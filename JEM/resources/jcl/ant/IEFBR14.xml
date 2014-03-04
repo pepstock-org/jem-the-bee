@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="IEFBR14" default="null-br14" basedir=".">
+	<description>
+        Does nothing
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="IEFBR14"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.hold" value="true"></property-->
+	<!--property name="jem.job.classPath" value="/test/ant-contrib-1.0b3.jar"/-->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="iefbr14" classname="org.pepstock.jem.ant.tasks.utilities.NullTask" />
+
+	<!-- 
+	NULL: does nothing
+	-->
+	<target name="null-br14">
+		<iefbr14>
+			<!--lock name="test"/-->
+		</iefbr14>
+	</target>
+</project>

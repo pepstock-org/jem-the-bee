@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_DELETE_ALIAS" default="import_cert"
+	basedir=".">
+	<description>
+		Delete alias from JEM user keystore
+	</description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_DELETE_ALIAS" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="certificate" classname="org.pepstock.jem.ant.CertificateTask" />
+	<target name="import_cert">
+		<certificate license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					DELETE ALIAS PIPPO;
+				</dataSet>
+			</dataDescription>
+		</certificate>
+	</target>
+</project>

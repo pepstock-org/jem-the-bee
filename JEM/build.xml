@@ -1,0 +1,42 @@
+<project name="jem" default="compile-jem" basedir=".">
+	<!-- import properties -->
+	<import file="../JEM/build-properties.xml" />
+
+	<!-- clean project JEM -->
+	<target name="clean-jem">
+		<delete dir="${jem.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.jar.file}" />
+	</target>
+
+	<!-- create directory needed -->
+	<target name="make-jem-directories" depends="clean-jem">
+		<mkdir dir="${jem.classes.directory}" />
+	</target>
+
+	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
+	<target name="compile-jem" depends="make-jem-directories">
+		<javac srcdir="${jem.source.directory}" destdir="${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+			<classpath>
+				<pathelement path="${jem.classes.directory}" />
+				<fileset dir="${jem.library.directory}">
+					<include name="**/*.jar" />
+					<exclude name="gwt/gwt-dev.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
+					<!-- XStream is excluded from SPRING framework -->
+					<exclude name="spring/com.springsource.com.thoughtworks.xstream-1.3.0.jar" />
+				</fileset>
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		</javac>
+		<jar jarfile="${jem.jar.file}" basedir="${jem.classes.directory}">
+			<manifest>
+				<section name="JEM_the_BEE">
+					<attribute name="Jem_version" value="${jem.version}" />
+					<attribute name="Built-By" value="${user.name}" />
+					<attribute name="Creation_time" value="${TODAY}" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+</project>

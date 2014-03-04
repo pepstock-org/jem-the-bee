@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="ICEGENER-2" default="copy1" basedir=".">
+	<description>
+		Copy a GDG, with more records, to new generation 
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="ICEGENER-2"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	COPY: copy a GDG generation 0, addind additional records defined inside a INLINE dataset, into a new generation
+	-->
+	<target name="copy1">
+		<icegener id="first">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(+1)"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+				<dataset>
+					These records are added to OUTPUT file:
+					Record1 test abcdefghjklilmnopqrstuvzxw
+					Record2 test abcdefghjklilmnopqrstuvzxw
+					Record3 test abcdefghjklilmnopqrstuvzxw
+				</dataset>	
+			</dataDescription>
+
+		</icegener>
+
+		<icegener id="second">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.copy1.icegener.first.OUTPUT"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+</project>

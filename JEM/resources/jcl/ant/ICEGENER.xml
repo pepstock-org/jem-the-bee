@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project name="PEPS" default="step4" basedir=".">
+	<description>
+		JCL to test all dataset types
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="PEPS"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	<property name="jem.job.affinity" value="***"/>
+	<!--property name="jem.job.domain" value="domain"/-->
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+	<taskdef name="wait" classname="org.pepstock.jem.ant.tasks.utilities.WaitTask" />
+
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step1">
+		<icegener>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<!-- 
+	STEP2: copy a GDG generation 0 of previuous step into a sysout
+	-->
+	<target name="step2" depends="step1">
+		<icegener>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step1.icegener.INPUT"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<!-- 
+	STEP3: copy a GDG generation 0 of previuous step into a temporary file
+	-->
+	<target name="step3" depends="step2">
+		<icegener>
+			
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="@@temp"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step1.icegener.OUTPUT" />
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<!-- 
+	STEP4: copy temporary file previously created into a sysout
+	-->
+	<target name="step4" depends="step3">
+		<icegener>
+
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step3.icegener.OUTPUT" />
+			</dataDescription>
+
+		</icegener>
+	</target>	
+	
+</project>

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<project name="YAUSJAVA" default="post" basedir=".">
+	<description>
+        test
+    </description>
+
+	<property name="jem.job.name" value="YAUSJAVA"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+
+	<target name="main">
+		<step-java classname="org.pepstock.test.Main">
+			<arg value="-h" />
+			<classpath>
+				<!--pathelement path="../../node/lib/jem.jar" /-->
+				<pathelement path="C:\\helios\\workspace\\JEM\\runtime\\node\\lib\\jem.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+
+			<dataDescription name="Ciao" sysout="true" disposition="NEW" />
+
+			<dataDescription name="Single" disposition="SHR">
+				<dataSet name="cnf.xml" />
+			</dataDescription>
+
+			<dataDescription name="Multi" disposition="SHR">
+				<dataSet name="nas.rx.jemtest(0)" />
+				<dataSet name="cnf.xml" />
+			</dataDescription>
+
+			<dataDescription name="Inline">
+				<dataSet>
+				Eccome qua!
+				Questa è una DD *
+			</dataSet>
+			</dataDescription>
+
+			<!--dataDescription name="Stock" sysout="true" disposition="NEW" /-->
+			<dataDescription name="Stock" disposition="NEW">
+				<dataSet name="@@CIAO" />
+			</dataDescription>
+
+		</step-java>
+
+	</target>
+
+	<target name="post" depends="main">
+		<step-java classname="org.pepstock.test.Main2">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="../../node/lib/jem.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+
+			<dataDescription name="Single" disposition="SHR">
+				<dataSet name="*.main.step-java.single" />
+			</dataDescription>
+			<dataDescription name="Multi" disposition="SHR">
+				<dataSet name="*.main.step-java.multi" />
+			</dataDescription>
+			<dataDescription name="Inline" disposition="SHR">
+				<dataSet name="*.main.step-java.inline" />
+			</dataDescription>
+
+			<dataDescription name="My" disposition="SHR">
+				<dataSet name="*.main.step-java.Stock" />
+			</dataDescription>
+
+		</step-java>
+
+	</target>
+
+</project>

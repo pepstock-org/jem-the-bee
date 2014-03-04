@@ -1,0 +1,13 @@
+<project name="jem-gwt-properties" basedir=".">
+	<!-- import common properties -->
+	<import file="../JEM/build-common-properties.xml" />
+	<!-- PROPERTIES JEM-gwt project -->
+	<property name="jem-gwt.workspace.directory" value="../JEM-gwt" />
+	<property name="jem-gwt.project.directory" value="${jem-gwt.workspace.directory}" />
+	<property name="jem-gwt.source.directory" value="${jem-gwt.project.directory}/src" />
+	<property name="jem.gwt.classes.directory" value="${jem-gwt.project.directory}/classes" />
+	<property name="jem-gwt.web.directory" value="${jem-gwt.project.directory}/war" />
+	<property name="jem-gwt.library.directory" value="${jem-gwt.web.directory}/WEB-INF/lib" />
+	<property name="jem-gwt.jar.name" value="jem-gwt.jar" />
+	<property name="jem-gwt.jar.file" location="${jem-gwt.library.directory}\${jem-gwt.jar.name}" />
+</project>

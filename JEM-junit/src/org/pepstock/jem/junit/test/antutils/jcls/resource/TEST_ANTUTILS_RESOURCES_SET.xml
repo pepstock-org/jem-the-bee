@@ -1,0 +1,145 @@
+<project name="TEST_ANTUTILS_RESOURCES_SET" default="set-resources" basedir=".">
+	<description>
+		Data sources are common resources defined centrally and addressable 
+		by jcl from any job (if the user of the job is authorized to use them). 
+		All resources must have a name, the key used by job to have it.
+		Currently this implementation works only for JAVA main programs, 
+		because data sources are provided by JNDI (Java Naming and Directory Interface). 
+		The great benefit of data sources is you could access to a database or ftp server 
+		using logical name, without caring about authentication stuff (as user-id or password) 
+		because JEM will prepare a connection already ready to use.
+		
+		This example show how you can get insert or some specifi datasource in the JEM
+		application server via JCL. You obviously can do this with the web interface too. 
+		We will found other example relative to the use of datasources in java program.
+	</description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_RESOURCES_SET" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+	<target name="set-resources" depends="set-ftp,set-jdbc,set-jms-http,set-jppf">
+	</target>
+	
+	<!-- set resource JDBC -->
+	<target name="set-jdbc">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="JDBC" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						 <resource name="JUNIT-JDBC-RESOURCE" type="jdbc" user="root" lastModified="2014-02-02 12:53:05.729 UTC">
+						   <property name="defaultReadOnly" visible="true" override="true">true</property>
+						   <property name="driverClassName" visible="true" override="true">DRIVER</property>
+						   <property name="defaultAutoCommit" visible="true" override="true">true</property>
+						   <property name="username" visible="true" override="true">USERID</property>
+						   <property name="password" visible="false" override="true">PWD</property>
+						   <property name="url" visible="true" override="true">URL</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE JDBC NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+	
+	<!-- set resource FTP -->
+	<target name="set-ftp">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="FTP" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						<resource name="JUNIT-FTP-RESOURCE" type="ftp" user="root" lastModified="2014-02-02 12:53:51.99 UTC">
+						   <property name="username" visible="true" override="true">USR</property>
+						   <property name="binary" visible="true" override="true">true</property>
+						   <property name="password" visible="false" override="true">PWD</property>
+						   <property name="url" visible="true" override="true">URL</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE FTP NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+	<!-- set resource JMS and HTTP -->
+	<target name="set-jms-http">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="JMS" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						 <resource name="JUNIT-JMS-RESOURCE" type="jms" user="root" lastModified="2014-02-02 12:54:25.927 UTC">
+						   <property name="java.naming.factory.initial" visible="true" override="true">CONTEXT-FACTORY</property>
+						   <property name="username" visible="true" override="true">USR</property>
+						   <property name="password" visible="false" override="true">PWD</property>
+						   <property name="java.naming.provider.url" visible="true" override="true">URL</property>
+						   <property name="connectionFactoryName" visible="true" override="true">FACTORY-NAME</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="HTTP" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						 <resource name="JUNIT-HTTP-RESOURCE" type="http" user="root" lastModified="2014-02-02 13:02:23.458 UTC">
+						   <property name="requestLoginParamUserid" visible="true" override="true">USER-ID</property>
+						   <property name="protocolType" visible="true" override="true">http</property>
+						   <property name="requestHostName" visible="true" override="true">URL</property>
+						   <property name="proxyPort" visible="true" override="true">8080</property>
+						   <property name="requestLoginParamPassword" visible="true" override="true">PWD</property>
+						   <property name="password" visible="false" override="true">PWD</property>
+						   <property name="requestLoginQueryString" visible="true" override="true">LOGIN-QUERY</property>
+						   <property name="proxyProtocol" visible="true" override="true">http</property>
+						   <property name="username" visible="true" override="true">PROXY-ID</property>
+						   <property name="requestLoginPassword" visible="false" override="true">PWD</property>
+						   <property name="proxyUrl" visible="true" override="true">URL</property>
+						   <property name="requestLoginUserid" visible="true" override="true">USER-ID</property>
+						   <property name="requestPort" visible="true" override="true">8080</property>
+						   <property name="requestLogoutQueryString" visible="true" override="true">LOGOUT</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE JMS NOENCRYPTION;
+					SET SOURCE HTTP NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+	<!-- set resource JPPF -->
+	<target name="set-jppf">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="JPPF" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					<resources>
+						 <resource name="JUNIT-JPPF-RESOURCE" type="jppf" user="root" lastModified="2014-02-02 13:10:12.733 UTC">
+						   <property name="addresses" visible="true" override="true">HOST1:369,HOST2:368,HOST3:369</property>
+						 </resource>
+					</resources>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE JPPF NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>

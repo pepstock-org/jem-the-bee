@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_STEPJAVA_USE_DATASOURCE" default="connectToJdbcDatasource" basedir=".">
+	<description>
+		This is an example of how to make use of datasource in JEM.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_STEPJAVA_USE_DATASOURCE" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<target name="connectToJdbcDatasource">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.ConnectToDataSource">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<fileset dir="${JEM_HOME}/lib/db/" includes="*.jar"/>
+				<!-- 
+					this will load all the libraries set by the application server JEM
+					and is needed in this case for access the datasource
+				-->
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<!-- DB datasource reference -->
+			<datasource name="jem-db" resource="JUNIT_JDBC_JEM"/>
+		    <datadescription name="log4j" disposition="SHR">
+		        <dataset name="${jem.data}/test_common/log4j.xml"></dataset>
+		    </datadescription>
+		</step-java>
+	</target>
+</project>

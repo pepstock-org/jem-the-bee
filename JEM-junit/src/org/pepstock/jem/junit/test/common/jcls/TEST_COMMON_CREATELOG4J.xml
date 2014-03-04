@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project name="TEST_COMMON_CREATE_LOG4J" default="createLog4jConfig" basedir=".">
+	<description>
+		This is an example will generate a datasource containing the log4j.xml configuration that
+		will be used in ant and springbatch test case.
+    </description>
+
+	<property name="jem.job.name" value="TEST_COMMON_CREATE_LOG4J" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<!-- Create log4j.xml configuration that will later be used -->
+    <target name="createLog4jConfig">
+	   <wrapper>
+	      <dataDescription name="OUTPUT" disposition="NEW">
+	         <dataSet name="${jem.data}/test_common/log4j.xml"/>
+	      </dataDescription>
+	      <dataDescription name="INPUT" disposition="SHR">
+	         <dataSet><![CDATA[<?xml version="1.0" encoding="UTF-8"?> 
+	         	<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	         		debug="false">
+	         		
+	         		<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+	         			<param name="Threshold" value="INFO" />
+	         			<layout class="org.apache.log4j.PatternLayout">
+	         				<param name="ConversionPattern" value="%d{yyyy MM dd HH:mm:ss} %-6p [%t] %m%n" />
+	         			</layout>
+	         		</appender>
+	         		
+	         		<root>
+	         			<priority value="info" />
+	         			<appender-ref ref="consoleAppender" />
+	         		</root>
+	         	</log4j:configuration> 
+				]]>
+	         </dataSet>
+	      </dataDescription>
+	      <copy file="${DD_INPUT}" tofile="${DD_OUTPUT}"/>
+	   </wrapper>
+	</target>
+</project>

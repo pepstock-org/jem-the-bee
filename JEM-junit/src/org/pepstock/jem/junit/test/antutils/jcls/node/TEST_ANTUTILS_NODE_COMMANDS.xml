@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_NODE_COMMANDS" default="test" basedir=".">
+	<description>
+		This example show you how you can controll cluster nodes through the
+		use of JCL without the need of the Web Console.
+		You can drain and start any nodes or group of nodes.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_NODE_COMMANDS"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+	
+	<taskdef name="nodes" classname="org.pepstock.jem.ant.NodesTask" />
+
+	<target name="test">
+		<nodes license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					DRAIN *; 
+					START *;
+					DRAIN 192*;
+					START 192*;
+				</dataSet>
+			</dataDescription>
+		</nodes>
+	</target>
+
+</project>

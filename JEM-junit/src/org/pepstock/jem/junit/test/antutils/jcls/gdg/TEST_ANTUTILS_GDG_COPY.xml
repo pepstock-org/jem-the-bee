@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_GDG_COPY" default="testcopy" basedir=".">
+	<description>
+		Copy a GDG, with more records, to new generation.
+		To better understand this JCL you first has to understand the concepts
+		behind a JCL. Please refer to JEM documentation.
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_GDG_COPY"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+	<!-- to refers the environment variable -->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="copy" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	
+	<!-- 
+	COPY: copy a GDG generation 0, addind additional records defined inside a INLINE dataset, into a new generation
+	-->
+	<target name="testcopy">
+	    <!-- define the gdg -->
+    	<gdg id="define" license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="GDG_COPY" disposition="NEW">
+				<dataSet name="test_antutils/gdg/copy"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    DEFINE GDG GDG_COPY NOEMPTY;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	    <copy id="first">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="test_antutils/gdg/copy(1)"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="test_antutils/gdg/copy(0)"/>
+				<dataset>
+					These records are added to OUTPUT file:
+					Record1 added to gdg
+					Record2 added to gdg
+					Record3 added to gdg
+				</dataset>	
+			</dataDescription>
+		</copy>
+
+		<copy id="second">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="test_antutils/gdg/copy(1)"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.testcopy.copy.first.OUTPUT"/>
+			</dataDescription>
+		</copy>
+	</target>
+
+</project>

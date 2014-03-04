@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="WAIT" />
+		<beans:property name="environment" value="TEST-Env" />
+	</beans:bean>
+
+	<beans:bean id="jem.listener" class="org.pepstock.jem.springbatch.tasks.StepListener"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="wait"
+		class="org.pepstock.jem.springbatch.tasks.utilities.WaitTasklet">
+		<beans:property name="seconds" value="100" />
+		<beans:property name="locks">
+			<beans:list>
+				<beans:ref local="LOCK" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="LOCK"
+		class="org.pepstock.jem.springbatch.tasks.Lock">
+		<beans:property name="name" value="semaforo" />
+	</beans:bean>
+
+	<!-- 
+		Job abstract definition necessary for integration with JEM
+	 -->
+	<job id="jem.baseJob" abstract="true">
+    	<listeners>
+        	<listener ref="jem.listener"/>
+    	</listeners>
+	</job>
+
+	<step id="jem.baseStep" abstract="true">
+		<tasklet>
+    		<listeners>
+        		<listener ref="jem.listener"/>
+    		</listeners>
+    	</tasklet>
+	</step>
+
+	<!-- 
+		wait: wait for n seconds
+	 -->
+	<job id="WAIT" parent="jem.baseJob">
+		<step id="waiting" parent="jem.baseStep">
+			<tasklet ref="wait" />
+		</step>
+	</job>
+	
+</beans:beans>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="JEM, the BEE"
+            id="JEM-plugin">
+      </category>
+      <view
+            category="JEM-plugin"
+            class="org.pepstock.jem.plugin.views.jobs.inspector.InspectorViewPart"
+            icon="icons/favicon.png"
+            id="org.pepstock.jem.plugin.views.jobs.inspector.InspectorViewPart"
+            name="Inspector"
+            restorable="false">
+      </view>
+      <view
+            category="JEM-plugin"
+            class="org.pepstock.jem.plugin.views.jobs.JobsViewPart"
+            icon="icons/favicon.png"
+            id="org.pepstock.jem.plugin.views.jobs.JobsViewPart"
+            name="Jobs">
+      </view>
+      <view
+            category="JEM-plugin"
+            class="org.pepstock.jem.plugin.views.explorer.ExplorerViewPart"
+            icon="icons/favicon.png"
+            id="org.pepstock.jem.plugin.views.explorer.ExplorerViewPart"
+            name="Explorer">
+      </view>
+   </extension>
+ 	<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.pepstock.jem.plugin.preferences.TablePreferencesContainer"
+            id="org.pepstock.jem.plugin.preferences.preferencepage1"
+            name="JEM, the BEE">
+      </page>
+   </extension> 
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="JEM-plugin.contribution1"
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter = "*.xml">
+         <menu
+               id="JEM-plugin.menu1"
+               label="JEM"
+               path="additions">
+            <separator
+                  name="JEM">
+            </separator>
+         </menu>
+         <action
+               class="org.pepstock.jem.plugin.actions.SubmitAction"
+               enablesFor="1"
+               id="JEM-plugin.submitAction"
+               label="Submit JCL"
+               menubarPath="JEM-plugin.menu1/JEM">
+         </action>
+      </objectContribution>
+      <viewerContribution id="org.pepstock.jem.plugin.actions.SubmitEditorAction"
+   			targetID="#CompilationUnitEditorContext"> 
+		   <action
+		         id="JEM-plugin.submitEditorAction" 
+		         label="Submit to Jem"
+		         icon="icons/red_dot.gif"
+		      menubarPath="additions" 
+		      class="org.pepstock.jem.plugin.actions.SubmitEditorAction"> 
+		      </action> 
+	   </viewerContribution> 
+   </extension>
+</plugin>

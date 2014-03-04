@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<project name="BINARY" default="step1" basedir=".">
+	<description>
+		BINARY action
+    </description>
+
+
+	<property name="jem.job.name" value="BINARY"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.user" value="utenteCheNonEsiste"/-->
+	
+	<taskdef name="bin" classname="org.pepstock.jem.ant.tasks.utilities.ExecBinaryTask" />
+
+	<target name="step1">
+		
+		<!--bin executable="/app1/tasklist"/-->
+
+		<!--bin executable="cmd.exe">
+			<arg value="/c"/>
+			<arg value="tasklist"/>
+			<arg value="/FO"/>
+			<arg value="TABLE"/>
+		</bin-->
+
+		<bin executable="tasklist.exe">
+			<!--arg value="/FI"/>
+			<arg value="&quot;USERNAME ne NT AUTHORITY\\SYSTEM&quot;"/-->
+		</bin>
+
+		<!--bin executable="exec">
+			<arg line=" arg1 arg2 pippo"/> 
+		</bin>
+
+		<bin executable="/app1/exec">
+			<arg value="arg1"/> 
+			<arg value="arg2"/>
+		</bin-->
+
+	</target>
+
+</project>

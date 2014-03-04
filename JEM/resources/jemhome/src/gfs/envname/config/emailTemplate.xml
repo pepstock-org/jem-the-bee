@@ -1,0 +1,30 @@
+<email-template>
+	<!-- Email format - TEXT_HTML o TEXT_PLAIN....default: TEXT_PLAIN -->
+	<!--format></format-->
+	
+	<!-- Name of the Email Sender: optional -->
+	<!-- from-user-name is alias of fromUserName -->
+	<from-user-name>Alessandro Zambrini</from-user-name>
+	
+	<!-- Email address of the Email Sender: MANDATORY -->
+	<!-- from-user-email-address is alias of fromUserEmailAddress -->
+	<from-user-email-address>alez.zambrini@gmail.com</from-user-email-address>
+
+	<!-- Subject of the Email -->	
+	<subject>
+	  <![CDATA[
+	  	End Job test Subjecto for job ${jem.job.name}
+	  ]]>
+	</subject>
+	
+	<!-- Text of the Email -->	
+	<text>
+	  <![CDATA[
+	  	<html>
+	  	 <h1>Hi</h1>
+	  	 <p>The Job ${jem.job.name} terminated with result: ${jem.job.result.returnCode}! <br/>
+		 StartedTime: ${jem.job.startedTime}.</p>
+	  	</html>
+	  ]]>
+	</text>
+</email-template>

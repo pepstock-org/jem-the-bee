@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_SCRIPT_WINDOWS" default="cmd-windows" basedir=".">
+	<description>
+    	With JEM is very easy to create a JCL able to launch any kind of script you need.
+    	Basically once defined the type of script you want to execute you just code in the
+    	JCL the script and that's it.
+    	Note that JEM is a set of nodes that can be Linux or Windows or others so often
+    	you will need to launch a script in a specific node. To do so use affinity.
+    	
+		This example show you how to use cmd.exe (dos commands). The JCL
+    	use affinity Windows to be shure that this JCL will be executed in a Windows node.
+    	The example show you also how to use dataset inside dos commands.
+    </description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_SCRIPT_WINDOWS"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<property name="jem.job.affinity" value="Windows"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	-->	
+
+	<taskdef name="windows" classname="org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask" />
+
+	<target name="cmd-windows">
+		<windows failonerror="true">
+			dir
+		</windows>
+		<windows failonerror="true">
+			<dataDescription name="TMP_FILE_FOR_WIN" disposition="SHR">
+				<dataSet>
+					Example on how to use dataset in windows.
+					This was a temporary file generate in JCL
+					and printed by a bash script
+				</dataSet>
+			</dataDescription>	
+            <!-- print the name of the tmp file OUTPUT -->
+		 	echo %DD_TMP_FILE_FOR_WIN%
+            <!-- print the content of the tmp file OUTPUT -->
+			type %DD_TMP_FILE_FOR_WIN%
+		</windows>
+	</target>
+</project>

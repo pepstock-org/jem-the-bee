@@ -1,0 +1,39 @@
+/*
+	Grigio chiaro:		#fcfcfc
+	Grigio scuro:		#bbbbbb
+*/
+
+.grid {
+	font-family: verdana, sans-serif;
+	color: black;
+	line-height: 25px;
+	
+	width: 100%;
+	
+	border: 1px solid #bbbbbb;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+	background-color: #fcfcfc;
+
+	padding: 7px 7px 20px 7px;
+	margin: 5px;
+	
+	font-size: 13px;
+	text-align: left;
+}
+
+.invisibleMessage {
+	color: #fcfcfc;
+}
+
+.logo:hover {
+    cursor: pointer;
+    /* ... */
+}
+.license {
+	text-align: center;
+	white-space: nowrap;
+	font-size: 0.7em;
+	color: grey;
+}

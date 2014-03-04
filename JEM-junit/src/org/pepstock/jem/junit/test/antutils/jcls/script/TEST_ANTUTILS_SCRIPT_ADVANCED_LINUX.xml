@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_SCRIPT_ADVANCED_LINUX" default="linux-bash" basedir=".">
+    <description>
+    	With JEM is very easy to create a JCL able to launch any kind of script you need.
+    	Basically once defined the type of script you want to execute you just code in the
+    	JCL the script and that's it.
+    	Note that JEM is a set of nodes that can be Linux or Windows or others so often
+    	you will need to launch a script in a specific node. To do so use affinity.
+    	
+		This example show you how to use bash, perl and pyton in JCL. The JCL
+    	use affinity Linux to be shure that this JCL will be executed in a Linux node.
+    	The examples show you also how to use dataset inside each script.
+    </description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_SCRIPT_ADVANCED_LINUX"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<property name="jem.job.affinity" value="linux"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	-->	
+
+	<taskdef name="bash" classname="org.pepstock.jem.ant.tasks.utilities.scripts.BashScriptTask" />
+	<taskdef name="perl" classname="org.pepstock.jem.ant.tasks.utilities.scripts.PerlScriptTask" />
+	<taskdef name="python" classname="org.pepstock.jem.ant.tasks.utilities.scripts.PythonScriptTask" />
+	
+	<!-- Whithout failonerror = true, even if the script command has error the job will not fail -->
+	
+	<!-- Remeber that bash does not interpret commands like ll becasue they are alias -->
+	<target name="linux-bash">
+		<!-- use bash accessing dataDescriptor -->
+		<bash suffix=".sh" failonerror="true">
+			<dataDescription name="TMP_FILE_FOR_BASH" disposition="SHR">
+				<dataSet>
+					Example on how to use dataset in linux bash.
+					This was a temporary file generate in JCL
+					and printed by a bash script
+				</dataSet>
+			</dataDescription>	
+            <!-- print the content of the tmp file OUTPUT -->
+            cat $DD_TMP_FILE_FOR_BASH
+            <!-- print the name of the tmp file OUTPUT -->
+		 	echo $DD_TMP_FILE_FOR_BASH
+		</bash>
+		<!-- use perl accessing dataDescriptor -->
+		<perl failonerror="true">
+    		<dataDescription name="TMP_FILE_FOR_PERL" disposition="SHR">
+				<dataSet>
+					Example on how to use dataset in perl.
+					This was a temporary file generate in JCL
+					and printed by a perl script
+				</dataSet>
+			</dataDescription>	
+            <!-- print the content of the tmp file OUTPUT -->
+            $FILE = $ENV{'DD_TMP_FILE_FOR_PERL'};
+            open(FILE) or die("Could not open log file.");
+            foreach $line (&lt;FILE&gt;) {
+                print $line;              
+                # remove the newline from $line.
+                # do line-by-line processing.
+            }
+        </perl>
+		<python failonerror="true">
+    		<dataDescription name="TMP_FILE_FOR_PYTHON" disposition="SHR">
+				<dataSet>
+					Example on how to use dataset in perl.
+					This was a temporary file generate in JCL
+					and printed by a perl script
+				</dataSet>
+			</dataDescription>	
+import os
+
+fname=os.environ['DD_TMP_FILE_FOR_PYTHON']
+with open(fname) as f:
+	content = f.readlines()
+	print(content)		
+		</python>
+	</target>
+</project>

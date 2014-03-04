@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	debug="false">
+	
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy MM dd HH:mm:ss} %-6p [%t] %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="fileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${JEM_NODE}/logs/jem.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<param name="Append" value="true" />
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy MM dd HH:mm:ss} %-6p [%t] %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="inMemoryAppender" class="org.pepstock.jem.log.InMemoryAppender">
+		<param name="Threshold" value="INFO" />
+		<param name="MaxRows" value="100" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy MM dd HH:mm:ss} %-6p [%t] %m%n" />
+		</layout>
+	</appender>
+	
+	<root>
+		<priority value="info" />
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="fileAppender" />		
+		<appender-ref ref="inMemoryAppender" />		
+	</root>
+	
+</log4j:configuration> 

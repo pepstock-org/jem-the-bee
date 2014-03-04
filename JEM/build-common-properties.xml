@@ -1,0 +1,22 @@
+<project name="jem-common-properties" basedir=".">
+	<!-- COMMON PROPERTIES -->
+	<property name="jem.version" value="HEAD" />
+	<tstamp>
+		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<!-- compilation properties -->
+	<property name="jem.javac.debug" value="true" />
+	<property name="jem.javac.debuglevel" value="lines,vars,source" />
+	<property name="jem.javac.source" value="1.6" />
+	<property name="jem.javac.target" value="1.6" />
+	<property name="jem.javac.includeantruntime" value="false" />
+
+	<!-- jem common properties used in other build -->
+	<property name="jem.workspace.directory" value="../JEM" />
+	<property name="jem.project.directory" value="${jem.workspace.directory}" />
+	<property name="jem.library.directory" value="${jem.project.directory}/lib" />
+	<property name="jem.jar.name" value="jem.jar" />
+	<property name="jem.jar.file" location="${jem.library.directory}/${jem.jar.name}" />
+	<property name="jem.classes.directory" value="${jem.project.directory}/classes" />
+	<property name="zip.name" value="jem.zip" />
+</project>

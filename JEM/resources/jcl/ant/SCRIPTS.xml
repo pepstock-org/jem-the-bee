@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="SCRIPTS" default="step1" basedir=".">
+	<description>
+		SCRIPTS action
+    </description>
+
+
+	<property name="jem.job.name" value="SCRIPTS"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.user" value="utenteCheNonEsiste"/-->
+
+	<taskdef name="shellscript" classname="org.pepstock.jem.ant.tasks.utilities.ShellScriptTask" />
+	
+	<taskdef name="windows" classname="org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask" />
+
+	<target name="step1">
+		<!--shellscript shell="cmd.exe" suffix=".bat">
+			<arg value="/c"/>
+			<arg value="call"/>
+			<resultProperty>RETURN_CODE</resultProperty>
+		 dir ${jem.data}
+		</shellscript-->
+		
+		<windows resultProperty="RETURN_CODE">
+			dir "${jem.data}";
+		</windows>
+		<!--echo>${RETURN_CODE}</echo-->
+	</target>
+
+</project>

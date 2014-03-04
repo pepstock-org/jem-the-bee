@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project basedir="." default="execute">
+
+	<property name="jem.job.name" value="JPPF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	<taskdef name="stepjava" classname="org.pepstock.jem.ant.tasks.StepJava"/>
+		
+	<target name="execute">
+		<echo message="Entering jppf task..." />
+		<!--jppf runnable="org.pepstock.jem.testjppf.MyRunnable" parallelTaskNumber="5" datasource="jppf"
+			mergedDataDescription="OUTPUT"-->
+		<stepjava classname="org.pepstock.jem.testjppf.MyMain">	
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			
+			<dataSource name="jppf" resource="JPPFLocalhost"/>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+
+			<dataDescription name="OUTPUT" disposition="OLD">
+				<dataSet name="gdg/stock"/>
+				</dataDescription>
+		</stepjava>	
+		<!--/jppf-->	
+	</target>
+</project>

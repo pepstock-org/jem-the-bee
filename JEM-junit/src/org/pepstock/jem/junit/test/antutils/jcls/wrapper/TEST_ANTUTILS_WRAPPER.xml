@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_WRAPPER" default="copyFile" basedir=".">
+	<description>
+		Wrapper is a custom Ant task adding a set of data descriptions functions. 
+		Using this way, the programmer is able to use all already prepared ANT tasks 
+		in own job batch programs, avoiding strong references with physical files 
+		but logical ones, by local ANT properties. To
+		reduce the risk to use properties already used in the ANT project, all variables 
+		names have DD_ prefix.
+		Wrapper is able to execute a nested ANT task, passing and substituting properties 
+		with values of data descritpions.
+
+		Here is a simple sample how to execute ANT task COPY to copy a file into another:     
+	</description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_WRAPPER" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<target name="copyFile">
+	   <wrapper>
+	      <dataDescription name="OUTPUT" disposition="NEW">
+	         <dataSet name="${jem.data}/test_antutils/wrapperTest.txt"/>
+	      </dataDescription>
+
+	      <dataDescription name="INPUT" disposition="SHR">
+	         <dataSet>
+	         	Data set used for test JEM wrapper task
+	         </dataSet>
+	      </dataDescription>
+
+	      <copy file="${DD_INPUT}" tofile="${DD_OUTPUT}"/>
+
+	   </wrapper>
+	</target>
+</project>

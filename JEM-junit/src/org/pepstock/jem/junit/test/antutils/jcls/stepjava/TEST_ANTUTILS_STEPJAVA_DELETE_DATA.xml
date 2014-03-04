@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_STEPJAVA_DELETE_DATA" default="main" basedir=".">
+    <description>
+		This is an example of how to run a java program whithin JEM.
+    	In the specific the java program will create a dataset containing a JDBC
+    	resource pointing to the JEM Database. This resource will than be loaded
+		into the JEM and used by another java program to test the connection to a 
+    	Database.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_STEPJAVA_DELETE_DATA" />
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+
+	<target name="main">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.DeleteJunitDataSet">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem.jar" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<fileset dir="${JEM_HOME}/lib/commons-io/" includes="*.jar"/>
+			</classpath>
+		</step-java>
+	</target>
+
+</project>

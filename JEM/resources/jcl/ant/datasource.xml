@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="YAUSWAIT" default="main" basedir=".">
+	<description>
+        test
+    </description>
+
+	<property name="jem.job.name" value="YAUSWAIT"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.domain" value="domain"/>
+	<!--property name="jem.job.affinity" value="classA"/-->
+	<property name="jem.job.priority" value="99"/>
+	<!--property name="jem.job.hold" value="true"/-->
+	<!-- to refers the environment variable -->
+	
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+
+	<target name="main">
+		<step-java classname="org.pepstock.test.MainDB">
+			<arg value="60" />
+			<classpath>
+				<pathelement path="../../../classes" />
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}" />
+			</classpath>
+
+			<dataSource name="db2" resource="C0D0"/>
+				
+			<!--dataDescription name="FILEOUT" disposition="NEW">
+				<dataSet name="nas.rx.jemtest(1)"/>
+			</dataDescription>
+
+			<dataDescription name="FILEIN" disposition="SHR">
+				<dataSet name="nas.rx.jemtest(0)"/>
+			</dataDescription-->
+
+		</step-java>
+
+	</target>
+</project>

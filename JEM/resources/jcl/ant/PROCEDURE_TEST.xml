@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_PROCEDURE" default="gfsInfo" basedir=".">
+	<description>
+		Example of the use of procedure.
+		A procedure is a peace of code that can be recall anyware once defined.
+		It is usefull to avoid unecessary code duplication and is helpfull for
+		code maintenance.
+		A procedure must be first declared and then use. A procedure, could be
+		store in a JCL and then imported so to be used in more then one JCL.
+		A procedure can be any script, java program, JEM task, ant task.
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_PROCEDURE"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+
+	<taskdef name="procdef" classname="org.pepstock.jem.ant.tasks.ProcedureDefinition" />
+	<taskdef name="procedure" classname="org.pepstock.jem.ant.tasks.Procedure" />
+
+	<procdef name="printHeader">
+		<sequential>
+		<echo> ------------------------------------------------------- </echo>
+		<echo> Current env information: </echo>
+		<echo> User:${user.name} </echo>
+		<echo> JEM Environment:${jem.domain} </echo>
+		<echo> ------------------------------------------------------- </echo>
+		<echo>  </echo>
+		</sequential>
+	</procdef>
+
+	<procdef name="printFooter">
+		<sequential>
+		<echo>  </echo>
+		<echo> ------------------------------------------------------- </echo>
+		<echo> JEM, the BEE - 2013-2014 pepstock.org </echo>
+		<echo> ------------------------------------------------------- </echo>
+		</sequential>
+	</procdef>
+
+	<target name="gfsInfo" depends="outputFolder,dataFolder,sourceFolder,binaryFolder,libraryFolder"/>
+
+	<target name="outputFolder" depends="">
+		<procedure name="printHeader"/>
+		<echo> GFS output folder:${jem.output} </echo>
+		<procedure name="printFooter"/>
+	</target>
+		
+	<target name="dataFolder" depends="">
+		<procedure name="printHeader"/>
+		<echo> GFS data folder:${jem.data} </echo>
+		<procedure name="printFooter"/>
+	</target>
+
+	<target name="sourceFolder" depends="">
+		<procedure name="printHeader"/>
+		<echo> GFS source folder:${jem.source} </echo>
+		<procedure name="printFooter"/>
+	</target>
+
+	<target name="binaryFolder" depends="">
+		<procedure name="printHeader"/>
+		<echo> GFS binary folder:${jem.binary} </echo>
+		<procedure name="printFooter"/>
+	</target>
+	
+	<target name="libraryFolder" depends="">
+		<procedure name="printHeader"/>
+		<echo> GFS library folder:${jem.library} </echo>
+		<procedure name="printFooter"/>
+	</target>
+</project>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="JPPF" />
+		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
+	</beans:bean>
+
+	<beans:bean id="jem.listener" class="org.pepstock.jem.springbatch.tasks.StepListener"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="jppf" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="jppf.bean" />
+		<beans:property name="dataDescriptionList">
+				<beans:list>
+					<beans:ref local="OUTPUT"/>
+				</beans:list>
+		</beans:property>
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="datasource"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>
+
+	<beans:bean id="jppf.bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.MyRunnable" />
+		<beans:property name="datasource" value="jppf" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+
+	<!-- 
+		Data source for JPPF
+	 -->
+
+	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
+		<beans:property name="name" value="jppf" />
+		<beans:property name="resource" value="JPPFLocalhost" />
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT-1 file
+	 -->
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+
+	<!-- 
+		Job abstract definition necessary for integration with JEM
+	 -->
+	<job id="jem.baseJob" abstract="true">
+    	<listeners>
+        	<listener ref="jem.listener"/>
+    	</listeners>
+	</job>
+
+	<step id="jem.baseStep" abstract="true">
+		<tasklet>
+    		<listeners>
+        		<listener ref="jem.listener"/>
+    		</listeners>
+    	</tasklet>
+	</step>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="JPPF" parent="jem.baseJob">
+		<step id="grid" parent="jem.baseStep">
+			<tasklet ref="jppf" />
+		</step>
+	</job>
+	
+</beans:beans>

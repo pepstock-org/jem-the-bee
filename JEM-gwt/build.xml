@@ -1,0 +1,63 @@
+<project name="jem-web" default="gwtc" basedir=".">
+	<!-- import properties -->
+	<import file="../JEM-gwt/build-properties.xml" />
+
+	<!-- clean clean project JEM-gwt -->
+	<target name="clean-gwt">
+		<delete dir="${jem.gwt.classes.directory}" includeemptydirs="true" />
+		<delete file="${jem-gwt.jar.file}" />
+		<delete dir="${jem-gwt.web.directory}/jem_gwt" includeemptydirs="true" />
+		<delete dir="${jem-gwt.project.directory}/gwt-unitCache" includeemptydirs="true" />
+		<delete file="${jem-gwt.library.directory}/${jem.jar.name}" />
+	</target>
+
+	<!-- create directory needed -->
+	<target name="make-gwt-directories" depends="clean-gwt">
+		<mkdir dir="${jem.gwt.classes.directory}" />
+	</target>
+
+	<!-- compile backend JEM-gwt -->
+	<target name="compile-backend" depends="make-gwt-directories">
+		<javac srcdir="${jem-gwt.source.directory}" destdir="${jem.gwt.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+			<classpath>
+				<pathelement path="${jem.classes.directory}" />
+				<pathelement path="${jem.library.directory}/gwt/gwt-dev.jar" />
+				<pathelement path="${jem.library.directory}/gwt/gwt-user.jar" />
+				<fileset dir="${jem-gwt.library.directory}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar jarfile="${jem-gwt.jar.file}" basedir="${jem.gwt.classes.directory}" >
+			<manifest>
+				<section name="JEM_the_BEE">
+					<attribute name="Jem_version" value="${jem.version}" />
+					<attribute name="Built-By" value="${user.name}" />
+					<attribute name="Creation_time" value="${TODAY}" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- compile the gwt application -->
+	<target name="gwtc" depends="compile-backend">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement path="${jem.library.directory}/gwt/validation-api-1.0.0.GA.jar" />
+				<pathelement path="${jem.library.directory}/gwt/validation-api-1.0.0.GA-sources.jar" />
+				<pathelement path="${jem.library.directory}/gwt/gwt-dev.jar" />
+				<pathelement path="${jem.library.directory}/gwt/gwt-user.jar" />
+				<pathelement location="${jem-gwt.library.directory}/gxt-3.0.1.jar" />
+				<pathelement location="${jem-gwt.library.directory}/gxt-chart-3.0.1.jar" />
+				<pathelement location="${jem-gwt.library.directory}/gxt-legacy-3.0.1.jar" />
+				<pathelement location="${jem-gwt.source.directory}" />
+				<pathelement location="${jem.project.directory}/src" />
+				<pathelement location="${jem.gwt.classes.directory}" />
+			</classpath>
+			<jvmarg value="-Xmx700M" />
+			<arg line="-war" />
+			<arg value="${jem-gwt.web.directory}" />
+			<arg value="org.pepstock.jem.gwt.JEM_gwt" />
+		</java>
+	</target>
+</project>

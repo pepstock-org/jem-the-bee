@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<project name="WAIT" default="wait" basedir=".">
+	<description>
+        Wait before ending
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="WAIT2"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+	<property name="jem.job.priority" value="99"/>
+	<property name="jem.job.hold" value="true"/-->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="wait" classname="org.pepstock.jem.ant.tasks.utilities.WaitTask" />
+
+	<!-- 
+	WAIT: waits for 60 seconds before ending
+	-->
+	<target name="wait">
+		<wait>
+			<arg value="60000" />
+			<lock name="semaforo"/>
+		</wait>
+
+	</target>
+</project>

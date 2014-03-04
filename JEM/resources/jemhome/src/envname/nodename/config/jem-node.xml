@@ -1,0 +1,45 @@
+<configuration>
+
+	<execution-environment>
+		<environment>#[jem.environment.name]</environment>
+		<domain>#[jem.domain]</domain>
+		<affinity>#[jem.affinity]</affinity>
+		<affinityFactory
+			className="org.pepstock.jem.node.affinity.JSPolicyAffinityLoader">
+			<properties>
+				<property name="jem.affinity.loader.policy" value="#[jem.persistence]/#[jem.environment.name]/policy/policy.js" />
+			</properties>
+		</affinityFactory>
+		<!--  to configure maximum number of jobs execution. Default 1 -->
+		<!-- parallel-jobs>1</parallel-jobs-->
+		<!--  to configure maximum amount of memory (in MB) to execute a process. Default 128 -->
+		<!-- memory>128</memory-->
+	</execution-environment>
+
+	<paths>
+		<!-- the path where the stored all output files of job execution -->
+		<output>#[jem.output]</output>
+		<!-- the path where the datasets and files should be stored. In Ant JCL 
+			can be referenced as ${jem.data} -->
+		<data>#[jem.data]</data>
+		<!-- the source the path where should be stores all the files that can 
+			be considered sources and that can be called at runtime In Ant JCL can be 
+			referenced as ${jem.source} -->
+		<source>#[jem.source]</source>
+		<!-- the binary path where all the executable files, like .exe files, that 
+			are called at runtime should be stored. In Ant JCL can be referenced as ${jem.binary} -->
+		<binary>#[jem.binary]</binary>
+		<!-- the classpath path where all the library (jars, zip, etc...) relative 
+			to an execution of a jcl should be stored In Ant JCL can be referenced as 
+			${jem.classpath} -->
+		<classpath>#[jem.classpath]</classpath>
+		<!-- the library path where all the native system libraries (like .dll, 
+			.so), that are needed by the executable files present in the binary path, 
+			should be stored In Ant JCL can be referenced as ${jem.library} -->
+		<library>#[jem.library]</library>
+		<!-- the persistence path where the database files for the persistence 
+			of the jem clustered maps should be stored. -->
+		<persistence>#[jem.persistence]</persistence>
+	</paths>
+
+</configuration>

@@ -1,0 +1,101 @@
+/*
+	base style
+*/
+.main {
+	border: 1px solid;
+	padding: 6px;
+	
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+
+	background: black;
+	color: white;
+	
+	-webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	
+	/*	
+	opacity: 0.8;
+	filter:alpha(opacity=60);  for IE8
+	*/
+}
+
+.title {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.message {
+	/*
+	max-width: 200px;
+	*/
+}
+
+/*
+color		bordo		background
+----------------------------------
+blue 		#3e6ddd		#9ab2ed
+green 		#44d78e		#9deac4
+grey 		#686868		#afafaf
+light blue 	#ffce19		#9acdff
+light green #79e03b		#b9ef98
+red 		#ff1d1d		#ff8989
+yellow 		#ffce19		#ffe489
+*/
+
+.blue {
+	background: #9ab2ed;
+	border-color: #3e6ddd;
+	color: black; 
+}
+
+.green {
+	background: #9deac4;
+	border-color: #44d78e;
+	color: black; 
+}
+
+.grey {
+	background: #afafaf;
+	border-color: #686868;
+	color: black; 
+}
+
+.yellow {
+	background: #ffe489;
+	border-color: #ffce19;
+	color: black; 
+}
+
+.red {
+	background: #ff8989;
+	border-color: #ff1d1d;
+	color: black; 
+}
+
+.lightGreen {
+	background: #b9ef98;
+	border-color: #79e03b;
+	color: black; 
+}
+
+.lightBlue {
+	background: #9acdff;
+	border-color: #ffce19;
+	color: black; 
+}
+
+/*
+.info {
+	background: #22b14c;
+}
+
+.warning {
+	background: #ffc90e;
+}
+
+.error {
+	background: #e60000;
+}
+*/

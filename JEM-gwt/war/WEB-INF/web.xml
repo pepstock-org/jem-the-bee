@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+    <distributable/>
+    
+	<!-- **********************************************************
+	 | Startup of JEM web app, extending Apache SHIRO for security|
+	 ********************************************************** -->
+	<listener>
+		<listener-class>org.pepstock.jem.gwt.server.listeners.StartUp</listener-class>
+	</listener>
+	
+	<!-- context-param>
+		<param-name>jem.logo.url</param-name>
+		<param-value>logo.png</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>jem.logo.link</param-name>
+		<param-value>http://www.pepstock.it</param-value>
+	</context-param-->
+	
+	<context-param>
+		<param-name>shiroConfigLocations</param-name>
+		<!-- LDAP -->
+		<!-- param-value>/WEB-INF/config/jem-node-ldap-shiro.ini</param-value-->
+		<param-value>/WEB-INF/config/jem-node-shiro.ini</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>hazelcast.config</param-name>
+		<param-value>/WEB-INF/config/jem-env-hazelcast.xml</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>jem.check.version</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	
+	<!-- Cache control -->
+	<filter>
+		<filter-name>GWTCacheControlFilter</filter-name>
+		<filter-class>org.pepstock.jem.gwt.server.servlet.GWTCacheControlFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>GWTCacheControlFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- Shiro -->
+	<filter>
+		<filter-name>ShiroFilter</filter-name>
+		<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>ShiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- **********************************************************
+	 | Startup of REST, component of JEM                          |
+	 ********************************************************** -->
+	<servlet>
+	   <servlet-name>RestService</servlet-name>
+	   <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+	   <init-param>
+	     <param-name>com.sun.jersey.config.property.packages</param-name>
+	     <param-value>org.pepstock.jem.gwt.server.rest</param-value>
+	   </init-param>
+	   <load-on-startup>1</load-on-startup>
+	</servlet>
+  	<servlet-mapping>
+		<servlet-name>RestService</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- **********************************************************
+	 | List of servlets, both GWT and JEM ones                    |
+	 ********************************************************** -->
+
+	<servlet>
+		<servlet-name>submit</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.Submit</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>getJobById</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetJobById</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>getEndedJobById</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetEndedJobById</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>login</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.Login</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>logout</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.Logout</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>getClusterGroupName</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetClusterGroupName</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>getClusterMembers</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetClusterMembers</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>commonResourcesManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.CommonResourcesManagerServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+	    <servlet-name>customResourceDefinitionsManager</servlet-name>
+	    <servlet-class>org.pepstock.jem.gwt.server.CustomResourceDefinitionsManagerServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>    
+		<servlet-name>certificatesManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.CertificatesManagerServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>jobsManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.JobsManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>loginManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.LoginManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>submitter</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.SubmitManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>certificateAdder</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.CertificateAdderManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>rolesManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.RolesManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>routingConfigManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.RoutingConfigManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>statsManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.StatisticsManagerServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>infoService</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.InfoServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>gfsManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.GfsManagerServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>nodesManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.NodesManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>swarmManager</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.SwarmManagerServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>statsManager</servlet-name>
+		<url-pattern>/jem_gwt/statsManager</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>certificatesManager</servlet-name>
+		<url-pattern>/jem_gwt/certificatesManager</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>infoService</servlet-name>
+		<url-pattern>/jem_gwt/infoService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>gfsManager</servlet-name>
+		<url-pattern>/jem_gwt/gfsManager</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>jobsManager</servlet-name>
+		<url-pattern>/jem_gwt/jobsManager</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>submitter</servlet-name>
+		<url-pattern>/jem_gwt/submitter</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>certificateAdder</servlet-name>
+		<url-pattern>/jem_gwt/certificateAdder</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>commonResourcesManager</servlet-name>
+		<url-pattern>/jem_gwt/commonResourcesManager</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>customResourceDefinitionsManager</servlet-name>
+		<url-pattern>/jem_gwt/customResourceDefinitionsManager</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>nodesManager</servlet-name>
+		<url-pattern>/jem_gwt/nodesManager</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>swarmManager</servlet-name>
+		<url-pattern>/jem_gwt/swarmManager</url-pattern>
+	</servlet-mapping>
+
+		<servlet-mapping>
+		<servlet-name>loginManager</servlet-name>
+		<url-pattern>/jem_gwt/loginManager</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>routingConfigManager</servlet-name>
+		<url-pattern>/jem_gwt/routingConfigManager</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>rolesManager</servlet-name>
+		<url-pattern>/jem_gwt/rolesManager</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>submit</servlet-name>
+		<url-pattern>/servlet/submit</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>getJobById</servlet-name>
+		<url-pattern>/servlet/getJobById</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>getEndedJobById</servlet-name>
+		<url-pattern>/servlet/getEndedJobById</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>login</servlet-name>
+		<url-pattern>/servlet/login</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>logout</servlet-name>
+		<url-pattern>/servlet/logout</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>getClusterGroupName</servlet-name>
+		<url-pattern>/servlet/getClusterGroupName</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>getClusterMembers</servlet-name>
+		<url-pattern>/servlet/getClusterMembers</url-pattern>
+	</servlet-mapping>
+
+	<!-- **********************************************************
+	 | Default page to serve                                      |
+	 ********************************************************** -->
+
+	<welcome-file-list>
+		<welcome-file>JEM_gwt.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="SimpleCopy" default="step1" basedir=".">
+	<description>
+		Copy GDG
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="SimpleCopy"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step1">
+		<icegener>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+</project>

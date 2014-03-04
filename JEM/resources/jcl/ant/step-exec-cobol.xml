@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="YAUSTOX3" default="main" basedir=".">
+	<description>
+        test
+    </description>
+
+	<property name="jem.job.name" value="YAUSTOX3"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<taskdef name="step-exec" classname="org.pepstock.jem.ant.tasks.StepExec" />
+
+	<target name="main">
+		<step-exec executable="cmd" dir="C:\\helios\\workspace\\Cobol">
+			<arg value="/c"/>
+			<arg value="C:\\helios\\workspace\\Cobol\\jbatch.exe"/>
+			
+			<dataDescription name="FILEOUT" disposition="NEW">
+				<dataSet name="nas.rx.jemtest(1)"/>
+			</dataDescription>
+
+			<dataDescription name="FILEIN" disposition="SHR">
+				<dataSet name="nas.rx.jemtest(0)"/>
+			</dataDescription>
+		</step-exec>
+
+	</target>
+
+</project>

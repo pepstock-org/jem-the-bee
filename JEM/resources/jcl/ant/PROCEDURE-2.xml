@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<project name="PROCEDURE-2" default="step2" basedir=".">
+	<description>
+		Prints some System properties and environment variables
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="PROCEDURE-2" />
+	<property name="jem.job.environment" value="TEST-Env" />
+
+
+	<taskdef name="procdef" classname="org.pepstock.jem.ant.tasks.ProcedureDefinition" />
+	<taskdef name="procedure" classname="org.pepstock.jem.ant.tasks.Procedure" />
+	<taskdef name="wait" classname="org.pepstock.jem.ant.tasks.utilities.WaitTask" />
+	<taskdef name="null" classname="org.pepstock.jem.ant.tasks.utilities.NullTask" />
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+	<taskdef name="windows" classname="org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask" />
+
+	<procdef name="my">
+		<sequential>
+			<wait>
+				<arg value="15" />
+				<lock name="semaforo" />
+			</wait>
+		</sequential>
+	</procdef>
+
+
+	<procdef name="my2">
+		<sequential>
+			<echo> Embed another:${user.name} </echo>
+			<echo> Embed another:${env.TEMP} </echo>
+			<echo> Embed another:${jem.classpath} </echo>
+			<windows name="stock">
+				<dataDescription name="OUTPUT" disposition="NEW">
+					<dataSet name="gdg/jemtest(1)" />
+				</dataDescription>
+
+				<dataDescription name="INPUT" disposition="SHR">
+					<dataSet name="${jem.data}/gdg/jemtest(0)" />
+				</dataDescription>
+			
+			copy %DD_INPUT% %DD_OUTPUT%
+
+			</windows>
+			<windows id="ahah">
+				<dataDescription name="OUTPUT" disposition="NEW">
+					<dataSet name="gdg/jemtest(1)" />
+				</dataDescription>
+
+				<dataDescription name="INPUT" disposition="SHR">
+					<dataSet name="${jem.data}/gdg/jemtest(0)" />
+				</dataDescription>
+			
+			copy %DD_INPUT% %DD_OUTPUT%
+
+			</windows>
+		</sequential>
+	</procdef>
+	<!--target name="copy">
+		<icegener>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)" />
+			</dataDescription>
+		</icegener>
+	</target-->
+
+	<target name="step1">
+		<null/>
+		<procedure name="my2">
+			<!--windows name="stock">
+				<dataDescription name="INPUT" disposition="SHR">
+					<dataSet name="gdg/jemtest(-1)" />
+				</dataDescription>
+			</windows>
+			<windows id="ahah">
+				<dataDescription name="INPUT" disposition="SHR">
+					<dataSet name="gdg/jemtest(-1)" />
+				</dataDescription>
+			</windows-->
+		</procedure>
+	</target>
+
+
+	<target name="step2" depends="step1">
+		<windows>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)" />
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step1.windows.ahah.INPUT" />
+			</dataDescription>
+	
+		copy %DD_INPUT% %DD_OUTPUT%
+
+		</windows>
+	</target>
+</project>

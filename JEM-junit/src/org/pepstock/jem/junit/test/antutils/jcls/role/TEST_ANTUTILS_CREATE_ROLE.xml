@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_CREATE_ROLE" default="step1" basedir=".">
+	<description>
+		Roles in JEM define a group of possibile permissions. JEM provide
+		out of the box a set of standard roles such as administrator but let
+		the user define any other role he needs.
+		Once defined, you can add users to role and yhis users will be able
+		to do only the operation permitted in the role.
+		Note that a user can have as many roles as you desire.
+		
+		This example shows how to create a role and add a user to it via JCL.
+		This operation can obviosly be done also via JEM Web Console
+    </description>
+
+	<!--
+	CREATE RoleProva;
+	GRANT jobs:* TO RoleProva;
+	REVOKE jobs:* TO RoleProva;	
+	REMOVE RoleProva;
+	ADD Stock,Pluto,Paperino TO RoleProva;
+	DELETE Pluto FROM RoleProva;
+	DELETE Pluto FROM RoleProva;
+	REVOKE jobs:* TO RoleProva;	
+	REMOVE RoleProva;
+	-->
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_CREATE_ROLE"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->		
+
+	<taskdef name="roles" classname="org.pepstock.jem.ant.RolesTask" />
+
+	<target name="step1">
+		<roles license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					CREATE JunitRole;
+					GRANT view:input TO JunitRole;
+					GRANT view:running TO JunitRole;
+					GRANT view:routing TO JunitRole;
+					GRANT view:output TO JunitRole;
+					GRANT view:nodes TO JunitRole;
+					GRANT jobs:* TO JunitRole;
+					GRANT swarm-nodes:* TO JunitRole;
+					GRANT search:jobs:* TO JunitRole;
+					GRANT search:nodes:* TO JunitRole;
+					ADD junit TO JunitRole;
+				</dataSet>
+			</dataDescription>
+		</roles>
+	</target>
+
+</project>

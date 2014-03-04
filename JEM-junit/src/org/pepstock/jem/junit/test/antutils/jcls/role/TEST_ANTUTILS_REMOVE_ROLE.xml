@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_REMOVE_ROLE" default="remove" basedir=".">
+	<description>
+		Roles in JEM define a group of possibile permissions. JEM provide
+		out of the box a set of standard roles such as administrator but let
+		the user define any other role he needs.
+		Once defined, you can add users to role and yhis users will be able
+		to do only the operation permitted in the role.
+		Note that a user can have as many roles as you desire.
+		
+		This example shows how to remove a role via JCL.
+		This operation can obviosly be done also via JEM Web Console
+    </description>
+
+	<!--
+	CREATE RoleProva;
+	GRANT jobs:* TO RoleProva;
+	REVOKE jobs:* TO RoleProva;	
+	REMOVE RoleProva;
+	ADD Stock,Pluto,Paperino TO RoleProva;
+	DELETE Pluto FROM RoleProva;
+	DELETE Pluto FROM RoleProva;
+	REVOKE jobs:* TO RoleProva;	
+	REMOVE RoleProva;
+	-->
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_REMOVE_ROLE"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->		
+
+	<taskdef name="roles" classname="org.pepstock.jem.ant.RolesTask" />
+
+	<target name="remove">
+		<roles license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REMOVE JunitRole;	
+				</dataSet>
+			</dataDescription>
+		</roles>
+	</target>
+
+</project>

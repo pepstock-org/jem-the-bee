@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="BASH" default="step1" basedir=".">
+	<description>
+		SCRIPTS-2 action
+    </description>
+
+
+	<property name="jem.job.name" value="BASH"/>
+	<property name="jem.job.environment" value="CLOUD-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	<property name="jem.job.affinity" value="linux"/>
+	
+	<taskdef name="bash" classname="org.pepstock.jem.ant.tasks.utilities.scripts.BashScriptTask" />
+
+	<target name="step1">
+		<bash>
+			echo "Hello World"
+		</bash>
+	</target>
+
+</project>

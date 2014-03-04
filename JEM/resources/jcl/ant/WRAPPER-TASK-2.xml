@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="WRAPPER" default="step1" basedir=".">
+	<description>
+		JCL to test all dataset types
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="PEPS"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	<property name="jem.job.affinity" value="***"/>
+	<!--property name="jem.job.domain" value="domain"/-->
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step1">
+		<wrapper>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(+1)"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg2/jemtest"/>
+			</dataDescription>
+			
+			<!--copy file="${DD_INPUT}" todir="${DD_OUTPUT}"/-->
+			
+			 <!--copy todir="${DD_OUTPUT}">
+			    <fileset dir="${DD_INPUT}"/>
+			  </copy-->
+			 <!--copy todir="${DD_OUTPUT}">
+			    <fileset dir="${DD_INPUT}">
+			    	<include name="**/*2"/>
+			    </fileset>
+			  </copy-->
+			
+			<!-- x SYSTDIN2 -->
+			 <concat destfile="${DD_OUTPUT}">
+			    <fileset dir="${DD_INPUT}">
+			    	<include name="**/*2"/>
+			    </fileset>
+			 </concat>
+		</wrapper>
+	</target>
+
+</project>

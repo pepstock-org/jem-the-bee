@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_WAIT" default="wait" basedir=".">
+	<description>
+        Wait 5 seconds before ending
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_WAIT" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="wait" classname="org.pepstock.jem.ant.tasks.utilities.WaitTask" />
+
+	<!-- 
+	WAIT: waits for 30 seconds before ending
+	-->
+	<target name="wait">
+		<wait>
+			<arg value="5" />
+		</wait>
+
+	</target>
+</project>

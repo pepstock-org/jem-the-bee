@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="ECHO" default="echo" basedir=".">
+	<description>
+		Prints some System properties and environment variables
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="ECHO"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.memory" value="60"></property>
+	
+	<!--property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+	<property name="jem.job.priority" value="99"/-->
+	<!--property name="jem.job.hold" value="true"/-->
+	<!-- to refers the environment variable -->
+
+	<!-- 
+	ECHO: prints some System properties and environment variables
+	-->
+	<target name="echo">
+		<echo> Embed another:${user.name} </echo>
+		<echo> Embed another:${env.TEMP} </echo>
+		<echo> Embed another:${jem.classpath} </echo>
+	</target>
+</project>

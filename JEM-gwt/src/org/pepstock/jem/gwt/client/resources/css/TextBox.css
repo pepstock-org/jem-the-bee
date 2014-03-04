@@ -1,0 +1,9 @@
+@external .gwt-*;
+
+.gwt-TextBox-readonly {
+	background: #ebebe4;
+}
+
+.mandatoryError{
+	border: 1px solid #ff0000;
+}

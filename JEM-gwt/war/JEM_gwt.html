@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the     -->
+<!-- browser's rendering engine into                -->
+<!-- "Standards Mode". Replacing this declaration   -->
+<!-- with a "Quirks Mode" doctype is not supported. -->
+
+<html>
+  <head>
+  	<!--  fixed #382: x-ua-comp must be the first directive of HEAD. Don't move otherwise it doesn't work on IE11 -->
+  	<meta http-equiv="x-ua-compatible" content="IE=10">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+	<!-- Favorites Icon -->
+	<link rel="icon" href="favicon.ico" />
+	
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+    <link type="text/css" rel="stylesheet" href="JEM_gwt.css">
+
+    <!--                                           -->
+    <!-- Title JEM                                 -->
+    <!--                                           -->
+    <title>JEM, the BEE</title>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                           -->
+    <script type="text/javascript" src="jem_gwt/jem_gwt.nocache.js"></script>
+
+    <!--                                                               -->
+    <!-- ACE Core, modes and themes                                    -->
+    <!--                                                               -->
+    <script type="text/javascript" src="ace/ace.js"           charset="utf-8"></script>
+	<script type="text/javascript" src="ace/theme-eclipse.js" charset="utf-8"></script>
+	<script type="text/javascript" src="ace/theme-monokai.js" charset="utf-8"></script>
+	<script type="text/javascript" src="ace/mode-xml.js"      charset="utf-8"></script>
+    <script type="text/javascript" src="ace/mode-text.js"     charset="utf-8"></script>
+    <script type="text/javascript" src="ace/mode-groovy.js"   charset="utf-8"></script>
+    <script type="text/javascript" src="ace/mode-javascript.js"   charset="utf-8"></script>
+    
+  </head>
+
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body style="margin: 0px;">
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+    
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+      </div>
+    </noscript>
+
+	<div id="jemLoading" align="center" style="text-align: center;">
+		<br>
+		<img alt="JEM Logo" src="img/logo_medium.png">
+		<br><br>
+		<h2 style="font-family: Helvetica, Arial, sans-serif;">JEM is loading, please wait...</h2>
+		<br> <img alt="Loading Bar" src="img/loading-bar.gif">
+	</div>
+</body>
+</html>

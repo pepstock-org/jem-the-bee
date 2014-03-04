@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/shiro-core-1.2.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/shiro-web-1.2.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-3.3.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-bundle-1.16.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-json-1.16.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-apache-client4-1.16.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-3.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-chart-3.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-legacy-3.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.7.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/xstream-1.4.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-149.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-ext-jdk15on-149.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hazelcast-all-2.6.6.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

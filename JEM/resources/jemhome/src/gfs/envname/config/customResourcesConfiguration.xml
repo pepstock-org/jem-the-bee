@@ -1,0 +1,40 @@
+<resource-templates>
+	<resource-template type="TestType">
+	
+		<section name="TestSection">
+		
+			<text-field key="textFieldPropertyOne" label="Property One" description="Description of Property One" mandatory="false" defaultValue="propertyOneValue" regExValidator=".*" />
+			
+			<single-selectable-list-field key="textFieldPropertyTwo" label="Property Two" description="Description of Property Two" mandatory="true" defaultValue="propertyTwoValue2" renderAsRadio="true">
+			
+				<value>propertyTwoValue1</value>
+				<value>propertyTwoValue2</value>
+				<value>propertyTwoValue3</value>
+				
+			</single-selectable-list-field>
+						
+			<single-selectable-list-field key="textFieldPropertyTwo" label="Property Two" description="Description of Property Two" mandatory="true" defaultValue="property.Two.Value1.dataaaaaaaaa" renderAsRadio="falserrrr">
+			
+				<value>
+					<![CDATA[
+						property.Two.Value1.dataaaaaaaaa
+					]]>
+				</value>
+				<value>
+					propertyTwoValue2
+				</value>
+				<value>propertyTwoValue3</value>
+				
+			</single-selectable-list-field>
+			
+			<multi-selectable-list-field key="textFieldPropertyThree" label="Property Three" description="Description of Property Three">
+				<value selected="true">propertyThreeValue1</value>
+				<value>propertyThreeValue2</value>
+				<value selected="true">propertyThreeValue3</value>			
+				<value selected="false">propertyThreeValue4</value>		
+			</multi-selectable-list-field>
+		
+		</section>		
+		
+	</resource-template>
+</resource-templates>

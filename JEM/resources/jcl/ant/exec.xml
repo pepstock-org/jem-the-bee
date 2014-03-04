@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="EXEC" default="main" basedir=".">
+	<description>
+        test
+    </description>
+
+	<property name="jem.job.name" value="EXEC"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<taskdef name="step-exec" classname="org.pepstock.jem.ant.tasks.StepExec" />
+
+	<target name="main">
+		<step-exec executable="${jem.binary}/test.cmd">
+			<arg value="/c"/>
+		</step-exec>
+		<echo>${step-exec.result}</echo>
+	</target>
+
+</project>

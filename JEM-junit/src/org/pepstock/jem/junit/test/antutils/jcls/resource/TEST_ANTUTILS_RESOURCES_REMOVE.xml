@@ -1,0 +1,38 @@
+<project name="TEST_ANTUTILS_RESOURCES_REMOVE" default="remove-resources" basedir=".">
+	<description>
+		Data sources are common resources defined centrally and addressable 
+		by jcl from any job (if the user of the job is authorized to use them). 
+		All resources must have a name, the key used by job to have it.
+		Currently this implementation works only for JAVA main programs, 
+		because data sources are provided by JNDI (Java Naming and Directory Interface). 
+		The great benefit of data sources is you could access to a database or ftp server 
+		using logical name, without caring about authentication stuff (as user-id or password) 
+		because JEM will prepare a connection already ready to use.
+		
+		This example show how you can remove, from the JEM batch-application server, resources
+		via JCL. You obviously can do this with the web interface too.
+	</description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_RESOURCES_REMOVE" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+	<target name="remove-resources">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REMOVE JUNIT-FTP-RESOURCE;
+					REMOVE JUNIT-HTTP-RESOURCE;
+					REMOVE JUNIT-JDBC-RESOURCE;
+					REMOVE JUNIT-JMS-RESOURCE;
+					REMOVE JUNIT-JPPF-RESOURCE;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>

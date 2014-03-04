@@ -1,0 +1,91 @@
+<project name="jem" default="javadoc" basedir=".">
+
+	<import file="build-properties.xml" />
+	
+	<property name="jem-site.project.directory" value="../JEM-site" />
+	<property name="jem-site.documentation.directory" value="${jem-site.project.directory}/WebContent" />
+	<property name="jem-site.api.directory" value="${jem-site.documentation.directory}/api" />
+	<property name="jem.api.directory" value="${jem-site.api.directory}/JEM" />
+	<property name="jem-gwt.api.directory" value="${jem-site.api.directory}/JEM-gwt" />
+
+	<!--  -->
+	<target name="make-directories">
+		<mkdir dir="${jem-site.api.directory}" />
+		<mkdir dir="${jem.api.directory}" />
+		<mkdir dir="${jem-gwt.api.directory}" />
+	</target>
+
+	<target name="clean" depends="make-directories">
+		<delete dir="${jem.api.directory}"
+			includeemptydirs="true"
+			includes="**/*"
+			excludes="."/>
+		<delete dir="${jem-gwt.api.directory}"
+			includeemptydirs="true"
+			includes="**/*"
+			excludes="."/>
+	</target>
+
+	<target name="javadoc" depends="clean">
+		<javadoc destdir="${jem.api.directory}"
+		         author="true"
+		         version="true"
+		           use="true"
+		           windowtitle="Job Entry Manager, the Batch Execution Environment API">
+			<classpath>
+				<pathelement path="${jem.classes.directory}" />
+				<fileset dir="${jem.library.directory}">
+					<include name="**/*.jar" />
+					<exclude name="gwt/gwt-dev.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
+				</fileset>
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<packageset dir="${jem.source.directory}" defaultexcludes="yes">
+				<include name="org/pepstock/**"/>
+			</packageset>
+			<!--doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+			
+			dir="${jem.source.directory}" 
+			
+		    <bottom><![CDATA[<i>Copyright &#169; 2000 Dummy Corp. All Rights Reserved.</i>]]></bottom>
+		    <tag name="todo" scope="all" description="To do:"/>
+		    <group title="Group 1 Packages" packages="com.dummy.test.a*"/>
+		    <group title="Group 2 Packages" packages="com.dummy.test.b*:com.dummy.test.c*"/-->
+		    <!--link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistLoc="C:\tmp"/-->
+		    <!--link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/-->
+		</javadoc>
+		<javadoc destdir="${jem-gwt.api.directory}"
+		         author="true"
+		         version="true"
+		           use="true"
+		           windowtitle="Job Entry Manager, the Batch Execution Environment API">
+			<classpath>
+				<pathelement path="${jem.classes.directory}" />
+				<fileset dir="${jem.library.directory}">
+					<include name="**/*.jar" />
+					<exclude name="gwt/gwt-dev.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
+					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
+				</fileset>
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<packageset dir="${jem-gwt.source.directory}" defaultexcludes="yes">
+				<include name="org/pepstock/**"/>
+			</packageset>
+
+			<!--doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+			
+			dir="${jem.source.directory}" 
+			
+		    <bottom><![CDATA[<i>Copyright &#169; 2000 Dummy Corp. All Rights Reserved.</i>]]></bottom>
+		    <tag name="todo" scope="all" description="To do:"/>
+		    <group title="Group 1 Packages" packages="com.dummy.test.a*"/>
+		    <group title="Group 2 Packages" packages="com.dummy.test.b*:com.dummy.test.c*"/-->
+		    <!--link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistLoc="C:\tmp"/-->
+		    <!--link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/-->
+		</javadoc>
+
+	</target>
+</project>

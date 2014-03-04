@@ -1,0 +1,133 @@
+@def selectionBorderWidth 1px;
+
+.cellTableWidget {
+	border: 1px solid #bfbfbf;
+}
+
+.cellTableFooter {
+	border-top: 1px solid #bfbfbf;
+	padding: 4px 15px;
+	text-align: left;
+	color: black;
+	font-weight: bold;
+	text-shadow: none;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.cellTableHeader {
+	border-bottom: 1px solid #bfbfbf;
+	padding: 4px 15px;
+	text-align: left;
+	color: black;
+	font-weight: bold;
+	text-shadow: none;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.cellTableCell {
+	padding: 2px 15px;
+	overflow: hidden;
+}
+
+.cellTableSortableHeader {
+	cursor: pointer;
+	cursor: hand;
+	text-decoration: underline;
+}
+
+.cellTableSortableHeader:hover {
+	color: black;
+}
+
+.cellTableSortedHeaderAscending {
+	
+}
+
+.cellTableSortedHeaderDescending {
+	
+}
+
+.cellTableEvenRow {
+	border: 1px solid white;
+	background: #ffffff;
+}
+
+.cellTableEvenRowCell {
+	border: 0px;
+}
+
+.cellTableOddRow {
+	border: 1px solid #ecf4ff;
+	background: #ecf4ff;
+}
+
+.cellTableOddRowCell {
+	border: 0px;
+}
+
+.cellTableHoveredRow {
+	border-style: 1px dashed black;
+}
+
+.cellTableHoveredRowCell {
+}
+
+.cellTableKeyboardSelectedRow {
+	background: #d0e6ff;
+	text: white;
+}
+
+.cellTableKeyboardSelectedRowCell {
+}
+
+.cellTableSelectedRow {
+	background: #d0e6ff;
+	color: white;
+	height: auto;
+	overflow: auto;
+}
+
+.cellTableSelectedRowCell {
+}
+
+/*
+ * The keyboard selected cell is visible over selection.
+ */
+
+.cellTableKeyboardSelectedCell {
+}
+
+@sprite .cellTableLoading {
+	gwt-image: 'cellTableLoading';
+	margin: 30px;
+}
+
+/*
+ * First and Last
+ */
+
+.cellTableFirstColumn {
+	
+}
+
+.cellTableLastColumn {
+	
+}
+
+.cellTableFirstColumnFooter {
+	
+}
+
+.cellTableFirstColumnHeader {
+	
+}
+
+.cellTableLastColumnFooter {
+	
+}
+
+.cellTableLastColumnHeader {
+	
+}

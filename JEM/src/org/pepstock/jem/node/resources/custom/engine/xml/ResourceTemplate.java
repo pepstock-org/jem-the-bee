@@ -1,0 +1,96 @@
+/**
+    JEM, the BEE - Job Entry Manager, the Batch Execution Environment
+    Copyright (C) 2012, 2013   Andrea "Stock" Stocchero
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.pepstock.jem.node.resources.custom.engine.xml;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
+
+/**
+ * This class represent a custom resource template 
+ * in the resource templates <code>xml</code> file. <br>
+ * It contains the description of the resource.
+
+ * @see XStream
+ * @author Alessandro Zambrini
+ */
+public class ResourceTemplate {
+
+	/**
+	 * Corresponding tag in the resource templates <code>xml</code> file.
+	 * @see XStream
+	 */
+	public static final String MAPPED_XML_TAG = "resource-template";
+
+	/**
+	 * Name of the type attribute. 
+	 * @see XStream
+	 */
+	public static final String TYPE_ATTRIBUTE = "type";
+	
+	/**
+	 * Name of the sections field. 
+	 * @see XStream
+	 */
+	public static final String SECTIONS_FIELD = "sections";
+
+	/**
+	 * Resource template type.
+	 */
+	private String type = null;
+
+	/**
+	 * The list of the sections of the resource template. <br>
+	 * All the field of a resource may be divided into sections.
+	 */
+	private LinkedList<SectionTemplate> sections = new LinkedList<SectionTemplate>();
+	
+		
+	/**
+	 * Return the type of the resource template.
+	 * @return the type of the resource template.
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Sets the type of the resource template.
+	 * @param type the type of the resource template.
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	/**
+	 * Adds a section in the list of the sections of the resource template.
+	 * @param section the section to be added in the sections list.
+	 * @see SectionTemplate
+	 */
+	public void add(SectionTemplate section) {
+		this.sections.addLast(section);
+	}
+
+	/**
+	 * Returns the list of the sections of the the resource template.
+	 * @return the list of the sections of the the resource template.
+	 */
+	public List<SectionTemplate> getContent() {
+		return this.sections;
+	}
+}

@@ -1,0 +1,17 @@
+
+@external .gwt-*;
+
+.gwt-TabPanel {
+	
+}
+
+.gwt-TabPanelBottom {
+	border-right: 1px solid #bfbfbf;
+	border-left: 1px solid #bfbfbf;
+	border-bottom: 1px solid #bfbfbf;
+	overflow: hidden;	/* what happen if content is bigger than host widget */
+	padding-top: 6px;
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-bottom: 1px;
+}

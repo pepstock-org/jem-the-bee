@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="ERROR" default="error" basedir=".">
+	<description>
+		Prints some System properties and environment variables
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="ERROR"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="null" classname="org.pepstock.jem.ant.tasks.utilities.NullTask" />
+	
+
+	<import file="${jem.source}/import.xml" />
+	<!-- 
+	ECHO: prints some System properties and environment variables
+	-->
+	<target name="error">
+		<echo> Embed another:${user.name} </echo>
+		<echo> Embed another:${env.TEMP} </echo>
+		<echo> Embed another:${jem.classpath} </echo>
+	</target>
+	
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step1">
+		<null>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg1/ciccio"/>
+				<!--dataSet name="stock/pippo.txt"/-->
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg1/pasticcio"/>
+			</dataDescription>
+
+		</null>
+	</target>
+	
+</project>

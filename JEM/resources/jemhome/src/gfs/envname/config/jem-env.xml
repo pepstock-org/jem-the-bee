@@ -1,0 +1,68 @@
+<configuration>
+
+	<database>
+		<driver>#[jem.db.driver]</driver>
+		<url>#[jem.db.url]</url>
+		<user>#[jem.db.user]</user>
+		<password>#[jem.db.password]</password>
+		<!--properties>
+			<property name="b" value="valore B" />
+			<property name="a" value="valore A" />
+			<property name="e" value="valore E" />
+			<property name="d" value="valore D" />
+			<property name="c" value="valore C" />
+		</properties-->
+	</database>
+
+	<statistics-manager enable="false"/>
+
+	<!-- node className="org.pepstock.jem.grs.GrsNode">
+		<properties>
+			<property name="license" value="Pepstock_JEM_GRS.license" />
+		</properties>
+	</node-->
+
+	<factories>
+		<factory className="org.pepstock.jem.ant.AntFactory">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+		<factory className="org.pepstock.jem.springbatch.SpringBatchFactory">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+			</properties>
+		</factory>
+	</factories>
+
+	<listeners>
+		<listener
+			className="org.pepstock.jem.node.events.DefaultJobChangeStatusListener">
+			<properties>
+				<property name="key" value="value" />
+			</properties>
+		</listener>
+		
+		<!-- listener className="org.pepstock.jem.listeners.JobOutputArchiveListener">
+			<properties>
+				<property name="license" value="Pepstock_JEM_AntUtil.license" />
+				<property name="class" value="org.pepstock.jem.node.archive.DefaultJobOutputArchive" />
+			</properties>
+		</listener-->
+	</listeners>
+
+	<!-- Uncomment and compile this to add custom resource support -->
+	<!--
+	<resource-definitions>
+		<resource-definition className="org.external.package.CustomResourceExampleClass">
+			<properties>
+				<property name="jem.xml.resource.template.file" value="path/to/customResourceFileConfiguration.xml" />
+			</properties>
+		</resource-definition>
+	</resource-definitions>
+	-->
+
+</configuration>

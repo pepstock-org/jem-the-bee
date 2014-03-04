@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="ICEGENER-3" default="write" basedir=".">
+	<description>
+		Copy a GDG, with more records, to new generation 
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="ICEGENER-3"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	
+	-->
+	<target name="read">
+		<icegener>
+			
+			<dataSource name="localhost" resource="FTPlocalhost">
+				<property name="binary">true</property>
+			</dataSource>
+			
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="@@temp"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<!--dataSet name="gdg1/jemtest(0)"/-->
+				<dataSet name="Action.java" datasource="localhost"/>
+				<dataset>
+					These records are added to OUTPUT file:
+					Record1 test abcdefghjklilmnopqrstuvzxw
+					Record2 test abcdefghjklilmnopqrstuvzxw
+					Record3 test abcdefghjklilmnopqrstuvzxw
+				</dataset>	
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<target name="write"  depends="read">
+		<icegener>
+			
+			<dataSource name="localhost" resource="FTPlocalhost"/>
+			
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="MYAction.java" datasource="localhost"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.read.icegener.OUTPUT" />
+			</dataDescription>
+		</icegener>
+	</target>
+
+</project>

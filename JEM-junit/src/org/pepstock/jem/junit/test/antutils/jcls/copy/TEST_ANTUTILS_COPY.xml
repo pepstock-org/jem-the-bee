@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_COPY" default="executeCopy" basedir=".">
+	<description>
+		This JCL is an example of how to copy file whithin a JCL using JEM 
+		feautures. As you will see with jem feautures copy files using JCL
+		will be very easy and exspecially you will not need absolute pat but
+		you can use environment viriable to refer to the global file system
+		so that your JCL will be platform independent.
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_COPY"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="copy" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	COPY: copy the INPUT dataset to the OUTPUT dataset
+	-->
+	<target name="executeCopy">
+		<copy id="first">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="${jem.data}/test_antutils/TestCopy"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+				    TestCopy first:
+					These records are added to OUTPUT file:
+					Record1 testCopy
+					Record2 testCopy
+					Record3 testCopy
+					Record4 testCopy
+					Record5 testCopy
+					Record6 testCopy
+				</dataset>	
+			</dataDescription>
+		</copy>
+		<copy id="second">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="${jem.data}/test_antutils/TestCopy2"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+				    TestCopy second:
+				</dataset>	
+   				<dataSet name="${jem.data}/test_antutils/TestCopy"/>
+			</dataDescription>
+		</copy>
+	</target>
+</project>

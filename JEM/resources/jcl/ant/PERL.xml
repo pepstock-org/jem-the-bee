@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="PERL" default="step1" basedir=".">
+	<description>
+		SCRIPTS-2 action
+    </description>
+
+
+	<property name="jem.job.name" value="PERL"/>
+	<property name="jem.job.environment" value="CLOUD-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	<property name="jem.job.affinity" value="linux"/>
+	
+	<taskdef name="perl" classname="org.pepstock.jem.ant.tasks.utilities.scripts.PerlScriptTask" />
+
+	<target name="step1">
+		<perl>
+			print "Hello World\n";
+		</perl>
+	</target>
+
+</project>

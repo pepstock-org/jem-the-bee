@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="ABEND" default="main" basedir=".">
+	<description>
+        Wait before ending
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="ABEND"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.memory" value="80"></property>
+	<!--property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+	<property name="jem.job.priority" value="99"/>
+	<property name="jem.job.hold" value="true"/-->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="abend" classname="org.pepstock.jem.ant.tasks.utilities.AbendTask" />
+
+	<!-- 
+	WAIT: waits for 60 seconds before ending
+	-->
+	<target name="main">
+		<abend/>
+	</target>
+</project>

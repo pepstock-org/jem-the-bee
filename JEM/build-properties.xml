@@ -1,0 +1,12 @@
+<project name="jem-properties" basedir=".">
+	<!-- import common properties -->
+	<import file="../JEM/build-common-properties.xml" />
+	<!-- properties for JEM project -->
+	<property name="license.file" value="${jem.project.directory}/COPYING" />
+	<property name="license.file.exception" value="${jem.project.directory}/COPYING-EXCEPTION" />
+	<property name="resources.directory" value="${jem.project.directory}/resources" />
+	<property name="jem.source.directory" value="${jem.project.directory}/src" />
+	<property name="jem.working.directory" value="${jem.project.directory}/work" />
+	<property name="jem.working.jemhome.directory" value="${jem.working.directory}/jemhome" />
+	<property name="jem.distribute.directory" value="${jem.project.directory}/dist" />
+</project>

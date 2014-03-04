@@ -1,0 +1,42 @@
+<project name="TEST_ANTUTILS_RESOURCES_GET" default="get-resources" basedir=".">
+	<description>
+		Data sources are common resources defined centrally and addressable 
+		by jcl from any job (if the user of the job is authorized to use them). 
+		All resources must have a name, the key used by job to have it.
+		Currently this implementation works only for JAVA main programs, 
+		because data sources are provided by JNDI (Java Naming and Directory Interface). 
+		The great benefit of data sources is you could access to a database or ftp server 
+		using logical name, without caring about authentication stuff (as user-id or password) 
+		because JEM will prepare a connection already ready to use.
+		
+		This example show how you can get the list or some specifi datasource configuration
+		via JCL. You obviously can do this with the web interface too. 
+		We will found other example relative to the use of datasources in java program
+	</description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_RESOURCES_GET" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+	<target name="get-resources">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="OUTPUT1" sysout="true" disposition="MOD"/>
+			<dataDescription name="OUTPUT2" sysout="true" disposition="MOD"/>
+			<dataDescription name="OUTPUT3" sysout="true" disposition="MOD"/>
+			<dataDescription name="OUTPUT4" sysout="true" disposition="MOD"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST * FILE OUTPUT1;
+					GETLIST JUNIT-* FILE OUTPUT2;
+					GET JUNIT-HTTP-RESOURCE FILE OUTPUT3;
+					GET JUNIT-JPPF-RESOURCE FILE OUTPUT4;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="SORT" default="sort" basedir=".">
+	<description>
+		Copy a GDG, with more records, to new generation 
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="SORT"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/-->
+	<!-- to refers the environment variable -->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="sort" classname="org.pepstock.jem.ant.tasks.utilities.SortTask" />
+
+	<!-- 
+	SORT: sort a GDG generation 0, addind additional records defined inside a INLINE dataset, into a new generation
+	-->
+	<target name="sort">
+		<sort>
+			<!--arg value="-class"/>
+			<arg value="org.pepstock.jem.testmachine.MyComparator"/>
+			
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath-->
+			
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					(10,4,ASC),    (5,        6),
+					(   10,DESC)
+				</dataSet>
+			</dataDescription>
+			
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true">
+				<!--dataSet name="${jem.data}/gdg/jemtest(1)"/-->
+				<!--dataSet name="gdg/jemtest(1)"/-->
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<!--dataSet name="${jem.data}/gdg/jemtest(0)"/-->
+				<dataSet name="gdg/jemtest(0)"/>
+	
+			</dataDescription>
+
+		</sort>
+	</target>
+
+</project>

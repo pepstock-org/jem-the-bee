@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+	<!-- Needed to get access to system variable e.g. ${jem.data} -->
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="TEST_SPRINGBATCH_ABEND" />
+		<beans:property name="lockingScope" value="step"/>
+		<!--  
+	    <beans:property name="environment" value="ENV1"/>
+	    <beans:property name="domain" value="domain"/>
+	    <beans:property name="affinity" value="classA"/>
+	    <beans:property name="user" value="newUser"/>
+	    <beans:property name="hold" value="true"/>
+	    <beans:property name="lockingScope" value="job"/>
+	    <beans:property name="priority" value="99"/>
+	    <beans:property name="memory" value="1024"/>
+	    <beans:property name="classPath" value="${jem.classpath}/jdbc.jar"/>
+	    <beans:property name="emailsNotification" value="m1@pepstock.org;m2@pepstock.org"/>
+	    <beans:property name="options" value="-next"/>
+	    <beans:property name="parameters" value="key1=value1 key2=value2"/>
+		-->
+	</beans:bean>
+
+	<beans:bean id="jem.listener" class="org.pepstock.jem.springbatch.tasks.StepListener"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="copy_dataset" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
+		<beans:property name="dataDescriptionList">
+				<beans:list>
+					<beans:ref local="INPUT"/>
+					<beans:ref local="OUTPUT"/>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		INPUT file
+	 -->
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="INPUT" />
+		<beans:property name="disposition" value="SHR" />
+		<beans:property name="datasets">
+				<beans:list>
+			        <beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
+			        	<beans:property name="text" value="
+						    TestCopy first:
+							These records are added to OUTPUT file:
+							Record1 testCopy
+							Record2 testCopy
+							Record3 testCopy
+							Record4 testCopy
+							Record5 testCopy
+							Record6 testCopy" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT file
+	 -->
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
+			        	<beans:property name="name" value="${jem.data}/test_springbacth/TestCopy" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Job abstract definition necessary for integration with JEM
+	 -->
+	<job id="jem.baseJob" abstract="true">
+    	<listeners>
+        	<listener ref="jem.listener"/>
+    	</listeners>
+	</job>
+
+	<step id="jem.baseStep" abstract="true">
+		<tasklet>
+    		<listeners>
+        		<listener ref="jem.listener"/>
+    		</listeners>
+    	</tasklet>
+	</step>
+
+	<!-- 
+		copy:  copy a GDG generation 0 in a new one
+	 -->
+	<job id="TEST_SPRINGBATCH_COPY" parent="jem.baseJob">
+		<step id="copy" parent="jem.baseStep">
+			<tasklet ref="copy_dataset" />
+		</step>
+	</job>
+	
+</beans:beans>

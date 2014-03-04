@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_SORT" default="sort" basedir=".">
+	<description>
+		This is a feature of JEM that allow you to use a sort command to
+		be able to sorts datasets. Remember that dataset can be also regular
+		file.
+		To better understand the use of dataset, refer to JEM documentation.
+    </description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_SORT" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="sort" classname="org.pepstock.jem.ant.tasks.utilities.SortTask" />
+
+	<!-- 
+	SORT: sort a GDG generation 0, addind additional records defined inside a INLINE dataset, into a new generation
+	-->
+	<target name="sort">
+		<sort>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					(1,DESC)
+				</dataSet>
+			</dataDescription>
+
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true">
+				<!--dataSet name="${jem.data}/gdg/jemtest(1)"/-->
+				<!--dataSet name="gdg/jemtest(1)"/-->
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+					Record01 testSort
+					Record02 testSort
+					Record03 testSort
+					Record04 testSort
+					Record05 testSort
+					Record06 testSort
+					Record07 testSort
+					Record08 testSort
+					Record09 testSort
+					Record10 testSort
+					Record11 testSort
+					Record12 testSort
+					Record13 testSort
+					Record14 testSort
+					Record15 testSort
+					Record16 testSort
+					Record17 testSort
+					Record18 testSort
+					Record19 testSort
+					Record20 testSort
+				</dataset>	
+			</dataDescription>
+		</sort>
+	</target>
+</project>

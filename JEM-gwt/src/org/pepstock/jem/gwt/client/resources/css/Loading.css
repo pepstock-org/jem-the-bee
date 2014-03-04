@@ -1,0 +1,11 @@
+
+@external .*;
+
+.gwt-PopupPanel {
+	border: 3px solid #ffc266;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+	padding: 7px;
+	background: white;
+}

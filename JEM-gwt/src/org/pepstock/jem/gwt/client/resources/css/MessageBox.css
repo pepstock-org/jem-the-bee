@@ -1,0 +1,18 @@
+.main {
+	border: 3px solid #ffc266;
+	padding: 15px;
+
+	background: white;
+	color: black;
+}
+
+.title {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.message {
+	/*
+	max-width: 200px;
+	*/
+}

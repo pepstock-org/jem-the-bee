@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_GDG_RENAME" default="execute" basedir=".">
+	<description>
+		RENAME GDGs.
+		To better understand this JCL you first has to understand the concepts
+		behind a JCL. Please refer to JEM documentation.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_GDG_RENAME"/>
+	<property name="jem.job.lockingScope" value="step"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+	<!-- to refers the environment variable -->
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	<target name="execute" depends="gdg-define, gdg-rename">
+	    
+	</target>
+	
+	<target name="gdg-define">
+	    <!-- define the gdg -->
+	    <gdg license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="GDG_RENAME" disposition="NEW">
+				<dataSet name="test_antutils/gdg/rename"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    DEFINE GDG GDG_RENAME NOEMPTY;
+				</dataSet>
+			</dataDescription>
+		</gdg>	    
+	</target>
+	
+	<target name="gdg-rename">
+		<gdg license="Pepstock_JEM_AntUtil.license">
+	    <!-- rename the gdg -->
+			<dataDescription name="GDG_RENAME" disposition="OLD">
+				<dataSet name="test_antutils/gdg/rename"/>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    RENAME GDG GDG_RENAME 00000 TO RENAMED;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_GDG_DEFINE" default="gdg-definition" basedir=".">
+	<description>
+		DEFINE 2 GDGs.
+		To better understand this JCL you first has to understand the concepts
+		behind a JCL. Please refer to JEM documentation.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_GDG_DEFINE"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+	<!-- to refers the environment variable -->
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+
+	<target name="gdg-definition">
+		<gdg license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="GDG_DEFINE1" disposition="NEW">
+				<dataSet name="test_antutils/gdg/define1"/>
+			</dataDescription>
+
+			<dataDescription name="GDG_DEFINE2" disposition="NEW">
+				<dataSet name="test_antutils/gdg/define2"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    DEFINE GDG GDG_DEFINE1 NOEMPTY;
+					DEFINE GDG GDG_DEFINE2;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>	
+</project>

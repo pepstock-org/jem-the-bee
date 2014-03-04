@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="TEST-Output" default="step1" basedir=".">
+	<description>
+		JCL to test all dataset types
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST-Output"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step1">
+		<icegener>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+These records are added to OUTPUT file:
+Record1 test abcdefghjklilmnopqrstuvzxw
+Record2 test abcdefghjklilmnopqrstuvzxw
+Record3 test abcdefghjklilmnopqrstuvzxw
+				</dataset>
+			</dataDescription>
+
+		</icegener>
+	</target>
+	
+</project>

@@ -1,0 +1,5 @@
+<project>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.affinity" value="classA"/>
+</project>

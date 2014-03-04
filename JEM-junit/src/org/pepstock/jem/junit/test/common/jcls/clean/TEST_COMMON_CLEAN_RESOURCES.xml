@@ -1,0 +1,24 @@
+<project name="TEST_COMMON_CLEAN_RESOURCES" default="remove-resources" basedir=".">
+	<description>
+		Clean resources created in the common part
+	</description>
+
+	<property name="jem.job.name" value="TEST_COMMON_CLEAN_RESOURCES" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+	<target name="remove-resources">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REMOVE JUNIT_JDBC_JEM;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>

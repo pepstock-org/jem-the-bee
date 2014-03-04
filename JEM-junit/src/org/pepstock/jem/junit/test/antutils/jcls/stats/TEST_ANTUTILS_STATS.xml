@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_STATS" default="step" basedir=".">
+	<description>
+		Retrieve statistics relative to the evironment and the number of jobs executed
+		
+		Here is a simple sample.     
+	</description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_STATS" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef onerror="ignore" name="stats" classname="org.pepstock.jem.ant.StatsCollectTask"/>
+
+	<target name="step">
+		<stats license="Pepstock_JEM_AntUtil.license">
+			<arg value="-days"/>
+			<arg value="-1"/>
+			<!--
+			arg value="-date"/>
+			<arg value="20130101"/
+			-->
+			<arg value="-class"/>
+			<arg value="org.pepstock.jem.node.stats.DefaultTransformAndLoader"/>
+		</stats>
+	</target>
+
+</project>

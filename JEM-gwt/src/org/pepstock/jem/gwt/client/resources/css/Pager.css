@@ -1,0 +1,18 @@
+
+/* Copied from original GWT SimplePager.css */
+
+.pageDetails {
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.button {
+  padding: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.disabledButton {
+  cursor: default;   
+}
+

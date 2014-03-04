@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="SCRIPTS-2" default="step3" basedir=".">
+	<description>
+		SCRIPTS-2 action
+    </description>
+
+
+	<property name="jem.job.name" value="SCRIPTS-2"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.user" value="utenteCheNonEsiste"/-->
+
+	<taskdef name="shellscript" classname="org.pepstock.jem.ant.tasks.utilities.ShellScriptTask" />
+	
+	<taskdef name="windows" classname="org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask" />
+
+	<target name="step1">
+		
+		<windows>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)"/>
+			</dataDescription>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			
+			copy %DD_INPUT% %DD_OUTPUT%
+
+		</windows>
+	</target>
+
+	<target name="step2" depends="step1">
+		
+		<windows>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true">
+			</dataDescription>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step1.windows.OUTPUT"/>
+			</dataDescription>
+			
+			sort %DD_INPUT% /O %DD_OUTPUT% /+10
+
+		</windows>
+	</target>
+	
+	<target name="step3" depends="step2, step1">
+		
+		<windows>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true">
+			</dataDescription>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.step1.windows.OUTPUT"/>
+			</dataDescription>
+			
+			sort %DD_INPUT% /O %DD_OUTPUT% /R
+
+		</windows>
+	</target>
+</project>

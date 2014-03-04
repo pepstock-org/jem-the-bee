@@ -1,0 +1,85 @@
+<submitter-configuration>
+	<submitters>
+		<submitter>
+		    <name>SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
+			<params>
+				<param>
+				     <name>host</name>
+				     <value>https://localhost:8888</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- necessary if socket interceptor is enabled 
+				<param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param>
+				 -->
+				<!--
+				parama jcl, type, noWait, printOutput will be set at run time depending on the test case
+				-->
+			</params>
+		</submitter>
+		<submitter> 
+		    <name>LOCAL_HOST_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
+			<selected>true</selected> 			   
+			<params>
+				<param>
+				     <name>env</name>
+				     <value>TEST-Env</value>
+				</param>
+				<param>
+				     <name>port</name>
+				     <value>5710</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- necessary if socket interceptor is enabled 
+				<param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param>
+				-->
+				<!--
+				parama jcl, type, noWait, printOutput will be set at run time depending on the test case
+				-->
+			</params>
+		</submitter>
+		<submitter>
+		    <name>HTTP_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.HttpSubmit</referenceClass>
+			
+			<params>
+				<param>
+				     <name>host</name>
+				     <value>https://localhost:8888</value>
+				</param>
+				<param>
+				     <name>user</name>
+				     <value>root</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>a</value>
+				</param>
+				<!--
+				parama jcl, type, wait will be set at run time depending on the test case
+				-->
+			</params>
+		</submitter>
+	</submitters>
+</submitter-configuration>
