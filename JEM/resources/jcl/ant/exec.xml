@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="EXEC" default="main" basedir=".">
 	<description>
-        test
+        test Exec
     </description>
 
 	<property name="jem.job.name" value="EXEC"/>
