@@ -2,10 +2,9 @@
 	<!-- import common properties -->
 	<import file="../JEM/build-common-properties.xml" />
 	<!-- properties for JEM-enterprise project -->
-	<property name="jem-junit.project.directory" value="../JEM-junit" />
+	<property name="jem-junit.project.directory" value="JEM-junit" />
 	<property name="jem-junit.library.directory" value="${jem-junit.project.directory}/lib" />
 	<property name="jem-junit.source.directory" value="${jem-junit.project.directory}/src" />
 	<property name="jem-junit.classes.directory" value="${jem-junit.project.directory}/classes" />
 	<property name="jem-junit.jar.name" value="jem-junit.jar" />
-	<property name="jem-junit.jar.file" location="${jem-junit.library.directory}/${jem-junit.jar.name}" />
 </project>

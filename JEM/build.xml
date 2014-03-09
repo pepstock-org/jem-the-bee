@@ -4,21 +4,21 @@
 
 	<!-- clean project JEM -->
 	<target name="clean-jem">
-		<delete dir="${jem.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
-		<delete file="${jem.jar.file}" />
+		<delete dir="${jem.workspace}/${jem.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" />
 	</target>
 
 	<!-- create directory needed -->
 	<target name="make-jem-directories" depends="clean-jem">
-		<mkdir dir="${jem.classes.directory}" />
+		<mkdir dir="${jem.workspace}/${jem.classes.directory}" />
 	</target>
 
 	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
 	<target name="compile-jem" depends="make-jem-directories">
-		<javac srcdir="${jem.source.directory}" destdir="${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+		<javac srcdir="${jem.workspace}/${jem.source.directory}" destdir="${jem.workspace}/${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
-				<pathelement path="${jem.classes.directory}" />
-				<fileset dir="${jem.library.directory}">
+				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
+				<fileset dir="${jem.workspace}/${jem.library.directory}">
 					<include name="**/*.jar" />
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
@@ -29,7 +29,7 @@
 				<pathelement path="${java.class.path}" />
 			</classpath>
 		</javac>
-		<jar jarfile="${jem.jar.file}" basedir="${jem.classes.directory}">
+		<jar jarfile="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" basedir="${jem.workspace}/${jem.classes.directory}">
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />

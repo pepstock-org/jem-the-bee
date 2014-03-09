@@ -21,30 +21,30 @@
 		<antcall target="compile-jem-junit" />
 		<antcall target="gwtc" />
 		<!-- copy jem.jar to JEM-gwt -->
-		<copy file="${jem.jar.file}" todir="${jem-gwt.library.directory}" />
+		<copy file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" todir="${jem.workspace}/${jem-gwt.library.directory}" />
 		<!-- copy jem.jar and jem-gwt.jar to JEM-plugin  -->
-		<copy file="${jem.jar.file}" todir="../JEM-plugin/lib" />
-		<copy file="${jem-gwt.jar.file}" todir="../JEM-plugin/lib" />		
+		<copy file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" todir="${jem.workspace}/JEM-plugin/lib" />
+		<copy file="${jem.workspace}/${jem-gwt.library.directory}/${jem-gwt.jar.name}" todir="${jem.workspace}/JEM-plugin/lib" />		
 		<!-- copy jem-jnuit.jar to JEM/lib -->
-		<copy file="${jem-junit.jar.file}" todir="${jem.library.directory}" />
+		<copy file="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" todir="${jem.workspace}/${jem.library.directory}" />
 	</target>
 
 	<!-- copy necessary files for distribution -->
 	<target name="create-distribution" depends="compile-distribution">
 		<!-- jem home directory -->
 		<copy todir="${working.jemhome.directory}">
-			<fileset dir="${resources.directory}/jemhome" />
+			<fileset dir="${jem.workspace}/${resources.directory}/jemhome" />
 		</copy>
 		<!-- jem library directory -->
 		<copy todir="${working.jemhome.directory}/lib">
-			<fileset dir="${jem.library.directory}">
+			<fileset dir="${jem.workspace}/${jem.library.directory}">
 				<exclude name="junit/" />
 				<exclude name="proguard/" />
 			</fileset>
 		</copy>
 		<!-- jem-gwt war -->
 		<copy todir="${working.jemhome.directory}/src/envname/war">
-			<fileset dir="${jem-gwt.web.directory}">
+			<fileset dir="${jem.workspace}/${jem-gwt.web.directory}">
 				<exclude name="WEB-INF/classes/**" />
 				<exclude name="WEB-INF/lib/servlet-api.jar" />
 			</fileset>
@@ -60,17 +60,18 @@
 			</section>
 		</manifest>
 		<!-- COPY licences files -->
-		<copy file="${license.file}" todir="${working.jemhome.directory}" />
-		<copy file="${license.file.exception}" todir="${working.jemhome.directory}" />
+		<copy file="${jem.workspace}/${license.file}" todir="${working.jemhome.directory}" />
+		<copy file="${jem.workspace}/${license.file.exception}" todir="${working.jemhome.directory}" />
 		<!-- create zip file containing the distribution -->
 		<zip destfile="${distribute.directory}/${zip.name}" basedir="${working.directory}" />
 	</target>
 
 	<target name="build-distribution">
 		<antcall target="create-distribution">
-			<param name="distribute.directory" value="${jem.distribute.directory}" />
-			<param name="working.directory" value="${jem.working.directory}" />
-			<param name="working.jemhome.directory" value="${jem.working.directory}/jemhome" />
+			<param name="jem.workspace" value="${jem.workspace}" />
+			<param name="distribute.directory" value="${jem.workspace}/${jem.distribute.directory}" />
+			<param name="working.directory" value="${jem.workspace}/${jem.working.directory}" />
+			<param name="working.jemhome.directory" value="${jem.workspace}/${jem.working.directory}/jemhome" />
 		</antcall>
 	</target>
 </project>

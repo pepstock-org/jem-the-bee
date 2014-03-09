@@ -2,28 +2,28 @@
 	<!-- import properties -->
 	<import file="../JEM-junit/build-properties.xml" />
 
-	<taskdef resource="proguard/ant/task.properties" classpath="${jem.library.directory}/proguard/proguard.jar" />
+	<taskdef resource="proguard/ant/task.properties" classpath="${jem.workspace}/${jem.library.directory}/proguard/proguard.jar" />
 
 	<!-- clean project JEM-junit -->
 	<target name="clean-jem-junit">
-		<delete dir="${jem-junit.library.directory}" includeemptydirs="true" />
-		<delete dir="${jem-junit.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete dir="${jem.workspace}/${jem-junit.library.directory}" includeemptydirs="true" />
+		<delete dir="${jem.workspace}/${jem-junit.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
 	</target>
 
 	<!-- create directory needed -->
 	<target name="make-jem-junit-directories" depends="clean-jem-junit">
-		<mkdir dir="${jem-junit.classes.directory}" />
-		<mkdir dir="${jem-junit.library.directory}" />
+		<mkdir dir="${jem.workspace}/${jem-junit.classes.directory}" />
+		<mkdir dir="${jem.workspace}/${jem-junit.library.directory}" />
 	</target>
 
 	<!-- compile JEM-junit project and create jem-junit.jar -->
 	<target name="compile-jem-junit" depends="make-jem-junit-directories">
-		<javac srcdir="${jem-junit.source.directory}" destdir="${jem-junit.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+		<javac srcdir="${jem.workspace}/${jem-junit.source.directory}" destdir="${jem.workspace}/${jem-junit.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
-				<pathelement path="${jem.classes.directory}" />
-				<pathelement path="${jem-junit.classes.directory}" />
-				<fileset dir="${jem.library.directory}">
+				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
+				<pathelement path="${jem.workspace}/${jem-junit.classes.directory}" />
+				<fileset dir="${jem.workspace}/${jem.library.directory}">
 					<include name="commons-io/*.jar" />
 					<include name="xstream/*.jar" />
 					<include name="logging/*.jar" />
@@ -33,11 +33,11 @@
 				</fileset>
 			</classpath>
 		</javac>
-		<copy todir="${jem-junit.classes.directory}">
-			<fileset dir="${jem-junit.project.directory}/src" includes="**/*.xml" />
+		<copy todir="${jem.workspace}/${jem-junit.classes.directory}">
+			<fileset dir="${jem.workspace}/${jem-junit.project.directory}/src" includes="**/*.xml" />
 		</copy>
-		<jar jarfile="${jem-junit.jar.file}" basedir="${jem-junit.classes.directory}">
-			<fileset dir="${jem-junit.source.directory}" includes="**/*.key" />
+		<jar jarfile="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" basedir="${jem.workspace}/${jem-junit.classes.directory}">
+			<fileset dir="${jem.workspace}/${jem-junit.source.directory}" includes="**/*.key" />
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />

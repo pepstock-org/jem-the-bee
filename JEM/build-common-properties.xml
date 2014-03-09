@@ -12,11 +12,10 @@
 	<property name="jem.javac.includeantruntime" value="false" />
 
 	<!-- jem common properties used in other build -->
-	<property name="jem.workspace.directory" value="../JEM" />
-	<property name="jem.project.directory" value="${jem.workspace.directory}" />
+	<property name="jem.workspace" value="../" />
+	<property name="jem.project.directory" value="JEM" />
 	<property name="jem.library.directory" value="${jem.project.directory}/lib" />
 	<property name="jem.jar.name" value="jem.jar" />
-	<property name="jem.jar.file" location="${jem.library.directory}/${jem.jar.name}" />
 	<property name="jem.classes.directory" value="${jem.project.directory}/classes" />
 	<property name="zip.name" value="jem.zip" />
 </project>
