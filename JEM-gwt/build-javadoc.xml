@@ -1,18 +1,18 @@
-<project name="jem-javadoc" default="javadoc" basedir=".">
+<project name="jem-gwt-javadoc" default="javadoc" basedir=".">
 
 	<import file="build-properties.xml" />
 	
 	<!-- path for javadoc directory  -->
-	<property name="jem.api.directory" value="./javadoc" />
+	<property name="jem-gwt.api.directory" value="./javadoc" />
 
 	<!-- make directories  -->
 	<target name="make-directories">
-		<mkdir dir="${jem.api.directory}" />
+		<mkdir dir="${jem-gwt.api.directory}" />
 	</target>
 
 	<!-- clean directories  -->
 	<target name="clean" depends="make-directories">
-		<delete dir="${jem.api.directory}"
+		<delete dir="${jem-gwt.api.directory}"
 			includeemptydirs="true"
 			includes="**/*"
 			excludes="."/>
@@ -20,7 +20,7 @@
 
 	<!-- build javadoc for jem-gwt  -->
 	<target name="javadoc" depends="clean">
-		<javadoc destdir="${jem.api.directory}"
+		<javadoc destdir="${jem-gwt.api.directory}"
 		         author="true"
 		         version="true"
 		           use="true"
@@ -35,7 +35,7 @@
 				</fileset>
 				<pathelement path="${java.class.path}" />
 			</classpath>
-			<packageset dir="${jem.workspace}/${jem.source.directory}" defaultexcludes="yes">
+			<packageset dir="${jem.workspace}/${jem-gwt.source.directory}" defaultexcludes="yes">
 				<include name="org/pepstock/**"/>
 			</packageset>
 		</javadoc>

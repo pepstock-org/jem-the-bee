@@ -1,18 +1,16 @@
-<project name="jem-javadoc" default="javadoc" basedir=".">
+<project name="jem-plugin-javadoc" default="javadoc" basedir=".">
 
-	<import file="build-properties.xml" />
-	
 	<!-- path for javadoc directory  -->
-	<property name="jem.api.directory" value="./javadoc" />
+	<property name="jem-plugin.api.directory" value="./javadoc" />
 
 	<!-- make directories  -->
 	<target name="make-directories">
-		<mkdir dir="${jem.api.directory}" />
+		<mkdir dir="${jem-plugin.api.directory}" />
 	</target>
 
 	<!-- clean directories  -->
 	<target name="clean" depends="make-directories">
-		<delete dir="${jem.api.directory}"
+		<delete dir="${jem-plugin.api.directory}"
 			includeemptydirs="true"
 			includes="**/*"
 			excludes="."/>
@@ -20,22 +18,20 @@
 
 	<!-- build javadoc for jem-gwt  -->
 	<target name="javadoc" depends="clean">
-		<javadoc destdir="${jem.api.directory}"
+		<javadoc destdir="${jem-plugin.api.directory}"
 		         author="true"
 		         version="true"
 		           use="true"
 		           windowtitle="Job Entry Manager, the Batch Execution Environment API">
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
-				<fileset dir="${jem.workspace}/${jem.library.directory}">
+				<pathelement path="../JEM/classes" />
+				<pathelement path="../JEM-gwt/classes" />
+				<fileset dir="./lib">
 					<include name="**/*.jar" />
-					<exclude name="gwt/gwt-dev.jar" />
-					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
-					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
 				</fileset>
 				<pathelement path="${java.class.path}" />
 			</classpath>
-			<packageset dir="${jem.workspace}/${jem.source.directory}" defaultexcludes="yes">
+			<packageset dir="./src" defaultexcludes="yes">
 				<include name="org/pepstock/**"/>
 			</packageset>
 		</javadoc>
