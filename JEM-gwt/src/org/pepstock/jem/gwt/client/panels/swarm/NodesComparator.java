@@ -44,23 +44,23 @@ public class NodesComparator extends IndexedColumnComparator<NodeInfoBean> {
 	public int compare(NodeInfoBean o1, NodeInfoBean o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 1: 
+			case 0: 
 				// sorts by label of node
 				diff = o1.getLabel().compareTo(o2.getLabel());
 				break;
-			case 2: 
+			case 1: 
 				// sorts by host name
 				diff = o1.getHostname().compareTo(o2.getHostname());
 				break;
-			case 3: 
+			case 2: 
 				// sorts by domain
 				diff = o1.getExecutionEnvironment().getEnvironment().compareTo(o2.getExecutionEnvironment().getEnvironment());
 				break;
-			case 4: 
+			case 3: 
 				// sorts by status
 				diff = o1.getStatus().compareTo(o2.getStatus());
 				break;
-			case 5: 
+			case 4: 
 				// sorts by os
 				diff = o1.getSystemName().compareTo(o2.getSystemName());
 				break;
