@@ -88,7 +88,6 @@ public class NodeInfoUtility {
         // set status starting at the beginning
         info.setStatus(Status.STARTING);
         // sets boolean if has affinity loader
-        info.setHasAffinitiyLoaders(Main.getAffinityLoader() != null);
 
         // for net info of member, loads all info inside of nodeinfo
         // port of RMI will be set later

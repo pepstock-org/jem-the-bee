@@ -89,8 +89,6 @@ public class NodeInfo implements Serializable {
 
 	private boolean isSwarmNode = false;
 
-	private boolean hasAffinitiyLoaders = true;
-
 	private NodeInfoBean nodeInfoBean = new NodeInfoBean();
 
 	private ExecutionEnvironment executionEnvironment = null;
@@ -371,20 +369,6 @@ public class NodeInfo implements Serializable {
 	}
 
 	/**
-	 * @return the hasAffinitiyLoaders
-	 */
-	public boolean isHasAffinitiyLoaders() {
-		return hasAffinitiyLoaders;
-	}
-
-	/**
-	 * @param hasAffinitiyLoaders the hasAffinitiyLoaders to set
-	 */
-	public void setHasAffinitiyLoaders(boolean hasAffinitiyLoaders) {
-		this.hasAffinitiyLoaders = hasAffinitiyLoaders;
-	}
-
-	/**
 	 * @return the isOperational
 	 */
 	public boolean isOperational() {
@@ -479,7 +463,6 @@ public class NodeInfo implements Serializable {
 				nodeInfoBean.getJobNames().add(jobName);
 			}
 		}
-		nodeInfoBean.setHasAffinitiyLoaders(this.isHasAffinitiyLoaders());
 		nodeInfoBean.setPort(this.getPort());
 		nodeInfoBean.setProcessId(this.getProcessId());
 		nodeInfoBean.setRmiPort(this.getRmiPort());

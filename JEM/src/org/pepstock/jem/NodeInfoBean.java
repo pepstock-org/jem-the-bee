@@ -49,8 +49,6 @@ public class NodeInfoBean implements Serializable {
 
 	private List<String> jobNames = new ArrayList<String>();
 
-	private boolean hasAffinitiyLoaders = true;
-
 	private String key = null;
 
 	private String label = null;
@@ -217,20 +215,6 @@ public class NodeInfoBean implements Serializable {
 	 */
 	public List<String> getJobNames() {
 		return jobNames;
-	}
-
-	/**
-	 * @return the hasAffinitiyLoaders
-	 */
-	public boolean isHasAffinitiyLoaders() {
-		return hasAffinitiyLoaders;
-	}
-
-	/**
-	 * @param hasAffinitiyLoaders the hasAffinitiyLoaders to set
-	 */
-	public void setHasAffinitiyLoaders(boolean hasAffinitiyLoaders) {
-		this.hasAffinitiyLoaders = hasAffinitiyLoaders;
 	}
 
 	/**

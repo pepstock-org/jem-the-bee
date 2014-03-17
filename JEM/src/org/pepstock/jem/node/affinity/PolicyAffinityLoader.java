@@ -136,32 +136,40 @@ public abstract class PolicyAffinityLoader extends FileAlterationListenerAdaptor
 						// loads affinities and memory
 						Main.EXECUTION_ENVIRONMENT.getDynamicAffinities().addAll(newResult.getAffinities());
 					}
-					// MEMORY
-					int value = Main.EXECUTION_ENVIRONMENT.getMemory();
-					if (newResult.getMemory() < ExecutionEnvironment.MINIMUM_MEMORY) {
-						// too low
-						LogAppl.getInstance().emit(NodeMessage.JEMC215W, newResult.getMemory(), ExecutionEnvironment.MINIMUM_MEMORY);
-					} else if (newResult.getMemory() >= ExecutionEnvironment.MAXIMUM_MEMORY) {
-						// too high
-						LogAppl.getInstance().emit(NodeMessage.JEMC214W, newResult.getMemory(), ExecutionEnvironment.MAXIMUM_MEMORY);
-					} else {
-						value = newResult.getMemory();
+					// if memory is set less then 0
+					// don't change the value
+					if (newResult.getMemory() >= 0) {
+						// MEMORY
+						int value = Main.EXECUTION_ENVIRONMENT.getMemory();
+						if (newResult.getMemory() < ExecutionEnvironment.MINIMUM_MEMORY) {
+							// too low
+							LogAppl.getInstance().emit(NodeMessage.JEMC215W, newResult.getMemory(), ExecutionEnvironment.MINIMUM_MEMORY);
+						} else if (newResult.getMemory() >= ExecutionEnvironment.MAXIMUM_MEMORY) {
+							// too high
+							LogAppl.getInstance().emit(NodeMessage.JEMC214W, newResult.getMemory(), ExecutionEnvironment.MAXIMUM_MEMORY);
+						} else {
+							value = newResult.getMemory();
+						}
+						Main.EXECUTION_ENVIRONMENT.setMemory(value);
 					}
-					Main.EXECUTION_ENVIRONMENT.setMemory(value);
 					LogAppl.getInstance().emit(NodeMessage.JEMC216I, Main.EXECUTION_ENVIRONMENT.getMemory());
-
-					// PARALLEL JOBS
-					value = Main.EXECUTION_ENVIRONMENT.getParallelJobs();
-					if (newResult.getParallelJobs() < ExecutionEnvironment.MINIMUM_PARALLEL_JOBS) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC211W, newResult.getParallelJobs(), ExecutionEnvironment.MINIMUM_PARALLEL_JOBS);
-					} else if (newResult.getParallelJobs() >= ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC210W, newResult.getParallelJobs(), ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS);
-					} else {
-						value = newResult.getParallelJobs();
-					}
-					// sets pool
-					if (value != Main.EXECUTION_ENVIRONMENT.getParallelJobs()) {
-						Main.EXECUTION_ENVIRONMENT.setParallelJobs(value);
+					
+					// if parallel jobs is set less then 0
+					// don't change the value
+					if (newResult.getParallelJobs() >= 0) {
+						// PARALLEL JOBS
+						int value = Main.EXECUTION_ENVIRONMENT.getParallelJobs();
+						if (newResult.getParallelJobs() < ExecutionEnvironment.MINIMUM_PARALLEL_JOBS) {
+							LogAppl.getInstance().emit(NodeMessage.JEMC211W, newResult.getParallelJobs(), ExecutionEnvironment.MINIMUM_PARALLEL_JOBS);
+						} else if (newResult.getParallelJobs() >= ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS) {
+							LogAppl.getInstance().emit(NodeMessage.JEMC210W, newResult.getParallelJobs(), ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS);
+						} else {
+							value = newResult.getParallelJobs();
+						}
+						// sets pool
+						if (value != Main.EXECUTION_ENVIRONMENT.getParallelJobs()) {
+							Main.EXECUTION_ENVIRONMENT.setParallelJobs(value);
+						}
 					}
 					LogAppl.getInstance().emit(NodeMessage.JEMC212I, Main.EXECUTION_ENVIRONMENT.getParallelJobs());
 

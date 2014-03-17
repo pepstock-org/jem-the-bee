@@ -487,35 +487,32 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 	private class MemoryFieldUpdater implements FieldUpdater<NodeInfoBean, String> {
 		@Override
 		public void update(int index, NodeInfoBean nodeInfoBean, String value) {
-			if (!nodeInfoBean.isHasAffinitiyLoaders()){
-				if (value !=null){
-					int memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
-					if (value.trim().length() > 0){
-						try {
-							memoryValue = Integer.parseInt(value);
-							if (memoryValue < ExecutionEnvironment.MINIMUM_MEMORY){
-								new Toast(MessageLevel.WARNING, "You can't assign less memory than "+ExecutionEnvironment.MINIMUM_MEMORY+".", "Memory not changed!").show();
-								memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
-							} else if (memoryValue > ExecutionEnvironment.MAXIMUM_MEMORY){
-								new Toast(MessageLevel.WARNING, "You can't assign more memory than "+ExecutionEnvironment.MAXIMUM_MEMORY+".", "Memory not changed!").show();
-								memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
-							}
-						} catch (Exception ex){
-							LogClient.getInstance().warning(ex.getMessage(), ex);
-							new Toast(MessageLevel.ERROR, "Value '"+value+"' assigned is NOT valid.", "Memory not changed!").show();
+			if (value !=null){
+				int memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
+				if (value.trim().length() > 0){
+					try {
+						memoryValue = Integer.parseInt(value);
+						if (memoryValue < ExecutionEnvironment.MINIMUM_MEMORY){
+							new Toast(MessageLevel.WARNING, "You can't assign less memory than "+ExecutionEnvironment.MINIMUM_MEMORY+".", "Memory not changed!").show();
+							memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
+						} else if (memoryValue > ExecutionEnvironment.MAXIMUM_MEMORY){
+							new Toast(MessageLevel.WARNING, "You can't assign more memory than "+ExecutionEnvironment.MAXIMUM_MEMORY+".", "Memory not changed!").show();
 							memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
 						}
-						memoryValue = Math.max(Math.min(memoryValue, ExecutionEnvironment.MAXIMUM_MEMORY), ExecutionEnvironment.MINIMUM_MEMORY);
+					} catch (Exception ex){
+						LogClient.getInstance().warning(ex.getMessage(), ex);
+						new Toast(MessageLevel.ERROR, "Value '"+value+"' assigned is NOT valid.", "Memory not changed!").show();
+						memoryValue = nodeInfoBean.getExecutionEnvironment().getMemory();
 					}
-					if (nodeInfoBean.getExecutionEnvironment().getMemory() != memoryValue){
-						nodeInfoBean.getExecutionEnvironment().setMemory(memoryValue);
-						updateNode(nodeInfoBean);
-						return;
-					}
+					memoryValue = Math.max(Math.min(memoryValue, ExecutionEnvironment.MAXIMUM_MEMORY), ExecutionEnvironment.MINIMUM_MEMORY);
 				}
-			} else {
-				new Toast(MessageLevel.WARNING, "You can't change the memory value because the JEM node has an affintiy loader which calculates memory value.", "Memory not changed!").show();
+				if (nodeInfoBean.getExecutionEnvironment().getMemory() != memoryValue){
+					nodeInfoBean.getExecutionEnvironment().setMemory(memoryValue);
+					updateNode(nodeInfoBean);
+					return;
+				}
 			}
+
 			refresh();
 		}
 	}
@@ -541,35 +538,32 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 	private class ParallelJobsFieldUpdater implements FieldUpdater<NodeInfoBean, String> {
 		@Override
 		public void update(int index, NodeInfoBean nodeInfoBean, String value) {
-			if (!nodeInfoBean.isHasAffinitiyLoaders()){
-				if (value !=null){
-					int jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
-					if (value.trim().length() > 0){
-						try {
-							jobsValue = Integer.parseInt(value);
-							if (jobsValue < ExecutionEnvironment.MINIMUM_PARALLEL_JOBS){
-								new Toast(MessageLevel.WARNING, "You can't assign less parallel jobs than "+ExecutionEnvironment.MINIMUM_PARALLEL_JOBS+".", "Parallel jobs not changed!").show();
-								jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
-							} else if (jobsValue > ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS){
-								new Toast(MessageLevel.WARNING, "You can't assign more parallel jobs than "+ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS+".", "Parallel jobs not changed!").show();
-								jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
-							}
-						} catch (Exception ex){
-							LogClient.getInstance().warning(ex.getMessage(), ex);
-							new Toast(MessageLevel.ERROR, "Value '"+value+"' assigned is NOT valid.", "Parallel jobs not changed!").show();
+			if (value !=null){
+				int jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
+				if (value.trim().length() > 0){
+					try {
+						jobsValue = Integer.parseInt(value);
+						if (jobsValue < ExecutionEnvironment.MINIMUM_PARALLEL_JOBS){
+							new Toast(MessageLevel.WARNING, "You can't assign less parallel jobs than "+ExecutionEnvironment.MINIMUM_PARALLEL_JOBS+".", "Parallel jobs not changed!").show();
+							jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
+						} else if (jobsValue > ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS){
+							new Toast(MessageLevel.WARNING, "You can't assign more parallel jobs than "+ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS+".", "Parallel jobs not changed!").show();
 							jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
 						}
-						jobsValue = Math.max(Math.min(jobsValue, ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS), ExecutionEnvironment.MINIMUM_PARALLEL_JOBS);
+					} catch (Exception ex){
+						LogClient.getInstance().warning(ex.getMessage(), ex);
+						new Toast(MessageLevel.ERROR, "Value '"+value+"' assigned is NOT valid.", "Parallel jobs not changed!").show();
+						jobsValue = nodeInfoBean.getExecutionEnvironment().getParallelJobs();
 					}
-					if (nodeInfoBean.getExecutionEnvironment().getParallelJobs() != jobsValue){
-						nodeInfoBean.getExecutionEnvironment().setParallelJobs(jobsValue);
-						updateNode(nodeInfoBean);
-						return;
-					}
+					jobsValue = Math.max(Math.min(jobsValue, ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS), ExecutionEnvironment.MINIMUM_PARALLEL_JOBS);
 				}
-			} else {
-				new Toast(MessageLevel.WARNING, "You can't change the parallel jobs value because the JEM node has an affintiy loader which calculates parallel jobs value.", "Parallel jobs not changed!").show();
+				if (nodeInfoBean.getExecutionEnvironment().getParallelJobs() != jobsValue){
+					nodeInfoBean.getExecutionEnvironment().setParallelJobs(jobsValue);
+					updateNode(nodeInfoBean);
+					return;
+				}
 			}
+
 			refresh();
 		}
 	}
