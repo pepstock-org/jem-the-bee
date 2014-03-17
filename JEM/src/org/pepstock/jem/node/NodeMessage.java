@@ -1476,7 +1476,19 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to delete WAR folder", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you are creating a node but the process is not able to remove WAR lib folder.")
-	JEMC247E(247, "Unable to delete war/lib folder", MessageLevel.ERROR);
+	JEMC247E(247, "Unable to delete war/lib folder", MessageLevel.ERROR),
+
+	/**
+	 * "Selected interface {0} for multicast service", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when in hazelcast configuration interfaces is enabled and JEM uses those to set the right onr for multicast service.")
+	JEMC248I(248, "Selected interface {0} for multicast service", MessageLevel.INFO),
+
+	/**
+	 * "No interfaces of the nodes matches the one configured in hazelcast configuration", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the inetrfaces set in hazelcast configuration does not match the node interfaces")
+	JEMC249W(249, "No interfaces of the nodes matches those configured in hazelcast configuration or network inetrfaces are not properly defined", MessageLevel.WARNING);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

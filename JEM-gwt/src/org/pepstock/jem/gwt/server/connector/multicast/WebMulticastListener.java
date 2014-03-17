@@ -26,6 +26,8 @@ import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.connector.WebInterceptor;
 import org.pepstock.jem.gwt.server.listeners.MulticastLifeCycle;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.multicast.MulticastUtils;
 import org.pepstock.jem.node.multicast.messages.ClientRequest;
 import org.pepstock.jem.node.multicast.messages.MulticastMessage;
 import org.pepstock.jem.node.multicast.messages.MulticastMessageFactory;
@@ -36,6 +38,7 @@ import org.pepstock.jem.util.CharSet;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
+import com.hazelcast.config.Interfaces;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -71,6 +74,14 @@ public class WebMulticastListener implements Runnable {
 			String multicastGroup = multicastConfig.getMulticastGroup();
 			int multicastPort = multicastConfig.getMulticastPort();
 			socket = new MulticastSocket(multicastPort);
+			Interfaces interfaces = config.getNetworkConfig().getInterfaces();
+			if (interfaces != null && interfaces.isEnabled()) {
+				try {
+					socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+				} catch (Exception e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
+				}
+			}
 			socket.setTimeToLive(multicastConfig.getMulticastTimeToLive());
 			InetAddress address = InetAddress.getByName(multicastGroup);
 			socket.joinGroup(address);

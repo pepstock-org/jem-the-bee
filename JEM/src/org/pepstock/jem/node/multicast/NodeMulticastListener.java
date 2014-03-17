@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.node.multicast;
 
 import java.io.IOException;
@@ -30,6 +30,8 @@ import org.pepstock.jem.node.multicast.messages.MulticastMessageFactory;
 import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
+
+import com.hazelcast.config.Interfaces;
 
 /**
  * Is a thread responsible for listening to the multicast client request and
@@ -56,6 +58,14 @@ public class NodeMulticastListener implements Runnable {
 		try {
 			// Prepare to join multicast group
 			socket = new MulticastSocket(Main.getMulticastService().getConfig().getMulticastPort());
+			Interfaces interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
+			if (interfaces != null && interfaces.isEnabled()) {
+				try {
+					socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+				} catch (Exception e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
+				}
+			}
 			socket.setTimeToLive(Main.getMulticastService().getConfig().getMulticastTimeToLive());
 			InetAddress address = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
 			socket.joinGroup(address);
