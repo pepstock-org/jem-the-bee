@@ -25,12 +25,15 @@ import java.net.MulticastSocket;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.multicast.MulticastService;
+import org.pepstock.jem.node.multicast.MulticastUtils;
 import org.pepstock.jem.node.multicast.messages.ClientRequest;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.Interfaces;
 
 /**
  * Class responsible for sending multicast messages used by the
@@ -49,6 +52,14 @@ public class WebMulticastSender {
 		try {
 			Config config = SharedObjects.getInstance().getHazelcastConfig();
 			socket = new MulticastSocket();
+			Interfaces interfaces = config.getNetworkConfig().getInterfaces();
+			if (interfaces != null && interfaces.isEnabled()) {
+				try {
+					socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+				} catch (Exception e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
+				}
+			}
 			socket.setTimeToLive(config.getNetworkConfig().getJoin()
 					.getMulticastConfig().getMulticastTimeToLive());
 			InetAddress address = InetAddress.getByName(config

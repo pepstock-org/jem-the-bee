@@ -30,6 +30,7 @@ import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
+import com.hazelcast.config.Interfaces;
 import com.hazelcast.core.Member;
 
 /**
@@ -76,6 +77,14 @@ public class MulticastSender {
 			String response = NodeResponse.marshall(nodeMessage);
 			try {
 				socket = new MulticastSocket();
+				Interfaces interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
+				if (interfaces != null && interfaces.isEnabled()) {
+					try {
+						socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+					} catch (Exception e) {
+						LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
+					}
+				}
 				socket.setTimeToLive(Main.getMulticastService().getConfig().getMulticastTimeToLive());
 				InetAddress address = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
 				outBuf = response.getBytes(CharSet.DEFAULT);
