@@ -113,7 +113,7 @@ public class WorkloadChart extends AbstractTimeSeriesChart<Workload> {
     	if (getType() == JOBS_SUBMITTED) {
     		sb.append(item.getJobsSubmitted());
     	} else {
-    		item.getJclsChecked();
+    		sb.append(item.getJclsChecked());
     	}
 	    return sb.toString();
     }
