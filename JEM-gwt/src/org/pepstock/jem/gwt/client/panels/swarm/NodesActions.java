@@ -314,7 +314,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 			if (result) {
 				new Toast(MessageLevel.INFO, "Swarm is stopped correctly!", "Swarm stopped!").show();
 			} else {
-				new Toast(MessageLevel.WARNING, "Some lite members are not stopped in swarm!", "Stop command warning!").show();
+				new Toast(MessageLevel.WARNING, "No swarm nodes detected!", "Stop command warning!").show();
 			}
 			super.onJemSuccess(result);
 		}
@@ -339,7 +339,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 			if (result) {
 				new Toast(MessageLevel.INFO, "Swarm is started correctly!", "Swarm started!").show();
 			} else {
-				new Toast(MessageLevel.WARNING, "Some lite members are not started in swarm!", "Start command warning!").show();
+				new Toast(MessageLevel.WARNING, "No swarm nodes detected!", "Start command warning!").show();
 			}
 			super.onJemSuccess(result);
 		}
