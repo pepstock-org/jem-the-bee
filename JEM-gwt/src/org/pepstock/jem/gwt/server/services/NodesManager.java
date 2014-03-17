@@ -120,8 +120,10 @@ public class NodesManager extends DefaultService {
 		// creates SQL
 		StringBuilder sb = new StringBuilder();
 		sb.append("(hostname like '").append(sqlFilter).append("'").append(" OR ");
-		sb.append("label like '").append(sqlFilter).append("') ").append(" AND ");
-		sb.append("isSwarmNode = " + swarmNodes);
+		sb.append("label like '").append(sqlFilter).append("') ");
+		if (swarmNodes) {
+			sb.append(" AND isSwarmNode = " + swarmNodes);
+		}
 		List<NodeInfoBean> list = getNodesButUnknown(new SqlPredicate(sb.toString()));
 		// if list is not empty
 		if (!list.isEmpty()){
