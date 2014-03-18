@@ -59,8 +59,7 @@ public final class Loading {
 	 * To avoid any instantiation
 	 */
 	private Loading() {
-		
-	};
+	}
 	
 	/**
 	 * Called when the remote call is ended. Sets show to false, because if the timer is still running,
