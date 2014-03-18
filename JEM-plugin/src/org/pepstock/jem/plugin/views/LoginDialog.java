@@ -81,7 +81,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
     @Override
     protected Control createDialogArea(Composite parent) {
     	// sets title
-		getShell().setText("Login to"+coordinate.getName());
+		getShell().setText("Login to "+coordinate.getName());
 
 		// main composite
 		Composite main = new Composite(parent, SWT.LEFT);
