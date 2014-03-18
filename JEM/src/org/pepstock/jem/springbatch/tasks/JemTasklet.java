@@ -173,9 +173,11 @@ public abstract class JemTasklet implements Tasklet {
 
 		List<DataDescriptionImpl> dataDescriptionImplList = ImplementationsContainer.getInstance().getDataDescriptionsByItem(stepContext.getStepName());
 
+		// new initial context for JNDI
+		InitialContext ic = null;
+		
 		try {
-			// new initial context for JNDI
-			InitialContext ic = new InitialContext();
+			ic = new InitialContext();
 			// scans all datasource passed
 			for (DataSource source : dataSourceList){
 				// checks if datasource is well defined
@@ -326,7 +328,24 @@ public abstract class JemTasklet implements Tasklet {
 						} else { 
 							exceptions.append(e.getMessage()).append("\n");
 						}
-
+					}
+					// unbinds all data sources
+					try {
+						ic.unbind(ddImpl.getName());
+					} catch (NamingException e) {
+						// ignore
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+						LogAppl.getInstance().emit(SpringBatchMessage.JEMS047E, e.getMessage());
+					}
+				}
+				for (DataSource source : dataSourceList){
+					// unbinds all resources
+					try {
+						ic.unbind(source.getName());
+					} catch (NamingException e) {
+						// ignore
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+						LogAppl.getInstance().emit(SpringBatchMessage.JEMS047E, e.getMessage());
 					}
 				}
 				if (exceptions.length() > 0 && !isAbended){
