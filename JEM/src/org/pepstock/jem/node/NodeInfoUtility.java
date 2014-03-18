@@ -137,9 +137,13 @@ public class NodeInfoUtility {
 			// gets version
 			return at.getValue(ConfigKeys.JEM_MANIFEST_VERSION);
 		} catch (IOException e) {
+			// ignore the stack trace
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			LogAppl.getInstance().emit(NodeMessage.JEMC184W);
 		} catch (URISyntaxException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC184W, e);
+			// ignore the stack trace
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			LogAppl.getInstance().emit(NodeMessage.JEMC184W);
 		} finally {
 			if (jarFile != null) {
 				try {

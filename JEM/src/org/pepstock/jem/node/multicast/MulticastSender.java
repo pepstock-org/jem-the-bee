@@ -80,7 +80,7 @@ public class MulticastSender {
 				Interfaces interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
 				if (interfaces != null && interfaces.isEnabled()) {
 					try {
-						socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+						socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));
 					} catch (Exception e) {
 						LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
 					}

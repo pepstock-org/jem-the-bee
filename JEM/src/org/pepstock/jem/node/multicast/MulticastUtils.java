@@ -18,11 +18,13 @@ package org.pepstock.jem.node.multicast;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
 
 /**
@@ -34,27 +36,38 @@ import org.pepstock.jem.node.NodeMessage;
 public class MulticastUtils {
 
 	/**
+	 * To avoid any instantiation 
+	 */
+	private MulticastUtils() {
+
+	}
+
+	/**
 	 * 
 	 * @param interfaces
 	 * @return the correct inetAddress of the node that matches the first
 	 *         interface present in the list of interfaces read in the hazelcast
 	 *         configuration
-	 * @throws Exception
+	 * @throws MessageException if any error occurs
 	 */
-	public static InetAddress getIntetAddress(Collection<String> interfaces) throws Exception {
-		for (String toMatch : interfaces) {
-			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-			for (NetworkInterface netint : Collections.list(nets)) {
-				Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-				for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-					if (doMatch(inetAddress, toMatch)) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC248I, inetAddress);
-						return inetAddress;
+	public static InetAddress getInetAddress(Collection<String> interfaces) throws MessageException {
+		try {
+			for (String toMatch : interfaces) {
+				Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+				for (NetworkInterface netint : Collections.list(nets)) {
+					Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+					for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+						if (doMatch(inetAddress, toMatch)) {
+							LogAppl.getInstance().emit(NodeMessage.JEMC248I, inetAddress);
+							return inetAddress;
+						}
 					}
 				}
 			}
+			throw new MessageException(NodeMessage.JEMC249W);
+		} catch (SocketException e) {
+			throw new MessageException(NodeMessage.JEMC250E, e);
 		}
-		throw new Exception(NodeMessage.JEMC249W.toMessage().getFormattedMessage());
 	}
 
 	/**
@@ -64,16 +77,15 @@ public class MulticastUtils {
 	 *            octet or an IP with a range on last octet (e.g. 196.168.35.10-100)
 	 * @return true if the toMatch string matches the hostAddress from the
 	 *         InetAddress
-	 * @throws Exception
 	 */
-	private static boolean doMatch(InetAddress inetAddress, String toMatch) throws Exception {
+	private static boolean doMatch(InetAddress inetAddress, String toMatchParam) {
 		String hostAddres = inetAddress.getHostAddress();
-		if (toMatch.contains("-")) {
+		if (toMatchParam.contains("-")) {
 			// if is ipv6 address do not consider
 			if (hostAddres.contains(":")) {
 				return false;
 			}
-			String[] octects = toMatch.split("\\.");
+			String[] octects = toMatchParam.split("\\.");
 			String[] octectsIA = hostAddres.split("\\.");
 			String first3 = octects[0] + "." + octects[1] + "." + octects[2];
 			String firstIA = octectsIA[0] + "." + octectsIA[1] + "." + octectsIA[2];
@@ -85,10 +97,9 @@ public class MulticastUtils {
 			int min = Integer.parseInt(ranges[0]);
 			int max = Integer.parseInt(ranges[1]);
 			int inetAddressLastOctect = Integer.parseInt(octectsIA[3]);
-			return (inetAddressLastOctect >= min && inetAddressLastOctect <= max);
+			return inetAddressLastOctect >= min && inetAddressLastOctect <= max;
 		} else {
-			toMatch = toMatch.replace(".", "\\.");
-			toMatch = toMatch.replace("*", "\\w*");
+			String toMatch = toMatchParam.replace(".", "\\.").replace("*", "\\w*");
 			return hostAddres.matches(toMatch);
 		}
 	}

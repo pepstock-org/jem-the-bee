@@ -1488,7 +1488,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "No interfaces of the nodes matches the one configured in hazelcast configuration", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when the inetrfaces set in hazelcast configuration does not match the node interfaces")
-	JEMC249W(249, "No interfaces of the nodes matches those configured in hazelcast configuration or network inetrfaces are not properly defined", MessageLevel.WARNING);
+	JEMC249W(249, "No interfaces of the nodes matches those configured in hazelcast configuration or network inetrfaces are not properly defined", MessageLevel.WARNING),
+	
+	/**
+	 * "Unable to extract the interfaces by network service", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM tries to extract the right netwoirk interface to use but network service return an excpetion.")
+	JEMC250E(250, "Unable to extract the interfaces by network service", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

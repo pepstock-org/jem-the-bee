@@ -11,6 +11,15 @@ import com.google.gwt.user.cellview.client.TextColumn;
  * @author Marco "Fuzzo" Cuccato
  */
 public final class LightMemberSampleColumns {
+	
+	
+
+	/**
+	 * To avoid any instantiation
+	 */
+    private LightMemberSampleColumns() {
+
+    }
 
 	/**
 	 * PID (unsortable)
@@ -54,6 +63,7 @@ public final class LightMemberSampleColumns {
 			return memberSample.getTime();
 		}
 	};
+	
 	static {
 		TIME_SORTABLE.setSortable(true);
 	}

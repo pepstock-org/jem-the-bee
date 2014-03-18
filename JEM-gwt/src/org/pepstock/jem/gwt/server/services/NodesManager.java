@@ -166,8 +166,7 @@ public class NodesManager extends DefaultService {
 		// checks if the user is authorized to get nodes
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
-		List<NodeInfoBean> list = getNodesButUnknown(new NodePredicate(filter));
-		return list;
+		return getNodesButUnknown(new NodePredicate(filter));
 	}
 
 	private List<NodeInfoBean> getNodesButUnknown(AbstractPredicate predicate) throws ServiceMessageException {
