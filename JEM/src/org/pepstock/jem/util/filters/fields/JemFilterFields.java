@@ -46,6 +46,16 @@ public interface JemFilterFields<T> {
 	String YES_NO_PATTERN_DESCRIPTION = "yes | no";
 	
 	/**
+	 * 
+	 */
+	String YES = "yes";
+	
+	/**
+	 * 
+	 */
+	String NO = "no";
+	
+	/**
 	 * @return the field name
 	 */
 	String getName();

@@ -29,6 +29,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
+import org.pepstock.jem.util.filters.fields.JemFilterFields;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
 import com.hazelcast.core.MapEntry;
@@ -128,6 +129,11 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 				break;
 			case ID:
 				includeThis &= StringUtils.containsIgnoreCase(job.getId(), tokenValue);
+				break;
+			case ROUTED:
+				boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
+				boolean isRouted = job.getRoutingInfo().getRoutedTime() != null; 
+				includeThis &= wantRouted == isRouted;
 				break;
 			default:
 				throw new JemRuntimeException("Unrecognized Job filter field: " + field);
