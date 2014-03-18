@@ -46,9 +46,7 @@ public class GetJobById extends AbstractGetJobById {
 		if (queueName == null){
 			throw new ServletException(UserInterfaceMessage.JEMG033E.toMessage().getFormattedMessage(QUEUE_NAME));
 		}
-		
-		Job job = getJobsManager().getJobById(queueName, jobId);
-		return job;
+		return getJobsManager().getJobById(queueName, jobId);
 	}
 
 }

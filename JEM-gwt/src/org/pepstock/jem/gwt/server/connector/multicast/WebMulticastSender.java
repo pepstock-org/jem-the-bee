@@ -55,7 +55,7 @@ public class WebMulticastSender {
 			Interfaces interfaces = config.getNetworkConfig().getInterfaces();
 			if (interfaces != null && interfaces.isEnabled()) {
 				try {
-					socket.setInterface(MulticastUtils.getIntetAddress(interfaces.getInterfaces()));
+					socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
 				}

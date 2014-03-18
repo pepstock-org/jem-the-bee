@@ -73,6 +73,8 @@ public class RmiStartUp {
 				LogAppl.getInstance().emit(NodeMessage.JEMC195I, externalObject.getName());
 
 			} catch (ClassNotFoundException e) {
+				// ignore the stack trace
+				LogAppl.getInstance().ignore(e.getMessage(), e);
 				LogAppl.getInstance().emit(NodeMessage.JEMC196W, CLASS_FOR_EXTERNAL);
 			} catch (InstantiationException e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);

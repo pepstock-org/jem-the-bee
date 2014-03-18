@@ -38,7 +38,10 @@ public final class Loading {
 		Styles.INSTANCE.loading().ensureInjected();
 	}
 
-	private static final DelayedPopupPanel POPUP = new DelayedPopupPanel(true, 100) {};
+	private static final DelayedPopupPanel POPUP = new DelayedPopupPanel(true, 100) {
+		// no code
+	};
+	
 	static {
 		POPUP.setGlassEnabled(true);
 		POPUP.setAnimationEnabled(false);
@@ -52,7 +55,12 @@ public final class Loading {
 		POPUP.add(container);
 	}
 
-	private Loading() {};
+	/**
+	 * To avoid any instantiation
+	 */
+	private Loading() {
+		
+	};
 	
 	/**
 	 * Called when the remote call is ended. Sets show to false, because if the timer is still running,
