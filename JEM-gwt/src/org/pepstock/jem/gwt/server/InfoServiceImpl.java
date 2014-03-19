@@ -76,7 +76,7 @@ public class InfoServiceImpl extends DefaultManager implements InfoService {
 			// Name of JEM GROUP
 			infos[Indexes.NAME.getIndex()] = SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName();
 
-			infos[Indexes.NODES_COUNT.getIndex()] = localMember.getCluster().getMembers().size() +" / "+getClients();
+			infos[Indexes.NODES_COUNT.getIndex()] = String.valueOf(localMember.getCluster().getMembers().size());
 
 			// Exec job count
 			IMap<String, Job> jobs = localMember.getMap(Queues.RUNNING_QUEUE);
@@ -169,7 +169,7 @@ public class InfoServiceImpl extends DefaultManager implements InfoService {
 	 * @return the number of clients connected to the cluster using a distributed task
 	 * @throws JemException 
 	 */
-	private int getClients() throws JemException {
+	public int getClients() throws JemException {
 		DefaultService ds = new DefaultService();
 		DistributedTaskExecutor<Integer> task = new DistributedTaskExecutor<Integer>(new Count(), ds.getMember());
 		return task.getResult();

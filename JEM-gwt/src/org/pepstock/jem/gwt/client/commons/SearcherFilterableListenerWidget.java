@@ -91,7 +91,7 @@ public abstract class SearcherFilterableListenerWidget extends SearcherListenerW
 			filter.add(event.getFilterToken());
 			
 			setSearchText(filter.toSearchString().trim());
-			setFocusOnTextBox();
+			setEnabled(true);
 		}
 	}
 

@@ -83,7 +83,7 @@ public class CmdHeader extends FlexTable  {
 					}
 				}
 			});
-			new Tooltip(button, executor.getLabel());
+			new Tooltip(button, executor.getTitle());
 			cf.setVerticalAlignment(0, column, HasVerticalAlignment.ALIGN_MIDDLE);
 			cf.setHorizontalAlignment(0, column, HasHorizontalAlignment.ALIGN_RIGHT);
 			cf.setWordWrap(0, column, false);
