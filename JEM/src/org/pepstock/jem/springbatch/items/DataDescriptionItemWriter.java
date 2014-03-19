@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.springbatch.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pepstock.catalog.DataDescriptionImpl;
@@ -23,6 +24,8 @@ import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.DataDescription;
+import org.pepstock.jem.springbatch.tasks.DataSource;
+import org.pepstock.jem.springbatch.tasks.Lock;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -45,6 +48,10 @@ public class DataDescriptionItemWriter<T> implements ResourceAwareItemWriterItem
 	private DataDescription dataDescription = null;
 
 	private DataDescriptionImpl dataDescriptionImpl = null;
+	
+	private List<DataSource> dataSources = new ArrayList<DataSource>();
+	
+	private List<Lock> locks = new ArrayList<Lock>();
 
 	private Resource resource = null;
 
@@ -89,6 +96,40 @@ public class DataDescriptionItemWriter<T> implements ResourceAwareItemWriterItem
 		}
 	}
 
+	/**
+	 * Returns the list of data sources defined for this tasklet.
+	 * 
+	 * @return the dataSourceList
+	 */
+	@Override
+	public List<DataSource> getDataSources() {
+		return dataSources;
+	}
+
+	/**
+	 * Sets the list of data sources
+	 * 
+	 * @param dataSourceList the dataSourceList to set
+	 */
+	public void setDataSources(List<DataSource> dataSourceList) {
+		this.dataSources = dataSourceList;
+	}
+
+	/**
+	 * @return the locks
+	 */
+	@Override
+	public List<Lock> getLocks() {
+		return locks;
+	}
+
+	/**
+	 * @param locks the locks to set
+	 */
+	public void setLocks(List<Lock> locks) {
+		this.locks = locks;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.springbatch.items.DataDescriptionItem#getStepName()
 	 */

@@ -17,6 +17,8 @@
 package org.pepstock.jem.springbatch.items;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.Disposition;
@@ -26,6 +28,8 @@ import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.DataDescription;
 import org.pepstock.jem.springbatch.tasks.DataSet;
+import org.pepstock.jem.springbatch.tasks.DataSource;
+import org.pepstock.jem.springbatch.tasks.Lock;
 import org.pepstock.jem.springbatch.tasks.managers.DataSetManager;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -51,6 +55,10 @@ public class DataDescriptionItemReader<T> extends MultiResourceItemReader<T> imp
 	private DataDescription dataDescription = null;
 
 	private DataDescriptionImpl dataDescriptionImpl = null;
+	
+	private List<DataSource> dataSources = new ArrayList<DataSource>();
+	
+	private List<Lock> locks = new ArrayList<Lock>(); 
 
 	private String stepName = null;
 
@@ -86,6 +94,40 @@ public class DataDescriptionItemReader<T> extends MultiResourceItemReader<T> imp
 		if (!dataDescription.getDisposition().equalsIgnoreCase(Disposition.SHR)){
 			throw new IllegalArgumentException(SpringBatchMessage.JEMS006E.toMessage().getFormattedMessage(dataDescription.getName(), dataDescription.getDisposition()));
 		}
+	}
+	
+	/**
+	 * Returns the list of data sources defined for this tasklet.
+	 * 
+	 * @return the dataSourceList
+	 */
+	@Override
+	public List<DataSource> getDataSources() {
+		return dataSources;
+	}
+
+	/**
+	 * Sets the list of data sources
+	 * 
+	 * @param dataSourceList the dataSourceList to set
+	 */
+	public void setDataSources(List<DataSource> dataSourceList) {
+		this.dataSources = dataSourceList;
+	}
+
+	/**
+	 * @return the locks
+	 */
+	@Override
+	public List<Lock> getLocks() {
+		return locks;
+	}
+
+	/**
+	 * @param locks the locks to set
+	 */
+	public void setLocks(List<Lock> locks) {
+		this.locks = locks;
 	}
 
 	/**

@@ -331,7 +331,13 @@ public enum SpringBatchMessage implements MessageInterface{
 	 * "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an exception is thrown during the unbind phase of JNDI resources.<br>Check with JEM adnimistrator.")
-	JEMS047E(47, "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR);
+	JEMS047E(47, "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to create JNDI context: {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when an exception is thrown during the JNDI context creation.<br>Check with JEM adnimistrator.")
+	JEMS048E(48, "Unable to create JNDI context: {0}", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

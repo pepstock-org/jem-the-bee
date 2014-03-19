@@ -50,7 +50,6 @@ public class Locker {
 	private	ResourceLocker locker = null;
 	
 	private boolean isExecutionStarted = false;
-
 	
 	/**
 	 * Constructs a object with lick by RMI to lock resources
@@ -148,8 +147,8 @@ public class Locker {
 	 */
 	private void loadChunk(Definition object) throws SpringBatchException{
 		DataDescriptionItem item = (DataDescriptionItem)object.getObject();
+		
 		String stepName = object.getStepName();
-
 		// creates a data description impl from data description
 		// data description impl is necessary object to have locking
 		DataDescriptionImpl ddImpl = DataDescriptionManager.createDataDescriptionImpl(item.getDataDescription(), stepName);
@@ -158,6 +157,16 @@ public class Locker {
 		// container
 		// necessary to lock all in one shot
 		InitiatorManager.addResourcesLock(ddImpl, resources);
+		
+		// adds all defined locks
+		for (Lock lock : item.getLocks()){
+			// checks if the name is not null
+			if (lock.getName() != null){
+				// creates resource lock and adds it to container
+				ResourceLock rLock = new ResourceLock(lock.getName(), ResourceLock.WRITE_MODE);
+				resources.add(rLock);
+			}
+		}
 	}
 
 	/**
