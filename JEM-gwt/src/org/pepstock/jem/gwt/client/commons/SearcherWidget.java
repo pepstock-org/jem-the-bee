@@ -50,7 +50,7 @@ public abstract class SearcherWidget extends HorizontalPanel {
 	 */
 	public static final String DEFAULT_INITIAL_FILTER_VALUE = "*";
 
-	private final Button search = new Button("Search");
+	private final Button searchButton = new Button("Search");
 	
 	private SearcherHistoryTextBox textBox = new SearcherHistoryTextBox();
 	
@@ -129,15 +129,15 @@ public abstract class SearcherWidget extends HorizontalPanel {
 				textBox.setText(list.get(0));
 			}
 		} 
-		search.addStyleName(Styles.INSTANCE.common().defaultActionButton());
+		searchButton.addStyleName(Styles.INSTANCE.common().defaultActionButton());
 		
 		if (textBox.getText().length() <= minChar) {
-			search.setEnabled(false);
+			searchButton.setEnabled(false);
 		} else {
-			search.setEnabled(true);
+			searchButton.setEnabled(true);
 		}
 
-		textBox.setSearchButton(search);
+		textBox.setSearchButton(searchButton);
 		
 		textBox.addKeyUpHandler(new KeyUpHandler() {
 
@@ -146,9 +146,9 @@ public abstract class SearcherWidget extends HorizontalPanel {
 				// button search is enable only if text length is greater
 				// than minimum characters set in the constructor
 				if (textBox.getText().length() <= minChar) {
-					search.setEnabled(false);
+					searchButton.setEnabled(false);
 				} else {
-					search.setEnabled(true);
+					searchButton.setEnabled(true);
 				}
 				textBox.hide();
 			}
@@ -159,14 +159,14 @@ public abstract class SearcherWidget extends HorizontalPanel {
 			
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER && search.isEnabled()){
-					search.click();
+				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER && searchButton.isEnabled()){
+					searchButton.click();
 					savePreference();
 				}
 			}
 		});
 
-		search.addClickHandler(new ClickHandler() {
+		searchButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				textBox.hide();
@@ -178,7 +178,7 @@ public abstract class SearcherWidget extends HorizontalPanel {
 		add(label);
 		
 		add(textBox);
-		add(search);
+		add(searchButton);
 		setCellWidth(textBox, Sizes.HUNDRED_PERCENT);
 	}
 	
@@ -262,7 +262,8 @@ public abstract class SearcherWidget extends HorizontalPanel {
 		this.enabled = enabled;
 		textBox.setReadOnly(!enabled);
 		textBox.setEnabled(enabled);
-		search.setEnabled(enabled);
+		searchButton.setEnabled(enabled);
+		textBox.setFocus(enabled);
 	}
 	
 	/**
@@ -278,19 +279,5 @@ public abstract class SearcherWidget extends HorizontalPanel {
 	 */
 	public String getSearchText() {
 		return textBox.getText();
-	}
-	
-	/**
-	 * Set focus on input box
-	 */
-	public void setFocusOnTextBox() {
-		textBox.setFocus(true);
-	}
-	
-	/**
-	 * Set focus on search button
-	 */
-	public void setFocusOnButton() {
-		search.setFocus(true);
 	}
 }

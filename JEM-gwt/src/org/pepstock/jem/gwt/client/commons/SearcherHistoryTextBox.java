@@ -84,7 +84,7 @@ public class SearcherHistoryTextBox extends FlexTable {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if (focus){
+				if (focus) {
 					removeStyleName(Styles.INSTANCE.common().searcherFocus());
 					focus = false;
 				}
@@ -94,11 +94,10 @@ public class SearcherHistoryTextBox extends FlexTable {
     	textBox.addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(FocusEvent event) {
-				if (!focus){
+				if (!focus) {
 					addStyleName(Styles.INSTANCE.common().searcherFocus());
 					focus = true;
 				}
-				
 			}
 		});
     	
