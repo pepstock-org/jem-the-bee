@@ -38,6 +38,7 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.affinity.CheckAffinityPolicy;
 import org.pepstock.jem.node.executors.affinity.GetAffinityPolicy;
 import org.pepstock.jem.node.executors.affinity.SaveAffinityPolicy;
@@ -70,7 +71,8 @@ import com.hazelcast.query.SqlPredicate;
 
 
 /**
- * Is the manager of all operations to the nodes of JEM. UNKNOWN members are not returned.
+ * Is the manager of all operations to the nodes of JEM. 
+ * UNKNOWN members are not returned.
  * 
  * @author Marco "Cuc" Cuccato
  *
@@ -208,88 +210,30 @@ public class NodesManager extends DefaultService {
 	 * Drains the list of members, using a future task by executor service of Hazelcast. 
 	 * 
 	 * @param nodes list of members to drain 
-	 * @return  always TRUE
+	 * @return always <code>true</code>
 	 * @throws ServiceMessageException 
-	 * @throws Exception  if any exception occurs
+	 * @throws Exception if any exception occurs
 	 */
 	public Boolean drain(Collection<NodeInfoBean> nodes) throws ServiceMessageException {
 		// checks if the user is authorized to drain nodes
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(Permissions.NODES_DRAIN));
-		// gets nodes map instance 
-		IMap<String, NodeInfo> membersMap = getInstance().getMap(Queues.NODES_MAP);
-
-		Boolean result = Boolean.TRUE;
-
-		// scans all nodes
-		for (NodeInfoBean node : nodes){
-			// is not a super node and is not UNKNOWN
-			if (!node.getStatus().equalsIgnoreCase(Status.UNKNOWN.getDescription())){
-				// gets key
-				String key = node.getKey();
-
-				if (membersMap.containsKey(key)){
-					// gets the cluster to have member object of Hazelcast
-					// to execute the future task
-					Cluster cluster = getInstance().getCluster();
-					// gets all members and scans them
-					Set<Member> set = cluster.getMembers();
-					for (Member member : set){
-						String memberKey = member.getUuid();
-						// is the same member
-						if (node.getKey().equalsIgnoreCase(memberKey)){
-							GenericDistributedTaskExecutor task = new GenericDistributedTaskExecutor(new Drain(), member);
-							task.execute();
-						} 
-					}
-				}
-			}
-		}
-		return result;
+		return doNodeAction(nodes, new Drain());
 	}
 	
 	/**
 	 * Starts the list of members, using a future task by executor service of Hazelcast. 
 	 * 
 	 * @param nodes nodes list of members to start
-	 * @return  always TRUE
+	 * @return always <code>true</code>
 	 * @throws ServiceMessageException 
-	 * @throws Exception  if any exception occurs
+	 * @throws Exception if any exception occurs
 	 */
 	public Boolean start(Collection<NodeInfoBean> nodes) throws ServiceMessageException{
 		// checks if the user is authorized to start nodes
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(Permissions.NODES_START));
-		// gets nodes map instance 
-		IMap<String, NodeInfo> membersMap = getInstance().getMap(Queues.NODES_MAP);
-
-		// scans all nodes
-		for (NodeInfoBean node : nodes){
-			// is not a super node and is not UNKNOWN
-			if (!node.getStatus().equalsIgnoreCase(Status.UNKNOWN.getDescription())){
-				// gets key
-				String key = node.getKey();
-				// checks if is in map
-				if (membersMap.containsKey(key)){
-
-					// gets the cluster to have member object of Hazelcast
-					// to execute the future task
-					Cluster cluster = getInstance().getCluster();
-					// gets all members and scans them
-					Set<Member> set = cluster.getMembers();
-					for (Member member : set){
-						String memberKey = member.getUuid();
-						// is the same member
-						if (node.getKey().equalsIgnoreCase(memberKey)){
-							GenericDistributedTaskExecutor task = new GenericDistributedTaskExecutor(new Start(), member);
-							task.execute();
-						} 
-					}
-
-				}
-			}
-		}
-		return Boolean.TRUE;
+		return doNodeAction(nodes, new Start());
 	}
 
 
@@ -298,16 +242,26 @@ public class NodesManager extends DefaultService {
 	 * Is not used.
 	 *  
 	 * @param nodes list of nodes
-	 * @return always true
+	 * @return always <code>true</code>
 	 * @throws ServiceMessageException 
-	 * @throws Exception  if any exception occurs
+	 * @throws Exception if any exception occurs
 	 */
 	@SuppressWarnings("unused")
     private Boolean shutdown(Collection<NodeInfoBean> nodes) throws ServiceMessageException{
 		checkAuthentication();
+		return doNodeAction(nodes, new Shutdown());
+	}
+
+	/**
+	 * Execute a specific task on a set of Nodes. Be sure you check authorizations before calling this.
+	 * @param nodes the target nodes
+	 * @param executor the task to be executed
+	 * @return always <code>true</code>
+	 * @throws ServiceMessageException if any exception occours
+	 */
+	private Boolean doNodeAction(Collection<NodeInfoBean> nodes, Callable<ExecutionResult> executor) throws ServiceMessageException {
 		// gets nodes map instance 
 		IMap<String, NodeInfo> membersMap = getInstance().getMap(Queues.NODES_MAP);
-
 		// scans all nodes
 		for (NodeInfoBean node : nodes){
 			// is not a super node and is not UNKNOWN
@@ -316,8 +270,6 @@ public class NodesManager extends DefaultService {
 				String key = node.getKey();
 				// checks if is in map
 				if (membersMap.containsKey(key)){
-
-					// if is DRAINED or DRAINING than starts it 
 					// gets the cluster to have member object of Hazelcast
 					// to execute the future task
 					Cluster cluster = getInstance().getCluster();
@@ -327,7 +279,7 @@ public class NodesManager extends DefaultService {
 						String memberKey = member.getUuid();
 						// is the same member
 						if (node.getKey().equalsIgnoreCase(memberKey)){
-							GenericDistributedTaskExecutor task = new GenericDistributedTaskExecutor(new Shutdown(), member);
+							GenericDistributedTaskExecutor task = new GenericDistributedTaskExecutor(executor, member);
 							task.execute();
 						} 
 					}
@@ -336,7 +288,7 @@ public class NodesManager extends DefaultService {
 		}
 		return Boolean.TRUE;
 	}
-
+	
 	/**
 	 * Update the domain or static affinities of node
 	 * @param node niode to update
