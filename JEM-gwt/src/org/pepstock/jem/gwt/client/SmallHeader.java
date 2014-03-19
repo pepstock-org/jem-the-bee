@@ -17,10 +17,10 @@
 package org.pepstock.jem.gwt.client;
 
 
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.ImageAndTextButton;
 import org.pepstock.jem.gwt.client.commons.ImageAndTextButton.TextPosition;
 import org.pepstock.jem.gwt.client.commons.Images;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.SharedObjects;
 import org.pepstock.jem.gwt.client.commons.Styles;
@@ -111,7 +111,7 @@ public class SmallHeader extends Grid {
 		environmentInfoBox.setText(0, 0, "JEM environment overview: ");
 		eibCellFormatter.addStyleName(0, 0, Styles.INSTANCE.header().infoBoxHeader());
 		environmentInfoBox.setText(1, 0, "Name");
-		environmentInfoBox.setText(1, 2, "Nodes / Clients");
+		environmentInfoBox.setText(1, 2, "Nodes");
 		environmentInfoBox.setText(2, 0, "Jobs in execution");
 		environmentInfoBox.setText(2, 2, "Uptime");
 		UITools.setColumnKeyValueStyle(environmentInfoBox, Styles.INSTANCE.common().bold(), true);
