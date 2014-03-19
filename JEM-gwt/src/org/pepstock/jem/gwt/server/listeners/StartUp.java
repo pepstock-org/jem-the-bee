@@ -167,8 +167,12 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 				SharedObjects.getInstance().setJemVersion(jemVersion);
 			}
 		} catch (FileNotFoundException e) {
+			// to ignore stack trace
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			LogAppl.getInstance().emit(NodeMessage.JEMC184W);
 		} catch (IOException e) {
+			// to ignore stack trace
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			LogAppl.getInstance().emit(NodeMessage.JEMC184W);
 		} finally {
 			if (fis != null) {

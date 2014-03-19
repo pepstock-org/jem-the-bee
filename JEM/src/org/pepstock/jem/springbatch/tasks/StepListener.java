@@ -247,5 +247,4 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
 	}
-
 }

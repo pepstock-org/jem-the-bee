@@ -429,9 +429,19 @@ public class StepJava extends Java  implements DataDescriptionStep {
 							exceptions.append(AntMessage.JEMA036E.toMessage().getFormattedMessage(e.getMessage())).append("\n");
 						}
 					}
-					// unbinds all resources
+					// unbinds all data sources
 					try {
 						ic.unbind(ddImpl.getName());
+					} catch (NamingException e) {
+						// ignore
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+						log(AntMessage.JEMA037E.toMessage().getFormattedMessage(e.getMessage()));
+					}
+				}
+				for (DataSource source : sources){
+					// unbinds all resources
+					try {
+						ic.unbind(source.getName());
 					} catch (NamingException e) {
 						// ignore
 						LogAppl.getInstance().ignore(e.getMessage(), e);

@@ -186,11 +186,11 @@ public abstract class SearcherWidget extends HorizontalPanel {
 	 * Saves user preference
 	 */
 	private void savePreference() {
-		String preferenceKey = getPreferenceKey();
-		if (preferenceKey != null) {
-			List<String> list = CurrentUser.getInstance().getListPreference(preferenceKey);
+		String prefKey = getPreferenceKey();
+		if (prefKey != null) {
+			List<String> list = CurrentUser.getInstance().getListPreference(prefKey);
 			if (list.isEmpty()) {
-				CurrentUser.getInstance().setListPreference(preferenceKey, list);
+				CurrentUser.getInstance().setListPreference(prefKey, list);
 			}
 			if (!list.contains(textBox.getText())) {
 				list.add(0, textBox.getText());

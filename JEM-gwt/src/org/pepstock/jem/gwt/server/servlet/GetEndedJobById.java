@@ -37,8 +37,7 @@ public class GetEndedJobById extends AbstractGetJobById {
 
 	@Override
 	public Job retrieveJob(String jobId, HttpServletRequest request) throws ServletException, ServiceMessageException {
-		Job job = getJobsManager().getEndedJobById(jobId);
-		return job;
+		return getJobsManager().getEndedJobById(jobId);
 	}
 	
 }

@@ -24,9 +24,6 @@ import com.google.gwt.i18n.client.NumberFormat;
  * @author Marco "Fuzzo" Cuccato
  */
 public final class JemConstants {
-
-	private JemConstants() {
-	}
 	
 	/*
 	 * OBJECTs
@@ -99,5 +96,12 @@ public final class JemConstants {
 	 * no
 	 */
 	public static final String NO = "no";
+	
+	/**
+	 * To avoid any instantiation
+	 */
+	private JemConstants() {
+		
+	}
 	
 }
