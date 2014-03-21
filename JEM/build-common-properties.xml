@@ -1,6 +1,6 @@
 <project name="jem-common-properties" basedir=".">
 	<!-- COMMON PROPERTIES -->
-	<property name="jem.version" value="BERGAMOTTO-2.0" />
+	<property name="jem.version" value="HEAD" />
 	<tstamp>
 		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 	</tstamp>
