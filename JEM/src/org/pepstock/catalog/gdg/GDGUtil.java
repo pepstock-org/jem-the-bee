@@ -13,12 +13,13 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.catalog.gdg;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
@@ -36,19 +37,19 @@ public class GDGUtil {
 
 	// format of GDG : pathname/#####. In JCL : pathname(####)
 	private static final String GDG_FORMAT = "{0}({1,number,integer})";
-	
+
 	// format of GDG : pathname/#####. In JCL : pathname(+####)
 	private static final String GDG_WITH_PLUS_FORMAT = "{0}(+{1,number,integer})";
 
 	private static MessageFormat FORMAT = new MessageFormat(GDG_FORMAT);
-	
+
 	private static MessageFormat FORMAT_WITH_PLUS = new MessageFormat(GDG_WITH_PLUS_FORMAT);
 
 	/**
 	 * To avoid any instantiation
 	 */
 	private GDGUtil() {
-		
+
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class GDGUtil {
 		int index = lastVersion + offset;
 
 		// if index is less than zero, out ot bounds
-		if (index < 0){
+		if (index < 0) {
 			throw new IndexOutOfBoundsException(GDGMessage.JEMD005E.toMessage().getFormattedMessage(offset));
 		}
 		// formats the result, padding left with 0
@@ -94,16 +95,17 @@ public class GDGUtil {
 		Object[] objects = null;
 		try {
 			objects = FORMAT.parse(name);
-		} catch (Exception ex){
+		} catch (Exception ex) {
 			// ignore
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			objects = FORMAT_WITH_PLUS.parse(name);	
+			objects = FORMAT_WITH_PLUS.parse(name);
 		}
 		return objects;
 	}
 
 	/**
-	 * Returns the generation file name. The generation filename is always the index (without any renaming is #####).
+	 * Returns the generation file name. The generation filename is always the
+	 * index (without any renaming is #####).
 	 * 
 	 * @param root gdg root
 	 * @param offset relative position
@@ -125,6 +127,7 @@ public class GDGUtil {
 		}
 		return generation;
 	}
+
 	/**
 	 * Creates a new GDG, creating the complete path and root file properties.
 	 * 
@@ -132,9 +135,10 @@ public class GDGUtil {
 	 * @return new root created
 	 * @throws IOException if I/O occurs
 	 */
-	public static Root createGDG(File parent) throws IOException{
+	public static Root createGDG(File parent) throws IOException {
 		return createGDG(parent, false);
-	}	
+	}
+
 	/**
 	 * Creates a new GDG, creating the complete path and root file properties.
 	 * 
@@ -143,33 +147,37 @@ public class GDGUtil {
 	 * @return new root created
 	 * @throws IOException if I/O occurs
 	 */
-	public static Root createGDG(File parent, boolean createEmptyGeneration) throws IOException{
+	public static Root createGDG(File parent, boolean createEmptyGeneration) throws IOException {
 		// checks if is null
-		if (parent == null){
+		if (parent == null) {
 			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
 		}
 		// checks if exists (MUST exists!)
-		if (parent.exists()){
+		if (parent.exists()) {
 			throw new FileNotFoundException(GDGMessage.JEMD007E.toMessage().getFormattedMessage(parent.getAbsolutePath()));
 		}
-		
+
 		Root root = null;
 		// creates all directories
-		if (parent.mkdirs()){
+		if (parent.mkdirs()) {
 			// creates a new Root without loading because is new
 			root = new Root(parent, false);
 
 			// if creates a empty generation 0
-			if (createEmptyGeneration){
+			if (createEmptyGeneration) {
 				// get key
 				String key = GDGUtil.getGenerationIndex(root, 0);
 				// gets generation file name
 				String generation = GDGUtil.getGeneration(root, 0);
-
+				System.out.println(root.getFile().getParentFile().getAbsolutePath());
 				// creates the file instance using the directory of Root and
-				// generation as file name
+				// generation as file name. Use printwriter so to be compliant with 
+				// hadoop file system that does not support touch command
 				File newFile = new File(root.getFile().getParentFile(), generation);
-				if (!newFile.createNewFile()){
+				PrintWriter writer = new PrintWriter(newFile, "UTF-8");
+				writer.write("");
+				writer.close();
+				if (!newFile.exists()) {
 					throw new FileNotFoundException(GDGMessage.JEMD008E.toMessage().getFormattedMessage(newFile.getAbsolutePath()));
 				}
 				// add to properties the file name
@@ -180,7 +188,7 @@ public class GDGUtil {
 			// save the properties file
 			root.commit();
 		} else {
-			// if was not able to create all directories 
+			// if was not able to create all directories
 			throw new FileNotFoundException(GDGMessage.JEMD009E.toMessage().getFormattedMessage(parent.getAbsolutePath()));
 		}
 		return root;

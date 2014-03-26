@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.catalog.gdg;
 
 import java.io.File;
@@ -51,7 +51,14 @@ public class Root {
 	 */
 	public static final String ROOT_FILE_NAME = "root.properties";
 
+	/**
+	 * File name of root properties
+	 */
+	private static final String BACKUP_ROOT_FILE_NAME = "root.properties.back";
+
 	private File file = null;
+
+	private File backupFile = null;
 
 	private int lastVersion = 0;
 
@@ -67,10 +74,11 @@ public class Root {
 	public Root(File parent) throws IOException {
 		this(parent, true);
 	}
+
 	/**
 	 * Constructs the object using the directory argument as parent for root.<br>
-	 * Root is called <code>root.properties</code>.
-	 * Is load argument is passed true, loads properties file, otherwise means is in creation phase
+	 * Root is called <code>root.properties</code>. Is load argument is passed
+	 * true, loads properties file, otherwise means is in creation phase
 	 * 
 	 * @param parent root file
 	 * @param load if <code>true</code>, load root values, otherwise not
@@ -78,38 +86,39 @@ public class Root {
 	 */
 	protected Root(File parent, boolean load) throws IOException {
 		// checks if is null
-		if (parent == null){
+		if (parent == null) {
 			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
 		}
 		// checks if exists (MUST exists!)
-		if (!parent.exists()){
+		if (!parent.exists()) {
 			throw new FileNotFoundException(GDGMessage.JEMD010E.toMessage().getFormattedMessage(parent.getAbsolutePath()));
 		}
 		// checks if i directory (MUST be!)
-		if (!parent.isDirectory()){
+		if (!parent.isDirectory()) {
 			throw new FileNotFoundException(GDGMessage.JEMD011E.toMessage().getFormattedMessage(parent.getAbsolutePath()));
 		}
-		
+
 		// save file, adding root.properties to parent passed
 		this.file = new File(parent, ROOT_FILE_NAME);
+		this.backupFile = new File(parent, BACKUP_ROOT_FILE_NAME);
 
-		//checks if has to load 
-		if (load){
+		// checks if has to load
+		if (load) {
 			// checks if exists
-			if (!this.file.exists()){
+			if (!this.file.exists()) {
 				throw new FileNotFoundException(GDGMessage.JEMD010E.toMessage().getFormattedMessage(this.file.getAbsolutePath()));
 			}
 
 			// load properties file
 			FileInputStream fis = null;
-			
+
 			try {
 				fis = new FileInputStream(this.file);
 				properties.load(fis);
 			} catch (IOException e) {
 				throw e;
 			} finally {
-				if (fis != null){
+				if (fis != null) {
 					fis.close();
 				}
 			}
@@ -169,25 +178,24 @@ public class Root {
 		return properties.containsKey(key);
 	}
 
-	
 	/**
 	 * Returns root properties.
 	 * 
 	 * @return root properties
 	 */
-	public Properties getProperties(){
+	public Properties getProperties() {
 		return properties;
 	}
-	
-	
-	
+
 	/**
-	 * Sets proeprties 
+	 * Sets proeprties
+	 * 
 	 * @param properties the properties to set
 	 */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
+
 	/**
 	 * Returns the file name of generation of passed key.
 	 * 
@@ -209,7 +217,6 @@ public class Root {
 		properties.setProperty(key, version);
 	}
 
-	
 	/**
 	 * Stores the information of properties into file.
 	 * 
@@ -219,15 +226,23 @@ public class Root {
 	public void commit() throws FileNotFoundException, IOException {
 		// load properties file
 		FileOutputStream fos = null;
-		
+		// because in hadoop we cannot modify an existing file, in this case
+		// root.properties we use a backup file as workaround
 		try {
+			if (backupFile.exists()) {
+				backupFile.delete();
+			}
+			file.renameTo(backupFile);
 			fos = new FileOutputStream(file);
 			properties.store(fos, "new GDG version");
 			fos.flush();
+			if (backupFile.exists()) {
+				backupFile.delete();
+			}
 		} catch (IOException e) {
 			throw e;
 		} finally {
-			if (fos != null){
+			if (fos != null) {
 				fos.close();
 			}
 		}
