@@ -33,7 +33,9 @@ import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.util.CharSet;
 
 /**
@@ -182,7 +184,7 @@ public class DataSetManager {
 			
 			// is GDG
 			// gets the right file object
-			FileWrapper fileWrapper = getFile(ds);
+			FileWrapper fileWrapper = getFile(ds, ddImpl.getDisposition());
 			File file = fileWrapper.getFile();
 
 			// set the name
@@ -210,7 +212,7 @@ public class DataSetManager {
 			}
 			// is normal file
 			// gets the right file object
-			FileWrapper fileWrapper = getFile(ds);
+			FileWrapper fileWrapper = getFile(ds, ddImpl.getDisposition());
 			File file = fileWrapper.getFile();
 			
 			// set the name
@@ -248,29 +250,22 @@ public class DataSetManager {
 	 * Creates a file wrapper, normalizing the name. That's necessary due to you can write on ANT JCL 
 	 * both the relative or the absolute file name.
 	 * 
-	 * @param ddImpl data description instance
 	 * @param ds dataset instance
 	 * @return a file wrapper instance
 	 * @throws BuildException if dataPath is null, returns ann exception
 	 */
-	private static FileWrapper getFile(DataSet ds) throws BuildException{
-		// gets the data path from the environment
-		// variables
-		// if data path is null, exception
-		String dataPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-		if (dataPath == null){
-			throw new BuildException(AntMessage.JEMA001E.toMessage().getFormattedMessage());
-		}
-		
-		// normalizes dataPath using UNIX rules
-		dataPath = FilenameUtils.normalize(dataPath, true);
+	private static FileWrapper getFile(DataSet ds, String disposition) throws BuildException{
+		// gets the data path and checks
+		// if dataset name starts
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(ds.getName());
+
 		File file = null;
 		String fileName = null;
 
 		//checks if the Dsname is a absolute file name
 		// if absolute path is equals return the file 
 		// otherwise checks datapath
-		if (ds.getName().startsWith(dataPath)){
+		if (dataPath != null){
 			// if name is absolute
 			// creates a new FILE object with full pathname 
 			file =  new File(ds.getName());
@@ -280,25 +275,49 @@ public class DataSetManager {
 			fileName = StringUtils.substringAfter(fileName, dataPath);
 			// removes the first / of the filename
 			fileName = fileName.substring(1);
-		} else { 
+			
+			// we must check if full is correct in disposition NEW (only for new allocation)
+			if (Disposition.NEW.equalsIgnoreCase(disposition)){
+				try {
+					// checks all paths
+					PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+					// creates a file with dataPath as parent, plus file name  
+					file = new File(paths.getCurrent().getContent(), fileName);
+
+				} catch (InvalidDatasetNameException e) {
+					throw new BuildException(e);
+				}
+			}
+		} else {
 			// should be relative
 			file = new File(ds.getName());
 			// normalizes the full path and checks again with the name
-			// if equals means that is absolute
+			// if equals means that is absolute because the previuos checks only if it's using the 
+			// data paths. here the absolute path IS NOT a data path
 			if (FilenameUtils.normalize(file.getAbsolutePath(), true).equalsIgnoreCase(ds.getName())){
 				// normalizes using UNIX rules
 				fileName = FilenameUtils.normalize(file.getAbsolutePath(), true);
 			} else {
-				// is relative!
-				// creates a file with dataPath as parent, plus file name  
-				file = new File(dataPath, ds.getName());
-				// normalizes using UNIX rules
-				fileName = FilenameUtils.normalize(ds.getName(), true);
+				try {
+					// checks all paths
+					PathsContainer paths = DataPathsContainer.getInstance().getPaths(ds.getName());
+					// is relative!
+					// creates a file with dataPath as parent, plus file name  
+					file = new File(paths.getCurrent().getContent(), ds.getName());
+					// if disposition is not in new allocation and the file with current path doesn't exists,
+					// try to use the old path is exist
+					if (!Disposition.NEW.equalsIgnoreCase(disposition) && !file.exists() && paths.getOld()!=null){
+						file = new File(paths.getOld().getContent(), ds.getName());
+					}
+					// normalizes using UNIX rules
+					fileName = FilenameUtils.normalize(ds.getName(), true);
+				} catch (InvalidDatasetNameException e) {
+					throw new BuildException(e);
+				}
 			}
 		}
 		return new FileWrapper(file, fileName);
 	}
-
 }
 
 /**
@@ -322,11 +341,9 @@ final class FileWrapper{
 	 * @param dataSetName full name
 	 */
 	public FileWrapper(File file, String dataSetName) {
-		super();
 		this.file = file;
 		this.dataSetName = dataSetName;
 	}
-
 
 	/**
 	 * @return the dataSetName
@@ -355,5 +372,5 @@ final class FileWrapper{
 	public void setFile(File file) {
 		this.file = file;
 	}
-			
+	
 }

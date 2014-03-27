@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node.configuration;
 
+import org.pepstock.jem.node.sgm.DataPaths;
+
 /**
  * Container with all "paths" definition for many purposes.<br>
  * Contains only strings used during the startup phase to start JEM node.
@@ -25,7 +27,7 @@ package org.pepstock.jem.node.configuration;
  */
 public class Paths {
 
-	private String data = null;
+	private DataPaths data = null;
 
 	private String output = null;
 
@@ -121,20 +123,20 @@ public class Paths {
 	}
 
 	/**
-	 * Returns the path where the datasets and files should be stored.
+	 * Returns a container of paths where the datasets and files should be stored.
 	 * 
-	 * @return the path where the datasets and files should be stored
+	 * @return container of paths where the datasets and files should be stored
 	 */
-	public String getData() {
+	public DataPaths getData() {
 		return data;
 	}
 
 	/**
-	 * Sets the path where the datasets and files should be stored.
+	 * Sets container of paths where the datasets and files should be stored.
 	 * 
-	 * @param data the path where the datasets and files should be stored
+	 * @param data container of paths where the datasets and files should be stored
 	 */
-	public void setData(String data) {
+	public void setData(DataPaths data) {
 		this.data = data;
 	}
 

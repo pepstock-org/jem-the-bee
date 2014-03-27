@@ -25,6 +25,8 @@ import javax.naming.NamingException;
 
 import org.pepstock.jem.Result;
 import org.pepstock.jem.Step;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.rmi.JobStartedObjects;
 import org.pepstock.jem.node.rmi.TasksDoor;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.tasks.JobId;
@@ -139,13 +141,16 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					// receives all roles for job user and stores in a static
 					// reference
 					// of realm
-					Collection<Role> myroles = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+					
+					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing
 					if (System.getSecurityManager() == null) {
 						System.setSecurityManager(new SpringBatchSecurityManager(myroles));
 					} else {
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS027E);
 					}
+					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
 				} else {
 					throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS026E, TasksDoor.NAME);
 				}

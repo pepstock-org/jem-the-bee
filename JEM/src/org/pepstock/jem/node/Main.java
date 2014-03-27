@@ -184,6 +184,9 @@ public class Main {
 	 * Count of JOB submission done by this node.
 	 */
 	public static final AtomicLong NUMBER_OF_JOB_SUBMITTED = new AtomicLong(0);
+	
+	// FIXME
+	public static final DataPathsManager DATA_PATHS_MANAGER = new DataPathsManager();
 
 	/**
 	 * Is the Main class used to handle the hazelcast instance of the swarm
@@ -209,6 +212,9 @@ public class Main {
 				LogAppl.getInstance().emit(NodeMessage.JEMC189I);
 			}
 
+			// sets shutdown hook passing the threads to interrupt
+			Runtime.getRuntime().addShutdownHook(new ShutDownHandler());
+
 			// starts the configuration loading and sub component instantiation
 			StartUpSystem.run();
 			// starts a RMI regirty container for objects necessary from job
@@ -223,9 +229,6 @@ public class Main {
 			NodeInfoUtility.checkAndStoreNodeInfo(Main.getNode());
 
 			Main.getStatisticsManager().init();
-
-			// sets shutdown hook passing the threads to interrupt
-			Runtime.getRuntime().addShutdownHook(new ShutDownHandler());
 
 			RmiStartUp.initialize();
 

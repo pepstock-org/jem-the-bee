@@ -34,6 +34,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -46,6 +48,7 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.affinity.AffinityLoader;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.affinity.SystemInfo;
@@ -62,6 +65,7 @@ import org.pepstock.jem.node.configuration.Paths;
 import org.pepstock.jem.node.configuration.StatsManager;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.node.events.JobLifecycleListener;
+import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
@@ -90,6 +94,8 @@ import org.pepstock.jem.node.resources.custom.ResourceDefinitionsManager;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
+import org.pepstock.jem.node.sgm.DataPaths;
+import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
@@ -97,6 +103,7 @@ import org.pepstock.jem.util.VariableSubstituter;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
@@ -311,6 +318,33 @@ public class StartUpSystem {
 				// if local member is not the first, so it's not coordinator of
 				// cluster
 				Main.IS_COORDINATOR.set(false);
+				// gets the datapaths to check if they are the same
+		        DistributedTask<List<String>> task = new DistributedTask<List<String>>(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
+		        ExecutorService executorService = Main.getHazelcast().getExecutorService();
+		        executorService.execute(task);
+				// gets result
+		        try {
+		        	List<String> localDataPaths = Main.DATA_PATHS_MANAGER.getDataPathsNames();
+					List<String> dataPaths = task.get();
+					// checks if the amount is the same
+					if (dataPaths.size() != localDataPaths.size()){
+						// FIXME
+						throw new ConfigurationException("Numero diverso");
+					} else {
+						for (String path : localDataPaths){
+							if (!dataPaths.contains(path)){
+								// FIXME
+								throw new ConfigurationException("non esiste "+path);
+							}
+						}
+					}
+					
+				} catch (InterruptedException e) {
+					throw new ConfigurationException(e.getMessage(), e);
+				} catch (ExecutionException e) {
+					throw new ConfigurationException(e.getMessage(), e);
+				}
+		        
 			}
 			checkIfEnoughMembers();
 			// bring in memory the persisted queue
@@ -489,17 +523,20 @@ public class StartUpSystem {
 			LogAppl.getInstance().emit(NodeMessage.JEMC005E, ConfigKeys.JEM_ENV_CONF);
 			throw new ConfigurationException(NodeMessage.JEMC005E.toMessage().getFormattedMessage(ConfigKeys.JEM_CONFIG));
 		}
-		String xmlConfig=null;
+		File fileConfig = new File(configFile);
+		String xmlConfig = null;
 		try {
-			xmlConfig = FileUtils.readFileToString(new File(configFile), CharSet.DEFAULT_CHARSET_NAME);
+			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
 			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
 		}
-
+		PROPERTIES.setProperty(ConfigKeys.JEM_ENV_CONF_FOLDER, FilenameUtils.normalize(fileConfig.getParent(), true));
+		
 		Configuration conf = Configuration.unmarshall(xmlConfig);
 		LogAppl.getInstance().emit(NodeMessage.JEMC008I, configFile);
-
+		
+		loadDatasetsRules(conf);
 		loadDatabaseManagers(conf);
 		loadNode(conf);
 		loadFactories(conf);
@@ -568,7 +605,8 @@ public class StartUpSystem {
 		}
 
 		// load Paths
-		String dataPath = paths.getData();
+		DataPaths dataPath = paths.getData();
+		
 		String outputPath = paths.getOutput();
 		String binaryPath = paths.getBinary();
 		String classpathPath = paths.getClasspath();
@@ -582,9 +620,9 @@ public class StartUpSystem {
 			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.JEM_OUTPUT_PATH_NAME));
 		}
 		// check if dataPath is not null. if not, exception occurs
-		if (dataPath == null) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC039E, ConfigKeys.JEM_DATA_PATH_NAME);
-			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.JEM_DATA_PATH_NAME));
+		if (dataPath == null || dataPath.getPaths().isEmpty()) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC039E, ConfigKeys.DATA_ELEMENT);
+			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.DATA_ELEMENT));
 		}
 		// check if binaryPath is not null. if not, exception occurs
 		if (binaryPath == null) {
@@ -614,9 +652,11 @@ public class StartUpSystem {
 
 		// substitutes variables if present, on data path
 		// adds this value in properties of JVM
-		dataPath = substituteVariable(dataPath);
-		System.getProperties().setProperty(ConfigKeys.JEM_DATA_PATH_NAME, normalizePath(dataPath));
-
+		for (Path p: dataPath.getPaths()){
+			p.setContent(normalizePath(substituteVariable(p.getContent())));
+		}
+		// loads all storage groups and checks if exist
+		Main.DATA_PATHS_MANAGER.setDataPaths(dataPath);
 		// substitutes variables if present, on output path
 		// adds this value in properties of JVM
 		outputPath = substituteVariable(outputPath);
@@ -647,7 +687,7 @@ public class StartUpSystem {
 
 		// load ths path values on a static reference on Main class which
 		// creates all necessary files and directories
-		Main.setOutputSystem(new OutputSystem(outputPath, dataPath, persistencePath));
+		Main.setOutputSystem(new OutputSystem(outputPath, persistencePath));
 
 	}
 
@@ -1189,6 +1229,55 @@ public class StartUpSystem {
 		} else {
 			Main.setStatisticsManager(new StatisticsManager());
 		}
+	}
+	
+	/**
+	 * Load the file with all datasets rules
+	 * 
+	 * @param conf the jem env config
+	 * @throws ConfigurationException if some error occurs
+	 */
+	private static void loadDatasetsRules(Configuration conf) throws ConfigurationException {
+		// gets the amount of data paths
+		int dataPathsCount = Main.DATA_PATHS_MANAGER.getDataPaths().size();
+
+		// load paths, checking if they are configured. If not, exception occurs
+		String datasetsRules = conf.getDatasetsRules();
+		// checks how mny data paths there are
+		// if more than 1 then datasets rules is mandatory
+		if (dataPathsCount > 1){
+			if (datasetsRules == null) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.DATASETS_RULES_ALIAS);
+				throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.DATASETS_RULES_ALIAS));
+			}
+		} else {
+			// datapaths amount is 1
+			// and data rules is not defined, it creates
+			// a default file with a default rules (ALL FILES)
+			if (datasetsRules == null) {
+				// gets the configuration folder of JEM env
+				String folder = PROPERTIES.getProperty(ConfigKeys.JEM_ENV_CONF_FOLDER);
+				// creates the default file name
+				File rulesFileOnTheFly = new File(folder, DataPathsManager.DEFAULT_RULES_FILE_NAME);
+				// if exists emits a warning
+				if (rulesFileOnTheFly.exists()){
+					LogAppl.getInstance().emit(NodeMessage.JEMC253W, rulesFileOnTheFly.getAbsolutePath());
+				} else {
+					// if doesn't exists, it creates a new one
+					Main.DATA_PATHS_MANAGER.saveXMLDataSetRules(rulesFileOnTheFly);
+				}
+				// sets datasets rules here
+				datasetsRules = rulesFileOnTheFly.getAbsolutePath();
+			}
+		}
+		// loads datasets rules
+		try {
+			File rulesFile = new File(substituteVariable(datasetsRules));
+			Main.DATA_PATHS_MANAGER.loadRules(rulesFile);
+		} catch (MessageException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
+
 	}
 
 	/**

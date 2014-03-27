@@ -42,6 +42,7 @@ import org.pepstock.jem.GfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.executors.gfs.GetFilesList;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.commons.JemColumnSortListener;
 import org.pepstock.jem.plugin.commons.JemContentProvider;
@@ -318,8 +319,15 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		@Override
 		public void execute() throws JemException {
 			try {
+				String filter = null;
+				if (getFilter().trim().length() == 0){
+					filter = GetFilesList.ROOT_PATH;
+				} else {
+					filter = "*".equalsIgnoreCase(getFilter()) ? GetFilesList.ROOT_PATH : getFilter();
+				}
+				
 				// gets  data
-				data = DataLoader.loadData(type, getFilter());
+				data = DataLoader.loadData(type, filter);
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						// loads tables

@@ -19,12 +19,16 @@ package org.pepstock.jem.node.executors.gfs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 
 /**
  * The executor returns the list of files and/or directories in a specific folder.
@@ -36,6 +40,13 @@ import org.pepstock.jem.node.executors.ExecutorException;
 public class GetFilesList extends Get<Collection<GfsFile>> {
 	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Is constant for root path
+	 */
+	public static final String ROOT_PATH = ".";
+	
+	
 	/**
 	 * Saves the type of GFS to read and the folder
 	 * 
@@ -56,7 +67,51 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 		if (!parent.isDirectory()){
 			throw new ExecutorException(NodeMessage.JEMC187E, parent.toString());
 		}
-		
+		return getFilesList(parentPath, parent);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.executors.gfs.Get#getResultForDataPath(java.lang.String)
+	 */
+	@Override
+	public Collection<GfsFile> getResultForDataPath() throws ExecutorException {
+		// checks if a data type and rootpath request. If yes, having the storage groups manager
+		// scans all defined data paths
+		// otherwise asks for the specific folder
+		if (ROOT_PATH.equalsIgnoreCase(getItem())){
+			Collection<GfsFile> list = new LinkedList<GfsFile>();
+			for (String path : Main.DATA_PATHS_MANAGER.getDataPaths()){
+				list.addAll(getFilesList(path, new File(path)));
+			}
+			return list;
+		} else {
+			String item = FilenameUtils.normalize(getItem().endsWith(File.separator) ? getItem() : getItem() + File.separator, true);
+			try {
+				PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(item);
+				String parentPath = paths.getCurrent().getContent();
+				File file = new File(parentPath, getItem());
+				if (!file.exists() && paths.getOld()!=null){
+					parentPath = paths.getOld().getContent();
+				}
+				file = new File(parentPath, getItem());
+				// checks if folder exists and must be a folder (not a file)
+				if (!file.exists()){
+					throw new ExecutorException(NodeMessage.JEMC186E, getItem());
+				}
+				return this.getResult(parentPath, file);
+			} catch (InvalidDatasetNameException e) {
+				throw new ExecutorException(e.getMessageInterface(), getItem());
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param parentPath
+	 * @param parent
+	 * @return
+	 */
+	private Collection<GfsFile> getFilesList(String parentPath, File parent){
 		// creates the collection of files and reads them
 		Collection<GfsFile> list = new ArrayList<GfsFile>();
 		File[] files = parent.listFiles();

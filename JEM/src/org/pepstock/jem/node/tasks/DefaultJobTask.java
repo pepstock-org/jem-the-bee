@@ -41,7 +41,8 @@ public class DefaultJobTask extends JobTask {
 	// rmi port for job in execution
 	private String rmiPort = "-D"+RmiKeys.JEM_RMI_PORT+"="+Main.getNode().getRmiPort();
 	// data path, necessary for GDG and all files
-	private String dataPath = "-D"+ConfigKeys.JEM_DATA_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
+	// FIXME
+//	private String dataPath = "-D"+ConfigKeys.JEM_DATA_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
 	// binary path folder, eventually needed to the jcl
 	private String binPath = "-D"+ConfigKeys.JEM_BINARY_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME);
 	// classpath folder, eventually needed to the jcl
@@ -82,7 +83,7 @@ public class DefaultJobTask extends JobTask {
 						"-D"+ConfigKeys.JEM_JOB_ID+"="+job.getId(),
 						getClassPath(),
 						getBinPath(),
-						getDataPath(),
+//						getDataPath(), FIXME
 						getLibPath(),
 						"-D"+ConfigKeys.JEM_OUTPUT_PATH_NAME+"="+FilenameUtils.normalize(jclFile.getParentFile().getAbsolutePath(), true),
 						getSrcPath(),
@@ -107,9 +108,10 @@ public class DefaultJobTask extends JobTask {
 	/**
 	 * @return the dataPath
 	 */
-	public String getDataPath() {
-		return dataPath;
-	}
+// FIXME	
+//	public String getDataPath() {
+//		return dataPath;
+//	}
 
 	/**
 	 * @return the binPath

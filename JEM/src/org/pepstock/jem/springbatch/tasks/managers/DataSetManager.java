@@ -29,7 +29,9 @@ import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.DataSet;
@@ -77,30 +79,30 @@ public class DataSetManager {
 			if (!ddImpl.getDisposition().equalsIgnoreCase(Disposition.NEW)){
 				throw new SpringBatchException(SpringBatchMessage.JEMS007E, ddImpl.getName(), ddImpl.getDisposition(), ds.toString());
 			}
-			createDataSetImpl(ds);
+			createDataSetImpl(ds, ddImpl.getDisposition());
 		} else if (ds.isInline()) {
 			// is inline dataset, no actions, loads it
-			createDataSetImpl(ds);
+			createDataSetImpl(ds, ddImpl.getDisposition());
 		} else if (ds.isGdg()) {
 			if (ds.getName() == null){
 				throw new SpringBatchException(SpringBatchMessage.JEMS008E, ddImpl.getName(), ddImpl.getDisposition());
 			}
 			// is gdg dataset, no actions, loads it
-			createDataSetImpl(ds);
+			createDataSetImpl(ds, ddImpl.getDisposition());
 		} else if (ds.isDefinedDatasource()) {
 			if (ds.getName() == null){
 				throw new SpringBatchException(SpringBatchMessage.JEMS008E, ddImpl.getName(), ddImpl.getDisposition());
 			}
 
 			// is datasource dataset, no actions, loads it
-			createDataSetImpl(ds);
+			createDataSetImpl(ds, ddImpl.getDisposition());
 		} else {
 			if (ds.getName() == null){
 				throw new SpringBatchException(SpringBatchMessage.JEMS008E, ddImpl.getName(), ddImpl.getDisposition());
 			}
 
 			// is normal dataset, load datasetimpl checks if file exists
-			createDataSetImpl(ds);
+			createDataSetImpl(ds, ddImpl.getDisposition());
 
 			// gets file from dataset
 			File file = dataset.getFile();
@@ -140,11 +142,12 @@ public class DataSetManager {
 	 * specific dataset type).<br>
 	 * 
 	 * @param ds dataset instance
+	 * @param disposition disposition of data description
 	 * @throws IOException occurs if errors
 	 * @throws SpringBatchException occurs if errors
 	 * 
 	 */
-	public static void createDataSetImpl(DataSet ds) throws SpringBatchException, IOException {
+	public static void createDataSetImpl(DataSet ds, String disposition) throws SpringBatchException, IOException {
 		// get dataset impl setting name
 		DataSetImpl dataset = ds.getDataSetImpl();
 		
@@ -181,7 +184,7 @@ public class DataSetManager {
 		} else if (ds.isGdg()) {
 			// is a gdg
 			// create file object
-			FileWrapper fileWrapper = getFile(ds);
+			FileWrapper fileWrapper = getFile(ds, disposition);
 			File file = fileWrapper.getFile();
 
 
@@ -203,7 +206,7 @@ public class DataSetManager {
 		} else {
 			// is a normal file
 			// create file object
-			FileWrapper fileWrapper = getFile(ds);
+			FileWrapper fileWrapper = getFile(ds, disposition);
 			File file = fileWrapper.getFile();
 
 			dataset.setName(fileWrapper.getDataSetName());
@@ -221,41 +224,72 @@ public class DataSetManager {
 	 * @return
 	 * @throws BuildException
 	 */
-	private static FileWrapper getFile(DataSet ds) throws SpringBatchException{
-		// gets the data path from the environment
-		// variables
-		// if data path is null, exception
-		String dataPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-		if (dataPath == null){
-			throw new SpringBatchException(SpringBatchMessage.JEMS001E);
-		}
+	private static FileWrapper getFile(DataSet ds, String disposition) throws SpringBatchException{
+		// gets the data path and checks
+		// if dataset name starts
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(ds.getName());
 		
-		dataPath = FilenameUtils.normalize(dataPath, true);
 		//checks if the Dsname is a absolute file name
 		// if absolute path is equals return the file 
 		// otherwise checks datapath
-		
 		File file = null;
 		String fileName = null;
-		
-		if (ds.getName().startsWith(dataPath)){
+
+		//checks if the Dsname is a absolute file name
+		// if absolute path is equals return the file 
+		// otherwise checks datapath
+		if (dataPath != null){
+			// if name is absolute
+			// creates a new FILE object with full pathname 
 			file =  new File(ds.getName());
+			// normalizes using UNIX rules
 			fileName = FilenameUtils.normalize(file.getAbsolutePath(), true);
-			dataPath = FilenameUtils.normalize(dataPath, true);
+			// extract the short name, taking the string after dataPath
 			fileName = StringUtils.substringAfter(fileName, dataPath);
+			// removes the first / of the filename
 			fileName = fileName.substring(1);
+			
+			// we must check if full is correct in disposition NEW (only for new allocation)
+			if (Disposition.NEW.equalsIgnoreCase(disposition)){
+				try {
+					// checks all paths
+					PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+					// creates a file with dataPath as parent, plus file name  
+					file = new File(paths.getCurrent().getContent(), fileName);
+				} catch (InvalidDatasetNameException e) {
+					throw new SpringBatchException(e.getMessageInterface(), e.getObjects());
+				}
+			}
 		} else {
+			// should be relative
 			file = new File(ds.getName());
+			// normalizes the full path and checks again with the name
+			// if equals means that is absolute because the previuos checks only if it's using the 
+			// data paths
 			if (FilenameUtils.normalize(file.getAbsolutePath(), true).equalsIgnoreCase(ds.getName())){
+				// normalizes using UNIX rules
 				fileName = FilenameUtils.normalize(file.getAbsolutePath(), true);
 			} else {
-				file = new File(dataPath, ds.getName());
-				fileName = FilenameUtils.normalize(ds.getName(), true);
+				try {
+					// checks all paths
+					PathsContainer paths = DataPathsContainer.getInstance().getPaths(ds.getName());
+					// is relative!
+					// creates a file with dataPath as parent, plus file name  
+					file = new File(paths.getCurrent().getContent(), ds.getName());
+					// if disposition is not in new allocation and the file with current path doesn't exists,
+					// try to use the old path is exist
+					if (!Disposition.NEW.equalsIgnoreCase(disposition) && !file.exists() && paths.getOld()!=null){
+						file = new File(paths.getOld().getContent(), ds.getName());
+					}
+					// normalizes using UNIX rules
+					fileName = FilenameUtils.normalize(ds.getName(), true);
+				} catch (InvalidDatasetNameException e) {
+					throw new SpringBatchException(e.getMessageInterface(), e.getObjects());
+				}
 			}
 		}
-		return  new FileWrapper(file, fileName);
+		return new FileWrapper(file, fileName);
 	}
-
 }
 
 final class FileWrapper{

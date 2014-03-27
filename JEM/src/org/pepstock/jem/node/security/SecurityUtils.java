@@ -23,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
@@ -47,7 +48,7 @@ public class SecurityUtils {
 	 */
 	public static final int TO_BE_REJECTED = -1;
 	
-	private static final String DATA_PATH = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
+//	private static final String DATA_PATH = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
 
 	private static final String OUTPUT_PATH = System.getProperty(ConfigKeys.JEM_OUTPUT_PATH_NAME);
 	
@@ -84,7 +85,9 @@ public class SecurityUtils {
 	 * @return -1, 0, 1 if authorized or must be checked
 	 */
 	public int checkReadFileName(String fileName){
-		if (fileName.startsWith(DATA_PATH)){
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
+//		if (fileName.startsWith(DATA_PATH)){
+		if (dataPath != null){
 			return TO_BE_CHECKED;
 		}
 
@@ -126,7 +129,9 @@ public class SecurityUtils {
 			return TO_BE_REJECTED;
 		}
 		
-		boolean textFolder = fileName.startsWith(DATA_PATH) ||
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
+//		boolean textFolder = fileName.startsWith(DATA_PATH) ||
+		boolean textFolder = dataPath != null ||
 				fileName.startsWith(SOURCE_PATH);
 		
 		boolean binaryFolder = fileName.startsWith(LIBRARY_PATH) ||
@@ -169,8 +174,10 @@ public class SecurityUtils {
 	 * @return relative file name
 	 */
 	public String normalizeFileName(String fileName){
-		if (fileName.startsWith(DATA_PATH)){
-			String file = StringUtils.substringAfter(fileName, DATA_PATH);
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
+//		if (fileName.startsWith(DATA_PATH)){
+		if (dataPath != null){
+			String file = StringUtils.substringAfter(fileName, dataPath);
 			if (FilenameUtils.separatorsToSystem(file).startsWith(File.separator)){
 				return file.substring(1);
 			} else {

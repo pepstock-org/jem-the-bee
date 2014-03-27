@@ -64,7 +64,7 @@ public class ImplementationsContainer {
 	 * Returns <code>true</code> if container contains the reference, otherwise
 	 * <code>false</code>.
 	 * 
-	 * @see org.pepstock.jem.ant.tasks.DataSet#isReference()
+	 * @see org.pepstock.jem.springbatch.tasks.DataSet#isReference()
 	 * @param reference string reference representation
 	 * @return <code>true</code> if container contains the reference
 	 */

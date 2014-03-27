@@ -187,7 +187,7 @@ public class DataDescriptionItemReader<T> extends MultiResourceItemReader<T> imp
 				// otherwise do!
 				if (!ds.isImplemented()) {
 					try {
-						DataSetManager.createDataSetImpl(ds);
+						DataSetManager.createDataSetImpl(ds, getDataDescription().getDisposition());
 					} catch (IOException e) {
 						// ignore
 						LogAppl.getInstance().emit(SpringBatchMessage.JEMS037W, e, ds.toString());

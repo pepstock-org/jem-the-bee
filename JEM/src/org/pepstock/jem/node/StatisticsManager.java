@@ -36,6 +36,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.executors.stats.GetSample;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightSample;
 import org.pepstock.jem.node.stats.MemberSample;
@@ -109,18 +111,27 @@ public class StatisticsManager {
 	public StatisticsManager(boolean enable, String path) {
 		this.enable = enable;
 		if (enable) {
-			File dataPath = (path == null) ? Main.getOutputSystem().getDataPath() : new File(path);
-			folderStatsLog = new File(dataPath, STATS);
-			if (!folderStatsLog.exists()) {
-				boolean isCreated = folderStatsLog.mkdirs();
-				if (isCreated) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC075I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
-				} else {
-					LogAppl.getInstance().emit(NodeMessage.JEMC153E, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
-					this.enable = false;
+			try {
+				if (path != null){
+					// checks on storage manager the complete path
+					// starting from path of put in config file
+					PathsContainer checkedPath = Main.DATA_PATHS_MANAGER.getPaths(path);
+					// the folder put in config file
+					folderStatsLog = new File(checkedPath.getCurrent().getContent(), path);
+					if (!folderStatsLog.exists()) {
+						boolean isCreated = folderStatsLog.mkdirs();
+						if (isCreated) {
+							LogAppl.getInstance().emit(NodeMessage.JEMC075I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+						} else {
+							LogAppl.getInstance().emit(NodeMessage.JEMC153E, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+							this.enable = false;
+						}
+					} else {
+						LogAppl.getInstance().emit(NodeMessage.JEMC076I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+					}
 				}
-			} else {
-				LogAppl.getInstance().emit(NodeMessage.JEMC076I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+			} catch (InvalidDatasetNameException e) {
+				LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
 			}
 		} else {
 			LogAppl.getInstance().emit(NodeMessage.JEMC183W);

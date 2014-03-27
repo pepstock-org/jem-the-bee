@@ -1261,10 +1261,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC211W(211, "Used default value for parallel jobs due to the value {0} is too low. Minimum is {1}", MessageLevel.WARNING),
 	
 	/**
-	 * "Parallel jobs is set to {0} ", MessageLevel.WARNING
+	 * "Parallel jobs is set to {0} ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It shows maximum number of jobs executed in parallel inside the node.")
-	JEMC212I(212, "Parallel jobs is set to {0} ", MessageLevel.WARNING),
+	JEMC212I(212, "Parallel jobs is set to {0} ", MessageLevel.INFO),
 
 	/**
 	 * "Used default value for memory due to inconsistent value: {0} ", MessageLevel.WARNING
@@ -1285,10 +1285,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC215W(215, "Used default value for memory due to the value {0} is too low. Minimum is {1}", MessageLevel.WARNING),
 	
 	/**
-	 * "Memory is set to {0} ", MessageLevel.WARNING
+	 * "Memory is set to {0} ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It shows maximum number of jobs executed in parallel inside the node.")
-	JEMC216I(216, "Memory is set to {0} ", MessageLevel.WARNING),
+	JEMC216I(216, "Memory is set to {0} ", MessageLevel.INFO),
 	
 	/**
 	 * "Invalid submitter class:  {0} ", MessageLevel.WARNING
@@ -1494,7 +1494,26 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to extract the interfaces by network service", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM tries to extract the right netwoirk interface to use but network service return an excpetion.")
-	JEMC250E(250, "Unable to extract the interfaces by network service", MessageLevel.ERROR);
+	JEMC250E(250, "Unable to extract the interfaces by network service", MessageLevel.ERROR),
+	
+	/**
+	 * "File {0} does not match with any dataset rule", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the filename, put in JCL, does not match with any dataset rule. Please have a look and correct file name.")
+	JEMC251E(251, "File {0} does not match with any dataset rule", MessageLevel.ERROR),
+	
+	/**
+	 * "{0} datasets rules loaded", MessageLevel.INFO
+	 */
+	@Description(explanation = "It shows the amount of datasets rules loaded.")
+	JEMC252I(252, "{0} datasets rules loaded", MessageLevel.INFO),
+	
+	/**
+	 * "Rules file is not defined but the default file {0} exists", MessageLevel.WARNIG
+	 */
+	@Description(explanation = "It occurs when a data path is defined and rules file name not. JEM tries to create a rule file on the file but the "+
+	 "default file already exists. Please have a look to JEM environment configuration.")
+	JEMC253W(253, "Rules file is not defined but the default file {0} exists", MessageLevel.WARNING);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
