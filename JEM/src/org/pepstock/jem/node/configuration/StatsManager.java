@@ -24,8 +24,7 @@ package org.pepstock.jem.node.configuration;
 public class StatsManager {
 	
 	private String path = null;
-	
-	private boolean enable = true;
+
 
 	/**
 	 * 
@@ -45,20 +44,6 @@ public class StatsManager {
 	 */
 	public void setPath(String path) {
 		this.path = path;
-	}
-
-	/**
-	 * @return the enable
-	 */
-	public boolean isEnable() {
-		return enable;
-	}
-
-	/**
-	 * @param enable the enable to set
-	 */
-	public void setEnable(boolean enable) {
-		this.enable = enable;
 	}
 
 	/* (non-Javadoc)

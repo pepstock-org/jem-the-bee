@@ -1084,8 +1084,8 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Statistics persistence is disabled by configuration", MessageLevel.WARNING
 	 */
-	@Description(explanation = "It occurs when in JEM node configuration file the statistics manager is set with enable=false.<br/> No statistics record is saved on filesystem.")
-	JEMC183W(183, "Statistics persistence is disabled by configuration", MessageLevel.WARNING),
+	@Description(explanation = "It occurs when in JEM node configuration file the statistics manager doesn't have 'path' attribute.<br/> No statistics record is saved on filesystem.")
+	JEMC183W(183, "Statistics persistence is disabled", MessageLevel.WARNING),
 
 	/**
 	 * "Unable to extract jem version from jem.jar", MessageLevel.WARNING

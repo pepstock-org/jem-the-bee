@@ -63,11 +63,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class StatisticsManager {
 	
-	/**
-	 * Default statistic files folder
-	 */
-	public static final String STATS = "stats";
-
 	private static final int MAXIMUM_NUMBER_OF_SAMPLES = 20;
 
 	private static final long POLLING_INTERVAL = 1 * TimeUtils.MINUTE;
@@ -86,55 +81,46 @@ public class StatisticsManager {
 
 	private MemberSample lastMemberSample = null;
 
-	private boolean enable = true;
+	private boolean enable = false;
 
 	/**
 	 * Enables statistics management
 	 */
 	public StatisticsManager() {
-		this(true);
+		this(null);
 	}
-
-	/**
-	 * Constructs the object. Uses the default path to store stats. 
-	 * @param enable <code>true</code> if statistics are managed
-	 */
-	public StatisticsManager(boolean enable) {
-		this(enable, null);
-	}
-
 	/**
 	 * Constructs the object. Uses the passed path to store stats. 
 	 * @param enable <code>true</code> if statistics are managed
 	 * @param path folder where to store stats
 	 */
-	public StatisticsManager(boolean enable, String path) {
-		this.enable = enable;
-		if (enable) {
-			try {
-				if (path != null){
-					// checks on storage manager the complete path
-					// starting from path of put in config file
-					PathsContainer checkedPath = Main.DATA_PATHS_MANAGER.getPaths(path);
-					// the folder put in config file
-					folderStatsLog = new File(checkedPath.getCurrent().getContent(), path);
-					if (!folderStatsLog.exists()) {
-						boolean isCreated = folderStatsLog.mkdirs();
-						if (isCreated) {
-							LogAppl.getInstance().emit(NodeMessage.JEMC075I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
-						} else {
-							LogAppl.getInstance().emit(NodeMessage.JEMC153E, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
-							this.enable = false;
-						}
+	public StatisticsManager(String path) {
+		try {
+			if (path != null){
+				// checks on storage manager the complete path
+				// starting from path of put in config file
+				PathsContainer checkedPath = Main.DATA_PATHS_MANAGER.getPaths(path);
+				// the folder put in config file
+				folderStatsLog = new File(checkedPath.getCurrent().getContent(), path);
+				if (!folderStatsLog.exists()) {
+					boolean isCreated = folderStatsLog.mkdirs();
+					if (isCreated) {
+						LogAppl.getInstance().emit(NodeMessage.JEMC075I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+						this.enable = true;
 					} else {
-						LogAppl.getInstance().emit(NodeMessage.JEMC076I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+						LogAppl.getInstance().emit(NodeMessage.JEMC153E, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+						LogAppl.getInstance().emit(NodeMessage.JEMC183W);
 					}
+				} else {
+					LogAppl.getInstance().emit(NodeMessage.JEMC076I, FilenameUtils.normalize(folderStatsLog.getAbsolutePath()));
+					this.enable = true;
 				}
-			} catch (InvalidDatasetNameException e) {
-				LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
 			}
-		} else {
-			LogAppl.getInstance().emit(NodeMessage.JEMC183W);
+		} catch (InvalidDatasetNameException e) {
+			LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
+		}
+		if (!enable){
+			LogAppl.getInstance().emit(NodeMessage.JEMC183W);	
 		}
 	}
 
@@ -148,7 +134,7 @@ public class StatisticsManager {
 		comparator = new TimeComparator();
 		String className = FilenameUtils.getExtension(this.getClass().getName());
 		timer = new Timer(className, false);
-		timer.schedule(new StatsTimerTask(), POLLING_INTERVAL, POLLING_INTERVAL);
+		timer.schedule(new StatsTimerTask(), 1, POLLING_INTERVAL);
 
 		// avoid recursive
 		xs.omitField(LightMemberSample.class, "sample");
@@ -161,12 +147,12 @@ public class StatisticsManager {
 	public boolean isEnable() {
 		return enable;
 	}
-
+	
 	/**
-	 * @param enable the enable to set
+	 * @return the folderStatsLog
 	 */
-	public void setEnable(boolean enable) {
-		this.enable = enable;
+	public File getFolderStatsLog() {
+		return folderStatsLog;
 	}
 
 	/**

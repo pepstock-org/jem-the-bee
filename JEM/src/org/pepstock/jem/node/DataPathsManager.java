@@ -285,33 +285,66 @@ public final class DataPathsManager implements Serializable{
     }
     
     /**
-     * 
-     * @param fileName
-     * @return
+     * Returns the name of data path to use for file name argument
+     * @param fileName file name to use to get data path name
+     * @return the data path name
+     */
+    public String getAbsoluteDataPathName(String fileName){
+    	return retrieveDataPath(fileName, true);
+    }
+    
+    /**
+     * Returns the absolute data path to use for file name argument
+     * @param fileName file name to use to get the absolute data path
+     * @return the the absolute data path
      */
     public String getAbsoluteDataPath(String fileName){
+    	return retrieveDataPath(fileName, false);
+    }
+    
+    /**
+     * Returns the absolute data path or data path name using file name argument
+     * @param fileName file name to use to get info
+     * @param names if <code>true</code>, get data path name otherwise absolute data path  
+     * @return if names is set to <code>true</code>, get data path name otherwise absolute data path 
+     */
+    private String retrieveDataPath(String fileName, boolean name){
+    	String file = FilenameUtils.normalize(fileName.endsWith(File.separator) ? fileName : fileName+File.separator, true);
     	for (Path mp : dataPaths.getPaths()){
     		String pathToCheck = FilenameUtils.normalize(mp.getContent().endsWith(File.separator) ? mp.getContent() : mp.getContent()+File.separator, true);
-    		if (StringUtils.startsWithIgnoreCase(fileName, pathToCheck)){
-    			return mp.getContent();
+    		if (StringUtils.startsWithIgnoreCase(file, pathToCheck)){
+    			return name ? mp.getName() : mp.getContent();
     		}
     	}
     	return null;
     }
     
+    /**
+     * Returns a list of string with data path name defined in JEM configuration file
+     * @return a list of string with data path name defined in JEM configuration file
+     */
     public List<String> getDataPathsNames(){
-    	List<String> groups = new LinkedList<String>();
-    	for (Path mp : dataPaths.getPaths()){
-    		groups.add(mp.getName());
-    	}
-    	return groups;
+    	return loadDataPaths(true);
     }
     
+    /**
+     * Returns a list of string with complete data path defined in JEM configuration file
+     * @return a list of string with complete data path defined in JEM configuration file
+     */
     public List<String> getDataPaths(){
+    	return loadDataPaths(false);
+    }
+    
+    /**
+     * Loads data path information on a list
+     * @param names if <code>true</code>, loads data path names otherwise absolute data paths 
+     * @return if names is set to <code>true</code>, loads data path names otherwise absolute data paths 
+     */
+    private List<String> loadDataPaths(boolean names){
     	List<String> groups = new LinkedList<String>();
     	for (Path mp : dataPaths.getPaths()){
-    		groups.add(FilenameUtils.normalize(mp.getContent(), true));
+    		groups.add(names ? mp.getName() : FilenameUtils.normalize(mp.getContent(), true));
     	}
-    	return groups;
+    	return groups;	
     }
 }

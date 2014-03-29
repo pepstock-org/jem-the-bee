@@ -37,7 +37,7 @@ public final class DataPathsContainer {
 	}
 	
 	public static final void createInstance(DataPathsManager manager){
-		if (INSTANCE.manager != null){
+		if (INSTANCE.manager == null){
 			INSTANCE.manager = manager;
 		}
 	}

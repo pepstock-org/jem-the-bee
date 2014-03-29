@@ -118,6 +118,7 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 		if (files != null && files.length > 0){
 			// scans all files and loads them into a collection, normalizing the names
 			for (int i=0; i<files.length; i++){
+				
 				boolean isDirectory = files[i].isDirectory();
 				String name = files[i].getName();
 				
@@ -130,6 +131,8 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 				file.setLongName(longName);
 				file.setLength((isDirectory) ? -1 : files[i].length());
 				file.setLastModified(files[i].lastModified());
+				
+				file.setDataPathName(Main.DATA_PATHS_MANAGER.getAbsoluteDataPathName(files[i].getAbsolutePath()));
 
 				list.add(file);
 			}

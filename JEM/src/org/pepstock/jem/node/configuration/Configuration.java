@@ -19,8 +19,8 @@ package org.pepstock.jem.node.configuration;
 import java.util.List;
 
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.node.sgm.DataPaths;
+import org.pepstock.jem.node.sgm.Path;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -230,7 +230,6 @@ public class Configuration {
 		xstream.alias(ConfigKeys.LISTENER_ALIAS, Listener.class);
 		xstream.aliasAttribute(Listener.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasAttribute(StatsManager.class, ConfigKeys.PATH_FIELD, ConfigKeys.PATH_ATTRIBUTE_ALIAS);
-		xstream.aliasAttribute(StatsManager.class, ConfigKeys.ENABLE_FIELD, ConfigKeys.ENABLE_ATTRIBUTE_ALIAS);
 		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CustomResourceDefinition.class);
 		xstream.aliasAttribute(CustomResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasField(ConfigKeys.RESOURCE_DEFINITIONS_ALIAS, Configuration.class, ConfigKeys.RESOURCE_DEFINITIONS_FIELD);

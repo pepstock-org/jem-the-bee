@@ -14,7 +14,7 @@
 		</properties-->
 	</database>
 
-	<statistics-manager enable="false"/>
+	<statistics-manager />
 
 	<!-- node className="org.pepstock.jem.grs.GrsNode">
 		<properties>

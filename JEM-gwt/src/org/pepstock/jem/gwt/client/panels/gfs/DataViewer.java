@@ -23,6 +23,9 @@ import org.pepstock.jem.gwt.client.panels.gfs.commons.FilesComparator;
 import org.pepstock.jem.gwt.client.panels.gfs.commons.FilesTable;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
 
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.TextColumn;
+
 /**
  * @author Andrea "Stock" Stocchero
  *
@@ -83,6 +86,33 @@ public class DataViewer extends FileSystemPanel{
         public IndexedColumnComparator<GfsFile> getIndexedColumnComparator() {
 	        return new FilesComparator(0, PreferencesKeys.EXPLORER_SORT_DATA);
         }
+
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.gwt.client.panels.gfs.commons.FilesTable#loadCellTable(com.google.gwt.user.cellview.client.CellTable)
+		 */
+        @Override
+        public void loadCellTable(CellTable<GfsFile> table) {
+    		
+        	super.loadCellTable(table);
+    		
+    		/*-------------------------+
+   	        | Data Path Name          |
+   		    +-------------------------*/
+    		TextColumn<GfsFile> pathName = new TextColumn<GfsFile>() {
+    			@Override
+    			public String getValue(GfsFile file) {
+    				if (file.getDataPathName() != null ) {
+    					return file.getDataPathName();
+    				} else { 
+    					return "";
+    				}
+    			}
+    		};
+    		pathName.setSortable(true);
+    		table.addColumn(pathName, "Path Name");
+    	}
+        
+        
     }
 
 }

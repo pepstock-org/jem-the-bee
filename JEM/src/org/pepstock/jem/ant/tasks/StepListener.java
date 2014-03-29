@@ -113,12 +113,7 @@ public class StepListener implements BuildListener {
 					// receives all roles for job user and stores in a static
 					// reference
 					// of realm
-					
-					// FIXME da rimuovere
-					long start = System.currentTimeMillis();
 					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
-					long elap = System.currentTimeMillis() - start;
-					System.err.println("Elap: "+elap);
 					
 					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing

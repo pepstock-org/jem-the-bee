@@ -1216,16 +1216,12 @@ public class StartUpSystem {
 	private static void loadStatisticsManager(Configuration conf) throws ConfigurationException {
 		StatsManager statsManager = conf.getStatsManager();
 		if (statsManager != null) {
-			if (!statsManager.isEnable()) {
-				Main.setStatisticsManager(new StatisticsManager(false));
-			} else {
-				// gets path and substitute variables if present
-				String path = statsManager.getPath();
-				if (path != null) {
-					path = substituteVariable(path);
-				}
-				Main.setStatisticsManager(new StatisticsManager(true, path));
+			// gets path and substitute variables if present
+			String path = statsManager.getPath();
+			if (path != null) {
+				path = substituteVariable(path);
 			}
+			Main.setStatisticsManager(new StatisticsManager(path));
 		} else {
 			Main.setStatisticsManager(new StatisticsManager());
 		}
