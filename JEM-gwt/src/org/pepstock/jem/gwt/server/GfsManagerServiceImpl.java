@@ -45,7 +45,7 @@ public class GfsManagerServiceImpl extends DefaultManager implements GfsManagerS
 	 * java.lang.String)
 	 */
 	@Override
-	public Collection<GfsFile> getFilesList(int type, String path) throws JemException {
+	public Collection<GfsFile> getFilesList(int type, String path, String pathName) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();
@@ -55,7 +55,7 @@ public class GfsManagerServiceImpl extends DefaultManager implements GfsManagerS
 			initManager();
 		}
 		try {
-			return gfsManager.getFilesList(type, path);
+			return gfsManager.getFilesList(type, path, pathName);
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, ex);
 			// creates a new Exception to avoid to try
@@ -72,7 +72,7 @@ public class GfsManagerServiceImpl extends DefaultManager implements GfsManagerS
 	 * java.lang.String)
 	 */
 	@Override
-	public String getFile(int type, String file) throws JemException {
+	public String getFile(int type, String file, String pathName) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();
@@ -82,7 +82,7 @@ public class GfsManagerServiceImpl extends DefaultManager implements GfsManagerS
 			initManager();
 		}
 		try {
-			return gfsManager.getFile(type, file);
+			return gfsManager.getFile(type, file, pathName);
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, ex);
 			// creates a new Exception to avoid to try

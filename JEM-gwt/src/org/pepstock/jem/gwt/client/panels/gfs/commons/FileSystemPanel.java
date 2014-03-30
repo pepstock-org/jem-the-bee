@@ -195,7 +195,7 @@ public abstract class FileSystemPanel extends GfsPanel implements SearchListener
 			
 			@Override
 			public void execute() {
-				Services.GFS_MANAGER.getFilesList(getFilesType(), "*".equalsIgnoreCase(filter) ? GetFilesList.ROOT_PATH : filter, new GetFilesListAsyncCallback(file));
+				Services.GFS_MANAGER.getFilesList(getFilesType(), "*".equalsIgnoreCase(filter) ? GetFilesList.ROOT_PATH : filter, file.getDataPathName(), new GetFilesListAsyncCallback(file));
 			}
 	    });
     }
@@ -240,7 +240,7 @@ public abstract class FileSystemPanel extends GfsPanel implements SearchListener
 			
 			@Override
 			public void execute() {
-				Services.GFS_MANAGER.getFile(getFilesType(), file.getLongName(), new GetFileAsyncCallback(file));
+				Services.GFS_MANAGER.getFile(getFilesType(), file.getLongName(), file.getDataPathName(), new GetFileAsyncCallback(file));
 			}
 	    });
     }

@@ -1513,8 +1513,46 @@ public enum NodeMessage implements MessageInterface {
 	 */
 	@Description(explanation = "It occurs when a data path is defined and rules file name not. JEM tries to create a rule file on the file but the "+
 	 "default file already exists. Please have a look to JEM environment configuration.")
-	JEMC253W(253, "Rules file is not defined but the default file {0} exists", MessageLevel.WARNING);
+	JEMC253W(253, "Rules file is not defined but the default file {0} exists", MessageLevel.WARNING),
+	
+	/**
+	 * "No rule has been loaded!", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when rules definition file contains wrong defintions and no rule has been loaded. Please have a look at rules file configuration.")
+	JEMC254E(254, "No rule has been loaded", MessageLevel.ERROR),
 
+	/**
+	 * "Path \"{0}\" is undefined!", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when a rule definition contains a link to undefined path. Please have a look at rules file configuration.")
+	JEMC255W(255, "Path \"{0}\" is undefined", MessageLevel.WARNING),
+
+	/**
+	 * "'pathName' is a mandatory attribute!", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when a rule definition doesn't contain any path name. Please have a look at rules file configuration.")
+	JEMC256W(256, "'pathName' is a mandatory attribute", MessageLevel.WARNING),
+	
+	/**
+	 * "Unable to load rules file : {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to load rule definition file. Please have a look at JEM environment configuration folder.")
+	JEMC257E(257, "Unable to load rules file : {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid data paths defintion: cluster has got {0} definition, node {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node at startup checks is own data paths are coherent with data paths of cluster. The data paths must be logically "+
+	 " the same. Please have a look at JEM node configuration fils.")
+	JEMC258E(258, "Invalid data paths defintions: cluster has got {0} definitions, node {1}", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node at startup checks is own data paths are coherent with data paths of cluster. The data paths must be logically "+
+	 " the same. Please have a look at JEM node configuration fils.")
+	JEMC259E(259, "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR);
+	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
 	 * instance of <code>NodeMessage</code>.

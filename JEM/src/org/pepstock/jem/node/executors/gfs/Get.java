@@ -38,6 +38,8 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 
 	private String item = null;
 	
+	private String pathName = null;
+	
 	private int type = GfsFile.DATA;
 	
 	/**
@@ -48,9 +50,10 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 	 * @param item the folder (relative to type of GFS) to use to read files and directories or the file to download
 	 * 
 	 */
-	public Get(int type, String item) {
+	public Get(int type, String item, String pathName) {
 		this.type = type;
 		this.item = item;
+		this.pathName = pathName;
 	}
 
 	/**
@@ -65,6 +68,13 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 	 */
 	public String getItem() {
 		return item;
+	}
+	
+	/**
+	 * @return the pathName
+	 */
+	public String getPathName() {
+		return pathName;
 	}
 
 	/* (non-Javadoc)

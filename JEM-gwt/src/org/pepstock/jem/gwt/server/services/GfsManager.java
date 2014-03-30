@@ -56,11 +56,11 @@ public class GfsManager extends DefaultService{
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs
      */
-    public Collection<GfsFile> getFilesList(int type, String path) throws ServiceMessageException {
+    public Collection<GfsFile> getFilesList(int type, String path, String pathName) throws ServiceMessageException {
 		// checks user authentication
 		// if not, this method throws an exception
     	checkAuthentication();
-		DistributedTaskExecutor<Collection<GfsFile>> task = new DistributedTaskExecutor<Collection<GfsFile>>(new GetFilesList(type, path), getMember());
+		DistributedTaskExecutor<Collection<GfsFile>> task = new DistributedTaskExecutor<Collection<GfsFile>>(new GetFilesList(type, path, pathName), getMember());
 		Collection<GfsFile> result = task.getResult();
 		
 		// checks if the list is empty.
@@ -101,14 +101,14 @@ public class GfsManager extends DefaultService{
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs
      */
-    public String getFile(int type, String file) throws ServiceMessageException {
+    public String getFile(int type, String file, String pathName) throws ServiceMessageException {
     	// creates the permission by file name
        	String filesPermission = Permissions.FILES_READ + file; 
 		// checks user authentication
 		// if not, this method throws an exception
        	checkAuthorization(new StringPermission(filesPermission));
        	
-		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetFile(type, file), getMember());
+		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
     }
  

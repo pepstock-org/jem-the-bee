@@ -99,20 +99,18 @@ public final class DataPathsManager implements Serializable{
 	 * @throws MessageException
 	 * @throws FileNotFoundException
 	 */
-	DatasetsRulesResult testRules(String fileNameDatasetRules) throws MessageException{
+	public DatasetsRulesResult testRules(String fileNameDatasetRules) throws MessageException{
     	File fileDatasetRules = new File(fileNameDatasetRules);
     	DatasetsRulesResult rules = null;
     	DataSetRules dsr;
 		try {
 			dsr = loadXMLDataSetRules(fileDatasetRules);
-			rules = loadRules(dsr);
+			rules = loadRules(dsr, false);
 			if (rules.getRules().isEmpty()){
-				// TODO messaggio
-				rules.getWarnings().add("No rule has been loaded!");
+				throw new MessageException(NodeMessage.JEMC254E);
 			}
 		} catch (Exception e) {
-			// TODO messaggio
-			e.printStackTrace();
+			throw new MessageException(NodeMessage.JEMC257E, fileDatasetRules.getAbsolutePath());
 		}
 		return rules;
 	}
@@ -127,23 +125,15 @@ public final class DataPathsManager implements Serializable{
     	DataSetRules dsr;
 		try {
 			dsr = loadXMLDataSetRules(fileDatasetRules);
-			DatasetsRulesResult rules = loadRules(dsr);
+			DatasetsRulesResult rules = loadRules(dsr, true);
 			if (rules.getRules().isEmpty()){
-				// TODO messaggio
-				System.err.println("*** rules are empty");
+				throw new MessageException(NodeMessage.JEMC254E);
 			} else {
 				DATASET_RULES.clear();
 				DATASET_RULES.putAll(rules.getRules());
 			}
-			if (!rules.getWarnings().isEmpty()){
-				for (String warning : rules.getWarnings()){
-					// TODO messaggio
-					System.err.println("*** warning: "+warning);
-				}
-			}
 		} catch (Exception e) {
-			// TODO messaggio
-			e.printStackTrace();
+			throw new MessageException(NodeMessage.JEMC257E, fileDatasetRules.getAbsolutePath());
 		}
     	LogAppl.getInstance().emit(NodeMessage.JEMC252I, DATASET_RULES.size());
     	
@@ -201,7 +191,7 @@ public final class DataPathsManager implements Serializable{
      * @param dsr
      * @return
      */
-    private DatasetsRulesResult loadRules(DataSetRules dsr){
+    private DatasetsRulesResult loadRules(DataSetRules dsr, boolean printWarnings){
     	DatasetsRulesResult result = new DatasetsRulesResult();
     	Map<Pattern, PathsContainer> newRules = new LinkedHashMap<Pattern, PathsContainer>();
     	List<String> warnings = new ArrayList<String>();
@@ -221,15 +211,15 @@ public final class DataPathsManager implements Serializable{
 							Path old = getPath(dsPattern.getOldPathName());
 							mps.setOld(old);
 							if (old == null){
-								addWarningMessage(warnings, "Path '"+dsPattern.getOldPathName()+"' is undefined!");
+								addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, dsPattern.getOldPathName());	
 							}
 						}
 						newRules.put(p, mps);
 					} else {
-						addWarningMessage(warnings, "Path '"+name+"' is undefined!");
+						addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, name);	
 					}
 				} else {
-					addWarningMessage(warnings, "'pathName' is a mandatory attribute!");
+					addWarningMessage(warnings, printWarnings, NodeMessage.JEMC256W, null);	
 				}
 			}
 		}
@@ -240,9 +230,12 @@ public final class DataPathsManager implements Serializable{
      * @param warnings
      * @param msg
      */
-    private void addWarningMessage(List<String> warnings, String msg){
-		if (!warnings.contains(msg)){
-			warnings.add(msg);
+    private void addWarningMessage(List<String> warnings, boolean printWarnings, NodeMessage message, String name){
+		if (printWarnings){
+			LogAppl.getInstance().emit(message, name);
+		} else if (!warnings.contains(message)){
+			String outputMessage = (name == null) ? message.toMessage().getMessage() : message.toMessage().getFormattedMessage(name);
+			warnings.add(outputMessage);
 		}
     }
     
@@ -282,6 +275,16 @@ public final class DataPathsManager implements Serializable{
     		}
     	}
     	throw new InvalidDatasetNameException(fileName);
+    }
+    
+    /**
+     * Returns the absolute path passing data path name argument
+     * @param name data path argument
+     * @return absolute path
+     */
+    public String getAbsoluteDataPathByName(String name){
+    	Path path = getPath(name);
+    	return path == null ? null : path.getContent();
     }
     
     /**

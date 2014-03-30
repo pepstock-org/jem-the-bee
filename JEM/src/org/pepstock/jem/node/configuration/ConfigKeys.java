@@ -111,13 +111,6 @@ public final class ConfigKeys {
 
 	/**
 	 * Is the environment variable name to use to pass the property to job
-	 * execution, for path where the files are stored
-	 */
-	// TODO da riattivare quando oki
-//	public static final String JEM_DATA_PATH_NAME = "jem.data";
-
-	/**
-	 * Is the environment variable name to use to pass the property to job
 	 * execution, for path where the source files, that can be included at
 	 * runtime in the jcl,are stored
 	 */

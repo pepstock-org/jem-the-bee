@@ -55,8 +55,8 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 	 * @param path the folder (relative to type of GFS) to use to read files and directories
 	 * 
 	 */
-	public GetFilesList(int type, String path) {
-		super(type, path);
+	public GetFilesList(int type, String path, String pathName) {
+		super(type, path, pathName);
 	}
 
 	/* (non-Javadoc)
@@ -85,22 +85,28 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 			}
 			return list;
 		} else {
-			String item = FilenameUtils.normalize(getItem().endsWith(File.separator) ? getItem() : getItem() + File.separator, true);
-			try {
-				PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(item);
-				String parentPath = paths.getCurrent().getContent();
+			if (getPathName() != null){
+				String parentPath = Main.DATA_PATHS_MANAGER.getAbsoluteDataPathByName(getPathName());
 				File file = new File(parentPath, getItem());
-				if (!file.exists() && paths.getOld()!=null){
-					parentPath = paths.getOld().getContent();
-				}
-				file = new File(parentPath, getItem());
-				// checks if folder exists and must be a folder (not a file)
-				if (!file.exists()){
-					throw new ExecutorException(NodeMessage.JEMC186E, getItem());
-				}
 				return this.getResult(parentPath, file);
-			} catch (InvalidDatasetNameException e) {
-				throw new ExecutorException(e.getMessageInterface(), getItem());
+			} else {
+				String item = FilenameUtils.normalize(getItem().endsWith(File.separator) ? getItem() : getItem() + File.separator, true);
+				try {
+					PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(item);
+					String parentPath = paths.getCurrent().getContent();
+					File file = new File(parentPath, getItem());
+					if (!file.exists() && paths.getOld()!=null){
+						parentPath = paths.getOld().getContent();
+					}
+					file = new File(parentPath, getItem());
+					// checks if folder exists and must be a folder (not a file)
+					if (!file.exists()){
+						throw new ExecutorException(NodeMessage.JEMC186E, getItem());
+					}
+					return this.getResult(parentPath, file);
+				} catch (InvalidDatasetNameException e) {
+					throw new ExecutorException(e.getMessageInterface(), getItem());
+				}
 			}
 		}
 	}

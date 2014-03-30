@@ -44,10 +44,11 @@ public class GetFile extends Get<String> {
 	 * @param type could a integer value
 	 * @see GfsFile
 	 * @param file the folder (relative to type of GFS) to use to read files and directories
+	 * @param pathName path data name for the file argument
 	 * 
 	 */
-	public GetFile(int type, String file) {
-		super(type, file);
+	public GetFile(int type, String file, String pathName) {
+		super(type, file, pathName);
 	}
 
 	/* (non-Javadoc)
@@ -70,23 +71,27 @@ public class GetFile extends Get<String> {
 	 */
 	@Override
 	public String getResultForDataPath() throws ExecutorException {
-		try {
-			PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(getItem());
-			String parentPath = paths.getCurrent().getContent();
+		if (getPathName() != null){
+			String parentPath = Main.DATA_PATHS_MANAGER.getAbsoluteDataPathByName(getPathName());
 			File file = new File(parentPath, getItem());
-			if (!file.exists() && paths.getOld()!=null){
-				parentPath = paths.getOld().getContent();
-			}
-			file = new File(parentPath, getItem());
-			// checks if folder exists and must be a folder (not a file)
-			if (!file.exists()){
-				throw new ExecutorException(NodeMessage.JEMC186E, getItem());
-			}
 			return this.getResult(parentPath, file);
-		} catch (InvalidDatasetNameException e) {
-			throw new ExecutorException(e.getMessageInterface(), getItem());
+		} else {
+			try {
+				PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(getItem());
+				String parentPath = paths.getCurrent().getContent();
+				File file = new File(parentPath, getItem());
+				if (!file.exists() && paths.getOld()!=null){
+					parentPath = paths.getOld().getContent();
+				}
+				file = new File(parentPath, getItem());
+				// checks if folder exists and must be a folder (not a file)
+				if (!file.exists()){
+					throw new ExecutorException(NodeMessage.JEMC186E, getItem());
+				}
+				return this.getResult(parentPath, file);
+			} catch (InvalidDatasetNameException e) {
+				throw new ExecutorException(e.getMessageInterface(), getItem());
+			}
 		}
 	}
-	
-	
 }

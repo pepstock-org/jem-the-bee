@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
 import java.util.Collection;
@@ -37,10 +37,10 @@ import org.pepstock.jem.log.LogAppl;
  * Pay attention to URL (@path) annotation
  * 
  * @author Enrico Frigo
- *
+ * 
  */
-@Path("/"+GfsManagerImpl.GFS_MANAGER_PATH)
-public class GfsManagerImpl extends DefaultServerResource  {
+@Path("/" + GfsManagerImpl.GFS_MANAGER_PATH)
+public class GfsManagerImpl extends DefaultServerResource {
 
 	/**
 	 * Key to define the path to bind this services
@@ -61,17 +61,17 @@ public class GfsManagerImpl extends DefaultServerResource  {
 	 * "lib" parameter on url
 	 */
 	public static final String GFS_MANAGER_FILE_LIBRARY = "lib";
-	
+
 	/**
 	 * "src" parameter on url
 	 */
 	public static final String GFS_MANAGER_FILE_SOURCE = "src";
-	
+
 	/**
 	 * "class" parameter on url
 	 */
 	public static final String GFS_MANAGER_FILE_CLASS = "class";
-	
+
 	/**
 	 * "bin" parameter on url
 	 */
@@ -82,120 +82,149 @@ public class GfsManagerImpl extends DefaultServerResource  {
 	public static final String GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH = "cat";
 
 	private GfsManager gfsManager = null;
-	
-    /**
-	 * REST service which returns all read DATA files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+
+	/**
+	 * REST service which returns all read DATA files on GFS. It checks also if
+	 * the user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @param pathName
+	 *            data path name of folder
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST+"/"+GFS_MANAGER_FILE_DATA)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesListData(String path) throws JemException  {
-		return getFilesList(GfsFile.DATA,path);
+	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_DATA)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesListData(String path) throws JemException {
+		return getFilesList(GfsFile.DATA, path, null);
 	}
 
-    /**
-	 * REST service which returns all read LIBRARY files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+	/**
+	 * REST service which returns all read LIBRARY files on GFS. It checks also
+	 * if the user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST+"/"+GFS_MANAGER_FILE_LIBRARY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesListLibrary(String path) throws JemException  {
-		return getFilesList(GfsFile.LIBRARY,path);
+	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_LIBRARY)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesListLibrary(String path) throws JemException {
+		return getFilesList(GfsFile.LIBRARY, path, null);
 	}
-	
-    /**
-	 * REST service which returns all read SOURCE files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+
+	/**
+	 * REST service which returns all read SOURCE files on GFS. It checks also
+	 * if the user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST+"/"+GFS_MANAGER_FILE_SOURCE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesListSource(String path) throws JemException  {
-		return getFilesList(GfsFile.SOURCE,path);
+	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_SOURCE)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesListSource(String path) throws JemException {
+		return getFilesList(GfsFile.SOURCE, path, null);
 	}
-	
-    /**
-	 * REST service which returns all read CLASS files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+
+	/**
+	 * REST service which returns all read CLASS files on GFS. It checks also if
+	 * the user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST+"/"+GFS_MANAGER_FILE_CLASS)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesListClass(String path) throws JemException  {
-		return getFilesList(GfsFile.CLASS,path);
+	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_CLASS)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesListClass(String path) throws JemException {
+		return getFilesList(GfsFile.CLASS, path, null);
 	}
-	
-    /**
-	 * REST service which returns all read BINARY files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+
+	/**
+	 * REST service which returns all read BINARY files on GFS. It checks also
+	 * if the user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST+"/"+GFS_MANAGER_FILE_BINARY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesListBinary(String path) throws JemException  {
-		return getFilesList(GfsFile.BINARY,path);
+	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_BINARY)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesListBinary(String path) throws JemException {
+		return getFilesList(GfsFile.BINARY, path, null);
 	}
-    /**
-	 * REST service which returns all read files on GFS.
-	 * It checks also if the user has got the authorization to read or write that folders.
-     * 
-     * @param type could a integer value
+
+	/**
+	 * REST service which returns all read files on GFS. It checks also if the
+	 * user has got the authorization to read or write that folders.
+	 * 
+	 * @param type
+	 *            could a integer value
 	 * @see GfsFile
-     * @param path the folder (relative to type of GFS) to use to read files and directories
-     * @return collections of files
-     * @throws JemException if any error occurs
-     */
+	 * @param path
+	 *            the folder (relative to type of GFS) to use to read files and
+	 *            directories
+	 * @param pathName
+	 *            data path name of folder
+	 * @return collections of files
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_FILE_LIST)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public GfsFileList getFilesList(int type, String path) throws JemException{
+	@Path("/" + GFS_MANAGER_FILE_LIST)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsFileList getFilesList(int type, String path, String pathName) throws JemException {
 		GfsFileList gfsContainer = new GfsFileList();
-		if (isEnable()){
-			if (gfsManager == null){
+		if (isEnable()) {
+			if (gfsManager == null) {
 				initManager();
 			}
 
 			Collection<GfsFile> gfsList;
-            try {
-            	gfsList = gfsManager.getFilesList(type,path);
+			try {
+				gfsList = gfsManager.getFilesList(type, path, pathName);
 				gfsContainer.setGfsFiles(gfsList);
-				gfsContainer.setPath(path);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-            	gfsContainer.setExceptionMessage(e.getMessage());
-            }				
+				gfsContainer.setPath(path);
+			} catch (Exception e) {
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
+				gfsContainer.setExceptionMessage(e.getMessage());
+			}
 		} else {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
 			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
@@ -206,95 +235,117 @@ public class GfsManagerImpl extends DefaultServerResource  {
 
 	/**
 	 * Return the content of the files requested, search on the DATA path.
-	 * @param path path where get the file from
+	 * 
+	 * @param path
+	 *            path where get the file from
+	 * @param pathName
+	 *            data path name of file
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws JemException
+	 *             if any exception occurs
 	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH+"/"+GFS_MANAGER_FILE_DATA)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_DATA)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileData(String path) throws JemException {
-		return getFile(GfsFile.DATA,path);
+		return getFile(GfsFile.DATA, path, null);
 	}
 
 	/**
 	 * Return the content of the files requested, search on the LIBRARY path.
-	 * @param path path where get the file from
+	 * 
+	 * @param path
+	 *            path where get the file from
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws JemException
+	 *             if any exception occurs
 	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH+"/"+GFS_MANAGER_FILE_LIBRARY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_LIBRARY)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileLibrary(String path) throws JemException {
-		return getFile(GfsFile.LIBRARY,path);
+		return getFile(GfsFile.LIBRARY, path, null);
 	}
 
 	/**
 	 * Return the content of the files requested, search on the SOURCE path.
-	 * @param path path where get the file from
+	 * 
+	 * @param path
+	 *            path where get the file from
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws JemException
+	 *             if any exception occurs
 	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH+"/"+GFS_MANAGER_FILE_SOURCE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_SOURCE)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileSource(String path) throws JemException {
-		return getFile(GfsFile.SOURCE,path);
+		return getFile(GfsFile.SOURCE, path, null);
 	}
-	
+
 	/**
 	 * Return the content of the files requested, search on the CLASS path.
-	 * @param path path where get the file from
+	 * 
+	 * @param path
+	 *            path where get the file from
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws JemException
+	 *             if any exception occurs
 	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH+"/"+GFS_MANAGER_FILE_CLASS)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_CLASS)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileClass(String path) throws JemException {
-		return getFile(GfsFile.CLASS,path);
+		return getFile(GfsFile.CLASS, path, null);
 	}
-	
+
 	/**
 	 * Return the content of the files requested, search on the BINARY path.
-	 * @param path path where get the file from
+	 * 
+	 * @param path
+	 *            path where get the file from
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws JemException
+	 *             if any exception occurs
 	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH+"/"+GFS_MANAGER_FILE_BINARY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_BINARY)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileBinary(String path) throws JemException {
-		return getFile(GfsFile.BINARY,path);
+		return getFile(GfsFile.BINARY, path, null);
 	}
 
 	/**
 	 * REST service which reads on GFS and returns the file
 	 * 
-     * @param type could a integer value
+	 * @param type
+	 *            could a integer value
+	 * @param pathName
+	 *            data path name of file
 	 * @see GfsFile
-     * @param file the file name to retrieve
-     * @return content of file
-     * @throws JemException if any error occurs
-     */
+	 * @param file
+	 *            the file name to retrieve
+	 * @return content of file
+	 * @throws JemException
+	 *             if any error occurs
+	 */
 	@POST
-	@Path("/"+GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public GfsOutputContent getFile(int type, String file) throws JemException {
+	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public GfsOutputContent getFile(int type, String file, String pathName) throws JemException {
 		GfsFileList gfsContainer = new GfsFileList();
 		GfsOutputContent gfsFile = new GfsOutputContent();
-		if (isEnable()){
-			if (gfsManager == null){
+		if (isEnable()) {
+			if (gfsManager == null) {
 				initManager();
 			}
-			
-            try {
-            	gfsFile.setContent(gfsManager.getFile(type, file));
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-            	gfsContainer.setExceptionMessage(e.getMessage());
-            }				
+
+			try {
+				gfsFile.setContent(gfsManager.getFile(type, file, pathName));
+			} catch (Exception e) {
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
+				gfsContainer.setExceptionMessage(e.getMessage());
+			}
 		} else {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
 			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
@@ -303,12 +354,11 @@ public class GfsManagerImpl extends DefaultServerResource  {
 		return gfsFile;
 	}
 
-
 	/**
 	 * Initializes a jobs manager
 	 */
-	private synchronized void initManager(){
-		if (gfsManager == null){
+	private synchronized void initManager() {
+		if (gfsManager == null) {
 			gfsManager = new GfsManager();
 		}
 	}
