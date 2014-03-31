@@ -610,12 +610,12 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "{0} isn't a directory.", MessageLevel.ERROR
 	 */
-	JEMC098E(98, "{0} isn't a directory.", MessageLevel.ERROR),
+	JEMC098E(98, "{0} is not a directory.", MessageLevel.ERROR),
 
 	/**
 	 * "{0} doesn't exist.", MessageLevel.ERROR
 	 */
-	JEMC099E(99, "{0} doesn't exist.", MessageLevel.ERROR),
+	JEMC099E(99, "{0} does not exist.", MessageLevel.ERROR),
 
 	/**
 	 * "{0} not found.", MessageLevel.ERROR
@@ -742,12 +742,12 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Role {0} couldn't be changed.", MessageLevel.ERROR
 	 */
-	JEMC123E(123, "Role \"{0}\" couldn't be changed.", MessageLevel.ERROR),
+	JEMC123E(123, "Role \"{0}\" could not be changed.", MessageLevel.ERROR),
 
 	/**
 	 * "Role \"{0}\" doesn't exist.", MessageLevel.ERROR
 	 */
-	JEMC124E(124, "Role \"{0}\" doesn't exist.", MessageLevel.ERROR),
+	JEMC124E(124, "Role \"{0}\" does not exist.", MessageLevel.ERROR),
 
 	/**
 	 * "Role \"{0}\" is not removable.", MessageLevel.ERROR
@@ -762,7 +762,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Any override to a 'jem' property is not allowed!", MessageLevel.ERROR
 	 */
-	JEMC127E(127, "Any override to a 'jem' property is not allowed!", MessageLevel.ERROR),
+	JEMC127E(127, "Any override to a \"jem\" property is not allowed!", MessageLevel.ERROR),
 
 	/**
 	 * "Access to RMI listener is not allowed.", MessageLevel.ERROR
@@ -815,7 +815,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "The protocol must be 'ftp' or 'ftps' instead of \"{0}\".", MessageLevel.ERROR
 	 */
-	JEMC137E(137, "The protocol must be 'ftp' or 'ftps' instead of \"{0}\".", MessageLevel.ERROR),
+	JEMC137E(137, "The protocol must be \"ftp\" or \"ftps\" instead of \"{0}\".", MessageLevel.ERROR),
 
 	/**
 	 * "Reply code \"{0}\", during connection, is not positive.", MessageLevel.ERROR
@@ -1104,7 +1104,7 @@ public enum NodeMessage implements MessageInterface {
 	 * "Path \"{0}\" doesn't exist", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you're going thru global file system but you asked a path that doesn't exist! Please check inserted path.")
-	JEMC186E(186, "Path \"{0}\" doesn't exist", MessageLevel.ERROR),
+	JEMC186E(186, "Path \"{0}\" does not exist", MessageLevel.ERROR),
 
 	/**
 	 * "Path \"{0}\" is not a folder", MessageLevel.ERROR);
@@ -1531,7 +1531,7 @@ public enum NodeMessage implements MessageInterface {
 	 * "'pathName' is a mandatory attribute!", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when a rule definition doesn't contain any path name. Please have a look at rules file configuration.")
-	JEMC256W(256, "'pathName' is a mandatory attribute", MessageLevel.WARNING),
+	JEMC256W(256, "\"pathName\" is a mandatory attribute", MessageLevel.WARNING),
 	
 	/**
 	 * "Unable to load rules file : {0}", MessageLevel.ERROR

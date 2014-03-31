@@ -19,9 +19,10 @@
 	<paths>
 		<!-- the path where the stored all output files of job execution -->
 		<output>#[jem.output]</output>
-		<!-- the path where the datasets and files should be stored. In Ant JCL 
-			can be referenced as ${jem.data} -->
-		<data>#[jem.data]</data>
+		<!-- the path where the datasets and files should be stored. -->
+		<data>
+			<path name="default">#[jem.data]</path>
+		</data>
 		<!-- the source the path where should be stores all the files that can 
 			be considered sources and that can be called at runtime In Ant JCL can be 
 			referenced as ${jem.source} -->

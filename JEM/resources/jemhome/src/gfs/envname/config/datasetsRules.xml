@@ -1,0 +1,9 @@
+<rules>
+  <rule pathName="default">
+    <dataSetPattern>.*</dataSetPattern>
+  </rule>
+  <!-- rule pathName="dataPathName"  oldPathName="dataPathName">
+    <dataSetPattern>folderPattern_1/.*</dataSetPattern>
+    <dataSetPattern>folderPattern_2/.*</dataSetPattern>
+  </rule-->
+</rules>
