@@ -19,7 +19,8 @@ package org.pepstock.jem.junit.test.antutils.java;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.sgm.PathsContainer;
 
 /**
  * This class will delete all the dataset create during the junit test relative
@@ -33,7 +34,7 @@ public class DeleteJunitDataSet {
 	/**
 	 * name of the dataset that will contain the JDBC resource information
 	 */
-	public static final String DATA_SET_JUNIT_FOLDER = "/test_antutils";
+	private static final String DATA_SET_JUNIT_FOLDER = "test_antutils";
 
 	/**
 	 * 
@@ -41,15 +42,15 @@ public class DeleteJunitDataSet {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		String dataPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-		String folderToDelete = dataPath + DATA_SET_JUNIT_FOLDER;
-		File dirToDelete = new File(folderToDelete);
-		System.out.println("Deliting folder:" + folderToDelete);
+		PathsContainer container = DataPathsContainer.getInstance().getPaths(DATA_SET_JUNIT_FOLDER);
+		String dataPath = container.getCurrent().getContent();
+		File dirToDelete = new File( dataPath, DATA_SET_JUNIT_FOLDER);
+		System.out.println("Deliting folder:" + dirToDelete);
 		if (dirToDelete.exists()) {
 			FileUtils.deleteDirectory(dirToDelete);
-			System.out.println("folder:" + folderToDelete + " deleted");
+			System.out.println("folder:" + dirToDelete + " deleted");
 		} else {
-			System.out.println("folder:" + folderToDelete + " does not exists");
+			System.out.println("folder:" + dirToDelete + " does not exists");
 		}
 	}
 }

@@ -185,7 +185,9 @@ public class Main {
 	 */
 	public static final AtomicLong NUMBER_OF_JOB_SUBMITTED = new AtomicLong(0);
 	
-	// FIXME
+	/**
+	 * Data paths manager. It manages all rules and data paths defintion
+	 */
 	public static final DataPathsManager DATA_PATHS_MANAGER = new DataPathsManager();
 
 	/**

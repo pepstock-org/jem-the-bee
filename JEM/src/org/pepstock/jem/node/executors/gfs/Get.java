@@ -48,6 +48,7 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 	 * @param type could a integer value
 	 * @see GfsFile
 	 * @param item the folder (relative to type of GFS) to use to read files and directories or the file to download
+	 * @param pathName data path name or null
 	 * 
 	 */
 	public Get(int type, String item, String pathName) {

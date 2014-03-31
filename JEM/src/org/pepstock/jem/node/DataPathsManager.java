@@ -45,15 +45,22 @@ import org.pepstock.jem.node.sgm.PathsContainer;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Manages all data paths, set in configuration file, and all datasets rules defined for allocation and accessing.
+ * Manages all data paths, set in configuration file, and all datasets rules defined for allocation and accessing.<br>
+ * Some methods are visible because this object is serialized to job and you want to avoid that someone change the configuration 
  * 
  * @author Andrea "Stock" Stocchero
- * @version 2.0
+ * @version 2.1
  */
 public final class DataPathsManager implements Serializable{
 	
+	/**
+	 * Default file name for rules when not defined
+	 */
 	public static final String DEFAULT_RULES_FILE_NAME = "$jem_Default_Datasets_Rules.xml";
 	
+	/**
+	 * Regular expression for ALL
+	 */
 	public static final String DEFAULT_REG_EX_FOR_ALL = ".*";
 	
 	private static final long serialVersionUID = 1L;
@@ -67,7 +74,7 @@ public final class DataPathsManager implements Serializable{
 	private transient XStream xs = new XStream();
 
 	/**
-	 * Empty constructor
+	 * It sets the XML definitions
 	 */
     public DataPathsManager() {
 		xs.alias(ConfigKeys.RULES_ALIAS, DataSetRules.class);
@@ -76,12 +83,13 @@ public final class DataPathsManager implements Serializable{
     }
 
 	/**
+	 * Loads the datapaths from JEM node configuration file 
 	 * @param dataPaths the storageGroups to set
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException if any error occurs
 	 */
 	void setDataPaths(DataPaths dataPaths) throws ConfigurationException {
 		this.dataPaths = dataPaths;
-
+		// checks is datapaths exists
 		for (Path p: dataPaths.getPaths()){
 			File dataPath = new File(p.getContent());
 			if (!dataPath.exists()) {
@@ -93,19 +101,21 @@ public final class DataPathsManager implements Serializable{
 	}
 
 	/**
-	 * 
-	 * @param fileNameDatasetRules
-	 * @return
-	 * @throws MessageException
-	 * @throws FileNotFoundException
+	 * Tests the file of datasets rules is correct
+	 * @param fileDatasetRules file with datasets rules
+	 * @return returns a dataset result
+	 * @throws MessageException if any error occurs
+	 * @throws FileNotFoundException if any IO error occurs
 	 */
-	public DatasetsRulesResult testRules(String fileNameDatasetRules) throws MessageException{
-    	File fileDatasetRules = new File(fileNameDatasetRules);
+	public DatasetsRulesResult testRules(File fileDatasetRules) throws MessageException{
     	DatasetsRulesResult rules = null;
     	DataSetRules dsr;
 		try {
+			// parses from XML
 			dsr = loadXMLDataSetRules(fileDatasetRules);
+			// load using object 
 			rules = loadRules(dsr, false);
+			// if rules are empty, no rules and then exception
 			if (rules.getRules().isEmpty()){
 				throw new MessageException(NodeMessage.JEMC254E);
 			}
@@ -115,20 +125,24 @@ public final class DataPathsManager implements Serializable{
 		return rules;
 	}
 	/**
-	 * Loads rules 
-	 * @param fileNameDatasetRules
-	 * @throws MessageException
-	 * @throws FileNotFoundException
+	 * Loads rules from a file
+	 * @param fileDatasetRules file with datasets rules
+	 * @throws MessageException if any error occurs
+	 * @throws FileNotFoundException if any IO error occurs
 	 */
 	void loadRules(File fileDatasetRules) throws MessageException{
 		this.datasetRulesFile = fileDatasetRules;
     	DataSetRules dsr;
 		try {
+			// parses from XML
 			dsr = loadXMLDataSetRules(fileDatasetRules);
+			// load using object 
 			DatasetsRulesResult rules = loadRules(dsr, true);
+			// if rules are empty, no rules and then exception
 			if (rules.getRules().isEmpty()){
 				throw new MessageException(NodeMessage.JEMC254E);
 			} else {
+				// sets new rules only if the parsing is correct
 				DATASET_RULES.clear();
 				DATASET_RULES.putAll(rules.getRules());
 			}
@@ -139,10 +153,10 @@ public final class DataPathsManager implements Serializable{
     	
     }
     /**
-     * 
-     * @param fileDatasetRules
-     * @return
-     * @throws Exception
+     * Lodas rules from XML file
+     * @param fileDatasetRules file with rules
+     * @return datasets rules object
+     * @throws Exception if any exception occurs
      */
     private DataSetRules loadXMLDataSetRules(File fileDatasetRules) throws Exception{
 		FileInputStream fis = new FileInputStream(fileDatasetRules);
@@ -158,17 +172,20 @@ public final class DataPathsManager implements Serializable{
     }
     
     /**
-     * 
-     * @param fileDatasetRules
-     * @throws Exception
+     * Saves the default rules file, only if data path is 1 and no rule is defined
+     * @param fileDatasetRules file where stores rules
+     * @throws Exception if any excpetion occurs
      */
     void saveXMLDataSetRules(File fileDatasetRules){
+    	// creates object with datarules
 		DataSetRules rules = new DataSetRules();
 		DataSetPattern pattern = new DataSetPattern();
 		pattern.setPathName(Main.DATA_PATHS_MANAGER.getDataPathsNames().get(0));
+		// puts ALL as default rule
 		pattern.getPatterns().add(DEFAULT_REG_EX_FOR_ALL);
 		rules.getPatterns().add(pattern);
 
+		// saves rules
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(fileDatasetRules);
@@ -187,33 +204,43 @@ public final class DataPathsManager implements Serializable{
     }
 
     /**
-     * 
-     * @param dsr
-     * @return
+     * Loads all rules, relating them to data path
+     * @param dsr object with all datasets rules definition
+     * @return the result of parsing
      */
     private DatasetsRulesResult loadRules(DataSetRules dsr, boolean printWarnings){
+    	// initializes the result with the right container
     	DatasetsRulesResult result = new DatasetsRulesResult();
     	Map<Pattern, PathsContainer> newRules = new LinkedHashMap<Pattern, PathsContainer>();
     	List<String> warnings = new ArrayList<String>();
     	result.setRules(newRules);
     	result.setWarnings(warnings);
     	
+    	// scans all rules
 		for (DataSetPattern dsPattern : dsr.getPatterns()){
 			for (String pattern : dsPattern.getPatterns()){
+				// creates patterns
 				Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+				// gets teh data path name
+				// if is not defined, creates a warning
 				String name = dsPattern.getPathName();
 				if (name != null){
 					Path mp = getPath(name);
 					if (mp != null){
+						// gets path definition
+						// creating a paths cont
 						PathsContainer mps = new PathsContainer();
 						mps.setCurrent(mp);
+						// checks if old is defined
 						if (dsPattern.getOldPathName() != null && dsPattern.getOldPathName().trim().length() > 0){
+							// checks if exists teh old path
 							Path old = getPath(dsPattern.getOldPathName());
 							mps.setOld(old);
 							if (old == null){
 								addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, dsPattern.getOldPathName());	
 							}
 						}
+						// adds rules
 						newRules.put(p, mps);
 					} else {
 						addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, name);	
@@ -225,14 +252,19 @@ public final class DataPathsManager implements Serializable{
 		}
 		return result;
     }
+
     /**
-     * 
-     * @param warnings
-     * @param msg
+     * Adds warning message to a list
+     * @param warnings collection of warnings
+     * @param printWarnings if <code>true</code>, puts message to log otherwise add to the collection
+     * @param message message to display
+     * @param name parameter to use to foramt the message
      */
     private void addWarningMessage(List<String> warnings, boolean printWarnings, NodeMessage message, String name){
+    	// if prints, use log
 		if (printWarnings){
 			LogAppl.getInstance().emit(message, name);
+		// if warnings collection already has got the message, skip it	
 		} else if (!warnings.contains(message)){
 			String outputMessage = (name == null) ? message.toMessage().getMessage() : message.toMessage().getFormattedMessage(name);
 			warnings.add(outputMessage);
@@ -240,13 +272,13 @@ public final class DataPathsManager implements Serializable{
     }
     
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Gets the configured data paths by its logical name  
+	 * @param name logical name of data path
+	 * @return defined path or null
 	 */
     private Path getPath(String name){
     	for (Path mp : dataPaths.getPaths()){
-    		if (name.equals(mp.getName())){
+    		if (name.equalsIgnoreCase(mp.getName())){
     			return mp;
     		}
     	}
@@ -261,10 +293,10 @@ public final class DataPathsManager implements Serializable{
 	}
 
 	/**
-     * 
-     * @param fileName
-     * @return
-	 * @throws InvalidDatasetNameException 
+     * Gets the path container checking the rules pattern with file name of dataset
+     * @param fileName file name of dataset
+     * @return path container
+	 * @throws InvalidDatasetNameException if file name doesn't match with defined rules
      */
     public PathsContainer getPaths(String fileName) throws InvalidDatasetNameException{
     	if (fileName != null){

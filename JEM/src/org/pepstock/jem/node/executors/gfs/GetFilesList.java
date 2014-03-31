@@ -53,6 +53,7 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 	 * @param type could a integer value
 	 * @see GfsFile
 	 * @param path the folder (relative to type of GFS) to use to read files and directories
+	 * @param pathName data path name or null
 	 * 
 	 */
 	public GetFilesList(int type, String path, String pathName) {

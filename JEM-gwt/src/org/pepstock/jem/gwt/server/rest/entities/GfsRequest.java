@@ -14,61 +14,61 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node;
+package org.pepstock.jem.gwt.server.rest.entities;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
-import org.pepstock.jem.node.sgm.PathsContainer;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Contains the list of warnings and rules, result of loading of datapaths and datasets rules.
- * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class DatasetsRulesResult implements Serializable {
+@XmlRootElement
+public class GfsRequest implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+
+	private String item = null;
 	
-	private List<String> warnings = null;
-	
-	private Map<Pattern, PathsContainer> rules = null;
+	private String pathName = null;
 
 	/**
 	 * Empty constructor
 	 */
-	public DatasetsRulesResult() {
+    public GfsRequest() {
+
+    }
+
+	/**
+	 * @return the item
+	 */
+	public String getItem() {
+		return item;
 	}
 
 	/**
-	 * @return the warnings
+	 * @param item the item to set
 	 */
-	public List<String> getWarnings() {
-		return warnings;
+	public void setItem(String item) {
+		this.item = item;
 	}
 
 	/**
-	 * @param warnings the warnings to set
+	 * @return the pathName
 	 */
-	public void setWarnings(List<String> warnings) {
-		this.warnings = warnings;
+	public String getPathName() {
+		return pathName;
 	}
 
 	/**
-	 * @return the rules
+	 * @param pathName the pathName to set
 	 */
-	public Map<Pattern, PathsContainer> getRules() {
-		return rules;
+	public void setPathName(String pathName) {
+		this.pathName = pathName;
 	}
-
-	/**
-	 * @param rules the rules to set
-	 */
-	public void setRules(Map<Pattern, PathsContainer> rules) {
-		this.rules = rules;
-	}
-
+	
+    
+	
+	
 }

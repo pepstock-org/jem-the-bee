@@ -22,6 +22,7 @@ import javax.xml.bind.JAXBElement;
 import org.pepstock.jem.gwt.server.rest.GfsManagerImpl;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsOutputContent;
+import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.AbstractRestManager;
@@ -49,67 +50,67 @@ public class GfsManager extends AbstractRestManager {
 
 	/**
 	 * Returns the content file in DATA
-	 * @param path data path
+	 * @param request data path
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFileData(String path) throws JemException {
-		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_DATA + "", path);
+	public String getFileData(GfsRequest request) throws JemException {
+		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_DATA + "", request);
 	}
 
 	/**
 	 * Returns the content file in LIBRARY
-	 * @param path library path
+	 * @param request library path
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFileLibrary(String path) throws JemException {
-		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_LIBRARY + "", path);
+	public String getFileLibrary(GfsRequest request) throws JemException {
+		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_LIBRARY + "", request);
 	}
 
 	/**
 	 * Returns the content file in CLASS
-	 * @param path classes path
+	 * @param request classes path
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFileClass(String path) throws JemException {
-		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_CLASS + "", path);
+	public String getFileClass(GfsRequest request) throws JemException {
+		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_CLASS + "", request);
 	}
 
 	/**
 	 * Returns the content file in SOURCE
-	 * @param path source path
+	 * @param request source path
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFileSource(String path) throws JemException {
-		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_SOURCE + "", path);
+	public String getFileSource(GfsRequest request) throws JemException {
+		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_SOURCE + "", request);
 	}
 
 	/**
 	 * Returns the content file in BINARY
-	 * @param path binary path
+	 * @param request binary path
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFileBinary(String path) throws JemException {
-		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_BINARY + "", path);
+	public String getFileBinary(GfsRequest request) throws JemException {
+		return getFile(GfsManagerImpl.GFS_MANAGER_FILE_BINARY + "", request);
 	}
 
 	/**
 	 * Returns a content file of a specific type
 	 * @param type type of file
-	 * @param file file name
+	 * @param request file name
 	 * @return content of file
 	 * @throws JemException if any exception occurs
 	 */
-	public String getFile(String type, String file) throws JemException {
+	public String getFile(String type, GfsRequest request) throws JemException {
 		WebResource resource = getClient().getBaseWebResource();
 		GenericType<JAXBElement<GfsOutputContent>> generic = new GenericType<JAXBElement<GfsOutputContent>>() {
 		};
 		try {
-			JAXBElement<GfsOutputContent> jaxbContact = resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH).path(type).accept(MediaType.APPLICATION_XML).post(generic, file);
+			JAXBElement<GfsOutputContent> jaxbContact = resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH).path(type).accept(MediaType.APPLICATION_XML).post(generic, request);
 			GfsOutputContent object = jaxbContact.getValue();
 			if (object.hasException()) {
 				throw new JemException(object.getExceptionMessage());
@@ -126,67 +127,67 @@ public class GfsManager extends AbstractRestManager {
 
 	/**
 	 * Returns the list of files from data directory
-	 * @param path data directory 
+	 * @param request data directory 
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	public GfsFileList getFilesListData(String path) throws JemException {
-		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_DATA + "", path);
+	public GfsFileList getFilesListData(GfsRequest request) throws JemException {
+		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_DATA + "", request);
 	}
 
 	/**
 	 * Returns the list of files from library directory
-	 * @param path library directory 
+	 * @param request library directory 
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	public GfsFileList getFilesListLibrary(String path) throws JemException {
-		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_LIBRARY + "", path);
+	public GfsFileList getFilesListLibrary(GfsRequest request) throws JemException {
+		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_LIBRARY + "", request);
 	}
 
 	/**
 	 * Returns the list of files from classes directory
-	 * @param path classes directory 
+	 * @param request classes directory 
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	public GfsFileList getFilesListClass(String path) throws JemException {
-		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_CLASS + "", path);
+	public GfsFileList getFilesListClass(GfsRequest request) throws JemException {
+		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_CLASS + "", request);
 	}
 
 	/**
 	 * Returns the list of files from source directory
-	 * @param path source directory 
+	 * @param request source directory 
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	public GfsFileList getFilesListSource(String path) throws JemException {
-		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_SOURCE + "", path);
+	public GfsFileList getFilesListSource(GfsRequest request) throws JemException {
+		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_SOURCE + "", request);
 	}
 
 	/**
 	 * Returns the list of files from binary directory
-	 * @param path binary directory 
+	 * @param request binary directory 
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	public GfsFileList getFilesListBinary(String path) throws JemException {
-		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_BINARY + "", path);
+	public GfsFileList getFilesListBinary(GfsRequest request) throws JemException {
+		return getFilesList(GfsManagerImpl.GFS_MANAGER_FILE_BINARY + "", request);
 	}
 
 	/**
 	 * Returns the list of file from a specific folder
 	 * @param type type of files
-	 * @param path specific folder
+	 * @param request specific folder
 	 * @return list of files
 	 * @throws JemException if any exception occurs
 	 */
-	private GfsFileList getFilesList(String type, String path) throws JemException {
+	private GfsFileList getFilesList(String type, GfsRequest request) throws JemException {
 		WebResource resource = getClient().getBaseWebResource();
 		GenericType<JAXBElement<GfsFileList>> generic = new GenericType<JAXBElement<GfsFileList>>() {
 		};
 		try {
-			JAXBElement<GfsFileList> jaxbContact = resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_LIST).path(type).accept(MediaType.APPLICATION_XML).post(generic, path);
+			JAXBElement<GfsFileList> jaxbContact = resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_LIST).path(type).accept(MediaType.APPLICATION_XML).post(generic, request);
 			GfsFileList object = jaxbContact.getValue();
 			if (object.hasException()) {
 				throw new JemException(object.getExceptionMessage());

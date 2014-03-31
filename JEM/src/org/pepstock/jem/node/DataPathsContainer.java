@@ -20,8 +20,11 @@ import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 
 /**
+ * Datapath manager conatiner, to use inside a job during its execution. This is a wrapper
+ * that is able to call easily the right methods of manager.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.0
+ * @version 2.1
  */
 public final class DataPathsContainer {
 	
@@ -30,26 +33,44 @@ public final class DataPathsContainer {
 	private DataPathsManager manager = null;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	private DataPathsContainer() {
 		
 	}
 	
+	/**
+	 * Loads the data path manager, ONLY if is not set
+	 * @param manager data paths manager
+	 */
 	public static final void createInstance(DataPathsManager manager){
 		if (INSTANCE.manager == null){
 			INSTANCE.manager = manager;
 		}
 	}
 	
+	/**
+	 * @return the instanc eof singleton
+	 */
 	public static final DataPathsContainer getInstance(){
 		return INSTANCE;
 	}
 
+	/**
+     * Gets the path container checking the rules pattern with file name of dataset
+     * @param fileName file name of dataset
+     * @return path container
+	 * @throws InvalidDatasetNameException if file name doesn't match with defined rules
+     */
     public PathsContainer getPaths(String fileName) throws InvalidDatasetNameException{
     	return manager.getPaths(fileName);
     }
     
+    /**
+     * Returns the absolute data path to use for file name argument
+     * @param fileName file name to use to get the absolute data path
+     * @return the the absolute data path
+     */
     public String getAbsoluteDataPath(String fileName){
     	return manager.getAbsoluteDataPath(fileName);
     }

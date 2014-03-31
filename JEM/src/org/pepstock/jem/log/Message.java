@@ -30,6 +30,11 @@ import java.text.MessageFormat;
 public class Message implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Prefix of all messages
+	 */
+	public static final String PREFIX = "JEM";
 
 	private static final DecimalFormat DF = new DecimalFormat("0000");
 
@@ -58,7 +63,7 @@ public class Message implements Serializable{
 		// formats the number to 5 digits
 		String codeString = DF.format(code);
 		// creates prefix to message "JEMnnnnn"
-		this.message = "JEM" + id + codeString + " " + msg;
+		this.message = PREFIX + id + codeString + " " + msg;
 
 		// creates format object
 		this.format = new MessageFormat(message);

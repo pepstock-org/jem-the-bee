@@ -52,6 +52,7 @@ public class GfsManager extends DefaultService{
      * @param type could a integer value
 	 * @see GfsFile
      * @param path the folder (relative to type of GFS) to use to read files and directories
+     * @param pathName data payh name or null
      * @return collections of files
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs
@@ -97,6 +98,7 @@ public class GfsManager extends DefaultService{
      * @param type could a integer value
 	 * @see GfsFile
      * @param file the file name to retrieve
+     * @param pathName data payh name or null
      * @return content of file
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs

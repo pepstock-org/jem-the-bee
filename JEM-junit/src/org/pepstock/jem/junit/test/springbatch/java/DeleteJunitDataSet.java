@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -38,7 +40,7 @@ public class DeleteJunitDataSet extends JemTasklet {
 	/**
 	 * name of the dataset that will contain the JDBC resource information
 	 */
-	public static final String DATA_SET_JUNIT_FOLDER = "/test_springbacth";
+	private static final String DATA_SET_JUNIT_FOLDER = "test_springbacth";
 
 	/**
 	 * Empty constructor
@@ -58,20 +60,23 @@ public class DeleteJunitDataSet extends JemTasklet {
 	public RepeatStatus run(StepContribution stepContribution,
 			ChunkContext chuckContext) throws TaskletException {
 		try {
-			String dataPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-			String folderToDelete = dataPath + DATA_SET_JUNIT_FOLDER;
-			File dirToDelete = new File(folderToDelete);
-			System.out.println("Deliting folder:" + folderToDelete);
+			PathsContainer container = DataPathsContainer.getInstance().getPaths(DATA_SET_JUNIT_FOLDER);
+			String dataPath = container.getCurrent().getContent();
+			File dirToDelete = new File(dataPath, DATA_SET_JUNIT_FOLDER);
+
+			System.out.println("Deliting folder:" + dirToDelete);
 			if (dirToDelete.exists()) {
 				FileUtils.deleteDirectory(dirToDelete);
-				System.out.println("folder:" + folderToDelete + " deleted");
+				System.out.println("folder:" + dirToDelete + " deleted");
 			} else {
-				System.out.println("folder:" + folderToDelete
+				System.out.println("folder:" + dirToDelete
 						+ " does not exists");
 			}
 		} catch (IOException e) {
 			throw new TaskletException(e);
-		}
+		} catch (InvalidDatasetNameException e) {
+			throw new TaskletException(e);
+        }
 		return RepeatStatus.FINISHED;
 	}
 
