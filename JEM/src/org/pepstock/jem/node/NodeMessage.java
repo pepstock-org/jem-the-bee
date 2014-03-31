@@ -610,12 +610,12 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "{0} isn't a directory.", MessageLevel.ERROR
 	 */
-	JEMC098E(98, "{0} isn't a directory.", MessageLevel.ERROR),
+	JEMC098E(98, "{0} is not a directory.", MessageLevel.ERROR),
 
 	/**
 	 * "{0} doesn't exist.", MessageLevel.ERROR
 	 */
-	JEMC099E(99, "{0} doesn't exist.", MessageLevel.ERROR),
+	JEMC099E(99, "{0} does not exist.", MessageLevel.ERROR),
 
 	/**
 	 * "{0} not found.", MessageLevel.ERROR
@@ -742,12 +742,12 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Role {0} couldn't be changed.", MessageLevel.ERROR
 	 */
-	JEMC123E(123, "Role \"{0}\" couldn't be changed.", MessageLevel.ERROR),
+	JEMC123E(123, "Role \"{0}\" could not be changed.", MessageLevel.ERROR),
 
 	/**
 	 * "Role \"{0}\" doesn't exist.", MessageLevel.ERROR
 	 */
-	JEMC124E(124, "Role \"{0}\" doesn't exist.", MessageLevel.ERROR),
+	JEMC124E(124, "Role \"{0}\" does not exist.", MessageLevel.ERROR),
 
 	/**
 	 * "Role \"{0}\" is not removable.", MessageLevel.ERROR
@@ -762,7 +762,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Any override to a 'jem' property is not allowed!", MessageLevel.ERROR
 	 */
-	JEMC127E(127, "Any override to a 'jem' property is not allowed!", MessageLevel.ERROR),
+	JEMC127E(127, "Any override to a \"jem\" property is not allowed!", MessageLevel.ERROR),
 
 	/**
 	 * "Access to RMI listener is not allowed.", MessageLevel.ERROR
@@ -815,7 +815,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "The protocol must be 'ftp' or 'ftps' instead of \"{0}\".", MessageLevel.ERROR
 	 */
-	JEMC137E(137, "The protocol must be 'ftp' or 'ftps' instead of \"{0}\".", MessageLevel.ERROR),
+	JEMC137E(137, "The protocol must be \"ftp\" or \"ftps\" instead of \"{0}\".", MessageLevel.ERROR),
 
 	/**
 	 * "Reply code \"{0}\", during connection, is not positive.", MessageLevel.ERROR
@@ -1084,8 +1084,8 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Statistics persistence is disabled by configuration", MessageLevel.WARNING
 	 */
-	@Description(explanation = "It occurs when in JEM node configuration file the statistics manager is set with enable=false.<br/> No statistics record is saved on filesystem.")
-	JEMC183W(183, "Statistics persistence is disabled by configuration", MessageLevel.WARNING),
+	@Description(explanation = "It occurs when in JEM node configuration file the statistics manager doesn't have 'path' attribute.<br/> No statistics record is saved on filesystem.")
+	JEMC183W(183, "Statistics persistence is disabled", MessageLevel.WARNING),
 
 	/**
 	 * "Unable to extract jem version from jem.jar", MessageLevel.WARNING
@@ -1104,7 +1104,7 @@ public enum NodeMessage implements MessageInterface {
 	 * "Path \"{0}\" doesn't exist", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you're going thru global file system but you asked a path that doesn't exist! Please check inserted path.")
-	JEMC186E(186, "Path \"{0}\" doesn't exist", MessageLevel.ERROR),
+	JEMC186E(186, "Path \"{0}\" does not exist", MessageLevel.ERROR),
 
 	/**
 	 * "Path \"{0}\" is not a folder", MessageLevel.ERROR);
@@ -1261,10 +1261,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC211W(211, "Used default value for parallel jobs due to the value {0} is too low. Minimum is {1}", MessageLevel.WARNING),
 	
 	/**
-	 * "Parallel jobs is set to {0} ", MessageLevel.WARNING
+	 * "Parallel jobs is set to {0} ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It shows maximum number of jobs executed in parallel inside the node.")
-	JEMC212I(212, "Parallel jobs is set to {0} ", MessageLevel.WARNING),
+	JEMC212I(212, "Parallel jobs is set to {0} ", MessageLevel.INFO),
 
 	/**
 	 * "Used default value for memory due to inconsistent value: {0} ", MessageLevel.WARNING
@@ -1285,10 +1285,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC215W(215, "Used default value for memory due to the value {0} is too low. Minimum is {1}", MessageLevel.WARNING),
 	
 	/**
-	 * "Memory is set to {0} ", MessageLevel.WARNING
+	 * "Memory is set to {0} ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It shows maximum number of jobs executed in parallel inside the node.")
-	JEMC216I(216, "Memory is set to {0} ", MessageLevel.WARNING),
+	JEMC216I(216, "Memory is set to {0} ", MessageLevel.INFO),
 	
 	/**
 	 * "Invalid submitter class:  {0} ", MessageLevel.WARNING
@@ -1494,8 +1494,65 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to extract the interfaces by network service", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM tries to extract the right netwoirk interface to use but network service return an excpetion.")
-	JEMC250E(250, "Unable to extract the interfaces by network service", MessageLevel.ERROR);
+	JEMC250E(250, "Unable to extract the interfaces by network service", MessageLevel.ERROR),
+	
+	/**
+	 * "File {0} does not match with any dataset rule", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the filename, put in JCL, does not match with any dataset rule. Please have a look and correct file name.")
+	JEMC251E(251, "File {0} does not match with any dataset rule", MessageLevel.ERROR),
+	
+	/**
+	 * "{0} datasets rules loaded", MessageLevel.INFO
+	 */
+	@Description(explanation = "It shows the amount of datasets rules loaded.")
+	JEMC252I(252, "{0} datasets rules loaded", MessageLevel.INFO),
+	
+	/**
+	 * "Rules file is not defined but the default file {0} exists", MessageLevel.WARNIG
+	 */
+	@Description(explanation = "It occurs when a data path is defined and rules file name not. JEM tries to create a rule file on the file but the "+
+	 "default file already exists. Please have a look to JEM environment configuration.")
+	JEMC253W(253, "Rules file is not defined but the default file {0} exists", MessageLevel.WARNING),
+	
+	/**
+	 * "No rule has been loaded!", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when rules definition file contains wrong defintions and no rule has been loaded. Please have a look at rules file configuration.")
+	JEMC254E(254, "No rule has been loaded", MessageLevel.ERROR),
 
+	/**
+	 * "Path \"{0}\" is undefined!", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when a rule definition contains a link to undefined path. Please have a look at rules file configuration.")
+	JEMC255W(255, "Path \"{0}\" is undefined", MessageLevel.WARNING),
+
+	/**
+	 * "'pathName' is a mandatory attribute!", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when a rule definition doesn't contain any path name. Please have a look at rules file configuration.")
+	JEMC256W(256, "\"pathName\" is a mandatory attribute", MessageLevel.WARNING),
+	
+	/**
+	 * "Unable to load rules file : {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to load rule definition file. Please have a look at JEM environment configuration folder.")
+	JEMC257E(257, "Unable to load rules file : {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid data paths defintion: cluster has got {0} definition, node {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node at startup checks is own data paths are coherent with data paths of cluster. The data paths must be logically "+
+	 " the same. Please have a look at JEM node configuration fils.")
+	JEMC258E(258, "Invalid data paths defintions: cluster has got {0} definitions, node {1}", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node at startup checks is own data paths are coherent with data paths of cluster. The data paths must be logically "+
+	 " the same. Please have a look at JEM node configuration fils.")
+	JEMC259E(259, "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR);
+	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
 	 * instance of <code>NodeMessage</code>.

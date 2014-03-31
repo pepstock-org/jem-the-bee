@@ -416,7 +416,13 @@ public enum UserInterfaceMessage implements MessageInterface {
 	 * "The sleeping thread {0} was unexpectedly interrupted", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occours when a thread that was sleeping is interrupted for some reasons")
-	JEMG066I(66, "The sleeping thread {0} was unexpectedly interrupted", MessageLevel.INFO);
+	JEMG066I(66, "The sleeping thread {0} was unexpectedly interrupted", MessageLevel.INFO),
+	
+	/**
+	 * "Unable to call executor. Cause: {0}.", MessageLevel.ERROR);
+	 */
+	@Description(explanation = "It occurs when the web application is not able to call an executor.<br> Please have a look to generated exception.")
+	JEMG067E(67, "Unable to call executor. Cause: {0}.", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 

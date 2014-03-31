@@ -21,14 +21,18 @@ import org.pepstock.jem.plugin.util.Loading;
 public abstract class FilesListLoading extends Loading {
 	
 	private String filter = null;
+	
+	private String pathName = null;
 
 	/**
 	 * Creates object with the folder path to search in JEM.
 	 * @param filter the folder path to search in JEM.
+	 * @param pathName data path name
 	 */
-    public FilesListLoading(String filter) {
+    public FilesListLoading(String filter, String pathName) {
 	    super();
 	    this.filter = filter;
+	    this.pathName = pathName;
     }
 
 	/**
@@ -36,6 +40,13 @@ public abstract class FilesListLoading extends Loading {
 	 */
 	public String getFilter() {
 		return filter;
+	}
+
+	/**
+	 * @return the pathName
+	 */
+	public String getPathName() {
+		return pathName;
 	}
 
 }

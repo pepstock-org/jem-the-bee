@@ -38,6 +38,8 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 
 	private String item = null;
 	
+	private String pathName = null;
+	
 	private int type = GfsFile.DATA;
 	
 	/**
@@ -46,11 +48,34 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 	 * @param type could a integer value
 	 * @see GfsFile
 	 * @param item the folder (relative to type of GFS) to use to read files and directories or the file to download
+	 * @param pathName data path name or null
 	 * 
 	 */
-	public Get(int type, String item) {
+	public Get(int type, String item, String pathName) {
 		this.type = type;
 		this.item = item;
+		this.pathName = pathName;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * @return the item
+	 */
+	public String getItem() {
+		return item;
+	}
+	
+	/**
+	 * @return the pathName
+	 */
+	public String getPathName() {
+		return pathName;
 	}
 
 	/* (non-Javadoc)
@@ -65,8 +90,7 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 		// checks here the type of file-system to scan
 		switch (type) {
 			case GfsFile.DATA:
-				parentPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-				break;
+				return getResultForDataPath();
 			case GfsFile.LIBRARY:
 				parentPath = System.getProperty(ConfigKeys.JEM_LIBRARY_PATH_NAME);
 				break;
@@ -80,8 +104,7 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 				parentPath = System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME);
 				break;
 			default:
-				parentPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-				break;
+				return getResultForDataPath();
 		}
 		file = new File(parentPath, item);
 		// checks if folder exists and must be a folder (not a file)
@@ -89,16 +112,23 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 			throw new ExecutorException(NodeMessage.JEMC186E, item);
 		}
 		return getResult(parentPath, file);
-		
 	}
 	
 	/**
-	 * Abstract method which return teh result from GFS
+	 * Abstract method which return the result from GFS
 	 * @param parentPath Path of different type
 	 * @param file file entry to get result
 	 * @return result of GFS action
-	 * @throws ExecutorException if any excetpion occurs 
+	 * @throws ExecutorException if any exception occurs 
 	 */
 	public abstract T getResult(String parentPath, File file) throws ExecutorException;
 
+	/**
+	 * Abstract method which return the result from GFS data path
+	 * @param item  file name 
+	 * @return result of GFS data path action
+	 * @throws ExecutorException if any exception occurs 
+	 */
+	public abstract T getResultForDataPath() throws ExecutorException;
+	
 }

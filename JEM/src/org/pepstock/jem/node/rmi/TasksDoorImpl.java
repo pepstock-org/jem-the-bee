@@ -17,7 +17,6 @@
 package org.pepstock.jem.node.rmi;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.Result;
@@ -28,7 +27,6 @@ import org.pepstock.jem.node.JobLogManager;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.util.rmi.DefaultRmiObject;
 
 import com.hazelcast.core.IMap;
@@ -58,7 +56,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 	 * @see org.pepstock.jem.node.rmi.TasksDoor#setJobStarted()
 	 */
 	@Override
-	public Collection<Role> setJobStarted(String jobId, String processId) throws RemoteException {
+	public JobStartedObjects setJobStarted(String jobId, String processId) throws RemoteException {
 		// gets current task by job id
 		CancelableTask task = getCurrentTask(jobId);
 		
@@ -93,7 +91,11 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 		// prints header into job-log
 		JobLogManager.printJobStarted(job);
 	
-		return task.getJobTask().getRoles();
+		JobStartedObjects result = new JobStartedObjects();
+		result.setRoles(task.getJobTask().getRoles());
+		result.setStorageGroupsManager(Main.DATA_PATHS_MANAGER);
+		
+		return result;
 	}
 
 	/**

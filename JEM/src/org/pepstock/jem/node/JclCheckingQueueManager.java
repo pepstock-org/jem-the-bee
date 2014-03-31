@@ -305,11 +305,13 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 */
 	@Override
 	public void shutdown() throws NodeException, NodeMessageException {
-		while (!isDown){
-			try {
-				Thread.sleep(1 * TimeUtils.SECOND);
-			} catch (InterruptedException e) {
-				throw new NodeException(e.getMessage(), e);
+		if (isAlive()){
+			while (!isDown){
+				try {
+					Thread.sleep(1 * TimeUtils.SECOND);
+				} catch (InterruptedException e) {
+					throw new NodeException(e.getMessage(), e);
+				}
 			}
 		}
 	}

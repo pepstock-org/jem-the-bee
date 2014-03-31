@@ -13,8 +13,10 @@
 			<property name="c" value="valore C" />
 		</properties-->
 	</database>
+	
+	<datasetsRules>#[jem.persistence]/#[jem.environment.name]/config/datasetsRules.xml</datasetsRules>
 
-	<statistics-manager enable="false"/>
+	<statistics-manager/>
 
 	<!-- node className="org.pepstock.jem.grs.GrsNode">
 		<properties>

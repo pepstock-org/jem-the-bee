@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.executors.SerializableException;
 
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
@@ -82,7 +83,26 @@ public class DistributedTaskExecutor<T>  {
 			throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
 		} catch (ExecutionException e) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
+			
+			SerializableException ex = getSerializableException(e);		
+			if (ex == null){
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
+			} else {
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG067E, ex, ex.getMessage());
+			}
+		}
+	}
+	
+	
+	private SerializableException getSerializableException(Throwable e){
+		if (e instanceof SerializableException){
+			return (SerializableException)e;
+		} else {
+			if (e.getCause() == null){
+				return null;
+			} else {
+				return getSerializableException(e.getCause());
+			}
 		}
 	}
 

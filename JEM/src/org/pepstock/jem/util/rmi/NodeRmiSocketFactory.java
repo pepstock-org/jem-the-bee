@@ -18,9 +18,11 @@ package org.pepstock.jem.util.rmi;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.server.RMISocketFactory;
+import java.util.Enumeration;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.UtilMessage;
@@ -50,8 +52,7 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 			public Socket accept() throws IOException{
 				Socket socket = super.accept();
 				String resolved = socket.getInetAddress().getHostAddress();
-				String localhost = InetAddress.getLocalHost().getHostAddress();
-				if (!resolved.equalsIgnoreCase(localhost)){
+				if (!isLocalHostAddress(resolved)){
 					socket.shutdownInput();
 					socket.shutdownOutput();
 					LogAppl.getInstance().emit(UtilMessage.JEMB007E, resolved);
@@ -59,5 +60,31 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 				return socket;
 			}
 		};
+	}
+	
+	/**
+	 * Scans all interfaces to check ip address
+	 * @param resolved host address of RMI request
+	 * @return <code>true</code> if is a local host.
+	 */
+	private boolean isLocalHostAddress(String resolved){
+		try {
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface ni = interfaces.nextElement();
+				Enumeration<InetAddress> addresses = ni.getInetAddresses();
+				while (addresses.hasMoreElements()) {
+					InetAddress addr = addresses.nextElement();
+					String localhost = addr.getHostAddress();
+					if (resolved.equalsIgnoreCase(localhost)){
+						return true;
+					}
+				}
+			}
+		} catch (Exception e) {
+			// debug
+			LogAppl.getInstance().debug(e.getMessage(), e);
+		}
+		return false;
 	}
 }

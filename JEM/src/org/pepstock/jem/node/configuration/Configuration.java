@@ -19,6 +19,8 @@ package org.pepstock.jem.node.configuration;
 import java.util.List;
 
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.sgm.DataPaths;
+import org.pepstock.jem.node.sgm.Path;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -46,6 +48,8 @@ public class Configuration {
 	private StatsManager statsManager = null;
 
 	private List<CustomResourceDefinition> resourceDefinitions = null;
+	
+	private String datasetsRules = null;
 
 	/**
 	 * Empty constructor.
@@ -192,6 +196,20 @@ public class Configuration {
 	}
 
 	/**
+	 * @return the datasetsRules
+	 */
+	public String getDatasetsRules() {
+		return datasetsRules;
+	}
+
+	/**
+	 * @param datasetsRules the datasetsRules to set
+	 */
+	public void setDatasetsRules(String datasetsRules) {
+		this.datasetsRules = datasetsRules;
+	}
+
+	/**
 	 * 
 	 * @param xmlConfiguration
 	 * @return the jem configuration
@@ -203,6 +221,8 @@ public class Configuration {
 		XStream xstream = new XStream();
 		xstream.alias(ConfigKeys.CONFIGURATION_TAG, Configuration.class);
 		xstream.aliasField(ConfigKeys.STATISTICS_MANAGER_ALIAS, Configuration.class, ConfigKeys.STATISTICS_MANAGER_FIELD);
+		xstream.aliasField(ConfigKeys.DATASETS_RULES_ALIAS, Configuration.class, ConfigKeys.DATASETS_RULES_FIELD);
+		
 		xstream.alias(ConfigKeys.NODE_ALIAS, Node.class);
 		xstream.alias(ConfigKeys.DATABASE_ELEMENT, Database.class);
 		xstream.alias(ConfigKeys.FACTORY_ALIAS, Factory.class);
@@ -210,13 +230,18 @@ public class Configuration {
 		xstream.alias(ConfigKeys.LISTENER_ALIAS, Listener.class);
 		xstream.aliasAttribute(Listener.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasAttribute(StatsManager.class, ConfigKeys.PATH_FIELD, ConfigKeys.PATH_ATTRIBUTE_ALIAS);
-		xstream.aliasAttribute(StatsManager.class, ConfigKeys.ENABLE_FIELD, ConfigKeys.ENABLE_ATTRIBUTE_ALIAS);
 		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CustomResourceDefinition.class);
 		xstream.aliasAttribute(CustomResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasField(ConfigKeys.RESOURCE_DEFINITIONS_ALIAS, Configuration.class, ConfigKeys.RESOURCE_DEFINITIONS_FIELD);
 		xstream.aliasField(ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS, Configuration.class, ConfigKeys.EXECUTION_ENVIRONMENT_FIELD);
 		xstream.aliasField(ConfigKeys.PARALLEL_JOBS_ALIAS, ExecutionEnvironment.class, ConfigKeys.PARALLEL_JOBS_FIELD);
 		xstream.alias(ConfigKeys.AFFINITY_FACTORY_ALIAS, AffinityFactory.class);
+		
+		xstream.alias(ConfigKeys.DATA_ALIAS, DataPaths.class);
+		xstream.aliasField(ConfigKeys.DATA_ALIAS, Paths.class, ConfigKeys.DATA_ELEMENT);
+		xstream.addImplicitCollection(DataPaths.class, ConfigKeys.PATHS_ELEMENT);
+		xstream.processAnnotations(Path.class);
+		
 		Object config = null;
 		try {
 			config = xstream.fromXML(xmlConfiguration);

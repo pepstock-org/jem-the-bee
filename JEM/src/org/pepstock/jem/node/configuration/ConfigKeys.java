@@ -53,6 +53,11 @@ public final class ConfigKeys {
 	public static final String JEM_ENV_CONF = "jem.env";
 	
 	/**
+	 * Is the variable name to use to store the configuration folder of JEM environment.
+	 */
+	public static final String JEM_ENV_CONF_FOLDER = "jem.env.config.folder";
+	
+	/**
 	 * Is the variable name to use to start JEM node in maintanance.<br>
 	 * The value of property is boolean. Default is false.<br>
 	 * Example:<br>
@@ -103,12 +108,6 @@ public final class ConfigKeys {
 	 * execution, for data description for sysout
 	 */
 	public static final String JEM_OUTPUT_PATH_NAME = "jem.output";
-
-	/**
-	 * Is the environment variable name to use to pass the property to job
-	 * execution, for path where the files are stored
-	 */
-	public static final String JEM_DATA_PATH_NAME = "jem.data";
 
 	/**
 	 * Is the environment variable name to use to pass the property to job
@@ -168,6 +167,31 @@ public final class ConfigKeys {
 	 * @see ConfigKeys#EXECUTION_ENVIRONMENT_ALIAS
 	 */
 	public static final String EXECUTION_ENVIRONMENT_FIELD = "executionEnviroment";
+	
+	/**
+	 * Tag name used for datasets rules. Is an alias, to do not use the
+	 * real instance name
+	 * 
+	 */
+	public static final String DATASETS_RULES_ALIAS = "datasetsRules";
+
+	/**
+	 * Tag name used for datasets rules. Is field name, equals to alias
+	 * 
+	 */
+	public static final String DATASETS_RULES_FIELD = "datasetsRules";
+
+	/**
+	 * Tag name used for rules main element
+	 * 
+	 */
+	public static final String RULES_ALIAS = "rules";
+	
+	/**
+	 * Tag name used for list of patterns
+	 * 
+	 */
+	public static final String PATTERNS_ALIAS = "patterns";
 
 	/**
 	 * Tag name used for parallel jobs. Is an alias, to do not use the
@@ -259,6 +283,16 @@ public final class ConfigKeys {
 	 * Attribute name for <code>path</code> fields
 	 */
 	public static final String PATH_FIELD = "path";
+	
+	/**
+	 * Alias for <code>data</code> element
+	 */
+	public static final String DATA_ALIAS = "data";
+	
+	/**
+	 * Tag name for <code>data</code> element
+	 */
+	public static final String DATA_ELEMENT = "data";
 	
 	/**
 	 * Alias for <code>enable</code> fields

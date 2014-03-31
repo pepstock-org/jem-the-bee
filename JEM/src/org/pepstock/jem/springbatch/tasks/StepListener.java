@@ -21,14 +21,22 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
+import javax.naming.NamingException;
+
 import org.pepstock.jem.Result;
 import org.pepstock.jem.Step;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.rmi.JobStartedObjects;
 import org.pepstock.jem.node.rmi.TasksDoor;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
+import org.pepstock.jem.springbatch.items.DataDescriptionItem;
+import org.pepstock.jem.springbatch.tasks.managers.ChunkDataSourcesManager;
+import org.pepstock.jem.springbatch.tasks.managers.Definition;
+import org.pepstock.jem.springbatch.tasks.managers.DefinitionsContainer;
 import org.pepstock.jem.springbatch.tasks.managers.DefinitionsLoader;
 import org.pepstock.jem.springbatch.tasks.managers.Locker;
 import org.pepstock.jem.util.Parser;
@@ -133,13 +141,16 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					// receives all roles for job user and stores in a static
 					// reference
 					// of realm
-					Collection<Role> myroles = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+					
+					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing
 					if (System.getSecurityManager() == null) {
 						System.setSecurityManager(new SpringBatchSecurityManager(myroles));
 					} else {
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS027E);
 					}
+					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
 				} else {
 					throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS026E, TasksDoor.NAME);
 				}
@@ -162,6 +173,24 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	 */
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
+
+		//scan all definition checking if this step is a chunk
+		// if yes, clear JNDI context
+		for (Definition object : DefinitionsContainer.getInstance().getObjects()){
+			// if is a chunk step and the step name is same
+			if (object.isChunkItem() && object.getStepName().equalsIgnoreCase(stepExecution.getStepName())){
+				DataDescriptionItem item = (DataDescriptionItem)object.getObject();
+				// if chunk has got datasources
+				// then loads JNDI context
+				if (!item.getDataSources().isEmpty() && object.getContext() != null){
+					// checks if JNDI context exists
+					// if yes, unbind everything
+					ChunkDataSourcesManager.clearJNDIContext(object.getContext(), item.getDataSources());
+				}				
+			}
+		}
+
+		// unlocks the resources
 		if (DefinitionsLoader.getInstance().isStepLockingScope()){
 			try {
 				locker.unlock();
@@ -169,6 +198,8 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				throw new SpringBatchRuntimeException(e.getMessageInterface(), e, e.getObjects().toArray());
 			}
 		}
+		
+		
 		// creates object to send to JEM
 		Step step = new Step();
 		// sets step name and description (uses summary information)
@@ -191,6 +222,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 		} catch (RemoteException e) {
 			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS042E, e);
 		}
+		
 		return eStatus;
 	}
 
@@ -224,6 +256,31 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				throw new SpringBatchRuntimeException(e.getMessageInterface(), e, e.getObjects().toArray());
 			}
 		}
+		
+		//scan all definition checking if this step is a chunk
+		// if yes, loads JNDI context
+		for (Definition object : DefinitionsContainer.getInstance().getObjects()){
+			// if is a chunk step and the step name is same
+			if (object.isChunkItem() && object.getStepName().equalsIgnoreCase(stepExecution.getStepName())){
+				DataDescriptionItem item = (DataDescriptionItem)object.getObject();
+				// if chunk has got datasources
+				// then loads JNDI context
+				if (!item.getDataSources().isEmpty()){
+					try {
+						object.setContext(ChunkDataSourcesManager.createJNDIContext(item.getDataSources()));
+					} catch (RemoteException e) {
+						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
+					} catch (UnknownHostException e) {
+						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
+					} catch (NamingException e) {
+						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
+					} catch (SpringBatchException e) {
+						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
+					}
+				}				
+			}
+		}
+		
 		// creates object to send to JEM
 		Step step = new Step();
 

@@ -24,6 +24,8 @@ import java.util.Collection;
 import org.apache.tools.ant.launch.Launcher;
 import org.pepstock.jem.ant.AntException;
 import org.pepstock.jem.ant.AntMessage;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.rmi.JobStartedObjects;
 import org.pepstock.jem.node.rmi.TasksDoor;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.tasks.JobId;
@@ -73,13 +75,18 @@ public class AntLauncher {
 			// receives all roles for job user and stores in a static
 			// reference
 			// of realm
-			Collection<Role> myroles = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+			JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+			
+			Collection<Role> myroles = objects.getRoles();
+			// check if is already instantiated. If yes, does nothing
 			// check if is already instantiated. If yes, does nothing
 			if (System.getSecurityManager() == null) {
 				System.setSecurityManager(new AntBatchSecurityManager(myroles));
 			} else {
 				throw new AntException(AntMessage.JEMA039E);
 			}
+
+			DataPathsContainer.createInstance(objects.getStorageGroupsManager());
 		} else {
 			throw new AntException(AntMessage.JEMA038E, TasksDoor.NAME);
 		}

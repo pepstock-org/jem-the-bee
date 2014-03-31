@@ -42,6 +42,7 @@ import org.pepstock.jem.GfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.executors.gfs.GetFilesList;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.commons.JemColumnSortListener;
 import org.pepstock.jem.plugin.commons.JemContentProvider;
@@ -80,8 +81,9 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	
 	private final Collection<JemTableColumn> columns = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name", 50),
-			new JemTableColumn("Size (bytes)", 25),
-			new JemTableColumn("Last modified", 25)
+			new JemTableColumn("Size (bytes)", 15),
+			new JemTableColumn("Last modified", 20),
+			new JemTableColumn("Path name", 15),
 	}));
 
 	/**
@@ -211,7 +213,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				if (file != null){
 					// DRILL down only for directory
 					if (file.isDirectory()){
-						refresh(file.getLongName());
+						refresh(file.getLongName(), file.getDataPathName());
 					} else {
 						//only DATA and SOURCE can be downloaded
 						if ((type == GfsFile.DATA) || (type == GfsFile.SOURCE)){
@@ -240,8 +242,17 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	 */
     @Override
     public void refresh(String filter) {
-		FilesListLoading loading = new GFSFilesListLoading(filter);
-		loading.run();
+    	refresh(filter, null);
+    }
+    
+    /**
+     * Method to refreh table with result, using filter and data path name
+	 * @param filter the folder path to search in JEM.
+	 * @param pathName data path name
+     */
+    public void refresh(String filter, String pathName){
+		FilesListLoading loading = new GFSFilesListLoading(filter, pathName);
+		loading.run();	
     }
 
 	/**
@@ -281,9 +292,9 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 			try {
 				String content = null;
 				if (type == GfsFile.DATA){
-					content = Client.getInstance().getGfsFileData(getFile().getLongName());
+					content = Client.getInstance().getGfsFileData(getFile().getLongName(), getFile().getDataPathName());
 				} else if (type == GfsFile.SOURCE){
-					content = Client.getInstance().getGfsFileSource(getFile().getLongName());
+					content = Client.getInstance().getGfsFileSource(getFile().getLongName(), getFile().getDataPathName());
 				} else { 
 					return;
 				}
@@ -308,18 +319,28 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	 * @version 1.4
 	 */
 	private class GFSFilesListLoading extends FilesListLoading{
+
 		/**
-		 * @param filter
+		 * Creates object with the folder path to search in JEM.
+		 * @param filter the folder path to search in JEM.
+		 * @param pathName data path name
 		 */
-        public GFSFilesListLoading(String filter) {
-	        super(filter);
+        public GFSFilesListLoading(String filter, String pathName) {
+	        super(filter, pathName);
         }
 
 		@Override
 		public void execute() throws JemException {
 			try {
+				String filter = null;
+				if (getFilter().trim().length() == 0){
+					filter = GetFilesList.ROOT_PATH;
+				} else {
+					filter = "*".equalsIgnoreCase(getFilter()) ? GetFilesList.ROOT_PATH : getFilter();
+				}
+				
 				// gets  data
-				data = DataLoader.loadData(type, getFilter());
+				data = DataLoader.loadData(type, filter, getPathName());
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						// loads tables

@@ -59,9 +59,8 @@ public class Drain extends DefaultExecutor<ExecutionResult>{
 
 			// if starting or unknown, ignore command is not in access maint
 			if (Main.getNode().getStatus().equals(Status.STARTING) || Main.getNode().getStatus().equals(Status.UNKNOWN)){
-				if (Main.IS_ACCESS_MAINT.get()){
-					Main.getNode().setStatus(Status.DRAINED);
-				} else {
+				Main.getNode().setStatus(Status.DRAINED);
+				if (!Main.IS_ACCESS_MAINT.get()){
 					return ExecutionResult.SUCCESSFUL;
 				}
 			}

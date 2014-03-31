@@ -144,13 +144,14 @@ public class ShutDownHandler extends Thread {
 			Main.getHazelcast().getLifecycleService().shutdown();
 		}
 
-		// closes DB connection
-		try {
-			DBPoolManager.getInstance().close();
-			LogAppl.getInstance().emit(NodeMessage.JEMC069I, StringUtils.substringAfterLast(DBPoolManager.class.getName(), "."));
-		} catch (Exception e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC070E, e, StringUtils.substringAfterLast(DBPoolManager.class.getName(), "."));
+		if (DBPoolManager.getInstance().isInitialized()){
+			// closes DB connection
+			try {
+				DBPoolManager.getInstance().close();
+				LogAppl.getInstance().emit(NodeMessage.JEMC069I, StringUtils.substringAfterLast(DBPoolManager.class.getName(), "."));
+			} catch (Exception e) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC070E, e, StringUtils.substringAfterLast(DBPoolManager.class.getName(), "."));
+			}
 		}
-
 	}
 }

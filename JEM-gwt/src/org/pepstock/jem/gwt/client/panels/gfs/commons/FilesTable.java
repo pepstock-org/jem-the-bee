@@ -20,9 +20,9 @@ import java.util.Date;
 
 import org.pepstock.jem.GfsFile;
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.FileSystemTableStyle;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -61,11 +61,12 @@ public abstract class FilesTable extends AbstractTable<GfsFile> {
 	 * @return index column comparator for sorting
 	 */
 	public abstract IndexedColumnComparator<GfsFile> getIndexedColumnComparator();
+
 	/**
 	 * Adds all columns to table, defining the sort columns too.
+	 * @param table table to show
 	 */
-
-	private void loadCellTable(CellTable<GfsFile> table) {
+	public void loadCellTable(CellTable<GfsFile> table) {
 		
 		/*-------------------------+
 		 | Name      |
@@ -94,6 +95,7 @@ public abstract class FilesTable extends AbstractTable<GfsFile> {
 			name.setSortable(true);
 			table.addColumn(name, "Name");
 		}
+		
 		/*-------------------------+
 		 | Size  in bytes          |
 		 +-------------------------*/

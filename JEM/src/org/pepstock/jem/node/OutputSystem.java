@@ -115,8 +115,6 @@ public class OutputSystem {
 
 	private File outputPath = null;
 
-	private File dataPath = null;
-
 	private File persistencePath = null;
 
 	/**
@@ -134,7 +132,7 @@ public class OutputSystem {
 	 *            persistence of the clusters queue and maps, are stored
 	 * @throws ConfigurationException occurs if parameters are wrong
 	 */
-	public OutputSystem(String outputpath, String datapath, String persistencepath) throws ConfigurationException {
+	public OutputSystem(String outputpath, String persistencepath) throws ConfigurationException {
 		currentPath = new File(CURRENT_PATH);
 		if (!currentPath.exists()) {
 			throw new ConfigurationException(NodeMessage.JEMC099E.toMessage().getFormattedMessage(CURRENT_PATH));
@@ -150,13 +148,6 @@ public class OutputSystem {
 			}
 		} else if (!outputPath.isDirectory()) {
 			throw new ConfigurationException(NodeMessage.JEMC098E.toMessage().getFormattedMessage(outputPath));
-		}
-
-		dataPath = new File(datapath);
-		if (!dataPath.exists()) {
-			throw new ConfigurationException(NodeMessage.JEMC099E.toMessage().getFormattedMessage(dataPath));
-		} else if (!dataPath.isDirectory()) {
-			throw new ConfigurationException(NodeMessage.JEMC098E.toMessage().getFormattedMessage(dataPath));
 		}
 
 		persistencePath = new File(persistencepath);
@@ -206,15 +197,6 @@ public class OutputSystem {
 	 */
 	public File getOutputPath(Job job) {
 		return new File(outputPath, job.getId());
-	}
-
-	/**
-	 * Returns the data path file.
-	 * 
-	 * @return data path file
-	 */
-	public File getDataPath() {
-		return dataPath;
 	}
 
 	/**

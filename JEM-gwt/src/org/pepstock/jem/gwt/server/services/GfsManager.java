@@ -52,15 +52,16 @@ public class GfsManager extends DefaultService{
      * @param type could a integer value
 	 * @see GfsFile
      * @param path the folder (relative to type of GFS) to use to read files and directories
+     * @param pathName data payh name or null
      * @return collections of files
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs
      */
-    public Collection<GfsFile> getFilesList(int type, String path) throws ServiceMessageException {
+    public Collection<GfsFile> getFilesList(int type, String path, String pathName) throws ServiceMessageException {
 		// checks user authentication
 		// if not, this method throws an exception
     	checkAuthentication();
-		DistributedTaskExecutor<Collection<GfsFile>> task = new DistributedTaskExecutor<Collection<GfsFile>>(new GetFilesList(type, path), getMember());
+		DistributedTaskExecutor<Collection<GfsFile>> task = new DistributedTaskExecutor<Collection<GfsFile>>(new GetFilesList(type, path, pathName), getMember());
 		Collection<GfsFile> result = task.getResult();
 		
 		// checks if the list is empty.
@@ -97,18 +98,19 @@ public class GfsManager extends DefaultService{
      * @param type could a integer value
 	 * @see GfsFile
      * @param file the file name to retrieve
+     * @param pathName data payh name or null
      * @return content of file
      * @throws ServiceMessageException 
      * @throws Exception if any error occurs
      */
-    public String getFile(int type, String file) throws ServiceMessageException {
+    public String getFile(int type, String file, String pathName) throws ServiceMessageException {
     	// creates the permission by file name
        	String filesPermission = Permissions.FILES_READ + file; 
 		// checks user authentication
 		// if not, this method throws an exception
        	checkAuthorization(new StringPermission(filesPermission));
        	
-		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetFile(type, file), getMember());
+		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
     }
  

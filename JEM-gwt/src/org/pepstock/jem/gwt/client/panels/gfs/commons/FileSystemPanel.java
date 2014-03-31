@@ -35,6 +35,7 @@ import org.pepstock.jem.gwt.client.security.CurrentUser;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.executors.gfs.GetFilesList;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -194,7 +195,7 @@ public abstract class FileSystemPanel extends GfsPanel implements SearchListener
 			
 			@Override
 			public void execute() {
-				Services.GFS_MANAGER.getFilesList(getFilesType(), "*".equalsIgnoreCase(filter) ? "." : filter, new GetFilesListAsyncCallback(file));
+				Services.GFS_MANAGER.getFilesList(getFilesType(), "*".equalsIgnoreCase(filter) ? GetFilesList.ROOT_PATH : filter, file.getDataPathName(), new GetFilesListAsyncCallback(file));
 			}
 	    });
     }
@@ -239,7 +240,7 @@ public abstract class FileSystemPanel extends GfsPanel implements SearchListener
 			
 			@Override
 			public void execute() {
-				Services.GFS_MANAGER.getFile(getFilesType(), file.getLongName(), new GetFileAsyncCallback(file));
+				Services.GFS_MANAGER.getFile(getFilesType(), file.getLongName(), file.getDataPathName(), new GetFileAsyncCallback(file));
 			}
 	    });
     }

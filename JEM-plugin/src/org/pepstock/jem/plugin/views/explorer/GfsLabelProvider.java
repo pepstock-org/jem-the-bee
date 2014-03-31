@@ -72,6 +72,9 @@ public class GfsLabelProvider extends LabelProvider implements ITableLabelProvid
 		case 2:
 			// no modified for directory
 			return getTextForLastModified(file);
+		case 3:
+			// no modified for directory
+			return file.getDataPathName();			
 		default:
 			return null;
 		}

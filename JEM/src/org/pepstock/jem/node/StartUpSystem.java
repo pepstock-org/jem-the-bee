@@ -34,6 +34,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -46,6 +48,7 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.affinity.AffinityLoader;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.affinity.SystemInfo;
@@ -62,6 +65,7 @@ import org.pepstock.jem.node.configuration.Paths;
 import org.pepstock.jem.node.configuration.StatsManager;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.node.events.JobLifecycleListener;
+import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
@@ -90,6 +94,8 @@ import org.pepstock.jem.node.resources.custom.ResourceDefinitionsManager;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
+import org.pepstock.jem.node.sgm.DataPaths;
+import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
@@ -97,6 +103,7 @@ import org.pepstock.jem.util.VariableSubstituter;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
@@ -125,6 +132,10 @@ public class StartUpSystem {
 	private static final Properties PROPERTIES = new Properties();
 
 	private static final String SEMAPHORE = "org.pepstock.jem.semaphore";
+	
+	private static Configuration JEM_NODE_CONFIG = null;
+	
+	private static Configuration JEM_ENV_CONFIG = null;
 
 	/**
 	 * To avoid any instantiation
@@ -299,7 +310,6 @@ public class StartUpSystem {
 
 			// checks if is coordinator
 			if (local.equals(first)) {
-
 				Main.IS_COORDINATOR.set(true);
 
 				// if there are some job listeners, then says it
@@ -311,8 +321,16 @@ public class StartUpSystem {
 				// if local member is not the first, so it's not coordinator of
 				// cluster
 				Main.IS_COORDINATOR.set(false);
+				// gets the datapaths to check if they are the same
+				checkDataPaths(JEM_NODE_CONFIG);
 			}
 			checkIfEnoughMembers();
+			// load data paths rules
+			loadDatasetsRules(JEM_ENV_CONFIG);
+			// load statistics manager after dataset rules
+			// because it uses the path to store data
+			loadStatisticsManager();
+			
 			// bring in memory the persisted queue
 			loadQueues();
 		} finally {
@@ -489,23 +507,24 @@ public class StartUpSystem {
 			LogAppl.getInstance().emit(NodeMessage.JEMC005E, ConfigKeys.JEM_ENV_CONF);
 			throw new ConfigurationException(NodeMessage.JEMC005E.toMessage().getFormattedMessage(ConfigKeys.JEM_CONFIG));
 		}
-		String xmlConfig=null;
+		File fileConfig = new File(configFile);
+		String xmlConfig = null;
 		try {
-			xmlConfig = FileUtils.readFileToString(new File(configFile), CharSet.DEFAULT_CHARSET_NAME);
+			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
 			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
 		}
-
-		Configuration conf = Configuration.unmarshall(xmlConfig);
+		PROPERTIES.setProperty(ConfigKeys.JEM_ENV_CONF_FOLDER, FilenameUtils.normalize(fileConfig.getParent(), true));
+		
+		JEM_ENV_CONFIG = Configuration.unmarshall(xmlConfig);
 		LogAppl.getInstance().emit(NodeMessage.JEMC008I, configFile);
-
-		loadDatabaseManagers(conf);
-		loadNode(conf);
-		loadFactories(conf);
-		loadListeners(conf);
-		loadStatisticsManager(conf);
-		loadResourceConfigurations(conf);
+		
+		loadDatabaseManagers();
+		loadNode();
+		loadFactories();
+		loadListeners();
+		loadResourceConfigurations();
 
 	}
 
@@ -543,12 +562,12 @@ public class StartUpSystem {
 			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
 		}
 
-		Configuration conf = Configuration.unmarshall(xmlConfig);
+		JEM_NODE_CONFIG = Configuration.unmarshall(xmlConfig);
 		LogAppl.getInstance().emit(NodeMessage.JEMC008I, configFile);
 
-		loadPaths(conf);
+		loadPaths();
 		PROPERTIES.putAll(System.getProperties());
-		loadExecutionEnvironment(conf);
+		loadExecutionEnvironment();
 	}
 
 	/**
@@ -559,16 +578,17 @@ public class StartUpSystem {
 	 *            properties
 	 * @throws ConfigurationException if some error occurs
 	 */
-	private static void loadPaths(Configuration conf) throws ConfigurationException {
+	private static void loadPaths() throws ConfigurationException {
 		// load paths, checking if they are configured. If not, exception occurs
-		Paths paths = conf.getPaths();
+		Paths paths = JEM_NODE_CONFIG.getPaths();
 		if (paths == null) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.PATHS_ELEMENT);
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.PATHS_ELEMENT));
 		}
 
 		// load Paths
-		String dataPath = paths.getData();
+		DataPaths dataPath = paths.getData();
+		
 		String outputPath = paths.getOutput();
 		String binaryPath = paths.getBinary();
 		String classpathPath = paths.getClasspath();
@@ -582,9 +602,9 @@ public class StartUpSystem {
 			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.JEM_OUTPUT_PATH_NAME));
 		}
 		// check if dataPath is not null. if not, exception occurs
-		if (dataPath == null) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC039E, ConfigKeys.JEM_DATA_PATH_NAME);
-			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.JEM_DATA_PATH_NAME));
+		if (dataPath == null || dataPath.getPaths().isEmpty()) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC039E, ConfigKeys.DATA_ELEMENT);
+			throw new ConfigurationException(NodeMessage.JEMC039E.toMessage().getFormattedMessage(ConfigKeys.DATA_ELEMENT));
 		}
 		// check if binaryPath is not null. if not, exception occurs
 		if (binaryPath == null) {
@@ -614,9 +634,11 @@ public class StartUpSystem {
 
 		// substitutes variables if present, on data path
 		// adds this value in properties of JVM
-		dataPath = substituteVariable(dataPath);
-		System.getProperties().setProperty(ConfigKeys.JEM_DATA_PATH_NAME, normalizePath(dataPath));
-
+		for (Path p: dataPath.getPaths()){
+			p.setContent(normalizePath(substituteVariable(p.getContent())));
+		}
+		// loads all storage groups and checks if exist
+		Main.DATA_PATHS_MANAGER.setDataPaths(dataPath);
 		// substitutes variables if present, on output path
 		// adds this value in properties of JVM
 		outputPath = substituteVariable(outputPath);
@@ -647,7 +669,7 @@ public class StartUpSystem {
 
 		// load ths path values on a static reference on Main class which
 		// creates all necessary files and directories
-		Main.setOutputSystem(new OutputSystem(outputPath, dataPath, persistencePath));
+		Main.setOutputSystem(new OutputSystem(outputPath, persistencePath));
 
 	}
 
@@ -670,10 +692,10 @@ public class StartUpSystem {
 	 *            properties
 	 * @throws ConfigurationException if some error occurs
 	 */
-	private static void loadListeners(Configuration conf) throws ConfigurationException {
+	private static void loadListeners() throws ConfigurationException {
 		// load listeners, checking if they are configured. If not, they are
 		// optional, so go ahead
-		List<Listener> listeners = conf.getListeners();
+		List<Listener> listeners = JEM_ENV_CONFIG.getListeners();
 		if (listeners != null && !listeners.isEmpty()) {
 			// for all listener checking which have the right className. If
 			// not, execption occurs, otherwise it's loaded
@@ -747,11 +769,11 @@ public class StartUpSystem {
 	 *            properties
 	 * @throws ConfigurationException if some error occurs.
 	 */
-	private static void loadResourceConfigurations(Configuration conf) throws ConfigurationException {
+	private static void loadResourceConfigurations() throws ConfigurationException {
 		// load custom resource definitions, checking if they are configured. If
 		// not, they are
 		// optional, so go ahead
-		List<CustomResourceDefinition> resourceDefinitions = conf.getResourceDefinitions();
+		List<CustomResourceDefinition> resourceDefinitions = JEM_ENV_CONFIG.getResourceDefinitions();
 		if (resourceDefinitions != null && !resourceDefinitions.isEmpty()) {
 			// for all resource definitions checking which have the right
 			// className. If
@@ -801,8 +823,8 @@ public class StartUpSystem {
 	 * @param conf
 	 * @throws Exception
 	 */
-	private static void loadDatabaseManagers(Configuration conf) throws ConfigurationException {
-		Database database = conf.getDatabase();
+	private static void loadDatabaseManagers() throws ConfigurationException {
+		Database database = JEM_ENV_CONFIG.getDatabase();
 		if (database == null) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.DATABASE_ELEMENT);
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.DATABASE_ELEMENT));
@@ -935,10 +957,10 @@ public class StartUpSystem {
 	 *            properties
 	 * @throws ConfigurationException if some error occurs
 	 */
-	private static void loadFactories(Configuration conf) throws ConfigurationException {
+	private static void loadFactories() throws ConfigurationException {
 		// load factories, checking if they are configured. If not, exception
 		// occurs
-		List<Factory> factories = conf.getFactories();
+		List<Factory> factories = JEM_ENV_CONFIG.getFactories();
 		if (factories == null) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.FACTORIES_ELEMENT);
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.FACTORIES_ELEMENT));
@@ -1015,59 +1037,59 @@ public class StartUpSystem {
 	 *            properties
 	 * @throws ConfigurationException if some error occurs
 	 */
-	private static void loadExecutionEnvironment(Configuration conf) throws ConfigurationException {
+	private static void loadExecutionEnvironment() throws ConfigurationException {
 		// checks if ExecutionEnvironment is configured
-		if (conf.getExecutionEnviroment() == null) {
+		if (JEM_NODE_CONFIG.getExecutionEnviroment() == null) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS);
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS));
 		}
 
 		// environment is mandatory. must be not null
-		if (conf.getExecutionEnviroment().getEnvironment() == null) {
+		if (JEM_NODE_CONFIG.getExecutionEnviroment().getEnvironment() == null) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.ENVIRONMENT);
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.ENVIRONMENT));
 		}
 
 		// domain is optional. if null set default value
-		if (conf.getExecutionEnviroment().getDomain() == null) {
-			conf.getExecutionEnviroment().setDomain(Jcl.DEFAULT_DOMAIN);
+		if (JEM_NODE_CONFIG.getExecutionEnviroment().getDomain() == null) {
+			JEM_NODE_CONFIG.getExecutionEnviroment().setDomain(Jcl.DEFAULT_DOMAIN);
 		}
 
 		// affinity is optional. if null, set default value
-		if (conf.getExecutionEnviroment().getAffinity() == null) {
-			conf.getExecutionEnviroment().setAffinity(Jcl.DEFAULT_AFFINITY);
+		if (JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity() == null) {
+			JEM_NODE_CONFIG.getExecutionEnviroment().setAffinity(Jcl.DEFAULT_AFFINITY);
 		}
 
 		// gets environment and substitute variables if present
-		String environment = conf.getExecutionEnviroment().getEnvironment();
-		conf.getExecutionEnviroment().setEnvironment(substituteVariable(environment));
+		String environment = JEM_NODE_CONFIG.getExecutionEnviroment().getEnvironment();
+		JEM_NODE_CONFIG.getExecutionEnviroment().setEnvironment(substituteVariable(environment));
 		// loads environment on shared object
-		Main.EXECUTION_ENVIRONMENT.setEnvironment(conf.getExecutionEnviroment().getEnvironment());
+		Main.EXECUTION_ENVIRONMENT.setEnvironment(JEM_NODE_CONFIG.getExecutionEnviroment().getEnvironment());
 
 		// gets domain and substitute variables if present
-		String domain = conf.getExecutionEnviroment().getDomain();
-		conf.getExecutionEnviroment().setDomain(substituteVariable(domain));
+		String domain = JEM_NODE_CONFIG.getExecutionEnviroment().getDomain();
+		JEM_NODE_CONFIG.getExecutionEnviroment().setDomain(substituteVariable(domain));
 		// loads domain on shared object
-		Main.EXECUTION_ENVIRONMENT.setDomain(conf.getExecutionEnviroment().getDomain());
+		Main.EXECUTION_ENVIRONMENT.setDomain(JEM_NODE_CONFIG.getExecutionEnviroment().getDomain());
 
 		// parallel jobs is optional. if null, set default value
-		if (conf.getExecutionEnviroment().getParallelJobs() == null) {
+		if (JEM_NODE_CONFIG.getExecutionEnviroment().getParallelJobs() == null) {
 			// parallel jobs not set so uses the default
 			Main.EXECUTION_ENVIRONMENT.setParallelJobs(org.pepstock.jem.node.ExecutionEnvironment.DEFAULT_PARALLEL_JOBS);
 		} else {
-			int value = Parser.parseInt(conf.getExecutionEnviroment().getParallelJobs(), Integer.MIN_VALUE);
+			int value = Parser.parseInt(JEM_NODE_CONFIG.getExecutionEnviroment().getParallelJobs(), Integer.MIN_VALUE);
 			if (value == Integer.MIN_VALUE) {
 				// not a number
 				value = org.pepstock.jem.node.ExecutionEnvironment.DEFAULT_PARALLEL_JOBS;
-				LogAppl.getInstance().emit(NodeMessage.JEMC209W, conf.getExecutionEnviroment().getParallelJobs());
+				LogAppl.getInstance().emit(NodeMessage.JEMC209W, JEM_NODE_CONFIG.getExecutionEnviroment().getParallelJobs());
 			} else if (value < org.pepstock.jem.node.ExecutionEnvironment.MINIMUM_PARALLEL_JOBS) {
 				// too low
 				value = org.pepstock.jem.node.ExecutionEnvironment.DEFAULT_PARALLEL_JOBS;
-				LogAppl.getInstance().emit(NodeMessage.JEMC211W, conf.getExecutionEnviroment().getParallelJobs(), value);
+				LogAppl.getInstance().emit(NodeMessage.JEMC211W, JEM_NODE_CONFIG.getExecutionEnviroment().getParallelJobs(), value);
 			} else if (value >= org.pepstock.jem.node.ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS) {
 				// too high
 				value = org.pepstock.jem.node.ExecutionEnvironment.DEFAULT_PARALLEL_JOBS;
-				LogAppl.getInstance().emit(NodeMessage.JEMC210W, conf.getExecutionEnviroment().getParallelJobs(), value);
+				LogAppl.getInstance().emit(NodeMessage.JEMC210W, JEM_NODE_CONFIG.getExecutionEnviroment().getParallelJobs(), value);
 			}
 			Main.EXECUTION_ENVIRONMENT.setParallelJobs(value);
 
@@ -1075,23 +1097,23 @@ public class StartUpSystem {
 		LogAppl.getInstance().emit(NodeMessage.JEMC212I, Main.EXECUTION_ENVIRONMENT.getParallelJobs());
 
 		// memory is optional. if 0, set default value
-		if (conf.getExecutionEnviroment().getMemory() == null) {
+		if (JEM_NODE_CONFIG.getExecutionEnviroment().getMemory() == null) {
 			// memory not set so uses the default
 			Main.EXECUTION_ENVIRONMENT.setMemory(Jcl.DEFAULT_MEMORY);
 		} else {
-			int value = Parser.parseInt(conf.getExecutionEnviroment().getMemory(), Integer.MIN_VALUE);
+			int value = Parser.parseInt(JEM_NODE_CONFIG.getExecutionEnviroment().getMemory(), Integer.MIN_VALUE);
 			if (value == Integer.MIN_VALUE) {
 				// not a number
 				value = Jcl.DEFAULT_MEMORY;
-				LogAppl.getInstance().emit(NodeMessage.JEMC213W, conf.getExecutionEnviroment().getMemory());
+				LogAppl.getInstance().emit(NodeMessage.JEMC213W, JEM_NODE_CONFIG.getExecutionEnviroment().getMemory());
 			} else if (value < org.pepstock.jem.node.ExecutionEnvironment.MINIMUM_MEMORY) {
 				// too low
 				value = Jcl.DEFAULT_MEMORY;
-				LogAppl.getInstance().emit(NodeMessage.JEMC215W, conf.getExecutionEnviroment().getMemory(), value);
+				LogAppl.getInstance().emit(NodeMessage.JEMC215W, JEM_NODE_CONFIG.getExecutionEnviroment().getMemory(), value);
 			} else if (value >= org.pepstock.jem.node.ExecutionEnvironment.MAXIMUM_MEMORY) {
 				// too high
 				value = Jcl.DEFAULT_MEMORY;
-				LogAppl.getInstance().emit(NodeMessage.JEMC214W, conf.getExecutionEnviroment().getMemory(), value);
+				LogAppl.getInstance().emit(NodeMessage.JEMC214W, JEM_NODE_CONFIG.getExecutionEnviroment().getMemory(), value);
 			}
 			Main.EXECUTION_ENVIRONMENT.setMemory(value);
 
@@ -1099,17 +1121,17 @@ public class StartUpSystem {
 		LogAppl.getInstance().emit(NodeMessage.JEMC216I, Main.EXECUTION_ENVIRONMENT.getMemory());
 
 		// gets affinity and substitute variables if present
-		String affinity = conf.getExecutionEnviroment().getAffinity();
-		conf.getExecutionEnviroment().setAffinity(substituteVariable(affinity));
+		String affinity = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity();
+		JEM_NODE_CONFIG.getExecutionEnviroment().setAffinity(substituteVariable(affinity));
 		// loads affinities on shared object
-		String[] affinities = conf.getExecutionEnviroment().getAffinity().split(",");
+		String[] affinities = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity().split(",");
 		for (int i = 0; i < affinities.length; i++) {
 			Main.EXECUTION_ENVIRONMENT.getStaticAffinities().add(affinities[i].trim().toLowerCase());
 		}
 
 		// load factories, checking if they are configured. If not, exception
 		// occurs
-		AffinityFactory affinityFactory = conf.getExecutionEnviroment().getAffinityFactory();
+		AffinityFactory affinityFactory = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinityFactory();
 		if (affinityFactory != null) {
 
 			// load all factories for affinity factory
@@ -1173,22 +1195,98 @@ public class StartUpSystem {
 	 * @param substituter
 	 * @throws ConfigurationException
 	 */
-	private static void loadStatisticsManager(Configuration conf) throws ConfigurationException {
-		StatsManager statsManager = conf.getStatsManager();
+	private static void loadStatisticsManager() throws ConfigurationException {
+		StatsManager statsManager = JEM_ENV_CONFIG.getStatsManager();
 		if (statsManager != null) {
-			if (!statsManager.isEnable()) {
-				Main.setStatisticsManager(new StatisticsManager(false));
-			} else {
-				// gets path and substitute variables if present
-				String path = statsManager.getPath();
-				if (path != null) {
-					path = substituteVariable(path);
-				}
-				Main.setStatisticsManager(new StatisticsManager(true, path));
+			// gets path and substitute variables if present
+			String path = statsManager.getPath();
+			if (path != null) {
+				path = substituteVariable(path);
 			}
+			Main.setStatisticsManager(new StatisticsManager(path));
 		} else {
 			Main.setStatisticsManager(new StatisticsManager());
 		}
+	}
+	
+	/**
+	 * Load the file with all datasets rules
+	 * 
+	 * @param conf the jem env config
+	 * @throws ConfigurationException if some error occurs
+	 */
+	private static void loadDatasetsRules(Configuration conf) throws ConfigurationException {
+		// gets the amount of data paths
+		int dataPathsCount = Main.DATA_PATHS_MANAGER.getDataPaths().size();
+
+		// load paths, checking if they are configured. If not, exception occurs
+		String datasetsRules = conf.getDatasetsRules();
+		// checks how mny data paths there are
+		// if more than 1 then datasets rules is mandatory
+		if (dataPathsCount > 1){
+			if (datasetsRules == null) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC009E, ConfigKeys.DATASETS_RULES_ALIAS);
+				throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.DATASETS_RULES_ALIAS));
+			}
+		} else {
+			// datapaths amount is 1
+			// and data rules is not defined, it creates
+			// a default file with a default rules (ALL FILES)
+			if (datasetsRules == null) {
+				// gets the configuration folder of JEM env
+				String folder = PROPERTIES.getProperty(ConfigKeys.JEM_ENV_CONF_FOLDER);
+				// creates the default file name
+				File rulesFileOnTheFly = new File(folder, DataPathsManager.DEFAULT_RULES_FILE_NAME);
+				// if exists emits a warning
+				if (rulesFileOnTheFly.exists()){
+					LogAppl.getInstance().emit(NodeMessage.JEMC253W, rulesFileOnTheFly.getAbsolutePath());
+				} else {
+					// if doesn't exists, it creates a new one
+					Main.DATA_PATHS_MANAGER.saveXMLDataSetRules(rulesFileOnTheFly);
+				}
+				// sets datasets rules here
+				datasetsRules = rulesFileOnTheFly.getAbsolutePath();
+			}
+		}
+		// loads datasets rules
+		try {
+			File rulesFile = new File(substituteVariable(datasetsRules));
+			Main.DATA_PATHS_MANAGER.loadRules(rulesFile);
+		} catch (MessageException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}
+
+	}
+	
+	/**
+	 * 
+	 * @param conf
+	 * @throws ConfigurationException
+	 */
+	private static void checkDataPaths(Configuration conf) throws ConfigurationException {
+        DistributedTask<List<String>> task = new DistributedTask<List<String>>(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
+        ExecutorService executorService = Main.getHazelcast().getExecutorService();
+        executorService.execute(task);
+		// gets result
+        try {
+        	List<String> localDataPaths = Main.DATA_PATHS_MANAGER.getDataPathsNames();
+			List<String> dataPaths = task.get();
+			// checks if the amount is the same
+			if (dataPaths.size() != localDataPaths.size()){
+				throw new ConfigurationException(NodeMessage.JEMC258E.toMessage().getFormattedMessage(dataPaths.size(), localDataPaths.size()));
+			} else {
+				for (String path : localDataPaths){
+					if (!dataPaths.contains(path)){
+						throw new ConfigurationException(NodeMessage.JEMC259E.toMessage().getFormattedMessage(path));
+					}
+				}
+			}
+			
+		} catch (InterruptedException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		} catch (ExecutionException e) {
+			throw new ConfigurationException(e.getMessage(), e);
+		}		
 	}
 
 	/**
@@ -1197,9 +1295,9 @@ public class StartUpSystem {
 	 * @param substituter
 	 * @throws ConfigurationException
 	 */
-	private static void loadNode(Configuration conf) throws ConfigurationException {
+	private static void loadNode() throws ConfigurationException {
 		// load node class, checking if they are configured.
-		Node node = conf.getNode();
+		Node node = JEM_ENV_CONFIG.getNode();
 		// load all factories for affinity factory
 		// for all factories checking which have the right className. If
 		// not,

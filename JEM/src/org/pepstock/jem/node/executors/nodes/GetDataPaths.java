@@ -14,44 +14,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.configuration;
+package org.pepstock.jem.node.executors.nodes;
+
+import java.util.List;
+
+import org.pepstock.jem.node.Main;
+import org.pepstock.jem.node.executors.DefaultExecutor;
+import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
+ * Returns the data paths names to be checked at node start up.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
- *
+ * @version 2.1
+ * 
  */
-public class StatsManager {
-	
-	private String path = null;
+public class GetDataPaths extends DefaultExecutor<List<String>>{
 
+	private static final long serialVersionUID = 1L;
 
 	/**
+	 * Returns the data paths names to be checked at node start up.
 	 * 
-	 */
-	public StatsManager() {
-	}
-
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @param path the path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	 * @return the data paths names
+	 * @throws Exception occurs if errors
 	 */
 	@Override
-	public String toString() {
-		return "StatisticsManager [path=" + path + "]";
+	public List<String> execute() throws ExecutorException {
+		return Main.DATA_PATHS_MANAGER.getDataPathsNames();
 	}
 
 }

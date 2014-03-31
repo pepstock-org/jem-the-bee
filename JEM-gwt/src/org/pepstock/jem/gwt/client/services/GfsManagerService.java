@@ -35,7 +35,7 @@ public interface GfsManagerService extends RemoteService {
 	 * @return
 	 * @throws JemException
 	 */
-	Collection<GfsFile> getFilesList(int type, String path) throws JemException;
+	Collection<GfsFile> getFilesList(int type, String path, String pathName) throws JemException;
 
 	/**
 	 * 
@@ -44,6 +44,6 @@ public interface GfsManagerService extends RemoteService {
 	 * @return
 	 * @throws JemException
 	 */
-	String getFile(int type, String file) throws JemException;
+	String getFile(int type, String file, String pathName) throws JemException;
 
 }

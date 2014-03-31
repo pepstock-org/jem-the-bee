@@ -36,31 +36,32 @@ public class DataLoader {
 	 * 
 	 * @param type data type (DATA, SOURCE, LIBRARY, CLASS, BINARY).
 	 * @param longName long name of folder of GFS 
+	 * @param pathName data path name
 	 * @return colletion of files of folder requested
 	 * @throws JemException if any error occurs
 	 */
-	public static Collection<GfsFile> loadData(int type, String longName) throws JemException {
+	public static Collection<GfsFile> loadData(int type, String longName, String pathName) throws JemException {
 		if (Client.getInstance().isLogged()){
 			Collection<GfsFile> filesList = null ;
 			switch (type) {
 			case GfsFile.DATA:
-				filesList = Client.getInstance().getGfsFileListData(longName);
+				filesList = Client.getInstance().getGfsFileListData(longName, pathName);
 				break;
 			case GfsFile.LIBRARY:
-				filesList = Client.getInstance().getGfsFileListLibrary(longName);
+				filesList = Client.getInstance().getGfsFileListLibrary(longName, pathName);
 				break;
 			case GfsFile.SOURCE:
-				filesList = Client.getInstance().getGfsFileListSource(longName);
+				filesList = Client.getInstance().getGfsFileListSource(longName, pathName);
 				break;
 			case GfsFile.CLASS:
-				filesList = Client.getInstance().getGfsFileListClass(longName);
+				filesList = Client.getInstance().getGfsFileListClass(longName, pathName);
 				break;
 			case GfsFile.BINARY:
-				filesList = Client.getInstance().getGfsFileListBinary(longName);
+				filesList = Client.getInstance().getGfsFileListBinary(longName, pathName);
 				break;
 			default:
-				// deafult load DATA
-				filesList = Client.getInstance().getGfsFileListData(longName);
+				// default load DATA
+				filesList = Client.getInstance().getGfsFileListData(longName, pathName);
 				break;
 			}
 			return filesList;

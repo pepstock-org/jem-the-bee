@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.springbatch.tasks.managers;
 
+import javax.naming.InitialContext;
+
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 
@@ -30,6 +32,8 @@ public class Definition {
 	private Object object = null;
 	
 	private String stepName = null;
+	
+	private InitialContext context = null;
 	
 	/**
 	 * 
@@ -65,6 +69,20 @@ public class Definition {
 	 */
 	public void setStepName(String stepName) {
 		this.stepName = stepName;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public InitialContext getContext() {
+		return context;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(InitialContext context) {
+		this.context = context;
 	}
 
 	/**

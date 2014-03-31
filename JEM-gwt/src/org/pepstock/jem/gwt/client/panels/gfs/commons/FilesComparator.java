@@ -51,6 +51,9 @@ public class FilesComparator extends IndexedColumnComparator<GfsFile> {
 			case 2:
 				diff = sortByLastModified(o1, o2);
 				break;
+			case 3:
+				diff = sortByPath(o1, o2);
+				break;				
 			default:
 				diff = sortByName(o1, o2);
 				break;
@@ -93,6 +96,28 @@ public class FilesComparator extends IndexedColumnComparator<GfsFile> {
 				diff = 1;
 			} else {
 				diff = o1.getName().compareTo(o2.getName());
+			}
+		}
+		return diff;
+	}
+	
+	private int sortByPath(GfsFile o1, GfsFile o2) {
+		int diff;
+		// sorts by label of node
+		if (o1.getDataPathName() != null) {
+			if (o2.getDataPathName() != null) {
+				diff = o1.getDataPathName().compareTo(o2.getDataPathName());
+				if (diff == 0){
+					diff = sortByName(o1, o2);
+				}
+			} else {
+				diff = -1;
+			}
+		} else {
+			if (o2.getDataPathName() != null) {
+				diff = 1;
+			} else {
+				diff = sortByName(o1, o2);
 			}
 		}
 		return diff;

@@ -16,8 +16,12 @@
 */
 package org.pepstock.jem.springbatch.items;
 
+import java.util.List;
+
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.jem.springbatch.tasks.DataDescription;
+import org.pepstock.jem.springbatch.tasks.DataSource;
+import org.pepstock.jem.springbatch.tasks.Lock;
 import org.springframework.core.io.Resource;
 
 /**
@@ -57,4 +61,17 @@ public interface DataDescriptionItem {
 	 * @param resources sets teh resources for SB
 	 */
 	void setResources(Resource[] resources);
+	
+	/**
+	 * Returns the list of data sources defined for this tasklet.
+	 * 
+	 * @return the dataSourceList
+	 */
+	List<DataSource> getDataSources();
+
+	/**
+	 * @return the locks
+	 */
+	List<Lock> getLocks();
+
 }

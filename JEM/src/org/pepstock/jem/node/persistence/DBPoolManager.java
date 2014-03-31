@@ -237,6 +237,14 @@ public class DBPoolManager {
 	}
 	
 	/**
+	 * Returns true if the pool has been initialized
+	 * @return true if the pool has been initialized
+	 */
+	public boolean isInitialized(){
+		return pool != null;
+	}
+	
+	/**
 	 * Close DBPOOL connection
 	 * 
 	 * @throws SQLException if occurs

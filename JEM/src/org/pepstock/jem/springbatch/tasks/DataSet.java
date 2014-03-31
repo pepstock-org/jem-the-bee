@@ -26,7 +26,6 @@ import java.text.ParseException;
 
 import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.gdg.GDGUtil;
-import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
 import org.springframework.core.io.AbstractResource;
@@ -47,8 +46,6 @@ public class DataSet extends AbstractResource implements Serializable{
 
 	private DataSetImpl dataSetImpl = new DataSetImpl();
 
-	private String path;
-
 	private String name = null;
 
 	private int offset = Integer.MIN_VALUE;
@@ -65,10 +62,6 @@ public class DataSet extends AbstractResource implements Serializable{
 	 * if variable is not set, a NullPointerException will throw.
 	 */
 	public DataSet() {
-		path = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
-		if (path == null){
-			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS001E);
-		}
 	}
 
 	/**
@@ -79,15 +72,6 @@ public class DataSet extends AbstractResource implements Serializable{
 	 */
 	public DataSetImpl getDataSetImpl() {
 		return dataSetImpl;
-	}
-
-	/**
-	 * Return the file path for this resource.
-	 * 
-	 * @return path
-	 */
-	public String getPath() {
-		return path;
 	}
 
 	/**

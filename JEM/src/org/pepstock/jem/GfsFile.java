@@ -58,6 +58,8 @@ public class GfsFile implements Serializable{
 	
 	private boolean isDirectory = false;
 	
+	private String dataPathName = null;
+	
 	private long length = 0;
 	
 	private long lastModified = 0;
@@ -137,6 +139,20 @@ public class GfsFile implements Serializable{
 	 */
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	/**
+	 * @return the dataPathName
+	 */
+	public String getDataPathName() {
+		return dataPathName;
+	}
+
+	/**
+	 * @param dataPathName the dataPathName to set
+	 */
+	public void setDataPathName(String dataPathName) {
+		this.dataPathName = dataPathName;
 	}
 
 	/* (non-Javadoc)

@@ -44,6 +44,10 @@ public class ExplorerColumnSorter extends JemColumnSorter<GfsFile> {
 			// last modified of file
 			diff = getComparedLastModified(o1, o2);
 			break;
+		case 3:
+			// last modified of file
+			diff = getComparedDataPath(o1, o2);
+			break;
 		default:
 			// default sorts by file 
 			diff = getComparedName(o1, o2);
@@ -118,6 +122,37 @@ public class ExplorerColumnSorter extends JemColumnSorter<GfsFile> {
 			diff = 1;
 		} else if (o1.getLastModified() < o2.getLastModified()) {
 			diff = -1;
+		}
+		return diff;
+	}
+	
+	/**
+	 * Compares the data path of GFS file
+	 * @param o1 first job to check
+	 * @param o2 second job to check
+	 * @return the value <code>0</code> if the arguments are equals; a value less than <code>0</code> if first argument
+     *          is lexicographically less than the second argument; and a
+     *          value greater than <code>0</code> if first argument is
+     *          lexicographically greater than the second argument.
+	 */
+	private int getComparedDataPath(GfsFile o1, GfsFile o2){
+		int diff;
+		// sorts by label of node
+		if (o1.getDataPathName() != null) {
+			if (o2.getDataPathName() != null) {
+				diff = o1.getDataPathName().compareTo(o2.getDataPathName());
+				if (diff == 0){
+					diff = getComparedName(o1, o2);
+				}
+			} else {
+				diff = -1;
+			}
+		} else {
+			if (o2.getDataPathName() != null) {
+				diff = 1;
+			} else {
+				diff = getComparedName(o1, o2);
+			}
 		}
 		return diff;
 	}
