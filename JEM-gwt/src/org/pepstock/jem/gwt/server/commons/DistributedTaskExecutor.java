@@ -23,6 +23,8 @@ import java.util.concurrent.ExecutorService;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
+import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.node.executors.SerializableException;
 
 import com.hazelcast.core.DistributedTask;
@@ -84,24 +86,33 @@ public class DistributedTaskExecutor<T>  {
 		} catch (ExecutionException e) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
 			
-			SerializableException ex = getSerializableException(e);		
-			if (ex == null){
-				throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
-			} else {
+			Exception ex = getCustomException(e);		
+			if (ex instanceof SerializableException){
 				throw new ServiceMessageException(UserInterfaceMessage.JEMG067E, ex, ex.getMessage());
+			} else if (ex instanceof ExecutorException){
+				ExecutorException me = (ExecutorException)ex;
+				throw new ServiceMessageException(me.getMessageInterface(), me.getObjects());
+			} else {
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
 			}
 		}
 	}
 	
-	
-	private SerializableException getSerializableException(Throwable e){
+	/**
+	 * Extracts from exceptions chain the JEM exception to get message
+	 * @param e leaf exception
+	 * @return null if not JEM exception
+	 */
+	private Exception getCustomException(Throwable e){
 		if (e instanceof SerializableException){
 			return (SerializableException)e;
+		} else if (e instanceof MessageException){
+			return (ExecutorException)e;
 		} else {
 			if (e.getCause() == null){
 				return null;
 			} else {
-				return getSerializableException(e.getCause());
+				return getCustomException(e.getCause());
 			}
 		}
 	}

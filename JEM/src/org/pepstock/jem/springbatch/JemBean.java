@@ -17,16 +17,22 @@
 package org.pepstock.jem.springbatch;
 
 import org.pepstock.jem.AbstractJcl;
+import org.pepstock.jem.springbatch.tasks.managers.DefinitionsLoader;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Contains all attributes to assign to job. it's a bean so you could add to
  * SpringBatch code.<br>
- * Only JobName is mandatory. All others are optional, using a default value.
+ * Only JobName is mandatory. All others are optional, using a default value.<br>
+ * Implements ApplicationContextAware to set to job and steps JEM StepListener
  * 
  * @author Andrea "Stock" Stocchero
  * 
  */
-public final class JemBean extends AbstractJcl{
+public final class JemBean extends AbstractJcl implements ApplicationContextAware{
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,7 +48,7 @@ public final class JemBean extends AbstractJcl{
 	 * Empty constructor
 	 */
 	public JemBean() {
-
+		
 	}
 
 	/**
@@ -105,5 +111,13 @@ public final class JemBean extends AbstractJcl{
 	 */
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+	 */
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
 	}
 }

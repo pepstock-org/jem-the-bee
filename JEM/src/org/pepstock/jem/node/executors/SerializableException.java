@@ -44,6 +44,7 @@ public class SerializableException extends JemException {
 		this.causePrintStackTrace = causePrintStackTrace;
 	}
 
+	
 	/**
 	 * @return the causePrintStackTrace
 	 */

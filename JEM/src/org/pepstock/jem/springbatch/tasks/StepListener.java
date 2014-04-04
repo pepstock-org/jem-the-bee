@@ -47,10 +47,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
 
 /**
  * Implements the interfaces of SpringBatch to listen all starts and ends both
@@ -61,7 +58,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public final class StepListener implements StepExecutionListener, JobExecutionListener, ApplicationContextAware {
+public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered {
 
 	private TasksDoor door = null;
 	
@@ -117,7 +114,6 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				throw new SpringBatchRuntimeException(e.getMessageInterface(), e, e.getObjects().toArray());
 			}
 		}
-		
 		// check if is already instatiated. If yes, does nothing
 		if (door == null) {
 			// get port number from env var
@@ -173,7 +169,6 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	 */
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-
 		//scan all definition checking if this step is a chunk
 		// if yes, clear JNDI context
 		for (Definition object : DefinitionsContainer.getInstance().getObjects()){
@@ -295,13 +290,12 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS042E, e);
 		}
 	}
-	
 
 	/* (non-Javadoc)
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+	 * @see org.springframework.core.Ordered#getOrder()
 	 */
 	@Override
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
+	public int getOrder() {
+		return Ordered.HIGHEST_PRECEDENCE;
 	}
 }

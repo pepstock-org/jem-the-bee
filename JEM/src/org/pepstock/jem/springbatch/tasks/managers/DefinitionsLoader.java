@@ -25,7 +25,11 @@ import org.pepstock.jem.springbatch.SpringBatchKeys;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
+import org.pepstock.jem.springbatch.tasks.StepListener;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.AbstractJob;
+import org.springframework.batch.core.step.AbstractStep;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -104,6 +108,26 @@ public class DefinitionsLoader {
 			lockingScope = SpringBatchKeys.JOB_SCOPE;
 		}
 		LogAppl.getInstance().emit(SpringBatchMessage.JEMS022I, bean.getJobName(), lockingScope);
+		
+		// creates Listener
+		StepListener listener = new StepListener();
+		// sets the springbatch listener
+		// both jobs and steps
+		@SuppressWarnings("rawtypes")
+		Map mapJobs = context.getBeansOfType(Job.class);
+		if (!mapJobs.isEmpty()) {
+			// sets Listener to all jobs
+			for (Object keyObject : mapJobs.keySet()) {
+				String jobName = keyObject.toString();
+				AbstractJob job = (AbstractJob)mapJobs.get(jobName);
+				job.registerJobExecutionListener(listener);
+				// sets Listener to all steps of job
+				for (String stepName : job.getStepNames()){
+					AbstractStep step = (AbstractStep)job.getStep(stepName);
+					step.registerStepExecutionListener(listener);
+				}
+			}
+		}
 	}
 
 	/**
@@ -142,7 +166,6 @@ public class DefinitionsLoader {
 	public void loadForLock(String step) {
 		// gets step bean definition
 		BeanDefinition bDef = context.getBeanFactory().getBeanDefinition(step);
-
 		// checks if you are using tasklets
 		if (bDef.getPropertyValues().contains(TASKLETS)) {
 			PropertyValue property = bDef.getPropertyValues().getPropertyValue(TASKLETS);

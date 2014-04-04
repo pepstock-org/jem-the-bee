@@ -26,7 +26,6 @@ import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.tasks.JobTask;
-import org.pepstock.jem.springbatch.tasks.StepListener;
 import org.pepstock.jem.util.CharSet;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -180,16 +179,6 @@ public class SpringBatchFactory extends AbstractFactory {
 		// if parameters are set, add to JCL
 		if (bean.getParameters() != null) {
 			jcl.setParameters(bean.getParameters());
-		}
-		// checks if there is listener. If not exception
-		if (!factory.containsBean(SpringBatchKeys.LISTENER_ID)){
-			throw new SpringBatchException(SpringBatchMessage.JEMS035E, SpringBatchKeys.LISTENER_ID);
-		}
-		@SuppressWarnings("rawtypes")
-		Class listenerClass = factory.getType(SpringBatchKeys.LISTENER_ID);
-		// checks if listener is StepListener. If not, exception
-		if (!listenerClass.equals(StepListener.class)){
-			throw new SpringBatchException(SpringBatchMessage.JEMS036E, SpringBatchKeys.LISTENER_ID, StepListener.class.getName(), listenerClass.getName());
 		}
 	}
 

@@ -33,8 +33,6 @@
 		<beans:property name="lockingScope" value="job" />
 	</beans:bean>
 
-	<beans:bean id="jem.listener" class="org.pepstock.jem.springbatch.tasks.StepListener"/>
-
 	<!-- 
 		Tasklet Defintion
 	 -->
@@ -146,33 +144,17 @@
 				</beans:list>
 		</beans:property>
 	</beans:bean>
-	<!-- 
-		Job abstract definition necessary for integration with JEM
-	 -->
-	<job id="jem.baseJob" abstract="true">
-    	<listeners>
-        	<listener ref="jem.listener"/>
-    	</listeners>
-	</job>
-
-	<step id="jem.baseStep" abstract="true">
-		<tasklet>
-    		<listeners>
-        		<listener ref="jem.listener"/>
-    		</listeners>
-    	</tasklet>
-	</step>
 
 	<!-- 
 		copy:  copy a GDG generation 0 in a new one
 	 -->
-	<job id="ICEGENER-MIXED" parent="jem.baseJob">
-		<step id="copy" parent="jem.baseStep" next="step1">
+	<job id="ICEGENER-MIXED">
+		<step id="copy" next="step1">
 			<tasklet>
-				<chunk reader="itemReader" writer="itemWriter"/> 
+				<chunk reader="itemReader" writer="itemWriter"  commit-interval="10"/> 
 			</tasklet>
 		</step>
-		<step id="step1" parent="jem.baseStep">
+		<step id="step1">
 			<tasklet ref="icegener-1" />
 		</step>
 		

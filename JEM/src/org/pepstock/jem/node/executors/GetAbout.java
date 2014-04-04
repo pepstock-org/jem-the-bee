@@ -19,6 +19,7 @@ package org.pepstock.jem.node.executors;
 import java.util.Collection;
 
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.About;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeLicense;
@@ -40,6 +41,7 @@ public class GetAbout extends DefaultExecutor<About>{
 	 * Calls an executor to extract all licences information, only if enterprise
 	 * configuration is running
 	 * @return bean with all info to show on UI
+	 * @throws ExecutorException 
 	 * @throws Exception occurs if errors
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -59,6 +61,8 @@ public class GetAbout extends DefaultExecutor<About>{
 		} catch (IllegalAccessException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
 		} catch (ExecutorException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
+		} catch (MessageException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
 		}
 		loadManifest(about);

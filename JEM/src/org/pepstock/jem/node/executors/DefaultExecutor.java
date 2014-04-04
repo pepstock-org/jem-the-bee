@@ -44,6 +44,7 @@ import java.io.StringWriter;
 import java.util.concurrent.Callable;
 
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 
@@ -68,12 +69,14 @@ public abstract class DefaultExecutor<V> implements Callable<V>, Serializable {
 	 * @throws if any error occurs. It creates always a new Exception to be sure that it's serializable
 	 */
 	
-	public final V call() throws SerializableException{
+	public final V call() throws ExecutorException, SerializableException{
 		// checks if is shutting down
 		try {
 			checkShutDown();
 			return execute();
 		} catch (ExecutorException e) {
+			throw e;
+		} catch (Exception e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
 
@@ -100,6 +103,7 @@ public abstract class DefaultExecutor<V> implements Callable<V>, Serializable {
 	 * Logic must be implemented here
 	 * @return object to return 
 	 * @throws ExecutorException if any error occurs
+	 * @throws MessageException if any error occurs
 	 */
 	public abstract V execute() throws ExecutorException;
 	
