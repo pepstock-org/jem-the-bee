@@ -19,7 +19,7 @@
     <target name="createLog4jConfig">
 	   <wrapper>
 	      <dataDescription name="OUTPUT" disposition="NEW">
-	         <dataSet name="${jem.data}/test_common/log4j.xml"/>
+	         <dataSet name="test_common/log4j.xml"/>
 	      </dataDescription>
 	      <dataDescription name="INPUT" disposition="SHR">
 	         <dataSet><![CDATA[<?xml version="1.0" encoding="UTF-8"?> 

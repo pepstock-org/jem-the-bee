@@ -31,13 +31,13 @@ import org.pepstock.jem.junit.submitter.JemTestManager;
 public class Clean extends TestCase {
 
 	/**
-	 * Clean dataset
+	 * Clean jobs created by the last junit run
 	 * 
 	 * @throws Exception
 	 */
-	public void testCleanDataset() throws Exception {
+	public void testCleanJobs() throws Exception {
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_COMMON_CLEAN_DATASETS.xml"), "ant", true,
+				.submit(getJcl("TEST_COMMON_CLEAN_JOBS.xml"), "ant", true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -56,18 +56,21 @@ public class Clean extends TestCase {
 		assertEquals(sr.getRc(), 0);
 	}
 
+
+
 	/**
-	 * Clean jobs created by the last junit run
+	 * Clean dataset
 	 * 
 	 * @throws Exception
 	 */
-	public void testCleanJobs() throws Exception {
+	public void testCleanDataset() throws Exception {
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_COMMON_CLEAN_JOBS.xml"), "ant", true,
+				.submit(getJcl("TEST_COMMON_CLEAN_DATASETS.xml"), "ant", true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
 	}
+
 
 	private String getJcl(String name) {
 		return this.getClass().getResource("jcls/clean/" + name).toString();

@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -30,6 +33,9 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
@@ -41,6 +47,10 @@ import org.pepstock.jem.node.sgm.DataSetRules;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.node.sgm.PathsContainer;
+import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.TimeUtils;
+import org.pepstock.jem.util.locks.LockException;
+import org.pepstock.jem.util.locks.ReadLock;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -51,7 +61,9 @@ import com.thoughtworks.xstream.XStream;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public final class DataPathsManager implements Serializable{
+public final class DataPathsManager extends FileAlterationListenerAdaptor implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Default file name for rules when not defined
@@ -63,7 +75,7 @@ public final class DataPathsManager implements Serializable{
 	 */
 	public static final String DEFAULT_REG_EX_FOR_ALL = ".*";
 	
-	private static final long serialVersionUID = 1L;
+	private static final long POLLING_INTERVAL = 5 * TimeUtils.SECOND;
 	
 	private DataPaths dataPaths = null;
 
@@ -71,12 +83,13 @@ public final class DataPathsManager implements Serializable{
 	
 	private File datasetRulesFile = null;
 	
-	private transient XStream xs = new XStream();
+	private transient XStream xs = null;
 
 	/**
 	 * It sets the XML definitions
 	 */
     public DataPathsManager() {
+    	xs = new XStream();
 		xs.alias(ConfigKeys.RULES_ALIAS, DataSetRules.class);
 		xs.addImplicitCollection(DataSetRules.class, ConfigKeys.PATTERNS_ALIAS);
 		xs.processAnnotations(DataSetPattern.class);
@@ -98,29 +111,38 @@ public final class DataPathsManager implements Serializable{
 				throw new ConfigurationException(NodeMessage.JEMC098E.toMessage().getFormattedMessage(dataPath));
 			}
 		}
+		
+		// if there is only 1 data path, then set the system property
+		if (dataPaths.getPaths().size() == 1){
+			String jemData = dataPaths.getPaths().get(0).getContent();
+			System.setProperty(ConfigKeys.JEM_DATA_PATH_NAME, jemData);
+			LogAppl.getInstance().emit(NodeMessage.JEMC057I, ConfigKeys.JEM_DATA_PATH_NAME, jemData);
+		} 
 	}
 
 	/**
-	 * Tests the file of datasets rules is correct
-	 * @param fileDatasetRules file with datasets rules
+	 * Tests the datasets rules is correct
+	 * @param contentDatasetRules xml data with datasets rules
 	 * @return returns a dataset result
 	 * @throws MessageException if any error occurs
 	 * @throws FileNotFoundException if any IO error occurs
 	 */
-	public DatasetsRulesResult testRules(File fileDatasetRules) throws MessageException{
+	public DatasetsRulesResult testRules(String contentDatasetRules) throws MessageException{
     	DatasetsRulesResult rules = null;
     	DataSetRules dsr;
 		try {
 			// parses from XML
-			dsr = loadXMLDataSetRules(fileDatasetRules);
+			dsr = loadXMLDataSetRules(new StringReader(contentDatasetRules));
 			// load using object 
 			rules = loadRules(dsr, false);
 			// if rules are empty, no rules and then exception
 			if (rules.getRules().isEmpty()){
 				throw new MessageException(NodeMessage.JEMC254E);
 			}
+		} catch (MessageException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new MessageException(NodeMessage.JEMC257E, fileDatasetRules.getAbsolutePath());
+			throw new MessageException(NodeMessage.JEMC257E, e, e.getMessage());
 		}
 		return rules;
 	}
@@ -131,26 +153,51 @@ public final class DataPathsManager implements Serializable{
 	 * @throws FileNotFoundException if any IO error occurs
 	 */
 	void loadRules(File fileDatasetRules) throws MessageException{
-		this.datasetRulesFile = fileDatasetRules;
-    	DataSetRules dsr;
+		ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
 		try {
-			// parses from XML
-			dsr = loadXMLDataSetRules(fileDatasetRules);
-			// load using object 
-			DatasetsRulesResult rules = loadRules(dsr, true);
-			// if rules are empty, no rules and then exception
-			if (rules.getRules().isEmpty()){
-				throw new MessageException(NodeMessage.JEMC254E);
-			} else {
-				// sets new rules only if the parsing is correct
-				DATASET_RULES.clear();
-				DATASET_RULES.putAll(rules.getRules());
+			read.acquire();
+			if (this.datasetRulesFile == null){
+				FileAlterationObserver observer = new FileAlterationObserver(fileDatasetRules.getParent());
+				FileAlterationMonitor monitor = new FileAlterationMonitor(POLLING_INTERVAL);
+				observer.addListener(this);
+				monitor.addObserver(observer);
+				try {
+					monitor.start();
+				} catch (Exception e) {
+					// debug
+					LogAppl.getInstance().debug(e.getMessage(), e);
+				}
+				this.datasetRulesFile = fileDatasetRules;
 			}
-		} catch (Exception e) {
-			throw new MessageException(NodeMessage.JEMC257E, fileDatasetRules.getAbsolutePath());
+			
+			DataSetRules dsr;
+			try {
+				InputStreamReader fis = new InputStreamReader(new FileInputStream(datasetRulesFile), CharSet.DEFAULT);
+				// parses from XML
+				dsr = loadXMLDataSetRules(fis);
+				// load using object 
+				DatasetsRulesResult rules = loadRules(dsr, true);
+				// if rules are empty, no rules and then exception
+				if (rules.getRules().isEmpty()){
+					throw new MessageException(NodeMessage.JEMC254E);
+				} else {
+					// sets new rules only if the parsing is correct
+					DATASET_RULES.clear();
+					DATASET_RULES.putAll(rules.getRules());
+				}
+			} catch (Exception e) {
+				throw new MessageException(NodeMessage.JEMC257E, e, datasetRulesFile.getAbsolutePath());
+			}
+			LogAppl.getInstance().emit(NodeMessage.JEMC252I, DATASET_RULES.size());
+		} catch (LockException e) {
+			throw new MessageException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
+		} finally {
+			try {
+				read.release();
+			} catch (Exception e) {
+				throw new MessageException(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+			}
 		}
-    	LogAppl.getInstance().emit(NodeMessage.JEMC252I, DATASET_RULES.size());
-    	
     }
     /**
      * Lodas rules from XML file
@@ -158,13 +205,12 @@ public final class DataPathsManager implements Serializable{
      * @return datasets rules object
      * @throws Exception if any exception occurs
      */
-    private DataSetRules loadXMLDataSetRules(File fileDatasetRules) throws Exception{
-		FileInputStream fis = new FileInputStream(fileDatasetRules);
+    private DataSetRules loadXMLDataSetRules(Reader readerDatasetRules) {
 		try {
-			return (DataSetRules) xs.fromXML(fis);
+			return (DataSetRules) xs.fromXML(readerDatasetRules);
 		} finally {
 			try {
-				fis.close();
+				readerDatasetRules.close();
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
@@ -172,9 +218,13 @@ public final class DataPathsManager implements Serializable{
     }
     
     /**
-     * Saves the default rules file, only if data path is 1 and no rule is defined
+     * Saves the default rules file, only if data path is 1 and no rule is defined.
+     * <br>
+     * It doesn't need any synchronization because it's called ONLY at start up, inside
+     * of LOCK startup of hazelcast node.
+     * 
      * @param fileDatasetRules file where stores rules
-     * @throws Exception if any excpetion occurs
+     * @throws Exception if any exception occurs
      */
     void saveXMLDataSetRules(File fileDatasetRules){
     	// creates object with datarules
@@ -207,8 +257,9 @@ public final class DataPathsManager implements Serializable{
      * Loads all rules, relating them to data path
      * @param dsr object with all datasets rules definition
      * @return the result of parsing
+     * @throws MessageException 
      */
-    private DatasetsRulesResult loadRules(DataSetRules dsr, boolean printWarnings){
+    private DatasetsRulesResult loadRules(DataSetRules dsr, boolean printWarnings) throws MessageException{
     	// initializes the result with the right container
     	DatasetsRulesResult result = new DatasetsRulesResult();
     	Map<Pattern, PathsContainer> newRules = new LinkedHashMap<Pattern, PathsContainer>();
@@ -216,41 +267,49 @@ public final class DataPathsManager implements Serializable{
     	result.setRules(newRules);
     	result.setWarnings(warnings);
     	
-    	// scans all rules
-		for (DataSetPattern dsPattern : dsr.getPatterns()){
-			for (String pattern : dsPattern.getPatterns()){
-				// creates patterns
-				Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
-				// gets teh data path name
-				// if is not defined, creates a warning
-				String name = dsPattern.getPathName();
-				if (name != null){
-					Path mp = getPath(name);
-					if (mp != null){
-						// gets path definition
-						// creating a paths cont
-						PathsContainer mps = new PathsContainer();
-						mps.setCurrent(mp);
-						// checks if old is defined
-						if (dsPattern.getOldPathName() != null && dsPattern.getOldPathName().trim().length() > 0){
-							// checks if exists teh old path
-							Path old = getPath(dsPattern.getOldPathName());
-							mps.setOld(old);
-							if (old == null){
-								addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, dsPattern.getOldPathName());	
-							}
-						}
-						// adds rules
-						newRules.put(p, mps);
-					} else {
-						addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, name);	
-					}
-				} else {
-					addWarningMessage(warnings, printWarnings, NodeMessage.JEMC256W, null);	
-				}
-			}
-		}
-		return result;
+    	if (dsr.getPatterns() != null && !dsr.getPatterns().isEmpty()){
+    		// scans all rules
+    		for (DataSetPattern dsPattern : dsr.getPatterns()){
+    			if (dsPattern.getPatterns() != null && !dsPattern.getPatterns().isEmpty()){
+    				for (String pattern : dsPattern.getPatterns()){
+    					// creates patterns
+    					Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+    					// gets teh data path name
+    					// if is not defined, creates a warning
+    					String name = dsPattern.getPathName();
+    					if (name != null){
+    						Path mp = getPath(name);
+    						if (mp != null){
+    							// gets path definition
+    							// creating a paths cont
+    							PathsContainer mps = new PathsContainer();
+    							mps.setCurrent(mp);
+    							// checks if old is defined
+    							if (dsPattern.getOldPathName() != null && dsPattern.getOldPathName().trim().length() > 0){
+    								// checks if exists teh old path
+    								Path old = getPath(dsPattern.getOldPathName());
+    								mps.setOld(old);
+    								if (old == null){
+    									addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, dsPattern.getOldPathName());	
+    								}
+    							}
+    							// adds rules
+    							newRules.put(p, mps);
+    						} else {
+    							addWarningMessage(warnings, printWarnings, NodeMessage.JEMC255W, name);	
+    						}
+    					} else {
+    						addWarningMessage(warnings, printWarnings, NodeMessage.JEMC256W, null);	
+    					}
+    				}
+    			} else {
+    				throw new MessageException(NodeMessage.JEMC263E, dsPattern.getPathName());
+    			}
+    		}
+    	} else {
+    		throw new MessageException(NodeMessage.JEMC262E);
+    	}
+    	return result;
     }
 
     /**
@@ -264,10 +323,12 @@ public final class DataPathsManager implements Serializable{
     	// if prints, use log
 		if (printWarnings){
 			LogAppl.getInstance().emit(message, name);
-		// if warnings collection already has got the message, skip it	
-		} else if (!warnings.contains(message)){
+		} else {
+			// if warnings collection already has got the message, skip it	
 			String outputMessage = (name == null) ? message.toMessage().getMessage() : message.toMessage().getFormattedMessage(name);
-			warnings.add(outputMessage);
+			if (!warnings.contains(outputMessage)){
+				warnings.add(outputMessage);
+			}
 		}
     }
     
@@ -382,4 +443,16 @@ public final class DataPathsManager implements Serializable{
     	}
     	return groups;	
     }
+    
+	// Is triggered when a file is deleted from the monitored folder
+	@Override
+	public void onFileChange(File file) {
+		if (file.equals(datasetRulesFile)){
+			try {
+				loadRules(datasetRulesFile);
+			} catch (MessageException e) {
+				LogAppl.getInstance().emit(e.getMessageInterface(), e, e.getObjects());
+			}
+		}
+	}
 }

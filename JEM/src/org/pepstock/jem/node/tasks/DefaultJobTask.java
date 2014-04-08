@@ -58,6 +58,8 @@ public class DefaultJobTask extends JobTask {
 	 */
 	public DefaultJobTask(Job job, JemFactory factory) {
 		super(job, factory);
+		
+		
 
 	}
 
@@ -78,6 +80,7 @@ public class DefaultJobTask extends JobTask {
 						getHome(),
 						getRmiPort(),
 						"-D"+ConfigKeys.JEM_JOB_ID+"="+job.getId(),
+						getDataPath(),
 						getClassPath(),
 						getBinPath(),
 						getLibPath(),
@@ -99,6 +102,15 @@ public class DefaultJobTask extends JobTask {
 	 */
 	public String getRmiPort() {
 		return rmiPort;
+	}
+	
+	/**
+	 * @return the binPath
+	 */
+	public String getDataPath() {
+		return System.getProperties().containsKey(ConfigKeys.JEM_DATA_PATH_NAME) ? 
+				"-D"+ConfigKeys.JEM_DATA_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME) : 
+					"";
 	}
 
 	/**

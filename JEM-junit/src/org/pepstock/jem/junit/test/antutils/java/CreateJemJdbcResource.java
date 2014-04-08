@@ -20,13 +20,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Date;
 
+import javax.naming.InitialContext;
+
 import org.apache.commons.io.FileUtils;
+import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.XmlUtil;
 import org.pepstock.jem.node.sgm.PathsContainer;
+import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.CharSet;
 
 import com.thoughtworks.xstream.XStream;
@@ -60,6 +64,8 @@ public class CreateJemJdbcResource {
 	public static void main(String[] args) throws Exception {
 		String persistencePath = System.getProperty(ConfigKeys.JEM_PERSISTENCE_PATH_NAME);
 //		String dataPath = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
+
+		
 		File file = new File(persistencePath);
 		String[] directories = file.list(new FilenameFilter() {
 			@Override
@@ -88,7 +94,10 @@ public class CreateJemJdbcResource {
 		resource.setProperty("defaultReadOnly", "true");
 		resource.setProperty("defaultAutoCommit", "true");
 		
-		PathsContainer container = DataPathsContainer.getInstance().getPaths(DATA_SET_NAME);
+		InitialContext ic = ContextUtils.getContext();
+		// loads datapath container
+		DataPathsContainer dc = (DataPathsContainer)ic.lookup(AntKeys.ANT_DATAPATHS_BIND_NAME);
+		PathsContainer container = dc.getPaths(DATA_SET_NAME);
 		String dataPath = container.getCurrent().getContent();
 		
 		XStream xStream = XmlUtil.getXStream();

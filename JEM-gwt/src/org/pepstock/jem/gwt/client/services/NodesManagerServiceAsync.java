@@ -40,7 +40,7 @@ public interface NodesManagerServiceAsync {
 
 	/**
 	 * @see NodesManagerService#getNodesByFilter(String)
-	 * @param nodesFilter
+	 * @param filterString
 	 * @param callback
 	 */
 	void getNodesByFilter(String filterString, AsyncCallback<Collection<NodeInfoBean>> callback);

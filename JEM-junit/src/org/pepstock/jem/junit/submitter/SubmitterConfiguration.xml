@@ -1,6 +1,6 @@
 <submitter-configuration>
 	<submitters>
-		<submitter>
+		<!-- submitter>
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
 			<params>
@@ -12,7 +12,6 @@
 				     <name>password</name>
 				     <value>jem_password</value>
 				</param>
-				<!-- necessary if socket interceptor is enabled 
 				<param>
 				     <name>privateKey</name>
 				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
@@ -21,12 +20,8 @@
 				     <name>privateKeyPwd</name>
 				     <value>jempassword</value>
 				</param>
-				 -->
-				<!--
-				parama jcl, type, noWait, printOutput will be set at run time depending on the test case
-				-->
 			</params>
-		</submitter>
+		</submitter-->
 		<submitter> 
 		    <name>LOCAL_HOST_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
@@ -44,29 +39,24 @@
 				     <name>password</name>
 				     <value>jem_password</value>
 				</param>
-				<!-- necessary if socket interceptor is enabled 
-				<param>
+				<!-- param>
 				     <name>privateKey</name>
 				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
 				</param>
 				<param>
 				     <name>privateKeyPwd</name>
 				     <value>jempassword</value>
-				</param>
-				-->
-				<!--
-				parama jcl, type, noWait, printOutput will be set at run time depending on the test case
-				-->
+				</param-->
 			</params>
 		</submitter>
-		<submitter>
+		<!-- submitter>
 		    <name>HTTP_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.HttpSubmit</referenceClass>
-			
+			<selected>true</selected> 
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>https://localhost:8888</value>
+				     <value>https://127.0.0.1:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -76,10 +66,7 @@
 				     <name>password</name>
 				     <value>a</value>
 				</param>
-				<!--
-				parama jcl, type, wait will be set at run time depending on the test case
-				-->
 			</params>
-		</submitter>
+		</submitter-->
 	</submitters>
 </submitter-configuration>

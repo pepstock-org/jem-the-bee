@@ -227,5 +227,4 @@ public abstract class BatchSecurityManager extends SecurityManager {
 	public final void checkDelete(String file) {
 		checkWrite(file);
 	}
-
 }

@@ -99,9 +99,11 @@ import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
+import org.pepstock.jem.util.locks.ConcurrentLock;
 
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.SemaphoreConfig;
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
@@ -234,6 +236,13 @@ public class StartUpSystem {
 				if (pwdFromConfig == null || "".equals(pwdFromConfig.trim())) {
 					throw new ConfigurationException(NodeMessage.JEMC108E.toMessage().getFormattedMessage());
 				}
+				
+				// defines here all read and writes locks 
+				SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig(ConcurrentLock.NO_WAITING_PREFIX+"*", Integer.MAX_VALUE);
+				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig(ConcurrentLock.NO_ACCESSING_PREFIX+"*", 1);
+				config.addSemaphoreConfig(semaphoreConfig1);
+				config.addSemaphoreConfig(semaphoreConfig2);
+						
 				Main.setHazelcastConfig(config);
 
 				// to avoid to loose data, sets Hazelcast shutdown hook disable
@@ -327,6 +336,9 @@ public class StartUpSystem {
 			checkIfEnoughMembers();
 			// load data paths rules
 			loadDatasetsRules(JEM_ENV_CONFIG);
+			// loads affinities locking access file if scripti affintiy loader is defined
+			loadDynamicAffinities();
+			
 			// load statistics manager after dataset rules
 			// because it uses the path to store data
 			loadStatisticsManager();
@@ -1128,7 +1140,13 @@ public class StartUpSystem {
 		for (int i = 0; i < affinities.length; i++) {
 			Main.EXECUTION_ENVIRONMENT.getStaticAffinities().add(affinities[i].trim().toLowerCase());
 		}
+		LogAppl.getInstance().emit(NodeMessage.JEMC050I, Main.EXECUTION_ENVIRONMENT);
+	}
 
+	/**
+	 * Loads affintiies loaders from JEM configuration.
+	 */
+	private static void loadDynamicAffinities() throws ConfigurationException {
 		// load factories, checking if they are configured. If not, exception
 		// occurs
 		AffinityFactory affinityFactory = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinityFactory();
@@ -1166,6 +1184,8 @@ public class StartUpSystem {
 						// initializes the factory with properties defined
 						// and puts in the list if everything went good
 						loader.init(propsOfFactory);
+						// locks the access to file to avoid multiple accesses
+
 						Result result = loader.load(new SystemInfo());
 						if (result != null) {
 							Main.EXECUTION_ENVIRONMENT.getDynamicAffinities().addAll(result.getAffinities());
@@ -1188,7 +1208,7 @@ public class StartUpSystem {
 		}
 		LogAppl.getInstance().emit(NodeMessage.JEMC050I, Main.EXECUTION_ENVIRONMENT);
 	}
-
+	
 	/**
 	 * 
 	 * @param conf

@@ -1536,8 +1536,8 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Unable to load rules file : {0}", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when JEM node is not able to load rule definition file. Please have a look at JEM environment configuration folder.")
-	JEMC257E(257, "Unable to load rules file : {0}", MessageLevel.ERROR),
+	@Description(explanation = "It occurs when JEM node is not able to load rule definition. Please have a look at JEM environment configuration folder.")
+	JEMC257E(257, "Unable to load rules : {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Invalid data paths defintion: cluster has got {0} definition, node {1}", MessageLevel.ERROR
@@ -1550,8 +1550,32 @@ public enum NodeMessage implements MessageInterface {
 	 * "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM node at startup checks is own data paths are coherent with data paths of cluster. The data paths must be logically "+
-	 " the same. Please have a look at JEM node configuration fils.")
-	JEMC259E(259, "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR);
+	 " the same. Please have a look at JEM node configuration file.")
+	JEMC259E(259, "Invalid data paths defintion: path {0} does not exist", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to acquire lock for {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to use lock by semaphore a specific file. Please check what Hazelcast structure is not locked and contatc you JEM adminitrator.")
+	JEMC260E(260, "Unable to acquire lock for {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to release lock for {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to use lock by semaphore a specific file. Please check what Hazelcast structure is not locked and contatc you JEM adminitrator.")
+	JEMC261E(261, "Unable to release lock for {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "No rule has been defined!", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to load rule definition. Please have a look at JEM environment configuration folder.")
+	JEMC262E(262, "No rule has been defined", MessageLevel.ERROR),
+	
+	/**
+	 *  "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERRO
+	 */
+	@Description(explanation = "It occurs when JEM node is not able to load rule definition. Please have a look at JEM environment configuration folder.")
+	JEMC263E(263, "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

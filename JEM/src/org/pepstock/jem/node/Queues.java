@@ -324,6 +324,12 @@ public final class Queues {
 	 * 
 	 */
 	public static final String AFFINITY_LOADER_LOCK = "org.pepstock.jem.affinity.loader";
+	
+	/**
+	 * Key for asking a Read/Write lock during the actions of datasets rules, to synchronize read and write
+	 * 
+	 */
+	public static final String DATASETS_RULES_LOCK = "org.pepstock.jem.datasets.rules";
 
 	/**
 	 * To avoid any instantiation

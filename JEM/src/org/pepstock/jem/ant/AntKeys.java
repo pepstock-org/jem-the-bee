@@ -114,6 +114,12 @@ public final class AntKeys {
 	 * project element, to validate the ant project using xslt. Is optional.
 	 */
 	public static final String ANT_XSLTPROJECTVALIDATOR = "jem.xslt.project.validator";
+	
+	/**
+	 * Is the name use during binding of DataPaths container
+	 */
+	public static final String ANT_DATAPATHS_BIND_NAME = "jem.dataPaths";
+	
 
 
 	/**

@@ -26,7 +26,10 @@ import java.io.StringReader;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 import org.pepstock.jem.node.Main;
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.util.CharSet;
+
+import com.hazelcast.core.ILock;
 
 /**
  * Is a loader of affinity and uses a javascript code to load simply all affinities for the node.<br>
@@ -58,8 +61,16 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
 	 */
 	@Override
 	public Result runScript(File script, SystemInfo info) throws IOException {
-		// reader of JS file
-		return runScript(new InputStreamReader(new FileInputStream(script), CharSet.DEFAULT), info);
+		// syncronized the access to file
+		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+		writeSynch.lock();
+		try {
+			// reader of JS file
+			return runScript(new InputStreamReader(new FileInputStream(script), CharSet.DEFAULT), info);
+		} finally {
+			// unlock always
+			writeSynch.unlock();
+		}
 	}
 
 

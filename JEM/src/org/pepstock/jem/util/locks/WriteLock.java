@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.util.locks;
 
-import org.pepstock.jem.log.JemException;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.InstanceDestroyedException;
 
@@ -37,27 +35,27 @@ public class WriteLock extends ConcurrentLock{
 	}
 
 	@Override
-	public void acquire() throws JemException {
+	public void acquire() throws LockException {
 		try {
 			getNoWaiting().acquire();
 		} catch (InstanceDestroyedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		} catch (InterruptedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		}
 		try {
 			getNoAccessing().acquire();
 		} catch (InstanceDestroyedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		} catch (InterruptedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		} finally {
 			getNoWaiting().release();
 		}
 	} 
 
 	@Override
-	public void release() throws JemException {
+	public void release() throws LockException {
 		getNoAccessing().release();
 	}
 }

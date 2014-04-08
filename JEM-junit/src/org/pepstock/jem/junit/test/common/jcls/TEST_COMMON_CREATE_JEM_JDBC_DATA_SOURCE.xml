@@ -30,7 +30,7 @@
 	<target name="createJDBCReource" depends="createDasetJDBC">
 		<resources license="Pepstock_JEM_AntUtil.license">
 			<dataDescription name="JUNIT_JDBC_JEM" disposition="SHR">
-				<dataSet name="${jem.data}/test_common/JEM_JDBC_RESOURCE" />
+				<dataSet name="test_common/JEM_JDBC_RESOURCE" />
 			</dataDescription>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
@@ -47,10 +47,8 @@
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.CreateJemJdbcResource">
 			<arg value="-h" />
 			<classpath>
-				<pathelement path="${JEM_HOME}/lib/jem.jar" />
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
-				<fileset dir="${JEM_HOME}/lib/commons-io/" includes="*.jar"/>
-				<fileset dir="${JEM_HOME}/lib/xstream/" includes="*.jar"/>
+				<pathelement path="${java.class.path}" />
 			</classpath>
 		</step-java>
 	</target>

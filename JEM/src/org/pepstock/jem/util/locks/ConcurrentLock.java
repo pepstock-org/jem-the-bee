@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.util.locks;
 
-import org.pepstock.jem.log.JemException;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ISemaphore;
 
@@ -26,6 +24,16 @@ import com.hazelcast.core.ISemaphore;
  *
  */
 public abstract class ConcurrentLock {
+	
+	/**
+	 * Label for no waiting semaphore
+	 */
+	public static final String NO_WAITING_PREFIX = "noWaiting"; 
+	
+	/**
+	 * Label for no accessing semaphore
+	 */
+	public static final String NO_ACCESSING_PREFIX = "noAccessing";
 	
 	private HazelcastInstance instance = null;
 	
@@ -43,8 +51,8 @@ public abstract class ConcurrentLock {
 	public ConcurrentLock(HazelcastInstance instance, String queueName){
 		this.instance = instance;
 		this.queueName = queueName;
-		noWaiting = instance.getSemaphore("noWaiting."+queueName); 
-		noAccessing = instance.getSemaphore("noAccessing."+queueName);
+		noWaiting = instance.getSemaphore(NO_WAITING_PREFIX+"."+queueName); 
+		noAccessing = instance.getSemaphore(NO_ACCESSING_PREFIX+"."+queueName);
 	}
 	
 	
@@ -85,13 +93,13 @@ public abstract class ConcurrentLock {
 
 	/**
 	 * 
-	 * @throws JemException
+	 * @throws LockException
 	 */
-	public abstract void acquire() throws JemException;
+	public abstract void acquire() throws LockException;
 	
 	/**
 	 * 
-	 * @throws JemException
+	 * @throws LockException
 	 */
-	public abstract void release() throws JemException;
+	public abstract void release() throws LockException;
 }

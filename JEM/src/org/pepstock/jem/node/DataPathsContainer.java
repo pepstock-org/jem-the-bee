@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node;
 
+import java.io.Serializable;
+
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 
@@ -26,8 +28,10 @@ import org.pepstock.jem.node.sgm.PathsContainer;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public final class DataPathsContainer {
+public final class DataPathsContainer implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	private static final DataPathsContainer INSTANCE = new DataPathsContainer();
 	
 	private DataPathsManager manager = null;

@@ -48,7 +48,7 @@ public interface NodesManagerService extends RemoteService {
 	/**
 	 * Returns the nodes using a filter.
 	 * 
-	 * @param nodesFilter
+	 * @param filterString
 	 *            a String that will be parsed as a {@link Filter}
 	 * @return list of nodes
 	 * @throws JemException

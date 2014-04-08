@@ -18,10 +18,10 @@ package org.pepstock.jem.junit.test.antutils;
 
 import java.util.concurrent.Future;
 
+import junit.framework.TestCase;
+
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.submitter.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 

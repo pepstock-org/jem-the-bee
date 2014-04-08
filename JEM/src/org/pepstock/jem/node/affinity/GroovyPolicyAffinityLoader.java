@@ -25,6 +25,9 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
+import org.pepstock.jem.node.Queues;
+
+import com.hazelcast.core.ILock;
 
 /**
  * Is a loader of affinity and uses a groovy code to load simply all affinities for the node.<br>
@@ -62,15 +65,23 @@ public class GroovyPolicyAffinityLoader extends PolicyAffinityLoader {
 
 		// call groovy expressions from Java code
 		Binding binding = new Binding();
-		
+
 		binding.setVariable(RESULT_VARIABLE, result);
 		binding.setVariable(SYSINFO_VARIABLE, info);
 		binding.setVariable(DOMAIN_VARIABLE, Main.EXECUTION_ENVIRONMENT.getDomain());
 		binding.setVariable(ENVIRONMENT_VARIABLE, Main.EXECUTION_ENVIRONMENT.getEnvironment());
 		GroovyShell shell = new GroovyShell(getClass().getClassLoader(), binding);
 
-		shell.run(script, new String[]{});
-		return result;
+		// syncronized the access to file
+		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+		writeSynch.lock();
+		try {
+			shell.run(script, new String[]{});
+			return result;
+		} finally {
+			// unlock always
+			writeSynch.unlock();
+		}
 	}
 
 	/* (non-Javadoc)

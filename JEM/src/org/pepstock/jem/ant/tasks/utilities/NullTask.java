@@ -16,8 +16,11 @@
 */
 package org.pepstock.jem.ant.tasks.utilities;
 
+import javax.naming.NamingException;
+
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.ant.tasks.StepJava;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 
 /**
  * Is a utility (both a task ANT and a main program) that return doing nothing.<br>
@@ -50,8 +53,10 @@ public class NullTask extends StepJava {
 	 * Main program, called by StepJava class. It does nothing.
 	 * 
 	 * @param args not used
+	 * @throws NamingException 
+	 * @throws InvalidDatasetNameException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NamingException, InvalidDatasetNameException {
 		// do nothing
 	}
 

@@ -53,12 +53,17 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 	
 	// HAZELCAST ID for Jem environment	
 	private static final String HAZELCAST_ID = "hazelcastEditorID";
+	
+	// DATASETS RULES for Jem environment	
+	private static final String DATASETS_RULES_ID = "datasetsRulesID";
 
 	private TabPanel tabPanel = new TabPanel();
 
 	private XmlConfigEditor envConfig = new XmlConfigEditor(JEM_ID, ConfigKeys.JEM_ENV_CONF, "JEM environment configuration");
 
 	private XmlConfigEditor hazelcast = new XmlConfigEditor(HAZELCAST_ID, ConfigKeys.HAZELCAST_CONFIG, "Hazelcast configuration");
+	
+	private XmlConfigEditor rules = new XmlConfigEditor(DATASETS_RULES_ID, ConfigKeys.DATASETS_RULES, "Datasets rules configuration");
 	
 	private EditorContainer editorContainer = new EditorContainer();
 
@@ -71,6 +76,7 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		List<AdminEditor> list = new LinkedList<AdminEditor>();
 		list.add(envConfig);
 		list.add(hazelcast);
+		list.add(rules);
 		editorContainer.setEditors(list);
 	}
 
@@ -88,6 +94,7 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		
 			tabPanel.add(envConfig, "Environment");
 			tabPanel.add(hazelcast, "Hazelcast");
+			tabPanel.add(rules, "Datasets Rules");
 
 			tabPanel.addSelectionHandler(new TabPanelSelectionHandler());
 		}
@@ -95,6 +102,7 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		// resets change status to false
 		envConfig.setChanged(false);
 		hazelcast.setChanged(false);
+		rules.setChanged(false);
 		
 		// shows popup editor panel
 		editorContainer.setPopupPositionAndShow(new PositionCallback() {
@@ -120,11 +128,18 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 				if (!envConfig.isChanged()){
 					inspect(event.getSelectedItem());
 				}
-			} else {
+			} else if (event.getSelectedItem() == 1) {
 				// loads by RPC the config file
 				// only if the file is not changed, 
 				// otherwise shows the text changed
 				if (!hazelcast.isChanged()){
+					inspect(event.getSelectedItem());
+				}
+			} else {
+				// loads by RPC the config file
+				// only if the file is not changed, 
+				// otherwise shows the text changed
+				if (!rules.isChanged()){
 					inspect(event.getSelectedItem());
 				}
 			}
@@ -142,8 +157,23 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 
 			@Override
 			public void execute() {
+				String parm = null;
+				switch(what){
+				case 0:
+					parm = ConfigKeys.JEM_ENV_CONF;
+					break;
+				case 1:
+					parm = ConfigKeys.HAZELCAST_CONFIG;
+					break;
+				case 2:
+					parm = ConfigKeys.DATASETS_RULES;
+					break;
+				default:
+					parm = ConfigKeys.JEM_ENV_CONF;
+					break;
+				}
 				// get configuration file
-				Services.NODES_MANAGER.getEnvConfigFile((what == 0) ? ConfigKeys.JEM_ENV_CONF : ConfigKeys.HAZELCAST_CONFIG, new GetEnvConfigFileAsyncCallback(what));
+				Services.NODES_MANAGER.getEnvConfigFile(parm, new GetEnvConfigFileAsyncCallback(what));
 			}
 		});
 	}
@@ -158,7 +188,21 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		
 		@Override
 		public void onJemFailure(Throwable caught) {
-			String description = (what == 0) ? envConfig.getDescription() : hazelcast.getDescription();
+			String description = null;
+			switch(what){
+			case 0:
+				description = envConfig.getDescription();
+				break;
+			case 1:
+				description = hazelcast.getDescription();
+				break;
+			case 2:
+				description = rules.getDescription();
+				break;
+			default:
+				description = envConfig.getDescription();
+				break;
+			}			
 			new Toast(MessageLevel.ERROR, description+": "+caught.getMessage(), "Get CONFIG file error!").show();
 		}
 
@@ -170,10 +214,14 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 					envConfig.setConfigurationFile(result);
 					envConfig.setContent(result.getContent());
 					envConfig.startEditor();
-				} else {
+				} else if (what == 1) {
 					hazelcast.setConfigurationFile(result);
 					hazelcast.setContent(result.getContent());
 					hazelcast.startEditor();
+				} else {
+					rules.setConfigurationFile(result);
+					rules.setContent(result.getContent());
+					rules.startEditor();
 				}
 			} else {
 				String description = (what == 0) ? envConfig.getDescription() : hazelcast.getDescription();
@@ -210,6 +258,7 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		// resizes editor
 		envConfig.onResize(syntaxHighlighterWidth, syntaxHighlighterHeight);
 		hazelcast.onResize(syntaxHighlighterWidth, syntaxHighlighterHeight);
+		rules.onResize(syntaxHighlighterWidth, syntaxHighlighterHeight);
 		
 		// if editor is showing, resize teh editors container
 		if (editorContainer.isShowing()){

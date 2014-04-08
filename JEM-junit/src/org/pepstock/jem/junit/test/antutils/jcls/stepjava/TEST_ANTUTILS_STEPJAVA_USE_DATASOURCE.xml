@@ -31,7 +31,7 @@
 			<!-- DB datasource reference -->
 			<datasource name="jem-db" resource="JUNIT_JDBC_JEM"/>
 		    <datadescription name="log4j" disposition="SHR">
-		        <dataset name="${jem.data}/test_common/log4j.xml"></dataset>
+		        <dataset name="test_common/log4j.xml"></dataset>
 		    </datadescription>
 		</step-java>
 	</target>

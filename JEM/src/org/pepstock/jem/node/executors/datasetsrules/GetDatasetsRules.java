@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.executors.affinity;
+package org.pepstock.jem.node.executors.datasetsrules;
 
 import java.io.IOException;
 
@@ -23,21 +23,20 @@ import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.affinity.ScriptAffinityLoader;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
-
-import com.hazelcast.core.ILock;
+import org.pepstock.jem.util.locks.LockException;
+import org.pepstock.jem.util.locks.ReadLock;
 
 
 /**
- * Executor which returns affinity policy if exists
+ * Executor which returns datasets rules
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4	
  *
  */
-public class GetAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
+public class GetDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -46,30 +45,29 @@ public class GetAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
 	 */
 	@Override
 	public ConfigurationFile execute() throws ExecutorException {
-		// checks if a affinity loader has been defined
-		// checks if is a Script affinity loader
-		if (Main.getAffinityLoader() != null && Main.getAffinityLoader() instanceof ScriptAffinityLoader) {
-			ScriptAffinityLoader loader = (ScriptAffinityLoader) Main.getAffinityLoader();
-			// checks if it has a script file
-			if (loader.getScriptFile() != null) {
-				// TODO mettere LOCK anche nel affinity loader!!!!
-				// locks the access to file to avoid multiple accesses
-				ILock writeSynch = null;
-				writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
-				writeSynch.lock();
+		// checks if a datasets rules file is defined
+		if (Main.DATA_PATHS_MANAGER.getDatasetRulesFile() != null) {
+			// locks the access to file to avoid multiple accesses
+			ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
+			try {
+				read.acquire();
+				// reads the file and prepare the bean to return
+				String content = FileUtils.readFileToString(Main.DATA_PATHS_MANAGER.getDatasetRulesFile());
+				ConfigurationFile policy = new ConfigurationFile();
+				policy.setContent(content);
+				policy.setType("xml");
+				policy.setLastModified(Main.DATA_PATHS_MANAGER.getDatasetRulesFile().lastModified());
+				return policy;
+			} catch (IOException e) {
+				throw new ExecutorException(NodeMessage.JEMC238E, e, Main.DATA_PATHS_MANAGER.getDatasetRulesFile().toString());
+			} catch (LockException e) {
+				throw new ExecutorException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
+			} finally {
+				// unlock always
 				try {
-					// reads teh file and prepare the bean to return
-					String content = FileUtils.readFileToString(loader.getScriptFile());
-					ConfigurationFile policy = new ConfigurationFile();
-					policy.setContent(content);
-					policy.setType(loader.getScriptType());
-					policy.setLastModified(loader.getScriptFile().lastModified());
-					return policy;
-				} catch (IOException e) {
-					throw new ExecutorException(NodeMessage.JEMC238E, e, loader.getScriptFile().toString());
-				} finally {
-					// unlock always
-					writeSynch.unlock();
+					read.release();
+				} catch (Exception e) {
+					throw new ExecutorException(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
 				}
 			}
 		}

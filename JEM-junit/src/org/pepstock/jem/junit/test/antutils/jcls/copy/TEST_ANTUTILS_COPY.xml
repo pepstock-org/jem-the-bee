@@ -29,7 +29,7 @@
 	<target name="executeCopy">
 		<copy id="first">
 			<dataDescription name="OUTPUT" disposition="NEW">
-				<dataSet name="${jem.data}/test_antutils/TestCopy"/>
+				<dataSet name="test_antutils/TestCopy"/>
 			</dataDescription>
 			<dataDescription name="INPUT" disposition="SHR">
 				<dataset>
@@ -46,13 +46,13 @@
 		</copy>
 		<copy id="second">
 			<dataDescription name="OUTPUT" disposition="NEW">
-				<dataSet name="${jem.data}/test_antutils/TestCopy2"/>
+				<dataSet name="test_antutils/TestCopy2"/>
 			</dataDescription>
 			<dataDescription name="INPUT" disposition="SHR">
 				<dataset>
 				    TestCopy second:
 				</dataset>	
-   				<dataSet name="${jem.data}/test_antutils/TestCopy"/>
+   				<dataSet name="test_antutils/TestCopy"/>
 			</dataDescription>
 		</copy>
 	</target>

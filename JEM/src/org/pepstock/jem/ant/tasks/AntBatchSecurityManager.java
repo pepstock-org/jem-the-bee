@@ -211,5 +211,4 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 		}
 		super.checkWrite(file);
 	}
-
 }

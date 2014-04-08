@@ -27,6 +27,8 @@ import org.pepstock.jem.node.JobLogManager;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.util.locks.LockException;
+import org.pepstock.jem.util.locks.ReadLock;
 import org.pepstock.jem.util.rmi.DefaultRmiObject;
 
 import com.hazelcast.core.IMap;
@@ -90,12 +92,23 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 
 		// prints header into job-log
 		JobLogManager.printJobStarted(job);
-	
-		JobStartedObjects result = new JobStartedObjects();
-		result.setRoles(task.getJobTask().getRoles());
-		result.setStorageGroupsManager(Main.DATA_PATHS_MANAGER);
 		
-		return result;
+		ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
+		try {
+			read.acquire();	
+			JobStartedObjects result = new JobStartedObjects();
+			result.setRoles(task.getJobTask().getRoles());
+			result.setStorageGroupsManager(Main.DATA_PATHS_MANAGER);
+			return result;
+		} catch (LockException e) {
+			throw new RemoteException(NodeMessage.JEMC260E.toMessage().getFormattedMessage(Queues.DATASETS_RULES_LOCK), e);
+		} finally {
+			try {
+				read.release();
+			} catch (Exception e) {
+				throw new RemoteException(NodeMessage.JEMC261E.toMessage().getFormattedMessage(Queues.DATASETS_RULES_LOCK), e);
+			}
+		}
 	}
 
 	/**

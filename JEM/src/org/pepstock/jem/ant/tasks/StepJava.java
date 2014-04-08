@@ -37,11 +37,13 @@ import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.ant.tasks.managers.ImplementationsContainer;
 import org.pepstock.jem.ant.tasks.managers.ReturnCodesContainer;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.FtpResource;
 import org.pepstock.jem.node.resources.HttpResource;
 import org.pepstock.jem.node.resources.JdbcResource;
@@ -52,6 +54,7 @@ import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.FtpReference;
 import org.pepstock.jem.node.tasks.jndi.HttpReference;
@@ -253,6 +256,15 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// new intial context for JNDI
 			ic = new InitialContext();
 
+			// LOADS DataPaths Container
+			Reference referencePaths = new DataPathsReference();
+			// loads dataPaths on static name
+			String xmlPaths = xstream.toXML(DataPathsContainer.getInstance());
+			// adds the String into a data stream reference
+			referencePaths.add(new StringRefAddr(StringRefAddrKeys.DATAPATHS_KEY, xmlPaths));
+			// re-bind the object inside the JNDI context
+			ic.rebind(AntKeys.ANT_DATAPATHS_BIND_NAME, referencePaths);
+			
 			// scans all datasource passed
 			for (DataSource source : sources){
 				// checks if datasource is well defined

@@ -54,13 +54,13 @@
 		<echo> GFS output folder:${jem.output} </echo>
 		<procedure name="printFooter"/>
 	</target>
-		
+	
 	<target name="dataFolder" depends="">
 		<procedure name="printHeader"/>
-		<echo> GFS data folder:${jem.data} </echo>
+		<echo> GFS output folder:${jem.data} </echo>
 		<procedure name="printFooter"/>
 	</target>
-
+		
 	<target name="sourceFolder" depends="">
 		<procedure name="printHeader"/>
 		<echo> GFS source folder:${jem.source} </echo>

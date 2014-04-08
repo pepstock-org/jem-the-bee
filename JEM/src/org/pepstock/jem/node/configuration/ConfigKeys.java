@@ -102,6 +102,12 @@ public final class ConfigKeys {
 	 * wrapper.conf while JAVA_HOME is set in the OS).
 	 */
 	public static final String WRAPPER_APP_ENV = "wrapper.app.env.";
+	
+	/**
+	 * Is the environment variable name to use to pass the property to job
+	 * execution, for data description for data (set only if dataPaths count is 1), otherwise doesn't exist
+	 */
+	public static final String JEM_DATA_PATH_NAME = "jem.data";
 
 	/**
 	 * Is the environment variable name to use to pass the property to job
@@ -180,6 +186,12 @@ public final class ConfigKeys {
 	 * 
 	 */
 	public static final String DATASETS_RULES_FIELD = "datasetsRules";
+	
+	/**
+	 * Property name used for datasets rules.
+	 * 
+	 */
+	public static final String DATASETS_RULES = "datasetsRules";
 
 	/**
 	 * Tag name used for rules main element

@@ -34,13 +34,13 @@
 		<shellscript shell="bash" suffix=".sh" failonerror="true">
 			 MYVARIABLE='Hello this is a shell script'
 			 echo $MYVARIABLE	
-			 ls ${jem.data}	
+			 ls ${jem.output}	
 		</shellscript>	
 		<!-- use bash -->
 		<bash suffix=".sh" failonerror="true">
 		 	MYVARIABLE='Hello this is a bash script'
 		 	echo $MYVARIABLE	
-		 	ls ${jem.data}	
+		 	ls ${jem.output}	
 		</bash>
 		<perl failonerror="true">
 			 $myVariable = "Hello this is a perl script";

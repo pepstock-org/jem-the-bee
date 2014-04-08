@@ -22,9 +22,8 @@
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.DeleteJunitDataSet">
 			<arg value="-h" />
 			<classpath>
-				<pathelement path="${JEM_HOME}/lib/jem.jar" />
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
-				<fileset dir="${JEM_HOME}/lib/commons-io/" includes="*.jar"/>
+				<pathelement path="${java.class.path}" />
 			</classpath>
 		</step-java>
 	</target>

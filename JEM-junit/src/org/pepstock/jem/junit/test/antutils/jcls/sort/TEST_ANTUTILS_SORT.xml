@@ -34,7 +34,6 @@
 			</dataDescription>
 
 			<dataDescription name="OUTPUT" disposition="NEW" sysout="true">
-				<!--dataSet name="${jem.data}/gdg/jemtest(1)"/-->
 				<!--dataSet name="gdg/jemtest(1)"/-->
 			</dataDescription>
 

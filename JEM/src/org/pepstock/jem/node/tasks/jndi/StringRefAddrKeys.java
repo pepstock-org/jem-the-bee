@@ -53,6 +53,11 @@ public final class StringRefAddrKeys {
 	 * Key used in JNDI for dataDescription, for merging, object
 	 */
 	public static final String TEMPORARY_FILE_KEY = "jem.temporary.file.object";
+	
+	/**
+	 * Key used in JNDI for data paths object
+	 */
+	public static final String DATAPATHS_KEY = "jem.datapaths.object";
 
 	/**
 	 * To avoid any instantiation

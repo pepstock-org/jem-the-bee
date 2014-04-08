@@ -6,16 +6,29 @@
 	<!--
 	JEM properties definition
 	-->
-	<property name="jem.job.name" value="TEST_COMMON_CLEAN_DATASETS"/>
-	<property name="jem.job.lockingScope" value="task"/>
+	<property name="jem.job.name" value="TEST_COMMON_CLEAN_DATASETS" />
+	<property name="jem.job.lockingScope" value="task" />
 	<!-- 
 	<property name="jem.job.domain" value="domain"/>
 	<property name="jem.job.environment" value="environment"/>
 	<property name="jem.job.affinity" value="affinity"/>
-	-->	
+	-->
 
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+	<!--
+		In case of single data path, is possible to remove the wrapper and
+		use DELETE Ant task wuth jem.data variable, as following:
+		
+		<delete dir="${jem.data}/test_common" />
+	-->
+	
 	<target name="delete">
-		<delete dir="${jem.data}/test_common"/>
+		<wrapper>
+			<dataDescription name="DELETE" disposition="OLD">
+				<dataSet name="test_common" />
+			</dataDescription>
+			<delete dir="${DD_DELETE}" failonerror="false" />
+		</wrapper>
 	</target>
 
 </project>

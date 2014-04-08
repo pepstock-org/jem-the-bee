@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.util.locks;
 
-import org.pepstock.jem.log.JemException;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.InstanceDestroyedException;
@@ -42,13 +40,13 @@ public class ReadLock extends ConcurrentLock{
 	}
 	
 	@Override
-	public void acquire() throws JemException {
+	public void acquire() throws LockException {
 		try {
 			getNoWaiting().acquire();
 		} catch (InstanceDestroyedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		} catch (InterruptedException e) {
-			throw new JemException(e);
+			throw new LockException(e);
 		}
 		
 		Long nReaders = null;
@@ -65,7 +63,7 @@ public class ReadLock extends ConcurrentLock{
 			readers.put(MAP_KEY, nReaders);
 		} catch (Exception e) {
 			getNoWaiting().release();
-			throw new JemException(e);
+			throw new LockException(e);
 		} finally {
 			readers.unlock(MAP_KEY);
 		}
@@ -74,16 +72,16 @@ public class ReadLock extends ConcurrentLock{
 				getNoAccessing().acquire();
 			} catch (InstanceDestroyedException e) {
 				getNoWaiting().release();
-				throw new JemException(e);
+				throw new LockException(e);
 			} catch (InterruptedException e) {
 				getNoWaiting().release();
-				throw new JemException(e);
+				throw new LockException(e);
 			}
 		}
 	} 
 
 	@Override
-	public void release() throws JemException{
+	public void release() throws LockException{
 		Long nReaders = null;
 		Long prev = null;
 		try {
@@ -91,6 +89,8 @@ public class ReadLock extends ConcurrentLock{
 			prev = readers.get(MAP_KEY);
 			nReaders = Long.valueOf(prev.longValue() - 1);
 			readers.put(MAP_KEY, nReaders);
+		} catch (Exception e){
+			throw new LockException(e);
 		} finally {
 			readers.unlock(MAP_KEY);
 		}

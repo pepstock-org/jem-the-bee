@@ -28,7 +28,7 @@
 	<target name="copyFile">
 	   <wrapper>
 	      <dataDescription name="OUTPUT" disposition="NEW">
-	         <dataSet name="${jem.data}/test_antutils/wrapperTest.txt"/>
+	         <dataSet name="test_antutils/wrapperTest.txt"/>
 	      </dataDescription>
 
 	      <dataDescription name="INPUT" disposition="SHR">

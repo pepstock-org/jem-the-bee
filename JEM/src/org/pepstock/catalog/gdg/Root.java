@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.pepstock.jem.log.LogAppl;
+
 /**
  * It represents the root of GDG. Contains all information about the created
  * generation and the index of last one (gen 0).<br>
@@ -229,15 +231,18 @@ public class Root {
 		// because in hadoop we cannot modify an existing file, in this case
 		// root.properties we use a backup file as workaround
 		try {
-			if (backupFile.exists()) {
-				backupFile.delete();
+			if (backupFile.exists() && !backupFile.delete()){
+					throw new IOException("Unable to delete backup file "+backupFile.getAbsolutePath());
 			}
-			file.renameTo(backupFile);
-			fos = new FileOutputStream(file);
-			properties.store(fos, "new GDG version");
-			fos.flush();
-			if (backupFile.exists()) {
-				backupFile.delete();
+			if (!file.exists() || file.renameTo(backupFile)){
+				fos = new FileOutputStream(file);
+				properties.store(fos, "new GDG version");
+				fos.flush();
+				if (backupFile.exists() && !backupFile.delete()){
+					LogAppl.getInstance().debug("Unable to delete backup file "+backupFile.getAbsolutePath());
+				}
+			} else {
+				throw new IOException("Unable to rename to backup file "+file.getAbsolutePath());
 			}
 		} catch (IOException e) {
 			throw e;

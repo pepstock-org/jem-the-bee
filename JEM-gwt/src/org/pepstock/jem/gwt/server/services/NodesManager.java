@@ -51,6 +51,9 @@ import org.pepstock.jem.node.executors.configuration.GetJemEnvConfiguration;
 import org.pepstock.jem.node.executors.configuration.SaveHazelcastConfiguration;
 import org.pepstock.jem.node.executors.configuration.SaveJemConfiguration;
 import org.pepstock.jem.node.executors.configuration.SaveJemEnvConfiguration;
+import org.pepstock.jem.node.executors.datasetsrules.CheckDatasetsRules;
+import org.pepstock.jem.node.executors.datasetsrules.GetDatasetsRules;
+import org.pepstock.jem.node.executors.datasetsrules.SaveDatasetsRules;
 import org.pepstock.jem.node.executors.nodes.Drain;
 import org.pepstock.jem.node.executors.nodes.GetLog;
 import org.pepstock.jem.node.executors.nodes.Shutdown;
@@ -409,6 +412,8 @@ public class NodesManager extends DefaultService {
 				executor = new CheckJemEnvConfiguration(content);
 			} else if (what.equalsIgnoreCase(ConfigKeys.HAZELCAST_CONFIG)){
 				executor = new CheckHazelcastConfiguration(content);
+			} else if (what.equalsIgnoreCase(ConfigKeys.DATASETS_RULES)){
+				executor = new CheckDatasetsRules(content);
 			} else {
 				executor = new CheckJemConfiguration(content);
 			}
@@ -461,6 +466,8 @@ public class NodesManager extends DefaultService {
 				executor = new GetHazelcastConfiguration();
 			} else if (what.equalsIgnoreCase(ConfigKeys.JEM_ENV_CONF)){
 				executor = new GetJemEnvConfiguration();
+			} else if (what.equalsIgnoreCase(ConfigKeys.DATASETS_RULES)){
+				executor = new GetDatasetsRules();				
 			} else {
 				executor = new GetJemEnvConfiguration();
 			}
@@ -498,6 +505,9 @@ public class NodesManager extends DefaultService {
 			} else if (what.equalsIgnoreCase(ConfigKeys.JEM_ENV_CONF)){
 				checkConfigFile(file.getContent(), what);
 				executor = new SaveJemEnvConfiguration(file);
+			} else if (what.equalsIgnoreCase(ConfigKeys.DATASETS_RULES)){
+				checkConfigFile(file.getContent(), what);
+				executor = new SaveDatasetsRules(file);
 			} else {
 				executor = new SaveJemEnvConfiguration(file);
 			}
