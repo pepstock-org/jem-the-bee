@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,9 +31,8 @@ import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.DataSet;
-import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.util.CharSet;
@@ -69,7 +68,7 @@ public class DataSetManager {
 	 * @param ds dataset instance
 	 * @throws BuildException if disposition is not compliant with reference
 	 */
-	public static void loadReferences(DataDescriptionImpl ddImpl, DataSet ds) throws BuildException {
+	static void loadReferences(DataDescriptionImpl ddImpl, DataSet ds) throws BuildException {
 		// checks if reference
 		if (ds.isReference()) {
 			// gets container by singleton method
@@ -130,7 +129,7 @@ public class DataSetManager {
 	 * @throws BuildException configuration not compliant (disposition wrongs or
 	 *             invalid call)
 	 */
-	public static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds, DataDescriptionStep item) throws IOException, BuildException {
+	static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds, DataDescriptionStep item) throws IOException, BuildException {
 		// creates a new instance of dataset implemetation
 		DataSetImpl dataset = new DataSetImpl();
 

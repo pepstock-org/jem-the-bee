@@ -14,15 +14,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.pepstock.jem.ant.tasks.Procedure;
-import org.pepstock.jem.ant.tasks.ProcedureDefinition;
 
 
 /**
@@ -60,7 +58,7 @@ public class ProceduresContainer {
 	 * Returns all procedure definitions 
 	 * @return the proceduresDefinitions
 	 */
-	public Map<String, ProcedureDefinition> getProceduresDefinitions() {
+	Map<String, ProcedureDefinition> getProceduresDefinitions() {
 		return proceduresDefinitions;
 	}
 
@@ -68,7 +66,7 @@ public class ProceduresContainer {
 	 *  Returns all procedures instances 
 	 * @return the procedures
 	 */
-	public List<Procedure> getProcedures() {
+	List<Procedure> getProcedures() {
 		return procedures;
 	}
 

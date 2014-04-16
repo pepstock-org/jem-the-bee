@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -28,8 +28,6 @@ import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.jem.ant.AntException;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.DataDescription;
-import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.node.ResourceLock;
 import org.pepstock.jem.node.rmi.ResourceLocker;
 import org.pepstock.jem.node.tasks.InitiatorManager;
@@ -56,7 +54,7 @@ public class Locker {
 	 * 
 	 * @throws AntException if any RMI exception occurs
 	 */
-	public Locker() throws AntException {
+	Locker() throws AntException {
 		try {
 			// gets the locker
 			locker = InitiatorManager.getResourceLocker();
@@ -75,7 +73,7 @@ public class Locker {
 	 * 
 	 * @throws AntException if any exception occurs
 	 */
-	public void lock() throws AntException{
+	void lock() throws AntException{
 		// sorts the data descriptions by steps order 
 		Collections.sort(StepsContainer.getInstance().getDataDescriptionSteps(), new Comparator<DataDescriptionStep>() {
 			@Override
@@ -140,7 +138,7 @@ public class Locker {
 	 * 
 	 * @throws AntException if any excpetion occurs
 	 */
-	public void unlock() throws AntException{
+	void unlock() throws AntException{
 		try {
 			// if resource locked container is empty, ends
 			if (!resources.isEmpty()) {

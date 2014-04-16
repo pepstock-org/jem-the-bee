@@ -48,6 +48,7 @@
 	<!-- Tasklet Defintion -->
 	
 	<beans:bean id="connect_to_datasource" class="org.pepstock.jem.junit.test.springbatch.java.DataSourceConnTasklet">
+		<beans:property name="jdbcTemplate" ref="jdbcTemplate" />
 		<beans:property name="dataDescriptionList">
 				<beans:list>
 					<beans:ref local="log4j"/>
@@ -59,6 +60,10 @@
 				</beans:list>
 		</beans:property>
 	</beans:bean>
+
+	<beans:bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">  
+  		<beans:property name="dataSource" ref="jem-db" />  
+	</beans:bean>  
 
 	<!-- DataSource Definition -->
 	<beans:bean id="jem-db" class="org.pepstock.jem.springbatch.tasks.DataSource">

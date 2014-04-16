@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.util.Map;
 
@@ -24,12 +24,7 @@ import org.pepstock.jem.springbatch.JemBean;
 import org.pepstock.jem.springbatch.SpringBatchKeys;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
-import org.pepstock.jem.springbatch.tasks.JemTasklet;
-import org.pepstock.jem.springbatch.tasks.StepListener;
-import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.job.AbstractJob;
-import org.springframework.batch.core.step.AbstractStep;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -87,13 +82,6 @@ public class DefinitionsLoader {
 	}
 
 	/**
-	 * @return the context
-	 */
-	public ConfigurableApplicationContext getContext() {
-		return context;
-	}
-
-	/**
 	 * @param context the context to set
 	 */
 	public void setContext(ConfigurableApplicationContext context) {
@@ -108,26 +96,6 @@ public class DefinitionsLoader {
 			lockingScope = SpringBatchKeys.JOB_SCOPE;
 		}
 		LogAppl.getInstance().emit(SpringBatchMessage.JEMS022I, bean.getJobName(), lockingScope);
-		
-		// creates Listener
-		StepListener listener = new StepListener();
-		// sets the springbatch listener
-		// both jobs and steps
-		@SuppressWarnings("rawtypes")
-		Map mapJobs = context.getBeansOfType(Job.class);
-		if (!mapJobs.isEmpty()) {
-			// sets Listener to all jobs
-			for (Object keyObject : mapJobs.keySet()) {
-				String jobName = keyObject.toString();
-				AbstractJob job = (AbstractJob)mapJobs.get(jobName);
-				job.registerJobExecutionListener(listener);
-				// sets Listener to all steps of job
-				for (String stepName : job.getStepNames()){
-					AbstractStep step = (AbstractStep)job.getStep(stepName);
-					step.registerStepExecutionListener(listener);
-				}
-			}
-		}
 	}
 
 	/**
@@ -147,7 +115,7 @@ public class DefinitionsLoader {
 	/**
 	 * Loads all definitions from JCL starting for all steps
 	 */
-	public void loadForLock() {
+	void loadForLock() {
 		@SuppressWarnings("rawtypes")
 		Map map = context.getBeansOfType(Step.class);
 		if (!map.isEmpty()) {
@@ -163,7 +131,7 @@ public class DefinitionsLoader {
 	 * 
 	 * @param step step name
 	 */
-	public void loadForLock(String step) {
+	void loadForLock(String step) {
 		// gets step bean definition
 		BeanDefinition bDef = context.getBeanFactory().getBeanDefinition(step);
 		// checks if you are using tasklets

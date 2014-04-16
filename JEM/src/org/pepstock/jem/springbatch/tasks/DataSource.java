@@ -17,11 +17,29 @@
 package org.pepstock.jem.springbatch.tasks;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.naming.Reference;
+import javax.naming.StringRefAddr;
+
+import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.resources.JdbcResource;
+import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.tasks.InitiatorManager;
+import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.JdbcReference;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
+import org.springframework.jdbc.datasource.AbstractDataSource;
 
 
 /**
@@ -34,7 +52,7 @@ import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
  * @version 1.0
  * 
  */
-public class DataSource implements Serializable {
+public class DataSource extends AbstractDataSource implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -113,6 +131,87 @@ public class DataSource implements Serializable {
 		return properties;
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.sql.DataSource#getConnection()
+	 */
+	@Override
+	public Connection getConnection() throws SQLException {
+		return getConnectionImpl();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.sql.DataSource#getConnection(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Connection getConnection(String username, String password) throws SQLException {
+		return getConnectionImpl();
+	}
+	
+	
+	private Connection getConnectionImpl() throws SQLException{
+		try {
+			SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
+			// checks if datasource is well defined
+			if ((getName() == null) || (getResource() == null)){
+				throw new SQLException(SpringBatchMessage.JEMS016E.toMessage().getFormattedMessage());
+			}
+			// gets the RMi object to get resources
+			CommonResourcer resourcer = InitiatorManager.getCommonResourcer();
+			// lookups by RMI for the database 
+			Resource res = resourcer.lookup(JobId.VALUE, getResource());
+			if (!batchSM.checkResource(res)){
+				throw new SQLException(SpringBatchMessage.JEMS017E.toMessage().getFormattedMessage(res.toString()));
+			}
+			// all properties create all StringRefAddrs necessary
+			Map<String, ResourceProperty> properties = res.getProperties();
+
+			// scans all properteis set by JCL
+			for (Property property : getProperties()){
+				// if a key is defined FINAL, throw an exception
+				for (ResourceProperty resProperty : properties.values()){
+					if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
+						throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));
+					}
+				}
+				res.setProperty(property.getName(), property.getValue());
+			}
+			// creates a JNDI reference
+			Reference ref = null;
+			// only JBDC, JMS and FTP types are accepted
+			if (res.getType().equalsIgnoreCase(JdbcResource.TYPE)) {
+				// creates a JDBC reference (uses DBCP Apache)
+				ref = new JdbcReference();
+
+			} else {
+				try {
+					ref = resourcer.lookupCustomResource(JobId.VALUE, res.getType());
+					if (ref == null){
+						throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+					}
+				} catch (Exception e) {
+					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+				} 
+			}
+
+			// loads all properties into RefAddr
+			for (ResourceProperty property : properties.values()){
+				ref.add(new StringRefAddr(property.getName(), property.getValue()));
+			}
+			
+			// binds the object with format {type]/[name]
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS024I, res);
+			
+			BasicDataSourceFactory factory = new BasicDataSourceFactory();
+			javax.sql.DataSource ds = (javax.sql.DataSource)factory.getObjectInstance(ref, null, null, null);
+			return ds.getConnection();
+		} catch (RemoteException e) {
+			throw new SQLException(e.getMessage(), e);
+		} catch (UnknownHostException e) {
+			throw new SQLException(e.getMessage(), e);
+		} catch (Exception e) {
+			throw new SQLException(e.getMessage(), e);
+		}
+	}
 	/**
 	 * Returns the string representation of data description.
 	 * 

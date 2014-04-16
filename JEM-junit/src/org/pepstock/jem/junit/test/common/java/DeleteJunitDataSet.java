@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.junit.test.antutils.java;
+package org.pepstock.jem.junit.test.common.java;
 
 import java.io.File;
 
@@ -37,7 +37,7 @@ public class DeleteJunitDataSet {
 	/**
 	 * name of the dataset that will contain the JDBC resource information
 	 */
-	private static final String DATA_SET_JUNIT_FOLDER = "test_antutils";
+	private static final String DATA_SET_JUNIT_FOLDER = "test_common";
 
 	/**
 	 * 

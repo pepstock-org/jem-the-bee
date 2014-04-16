@@ -57,7 +57,6 @@ public class CopyTask extends AbstractIOTask {
 	public static void main(String[] args) throws AntException, NamingException, IOException  {
 		// new initial context to access by JNDI to COMMAND DataDescription
 		InitialContext ic = ContextUtils.getContext();
-
 		// gets inputstream
 		Object input = (Object) ic.lookup(INPUT_DATA_DESCRIPTION_NAME);
 		// gets outputstream

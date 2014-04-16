@@ -54,7 +54,7 @@ public class SpringBatchSecurityManager extends BatchSecurityManager {
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
-	public SpringBatchSecurityManager(Collection<Role> roles) {
+	SpringBatchSecurityManager(Collection<Role> roles) {
 		super(roles);
 		loadPermissions(roles);
 	}

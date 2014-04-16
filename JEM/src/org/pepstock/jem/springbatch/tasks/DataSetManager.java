@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,13 +28,12 @@ import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
-import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.pepstock.jem.springbatch.tasks.DataSet;
 import org.pepstock.jem.util.CharSet;
 
 /**
@@ -70,7 +69,7 @@ public class DataSetManager {
 	 * @throws SpringBatchException occurs if errors
 	 * @throws IOException occurs if errors
 	 */
-	public static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds) throws SpringBatchException, IOException {
+	static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds) throws SpringBatchException, IOException {
 		DataSetImpl dataset = ds.getDataSetImpl();
 
 		if (ds.isTemporary()) {

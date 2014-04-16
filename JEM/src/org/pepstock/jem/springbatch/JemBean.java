@@ -16,8 +16,14 @@
 */
 package org.pepstock.jem.springbatch;
 
+import java.util.Map;
+
 import org.pepstock.jem.AbstractJcl;
-import org.pepstock.jem.springbatch.tasks.managers.DefinitionsLoader;
+import org.pepstock.jem.springbatch.tasks.DefinitionsLoader;
+import org.pepstock.jem.springbatch.tasks.StepListener;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.job.AbstractJob;
+import org.springframework.batch.core.step.AbstractStep;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -119,5 +125,25 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	@Override
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
+		
+		// creates Listener
+		StepListener listener = new StepListener();
+		// sets the springbatch listener
+		// both jobs and steps
+		@SuppressWarnings("rawtypes")
+		Map mapJobs = context.getBeansOfType(Job.class);
+		if (!mapJobs.isEmpty()) {
+			// sets Listener to all jobs
+			for (Object keyObject : mapJobs.keySet()) {
+				String jobName = keyObject.toString();
+				AbstractJob job = (AbstractJob)mapJobs.get(jobName);
+				job.registerJobExecutionListener(listener);
+				// sets Listener to all steps of job
+				for (String stepName : job.getStepNames()){
+					AbstractStep step = (AbstractStep)job.getStep(stepName);
+					step.registerStepExecutionListener(listener);
+				}
+			}
+		}
 	}
 }

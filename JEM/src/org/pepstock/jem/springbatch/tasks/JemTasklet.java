@@ -53,7 +53,6 @@ import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.pepstock.jem.springbatch.tasks.managers.ImplementationsContainer;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;

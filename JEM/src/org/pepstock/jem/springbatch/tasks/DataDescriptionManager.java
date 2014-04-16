@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,6 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.pepstock.jem.springbatch.tasks.DataDescription;
-import org.pepstock.jem.springbatch.tasks.DataSet;
 
 /**
  * Creates data description implementation from a data description.<br>
@@ -57,7 +55,7 @@ public class DataDescriptionManager {
 	 * @return data set implementation, to use for GRS
 	 * @throws SpringBatchException if errors occur
 	 */
-	public static DataDescriptionImpl createDataDescriptionImpl(DataDescription dd, String stepName) throws SpringBatchException {
+	static DataDescriptionImpl createDataDescriptionImpl(DataDescription dd, String stepName) throws SpringBatchException {
 		if (dd.getName() == null){
 			throw new SpringBatchException(SpringBatchMessage.JEMS003E);
 		}

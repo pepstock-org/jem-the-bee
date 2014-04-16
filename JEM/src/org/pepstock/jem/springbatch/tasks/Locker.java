@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -31,10 +31,6 @@ import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
-import org.pepstock.jem.springbatch.tasks.DataDescription;
-import org.pepstock.jem.springbatch.tasks.DataSet;
-import org.pepstock.jem.springbatch.tasks.JemTasklet;
-import org.pepstock.jem.springbatch.tasks.Lock;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -56,7 +52,7 @@ public class Locker {
 	 * @throws SpringBatchException if any RMI error occurs
 	 * 
 	 */
-	public Locker() throws SpringBatchException {
+	Locker() throws SpringBatchException {
 		try {
 			// gets the locker
 			locker = InitiatorManager.getResourceLocker();
@@ -72,7 +68,7 @@ public class Locker {
 	 * Locks resources, starting from definition of them!
 	 * @throws SpringBatchException if any RMI error occurs 
 	 */
-	public void lock() throws SpringBatchException{
+	void lock() throws SpringBatchException{
 		//scan all definition loading the implementations 
 		for (Definition object : DefinitionsContainer.getInstance().getObjects()){
 			if (object.isJemTasklet()){
@@ -207,7 +203,7 @@ public class Locker {
 	 * Unlocks resources, starting from definition of them!
 	 * @throws SpringBatchException if any exception occurs
 	 */
-	public void unlock() throws SpringBatchException{
+	void unlock() throws SpringBatchException{
 		try {
 			for (Definition object : DefinitionsContainer.getInstance().getObjects()){
 				if (object.isChunkItem()){

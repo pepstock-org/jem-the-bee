@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public final class ImplementationsContainer {
 	 * @param reference reference string representation
 	 * @return data description instance
 	 */
-	public DataDescriptionImpl getDataDescription(String reference) {
+	DataDescriptionImpl getDataDescription(String reference) {
 		String ref = normalizeReference(reference);
 		return (ref != null) ? mapDataDescription.get(ref.toLowerCase()) : null;	
 	}
@@ -106,7 +106,7 @@ public final class ImplementationsContainer {
 	 * @param item ANT task instance
 	 * @return list of data description instances
 	 */
-	public List<DataDescriptionImpl> getDataDescriptionsByItem(DataDescriptionStep item) {
+	List<DataDescriptionImpl> getDataDescriptionsByItem(DataDescriptionStep item) {
 		// creates a new list
 		List<DataDescriptionImpl> result = new ArrayList<DataDescriptionImpl>();
 		// creates a key usinf format for searching (without data description
@@ -132,7 +132,7 @@ public final class ImplementationsContainer {
 	 * @param task task name
 	 * @param dd data description implementation
 	 */
-	public void addDataDescription(DataDescriptionStep item, DataDescriptionImpl dd) {
+	void addDataDescription(DataDescriptionStep item, DataDescriptionImpl dd) {
 		// create a key using message format defined for reference
 		String key = createKey(item, dd.getName());
 		mapDataDescription.put(key, dd);

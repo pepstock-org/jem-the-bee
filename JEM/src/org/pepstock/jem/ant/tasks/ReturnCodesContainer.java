@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -75,7 +75,7 @@ public final class ReturnCodesContainer {
 	 * @param step representation
 	 * @return <code>true</code> if container contains the step
 	 */
-	public boolean hasReturnCode(DataDescriptionStep step) {
+	boolean hasReturnCode(DataDescriptionStep step) {
 		return hasReturnCode(createKey(step));
 	}
 
@@ -85,7 +85,7 @@ public final class ReturnCodesContainer {
 	 * @param step step representation
 	 * @return return code instance
 	 */
-	public Integer getReturnCode(DataDescriptionStep step) {
+	Integer getReturnCode(DataDescriptionStep step) {
 		return getReturnCode(createKey(step));
 	}
 
@@ -96,7 +96,7 @@ public final class ReturnCodesContainer {
 	 * @param reference string reference representation
 	 * @return <code>true</code> if container contains the reference
 	 */
-	public boolean hasReturnCode(String reference) {
+	boolean hasReturnCode(String reference) {
 		String ref = normalizeReference(reference);
 		return (ref != null) ? mapReturnCodes.containsKey(ref.toLowerCase()) : false;	
 	}
@@ -107,7 +107,7 @@ public final class ReturnCodesContainer {
 	 * @param reference reference string representation
 	 * @return return code instance
 	 */
-	public Integer getReturnCode(String reference) {
+	Integer getReturnCode(String reference) {
 		String ref = normalizeReference(reference);
 		return (ref != null) ? mapReturnCodes.get(ref.toLowerCase()) : null;	
 	}
@@ -122,7 +122,7 @@ public final class ReturnCodesContainer {
 	 * @param task task name
 	 * @param dd data description implementation
 	 */
-	public void setReturnCode(Project project, DataDescriptionStep item, Integer rc) {
+	void setReturnCode(Project project, DataDescriptionStep item, Integer rc) {
 		// create a key using message format defined for reference
 		String key = createKey(item);
 		mapReturnCodes.put(key, rc);
