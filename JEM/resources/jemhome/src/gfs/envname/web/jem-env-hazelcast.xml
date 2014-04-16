@@ -2,35 +2,35 @@
 	xmlns="http://www.hazelcast.com/schema/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<group>
-        <name>TEST-Env</name>
-        <password>jem_password</password>
+		<name>#[jem.environment.name]</name>
+		<password>#[jem.environment.password]</password>
 	</group>
 
 	<network>
 		<port auto-increment="true">5710</port>
 		<join>
 			<multicast enabled="true">
-				<multicast-group>233.0.0.1</multicast-group>
-				<multicast-port>54327</multicast-port>
+				<multicast-group>#[jem.multicast.group]</multicast-group>
+				<multicast-port>#[jem.multicast.port]</multicast-port>
 			</multicast>	
 			<tcp-ip enabled="false">
 				<interface>127.0.0.1</interface>
 			</tcp-ip>
 		</join>
-		<interfaces enabled="false">
-			<interface>10.10.1.*</interface>
+		<interfaces enabled="#[jem.interfaces.enable]">
+			<interface>#[jem.interface]</interface>
 		</interfaces>
-		<socket-interceptor enabled="false">
+		<socket-interceptor enabled="#[jem.login.protocol.enable]">
 			<class-name>org.pepstock.jem.node.security.socketinterceptor.NodeInterceptor</class-name>
 			<properties>
 				<!-- is the path of the keystore that contains the symmetric key used to crypt the login process -->
-			    <property name="jem.keystore.path">./WEB-INF/config/TEST-Env.keystore</property>
+			    <property name="jem.keystore.path">./WEB-INF/config/keystores/#[jem.keystore.name]</property>
 			    <!-- is password of the kesystore -->
-				<property name="jem.keystore.pwd">jem_password</property>
+				<property name="jem.keystore.pwd">#[jem.keystore.pwd]</property>
 				<!-- is the alias of the symmetric key inside keystore -->
-				<property name="jem.crypt.key.alias">TEST-Env</property>
+				<property name="jem.crypt.key.alias">#[jem.environment.name]</property>
 				<!-- is the password to access symmetric key inside keystore -->
-				<property name="jem.crypt.key.pwd">jem_password</property>
+				<property name="jem.crypt.key.pwd">#[jem.crypt.key.pwd]</property>
 			</properties>
 		</socket-interceptor>
 	</network>

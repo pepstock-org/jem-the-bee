@@ -66,6 +66,16 @@ public class NodeAttributes {
 	public static final String TEMPLATE_WAR_DIRECTORY_NAME = "war";
 
 	/**
+	 * Is the name of the template directory of web directory inside the gfs
+	 */
+	public static final String TEMPLATE_WEB_DIRECTORY_NAME = "web";
+
+	/**
+	 * Is the name of the template config directory
+	 */
+	public static final String TEMPLATE_WEB_CONFIG_DIRECTORY_NAME = "WEB-INF/config";
+
+	/**
 	 * The name of the war file
 	 */
 	public static final String TEMPLATE_WAR_FILE_NAME = "jem_gwt.war";
@@ -105,6 +115,10 @@ public class NodeAttributes {
 
 	// The directory where is present the war distribution for the environment
 	private File warDir;
+
+	// The directory where is present the config of war distribution for the
+	// environment
+	private File warConfigDir;
 
 	// The war file for the web application
 	private File warFile;
@@ -159,8 +173,9 @@ public class NodeAttributes {
 			String fs = "/";
 			envName = nodeProperties.getEnvironmentName();
 			envDir = new File(jemHome + fs + envName);
-			warDir = new File(jemHome + fs + envName + fs + TEMPLATE_WAR_DIRECTORY_NAME);
-			warFile = new File(jemHome + fs + envName + fs + TEMPLATE_WAR_FILE_NAME);
+			warDir = new File(nodeProperties.getPersistencePath() + fs + envName + fs + TEMPLATE_WEB_DIRECTORY_NAME + fs + TEMPLATE_WAR_DIRECTORY_NAME);
+			warConfigDir = new File(warDir.getAbsolutePath() + fs + TEMPLATE_WEB_CONFIG_DIRECTORY_NAME);
+			warFile = new File(nodeProperties.getPersistencePath() + fs + envName + fs + TEMPLATE_WEB_DIRECTORY_NAME + fs +TEMPLATE_WAR_FILE_NAME);
 			setNodeName(nodeProperties.getNodeName());
 			nodeDir = new File(envDir + fs + nodeName);
 			templateEnvDirectory = new File(jemHome + fs + TEMPLATE_SOURCE + fs + TEMPLATE_ENV_DIRECTORY_NAME);
@@ -315,6 +330,14 @@ public class NodeAttributes {
 	 */
 	public File getWarDir() {
 		return warDir;
+	}
+
+	/**
+	 * @return the directory where is present the config of war distribution for
+	 *         the environmnet
+	 */
+	public File getWarConfigDir() {
+		return warConfigDir;
 	}
 
 	/**

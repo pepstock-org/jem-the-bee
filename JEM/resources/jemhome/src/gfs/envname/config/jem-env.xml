@@ -14,7 +14,7 @@
 		</properties-->
 	</database>
 	
-	<datasetsRules>#[jem.persistence]/#[jem.environment.name]/config/datasetsRules.xml</datasetsRules>
+	<datasetsRules>${jem.persistence}/#[jem.environment.name]/config/datasetsRules.xml</datasetsRules>
 
 	<statistics-manager/>
 

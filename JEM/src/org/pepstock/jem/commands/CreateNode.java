@@ -109,7 +109,7 @@ public class CreateNode {
 			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "Node", nodeAttributes.getNodeDir().getAbsolutePath());
 		} else {
 			createEnvironment(nodeAttributes);
-			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "Environmnet", nodeAttributes.getEnvDir().getAbsolutePath());
+			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "Environment", nodeAttributes.getEnvDir().getAbsolutePath());
 			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "Node", nodeAttributes.getNodeDir().getAbsolutePath());
 		}
 	}
@@ -132,6 +132,7 @@ public class CreateNode {
 		File srcDir = nodeAttributes.getTemplateEnvDirectory();
 		File destDir = nodeAttributes.getEnvDir();
 		FileUtils.copyDirectory(srcDir, destDir);
+		ConfsUpdater confs = new ConfsUpdater(nodeAttributes);
 		// copy all the template gfs config environment directory
 		if (!nodeAttributes.getGfsConfigDirectory().exists()) {
 			File srcGfsConfigDir = nodeAttributes.getTemplateGfsConfigDirectory();
@@ -162,6 +163,12 @@ public class CreateNode {
 			userkeystoreInfo.setPassword(np.getKeystorePwd());
 			KeyStoreUtil.generate(userkeystoreInfo);
 			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "users Keystore", usekeystoreFile.getAbsolutePath());
+			// update configuration files
+			confs.updateEnvGfsConfig();
+			FileUtils.copyFileToDirectory(keystoreFile, nodeAttributes.getWarConfigDir());
+			// create the war file (if does not exist) for the web distribution of the environment 
+			zipDirectory(nodeAttributes.getWarDir(), nodeAttributes.getWarFile());			
+			LogAppl.getInstance().emit(NodeMessage.JEMC059I, "war file", nodeAttributes.getWarFile());
 		}
 		// raname the node foder with the one set by the user
 		File newNodeDir = new File(nodeAttributes.getEnvDir() + "/" + NodeAttributes.TEMPLATE_NODE_DIRECTORY_NAME);
@@ -170,12 +177,9 @@ public class CreateNode {
 			throw new MessageException(NodeMessage.JEMC154E);
 		}
 		// update configuration files
-		ConfsUpdater confs = new ConfsUpdater(nodeAttributes);
 		confs.updateEnvConfigs();
-		confs.updateNodeConfigs();
-		// create the war file for the web distribution of the environment
-		zipDirectory(nodeAttributes.getWarDir(), nodeAttributes.getWarFile());
-		
+		// update configuration files
+		confs.updateNodeConfigs();		
 		
 		int count = 0;
 		// this while is added to solve the issues

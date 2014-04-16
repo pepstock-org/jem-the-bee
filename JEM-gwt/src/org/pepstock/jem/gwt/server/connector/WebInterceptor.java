@@ -18,6 +18,7 @@
 package org.pepstock.jem.gwt.server.connector;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -28,10 +29,11 @@ import java.security.KeyException;
 import java.util.Properties;
 
 import org.apache.shiro.codec.Base64;
+import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.security.keystore.Factory;
-import org.pepstock.jem.node.security.keystore.KeyStoresInfo;
+import org.pepstock.jem.node.security.keystore.KeyStoreInfo;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
 import org.pepstock.jem.node.security.loginprotocol.ClientLoginProtocol;
 import org.pepstock.jem.node.security.loginprotocol.LoginProtocolException;
@@ -48,14 +50,28 @@ import com.hazelcast.nio.SocketInterceptor;
 public class WebInterceptor implements SocketInterceptor {
 
 
-	private KeyStoresInfo keystoresInfo;
+	private KeyStoreInfo clusterKeystoreInfo;
 
 	/**
 	 * Build the web connector to JEM
 	 * @param configProperties
 	 */
 	public WebInterceptor(Properties configProperties) {
-		keystoresInfo = Factory.createKeyStoresInfo(configProperties);
+		String keystorePath=configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
+		File clusterKeystoreFile = new File(SharedObjects.getInstance().getContextPath()+"/"+keystorePath);
+		// if the keystore is not in the war than try to solve as absolute path
+		if(!clusterKeystoreFile.exists()){
+			clusterKeystoreFile=new File(keystorePath);
+		}
+		String keystorePasswd = configProperties.getProperty(Factory.JEM_KEYSTORE_PWD_PROP);
+		String keyPasswd = configProperties.getProperty(Factory.JEM_CRYPT_KEY_PWD_PROP);
+		String keyAlias = configProperties.getProperty(Factory.JEM_CRYPT_KEY_ALIAS_PROP);
+		// Info relative to the keystore containing the symmetric key
+		clusterKeystoreInfo = new KeyStoreInfo(KeyStoreInfo.JCEKS_KEYSTORE_TYPE);
+		clusterKeystoreInfo.setFile(clusterKeystoreFile);
+		clusterKeystoreInfo.setPassword(keystorePasswd);
+		clusterKeystoreInfo.setSymmetricKeyAlias(keyAlias);
+		clusterKeystoreInfo.setSymmetricKeyPwd(keyPasswd);
 	}
 
 	/*
@@ -81,7 +97,7 @@ public class WebInterceptor implements SocketInterceptor {
 			address = ip + ":" + port;
 			// instantiate the jemProtocol that give the right request (Base64
 			// encoded) from the given response
-			Key symmetricKey = KeysUtil.getSymmetricKey(keystoresInfo.getClusterKeystoreInfo());
+			Key symmetricKey = KeysUtil.getSymmetricKey(clusterKeystoreInfo);
 			ClientLoginProtocol jemClientProtocol = new ClientLoginProtocol(symmetricKey);
 			String request = jemClientProtocol.getRequestFromResponse(null, address, LoginRequest.JEM_WEB_USER);
 			LogAppl.getInstance().emit(NodeMessage.JEMC203I, new String(Base64.decode(request), CharSet.DEFAULT));

@@ -32,7 +32,7 @@
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
-					<attribute name="Built-By" value="${user.name}" />
+					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
 				</section>
 			</manifest>

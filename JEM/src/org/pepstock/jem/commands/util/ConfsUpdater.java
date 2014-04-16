@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.commands.util;
 
 import java.io.File;
@@ -75,33 +75,48 @@ public class ConfsUpdater {
 	}
 
 	/**
-	 * Updates the config/bin files of the new environment those files are:<br>
+	 * Updates the config files of the new environment those files are:<br>
 	 * <ul>
-	 * <li>[gfs]/[environment]/config/jem-env-hazelcast.xml</li>
-	 * <li>[gfs]/[environment]/config/jem-env.xml</li>
-	 * <li>[environment]/config/wrapper.cong</li>
+	 * <li>[environment]/config/env_common.cong</li>
 	 * 
 	 * @throws MessageException if any exception occurs
 	 */
 	public void updateEnvConfigs() throws MessageException {
+		String fs = System.getProperty("file.separator");
+		// update env-common.conf
+		String envCommonName = "env_common.conf";
+		String envCommon = nodeAttributes.getEnvDir().getAbsolutePath() + fs + "config" + fs + envCommonName;
+		updateFile(new File(envCommon));
+	}
+
+	/**
+	 * Updates the config files of the new environment those files are:<br>
+	 * <ul>
+	 * <li>[gfs]/[environment]/config/jem-env-hazelcast.xml</li>
+	 * <li>[gfs]/[environment]/web/jem-env-hazelcast.xml</li>
+	 * <li>[gfs]/[environment]/config/jem-env.xml</li>
+	 * 
+	 * @throws MessageException if any exception occur
+	 */
+	public void updateEnvGfsConfig() throws MessageException {
 		try {
 			String fs = System.getProperty("file.separator");
-			// update jem-env-hazelcast.xml
+			// update config/jem-env-hazelcast.xml
 			String hazelcastXmlName = "jem-env-hazelcast.xml";
 			String hazelcastXml = nodeAttributes.getGfsConfigDirectory().getAbsolutePath() + fs + "config" + fs + hazelcastXmlName;
 			updateFile(new File(hazelcastXml));
-			// copy file also in the web distribution
-			File src = new File(hazelcastXml);
+			// update web/jem-env-hazelcast.xml
+			String hazelcastWebXml = nodeAttributes.getGfsConfigDirectory().getAbsolutePath() + fs + "web" + fs + hazelcastXmlName;
+			updateFile(new File(hazelcastWebXml));
+			// move file in the war distribution
+			File src = new File(hazelcastWebXml);
 			File dest = new File(nodeAttributes.getWarDir().getPath() + fs + "WEB-INF" + fs + "config" + fs + hazelcastXmlName);
 			FileUtils.copyFile(src, dest);
+			FileUtils.deleteQuietly(src);
 			// update jem-env.xml
 			String jemEnvXmlName = "jem-env.xml";
 			String jemEnvXml = nodeAttributes.getGfsConfigDirectory().getAbsolutePath() + fs + "config" + fs + jemEnvXmlName;
 			updateFile(new File(jemEnvXml));
-			// update env-common.conf 
-			String envCommonName = "env_common.conf";
-			String envCommon = nodeAttributes.getEnvDir().getAbsolutePath() + fs + "config" + fs + envCommonName;
-			updateFile(new File(envCommon));
 		} catch (IOException e) {
 			throw new MessageException(NodeMessage.JEMC006E, e);
 		}

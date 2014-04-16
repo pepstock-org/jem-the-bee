@@ -43,19 +43,18 @@
 			</fileset>
 		</copy>
 		<!-- jem-gwt war -->
-		<copy todir="${working.jemhome.directory}/src/envname/war">
+		<copy todir="${working.jemhome.directory}/src/gfs/envname/web/war">
 			<fileset dir="${jem.workspace}/${jem-gwt.web.directory}">
 				<exclude name="WEB-INF/classes/**" />
 				<exclude name="WEB-INF/lib/servlet-api.jar" />
 			</fileset>
 		</copy>
 		<!-- CREATE META-INF and manifest for war -->
-		<mkdir dir="${working.jemhome.directory}/src/envname/war/META-INF" />
-		<manifest file="${working.jemhome.directory}/src/envname/war/META-INF/MANIFEST.MF">
-			<attribute name="Built-By" value="${user.name}" />
+		<mkdir dir="${working.jemhome.directory}/src/gfs/envname/web/war/META-INF" />
+		<manifest file="${working.jemhome.directory}/src/gfs/envname/web/war/META-INF/MANIFEST.MF">
 			<section name="JEM_the_BEE">
 				<attribute name="Jem_version" value="${jem.version}" />
-				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-By" value="${jem.built.by}" />
 				<attribute name="Creation_time" value="${TODAY}" />
 			</section>
 		</manifest>

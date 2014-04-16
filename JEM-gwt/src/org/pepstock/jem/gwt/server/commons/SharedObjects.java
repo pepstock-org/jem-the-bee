@@ -52,6 +52,8 @@ public class SharedObjects {
 
 	private String jemVersion = NodeInfo.UNKNOWN_VERSION;
 
+	private String contextPath;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -90,6 +92,21 @@ public class SharedObjects {
 			throw new MessageRuntimeException(UserInterfaceMessage.JEMG024E);
 		}
 		return SharedObjects.getInstance().getHazelcastClient();
+	}
+	
+	/**
+	 * @return the context path
+	 */
+	public String getContextPath() {
+		return contextPath;
+	}
+
+	/**
+	 * 
+	 * @param contextPath to set
+	 */
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 
 	/**
