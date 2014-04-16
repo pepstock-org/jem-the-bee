@@ -32,7 +32,6 @@ import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.managers.ImplementationsContainer;
 import org.pepstock.jem.log.LogAppl;
 
 /**

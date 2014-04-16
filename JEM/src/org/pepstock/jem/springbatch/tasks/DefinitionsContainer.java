@@ -14,46 +14,51 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.pepstock.jem.ant.DataDescriptionStep;
-
-
 /**
- * Singleton that contains all steps definitions of ANT JCL.
- * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
  */
-public class StepsContainer {
+public class DefinitionsContainer {
 	
-	private static final StepsContainer INSTANCE = new StepsContainer();
+	private static DefinitionsContainer INSTANCE = null;
 	
-	private List<DataDescriptionStep> dataDescriptionSteps = new LinkedList<DataDescriptionStep>();
+	private List<Definition> objects = new LinkedList<Definition>();
 
 	/**
 	 * Singleton, emtpy constructor
 	 */
-	private StepsContainer() {
+	private DefinitionsContainer() {
 		
 	}
 	
 	/**
-	 * Returns the singleton instance 
 	 * @return singleton instance
 	 */
-	public static synchronized StepsContainer getInstance(){
+	public static synchronized DefinitionsContainer getInstance(){
+		if  (INSTANCE == null){
+			INSTANCE = new DefinitionsContainer();
+		}
 		return INSTANCE;
 	}
 
 	/**
-	 * @return the dataDescriptions
+	 * @return the tasklets
 	 */
-	public List<DataDescriptionStep> getDataDescriptionSteps() {
-		return dataDescriptionSteps;
+	List<Definition> getObjects() {
+		return objects;
 	}
+
+	/**
+	 * @param objects the tasklets to set
+	 */
+	void setObjects(List<Definition> objects) {
+		this.objects = objects;
+	}
+
 }

@@ -14,21 +14,16 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->
 
-	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
-	<!--
-		In case of single data path, is possible to remove the wrapper and
-		use DELETE Ant task wuth jem.data variable, as following:
-		
-		<delete dir="${jem.data}/test_common" />
-	-->
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
 	
 	<target name="delete">
-		<wrapper>
-			<dataDescription name="DELETE" disposition="OLD">
-				<dataSet name="test_common" />
-			</dataDescription>
-			<delete dir="${DD_DELETE}" failonerror="false" />
-		</wrapper>
+		<step-java classname="org.pepstock.jem.junit.test.common.java.DeleteJunitDataSet">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		</step-java>
 	</target>
 
 </project>

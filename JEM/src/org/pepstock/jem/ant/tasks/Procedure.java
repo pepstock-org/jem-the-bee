@@ -29,8 +29,6 @@ import org.apache.tools.ant.property.LocalProperties;
 import org.apache.tools.ant.taskdefs.Sequential;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.managers.ProceduresContainer;
-import org.pepstock.jem.ant.tasks.managers.StepsContainer;
 
 /**
  * Procedure is a reference to a Procedure definition, with the possibility to

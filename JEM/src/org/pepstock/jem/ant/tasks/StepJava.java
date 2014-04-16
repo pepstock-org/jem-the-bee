@@ -40,8 +40,6 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.managers.ImplementationsContainer;
-import org.pepstock.jem.ant.tasks.managers.ReturnCodesContainer;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.FtpResource;

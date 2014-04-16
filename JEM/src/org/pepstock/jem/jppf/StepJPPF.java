@@ -30,9 +30,9 @@ import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.tasks.DataDescription;
+import org.pepstock.jem.ant.tasks.DataDescriptionManager;
 import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.ant.tasks.StepJava;
-import org.pepstock.jem.ant.tasks.managers.DataDescriptionManager;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 

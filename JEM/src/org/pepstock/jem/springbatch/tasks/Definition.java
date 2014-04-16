@@ -14,12 +14,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import javax.naming.InitialContext;
 
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
-import org.pepstock.jem.springbatch.tasks.JemTasklet;
 
 
 /**

@@ -18,10 +18,10 @@ package org.pepstock.jem.junit.test.antutils;
 
 import java.util.concurrent.Future;
 
+import junit.framework.TestCase;
+
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.submitter.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class SortTask extends TestCase{
 	 * 
 	 * @throws Exception
 	 */
-	public void testRole() throws Exception {
+	public void testSort() throws Exception {
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
 				.submit(getJcl("TEST_ANTUTILS_SORT.xml"), "ant", true,
 						false);

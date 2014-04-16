@@ -17,6 +17,7 @@
 package org.pepstock.jem.node;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
@@ -54,7 +55,7 @@ public final class DataPathsContainer implements Serializable{
 	}
 	
 	/**
-	 * @return the instanc eof singleton
+	 * @return the instance of singleton
 	 */
 	public static final DataPathsContainer getInstance(){
 		return INSTANCE;
@@ -78,4 +79,21 @@ public final class DataPathsContainer implements Serializable{
     public String getAbsoluteDataPath(String fileName){
     	return manager.getAbsoluteDataPath(fileName);
     }
+    
+    /**
+     * Returns a list of string with complete data path defined in JEM configuration file
+     * @return a list of string with complete data path defined in JEM configuration file
+     */
+    public List<String> getDataPaths(){
+    	return manager.getDataPaths();
+    }
+    
+    /**
+     * Returns a list of string with data path name defined in JEM configuration file
+     * @return a list of string with data path name defined in JEM configuration file
+     */
+    public List<String> getDataPathsNames(){
+    	return manager.getDataPathsNames();
+    }
+    
 }

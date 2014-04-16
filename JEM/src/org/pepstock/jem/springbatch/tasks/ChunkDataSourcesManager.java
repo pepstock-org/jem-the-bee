@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
@@ -43,9 +43,6 @@ import org.pepstock.jem.node.tasks.jndi.JmsReference;
 import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.pepstock.jem.springbatch.tasks.DataSource;
-import org.pepstock.jem.springbatch.tasks.Property;
-import org.pepstock.jem.springbatch.tasks.SpringBatchSecurityManager;
 
 /**
  * Manages teh JNDI context for Chunks. Be aware that FTP resources (defined out-of-the-box) couldn't be used here.
@@ -72,7 +69,7 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	public static InitialContext createJNDIContext(List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static InitialContext createJNDIContext(List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.pepstock.jem.node.tasks.jndi.JemContextFactory");
 		// new initial context for JNDI
 		InitialContext ic = new InitialContext();
@@ -91,7 +88,7 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	public static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager) System.getSecurityManager();
 		// scans all datasource passed
 		for (DataSource source : dataSourceList) {
@@ -167,7 +164,7 @@ public final class ChunkDataSourcesManager {
 	 * @param context JNDI context to clear
 	 * @param dataSourceList list of datasources to unbind
 	 */
-	public static void clearJNDIContext(InitialContext context, List<DataSource> dataSourceList){
+	static void clearJNDIContext(InitialContext context, List<DataSource> dataSourceList){
 		for (DataSource source : dataSourceList){
 			// unbinds all resources
 			try {

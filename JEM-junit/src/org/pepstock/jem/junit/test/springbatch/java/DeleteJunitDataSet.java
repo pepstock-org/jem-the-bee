@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.node.DataPathsContainer;
-import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
-import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -60,21 +58,19 @@ public class DeleteJunitDataSet extends JemTasklet {
 	public RepeatStatus run(StepContribution stepContribution,
 			ChunkContext chuckContext) throws TaskletException {
 		try {
-			PathsContainer container = DataPathsContainer.getInstance().getPaths(DATA_SET_JUNIT_FOLDER);
-			String dataPath = container.getCurrent().getContent();
-			File dirToDelete = new File(dataPath, DATA_SET_JUNIT_FOLDER);
+			for (String path : DataPathsContainer.getInstance().getDataPaths()){
+				File dirToDelete = new File(path, DATA_SET_JUNIT_FOLDER);
 
-			System.out.println("Deliting folder:" + dirToDelete);
-			if (dirToDelete.exists()) {
-				FileUtils.deleteDirectory(dirToDelete);
-				System.out.println("folder:" + dirToDelete + " deleted");
-			} else {
-				System.out.println("folder:" + dirToDelete
-						+ " does not exists");
+				System.out.println("Deliting folder:" + dirToDelete);
+				if (dirToDelete.exists()) {
+					FileUtils.deleteDirectory(dirToDelete);
+					System.out.println("folder:" + dirToDelete + " deleted");
+				} else {
+					System.out.println("folder:" + dirToDelete
+							+ " does not exists");
+				}
 			}
 		} catch (IOException e) {
-			throw new TaskletException(e);
-		} catch (InvalidDatasetNameException e) {
 			throw new TaskletException(e);
         }
 		return RepeatStatus.FINISHED;

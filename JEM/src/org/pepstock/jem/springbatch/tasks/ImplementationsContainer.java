@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.springbatch.tasks.managers;
+package org.pepstock.jem.springbatch.tasks;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class ImplementationsContainer {
 	 * @param reference string reference representation
 	 * @return <code>true</code> if container contains the reference
 	 */
-	public boolean hasDataDescription(String reference) {
+	boolean hasDataDescription(String reference) {
 		return (reference != null) ? mapDataDescription.containsKey(reference.toLowerCase()) : false;	
 	}
 
@@ -78,7 +78,7 @@ public class ImplementationsContainer {
 	 * @param reference reference string representation
 	 * @return data description instance
 	 */
-	public DataDescriptionImpl getDataDescription(String reference) {
+	DataDescriptionImpl getDataDescription(String reference) {
 		return (reference != null) ? mapDataDescription.get(reference.toLowerCase()) : null;	
 	}
 
@@ -88,7 +88,7 @@ public class ImplementationsContainer {
 	 * @param step stepname
 	 * @return list of data description instances
 	 */
-	public List<DataDescriptionImpl> getDataDescriptionsByItem(String step) {
+	List<DataDescriptionImpl> getDataDescriptionsByItem(String step) {
 		// creates a new list
 		List<DataDescriptionImpl> result = new ArrayList<DataDescriptionImpl>();
 		// creates a key usinf format for searching (without data description
@@ -113,7 +113,7 @@ public class ImplementationsContainer {
 	 * @param step step name
 	 * @param dd data description implementation
 	 */
-	public void addDataDescription(String step, DataDescriptionImpl dd) {
+	void addDataDescription(String step, DataDescriptionImpl dd) {
 		// create a key using message format defined for reference
 		String key = createKey(step, dd.getName());
 		mapDataDescription.put(key, dd);

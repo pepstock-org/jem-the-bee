@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.managers;
+package org.pepstock.jem.ant.tasks;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +26,6 @@ import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.DataDescription;
-import org.pepstock.jem.ant.tasks.DataSet;
-import org.pepstock.jem.ant.tasks.StepExec;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 

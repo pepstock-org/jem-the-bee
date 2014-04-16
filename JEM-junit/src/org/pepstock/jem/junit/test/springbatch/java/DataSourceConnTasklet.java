@@ -36,6 +36,7 @@ import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.w3c.dom.Document;
 
 /**
@@ -48,11 +49,27 @@ import org.w3c.dom.Document;
 public class DataSourceConnTasklet extends JemTasklet {
 
 	static Logger log = Logger.getLogger(ConnectToDataSource.class.getName());
+	
+	private JdbcTemplate jdbcTemplate = null;
 
 	/**
 	 * Empty constructor
 	 */
 	public DataSourceConnTasklet() {
+	}
+	
+	/**
+	 * @return the jdbcTemplate
+	 */
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	/**
+	 * @param jdbcTemplate the jdbcTemplate to set
+	 */
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	/*
@@ -66,6 +83,9 @@ public class DataSourceConnTasklet extends JemTasklet {
 	@Override
 	public RepeatStatus run(StepContribution stepContribution,
 			ChunkContext chuckContext) throws TaskletException {
+		
+		log.info("Number of records on ROLES_MAP: "+getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM ROLES_MAP"));
+		
 		try {
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY,
