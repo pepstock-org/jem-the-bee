@@ -21,9 +21,11 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
@@ -220,5 +222,15 @@ public class DataSource extends AbstractDataSource implements Serializable {
 	@Override
 	public String toString() {
 		return "[datasource=" + getName() + ", resource=" + getResource() + "]";
+	}
+	
+	/**
+	 * Compatibility with version 6 and 7. This is JDBC 4.1 in Java 7 
+	 * @return null, always exception
+	 * @throws SQLFeatureNotSupportedException always throws
+	 */
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException{
+		throw new SQLFeatureNotSupportedException("Not supported");
+		
 	}
 }

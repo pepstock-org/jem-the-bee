@@ -29,7 +29,9 @@
 				<pathelement path="${java.class.path}" />
 			</classpath>
 		</javac>
-		<jar jarfile="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" basedir="${jem.workspace}/${jem.classes.directory}">
+		<jar jarfile="${jem.workspace}/${jem.library.directory}/${jem.jar.name}">
+			<fileset dir="${jem.workspace}/${jem.classes.directory}"/>
+			<fileset dir="${jem.workspace}/${jem.source.directory}" includes="**/*.xsd"/>
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
@@ -37,6 +39,12 @@
 					<attribute name="Creation_time" value="${TODAY}" />
 				</section>
 			</manifest>
+			<metainf dir="${jem.workspace}/${jem.source.directory}/org/pepstock/jem/springbatch/xml" includes="spring.handlers, spring.schemas"/>
+			<!--metainf>
+				<fileset dir="">
+    				<include name="/spring.*"/>
+				</fileset>
+			</metainf-->
 		</jar>
 	</target>
 </project>

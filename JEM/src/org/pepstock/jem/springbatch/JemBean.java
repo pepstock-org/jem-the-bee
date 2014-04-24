@@ -43,7 +43,7 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	private static final long serialVersionUID = 1L;
 
 	private String classPath = null;
-	
+
 	private String lockingScope = SpringBatchKeys.JOB_SCOPE;
 	
 	private String options= null;
@@ -124,8 +124,6 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	 */
 	@Override
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
-		
 		// creates Listener
 		StepListener listener = new StepListener();
 		// sets the springbatch listener
@@ -136,6 +134,9 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 			// sets Listener to all jobs
 			for (Object keyObject : mapJobs.keySet()) {
 				String jobName = keyObject.toString();
+				if (this.getJobName() == null){
+					setJobName(jobName);
+				}
 				AbstractJob job = (AbstractJob)mapJobs.get(jobName);
 				job.registerJobExecutionListener(listener);
 				// sets Listener to all steps of job
@@ -145,5 +146,19 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 				}
 			}
 		}
+		// sets job locking
+		DefinitionsLoader.getInstance().setContext((ConfigurableApplicationContext)context);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JemBean [classPath=" + classPath + ", lockingScope=" + lockingScope + ", options=" + options + ", parameters=" + parameters + ", getJobName()=" + getJobName() + ", getAffinity()=" + getAffinity() + ", getEmailNotificationAddresses()="
+				+ getEmailNotificationAddresses() + ", getMemory()=" + getMemory() + ", getPriority()=" + getPriority() + ", isHold()=" + isHold() + ", getUser()=" + getUser() + ", getEnvironment()=" + getEnvironment() + ", getDomain()=" + getDomain()
+				+ ", getClass()=" + getClass() + "]";
+	}
+	
+	
 }

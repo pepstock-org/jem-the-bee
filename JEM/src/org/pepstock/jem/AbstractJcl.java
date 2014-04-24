@@ -26,7 +26,8 @@ import java.io.Serializable;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class AbstractJcl extends AbstractExecutionEnvironment implements Serializable {
+
+public abstract class AbstractJcl extends AbstractExecutionEnvironment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -50,9 +51,9 @@ public class AbstractJcl extends AbstractExecutionEnvironment implements Seriali
 	private String affinity = DEFAULT_AFFINITY;
 	
 	private int memory =  DEFAULT_MEMORY;
-
+	
 	private int priority = DEFAULT_PRIORITY;
-
+	
 	private boolean hold = false;
 	
 	/**
@@ -60,7 +61,7 @@ public class AbstractJcl extends AbstractExecutionEnvironment implements Seriali
 	 * Job notification. The addresses are semicolon separated.
 	 */
 	private String emailNotificationAddresses = null;
-	
+
 	private String user = null;
 
 	/**

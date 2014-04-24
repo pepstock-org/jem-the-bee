@@ -23,7 +23,7 @@ package org.pepstock.jem.jppf;
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
-public class JPPFBean {
+public final class JPPFBean {
 
 	private String runnable = null;
 
@@ -153,4 +153,14 @@ public class JPPFBean {
 		this.mergedDataDescription = mergedDataDescription;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JPPFBean [runnable=" + runnable + ", address=" + address + ", parallelTaskNumber=" + parallelTaskNumber + ", datasource=" + datasource + ", delimiter=" + delimiter + ", delimiterString=" + delimiterString + ", chunkableDataDescription="
+				+ chunkableDataDescription + ", mergedDataDescription=" + mergedDataDescription + "]";
+	}
+
+	
 }

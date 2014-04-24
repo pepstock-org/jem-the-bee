@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.pepstock.org/schema/jem"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://www.pepstock.org/schema/jem"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<!-- jem.xsd (inside package org/pepstock/jem/springbatch/xml) -->
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+
+	<xsd:element name="configuration">
+		<xsd:complexType>
+			<xsd:attribute name="environment" type="xsd:string"
+				use="optional" />
+			<xsd:attribute name="domain" type="xsd:string" use="optional" />
+			<xsd:attribute name="jobName" type="xsd:string" use="optional" />
+			<xsd:attribute name="affinity" type="xsd:string" use="optional" />
+
+			<xsd:attribute name="memory" type="xsd:integer" use="optional" />
+			<xsd:attribute name="priority" type="xsd:integer" use="optional" />
+			<xsd:attribute name="hold" type="xsd:boolean" use="optional" />
+
+			<xsd:attribute name="emailNotificationAddresses" type="xsd:string"
+				use="optional" />
+			<xsd:attribute name="user" type="xsd:string" use="optional" />
+			<xsd:attribute name="classPath" type="xsd:string" use="optional" />
+			<xsd:attribute name="lockingScope" type="xsd:string"
+				use="optional" />
+			<xsd:attribute name="options" type="xsd:string" use="optional" />
+			<xsd:attribute name="parameters" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="tasklet">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="dataDescription" />
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+					<xsd:attribute name="class" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:element name="jppf-tasklet">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="jppf-configuration" />
+						<xsd:element ref="dataDescription" />
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="dataDescription">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="dataSet" />
+					</xsd:choice>
+					<xsd:attribute name="name" type="xsd:string" use="required" />
+					<xsd:attribute name="disposition" type="xsd:string"
+						use="required" />
+					<xsd:attribute name="sysout" type="xsd:boolean" use="optional" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="dataSet">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+					<xsd:attribute name="name" type="xsd:string" />
+					<xsd:attribute name="datasource" type="xsd:string" />
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="dataSource">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="property" />
+					</xsd:choice>
+					<xsd:attribute name="name" type="xsd:string" use="required" />
+					<xsd:attribute name="resource" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="property">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+					<xsd:attribute name="name" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="lock">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="name" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="jppf-configuration">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="runnable" type="xsd:string" use="optional" />
+					<xsd:attribute name="address" type="xsd:string" use="optional" />
+					<xsd:attribute name="datasource" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="delimiter" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="delimiterString" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="chunkableDataDescription" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="mergedDataDescription" type="xsd:string"
+						use="optional" />
+					<xsd:attribute name="parallelTaskNumber" type="xsd:integer"
+						use="optional" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>

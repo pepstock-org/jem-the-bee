@@ -128,7 +128,7 @@ public class JavaUtils {
 		String[] filesNames = classPathProperty.split(pathSeparator);
 		for (int i=0; i<filesNames.length; i++){
 			File file = new File(filesNames[i]);
-
+			
 			// here checks if the file is to add to classpath for new process or not
 			if (isToAdd(file, additionalFolders)){
 				String ext = FilenameUtils.getExtension(file.getAbsolutePath());

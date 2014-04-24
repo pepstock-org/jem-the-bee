@@ -41,7 +41,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
-public class JPPFTasklet extends JemTasklet {
+public final class JPPFTasklet extends JemTasklet {
 	
 	private JPPFBean bean = null;
 

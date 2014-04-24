@@ -93,7 +93,7 @@ public abstract class JemTasklet implements Tasklet {
 	 * 
 	 * @return the list of data description
 	 */
-	public List<DataDescription> getDataDescriptionList() {
+	public final List<DataDescription> getDataDescriptionList() {
 		return dataDescriptionList;
 	}
 
@@ -102,7 +102,7 @@ public abstract class JemTasklet implements Tasklet {
 	 * 
 	 * @param dataDescriptionList the list of data description
 	 */
-	public void setDataDescriptionList(List<DataDescription> dataDescriptionList) {
+	public final void setDataDescriptionList(List<DataDescription> dataDescriptionList) {
 		this.dataDescriptionList = dataDescriptionList;
 	}
 
@@ -111,7 +111,7 @@ public abstract class JemTasklet implements Tasklet {
 	 * 
 	 * @return the dataSourceList
 	 */
-	public List<DataSource> getDataSourceList() {
+	public final List<DataSource> getDataSourceList() {
 		return dataSourceList;
 	}
 
@@ -120,21 +120,21 @@ public abstract class JemTasklet implements Tasklet {
 	 * 
 	 * @param dataSourceList the dataSourceList to set
 	 */
-	public void setDataSourceList(List<DataSource> dataSourceList) {
+	public final void setDataSourceList(List<DataSource> dataSourceList) {
 		this.dataSourceList = dataSourceList;
 	}
 
 	/**
 	 * @return the locks
 	 */
-	public List<Lock> getLocks() {
+	public final List<Lock> getLocks() {
 		return locks;
 	}
 
 	/**
 	 * @param locks the locks to set
 	 */
-	public void setLocks(List<Lock> locks) {
+	public final void setLocks(List<Lock> locks) {
 		this.locks = locks;
 	}
 

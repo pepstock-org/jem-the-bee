@@ -14,66 +14,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.sgm;
+package org.pepstock.jem.springbatch.xml;
 
-import java.io.Serializable;
+import org.pepstock.jem.jppf.JPPFBean;
+import org.pepstock.jem.jppf.JPPFTasklet;
 
 /**
  * @author Andrea "Stock" Stocchero
- * @version 2.0
+ * @version 2.1
  */
-public class PathsContainer implements Serializable{
+public class JPPFTaskletFactoryBean extends TaskletFactoryBean {
 	
-	/**
-	 * 
-	 */
-    private static final long serialVersionUID = 1L;
+	static final String JPPF_CONFIGURATION = "jppfConfiguration";
 
-	private Path current = null;
-	
-	private Path old = null;
+	private JPPFBean jppfConfiguration = null;
 
 	/**
-	 * 
+	 * @return the jppfConfiguration
 	 */
-    public PathsContainer() {
-
-    }
-
-	/**
-	 * @return the current
-	 */
-	public Path getCurrent() {
-		return current;
+	public JPPFBean getJppfConfiguration() {
+		return jppfConfiguration;
 	}
 
 	/**
-	 * @param current the current to set
+	 * @param jppfConfiguration the jppfConfiguration to set
 	 */
-	public void setCurrent(Path current) {
-		this.current = current;
-	}
-
-	/**
-	 * @return the old
-	 */
-	public Path getOld() {
-		return old;
-	}
-
-	/**
-	 * @param old the old to set
-	 */
-	public void setOld(Path old) {
-		this.old = old;
+	public void setJppfConfiguration(JPPFBean jppfConfiguration) {
+		this.jppfConfiguration = jppfConfiguration;
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	 * @see org.pepstock.jem.springbatch.xml.TaskletFactoryBean#getObject()
 	 */
 	@Override
-	public String toString() {
-		return "PathsContainer [current=" + current + ", old=" + old + "]";
+	public Object getObject() throws Exception {
+		JPPFTasklet tasklet = (JPPFTasklet)super.getObject();
+		if (jppfConfiguration != null){
+			tasklet.setBean(jppfConfiguration);
+		}
+		return tasklet;
 	}
 
 }
