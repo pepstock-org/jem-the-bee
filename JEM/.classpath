@@ -2,36 +2,16 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="lib" path="lib/hazelcast/hazelcast-all-2.6.6.jar"/>
+	<classpathentry kind="lib" path="lib/xstream/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/logging/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/logging/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec/commons-codec-1.8.jar"/>
-	<classpathentry kind="lib" path="lib/commons-net/commons-net-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/lang/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io/commons-compress-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/cli/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/dbcp/commons-pool-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/dbcp/commons-dbcp-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/logging/commons-logging-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/commons-email-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/beanutils/commons-beanutils-1.8.3.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math/commons-math3-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/rhino/js-14.jar"/>
-	<classpathentry kind="lib" path="lib/xstream/xstream-1.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/xstream/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/sigar/sigar.jar"/>
-	<classpathentry kind="lib" path="lib/shiro/shiro-core-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/shiro/shiro-web-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-bundle-1.16.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-json-1.16.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-apache-client4-1.16.jar"/>
-	<classpathentry kind="lib" path="lib/httpcomponents/httpclient-4.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/httpcomponents/httpcore-4.2.4.jar"/>
-	<classpathentry kind="lib" path="lib/httpcomponents/httpmime-4.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/logging/slf4j-log4j12-1.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/quartz/quartz-all-2.1.7.jar"/>
-	<classpathentry kind="lib" path="lib/db/mysql-connector-java-5.1.23-bin.jar"/>
 	<classpathentry kind="lib" path="lib/xalan/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/dsn-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/imap-1.5.0.jar"/>
@@ -40,34 +20,9 @@
 	<classpathentry kind="lib" path="lib/emailing/smtp-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/javax.mail-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/jms/javax.jms-api-2.0-b10.jar"/>
-	<classpathentry kind="lib" path="lib/bouncycastle/bcpkix-jdk15on-149.jar"/>
-	<classpathentry kind="lib" path="lib/bouncycastle/bcprov-ext-jdk15on-149.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-client.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-common-node.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-common.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/asm-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/asm-analysis-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/asm-commons-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/asm-tree-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/asm-util-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/bsf-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/gpars-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-ant-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-bsf-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-console-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-docgenerator-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-groovydoc-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-groovysh-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-jmx-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-json-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-jsr223-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-servlet-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-sql-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-swing-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-templates-2.1.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy/groovy-xml-2.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-antlr.jar"/>
@@ -91,6 +46,30 @@
 	<classpathentry kind="lib" path="lib/ant/ant-swing.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-testutil.jar"/>
 	<classpathentry kind="lib" path="lib/ant/antcontrib.jar"/>
+	<classpathentry kind="lib" path="lib/gwt/gwt-user.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/beanutils/commons-beanutils-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/bouncycastle/bcpkix-jdk15on-150.jar"/>
+	<classpathentry kind="lib" path="lib/bouncycastle/bcprov-jdk15on-150.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/commons-net/commons-net-3.3.jar"/>
+	<classpathentry kind="lib" path="lib/db/mysql-connector-java-5.1.30-bin.jar"/>
+	<classpathentry kind="lib" path="lib/httpcomponents/httpclient-4.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/httpcomponents/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpcomponents/httpmime-4.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/logging/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/logging/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/logging/slf4j-log4j12-1.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/quartz/quartz-2.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/shiro/shiro-core-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/shiro/shiro-web-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/hazelcast/hazelcast-all-2.6.6.jar"/>
+	<classpathentry kind="lib" path="lib/dbcp/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/dbcp/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-apache-client4-1.18.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-bundle-1.18.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-json-1.18.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.com.ibatis-2.3.0.677.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.com.mysql.jdbc-5.1.6.jar"/>
@@ -105,7 +84,6 @@
 	<classpathentry kind="lib" path="lib/spring/com.springsource.oracle.jdbc-10.2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.org.apache.commons.collections-3.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/spring/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.org.apache.commons.io-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.org.apache.commons.lang-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
@@ -145,7 +123,28 @@
 	<classpathentry kind="lib" path="lib/springbatch/org.springframework.batch.core-2.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/springbatch/org.springframework.batch.infrastructure-2.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/springbatch/org.springframework.batch.test-2.0.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/gwt/gwt-user.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/groovy/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/asm-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/asm-analysis-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/asm-commons-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/asm-tree-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/asm-util-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/bsf-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/gpars-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-ant-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-bsf-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-console-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-docgenerator-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-groovydoc-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-groovysh-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-jmx-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-json-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-jsr223-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-servlet-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-sql-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-swing-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-templates-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-xml-2.2.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
