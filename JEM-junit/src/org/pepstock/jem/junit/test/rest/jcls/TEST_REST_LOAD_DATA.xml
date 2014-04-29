@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project name="TEST_REST_LOAD_DATA" default="executeCopy" basedir=".">
+	<description>
+		Load some data for rest regression test
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_REST_LOAD_DATA"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="copy" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	COPY: copy the INPUT dataset to the OUTPUT dataset
+	-->
+	<target name="executeCopy">
+		<copy id="first">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="test_rest/Data1"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+					Data1 for rest test
+				</dataset>	
+			</dataDescription>
+		</copy>
+		<copy id="first">
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="test_rest/Data2"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+					Data2 for rest test
+				</dataset>	
+			</dataDescription>
+		</copy>
+	</target>
+</project>

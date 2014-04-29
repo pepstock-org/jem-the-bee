@@ -31,6 +31,8 @@ import com.thoughtworks.xstream.XStream;
 public class SubmitterConfiguration {
 
 	private List<Submitter> submitters;
+	
+	private RestConf restconf;
 
 	/**
 	 * @return the submitters
@@ -58,7 +60,7 @@ public class SubmitterConfiguration {
 	public static SubmitterConfiguration unmarshall(String xml)
 			throws Exception {
 		XStream xStream = new XStream();
-		xStream.alias("submitter-configuration", SubmitterConfiguration.class);
+		xStream.alias("configuration", SubmitterConfiguration.class);
 		xStream.alias("submitter", Submitter.class);
 		xStream.alias("param", Param.class);
 		Object object = xStream.fromXML(xml);
@@ -75,10 +77,26 @@ public class SubmitterConfiguration {
 	 */
 	public static String marshall(SubmitterConfiguration object) {
 		XStream xStream = new XStream();
-		xStream.alias("submitter-configuration", SubmitterConfiguration.class);
+		xStream.alias("configuration", SubmitterConfiguration.class);
 		xStream.alias("submitter", Submitter.class);
 		xStream.alias("param", Param.class);
 		return xStream.toXML(object);
+	}
+
+	/**
+	 * 
+	 * @return the rest client object
+	 */
+	public RestConf getRestconf() {
+		return restconf;
+	}
+
+	/**
+	 * 
+	 * @param restclient object to set
+	 */
+	public void setRestconf(RestConf restconf) {
+		this.restconf = restconf;
 	}
 
 	/**
@@ -88,8 +106,8 @@ public class SubmitterConfiguration {
 	 */
 	public static void main(String[] args) throws Exception {
 		String xml = FileUtils
-				.readFileToString(new File(
-						"C:/workspace/Test/src/org/pepstock/junit/submitter/SubmitterConfiguration.xml"));
+				.readFileToString(new File(SubmitterConfiguration.class
+						.getResource("Configuration.xml").getFile()));
 		SubmitterConfiguration.unmarshall(xml);
 	}
 }

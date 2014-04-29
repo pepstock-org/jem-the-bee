@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="TEST_REST_DELETE_DATA" default="main" basedir=".">
+    <description>
+    	Clean data for test case rest
+    </description>
+
+	<property name="jem.job.name" value="TEST_REST_DELETE_DATA" />
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+
+	<target name="main">
+		<step-java classname="org.pepstock.jem.junit.test.rest.java.DeleteJunitDataSet">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		</step-java>
+	</target>
+
+</project>

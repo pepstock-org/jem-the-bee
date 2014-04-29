@@ -1,4 +1,9 @@
-<submitter-configuration>
+<configuration>
+	<restconf>
+		<url>http://localhost:8888/rest</url>
+		<user>root</user>
+		<password>pwd</password>
+	</restconf>
 	<submitters>
 		<!-- submitter>
 		    <name>SUBMIT</name>
@@ -69,4 +74,4 @@
 			</params>
 		</submitter-->
 	</submitters>
-</submitter-configuration>
+</configuration>

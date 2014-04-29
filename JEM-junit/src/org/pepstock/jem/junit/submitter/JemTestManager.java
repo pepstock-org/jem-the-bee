@@ -40,6 +40,10 @@ public class JemTestManager {
 
 	private Submitter selectedSubmitter;
 
+	private RestConf restConf;
+
+	private SubmitterConfiguration configuration;
+
 	private ExecutorService executor;
 
 	private static JemTestManager jemSubmit;
@@ -54,6 +58,8 @@ public class JemTestManager {
 	private JemTestManager(File configurationFile) throws Exception {
 		String xml = FileUtils.readFileToString(configurationFile);
 		SubmitterConfiguration conf = SubmitterConfiguration.unmarshall(xml);
+		this.configuration = conf;
+		this.restConf = conf.getRestconf();
 		for (Submitter submitter : conf.getSubmitters()) {
 			if (submitter.getSelected() != null
 					&& submitter.getSelected() == true) {
@@ -81,7 +87,7 @@ public class JemTestManager {
 	public static JemTestManager getSharedInstance() throws Exception {
 		if (jemSubmit == null) {
 			return new JemTestManager(new File(JemTestManager.class
-					.getResource("SubmitterConfiguration.xml").getFile()));
+					.getResource("Configuration.xml").getFile()));
 		}
 		return jemSubmit;
 	}
@@ -111,4 +117,19 @@ public class JemTestManager {
 		return submitResult;
 	}
 
+	/**
+	 * 
+	 * @return the configuration object
+	 */
+	public SubmitterConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * 
+	 * @return the rest configuration object
+	 */
+	public RestConf getRestConf() {
+		return restConf;
+	}
 }
