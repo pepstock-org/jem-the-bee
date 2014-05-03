@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project basedir="." default="testReaderChunk">
+
+	<property name="jem.job.name" value="JPPF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	
+	<target name="test-T-Reader">
+		<jppf runnable="org.pepstock.jem.testjppf.JPPFTaskReader" parallelTaskNumber="5"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+	
+	<target name="test-T-ReaderChunk" depends="test-T-Reader">
+		<jppf runnable="org.pepstock.jem.testjppf.JPPFTaskReader" parallelTaskNumber="5"  address="localhost:11111"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+		
+	<target name="testReader" depends="test-T-ReaderChunk">
+		<jppf runnable="org.pepstock.jem.testjppf.RunnableReader" parallelTaskNumber="5"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+	
+	<target name="testReaderChunk" depends="testReader">
+		<jppf runnable="org.pepstock.jem.testjppf.RunnableReader" parallelTaskNumber="5"  address="localhost:11111"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+
+</project>

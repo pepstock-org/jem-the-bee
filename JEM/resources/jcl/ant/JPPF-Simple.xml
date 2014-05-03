@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<project basedir="." default="testConfig">
+
+	<property name="jem.job.name" value="JPPF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+
+	<target name="test-T-Resource">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleJPPFTask" parallelTaskNumber="5">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			
+			<dataSource name="jppf" resource="JPPFLocalhost"/>
+				
+		</jppf>	
+	</target>
+	
+	<target name="test-T-Attribute" depends="test-T-Resource">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleJPPFTask" parallelTaskNumber="5"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+		</jppf>	
+	</target>
+
+	<target name="test-T-Config" depends="test-T-Attribute">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleJPPFTask" parallelTaskNumber="5">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="JPPF-CONFIG" disposition="SHR">
+				<dataset>
+#jppf.ssl.enabled=true
+jppf.discovery.enabled=false
+jppf.drivers=main
+main.jppf.server.port=11111
+main.jppf.server.host=localhost
+				</dataset>	
+			</dataDescription>
+		</jppf>	
+	</target>
+
+	<target name="testResource" depends="test-T-Config">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleRunnable" parallelTaskNumber="5">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			
+			<dataSource name="jppf" resource="JPPFLocalhost"/>
+				
+		</jppf>	
+	</target>
+	
+	<target name="testAttribute" depends="testResource">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleRunnable" parallelTaskNumber="5"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+		</jppf>	
+	</target>
+
+	<target name="testConfig" depends="testAttribute">
+		<jppf runnable="org.pepstock.jem.testjppf.SimpleRunnable" parallelTaskNumber="5">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="JPPF-CONFIG" disposition="SHR">
+				<dataset>
+#jppf.ssl.enabled=true
+jppf.discovery.enabled=false
+jppf.drivers=main
+main.jppf.server.port=11111
+main.jppf.server.host=localhost
+				</dataset>	
+			</dataDescription>
+		</jppf>	
+	</target>
+
+</project>

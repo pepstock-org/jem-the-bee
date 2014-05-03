@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project basedir="." default="testReaderChunk">
+
+	<property name="jem.job.name" value="TEST_JPPF_ANT_READER"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	
+	<target name="test-T-Reader">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskReader" parallelTaskNumber="2"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="test_jppf/sample.data"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+	
+	<target name="test-T-ReaderChunk" depends="test-T-Reader">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskReader" parallelTaskNumber="2"  address="localhost:11111"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="test_jppf/sample.data"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+		
+	<target name="testReader" depends="test-T-ReaderChunk">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.RunnableReader" parallelTaskNumber="2"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="test_jppf/sample.data"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+	
+	<target name="testReaderChunk" depends="testReader">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.RunnableReader" parallelTaskNumber="2"  address="localhost:11111"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="test_jppf/sample.data"/>
+			</dataDescription>
+		</jppf>	
+	</target>
+
+</project>

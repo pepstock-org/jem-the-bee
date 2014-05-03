@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project basedir="." default="testReaderWriterChunk">
+
+	<property name="jem.job.name" value="JPPF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	
+	<target name="test-T-ReaderWriter">
+		<jppf runnable="org.pepstock.jem.testjppf.JPPFTaskReaderWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+	
+	<target name="test-T-ReaderWriterChunk" depends="test-T-ReaderWriter">
+		<jppf runnable="org.pepstock.jem.testjppf.JPPFTaskReaderWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+		
+	<target name="testReaderWriter" depends="test-T-ReaderWriterChunk">
+		<jppf runnable="org.pepstock.jem.testjppf.RunnableReaderWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+	
+	<target name="testReaderWriterChunk" depends="testReaderWriter">
+		<jppf runnable="org.pepstock.jem.testjppf.RunnableReaderWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT"
+			chunkableDataDescription="INPUT" delimiterString="789">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+		
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+
+</project>

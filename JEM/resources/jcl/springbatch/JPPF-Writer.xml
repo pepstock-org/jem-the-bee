@@ -41,59 +41,71 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="jppf" class="org.pepstock.jem.jppf.JPPFTasklet">
-		<beans:property name="bean" ref="jppf.bean" />
+	<beans:bean id="test-T-Writer" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Bean" />
 		<beans:property name="dataDescriptionList">
-				<beans:list>
-					<beans:ref local="INPUT"/>
-				</beans:list>
+			<beans:list>
+				<beans:ref local="OUTPUT-1"/>
+			</beans:list>
 		</beans:property>
-		<beans:property name="dataSourceList">
-				<beans:list>
-					<beans:ref local="datasource"/>
-				</beans:list>
+	</beans:bean>
+	
+	<beans:bean id="test-Writer" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref local="OUTPUT-2"/>
+			</beans:list>
 		</beans:property>		
 	</beans:bean>
-
-	<beans:bean id="jppf.bean" class="org.pepstock.jem.jppf.JPPFBean">
-		<beans:property name="runnable" value="org.pepstock.jem.testjppf.MyJPPFTask" />
-		<beans:property name="datasource" value="jppf" />
-		<beans:property name="parallelTaskNumber" value="5" />
-		<beans:property name="chunkableDataDescription" value="INPUT" />
-		<beans:property name="delimiterString" value="345" />
-	</beans:bean>
-
+	
 	<!-- 
-		Data source for JPPF
+		JPPF beans Defintion
 	 -->
 
-	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
-		<beans:property name="name" value="jppf" />
-		<beans:property name="resource" value="JPPFLocalhost" />
+	<beans:bean id="test-T-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.JPPFTaskWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+	
+	<beans:bean id="test-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.RunnableWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
 	</beans:bean>
 
 	<!-- 
 		Data description list
-		INPUT-1 file
+		OUTPUT-1 file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
-		<beans:property name="name" value="INPUT" />
-		<beans:property name="disposition" value="SHR" />
-		<beans:property name="datasets">
-				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
-			        	<beans:property name="name" value="gdg/jemtest(0)" />
-			        </beans:bean>
-				</beans:list>
-		</beans:property>
+	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT-2 file
+	 -->
+	<beans:bean id="OUTPUT-2" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
 	</beans:bean>
 
 	<!-- 
 		null: does nothing
 	 -->
 	<job id="JPPF">
-		<step id="grid">
-			<tasklet ref="jppf" />
+		<step id="test-Task-Writer" next="test-Run-Writer">
+			<tasklet ref="test-T-Writer" />
+		</step>
+		<step id="test-Run-Writer">
+			<tasklet ref="test-Writer" />
 		</step>
 	</job>
 	

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:jem="http://www.pepstock.org/schema/jem" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+           http://www.pepstock.org/schema/jem
+           http://www.pepstock.org/schema/jem/jem.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+	 
+	 <jem:configuration jobName="TEST_JPPF_SBXSD_READER" environment="TEST-Env" classPath="${JEM_HOME}/lib/jem-junit.jar"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<jem:jppf-tasklet id="test-T-Reader">
+		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskReader" address="localhost:11111" parallelTaskNumber="2"/>
+				<jem:dataDescription name="INPUT" disposition="SHR">
+			<jem:dataSet name="test_jppf/sample.data" />
+		</jem:dataDescription>
+	</jem:jppf-tasklet>
+
+	<jem:jppf-tasklet id="test-T-Chunk-Reader">
+		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskReader" address="localhost:11111" parallelTaskNumber="2"
+		chunkableDataDescription="INPUT" delimiterString="789"/>
+				<jem:dataDescription name="INPUT" disposition="SHR">
+			<jem:dataSet name="test_jppf/sample.data" />
+		</jem:dataDescription>
+	</jem:jppf-tasklet>
+
+	<jem:jppf-tasklet id="test-Reader">
+		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.RunnableReader" address="localhost:11111" parallelTaskNumber="2"/>
+				<jem:dataDescription name="INPUT" disposition="SHR">
+			<jem:dataSet name="test_jppf/sample.data" />
+		</jem:dataDescription>
+	</jem:jppf-tasklet>
+
+	<jem:jppf-tasklet id="test-Chunk-Reader">
+		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.RunnableReader" address="localhost:11111" parallelTaskNumber="2"
+		chunkableDataDescription="INPUT" delimiterString="789"/>
+				<jem:dataDescription name="INPUT" disposition="SHR">
+			<jem:dataSet name="test_jppf/sample.data" />
+		</jem:dataDescription>
+	</jem:jppf-tasklet>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="TEST_JPPF_SBXSD_READER">
+		<step id="test-Task-Chunk-Reader" next="test-Task-Reader">
+			<tasklet ref="test-T-Chunk-Reader" />
+		</step>
+		<step id="test-Task-Reader" next="test-Run-Chunk-Reader">
+			<tasklet ref="test-T-Reader" />
+		</step>
+		<step id="test-Run-Chunk-Reader" next="test-Run-Reader">
+			<tasklet ref="test-Chunk-Reader" />
+		</step>
+		<step id="test-Run-Reader">
+			<tasklet ref="test-Reader" />
+		</step>
+	</job>
+	
+</beans:beans>

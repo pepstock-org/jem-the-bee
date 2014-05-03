@@ -6,6 +6,10 @@
 	<classpathentry kind="lib" path="/JEM/lib/xstream/xstream-1.4.4.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/logging/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="jppf/driver/lib/jmxremote_optional.jar"/>
+	<classpathentry kind="lib" path="jppf/driver/lib/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="jppf/driver/lib/jppf-common.jar"/>
+	<classpathentry kind="lib" path="jppf/driver/lib/jppf-server.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/JEM/lib/junit/junit-4.11.jar"/>
@@ -63,5 +67,8 @@
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web-2.5.6.A.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.xml-1.5.5.A.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/spring-modules-validation-0.8.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-client.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
