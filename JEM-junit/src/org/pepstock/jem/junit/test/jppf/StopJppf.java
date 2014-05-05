@@ -16,10 +16,18 @@
 */
 package org.pepstock.jem.junit.test.jppf;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jppf.management.JMXDriverConnectionWrapper;
 import org.jppf.management.JMXNodeConnectionWrapper;
+import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
+import org.pepstock.jem.node.tasks.platform.Platform;
 
 /**
  * 
@@ -28,27 +36,65 @@ import org.jppf.management.JMXNodeConnectionWrapper;
  */
 public class StopJppf extends TestCase{
 	
+	private Platform platform = null;
+
 	/**
 	 * 
 	 * @throws Exception
 	 */
 	public void testStopJppf() throws Exception{
 		try {
-			
-			System.out.println("====================================\nStop JPPF node\n====================================");
-			JMXNodeConnectionWrapper wrapper = new JMXNodeConnectionWrapper("localhost", 12001, false);
-			wrapper.connectAndWait(5000L);
-			// stop the node
-			wrapper.shutdown();
-
-			System.out.println("====================================\nStop JPPF driver\n====================================");
-			// connect to the driver's JMX server
-			JMXDriverConnectionWrapper jmxDriver =
-					new JMXDriverConnectionWrapper("localhost", 11198, false);
+			platform = CurrentPlatform.getInstance();
+			JMXDriverConnectionWrapper jmxDriver =	new JMXDriverConnectionWrapper("localhost", 11198, false);
 			jmxDriver.connectAndWait(5000L);
-			jmxDriver.restartShutdown(0L, -1L);
+			close("driver");
+			
+			JMXNodeConnectionWrapper wrapper = new JMXNodeConnectionWrapper("localhost", 12001, false);
+			wrapper.connectAndWait(5000L);			
+			close("node");
+//			System.out.println("====================================\nStop JPPF driver\n====================================");
+//			// connect to the driver's JMX server
+//			JMXDriverConnectionWrapper jmxDriver =
+//					new JMXDriverConnectionWrapper("localhost", 11198, false);
+////			jmxDriver.connectAndWait(5000L);
+//			jmxDriver.connect();
+//			jmxDriver.restartShutdown(5000L, -1L);
+//			
+//			jmxDriver.getAllJobIds();
+//			
+//			System.err.println(jmxDriver.getDisplayName());
+//			
+//			System.out.println("====================================\nStop JPPF node\n====================================");
+//			JMXNodeConnectionWrapper wrapper = new JMXNodeConnectionWrapper("localhost", 12001, false);
+//			wrapper.connectAndWait(5000L);
+//			// stop the node
+//			wrapper.shutdown();
+
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+	
+	private void close(String type) throws IOException{
+		System.out.println("====================================\nStop JPPF "+type+"\n====================================");
+		File dir = new File("./jppf/"+type);
+		File log = new File(dir, "jppf-"+type+".log");
+		
+		List<String> rows = FileUtils.readLines(log);
+		
+		String toSearch = "starting "+type+" with PID=";
+		
+		for (String row : rows){
+			if (StringUtils.contains(row, toSearch)){
+				String pids = StringUtils.substringBetween(row, toSearch, ",");
+				long pid = Long.parseLong(pids);
+				platform.kill(pid, null, true, false);
+				System.out.println("kill process "+type+":"+pid);
+				return;
+			}
+		}
+
+
 	}
 
 }

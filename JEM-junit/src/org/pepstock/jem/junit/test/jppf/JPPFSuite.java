@@ -24,11 +24,12 @@ import org.junit.runners.Suite.SuiteClasses;
  * Is the jnuit suite dedicated to test the jppf utility provided by the
  * JEM.
  * 
- * @author Simone "Busy" Businaro 
+ * @author Simone "Busy" Businaro    
+ * 
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ Clean.class, Create.class, StartJppf.class, AntSubmit.class,  SpringBatchSubmit.class, SpringBatchXsdSubmit.class, StopJppf.class  })
+@SuiteClasses({Clean.class, Create.class, StartJppf.class, AntSubmit.class,  SpringBatchSubmit.class, SpringBatchXsdSubmit.class, StopJppf.class })
 public class JPPFSuite {
 
 }
