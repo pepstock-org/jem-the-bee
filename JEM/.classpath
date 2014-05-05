@@ -44,7 +44,9 @@
 	<classpathentry kind="lib" path="lib/ant/ant-testutil.jar"/>
 	<classpathentry kind="lib" path="lib/ant/antcontrib.jar"/>
 	<classpathentry kind="lib" path="lib/gwt/gwt-user.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jppf/jppf-client.jar"/>
+	<classpathentry kind="lib" path="lib/jppf/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="lib/jppf/jppf-common.jar"/>
 	<classpathentry kind="lib" path="lib/beanutils/commons-beanutils-1.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/bouncycastle/bcpkix-jdk15on-150.jar"/>
 	<classpathentry kind="lib" path="lib/bouncycastle/bcprov-jdk15on-150.jar"/>
@@ -143,5 +145,6 @@
 	<classpathentry kind="lib" path="lib/groovy/groovy-swing-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-templates-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-xml-2.2.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
