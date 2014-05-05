@@ -63,6 +63,9 @@
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.xml-1.5.5.A.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/spring-modules-validation-0.8.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/xstream/xstream-1.4.7.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-client.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM-gwt"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

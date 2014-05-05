@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="TEST_JPPF_RESOURCE_CREATE" default="create" basedir=".">
+	<description>
+		This job creates a JPPF resource to use to test JPPF functionalities.
+    </description>
+
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+
+	<target name="create">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="RESOURCE" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					<resource name="JUNIT-JPPF-RESOURCE" type="jppf">
+					   <property name="addresses" visible="true" override="true">localhost:11111</property>
+					</resource>
+					]]>
+				</dataset>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE RESOURCE;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

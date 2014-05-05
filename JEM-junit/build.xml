@@ -6,7 +6,7 @@
 
 	<!-- clean project JEM-junit -->
 	<target name="clean-jem-junit">
-		<delete dir="${jem.workspace}/${jem-junit.library.directory}" includeemptydirs="true" />
+		<delete file="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" />
 		<delete dir="${jem.workspace}/${jem-junit.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
 	</target>
 
@@ -23,6 +23,9 @@
 			<classpath>
 				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
 				<pathelement path="${jem.workspace}/${jem-junit.classes.directory}" />
+				<fileset dir="${jem.workspace}/${jem-junit.library.directory}">
+					<include name="**/*.jar" />
+				</fileset>
 				<fileset dir="${jem.workspace}/${jem.library.directory}">
 					<include name="commons-io/*.jar" />
 					<include name="xstream/*.jar" />
@@ -30,6 +33,7 @@
 					<include name="junit/*.jar" />
 					<include name="springbatch/*.jar" />
 					<include name="spring/*.jar" />
+					<include name="jppf/*.jar" />
 				</fileset>
 			</classpath>
 		</javac>

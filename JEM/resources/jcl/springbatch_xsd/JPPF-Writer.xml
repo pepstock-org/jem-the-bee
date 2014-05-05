@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:jem="http://www.pepstock.org/schema/jem" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+           http://www.pepstock.org/schema/jem
+           http://www.pepstock.org/schema/jem/jem.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+	 
+	 <jem:configuration jobName="JPPF" environment="TEST-Env" classPath="${jem.classpath}/test/jem-test.jar"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<jem:jppf-tasklet id="test-T-Writer">
+		<jem:jppf-configuration runnable="org.pepstock.jem.testjppf.JPPFTaskWriter" address="localhost:11111" parallelTaskNumber="5"
+		mergedDataDescription="OUTPUT"/>
+		<jem:dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+	</jem:jppf-tasklet>
+	
+	<jem:jppf-tasklet id="test-Writer">
+		<jem:jppf-configuration runnable="org.pepstock.jem.testjppf.RunnableWriter" address="localhost:11111" parallelTaskNumber="5"
+		mergedDataDescription="OUTPUT"/>
+		<jem:dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+	</jem:jppf-tasklet>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="JPPF">
+		<step id="test-Task-Writer" next="test-Run-Writer">
+			<tasklet ref="test-T-Writer" />
+		</step>
+		<step id="test-Run-Writer">
+			<tasklet ref="test-Writer" />
+		</step>
+	</job>
+	
+</beans:beans>

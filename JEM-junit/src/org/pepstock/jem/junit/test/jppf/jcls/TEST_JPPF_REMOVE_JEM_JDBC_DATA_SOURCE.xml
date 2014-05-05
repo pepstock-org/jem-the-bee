@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="TEST_JPPF_REMOVE_JEM_JDBC_DATA_SOURCE" default="removeJDBCReource" basedir=".">
+	<description>
+		This example will     	
+    		1) target:createDasetJDBC 
+    		   Launch a step java that will retrieve the configuration of the 
+    		   JEM DB and create a data set containing the definition
+		       of a JEM resource of type JDBC. Note that this will be possibile only
+		       because the user that launch this task will be configure as an admin
+		       user that hence can access the persisence path,
+    	
+    		2) target:createJDBCReource
+    		   launch a job that will use the dataset create in step one to import
+    		   the datasource inside the JEM application server    	
+    </description>
+
+	<property name="jem.job.name" value="TEST_JPPF_REMOVE_JEM_JDBC_DATA_SOURCE" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+
+	<!-- create jdbc resource read from dataset -->
+	<target name="removeJDBCReource">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REMOVE JUNIT_JPPF_JDBC_JEM;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

@@ -87,6 +87,15 @@ public class DefaultJobTask extends JobTask {
 						"-D"+ConfigKeys.JEM_OUTPUT_PATH_NAME+"="+FilenameUtils.normalize(jclFile.getParentFile().getAbsolutePath(), true),
 						getSrcPath(),
 						getPersistencePath());
+		
+		// loads properties set during submit
+		if (!job.getInputArguments().isEmpty()){
+			for (String prop : job.getInputArguments()){
+				if (prop.startsWith("-Djem.custom.")){
+					command.setJavaOptions(prop);
+				}
+			}
+		}
 		setCommand(command);
 	}
 

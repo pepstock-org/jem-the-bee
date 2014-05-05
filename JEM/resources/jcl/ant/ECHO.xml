@@ -24,5 +24,6 @@
 		<echo> Embed another:${user.name} </echo>
 		<echo> Embed another:${env.TEMP} </echo>
 		<echo> Embed another:${jem.classpath} </echo>
+		<echo> Embed another:${jem.pippo} </echo>
 	</target>
 </project>

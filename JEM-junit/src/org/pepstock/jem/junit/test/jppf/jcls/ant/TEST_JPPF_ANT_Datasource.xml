@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project basedir="." default="testDatasource">
+
+	<property name="jem.job.name" value="TEST_JPPF_ANT_DATASOURCE"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	
+	<target name="test-T-Datasource">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskDatasource" parallelTaskNumber="2"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			
+			<dataSource name="JUNIT_JPPF_JDBC_JEM" resource="JUNIT_JPPF_JDBC_JEM"/>
+			
+		</jppf>	
+	</target>
+
+	<target name="testDatasource" depends="test-T-Datasource">
+		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.RunnableDatasource" parallelTaskNumber="2"  address="localhost:11111">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+			</classpath>
+			
+			<dataSource name="JUNIT_JPPF_JDBC_JEM" resource="JUNIT_JPPF_JDBC_JEM"/>
+			
+		</jppf>	
+	</target>
+
+</project>

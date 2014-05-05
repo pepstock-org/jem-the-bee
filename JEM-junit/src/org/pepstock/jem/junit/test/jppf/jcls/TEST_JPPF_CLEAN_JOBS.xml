@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="TEST_JPPF_CLEAN_JOBS" default="archive_jobs" basedir=".">
+	<description>
+		Archive and delete jobs using a query against jobs.
+		Note that currently the default archive does not create a zip file.
+		If you need to create zip file you must define your own JobOutputArchive
+		and not use the default one.
+    </description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_JPPF_CLEAN_JOBS"/>
+	<property name="jem.job.lockingScope" value="task"/>
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->	
+
+	<taskdef name="archive" classname="org.pepstock.jem.ant.JobOutputArchiveTask" />
+
+	<target name="archive_jobs">
+		<archive license="Pepstock_JEM_AntUtil.license">
+			<arg value="-class"/>
+			<arg value="org.pepstock.jem.node.archive.DefaultJobOutputArchive"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					<![CDATA[
+						name LIKE 'TEST_JPPF%';
+					]]>
+				</dataSet>
+			</dataDescription>
+		</archive>
+	</target>
+
+</project>

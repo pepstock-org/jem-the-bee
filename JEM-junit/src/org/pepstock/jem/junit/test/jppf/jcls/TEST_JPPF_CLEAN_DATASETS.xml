@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="TEST_JPPF_CLEAN_DATASETS" default="delete" basedir=".">
+	<description>
+		Delete datasets used by jppf junit test
+    </description>
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_JPPF_CLEAN_DATASETS" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	
+	<target name="delete">
+		<step-java classname="org.pepstock.jem.junit.test.jppf.java.DeleteJunitDataSet">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		</step-java>
+	</target>
+
+</project>

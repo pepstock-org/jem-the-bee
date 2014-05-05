@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project basedir="." default="testWriter">
+
+	<property name="jem.job.name" value="JPPF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="jppf" classname="org.pepstock.jem.jppf.StepJPPF"/>
+	
+	<target name="test-T-Writer">
+		<jppf runnable="org.pepstock.jem.testjppf.JPPFTaskWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+		
+	<target name="testWriter" depends="test-T-Writer">
+		<jppf runnable="org.pepstock.jem.testjppf.RunnableWriter" parallelTaskNumber="5"  address="localhost:11111" mergedDataDescription="OUTPUT">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="${jem.classpath}/test/jem-test.jar" />
+			</classpath>
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+		</jppf>	
+	</target>
+	
+</project>
