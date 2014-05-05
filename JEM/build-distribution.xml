@@ -18,8 +18,8 @@
 	<!-- compile JEM and JEM-gwt -->
 	<target name="compile-distribution" depends="make-directories">
 		<antcall target="compile-jem" />
-		<antcall target="compile-jem-junit" />
 		<antcall target="gwtc" />
+		<antcall target="compile-jem-junit" />
 		<!-- copy jem.jar to JEM-gwt -->
 		<copy file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" todir="${jem.workspace}/${jem-gwt.library.directory}" />
 		<!-- copy jem.jar and jem-gwt.jar to JEM-plugin  -->

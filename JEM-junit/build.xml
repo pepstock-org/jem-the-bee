@@ -22,6 +22,7 @@
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
 				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
+				<pathelement path="${jem.workspace}/JEM-gwt/classes"/>
 				<pathelement path="${jem.workspace}/${jem-junit.classes.directory}" />
 				<fileset dir="${jem.workspace}/${jem-junit.library.directory}">
 					<include name="**/*.jar" />
