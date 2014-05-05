@@ -20,9 +20,6 @@
 	<classpathentry kind="lib" path="lib/emailing/smtp-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/javax.mail-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/jms/javax.jms-api-2.0-b10.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-client.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-common-node.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-common.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-antlr.jar"/>
