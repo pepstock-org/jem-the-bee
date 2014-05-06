@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.junit.submitter;
+package org.pepstock.jem.junit.init;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -42,7 +42,7 @@ public class JemTestManager {
 
 	private RestConf restConf;
 
-	private SubmitterConfiguration configuration;
+	private Configuration configuration;
 
 	private ExecutorService executor;
 
@@ -57,7 +57,7 @@ public class JemTestManager {
 	 */
 	private JemTestManager(File configurationFile) throws Exception {
 		String xml = FileUtils.readFileToString(configurationFile);
-		SubmitterConfiguration conf = SubmitterConfiguration.unmarshall(xml);
+		Configuration conf = Configuration.unmarshall(xml);
 		this.configuration = conf;
 		this.restConf = conf.getRestconf();
 		for (Submitter submitter : conf.getSubmitters()) {
@@ -121,7 +121,7 @@ public class JemTestManager {
 	 * 
 	 * @return the configuration object
 	 */
-	public SubmitterConfiguration getConfiguration() {
+	public Configuration getConfiguration() {
 		return configuration;
 	}
 

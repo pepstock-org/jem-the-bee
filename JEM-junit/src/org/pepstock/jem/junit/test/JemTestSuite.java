@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
 import org.pepstock.jem.junit.test.common.CommonSuite;
+import org.pepstock.jem.junit.test.rest.RestSuite;
 import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
 
 /**
@@ -29,7 +30,7 @@ import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
  * @version 1.4
  */
 @RunWith(Suite.class)
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class })
+@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class, RestSuite.class })
 public class JemTestSuite {
 
 }

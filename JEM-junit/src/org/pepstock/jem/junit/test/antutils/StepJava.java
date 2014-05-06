@@ -19,7 +19,7 @@ package org.pepstock.jem.junit.test.antutils;
 import java.util.concurrent.Future;
 
 import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.submitter.JemTestManager;
+import org.pepstock.jem.junit.init.JemTestManager;
 
 import junit.framework.TestCase;
 

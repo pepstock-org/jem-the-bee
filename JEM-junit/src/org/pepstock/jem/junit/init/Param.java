@@ -14,25 +14,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.junit.submitter;
-
-import java.util.List;
+package org.pepstock.jem.junit.init;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  *
  */
-public class Submitter {
+public class Param {
 
 	private String name;
-
-	@SuppressWarnings("rawtypes")
-	private Class referenceClass;
-
-	private Boolean selected;
-
-	private List<Param> params;
+	
+	private String value;
 
 	/**
 	 * @return the name
@@ -49,47 +42,16 @@ public class Submitter {
 	}
 
 	/**
-	 * @return the clazz
+	 * @return the value
 	 */
-	@SuppressWarnings("rawtypes")
-	public Class getReferenceClass() {
-		return referenceClass;
+	public String getValue() {
+		return value;
 	}
 
 	/**
-	 * @param clazz the clazz to set
+	 * @param value the value to set
 	 */
-	@SuppressWarnings("rawtypes")
-	public void setReferenceClass(Class clazz) {
-		this.referenceClass = clazz;
+	public void setValue(String value) {
+		this.value = value;
 	}
-
-	/**
-	 * @return the selected
-	 */
-	public Boolean getSelected() {
-		return selected;
-	}
-
-	/**
-	 * @param selected the selected to set
-	 */
-	public void setSelected(Boolean selected) {
-		this.selected = selected;
-	}
-
-	/**
-	 * @return the params
-	 */
-	public List<Param> getParams() {
-		return params;
-	}
-
-	/**
-	 * @param params the params to set
-	 */
-	public void setParams(List<Param> params) {
-		this.params = params;
-	}
-
 }

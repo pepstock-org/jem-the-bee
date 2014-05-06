@@ -11,8 +11,8 @@ import org.pepstock.jem.gwt.client.rest.JobsManager;
 import org.pepstock.jem.gwt.client.rest.LoginManager;
 import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.server.rest.entities.Account;
-import org.pepstock.jem.junit.submitter.JemTestManager;
-import org.pepstock.jem.junit.submitter.RestConf;
+import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.junit.init.RestConf;
 import org.pepstock.jem.util.MultiRestClient;
 import org.pepstock.jem.util.RestClient;
 

@@ -1,4 +1,4 @@
-package org.pepstock.jem.junit.submitter;
+package org.pepstock.jem.junit.init;
 
 public class RestConf {
 	private String url;

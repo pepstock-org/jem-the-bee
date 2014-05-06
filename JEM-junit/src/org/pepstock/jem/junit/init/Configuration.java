@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.junit.submitter;
+package org.pepstock.jem.junit.init;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Simone "Busy" Businaro
  *
  */
-public class SubmitterConfiguration {
+public class Configuration {
 
 	private List<Submitter> submitters;
 	
@@ -57,17 +57,17 @@ public class SubmitterConfiguration {
 	 * @throws Exception
 	 *             if any exception occurs during the unmarshall process
 	 */
-	public static SubmitterConfiguration unmarshall(String xml)
+	public static Configuration unmarshall(String xml)
 			throws Exception {
 		XStream xStream = new XStream();
-		xStream.alias("configuration", SubmitterConfiguration.class);
+		xStream.alias("configuration", Configuration.class);
 		xStream.alias("submitter", Submitter.class);
 		xStream.alias("param", Param.class);
 		Object object = xStream.fromXML(xml);
-		if (!(object instanceof SubmitterConfiguration)) {
+		if (!(object instanceof Configuration)) {
 			throw new Exception("Error unmarshall");
 		}
-		return (SubmitterConfiguration) object;
+		return (Configuration) object;
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class SubmitterConfiguration {
 	 * @param object
 	 * @return the xml marshall from the ClientMulticastRequest
 	 */
-	public static String marshall(SubmitterConfiguration object) {
+	public static String marshall(Configuration object) {
 		XStream xStream = new XStream();
-		xStream.alias("configuration", SubmitterConfiguration.class);
+		xStream.alias("configuration", Configuration.class);
 		xStream.alias("submitter", Submitter.class);
 		xStream.alias("param", Param.class);
 		return xStream.toXML(object);
@@ -106,8 +106,8 @@ public class SubmitterConfiguration {
 	 */
 	public static void main(String[] args) throws Exception {
 		String xml = FileUtils
-				.readFileToString(new File(SubmitterConfiguration.class
+				.readFileToString(new File(Configuration.class
 						.getResource("Configuration.xml").getFile()));
-		SubmitterConfiguration.unmarshall(xml);
+		Configuration.unmarshall(xml);
 	}
 }
