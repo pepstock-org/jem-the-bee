@@ -17,8 +17,8 @@
 	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
 	
 	<target name="delete">
-		<step-java classname="org.pepstock.jem.junit.test.jppf.java.DeleteJunitDataSet">
-			<arg value="-h" />
+		<step-java classname="org.pepstock.jem.junit.test.common.java.DeleteJunitDataSet">
+			<arg value="test_jppf" />
 			<classpath>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 				<pathelement path="${java.class.path}" />

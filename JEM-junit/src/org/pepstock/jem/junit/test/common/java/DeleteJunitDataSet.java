@@ -27,7 +27,7 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
  * This class will delete all the dataset create during the junit test relative
- * to antutils.
+ * to folder passed as parameter.
  * 
  * @author Simone "busy" Businaro
  * 
@@ -35,22 +35,20 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 public class DeleteJunitDataSet {
 
 	/**
-	 * name of the dataset that will contain the JDBC resource information
-	 */
-	private static final String DATA_SET_JUNIT_FOLDER = "test_common";
-
-	/**
 	 * 
-	 * @param args
+	 * @param args[0] is the folder on the jem.dataPaths to delete
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		if(args==null || args[0].length() == 0){
+			throw new Exception("Need argument for the folder to delete !");
+		}
+		String folder=args[0];
 		InitialContext ic = ContextUtils.getContext();
 		// loads datapath container
 		DataPathsContainer dc = (DataPathsContainer)ic.lookup(AntKeys.ANT_DATAPATHS_BIND_NAME);
-
 		for (String path : dc.getDataPaths()){
-			File dirToDelete = new File(path, DATA_SET_JUNIT_FOLDER);
+			File dirToDelete = new File(path, folder);
 			System.out.println("Deliting folder:" + dirToDelete);
 			if (dirToDelete.exists()) {
 				FileUtils.deleteDirectory(dirToDelete);
