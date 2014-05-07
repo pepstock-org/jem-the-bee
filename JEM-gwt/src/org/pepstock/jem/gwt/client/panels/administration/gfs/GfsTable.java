@@ -34,6 +34,9 @@ import com.google.gwt.user.cellview.client.TextColumn;
  */
 public class GfsTable extends AbstractTable<LightMemberSample> {
 	
+	public static final NumberFormat MB_FORMAT = NumberFormat.getFormat("###,###,##0 MB");
+	public static final NumberFormat PERCENT_FORMAT = NumberFormat.getFormat("##0.00 %"); 
+	
 	/**
 	 *  Empty constructor
 	 */
@@ -57,7 +60,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> freeMb = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return NumberFormat.getFormat("###,###,##0 MB").format(memberSample.getGfsFree()/1024D);
+				return MB_FORMAT.format(memberSample.getGfsFree()/1024D);
 			}
 		};
 		freeMb.setSortable(true);
@@ -70,7 +73,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
 				long tot = memberSample.getGfsFree() + memberSample.getGfsUsed();
-				return  NumberFormat.getFormat("##0.00 %").format(memberSample.getGfsFree()/(double)tot);
+				return PERCENT_FORMAT.format(memberSample.getGfsFree()/(double)tot);
 			}
 		};
 		freePercent.setSortable(true);
@@ -82,7 +85,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> usedMb = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return  NumberFormat.getFormat("###,###,##0 MB").format(memberSample.getGfsUsed()/1024D);
+				return MB_FORMAT.format(memberSample.getGfsUsed()/1024D);
 			}
 		};
 		usedMb.setSortable(true);
@@ -95,7 +98,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
 				long tot = memberSample.getGfsFree() + memberSample.getGfsUsed();
-				return  NumberFormat.getFormat("##0.00 %").format(memberSample.getGfsUsed()/(double)tot);
+				return PERCENT_FORMAT.format(memberSample.getGfsUsed()/(double)tot);
 			}
 		};
 		usedPercent.setSortable(true);

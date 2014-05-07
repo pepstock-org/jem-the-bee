@@ -21,9 +21,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.charts.PieData;
+import org.pepstock.jem.gwt.client.charts.gflot.DataPoint;
+import org.pepstock.jem.gwt.client.charts.gflot.GPieChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -33,6 +35,8 @@ import org.pepstock.jem.node.stats.LightSample;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.googlecode.gflot.client.Series;
+import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -40,11 +44,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private GfsChart chart = new GfsChart();
+	private GPieChart chart = new GPieChart();
 	private TableContainer<LightMemberSample> gfs = new TableContainer<LightMemberSample>(new GfsTable());
 
 	private ScrollPanel scroller = new ScrollPanel(gfs);
-	private List<PieData> mapData = new LinkedList<PieData>();
+	private List<DataPoint<String, Double>> mapData = new LinkedList<DataPoint<String,Double>>();
 	
 	private VerticalPanel entriesPanel = new VerticalPanel();
 
@@ -60,30 +64,18 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 * @param memberKey 
 	 * 
 	 */
-	public void load(){
+	public void load() {
 		mapData.clear();
 
 		LightMemberSample msample = Instances.getLastSample().getMembers().iterator().next();
-		if (msample != null){
-			long tot = msample.getGfsFree() + msample.getGfsUsed();
-			
-			PieData dataFree = new PieData();
-			dataFree.setKey("Free");
-			dataFree.setValue(msample.getGfsFree());
-			dataFree.setPercent(msample.getGfsFree()/(double)tot);
-			
-			
-			PieData dataUsed = new PieData();
-			dataUsed.setKey("Used");
-			dataUsed.setValue(msample.getGfsUsed());
-			dataUsed.setPercent(msample.getGfsUsed()/(double)tot);
-			
-			mapData.add(0, dataFree);
-			mapData.add(mapData.size(), dataUsed);
+		if (msample != null) {
+			DataPoint<String, Double> used = new DataPoint<String, Double>("Used", (double)msample.getGfsUsed(), ColorsHex.LIGHT_RED);
+			DataPoint<String, Double> free = new DataPoint<String, Double>("Free", (double)msample.getGfsFree(), ColorsHex.LIGHT_BLUE);
+			mapData.add(used);
+			mapData.add(free);
  		}
 		
     	List<LightMemberSample> list = new ArrayList<LightMemberSample>();
-    	
     	for (LightSample sample : Instances.getSamples()){
     		for (LightMemberSample membersample : sample.getMembers()){
     			if (membersample.getMemberKey().equalsIgnoreCase(msample.getMemberKey())){
@@ -96,8 +88,15 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		loadChart();
 	}
 
-	private void loadChart(){
-		//
+	private void loadChart() {
+		// set a specific labelformatter
+		chart.setLabelFormatter(new Formatter() {
+			@Override
+			public String format(String label, Series series) {
+				return label;
+			}
+		});
+		// set data to chart
 		chart.setData(mapData);
 		if (entriesPanel.getWidgetCount() == 0) {
 			entriesPanel.add(chart.asWidget());

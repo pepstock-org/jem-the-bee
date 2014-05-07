@@ -12,6 +12,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gflot-3.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-150.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15on-150.jar"/>
