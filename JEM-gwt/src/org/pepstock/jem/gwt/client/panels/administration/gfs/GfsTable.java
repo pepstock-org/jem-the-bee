@@ -34,8 +34,8 @@ import com.google.gwt.user.cellview.client.TextColumn;
  */
 public class GfsTable extends AbstractTable<LightMemberSample> {
 	
-	public static final NumberFormat MB_FORMAT = NumberFormat.getFormat("###,###,##0 MB");
-	public static final NumberFormat PERCENT_FORMAT = NumberFormat.getFormat("##0.00 %"); 
+	protected static final NumberFormat MB_FORMAT = NumberFormat.getFormat("###,###,##0 MB");
+	protected static final NumberFormat PERCENT_FORMAT = NumberFormat.getFormat("##0.00 %"); 
 	
 	/**
 	 *  Empty constructor

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.pepstock.jem.gwt.client.ColorsHex;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import com.googlecode.gflot.client.Series;
 import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
 
@@ -38,7 +39,8 @@ public class UsedFreePieChart extends PieChart {
 		setLabelFormatter(new Formatter() {
 			@Override
 			public String format(String label, Series series) {
-				return label + series.getData().getY(0);
+				//TODO test!
+				return NumberFormat.getFormat("0.0%").format(series.getPercent());
 			}
 		});
 	}
