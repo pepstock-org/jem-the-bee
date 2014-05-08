@@ -18,14 +18,11 @@ package org.pepstock.jem.gwt.client.panels.administration.gfs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.charts.gflot.DataPoint;
-import org.pepstock.jem.gwt.client.charts.gflot.GPieChart;
+import org.pepstock.jem.gwt.client.charts.gflot.UsedFreePieChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -35,8 +32,6 @@ import org.pepstock.jem.node.stats.LightSample;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.googlecode.gflot.client.Series;
-import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -44,12 +39,10 @@ import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private GPieChart chart = new GPieChart();
+	private UsedFreePieChart chart = new UsedFreePieChart();
 	private TableContainer<LightMemberSample> gfs = new TableContainer<LightMemberSample>(new GfsTable());
 
 	private ScrollPanel scroller = new ScrollPanel(gfs);
-	private List<DataPoint<String, Double>> mapData = new LinkedList<DataPoint<String,Double>>();
-	
 	private VerticalPanel entriesPanel = new VerticalPanel();
 
 	/**
@@ -65,14 +58,11 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 * 
 	 */
 	public void load() {
-		mapData.clear();
+		chart.clearData();
 
 		LightMemberSample msample = Instances.getLastSample().getMembers().iterator().next();
 		if (msample != null) {
-			DataPoint<String, Double> used = new DataPoint<String, Double>("Used", (double)msample.getGfsUsed(), ColorsHex.LIGHT_RED);
-			DataPoint<String, Double> free = new DataPoint<String, Double>("Free", (double)msample.getGfsFree(), ColorsHex.LIGHT_BLUE);
-			mapData.add(used);
-			mapData.add(free);
+			chart.setUsedFreeData(msample.getGfsUsed(), msample.getGfsFree());
  		}
 		
     	List<LightMemberSample> list = new ArrayList<LightMemberSample>();
@@ -89,15 +79,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	}
 
 	private void loadChart() {
-		// set a specific labelformatter
-		chart.setLabelFormatter(new Formatter() {
-			@Override
-			public String format(String label, Series series) {
-				return label;
-			}
-		});
-		// set data to chart
-		chart.setData(mapData);
 		if (entriesPanel.getWidgetCount() == 0) {
 			entriesPanel.add(chart.asWidget());
 		}

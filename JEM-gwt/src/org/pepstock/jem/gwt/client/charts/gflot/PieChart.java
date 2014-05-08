@@ -1,5 +1,22 @@
+/**
+    JEM, the BEE - Job Entry Manager, the Batch Execution Environment
+    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.pepstock.jem.gwt.client.charts.gflot;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,10 +38,14 @@ import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Background;
 import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
 import com.googlecode.gflot.client.options.PlotOptions;
 
-public class GPieChart implements IsWidget, HasSizes {
+/**
+ * Provide a widget that show a Pie Chart. 
+ * @author Marco "Fuzzo" Cuccato
+ */
+public class PieChart implements IsWidget, HasSizes {
 
-	public static int DEFAULT_WIDTH = 300;
-	public static int DEFAULT_HEIGHT = 300;
+	protected static int DEFAULT_WIDTH = 300;
+	protected static int DEFAULT_HEIGHT = 300;
 	
 	private int width = DEFAULT_WIDTH;
 	private int height = DEFAULT_HEIGHT;
@@ -46,19 +67,37 @@ public class GPieChart implements IsWidget, HasSizes {
 	
 	private List<DataPoint<String, Double>> data = new LinkedList<DataPoint<String, Double>>();
 	
-	public GPieChart() {
+	/**
+	 * Build an empty PieChart widget
+	 */
+	public PieChart() {
 	}
 
-	public GPieChart(List<DataPoint<String, Double>> data) {
+	/**
+	 * Build an PieChart widget 
+	 * @param data the chart data
+	 */
+	public PieChart(List<DataPoint<String, Double>> data) {
 		setData(data);
 	}
 
-	public GPieChart(int width, int height) {
+	/**
+	 * Build a PieChart widget
+	 * @param width the widget width
+	 * @param height the widget height
+	 */
+	public PieChart(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 	
-	public GPieChart(List<DataPoint<String, Double>> data, int width, int height) {
+	/**
+	 * Build a PieChart widget
+	 * @param data the chart data
+	 * @param width the widget width
+	 * @param height the widget height
+	 */
+	public PieChart(List<DataPoint<String, Double>> data, int width, int height) {
 		setData(data);
 		this.width = width;
 		this.height = height;
@@ -90,10 +129,17 @@ public class GPieChart implements IsWidget, HasSizes {
 		}
 	}
 	
+	/**
+	 * @return the chart data
+	 */
 	public List<DataPoint<String, Double>> getData() {
 		return data;
 	}
 
+	/**
+	 * Set the chart data
+	 * @param data list of {@link DataPoint}
+	 */
 	public void setData(List<DataPoint<String, Double>> data) {
 		// save the data
 		this.data = data;
@@ -101,7 +147,7 @@ public class GPieChart implements IsWidget, HasSizes {
 		model.removeAllSeries();
 		// create model
 		for (DataPoint<String, Double> dataPoint : data) {
-			SeriesHandler seriesHandler;// 
+			SeriesHandler seriesHandler; 
 			if (dataPoint.hasColor()) {
 				seriesHandler = model.addSeries(Series.of(dataPoint.getX(), dataPoint.getColor()));
 			} else {
@@ -111,66 +157,129 @@ public class GPieChart implements IsWidget, HasSizes {
 		}
 	}
 	
+	/**
+	 * Clear all chart data
+	 */
+	public void clearData() {
+		setData(new ArrayList<DataPoint<String,Double>>());
+	}
+	
+	/**
+	 * @return the pie radius. 0-1 for percentage of fullsize, or a specified pixel length
+	 */
 	public double getPieRadious() {
 		return pieRadious;
 	}
 
+	/**
+	 * Set the pie radious 
+	 * @param pieRadious the pie radius. 0-1 for percentage of fullsize, or a specified pixel length
+	 */
 	public void setPieRadious(double pieRadious) {
 		this.pieRadious = pieRadious;
 	}
 
+	/**
+	 * @return the inner radius to create a donut effect. 0-1 for percentage of fullsize or a specified pixel length
+	 */
 	public double getPieInnerRadious() {
 		return pieInnerRadious;
 	}
 
+	/**
+	 * Set the inner pie radious
+	 * @param pieInnerRadious the inner radius to create a donut effect. 0-1 for percentage of fullsize or a specified pixel length
+	 */
 	public void setPieInnerRadious(double pieInnerRadious) {
 		this.pieInnerRadious = pieInnerRadious;
 	}
 
+	/**
+	 * @return <code>true</code> if the legent be displayed, <code>false</code> otherwise
+	 */
 	public boolean isShowLegend() {
 		return showLegend;
 	}
 
+	/**
+	 * Set if the legeng will be displayed
+	 * @param showLegend <code>true</code> if you want the legend will be displayed, <code>false</code> otherwise
+	 */
 	public void setShowLegend(boolean showLegend) {
 		this.showLegend = showLegend;
 	}
 
+	/**
+	 * @return <code>true</code> if you want a label for pie series will be displayed, <code>false</code> otherwise
+	 */
 	public boolean isShowLabel() {
 		return showLabel;
 	}
 
+	/**
+	 * Set if the pie series label will be displayed
+	 * @param showLabel <code>true</code> if you want a label for pie series will be displayed, <code>false</code> otherwise
+	 */
 	public void setShowLabel(boolean showLabel) {
 		this.showLabel = showLabel;
 	}
 
+	/**
+	 * @return the label radius. 0-1 for percentage of fullsize, or a specified pixel length
+	 */
 	public double getLabelRadious() {
 		return labelRadious;
 	}
 
+	/**
+	 * Set the label radious
+	 * @param labelRadious the label radius. 0-1 for percentage of fullsize, or a specified pixel length
+	 */
 	public void setLabelRadious(double labelRadious) {
 		this.labelRadious = labelRadious;
 	}
 
+	/**
+	 * @return the threshold. 0-1 for the percentage value at which to hide labels (if they're too small)
+	 */
 	public double getLabelThreshold() {
 		return labelThreshold;
 	}
 
+	/**
+	 * Set the label threshold
+	 * @param labelThreshold the threshold. 0-1 for the percentage value at which to hide labels (if they're too small)
+	 */
 	public void setLabelThreshold(double labelThreshold) {
 		this.labelThreshold = labelThreshold;
 	}
 
+	/**
+	 * @return the label {@link Formatter} class which format the series label
+	 */
 	public Formatter getLabelFormatter() {
 		return labelFormatter;
 	}
 
+	/**
+	 * Set the label {@link Formatter} class
+	 * @param labelFormatter the label {@link Formatter} class which format the series label
+	 */
 	public void setLabelFormatter(Formatter labelFormatter) {
 		this.labelFormatter = labelFormatter;
 	}
 
+	/**
+	 * @return the label background opacity
+	 */
 	public double getLabelBackgroundOpacity() {
 		return labelBackgroundOpacity;
 	}
 
+	/**
+	 * Set the label background opacity
+	 * @param labelBackgroundOpacity the label background opacity
+	 */
 	public void setLabelBackgroundOpacity(double labelBackgroundOpacity) {
 		this.labelBackgroundOpacity = labelBackgroundOpacity;
 	}
@@ -203,7 +312,7 @@ public class GPieChart implements IsWidget, HasSizes {
 	 */
 	private static class DefaultLabelFormatter implements Formatter {
 
-		private static NumberFormat FORMAT = NumberFormat.getFormat("#0.#");
+		private static final NumberFormat FORMAT = NumberFormat.getFormat("#0.#");
 		
 		@Override
 		public String format(String label, Series series) {
