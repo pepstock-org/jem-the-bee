@@ -15,7 +15,7 @@
 				<dataset>
 					<![CDATA[
 					<resource name="JUNIT-JPPF-RESOURCE" type="jppf">
-					   <property name="addresses" visible="true" override="true">localhost:11111</property>
+					   <property name="addresses" visible="true" override="true">127.0.0.1:11111</property>
 					</resource>
 					]]>
 				</dataset>

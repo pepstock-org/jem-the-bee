@@ -94,7 +94,7 @@ public class StartDriverAndNode {
 			if (SystemUtils.IS_OS_WINDOWS){
 				builder.command("cmd.exe", "/C", command+".bat");
 			} else {
-				builder.command("bash", "-c", command+".sh");
+				builder.command("bash", "-c", "./"+command+".sh");
 			}
 			try {
 	            PROCESS = builder.start();

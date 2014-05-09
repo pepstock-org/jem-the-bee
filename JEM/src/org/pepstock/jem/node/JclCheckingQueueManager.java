@@ -232,6 +232,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				jcl.setType(prejob.getJclType());
 			}
 			performException(e, job, jcl);
+		} catch (NodeMessageException e) {
+			performException(e, job, job.getJcl());			
 		} catch (Exception e) {
 			Jcl jcl = new DefaultJcl();
 			jcl.setContent(prejob.getJclContent());
