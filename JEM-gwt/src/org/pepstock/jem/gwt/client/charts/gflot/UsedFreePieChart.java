@@ -32,6 +32,8 @@ import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
  */
 public class UsedFreePieChart extends PieChart {
 
+	protected static final NumberFormat PERCENT_FORMAT = NumberFormat.getFormat("#.#"); 
+	
 	/**
 	 * Build an empty pie
 	 */
@@ -39,8 +41,7 @@ public class UsedFreePieChart extends PieChart {
 		setLabelFormatter(new Formatter() {
 			@Override
 			public String format(String label, Series series) {
-				//TODO test!
-				return NumberFormat.getFormat("0.0%").format(series.getPercent());
+				return PERCENT_FORMAT.format(series.getPercent()) + "%";
 			}
 		});
 	}
