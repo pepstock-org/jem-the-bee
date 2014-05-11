@@ -78,6 +78,10 @@
 		<servlet-name>RestService</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
+  	<servlet-mapping>
+		<servlet-name>RestService</servlet-name>
+		<url-pattern>/restAuth/*</url-pattern>
+	</servlet-mapping>	
 	
 	<!-- **********************************************************
 	 | List of servlets, both GWT and JEM ones                    |
