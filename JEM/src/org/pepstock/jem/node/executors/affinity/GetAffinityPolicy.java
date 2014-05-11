@@ -52,7 +52,6 @@ public class GetAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
 			ScriptAffinityLoader loader = (ScriptAffinityLoader) Main.getAffinityLoader();
 			// checks if it has a script file
 			if (loader.getScriptFile() != null) {
-				// TODO mettere LOCK anche nel affinity loader!!!!
 				// locks the access to file to avoid multiple accesses
 				ILock writeSynch = null;
 				writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
