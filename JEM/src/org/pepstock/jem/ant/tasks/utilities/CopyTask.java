@@ -79,7 +79,9 @@ public class CopyTask extends AbstractIOTask {
 		}
 
 		// copy
-		IOUtils.copy(istream, ostream);
-
+		int bytes = IOUtils.copy(istream, ostream);
+		IOUtils.closeQuietly(istream);
+		IOUtils.closeQuietly(ostream);
+		System.err.println(AntMessage.JEMA062I.toMessage().getFormattedMessage(bytes));
 	}
 }

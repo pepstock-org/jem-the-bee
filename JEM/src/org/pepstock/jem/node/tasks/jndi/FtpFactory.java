@@ -53,7 +53,6 @@ public class FtpFactory implements ObjectFactory {
 	private static final String FTP_PROTOCOL = "ftp";
 
 	private static final String FTPS_PROTOCOL = "ftps";
-
 	
 	
 	/* (non-Javadoc)
@@ -132,6 +131,7 @@ public class FtpFactory implements ObjectFactory {
 			} else {
 				ftp.connect(server);
 			}
+			
 			// After connection attempt, you should check the reply code to
 			// verify
 			// success.
@@ -145,7 +145,7 @@ public class FtpFactory implements ObjectFactory {
 			if (!ftp.login(username, password)) {
 				ftp.logout();
 			}
-
+			
 			if (binaryTransfer) {
 				ftp.setFileType(FTP.BINARY_FILE_TYPE);
 			}

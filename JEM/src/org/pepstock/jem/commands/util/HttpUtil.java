@@ -21,30 +21,36 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Properties;
 
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.resources.HttpResource;
 import org.pepstock.jem.util.CharSet;
 
 import com.thoughtworks.xstream.XStream;
@@ -56,7 +62,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class HttpUtil {
+public final class HttpUtil {
 
 	/**
 	 * Key used to store user id
@@ -113,20 +119,27 @@ public class HttpUtil {
 	 */
 	public static String[] getMembers(String url) throws SubmitException {
 		// creates a HTTP client
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = null;
 		try {
-			configureHttpClient(httpclient, url);
+			httpclient = createHttpClient(url);
 			// concats URL with query string
 			String completeUrl = url + HttpUtil.MEMBERS_QUERY_STRING;
 			// prepares GET request and basic response handler
 			HttpGet httpget = new HttpGet(completeUrl);
-			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-
-			// executes and parse the results
-			// result must be
-			// [ipaddress:port],[ipaddress:port],[ipaddress:port],....[ipaddress:port]
-			String responseBody = httpclient.execute(httpget, responseHandler);
-			return responseBody.trim().split(",");
+			CloseableHttpResponse response = httpclient.execute(httpget);
+			HttpEntity entity = response.getEntity();
+			if (entity != null) {
+				long len = entity.getContentLength();
+				if (len != -1 && len < 2048) {
+					// executes and parse the results
+					// result must be
+					// [ipaddress:port],[ipaddress:port],[ipaddress:port],....[ipaddress:port]
+					return EntityUtils.toString(entity).trim().split(",");
+				} else {
+					throw new IOException("HTTP Entity content length wrong: "+len);
+				}
+			}
+			throw new IOException("HTTP Entity is null");
 		} catch (KeyManagementException e) {
 			throw new SubmitException(SubmitMessage.JEMW001E, e);
 		} catch (UnrecoverableKeyException e) {
@@ -143,7 +156,13 @@ public class HttpUtil {
 			throw new SubmitException(SubmitMessage.JEMW001E, e);
 		} finally {
 			// close http client
-			httpclient.getConnectionManager().shutdown();
+			if (httpclient != null){
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -157,10 +176,9 @@ public class HttpUtil {
 	 */
 	public static String getGroupName(String url) throws SubmitException {
 		// creates a HTTP client
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = null;
 		try {
-			configureHttpClient(httpclient, url);
-
+			httpclient = createHttpClient(url);
 			// concats URL with query string
 			String completeUrl = url + HttpUtil.NAME_QUERY_STRING;
 			// prepares GET request and basic response handler
@@ -187,7 +205,13 @@ public class HttpUtil {
 			throw new SubmitException(SubmitMessage.JEMW002E, e);
 		} finally {
 			// close http client
-			httpclient.getConnectionManager().shutdown();
+			if (httpclient != null){
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -203,10 +227,10 @@ public class HttpUtil {
 	 */
 	public static String submit(String user, String password, String url, PreJob prejob) throws SubmitException {
 		// creates a HTTP client
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = null;
 		boolean loggedIn = false;
 		try {
-			configureHttpClient(httpclient, url);
+			httpclient = createHttpClient(url);
 			// prepares the entity to send via HTTP
 			XStream streamer = new XStream();
 			String content = streamer.toXML(prejob);
@@ -250,7 +274,13 @@ public class HttpUtil {
 				}
 			}
 			// close http client
-			httpclient.getConnectionManager().shutdown();
+			if (httpclient != null){
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -265,10 +295,10 @@ public class HttpUtil {
 	 */
 	public static Object getEndedJobByID(String user, String password, String url, String jobId) throws SubmitException {
 		// creates a HTTP client
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = null;
 		boolean loggedIn = false;
 		try {
-			configureHttpClient(httpclient, url);
+			httpclient = createHttpClient(url);
 			// prepares the entity to send via HTTP
 			XStream streamer = new XStream();
 
@@ -308,7 +338,13 @@ public class HttpUtil {
 				}
 			}
 			// close http client
-			httpclient.getConnectionManager().shutdown();
+			if (httpclient != null){
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -367,53 +403,62 @@ public class HttpUtil {
 	/**
 	 * Configures SSL HTTP client, if necessary
 	 * 
-	 * @param client http client already created
 	 * @param uri http URI to call
+	 * @return HTTP client
 	 * @throws URISyntaxException
 	 * @throws KeyManagementException
 	 * @throws UnrecoverableKeyException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 */
-	private static void configureHttpClient(HttpClient client, String uri) throws URISyntaxException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+	public final static CloseableHttpClient createHttpClient(String uri) throws URISyntaxException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		URI uriObject = URI.create(uri);
-		HttpUtil.configureHttpClient(client, uriObject);
+		return HttpUtil.createHttpClient(uriObject);
 	}
 
 	/**
 	 * Configures SSL HTTP client, if necessary
 	 * 
-	 * @param client http client already created
 	 * @param uri http URI to call
+	 * @return HTTP client
 	 * @throws KeyManagementException
 	 * @throws UnrecoverableKeyException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 */
-	private static void configureHttpClient(HttpClient client, URI uri) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+	public final static CloseableHttpClient createHttpClient(URI uri) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
-		if (uri.getScheme() != null && "https".equalsIgnoreCase(uri.getScheme())) {
-			SSLSocketFactory sf = buildSSLSocketFactory();
-			int port = uri.getPort();
-			if (port == -1) {
-				port = 443;
-			}
-			Scheme https = new Scheme(uri.getScheme(), port, sf);
-			SchemeRegistry sr = client.getConnectionManager().getSchemeRegistry();
-			sr.register(https);
+		return createHttpClientByScheme(uri.getScheme()).build();
+	}
+	
+	/**
+	 * Configures SSL HTTP client, if necessary
+	 * @param scheme scheme of URI
+	 * @return HTTP client
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 */
+	public final static HttpClientBuilder createHttpClientByScheme(String scheme) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+		// sets SSL ONLY if the scheme is HTTPS
+		if (scheme != null && HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(scheme)) {
+	        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
+	        // Trust own CA and all self-signed certs
+	        SSLContext sslcontext = SSLContexts.custom()
+	                .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
+	                .build();
+	        // Allow TLSv1 protocol only
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+	                sslcontext,
+	                new String[] { "TLSv1" },
+	                null,
+	                SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+	        return  HttpClients.custom().setSSLSocketFactory(sslsf);
+		} else {
+			return HttpClients.custom();
 		}
 	}
-
-	private static SSLSocketFactory buildSSLSocketFactory() throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy ts = new TrustStrategy() {
-			@Override
-			public boolean isTrusted(X509Certificate[] cert, String name) throws CertificateException {
-				// always true to avoid certificate unknown exception
-				return true;
-			}
-		};
-		/* build socket factory with hostname verification turned off. */
-		return new SSLSocketFactory(ts, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-	}
+	
 
 }

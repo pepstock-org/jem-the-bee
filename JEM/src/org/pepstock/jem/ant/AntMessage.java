@@ -419,7 +419,13 @@ public enum AntMessage implements MessageInterface{
 	 * "Unable to unlock resources.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you are not able to unlock resources.<br>Please contact your JEM administrators.")
-	JEMA061E(61, "Unable to unlock resources.", MessageLevel.ERROR);
+	JEMA061E(61, "Unable to unlock resources.", MessageLevel.ERROR),
+	
+	/**
+	 *"\"{0}\" bytes have been written", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes has been written.")
+	JEMA062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO);
 
 
 	/**

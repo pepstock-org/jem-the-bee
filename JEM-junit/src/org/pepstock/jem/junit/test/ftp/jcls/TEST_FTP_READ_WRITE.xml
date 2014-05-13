@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<project name="TEST_FTP_READ_WRITE" default="write" basedir=".">
+	<description>
+		Copy a GDG, with more records, to new generation 
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="icegener" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	
+	-->
+	<target name="read">
+		<icegener>
+			<dataSource name="localhost" resource="JUNIT-FTP-RESOURCE"/>
+			
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="@@temp"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="sample.data" datasource="localhost"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+	
+	<target name="dump" depends="read">
+		<icegener>
+			<dataSource name="localhost" resource="JUNIT-FTP-RESOURCE"/>
+			
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="sample.data" datasource="localhost"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<target name="write"  depends="dump">
+		<icegener>
+			<dataSource name="localhost" resource="JUNIT-FTP-RESOURCE"/>
+			
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="sample-new.data" datasource="localhost"/>
+			</dataDescription>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="*.read.icegener.OUTPUT" />
+			</dataDescription>
+		</icegener>
+	</target>
+
+</project>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="TEST_FTP_RESOURCE_CREATE" default="create" basedir=".">
+	<description>
+		This job creates a JPPF resource to use to test FTP functionalities.
+    </description>
+
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+
+	<target name="create">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="RESOURCE" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					<resource name="JUNIT-FTP-RESOURCE" type="ftp">
+					   <property name="username" visible="true" override="false">admin</property>
+					   <property name="password" visible="false" override="false">admin</property>
+					   <property name="url" visible="true" override="false">ftp://localhost:2121</property>
+					</resource>
+					]]>
+				</dataset>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE RESOURCE NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>
