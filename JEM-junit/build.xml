@@ -27,6 +27,9 @@
 				<fileset dir="${jem.workspace}/${jem-junit.library.directory}">
 					<include name="**/*.jar" />
 				</fileset>
+				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
+					<include name="ftp/lib/*.jar" />
+				</fileset>
 				<fileset dir="${jem.workspace}/${jem.library.directory}">
 					<include name="commons-io/*.jar" />
 					<include name="xstream/*.jar" />

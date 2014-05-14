@@ -25,13 +25,12 @@
 			</dataDescription>
 
 			<dataDescription name="INPUT" disposition="SHR">
-				<dataSet>
+				<dataSet>#
 #jppf.ssl.enabled=true
 jppf.discovery.enabled=false
 jppf.drivers=main
 main.jppf.server.port=11111
-main.jppf.server.host=localhost					
-				</dataSet>
+main.jppf.server.host=localhost</dataSet>
 			</dataDescription>
 
 		</icegener>
