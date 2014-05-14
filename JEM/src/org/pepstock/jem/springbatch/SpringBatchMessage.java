@@ -243,7 +243,7 @@ public enum SpringBatchMessage implements MessageInterface{
 	 */
 	@Description(explanation = "It occurs when a item is not able to read the resource for one of described cases."+
 	 "<br>Check data description definition.")
-	JEMS033E(33, "Input resource must not be null, must exists, must be readabl and must be a Dataset.", MessageLevel.ERROR),
+	JEMS033E(33, "Input resource must not be null, must exists, must be readable and must be a Dataset.", MessageLevel.ERROR),
 	
 	/**
 	 * ""Reader must be open before it can be read", MessageLevel.ERROR
@@ -337,7 +337,14 @@ public enum SpringBatchMessage implements MessageInterface{
 	 * "Unable to create JNDI context: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an exception is thrown during the JNDI context creation.<br>Check with JEM adnimistrator.")
-	JEMS048E(48, "Unable to create JNDI context: {0}", MessageLevel.ERROR);
+	JEMS048E(48, "Unable to create JNDI context: {0}", MessageLevel.ERROR),
+
+	/**
+	 * "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you try to access to dataset using a disposition different from NEWbut the data does not exists."+
+	 "<br>Check data description definition and file system.")
+	JEMS049E(49, "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR);	
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

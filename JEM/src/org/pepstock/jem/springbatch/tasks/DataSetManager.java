@@ -125,7 +125,7 @@ public class DataSetManager {
 				// if the file is not defined as NEW, it must exist, otherwise
 				// exception
 				if (!file.exists()){
-					throw new SpringBatchException(SpringBatchMessage.JEMS009E, ddImpl.getName(), ddImpl.getDisposition());
+					throw new SpringBatchException(SpringBatchMessage.JEMS049E, ddImpl.getName(), ddImpl.getDisposition());
 				}
 			}
 		}
