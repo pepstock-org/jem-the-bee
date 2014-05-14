@@ -16,56 +16,33 @@
 */
 package org.pepstock.jem.gwt.client.charts.gflot;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.pepstock.jem.gwt.client.HasSizes;
-
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.gflot.client.PieDataPoint;
-import com.googlecode.gflot.client.PlotModel;
 import com.googlecode.gflot.client.Series;
 import com.googlecode.gflot.client.SeriesHandler;
-import com.googlecode.gflot.client.SimplePlot;
 import com.googlecode.gflot.client.options.GlobalSeriesOptions;
 import com.googlecode.gflot.client.options.LegendOptions;
 import com.googlecode.gflot.client.options.PieSeriesOptions;
 import com.googlecode.gflot.client.options.PieSeriesOptions.Label;
 import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Background;
 import com.googlecode.gflot.client.options.PieSeriesOptions.Label.Formatter;
-import com.googlecode.gflot.client.options.PlotOptions;
 
 /**
  * Provide a widget that show a Pie Chart. 
  * @author Marco "Fuzzo" Cuccato
  */
-public class PieChart implements IsWidget, HasSizes {
+public class PieChart extends AbstractChart<String, Double> {
 
-	protected static int DEFAULT_WIDTH = 300;
-	protected static int DEFAULT_HEIGHT = 300;
-	
-	private int width = DEFAULT_WIDTH;
-	private int height = DEFAULT_HEIGHT;
-	
-	private final PlotModel model = new PlotModel();
-	private final PlotOptions options = PlotOptions.create();
-	private SimplePlot plot = null;
-	
 	private double pieRadious = 1;
 	private double pieInnerRadious = 0.2;
-	
-	private boolean showLegend = true;
 	
 	private boolean showLabel = true;
 	private double labelRadious = 0.5;
 	private double labelThreshold = 0.05;
-	private Formatter labelFormatter = new DefaultLabelFormatter();
+	private Formatter labelFormatter = new DefaultPieLabelFormatter();
 	private double labelBackgroundOpacity = 0.8;
-	
-	private List<DataPoint<String, Double>> data = new LinkedList<DataPoint<String, Double>>();
 	
 	/**
 	 * Build an empty PieChart widget
@@ -74,11 +51,11 @@ public class PieChart implements IsWidget, HasSizes {
 	}
 
 	/**
-	 * Build an PieChart widget 
+	 * Build a PieChart widget 
 	 * @param data the chart data
 	 */
-	public PieChart(List<DataPoint<String, Double>> data) {
-		setData(data);
+	public PieChart(List<SeriesData<String, Double>> data) {
+		super(data);
 	}
 
 	/**
@@ -87,8 +64,7 @@ public class PieChart implements IsWidget, HasSizes {
 	 * @param height the widget height
 	 */
 	public PieChart(int width, int height) {
-		this.width = width;
-		this.height = height;
+		super(width, height);
 	}
 	
 	/**
@@ -97,71 +73,38 @@ public class PieChart implements IsWidget, HasSizes {
 	 * @param width the widget width
 	 * @param height the widget height
 	 */
-	public PieChart(List<DataPoint<String, Double>> data, int width, int height) {
-		setData(data);
-		this.width = width;
-		this.height = height;
+	public PieChart(List<SeriesData<String, Double>> data, int width, int height) {
+		super(data, width, height);
 	}
 	
-	@Override
-	public Widget asWidget() {
-		applyOptions();
-		plot = new SimplePlot(model, options);
-		applySizes();
-		return plot;
-	}
-
 	protected void applyOptions() {
 		// activate the pie
-		options.setGlobalSeriesOptions(GlobalSeriesOptions.create().setPieSeriesOptions(
+		getOptions().setGlobalSeriesOptions(GlobalSeriesOptions.create().setPieSeriesOptions(
 			PieSeriesOptions.create().setShow(true).setRadius(pieRadious).setInnerRadius(pieInnerRadious).setLabel(
 				Label.create().setShow(showLabel).setRadius(labelRadious).setBackground(
 						Background.create().setOpacity(labelBackgroundOpacity)).setThreshold(labelThreshold).setFormatter(labelFormatter)
 					)));
-		options.setLegendOptions(LegendOptions.create().setShow(showLegend));
+		getOptions().setLegendOptions(LegendOptions.create().setShow(isShowLegend()));
 		//options.setGridOptions(GridOptions.create().setHoverable(true));
 	}
 	
-	protected void applySizes() {
-		if (plot != null) {
-			plot.setWidth(getWidth());
-			plot.setHeight(getHeight());
-		}
-	}
-	
-	/**
-	 * @return the chart data
-	 */
-	public List<DataPoint<String, Double>> getData() {
-		return data;
-	}
-
-	/**
-	 * Set the chart data
-	 * @param data list of {@link DataPoint}
-	 */
-	public void setData(List<DataPoint<String, Double>> data) {
+	@Override
+	public void setData(List<SeriesData<String, Double>> data) {
 		// save the data
-		this.data = data;
+		super.setData(data);
 		// reset model
-		model.removeAllSeries();
+		getModel().removeAllSeries();
 		// create model
-		for (DataPoint<String, Double> dataPoint : data) {
-			SeriesHandler seriesHandler; 
-			if (dataPoint.hasColor()) {
-				seriesHandler = model.addSeries(Series.of(dataPoint.getX(), dataPoint.getColor()));
+		for (SeriesData<String, Double> s : data) {
+			SeriesHandler sh;
+			DataPoint<String, Double> dataPoint = s.getDataPoints().get(0);
+			if (s.hasColor()) {
+				sh = getModel().addSeries(Series.of(dataPoint.getX(), s.getColor()));
 			} else {
-				seriesHandler = model.addSeries(Series.of(dataPoint.getX()));
+				sh = getModel().addSeries(Series.of(dataPoint.getX()));
 			}
-			seriesHandler.add(PieDataPoint.of(dataPoint.getY()));
+			sh.add(PieDataPoint.of(dataPoint.getY()));
 		}
-	}
-	
-	/**
-	 * Clear all chart data
-	 */
-	public void clearData() {
-		setData(new ArrayList<DataPoint<String,Double>>());
 	}
 	
 	/**
@@ -192,21 +135,6 @@ public class PieChart implements IsWidget, HasSizes {
 	 */
 	public void setPieInnerRadious(double pieInnerRadious) {
 		this.pieInnerRadious = pieInnerRadious;
-	}
-
-	/**
-	 * @return <code>true</code> if the legent be displayed, <code>false</code> otherwise
-	 */
-	public boolean isShowLegend() {
-		return showLegend;
-	}
-
-	/**
-	 * Set if the legeng will be displayed
-	 * @param showLegend <code>true</code> if you want the legend will be displayed, <code>false</code> otherwise
-	 */
-	public void setShowLegend(boolean showLegend) {
-		this.showLegend = showLegend;
 	}
 
 	/**
@@ -284,33 +212,11 @@ public class PieChart implements IsWidget, HasSizes {
 		this.labelBackgroundOpacity = labelBackgroundOpacity;
 	}
 
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public void setWidth(int width) {
-		this.width = width;
-		applySizes();
-	}
-
-	@Override
-	public void setHeight(int height) {
-		this.height = height;
-		applySizes();
-	}
-
 	/**
 	 * Default pie label formatter, that is 'value (percent%)'  
 	 * @author Marco "Fuzzo" Cuccato
 	 */
-	private static class DefaultLabelFormatter implements Formatter {
+	private static class DefaultPieLabelFormatter implements Formatter {
 
 		private static final NumberFormat FORMAT = NumberFormat.getFormat("#0.#");
 		

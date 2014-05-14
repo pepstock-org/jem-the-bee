@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.gwt.client.charts.gflot;
 
-import org.pepstock.jem.gwt.client.ColorsHex;
 
 /**
  * Contains info for a generic chart data point
@@ -29,7 +28,6 @@ public final class DataPoint<X, Y> {
 
 	private X x;
 	private Y y;
-	private String color;
 	
 	/**
 	 * Build an empty datapoint
@@ -48,17 +46,6 @@ public final class DataPoint<X, Y> {
 		this.y = y;
 	}
 
-	/**
-	 * Build a datapoint with spedified values and color 
-	 * @param x the X axis value
-	 * @param y the Y axis value
-	 * @param color a color specified in hex format. See {@link ColorsHex}
-	 */
-	public DataPoint(X x, Y y, String color) {
-		this(x, y);
-		this.color = color;
-	}
-	
 	/**
 	 * @return the X axis value
 	 */
@@ -87,37 +74,15 @@ public final class DataPoint<X, Y> {
 		this.y = y;
 	}
 
-	/**
-	 * @return the color, in hex format
-	 */
-	public String getColor() {
-		return color;
-	}
-
-	/**
-	 * @param color the color, in hex format 
-	 */
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	/**
-	 * @return <code>true</code> if the point has a specified color, <code>false</code> otherwise (a default color will be used)
-	 */
-	public boolean hasColor() {
-		return color != null;
-	}
-	
 	@Override
 	public String toString() {
-		return "DataPoint [x=" + x + ", y=" + y + ", color=" + color + "]";
+		return "DataPoint [x=" + x + ", y=" + y + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
 		result = prime * result + ((x == null) ? 0 : x.hashCode());
 		result = prime * result + ((y == null) ? 0 : y.hashCode());
 		return result;
@@ -132,11 +97,6 @@ public final class DataPoint<X, Y> {
 		if (getClass() != obj.getClass())
 			return false;
 		DataPoint<?, ?> other = (DataPoint<?, ?>) obj;
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
-			return false;
 		if (x == null) {
 			if (other.x != null)
 				return false;

@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.charts.gflot;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pepstock.jem.gwt.client.ColorsHex;
@@ -63,12 +63,33 @@ public class UsedFreePieChart extends PieChart {
 	 */
 	public void setUsedFreeData(long usedBytes, long freeBytes) {
 		clearData();
-		final List<DataPoint<String, Double>> data = new LinkedList<DataPoint<String,Double>>();
-		final DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/1024d, ColorsHex.LIGHT_RED);
-		final DataPoint<String, Double> free = new DataPoint<String, Double>("Free", freeBytes/1024d, ColorsHex.LIGHT_BLUE);
-		data.add(used);
-		data.add(free);
+		List<SeriesData<String, Double>> data = new ArrayList<SeriesData<String,Double>>();
+		
+		// used series
+		List<DataPoint<String, Double>> usedDataPoints = new ArrayList<DataPoint<String,Double>>(1);
+		SeriesData<String, Double> usedSeries = new SeriesData<String, Double>();
+		usedSeries.setColor(ColorsHex.LIGHT_RED);
+		DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/1024d);
+		usedDataPoints.add(used);
+		usedSeries.setDataPoints(usedDataPoints);
+		
+		// free series
+		List<DataPoint<String, Double>> freeDataPoints = new ArrayList<DataPoint<String,Double>>(1);
+		SeriesData<String, Double> freeSeries = new SeriesData<String, Double>();
+		usedSeries.setColor(ColorsHex.LIGHT_BLUE);
+		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", usedBytes/1024d);
+		freeDataPoints.add(free);
+		freeSeries.setDataPoints(freeDataPoints);
+		
+		// add both series to data and set it
+		data.add(usedSeries);
+		data.add(freeSeries);
 		setData(data);
+	}
+
+	@Override
+	public void setData(List<SeriesData<String, Double>> data) {
+		throw new UnsupportedOperationException("You have to call setUsedFreeData()!");
 	}
 	
 }
