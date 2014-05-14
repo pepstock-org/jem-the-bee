@@ -94,6 +94,7 @@ public class CounterHBarChart extends BarChart {
 	 */
 	private class NamesTickFormatter implements TickFormatter {
 
+		public static final String DOTH = ".";
 		private String[] names;
 		
 		/**
@@ -101,7 +102,16 @@ public class CounterHBarChart extends BarChart {
 		 * @param names the names
 		 */
 		public NamesTickFormatter(String[] names) {
-			this.names = names;
+			// normalize the names
+			this.names = new String[names.length];
+			for (int i=0; i<names.length; i++) {
+				int lastDothIndex = names[i].lastIndexOf(DOTH); 
+				String newName = names[i];
+				if (lastDothIndex > -1) {
+					newName = names[i].substring(lastDothIndex+1);
+				}
+				names[i] = newName;
+			}
 		}
 		
 		@Override
