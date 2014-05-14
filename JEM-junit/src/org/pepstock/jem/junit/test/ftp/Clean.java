@@ -43,7 +43,20 @@ public class Clean extends TestCase{
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
 	}
-		
+
+	/**
+	 * Clean jobs created by the last junit run
+	 * 
+	 * @throws Exception
+	 */
+	public void testCleanDatasets() throws Exception {
+		Future<SubmitResult>future = JemTestManager.getSharedInstance()
+				.submit(getJcl("TEST_FTP_CLEAN_DATASETS.xml"), "ant", true,
+						false);
+		SubmitResult sr = future.get();
+		assertEquals(sr.getRc(), 0);
+	}
+
 	private String getJcl(String name) {
 		return this.getClass().getResource("jcls/" + name).toString();
 	}

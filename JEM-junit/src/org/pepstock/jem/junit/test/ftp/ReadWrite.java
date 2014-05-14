@@ -36,14 +36,40 @@ public class ReadWrite extends TestCase{
 	 * 
 	 * @throws Exception
 	 */
-	public void testReadWrite() throws Exception {
+	public void testAntReadWrite() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_FTP_READ_WRITE.xml"), "ant", true,
+				.submit(getJcl("TEST_FTP_ANT_READ_WRITE.xml"), "ant", true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
 	}
 		
+	/**
+	 * Clean jobs created by the last junit run
+	 * 
+	 * @throws Exception
+	 */
+	public void testSBReadWrite() throws Exception {
+		Future<SubmitResult>future = JemTestManager.getSharedInstance()
+				.submit(getJcl("TEST_FTP_SB_READ_WRITE.xml"), "sb", true,
+						false);
+		SubmitResult sr = future.get();
+		assertEquals(sr.getRc(), 0);
+	}
+	
+	/**
+	 * Clean jobs created by the last junit run
+	 * 
+	 * @throws Exception
+	 */
+	public void testSBXsdReadWrite() throws Exception {
+		Future<SubmitResult>future = JemTestManager.getSharedInstance()
+				.submit(getJcl("TEST_FTP_SBXSD_READ_WRITE.xml"), "sb", true,
+						false);
+		SubmitResult sr = future.get();
+		assertEquals(sr.getRc(), 0);
+	}
+	
 	private String getJcl(String name) {
 		return this.getClass().getResource("jcls/" + name).toString();
 	}

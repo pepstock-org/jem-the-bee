@@ -53,7 +53,7 @@
 	<jem:jppf-tasklet id="test-T-Config">
 		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.SimpleJPPFTask" parallelTaskNumber="2"/>
 		<jem:dataDescription name="JPPF-CONFIG" disposition="SHR">
-			<jem:dataSet name="jppf.config" />
+			<jem:dataSet name="test_jppf/jppf.config" />
 		</jem:dataDescription>
 	</jem:jppf-tasklet>
 
@@ -69,7 +69,7 @@
 	<jem:jppf-tasklet id="test-Config">
 		<jem:jppf-configuration runnable="org.pepstock.jem.junit.test.jppf.java.SimpleRunnable" parallelTaskNumber="2"/>
 		<jem:dataDescription name="JPPF-CONFIG" disposition="SHR">
-			<jem:dataSet name="jppf.config" />
+			<jem:dataSet name="test_jppf/jppf.config" />
 		</jem:dataDescription>
 	</jem:jppf-tasklet>
 

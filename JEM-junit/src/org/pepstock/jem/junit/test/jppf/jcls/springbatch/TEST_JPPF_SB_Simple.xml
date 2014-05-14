@@ -121,7 +121,7 @@
 		<beans:property name="datasets">
 				<beans:list>
 			        <beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
-			        	<beans:property name="name" value="jppf.config" />
+			        	<beans:property name="name" value="test_jppf/jppf.config" />
           			</beans:bean>
 				</beans:list>
 		</beans:property>

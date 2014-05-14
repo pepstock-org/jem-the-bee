@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="TEST_FTP_READ_WRITE" default="write" basedir=".">
+<project name="TEST_FTP_ANT_READ_WRITE" default="write" basedir=".">
 	<description>
 		Copy a GDG, with more records, to new generation 
     </description>
