@@ -59,8 +59,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 * 
 	 */
 	public void load() {
-		chart.clearData();
-
 		LightMemberSample msample = Instances.getLastSample().getMembers().iterator().next();
 		if (msample != null) {
 			chart.setUsedFreeData(msample.getGfsUsed(), msample.getGfsFree());

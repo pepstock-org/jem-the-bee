@@ -19,7 +19,8 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.thirdparty.guava.common.primitives.Ints;
+import org.pepstock.jem.gwt.client.Toolbox;
+
 import com.googlecode.gflot.client.Axis;
 import com.googlecode.gflot.client.options.TickFormatter;
 
@@ -52,7 +53,7 @@ public class CounterHBarChart extends BarChart {
 	 * @param labelValues the values axis label (can be null)
 	 * @param labelNames the names axis label (can be null)
 	 */
-	public void setCountData(String[] names, int[] values, String color, String labelValues, String labelNames) {
+	public void setCountData(String[] names, long[] values, String color, String labelValues, String labelNames) {
 		// check if input data are correct
 		if (names.length != values.length) {
 			throw new IllegalArgumentException("Names and Values must have the same size!");
@@ -63,7 +64,7 @@ public class CounterHBarChart extends BarChart {
 		// set Y axis tick formatter
 		setTickFormatterY(new NamesTickFormatter(names));
 		// set X and Y axis max values
-		setMaxX((long)Math.floor(Ints.max(values)*1.25));
+		setMaxX((long)Math.floor(Toolbox.max(values)*1.25));
 		setMaxY((long)names.length);
 		// build dataponts
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
@@ -76,15 +77,10 @@ public class CounterHBarChart extends BarChart {
 			// X is the entries count, Y is the name index
 			DataPoint<Double, Double> dataPoint = new DataPoint<Double, Double>((double)values[i], (double)i);
 			dataPoints.add(dataPoint);
-			i++;
 		}
 		series.setDataPoints(dataPoints);
+		chartData.add(series);
 		super.setData(chartData);
-	}
-
-	@Override
-	public void setData(List<SeriesData<Double, Double>> data) {
-		throw new UnsupportedOperationException("You have to call setCountData()!");
 	}
 
 	/**
@@ -110,7 +106,7 @@ public class CounterHBarChart extends BarChart {
 				if (lastDothIndex > -1) {
 					newName = names[i].substring(lastDothIndex+1);
 				}
-				names[i] = newName;
+				this.names[i] = newName;
 			}
 		}
 		

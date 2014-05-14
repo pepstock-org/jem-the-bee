@@ -47,37 +47,26 @@ public class UsedFreePieChart extends PieChart {
 	}
 	
 	/**
-	 * Build a pie with provided values
-	 * @param usedBytes the used space
-	 * @param freeBytes the free space
-	 */
-	public UsedFreePieChart(long usedBytes, long freeBytes) {
-		this();
-		setUsedFreeData(usedBytes, freeBytes);
-	}
-
-	/**
 	 * Set the values of used and free space
 	 * @param usedBytes the used space value
 	 * @param freeBytes the free space value
 	 */
 	public void setUsedFreeData(long usedBytes, long freeBytes) {
-		clearData();
 		List<SeriesData<String, Double>> data = new ArrayList<SeriesData<String,Double>>();
 		
 		// used series
-		List<DataPoint<String, Double>> usedDataPoints = new ArrayList<DataPoint<String,Double>>(1);
 		SeriesData<String, Double> usedSeries = new SeriesData<String, Double>();
 		usedSeries.setColor(ColorsHex.LIGHT_RED);
+		List<DataPoint<String, Double>> usedDataPoints = new ArrayList<DataPoint<String,Double>>(1);
 		DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/1024d);
 		usedDataPoints.add(used);
 		usedSeries.setDataPoints(usedDataPoints);
 		
 		// free series
-		List<DataPoint<String, Double>> freeDataPoints = new ArrayList<DataPoint<String,Double>>(1);
 		SeriesData<String, Double> freeSeries = new SeriesData<String, Double>();
-		usedSeries.setColor(ColorsHex.LIGHT_BLUE);
-		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", usedBytes/1024d);
+		freeSeries.setColor(ColorsHex.LIGHT_BLUE);
+		List<DataPoint<String, Double>> freeDataPoints = new ArrayList<DataPoint<String,Double>>(1);
+		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", freeBytes/1024d);
 		freeDataPoints.add(free);
 		freeSeries.setDataPoints(freeDataPoints);
 		
@@ -85,11 +74,6 @@ public class UsedFreePieChart extends PieChart {
 		data.add(usedSeries);
 		data.add(freeSeries);
 		setData(data);
-	}
-
-	@Override
-	public void setData(List<SeriesData<String, Double>> data) {
-		throw new UnsupportedOperationException("You have to call setUsedFreeData()!");
 	}
 	
 }

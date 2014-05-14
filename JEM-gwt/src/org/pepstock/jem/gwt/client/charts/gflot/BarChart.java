@@ -54,14 +54,6 @@ public class BarChart extends AbstractChart<Double, Double> {
 
 	/**
 	 * Build a BarChart widget
-	 * @param data the chart data
-	 */
-	public BarChart(List<SeriesData<Double, Double>> data) {
-		setData(data);
-	}
-	
-	/**
-	 * Build a BarChart widget
 	 * @param width the widget width
 	 * @param height the widget height
 	 */
@@ -69,16 +61,6 @@ public class BarChart extends AbstractChart<Double, Double> {
 		super(width, height);
 	}
 
-	/**
-	 * Build a BarChart widget
-	 * @param data the chart data
-	 * @param width the widget width
-	 * @param height the widget height
-	 */
-	public BarChart(List<SeriesData<Double, Double>> data, int width, int height) {
-		super(data, width, height);
-	}
-	
 	protected void applyOptions() {
 		getOptions().setGlobalSeriesOptions(GlobalSeriesOptions.create().setBarsSeriesOptions(
 			BarSeriesOptions.create().setShow(true).setLineWidth(lineWidth).setBarWidth(barWidth).setAlignment(BarAlignment.CENTER)

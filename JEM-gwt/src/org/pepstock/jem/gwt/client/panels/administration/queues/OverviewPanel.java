@@ -19,15 +19,12 @@ package org.pepstock.jem.gwt.client.panels.administration.queues;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.charts.gflot.BarChart;
-import org.pepstock.jem.gwt.client.charts.gflot.DataPoint;
-import org.pepstock.jem.gwt.client.charts.gflot.SeriesData;
+import org.pepstock.jem.gwt.client.charts.gflot.CounterHBarChart;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
@@ -37,8 +34,6 @@ import org.pepstock.jem.node.stats.LightMemberSample;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.googlecode.gflot.client.Axis;
-import com.googlecode.gflot.client.options.TickFormatter;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -46,7 +41,7 @@ import com.googlecode.gflot.client.options.TickFormatter;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private BarChart chart = new BarChart();
+	private CounterHBarChart chart = new CounterHBarChart();
 	private TableContainer<DetailedQueueData> queues = new TableContainer<DetailedQueueData>(new QueuesTable());
 	
 	private ScrollPanel scroller = new ScrollPanel(queues);
@@ -84,7 +79,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 */
 	public void load() {
 		mapData.clear();
-		chart.clearData();
 
 		for (LightMemberSample msample : Instances.getLastSample().getMembers()){
 			if (msample != null){
@@ -123,63 +117,16 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
 	private void loadChart() {
 		// convert from mapdata to datapoint
-		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>();
-		SeriesData<Double, Double> series = new SeriesData<Double, Double>();
-		series.setColor(ColorsHex.LIGHT_GREEN);
-		
-		List<DataPoint<Double, Double>> dataPoints = new ArrayList<DataPoint<Double,Double>>();
-		final List<String> queueNames = new ArrayList<String>(mapData.keySet().size());
-		int i = 0;
-		long maxXValue = 0; 
+		String[] names = new String[mapData.size()];
+		long[] values = new long[mapData.size()];
+		int i=0;
 		for (String key : mapData.keySet()) {
-			long entries = mapData.get(key).getEntries();
-			if (maxXValue < entries) {
-				maxXValue = entries;
-			}
-			queueNames.add(key);
-			// a datapoint is the entries count (x axis) then the queue index (y axis)
-			dataPoints.add(new DataPoint<Double, Double>((double)entries, (double)i++));
+			names[i] = key;
+			values[i] = mapData.get(key).getEntries();
+			i++;
 		}
 
-		series.setDataPoints(dataPoints);
-		chartData.add(series);
-
-		chart.setHorizontal(true);
-		chart.setLabelX("Entries");
-		chart.setLabelY("Queues");
-		
-		chart.setMinXTickSize(1l);
-		chart.setMinYTickSize(1l);
-		
-		chart.setTickDecimalsX(0);
-		chart.setTickDecimalsY(0);
-		
-		chart.setMinX(0l);
-		// max X axis value is the entries count plus a "margin"
-		chart.setMaxX((long)Math.floor(maxXValue*1.25));
-		
-		chart.setMinY(-1l);
-		// max Y value is the queue count
-		chart.setMaxY((long)series.getDataPoints().size());
-		
-		// format the Y tick labels as the queue name
-		chart.setTickFormatterY(new TickFormatter() {
-			
-			@Override
-			public String formatTickValue(double tickValue, Axis axis) {
-				String tickLabel;
-				int tickIndex = (int)tickValue;
-				if (tickIndex > -1 && tickIndex<queueNames.size()) {
-					tickLabel = queueNames.get(tickIndex);
-				} else {
-					tickLabel = "";
-				}
-				return tickLabel;
-			}
-		});
-		
-		// set data to chart
-		chart.setData(chartData);
+		chart.setCountData(names, values, ColorsHex.LIGHT_GREEN, "Entries", "Queues");
 		
 		// add chart to panel
 		if (entriesPanel.getWidgetCount() == 0){

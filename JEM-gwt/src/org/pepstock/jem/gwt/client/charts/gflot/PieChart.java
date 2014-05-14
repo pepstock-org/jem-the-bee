@@ -51,30 +51,12 @@ public class PieChart extends AbstractChart<String, Double> {
 	}
 
 	/**
-	 * Build a PieChart widget 
-	 * @param data the chart data
-	 */
-	public PieChart(List<SeriesData<String, Double>> data) {
-		super(data);
-	}
-
-	/**
 	 * Build a PieChart widget
 	 * @param width the widget width
 	 * @param height the widget height
 	 */
 	public PieChart(int width, int height) {
 		super(width, height);
-	}
-	
-	/**
-	 * Build a PieChart widget
-	 * @param data the chart data
-	 * @param width the widget width
-	 * @param height the widget height
-	 */
-	public PieChart(List<SeriesData<String, Double>> data, int width, int height) {
-		super(data, width, height);
 	}
 	
 	protected void applyOptions() {

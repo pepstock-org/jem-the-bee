@@ -64,14 +64,6 @@ public abstract class AbstractChart<X, Y> implements IsWidget, HasSizes {
 	}
 	
 	/**
-	 * Build the chart widget with given data
-	 * @param data the chart data
-	 */
-	public AbstractChart(List<SeriesData<X, Y>> data) {
-		setData(data);
-	}
-	
-	/**
 	 * Build the chart widget with given sizes
 	 * @param width the chart widget width, in pixel
 	 * @param height the chart widget height, in pixel
@@ -81,18 +73,6 @@ public abstract class AbstractChart<X, Y> implements IsWidget, HasSizes {
 		this.height = height;
 	}
 
-	/**
-	 * Build the chart widget with given data and sizes
-	 * @param data the chart data
-	 * @param width the widget width, in pixel
-	 * @param height the widget height, in pixel
-	 */
-	public AbstractChart(List<SeriesData<X, Y>> data, int width, int height) {
-		setData(data);
-		this.width = width;
-		this.height = height;
-	}
-	
 	/**
 	 * Apply the chart options to underlying implementation
 	 */
@@ -129,13 +109,6 @@ public abstract class AbstractChart<X, Y> implements IsWidget, HasSizes {
 	 */
 	public void setData(List<SeriesData<X, Y>> data) {
 		this.data = data;
-	}
-
-	/**
-	 * Clear all chart data
-	 */
-	public void clearData() {
-		setData(new LinkedList<SeriesData<X, Y>>());
 	}
 
 	/**
