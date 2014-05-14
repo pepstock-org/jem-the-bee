@@ -146,7 +146,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		chart.setWidth(chartWidth);
 		chart.setHeight(Sizes.CHART_HEIGHT);
 		
-	
 		int height = getHeight() - Sizes.CHART_HEIGHT;
     	height = Math.max(height, 1);
 		
