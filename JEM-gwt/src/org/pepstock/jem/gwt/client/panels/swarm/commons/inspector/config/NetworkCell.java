@@ -23,6 +23,11 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
+/**
+ * A cell that render an ip address in a beautiful way
+ * @author Marco "Fuzzo" Cuccato
+ *
+ */
 public class NetworkCell extends AbstractCell<String> {
 	
 	static {
