@@ -64,7 +64,7 @@ public class CounterHBarChart extends BarChart {
 		// set Y axis tick formatter
 		setTickFormatterY(new NamesTickFormatter(names));
 		// set X and Y axis max values
-		setMaxX((long)Math.floor(Toolbox.max(values)*1.25));
+		setMaxX((long)Math.floor(Toolbox.max(values)*1.10));
 		setMaxY((long)names.length);
 		// build dataponts
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);

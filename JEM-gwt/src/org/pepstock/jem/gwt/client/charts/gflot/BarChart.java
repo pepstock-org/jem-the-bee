@@ -25,26 +25,16 @@ import com.googlecode.gflot.client.options.BarSeriesOptions;
 import com.googlecode.gflot.client.options.BarSeriesOptions.BarAlignment;
 import com.googlecode.gflot.client.options.GlobalSeriesOptions;
 import com.googlecode.gflot.client.options.LegendOptions;
-import com.googlecode.gflot.client.options.TickFormatter;
 
 /**
  * Provide a widget that show a Bar Chart. 
  * @author Marco "Fuzzo" Cuccato
  */
-public class BarChart extends AbstractChart<Double, Double> {
+public class BarChart extends AbstractGridBasedChart {
 
 	private double lineWidth = 1;
 	private double barWidth = 0.75;
 	private boolean horizontal = false;
-	
-	private Long minX, maxX, minXTickSize;
-	private Long minY, maxY, minYTickSize;
-	
-	private String labelX, labelY;
-	
-	private Double tickDecimalsX, tickDecimalsY;
-	
-	private TickFormatter tickFormatterX, tickFormatterY; 
 	
 	/**
 	 * Build an empty BarChart widget
@@ -62,30 +52,35 @@ public class BarChart extends AbstractChart<Double, Double> {
 	}
 
 	protected void applyOptions() {
+		// global
 		getOptions().setGlobalSeriesOptions(GlobalSeriesOptions.create().setBarsSeriesOptions(
 			BarSeriesOptions.create().setShow(true).setLineWidth(lineWidth).setBarWidth(barWidth).setAlignment(BarAlignment.CENTER)
 			.setHorizontal(horizontal)
 		));
+		
+		// legend
 		getOptions().setLegendOptions(LegendOptions.create().setShow(isShowLegend()));
 		
 		// axis X options
 		AxisOptions optionsX = AxisOptions.create();
-		if (minXTickSize != null) optionsX.setMinTickSize(minXTickSize);
-		if (minX != null) optionsX.setMinimum(minX);
-		if (maxX != null) optionsX.setMaximum(maxX);
-		if (labelX != null) optionsX.setLabel(labelX);
-		if (tickFormatterX != null) optionsX.setTickFormatter(tickFormatterX);
-		if (tickDecimalsX != null) optionsX.setTickDecimals(tickDecimalsX);
+		if (hasMinXTickSize()) optionsX.setMinTickSize(getMinXTickSize());
+		if (hasMinX()) optionsX.setMinimum(getMinX());
+		if (hasMaxX()) optionsX.setMaximum(getMaxX());
+		if (hasLabelX()) optionsX.setLabel(getLabelX());
+		if (hasTickFormatterX()) optionsX.setTickFormatter(getTickFormatterX());
+		if (hasTickDecimalsX()) optionsX.setTickDecimals(getTickDecimalsX());
+		if (hasTickSizeX()) optionsX.setTickSize(getTickSizeX());
 		getOptions().addXAxisOptions(optionsX);
 		
 		// axis Y options
 		AxisOptions optionsY = AxisOptions.create();
-		if (minYTickSize != null) optionsY.setMinTickSize(minYTickSize);
-		if (minY != null) optionsY.setMinimum(minY);
-		if (maxY != null) optionsY.setMaximum(maxY);
-		if (labelY != null) optionsY.setLabel(labelY);
-		if (tickFormatterY != null) optionsY.setTickFormatter(tickFormatterY);
-		if (tickDecimalsY != null) optionsY.setTickDecimals(tickDecimalsY);
+		if (hasMinYTickSize()) optionsY.setMinTickSize(getMinYTickSize());
+		if (hasMinY()) optionsY.setMinimum(getMinY());
+		if (hasMaxY()) optionsY.setMaximum(getMaxY());
+		if (hasLabelY()) optionsY.setLabel(getLabelY());
+		if (hasTickFormatterY()) optionsY.setTickFormatter(getTickFormatterY());
+		if (hasTickDecimalsY()) optionsY.setTickDecimals(getTickDecimalsY());
+		if (hasTickSizeY()) optionsY.setTickSize(getTickSizeY());
 		getOptions().addYAxisOptions(optionsY);
 	}
 
@@ -149,176 +144,6 @@ public class BarChart extends AbstractChart<Double, Double> {
 	 */
 	public void setHorizontal(boolean horizontal) {
 		this.horizontal = horizontal;
-	}
-
-	/**
-	 * @return the minimum X value
-	 */
-	public Long getMinX() {
-		return minX;
-	}
-
-	/**
-	 * @param minX the minimum X value
-	 */
-	public void setMinX(Long minX) {
-		this.minX = minX;
-	}
-
-	/**
-	 * @return the maximum X value
-	 */
-	public Long getMaxX() {
-		return maxX;
-	}
-
-	/**
-	 * @param maxX the maximum X value
-	 */
-	public void setMaxX(Long maxX) {
-		this.maxX = maxX;
-	}
-
-	/**
-	 * @return the minimum X axis scale step
-	 */
-	public Long getMinXTickSize() {
-		return minXTickSize;
-	}
-
-	/**
-	 * @param minXTickSize the minimum X axis scale step
-	 */
-	public void setMinXTickSize(Long minXTickSize) {
-		this.minXTickSize = minXTickSize;
-	}
-
-	/**
-	 * @return the minimum Y value
-	 */
-	public Long getMinY() {
-		return minY;
-	}
-
-	/**
-	 * @param minY the minimum Y value
-	 */
-	public void setMinY(Long minY) {
-		this.minY = minY;
-	}
-
-	/**
-	 * @return the maximum Y value
-	 */
-	public Long getMaxY() {
-		return maxY;
-	}
-
-	/**
-	 * @param maxY  the maximum Y value
-	 */
-	public void setMaxY(Long maxY) {
-		this.maxY = maxY;
-	}
-
-	/**
-	 * @return the minimum Y axis scale step
-	 */
-	public Long getMinYTickSize() {
-		return minYTickSize;
-	}
-
-	/**
-	 * @param minYTickSize the minimum Y axis scale step
-	 */
-	public void setMinYTickSize(Long minYTickSize) {
-		this.minYTickSize = minYTickSize;
-	}
-
-	/**
-	 * @return the X axis label
-	 */
-	public String getLabelX() {
-		return labelX;
-	}
-
-	/**
-	 * @param labelX the X axis label
-	 */
-	public void setLabelX(String labelX) {
-		this.labelX = labelX;
-	}
-
-	/**
-	 * @return the Y axis label
-	 */
-	public String getLabelY() {
-		return labelY;
-	}
-
-	/**
-	 * @param labelY the Y axis value
-	 */
-	public void setLabelY(String labelY) {
-		this.labelY = labelY;
-	}
-
-	/**
-	 * @return the X axis {@link TickFormatter}
-	 */
-	public TickFormatter getTickFormatterX() {
-		return tickFormatterX;
-	}
-
-	/**
-	 * Set the X axis {@link TickFormatter}. This class will be used as renderer of X axis ticks
-	 * @param tickFormatterX
-	 */
-	public void setTickFormatterX(TickFormatter tickFormatterX) {
-		this.tickFormatterX = tickFormatterX;
-	}
-
-	/**
-	 * @return the Y axis {@link TickFormatter}
-	 */
-	public TickFormatter getTickFormatterY() {
-		return tickFormatterY;
-	}
-
-	/**
-	 * Set the Y axis {@link TickFormatter}. This class will be used as renderer of Y axis ticks
-	 * @param tickFormatterY
-	 */
-	public void setTickFormatterY(TickFormatter tickFormatterY) {
-		this.tickFormatterY = tickFormatterY;
-	}
-
-	/**
-	 * @return the number of decimals rendered in X axis ticks
-	 */
-	public double getTickDecimalsX() {
-		return tickDecimalsX;
-	}
-
-	/**
-	 * @param tickDecimalsX the number of decimals rendered in X axis ticks. If a {@link TickFormatter} is provided, this is ignored.
-	 */
-	public void setTickDecimalsX(double tickDecimalsX) {
-		this.tickDecimalsX = tickDecimalsX;
-	}
-
-	/**
-	 * @return the number of decimals rendered in Y axis ticks
-	 */
-	public double getTickDecimalsY() {
-		return tickDecimalsY;
-	}
-
-	/**
-	 * @param tickDecimalsY the number of decimals rendered in Y axis ticks. If a {@link TickFormatter} is provided, this is ignored.
-	 */
-	public void setTickDecimalsY(double tickDecimalsY) {
-		this.tickDecimalsY = tickDecimalsY;
 	}
 
 }

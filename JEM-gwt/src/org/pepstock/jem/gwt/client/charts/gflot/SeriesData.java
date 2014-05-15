@@ -33,6 +33,7 @@ public class SeriesData<X, Y> {
 	private String label;
 	private String color;
 	private List<DataPoint<X, Y>> dataPoints = new LinkedList<DataPoint<X, Y>>();
+	private Boolean fill;
 	
 	/**
 	 * 
@@ -89,6 +90,20 @@ public class SeriesData<X, Y> {
 		this.dataPoints = dataPoints;
 	}
 
+	/**
+	 * @return <code>true</code> if the area have to be filled, <code>false</code> otherwhise (only applicable for {@link LineChart})
+	 */
+	public Boolean getFill() {
+		return fill;
+	}
+
+	/**
+	 * @param fill set it to <code>true</code> if you want the area filled, <code>false</code> otherwhise (only applicable for {@link LineChart})
+	 */
+	public void setFill(Boolean fill) {
+		this.fill = fill;
+	}
+
 	@Override
 	public String toString() {
 		return "SeriesData [label=" + label + ", color=" + color
@@ -102,6 +117,7 @@ public class SeriesData<X, Y> {
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
 		result = prime * result
 				+ ((dataPoints == null) ? 0 : dataPoints.hashCode());
+		result = prime * result + ((fill == null) ? 0 : fill.hashCode());
 		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		return result;
 	}
@@ -124,6 +140,11 @@ public class SeriesData<X, Y> {
 			if (other.dataPoints != null)
 				return false;
 		} else if (!dataPoints.equals(other.dataPoints))
+			return false;
+		if (fill == null) {
+			if (other.fill != null)
+				return false;
+		} else if (!fill.equals(other.fill))
 			return false;
 		if (label == null) {
 			if (other.label != null)
