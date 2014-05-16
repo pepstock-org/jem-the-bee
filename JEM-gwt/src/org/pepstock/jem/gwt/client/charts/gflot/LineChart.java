@@ -18,14 +18,25 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.gflot.client.Series;
 import com.googlecode.gflot.client.SeriesHandler;
+import com.googlecode.gflot.client.event.PlotClickListener;
+import com.googlecode.gflot.client.event.PlotHoverListener;
+import com.googlecode.gflot.client.event.PlotItem;
+import com.googlecode.gflot.client.event.PlotPosition;
+import com.googlecode.gflot.client.jsni.Plot;
 import com.googlecode.gflot.client.options.AxisOptions;
+import com.googlecode.gflot.client.options.GlobalSeriesOptions;
 import com.googlecode.gflot.client.options.GridOptions;
 import com.googlecode.gflot.client.options.LegendOptions;
 import com.googlecode.gflot.client.options.LegendOptions.LegendPosition;
 import com.googlecode.gflot.client.options.LegendOptions.LegendSorting;
 import com.googlecode.gflot.client.options.LineSeriesOptions;
+import com.googlecode.gflot.client.options.PointsSeriesOptions;
+import com.googlecode.gflot.client.options.PointsSeriesOptions.PointSymbol;
 
 /**
  * Provide a widget that show a Line Chart.
@@ -41,6 +52,14 @@ public class LineChart extends AbstractGridBasedChart {
 	private Double gridMargin = 5d;
 	private String gridColor;
 	
+	private boolean showPoints = false;
+	private PointSymbol pointSymbol;
+	private Double pointRadious;
+	private String pointHighlightColor;
+	
+	private PlotHoverListener hoverListener;
+	private PlotClickListener clickListener;
+	
 	@Override
 	protected void applyOptions() {
 		// legend
@@ -50,12 +69,32 @@ public class LineChart extends AbstractGridBasedChart {
 		if (legendColumns != null) legendOptions.setNumOfColumns(legendColumns);
 		if (legendSorting != null) legendOptions.setSorted(legendSorting);
 		getOptions().setLegendOptions(legendOptions);
-		
+
 		// grid
 		GridOptions gridOptions = GridOptions.create();
 		gridOptions.setMargin(gridMargin);
+		// make the plot hoverable/clickable (needed for point labels)
+		gridOptions.setHoverable(true).setClickable(true);
 		if (gridColor != null) gridOptions.setColor(gridColor);
 		getOptions().setGridOptions(gridOptions);
+
+		// point
+		if (isShowPoints()) {
+			GlobalSeriesOptions globalSeriesOptions = GlobalSeriesOptions.create();
+			globalSeriesOptions.setLineSeriesOptions(LineSeriesOptions.create().setShow(true));
+			
+			if (hasPointHighlightColor()) {
+				globalSeriesOptions.setHighlightColor(pointHighlightColor);
+			}
+			
+			PointsSeriesOptions pointOptions = PointsSeriesOptions.create();
+			pointOptions.setShow(true);
+			if (hasPointSymbol()) pointOptions.setSymbol(pointSymbol);
+			if (hasPointRadious()) pointOptions.setRadius(pointRadious);
+			globalSeriesOptions.setPointsOptions(pointOptions);
+			
+			getOptions().setGlobalSeriesOptions(globalSeriesOptions);
+		}
 		
 		// axis X options
 		AxisOptions optionsX = AxisOptions.create();
@@ -91,7 +130,7 @@ public class LineChart extends AbstractGridBasedChart {
 			// build the series
 			Series series = Series.of(s.getLabel());
 			if (s.hasColor()) series.setColor(s.getColor());
-			series.setLineSeriesOptions(LineSeriesOptions.create().setFill(s.getFill()));
+			series.setLineSeriesOptions(LineSeriesOptions.create().setFill(s.getFill()).setLineWidth(1d));
 			// add series to model
 			SeriesHandler sh = getModel().addSeries(series);
 			// add all series datapoint
@@ -101,6 +140,69 @@ public class LineChart extends AbstractGridBasedChart {
 		}
 	}
 
+	@Override
+	public Widget asWidget() {
+		Widget w = super.asWidget();
+		
+		// listeners (here because before plot is null)
+		if (hasHoverListener()) {
+			getPlot().addHoverListener(getHoverListener(), false);
+		}
+		if (hasClickListener()) {
+			getPlot().addClickListener(getClickListener(), false);
+		}
+		
+		return w;
+	}
+
+
+
+	/**
+	 * Default {@link PlotHoverListener} that show the coordinates of an hovered point
+	 * @author Marco "Fuzzo" Cuccato
+	 */
+	public static class XYPlotHoverListener implements PlotHoverListener {
+
+		final PopupPanel popup = new PopupPanel();
+		final Label label = new Label();
+
+		/**
+		 * 
+		 */
+		public XYPlotHoverListener() {
+			popup.add(label);
+		}
+
+		@Override
+		public void onPlotHover(Plot plot, PlotPosition position, PlotItem item) {
+			if (item != null) {
+				String text = item.getDataPoint().getX() + ", " + item.getDataPoint().getY();
+				label.setText(text);
+				popup.setPopupPosition(item.getPageX() + 10, item.getPageY() - 25);
+				popup.show();
+			} else {
+				popup.hide();
+			}
+		}
+
+	}
+
+	/**
+	 * Default {@link PlotClickListener} that keep highlighted a point if clicked and unhighlight it if a click is done outside 
+	 * @author Marco "Fuzzo" Cuccato
+	 */
+	public static class DefaultPlotClickListener implements PlotClickListener {
+
+		@Override
+		public void onPlotClick(Plot plot, PlotPosition position, PlotItem item) {
+            plot.unhighlight();
+            if(null != item){
+                plot.highlight(item.getSeries(), item.getDataPoint());
+            }
+		}
+		
+	}
+	
 	/**
 	 * @return the legend background opacity. Opacity range from 0.0 to 1.0.
 	 */
@@ -185,4 +287,124 @@ public class LineChart extends AbstractGridBasedChart {
 		this.gridColor = gridColor;
 	}
 
+	/**
+	 * @return <code>true</code> if the points will be show, <code>false</code> otherwhise
+	 */
+	public boolean isShowPoints() {
+		return showPoints;
+	}
+
+	/**
+	 * @param showPoints set <code>true</code> if you want the points will be show, <code>false</code> otherwhise
+	 */
+	public void setShowPoints(boolean showPoints) {
+		this.showPoints = showPoints;
+	}
+
+	/**
+	 * @return the point symbol
+	 */
+	public PointSymbol getPointSymbol() {
+		return pointSymbol;
+	}
+
+	/**
+	 * @param pointSymbol set the point symbol
+	 */
+	public void setPointSymbol(PointSymbol pointSymbol) {
+		this.pointSymbol = pointSymbol;
+	}
+
+	/**
+	 * 
+	 * @return <code>true</code> if the value <i>pointSymbol</i> is specified, <code>false</code> if not
+	 */
+	public boolean hasPointSymbol() {
+		return pointSymbol != null;
+	}
+	
+	/**
+	 * @return the symbol radious
+	 */
+	public Double getPointRadious() {
+		return pointRadious;
+	}
+
+	/**
+	 * @param pointRadious set the point radious
+	 */
+	public void setPointRadious(Double pointRadious) {
+		this.pointRadious = pointRadious;
+	}
+
+	/**
+	 * @return <code>true</code> if the value <i>pointRadious</i> is specified, <code>false</code> if not
+	 */
+	public boolean hasPointRadious() {
+		return pointRadious != null;
+	}
+	
+	/**
+	 * @return the color of an highlighted point
+	 */
+	public String getPointHighlightColor() {
+		return pointHighlightColor;
+	}
+
+	/**
+	 * @param pointHighlightColor set the color of an highlighted point
+	 */
+	public void setPointHighlightColor(String pointHighlightColor) {
+		this.pointHighlightColor = pointHighlightColor;
+	}
+	
+	/**
+	 * @return <code>true</code> if the value <i>pointHighlightColor</i> is specified, <code>false</code> if not
+	 */
+	public boolean hasPointHighlightColor() {
+		return pointHighlightColor != null;
+	}
+
+	/**
+	 * @return the {@link PlotHoverListener}, or <code>null</code>
+	 */
+	public PlotHoverListener getHoverListener() {
+		return hoverListener;
+	}
+
+	/**
+	 * @param hoverListener set the {@link PlotHoverListener}
+	 */
+	public void setHoverListener(PlotHoverListener hoverListener) {
+		this.hoverListener = hoverListener;
+	}
+
+	/**
+	 * @return <code>true</code> if a {@link PlotHoverListener} is defined, <code>false</code> otherwhise
+	 */
+	public boolean hasHoverListener() {
+		return hoverListener != null;
+	}
+	
+	/**
+	 * @return the {@link PlotClickListener}, or <code>null</code>
+	 */
+	public PlotClickListener getClickListener() {
+		return clickListener;
+	}
+
+	/**
+	 * 
+	 * @param clickListener set the {@link PlotClickListener}
+	 */
+	public void setClickListener(PlotClickListener clickListener) {
+		this.clickListener = clickListener;
+	}
+
+	/**
+	 * @return <code>true</code> if a {@link PlotClickListener} is defined, <code>false</code> otherwhise
+	 */
+	public boolean hasClickListener() {
+		return clickListener != null;
+	}
 }

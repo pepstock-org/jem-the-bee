@@ -28,4 +28,9 @@ public abstract class ColorsHex {
 	 * 
 	 */
 	public static final String VIOLET = "#8C8CFF";
+	
+	/**
+	 * 
+	 */
+	public static final String CYAN = "#57BCD9";
 }

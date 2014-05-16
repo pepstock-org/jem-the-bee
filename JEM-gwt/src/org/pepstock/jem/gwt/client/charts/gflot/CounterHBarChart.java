@@ -50,17 +50,17 @@ public class CounterHBarChart extends BarChart {
 	 * @param names the entity names
 	 * @param values the entity values
 	 * @param color the bar color
-	 * @param labelValues the values axis label (can be null)
-	 * @param labelNames the names axis label (can be null)
+	 * @param valuesLabel the values axis label (can be null)
+	 * @param namesLabel the names axis label (can be null)
 	 */
-	public void setCountData(String[] names, long[] values, String color, String labelValues, String labelNames) {
+	public void setCountData(String[] names, long[] values, String color, String valuesLabel, String namesLabel) {
 		// check if input data are correct
 		if (names.length != values.length) {
 			throw new IllegalArgumentException("Names and Values must have the same size!");
 		}
 		// set the labels
-		if (labelValues != null && !labelValues.trim().isEmpty()) setLabelX(labelValues);
-		if (labelNames != null && !labelNames.trim().isEmpty()) setLabelY(labelNames);
+		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelX(valuesLabel);
+		if (namesLabel != null && !namesLabel.trim().isEmpty()) setLabelY(namesLabel);
 		// set Y axis tick formatter
 		setTickFormatterY(new NamesTickFormatter(names));
 		// set X and Y axis max values
