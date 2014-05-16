@@ -4,33 +4,43 @@ package org.pepstock.jem.gwt.client;
  * Contains some HTML HEX color codes 
  * @author Marco "Fuzzo" Cuccato
  */
-public abstract class ColorsHex {
+public enum ColorsHex {
 
-	private ColorsHex() {
+	/**
+	 * 
+	 */
+	LIGHT_RED("#FFA8A8"),
+	/**
+	 * 
+	 */
+	LIGHT_BLUE("#99C7FF"),
+	/**
+	 * 
+	 */
+	LIGHT_GREEN("#7CEB98"),
+	/**
+	 * 
+	 */
+	VIOLET("#8C8CFF"),
+	/**
+	 * 
+	 */
+	CYAN("#57BCD9"),
+	/**
+	 * 
+	 */
+	LIGHT_ORANGE("#FFAC62");
+	
+	private String hexCode;
+	
+	private ColorsHex(String hexCode) {
+		this.hexCode = hexCode;
 	}
-
-	/**
-	 * 
-	 */
-	public static final String LIGHT_RED = "#FFA8A8";
 	
 	/**
-	 * 
+	 * @return the color code
 	 */
-	public static final String LIGHT_BLUE = "#99C7FF";
-	
-	/**
-	 * 
-	 */
-	public static final String LIGHT_GREEN = "#7CEB98";
-	
-	/**
-	 * 
-	 */
-	public static final String VIOLET = "#8C8CFF";
-	
-	/**
-	 * 
-	 */
-	public static final String CYAN = "#57BCD9";
+	public String getCode() {
+		return hexCode;
+	}
 }

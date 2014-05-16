@@ -56,7 +56,7 @@ public class UsedFreePieChart extends PieChart {
 		
 		// used series
 		SeriesData<String, Double> usedSeries = new SeriesData<String, Double>();
-		usedSeries.setColor(ColorsHex.LIGHT_RED);
+		usedSeries.setColor(ColorsHex.LIGHT_RED.getCode());
 		List<DataPoint<String, Double>> usedDataPoints = new ArrayList<DataPoint<String,Double>>(1);
 		DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/1024d);
 		usedDataPoints.add(used);
@@ -64,7 +64,7 @@ public class UsedFreePieChart extends PieChart {
 		
 		// free series
 		SeriesData<String, Double> freeSeries = new SeriesData<String, Double>();
-		freeSeries.setColor(ColorsHex.LIGHT_BLUE);
+		freeSeries.setColor(ColorsHex.LIGHT_BLUE.getCode());
 		List<DataPoint<String, Double>> freeDataPoints = new ArrayList<DataPoint<String,Double>>(1);
 		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", freeBytes/1024d);
 		freeDataPoints.add(free);

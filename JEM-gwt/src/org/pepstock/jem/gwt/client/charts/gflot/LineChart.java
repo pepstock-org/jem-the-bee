@@ -18,16 +18,11 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.gflot.client.Series;
 import com.googlecode.gflot.client.SeriesHandler;
 import com.googlecode.gflot.client.event.PlotClickListener;
 import com.googlecode.gflot.client.event.PlotHoverListener;
-import com.googlecode.gflot.client.event.PlotItem;
-import com.googlecode.gflot.client.event.PlotPosition;
-import com.googlecode.gflot.client.jsni.Plot;
 import com.googlecode.gflot.client.options.AxisOptions;
 import com.googlecode.gflot.client.options.GlobalSeriesOptions;
 import com.googlecode.gflot.client.options.GridOptions;
@@ -155,54 +150,6 @@ public class LineChart extends AbstractGridBasedChart {
 		return w;
 	}
 
-
-
-	/**
-	 * Default {@link PlotHoverListener} that show the coordinates of an hovered point
-	 * @author Marco "Fuzzo" Cuccato
-	 */
-	public static class XYPlotHoverListener implements PlotHoverListener {
-
-		final PopupPanel popup = new PopupPanel();
-		final Label label = new Label();
-
-		/**
-		 * 
-		 */
-		public XYPlotHoverListener() {
-			popup.add(label);
-		}
-
-		@Override
-		public void onPlotHover(Plot plot, PlotPosition position, PlotItem item) {
-			if (item != null) {
-				String text = item.getDataPoint().getX() + ", " + item.getDataPoint().getY();
-				label.setText(text);
-				popup.setPopupPosition(item.getPageX() + 10, item.getPageY() - 25);
-				popup.show();
-			} else {
-				popup.hide();
-			}
-		}
-
-	}
-
-	/**
-	 * Default {@link PlotClickListener} that keep highlighted a point if clicked and unhighlight it if a click is done outside 
-	 * @author Marco "Fuzzo" Cuccato
-	 */
-	public static class DefaultPlotClickListener implements PlotClickListener {
-
-		@Override
-		public void onPlotClick(Plot plot, PlotPosition position, PlotItem item) {
-            plot.unhighlight();
-            if(null != item){
-                plot.highlight(item.getSeries(), item.getDataPoint());
-            }
-		}
-		
-	}
-	
 	/**
 	 * @return the legend background opacity. Opacity range from 0.0 to 1.0.
 	 */

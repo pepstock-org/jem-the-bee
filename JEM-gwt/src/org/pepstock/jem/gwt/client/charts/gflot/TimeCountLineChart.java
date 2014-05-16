@@ -29,15 +29,14 @@ import com.googlecode.gflot.client.options.TickFormatter;
  * A line chart that has timestamps on X axis and a count in Y axis  
  * @author Marco "Fuzzo" Cuccato
  */
-public class TimeLineChart extends LineChart {
+public class TimeCountLineChart extends LineChart {
 
 	/**
 	 * Build the chart
 	 */
-	public TimeLineChart() {
+	public TimeCountLineChart() {
 		setShowPoints(true);
 		setPointSymbol(PointSymbol.DIAMOND);
-		setHoverListener(new XYPlotHoverListener());
 	}
 
 
