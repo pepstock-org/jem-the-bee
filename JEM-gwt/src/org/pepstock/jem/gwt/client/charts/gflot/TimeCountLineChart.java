@@ -65,7 +65,7 @@ public class TimeCountLineChart extends LineChart {
 		setTickSizeX(1d);
 		// set X axis min and max
 		setMinY(0l);
-		setMaxY((long)Math.floor(Toolbox.max(values)*1.10));
+		setMaxY((long)Math.ceil(Toolbox.max(values)*1.10));
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
 		SeriesData<Double, Double> series = new SeriesData<Double, Double>();
 		// set the bars color and fill

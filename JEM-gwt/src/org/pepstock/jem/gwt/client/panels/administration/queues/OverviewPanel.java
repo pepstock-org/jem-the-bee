@@ -126,7 +126,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 			i++;
 		}
 
-		chart.setCountData(names, values, ColorsHex.LIGHT_GREEN, "Entries", "Queues");
+		chart.setCountData(names, values, ColorsHex.LIGHT_GREEN.getCode(), "Entries", "Queues");
 		
 		// add chart to panel
 		if (entriesPanel.getWidgetCount() == 0){
