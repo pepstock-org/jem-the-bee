@@ -51,8 +51,6 @@ public class JobLogManager {
 	private static final MessageFormat ROW_JOB_PID = new MessageFormat("{0} PROCESS-ID {1}");
 	
 	private static final MessageFormat ROW_JOB_TIME_STARTED = new MessageFormat("{0} STARTED - TIME={1}");
-
-//	private static final String HEADER_JOB_NAME = "JOBNAME";
 	
 	private static final String HEADER_STEPS = "STEPNAME                 RC   CPU(ms)    MEMORY(kb)       ";
 
@@ -99,8 +97,6 @@ public class JobLogManager {
 		}
 		Main.getOutputSystem().writeJobLog(job, " ");
 
-//		int length = Math.max(job.getName().length(), 16);
-//		Main.getOutputSystem().writeJobLog(job, StringUtils.rightPad(HEADER_JOB_NAME, length)+" "+HEADER_STEPS);
 		Main.getOutputSystem().writeJobLog(job, HEADER_STEPS);
 		printStepResult(job, null);
 	}
@@ -120,16 +116,15 @@ public class JobLogManager {
 		Sigar sigar = new Sigar();
 		SigarProxy proxy = SigarProxyCache.newInstance(sigar, 0);
 		
-//		int length = Math.max(job.getName().length(), 16);
-		
-//		StringBuilder sb = new StringBuilder(StringUtils.rightPad(job.getName(), length));
 		StringBuilder sb = new StringBuilder();
 		if (step == null){
 			sb.append(StringUtils.rightPad("[init]", 24));
 			sb.append(' ').append(StringUtils.rightPad("-", 4));
 		} else {
+			// if name of step more than 24 chars
+			// cut the name adding "..." as to be continued
 			if (step.getName().length() > 24){
-				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), 22), 24, "."));
+				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), 21), 24, "."));
 			} else {
 				sb.append(StringUtils.rightPad(step.getName(), 24));
 			}

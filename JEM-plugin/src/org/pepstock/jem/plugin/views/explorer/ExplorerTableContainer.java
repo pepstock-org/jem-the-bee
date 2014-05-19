@@ -345,8 +345,12 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 					public void run() {
 						// loads tables
 						getViewer().setInput(data);
-						// sets amount
-						number.setText(String.valueOf(data.size()));
+						if (data != null){
+							// sets amount
+							number.setText(String.valueOf(data.size()));
+						} else {
+							number.setText(String.valueOf(0));
+						}
 						// sets complete folder name to text
 						searcher.setText(getFilter());
 					}

@@ -149,7 +149,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		tableViewer.setContentProvider(new JemContentProvider<Coordinate>());
 		tableViewer.setSorter(tablePreferences.getColumnSorter());
 		tableViewer.setLabelProvider(tablePreferences.getLabelProvider());		
-
+		
 		tableViewer.setInput(cloneEnvironments.values());
 
 		// Initializes Buttons
