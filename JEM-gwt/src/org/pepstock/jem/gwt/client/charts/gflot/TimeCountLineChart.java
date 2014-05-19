@@ -39,6 +39,25 @@ public class TimeCountLineChart extends LineChart {
 		setPointSymbol(PointSymbol.DIAMOND);
 	}
 
+	/*
+	 * Build the chart with the provided values
+	 * @param times the times
+	 * @param values the object[] that contains the values
+	 * @param propertyName the object property name that contains the values
+	 * @param color the line and fill color
+	 * @param timesLabel the X axis label
+	 * @param valuesLabel the Y axis label
+	 * @throws Exception when it's not possible to extract the property value from <code>values</code>
+	 */
+	/*
+	public void setTimeAndDatas(String[] times, Object[] values, String propertyName, String color, String timesLabel, String valuesLabel) throws Exception {
+		long[] extractedValues = new long[values.length];
+		for (int i=0; i<values.length; i++) {
+			extractedValues[i] = (Long) PropertyUtils.getProperty(values[i], propertyName);
+		}
+		setTimeAndDatas(times, extractedValues, color, timesLabel, valuesLabel);
+	}
+	*/
 
 	/**
 	 * Build the chart with the provided values
@@ -63,9 +82,16 @@ public class TimeCountLineChart extends LineChart {
 		setMaxX((long)times.length-1);
 		setMinXTickSize(1l);
 		setTickSizeX(1d);
-		// set X axis min and max
+		// set Y axis min and max
 		setMinY(0l);
-		setMaxY((long)Math.ceil(Toolbox.max(values)*1.10));
+		long maxY = (long)Math.ceil(Toolbox.max(values)*1.10);
+		// 2 is the max Y axis value if the values are too small
+		maxY = Toolbox.max(maxY, 3);
+		setMaxY(maxY);
+		setMinYTickSize(1l);
+		setTickSizeY(1d);
+		setTickDecimalsY(0d);
+		
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
 		SeriesData<Double, Double> series = new SeriesData<Double, Double>();
 		// set the bars color and fill

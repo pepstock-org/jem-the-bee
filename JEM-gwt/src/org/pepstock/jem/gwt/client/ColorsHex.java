@@ -1,5 +1,7 @@
 package org.pepstock.jem.gwt.client;
 
+import com.google.gwt.user.client.Random;
+
 /**
  * Contains some HTML HEX color codes 
  * @author Marco "Fuzzo" Cuccato
@@ -30,6 +32,14 @@ public enum ColorsHex {
 	 * 
 	 */
 	LIGHT_ORANGE("#FFAC62");
+	
+	/**
+	 * @return a random color :) 
+	 */
+	public static final ColorsHex randomColor() {
+		ColorsHex[] allColors = ColorsHex.values();
+		return allColors[Random.nextInt(allColors.length)];
+	}
 	
 	private String hexCode;
 	

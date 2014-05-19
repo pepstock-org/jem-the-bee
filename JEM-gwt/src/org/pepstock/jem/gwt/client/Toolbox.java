@@ -29,12 +29,9 @@ public final class Toolbox {
 	/**
 	 * Returns the greatest value present in {@code array}.
 	 * 
-	 * @param array
-	 *            a <i>nonempty</i> array of {@code long} values
-	 * @return the value present in {@code array} that is greater than or equal
-	 *         to every other value in the array
-	 * @throws IllegalArgumentException
-	 *             if {@code array} is empty
+	 * @param array a <i>nonempty</i> array of {@code long} values
+	 * @return the value present in {@code array} that is greater than or equal to every other value in the array
+	 * @throws IllegalArgumentException if {@code array} is empty
 	 */
 	public static long max(long... array) {
 		if (array.length < 1) {
@@ -47,5 +44,25 @@ public final class Toolbox {
 			}
 		}
 		return max;
+	}
+	
+	/**
+	 * Returns the lowest value present in {@code array}.
+	 * 
+	 * @param array a <i>nonempty</i> array of {@code long} values
+	 * @return the value present in {@code array} that is lower than or equal to every other value in the array
+	 * @throws IllegalArgumentException if {@code array} is empty
+	 */
+	public static long min(long... array) {
+		if (array.length < 1) {
+			throw new IllegalArgumentException("Array must be not empty!");
+		}
+		long min = array[0];
+		for (int i = 1; i < array.length; i++) {
+			if (array[i] < min) {
+				min = array[i];
+			}
+		}
+		return min;
 	}
 }

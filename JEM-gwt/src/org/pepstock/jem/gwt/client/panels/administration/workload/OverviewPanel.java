@@ -19,8 +19,10 @@ package org.pepstock.jem.gwt.client.panels.administration.workload;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
@@ -43,7 +45,10 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
 	private final TabPanel mainTabPanel = new TabPanel();
 
-	private WorkloadChart chartJobs = new WorkloadChart(WorkloadChart.JOBS_SUBMITTED);
+	//private WorkloadChart chartJobs = new WorkloadChart(WorkloadChart.JOBS_SUBMITTED);
+	private TimeCountLineChart jobsSubmittedChart = new TimeCountLineChart();
+	private boolean jobsSubmittedChartLoaded = false;
+	
 	private WorkloadChart chartJcls = new WorkloadChart(WorkloadChart.JCLS_CHECKED);
 	
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
@@ -112,18 +117,28 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     		listData.add(data);
     	}
     	nodes.getUnderlyingTable().setRowData(Instances.getLastSample().getMembers());
+    	//chartJobs.setLoaded(false);
+    	jobsSubmittedChartLoaded = false;
     	chartJcls.setLoaded(false);
-    	chartJobs.setLoaded(false);
+    	
     	mainTabPanel.selectTab(0, true);
 	}
 	
 	private void loadChart(int selected){
 		if (selected == WorkloadChart.JOBS_SUBMITTED){
-			if (!chartJobs.isLoaded()){
-				//
-				chartJobs.setData(listData);
+			if (!jobsSubmittedChartLoaded){
+
+				String[] times = new String[listData.size()];
+				long[] jobs = new long[listData.size()];
+				for (int i=0; i<listData.size(); i++) {
+					Workload w = listData.get(i);
+					times[i] = w.getKey();
+					jobs[i] = w.getJobsSubmitted();
+				}
+				jobsSubmittedChart.setTimeAndDatas(times, jobs, ColorsHex.randomColor().getCode(), "Time", "Jobs");
+				
 				if (jobPanel.getWidgetCount() == 0) {
-					jobPanel.add(chartJobs.asWidget());
+					jobPanel.add(jobsSubmittedChart);
 				}
 			}
 		} else {
@@ -162,9 +177,9 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	} 
     	
 		chartJcls.setWidth(chartWidth);
-		chartJobs.setWidth(chartWidth);
+		jobsSubmittedChart.setWidth(chartWidth);
 		chartJcls.setHeight(Sizes.CHART_HEIGHT);
-		chartJobs.setHeight(Sizes.CHART_HEIGHT);
+		jobsSubmittedChart.setHeight(Sizes.CHART_HEIGHT);
 		
 		mainTabPanel.setWidth(Sizes.toString(getWidth()));
 		mainTabPanel.setHeight(Sizes.toString(mainTabPanelHeight));
