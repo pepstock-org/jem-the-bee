@@ -52,12 +52,6 @@ public class JmsResource extends Resource {
 	public static final String INITIAL_CONTEXT_FACTORY = Context.INITIAL_CONTEXT_FACTORY;
 	
 	/**
-	 * Constant property containing the <code>CONNECTION FACTORY NAME</code>   
-	 * to create the connection to use <code>JMS</code> objects.
-	 */
-	public static final String CONNECTION_FACTORY_NAME = "connectionFactoryName";
-	
-	/**
 	 * <code>String Array</code> containing all the properties of <code>JmsResource</code>.
 	 */
 	public static final String[] PROPERTIES_ALL = new String[] { 
@@ -65,7 +59,6 @@ public class JmsResource extends Resource {
 		PASSWORD, 
 		PROVIDER_URL,
 		INITIAL_CONTEXT_FACTORY,
-		CONNECTION_FACTORY_NAME
 	};
 	
 	/**

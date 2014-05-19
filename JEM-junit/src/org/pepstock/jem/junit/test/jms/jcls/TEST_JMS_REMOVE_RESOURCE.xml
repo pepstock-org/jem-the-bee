@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="TEST_JMS_REMOVE_RESOURCE" default="remove">
+	<description>
+		This job removes the JMS resource used to test JMS functionalities.
+    </description>
+
+	<property name="jem.job.environment" value="TEST-Env"/>
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+
+	<target name="remove">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REMOVE JUNIT-JMS-RESOURCE;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

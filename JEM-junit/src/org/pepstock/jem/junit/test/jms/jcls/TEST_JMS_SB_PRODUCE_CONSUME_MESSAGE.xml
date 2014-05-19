@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:jem="http://www.pepstock.org/schema/jem" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+           http://www.pepstock.org/schema/jem
+           http://www.pepstock.org/schema/jem/jem.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+	 
+	 <jem:configuration classPath="${jem.classpath}/jms/ffmq3-core.jar;${JEM_HOME}/lib/jem-junit.jar"/>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+<!-- Tasklet Defintion -->
+	<jem:tasklet id="producer"
+		class="org.pepstock.jem.junit.test.jms.java.ProduceJmsSbTasklet">
+		<jem:dataSource name="jem-jms" resource="JUNIT-JMS-RESOURCE"/>
+	</jem:tasklet>
+
+	<jem:tasklet id="consumer"
+		class="org.pepstock.jem.junit.test.jms.java.ConsumeJmsSbTasklet">
+		<jem:dataSource name="jem-jms" resource="JUNIT-JMS-RESOURCE"/>
+	</jem:tasklet>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="TEST_JMS_SB_PRODUCE_CONSUME_MESSAGE">
+		<step id="produce_message" next="consume_message">
+			<tasklet ref="producer" />
+		</step>
+		<step id="consume_message">
+			<tasklet ref="consumer" />
+		</step>
+	</job>
+	
+</beans:beans>

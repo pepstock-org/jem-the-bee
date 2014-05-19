@@ -85,7 +85,6 @@
 						   <property name="username" visible="true" override="true">USR</property>
 						   <property name="password" visible="false" override="true">PWD</property>
 						   <property name="java.naming.provider.url" visible="true" override="true">URL</property>
-						   <property name="connectionFactoryName" visible="true" override="true">FACTORY-NAME</property>
 						 </resource>
 					]]>
 				</dataset>

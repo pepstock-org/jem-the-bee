@@ -58,16 +58,9 @@ public class JMSAttributesPanel  extends ResourcesPropertiesPanel{
 	 */
 	private static String NO_INITIAL_CONTEXT_FACTORY_DESCRIPTION = "JMS Initial Context Factory is empty. <br/>Please type a JMS Initial Context Factory.";
 	
-	/**
-	 * Alert message if a <code>JMS Connection Factory Name</code> is missing.
-	 */
-	private static String NO_CONNECTION_FACTORY_NAME_DESCRIPTION = "JMS Connection Factory Name is empty. <br/>Please type a <br/>JMS Connection Factory Name.";
-	
 	private MandatoryTextBox providerUrl = new MandatoryTextBox();
 	
 	private MandatoryTextBox initialContextFactory = new MandatoryTextBox();
-	
-	private MandatoryTextBox connectionFactoryName = new MandatoryTextBox();
 	
 	// not mandatory
 	private TextBox userid = new TextBox();
@@ -93,19 +86,15 @@ public class JMSAttributesPanel  extends ResourcesPropertiesPanel{
 		table.setWidget(1, 1, initialContextFactory);
 		table.setHTML(1, 2, "The JMS Initial Context Factory to create the connection to use <code>JMS</code>");
 	    
-		table.setHTML(2, 0, "JMS Connection Factory Name: <font color=\"red\"><b>*</b></font>");
-		table.setWidget(2, 1, connectionFactoryName);
-		table.setHTML(2, 2, "The JMS Connection Factory Name to create the connection to use <code>JMS Queue</code> or <code>Topic</code>");
-	    
-		table.setHTML(3, 0, "User ID:");
-		table.setWidget(3, 1, userid);
-		table.setHTML(3, 2, " The JMS security principal on whose behalf the connection is being made");	    
+		table.setHTML(2, 0, "User ID:");
+		table.setWidget(2, 1, userid);
+		table.setHTML(2, 2, " The JMS security principal on whose behalf the connection is being made");	    
 
-		table.setHTML(4, 0, "Password:");
-		table.setWidget(4, 1, password);
-		table.setHTML(4, 2, " The JMS security credentials");
+		table.setHTML(3, 0, "Password:");
+		table.setWidget(3, 1, password);
+		table.setHTML(3, 2, " The JMS security credentials");
 	    
-		table.setHTML(5, 0, "<font color=\"red\"><b>*</b></font> Mandatory.");
+		table.setHTML(4, 0, "<font color=\"red\"><b>*</b></font> Mandatory.");
 	    
 	    FlexCellFormatter cf = table.getFlexCellFormatter();
 	    cf.setWordWrap(0, 0, false);
@@ -138,18 +127,6 @@ public class JMSAttributesPanel  extends ResourcesPropertiesPanel{
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				setPropertyValue(JmsResource.INITIAL_CONTEXT_FACTORY, initialContextFactory.getText());
-			}
-	    });
-	    connectionFactoryName.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				setPropertyValue(JmsResource.CONNECTION_FACTORY_NAME, connectionFactoryName.getText());
-			}
-		});
-	    connectionFactoryName.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				setPropertyValue(JmsResource.CONNECTION_FACTORY_NAME, connectionFactoryName.getText());
 			}
 	    });
 	    userid.addKeyUpHandler(new KeyUpHandler() {
@@ -189,8 +166,6 @@ public class JMSAttributesPanel  extends ResourcesPropertiesPanel{
 				providerUrl.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(JmsResource.INITIAL_CONTEXT_FACTORY)){
 				initialContextFactory.setText(property.getValue());
-			} else if (property.getName().equalsIgnoreCase(JmsResource.CONNECTION_FACTORY_NAME)){
-				connectionFactoryName.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(JmsResource.USERID)){
 				userid.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(JmsResource.PASSWORD)){
@@ -209,9 +184,6 @@ public class JMSAttributesPanel  extends ResourcesPropertiesPanel{
 		}
 		if(null == initialContextFactory.getText() || "".equals(initialContextFactory.getText().trim())){
 			description = description + "<li>" + NO_INITIAL_CONTEXT_FACTORY_DESCRIPTION + "</li>";
-		}
-		if(null == connectionFactoryName.getText() || "".equals(connectionFactoryName.getText().trim())){
-			description = description + "<li>" + NO_CONNECTION_FACTORY_NAME_DESCRIPTION + "</li>";
 		}
 		if(!"".equals(description)){
 			new Toast(MessageLevel.ERROR, NO_REQUIRED_FIELD, "<ul>" + description + "</ul>").show();

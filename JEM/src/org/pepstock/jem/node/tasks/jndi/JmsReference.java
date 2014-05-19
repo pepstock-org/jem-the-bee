@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.tasks.jndi;
 
 import javax.jms.ConnectionFactory;
+import javax.naming.Context;
 import javax.naming.Reference;
 
 /**
@@ -50,7 +51,7 @@ public class JmsReference extends Reference{
 	 * 
 	 * @see ConnectionFactory
 	 */
-	public static final String JNDI_OBJECT = ConnectionFactory.class.getName();
+	public static final String JNDI_OBJECT = Context.class.getName();
 	
 	/**
 	 * Creates a <code>JNDI</code> reference for <code>JMS</code> purposes.

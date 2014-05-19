@@ -1,0 +1,35 @@
+<project name="TEST_JMS_CREATE_RESOURCE" default="set-jms" basedir=".">
+	<description>
+		Create jms resource to use during jms test
+	</description>
+
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+
+	<!-- set resource JMS and HTTP -->
+	<target name="set-jms">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="JMS" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						 <resource name="JUNIT-JMS-RESOURCE" type="jms" user="root" lastModified="2014-02-02 12:54:25.927 UTC">
+						   <property name="java.naming.provider.url" visible="true" override="true">tcp://localhost:10002</property>
+						   <property name="java.naming.factory.initial" visible="true" override="true">net.timewalker.ffmq3.jndi.FFMQInitialContextFactory</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE JMS NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>
