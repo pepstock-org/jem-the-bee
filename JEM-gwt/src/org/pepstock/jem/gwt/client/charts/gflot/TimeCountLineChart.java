@@ -21,9 +21,7 @@ import java.util.List;
 
 import org.pepstock.jem.gwt.client.Toolbox;
 
-import com.googlecode.gflot.client.Axis;
 import com.googlecode.gflot.client.options.PointsSeriesOptions.PointSymbol;
-import com.googlecode.gflot.client.options.TickFormatter;
 
 /**
  * A line chart that has timestamps on X axis and a count in Y axis  
@@ -38,26 +36,6 @@ public class TimeCountLineChart extends LineChart {
 		setShowPoints(true);
 		setPointSymbol(PointSymbol.DIAMOND);
 	}
-
-	/*
-	 * Build the chart with the provided values
-	 * @param times the times
-	 * @param values the object[] that contains the values
-	 * @param propertyName the object property name that contains the values
-	 * @param color the line and fill color
-	 * @param timesLabel the X axis label
-	 * @param valuesLabel the Y axis label
-	 * @throws Exception when it's not possible to extract the property value from <code>values</code>
-	 */
-	/*
-	public void setTimeAndDatas(String[] times, Object[] values, String propertyName, String color, String timesLabel, String valuesLabel) throws Exception {
-		long[] extractedValues = new long[values.length];
-		for (int i=0; i<values.length; i++) {
-			extractedValues[i] = (Long) PropertyUtils.getProperty(values[i], propertyName);
-		}
-		setTimeAndDatas(times, extractedValues, color, timesLabel, valuesLabel);
-	}
-	*/
 
 	/**
 	 * Build the chart with the provided values
@@ -84,12 +62,12 @@ public class TimeCountLineChart extends LineChart {
 		setTickSizeX(1d);
 		// set Y axis min and max
 		setMinY(0l);
-		long maxY = (long)Math.ceil(Toolbox.max(values)*1.10);
+		long maxY = (long)Math.ceil(Toolbox.maxLong(values)*1.10);
 		// 2 is the max Y axis value if the values are too small
-		maxY = Toolbox.max(maxY, 3);
+		maxY = Toolbox.maxLong(maxY, 3l);
 		setMaxY(maxY);
 		setMinYTickSize(1l);
-		setTickSizeY(1d);
+		//setTickSizeY(1d);
 		setTickDecimalsY(0d);
 		
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
@@ -110,35 +88,4 @@ public class TimeCountLineChart extends LineChart {
 		super.setData(chartData);
 	}
 	
-	
-	/**
-	 * Default tickformatter for Time axis
-	 * @author Marco "Fuzzo" Cuccato
-	 *
-	 */
-	private class TimeTickFormatter implements TickFormatter {
-		
-		private String[] times;
-
-		/**
-		 * Build the formatter
-		 * @param times the times
-		 */
-		public TimeTickFormatter(String[] times) {
-			this.times = times;
-		}
-
-		@Override
-		public String formatTickValue(double tickValue, Axis axis) {
-			String tickLabel;
-			int tickIndex = (int)tickValue;
-			if (tickIndex > -1 && tickIndex<times.length) {
-				tickLabel = times[tickIndex];
-			} else {
-				tickLabel = "";
-			}
-			return tickLabel;
-		}
-	}
-
 }

@@ -33,7 +33,7 @@ public final class Toolbox {
 	 * @return the value present in {@code array} that is greater than or equal to every other value in the array
 	 * @throws IllegalArgumentException if {@code array} is empty
 	 */
-	public static long max(long... array) {
+	public static long maxLong(long... array) {
 		if (array.length < 1) {
 			throw new IllegalArgumentException("Array must be not empty!");
 		}
@@ -53,7 +53,7 @@ public final class Toolbox {
 	 * @return the value present in {@code array} that is lower than or equal to every other value in the array
 	 * @throws IllegalArgumentException if {@code array} is empty
 	 */
-	public static long min(long... array) {
+	public static long minLong(long... array) {
 		if (array.length < 1) {
 			throw new IllegalArgumentException("Array must be not empty!");
 		}
@@ -65,4 +65,45 @@ public final class Toolbox {
 		}
 		return min;
 	}
+	
+	/**
+	 * Returns the greatest value present in {@code array}.
+	 * 
+	 * @param array a <i>nonempty</i> array of {@code double} values
+	 * @return the value present in {@code array} that is greater than or equal to every other value in the array
+	 * @throws IllegalArgumentException if {@code array} is empty
+	 */
+	public static double maxDouble(double... array) {
+		if (array.length < 1) {
+			throw new IllegalArgumentException("Array must be not empty!");
+		}
+		double max = array[0];
+		for (int i = 1; i < array.length; i++) {
+			if (array[i] > max) {
+				max = array[i];
+			}
+		}
+		return max;
+	}
+	
+	/**
+	 * Returns the lowest value present in {@code array}.
+	 * 
+	 * @param array a <i>nonempty</i> array of {@code double} values
+	 * @return the value present in {@code array} that is lower than or equal to every other value in the array
+	 * @throws IllegalArgumentException if {@code array} is empty
+	 */
+	public static double minDouble(double... array) {
+		if (array.length < 1) {
+			throw new IllegalArgumentException("Array must be not empty!");
+		}
+		double min = array[0];
+		for (int i = 1; i < array.length; i++) {
+			if (array[i] < min) {
+				min = array[i];
+			}
+		}
+		return min;
+	}
+
 }

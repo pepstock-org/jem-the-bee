@@ -27,11 +27,27 @@ public enum ColorsHex {
 	/**
 	 * 
 	 */
-	CYAN("#57BCD9"),
+	DARK_CYAN("#57BCD9"),
 	/**
 	 * 
 	 */
-	LIGHT_ORANGE("#FFAC62");
+	LIGHT_CYAN("#74FEF8"),
+	/**
+	 * 
+	 */
+	LIGHT_ORANGE("#FFAC62"),
+	/**
+	 * 
+	 */
+	PINK("#FE98F1"),
+	/**
+	 * 
+	 */
+	BLUE("#7BA7E1"),
+	/**
+	 * 
+	 */
+	YELLOW("#FFE920");	
 	
 	/**
 	 * @return a random color :) 

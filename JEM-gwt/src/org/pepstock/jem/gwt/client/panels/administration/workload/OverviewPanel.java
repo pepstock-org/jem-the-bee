@@ -43,13 +43,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
+	@SuppressWarnings("javadoc")
+    public static final int SUBMITTED_JOBS = 0, JCLS_CHACKED = 1;
+
 	private final TabPanel mainTabPanel = new TabPanel();
 
-	//private WorkloadChart chartJobs = new WorkloadChart(WorkloadChart.JOBS_SUBMITTED);
 	private TimeCountLineChart jobsSubmittedChart = new TimeCountLineChart();
-	private boolean jobsSubmittedChartLoaded = false;
-	
-	private WorkloadChart chartJcls = new WorkloadChart(WorkloadChart.JCLS_CHECKED);
+	private TimeCountLineChart jclsCheckedChart = new TimeCountLineChart();
+	private boolean jobsSubmittedChartLoaded;
+	private boolean jclsCheckedChartLoaded;
 	
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 	private ScrollPanel scroller = new ScrollPanel(nodes);
@@ -117,40 +119,46 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     		listData.add(data);
     	}
     	nodes.getUnderlyingTable().setRowData(Instances.getLastSample().getMembers());
-    	//chartJobs.setLoaded(false);
     	jobsSubmittedChartLoaded = false;
-    	chartJcls.setLoaded(false);
+    	jclsCheckedChartLoaded = false;
     	
     	mainTabPanel.selectTab(0, true);
 	}
 	
-	private void loadChart(int selected){
-		if (selected == WorkloadChart.JOBS_SUBMITTED){
+	private void loadChart(int selected) {
+		String[] times = new String[listData.size()];
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			Workload w = listData.get(i);
+			times[i] = w.getKey();
+		}
+		
+		if (selected == SUBMITTED_JOBS) {
 			if (!jobsSubmittedChartLoaded){
-
-				String[] times = new String[listData.size()];
-				long[] jobs = new long[listData.size()];
 				for (int i=0; i<listData.size(); i++) {
-					Workload w = listData.get(i);
-					times[i] = w.getKey();
-					jobs[i] = w.getJobsSubmitted();
+					values[i] = listData.get(i).getJobsSubmitted();
 				}
-				jobsSubmittedChart.setTimeAndDatas(times, jobs, ColorsHex.randomColor().getCode(), "Time", "Jobs");
+				jobsSubmittedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Jobs");
 				
 				if (jobPanel.getWidgetCount() == 0) {
 					jobPanel.add(jobsSubmittedChart);
 				}
+				jobsSubmittedChartLoaded = true;
 			}
 		} else {
-			if (!chartJcls.isLoaded()){
-				chartJcls.setData(listData);
-				if (jclPanel.getWidgetCount() == 0) {
-					jclPanel.add(chartJcls);
+			if (!jclsCheckedChartLoaded){
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getJclsChecked();
 				}
+				jclsCheckedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Jcls");
+				
+				if (jclPanel.getWidgetCount() == 0) {
+					jclPanel.add(jclsCheckedChart);
+				}
+				jclsCheckedChartLoaded = true;
 			}
 		}
     }
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.gwt.client.ResizeCapable#onResize(int, int)
@@ -176,10 +184,10 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     		mainTabPanelHeight -= Sizes.TABBAR_HEIGHT_PX;
     	} 
     	
-		chartJcls.setWidth(chartWidth);
 		jobsSubmittedChart.setWidth(chartWidth);
-		chartJcls.setHeight(Sizes.CHART_HEIGHT);
 		jobsSubmittedChart.setHeight(Sizes.CHART_HEIGHT);
+		jclsCheckedChart.setWidth(chartWidth);
+		jclsCheckedChart.setHeight(Sizes.CHART_HEIGHT);
 		
 		mainTabPanel.setWidth(Sizes.toString(getWidth()));
 		mainTabPanel.setHeight(Sizes.toString(mainTabPanelHeight));
