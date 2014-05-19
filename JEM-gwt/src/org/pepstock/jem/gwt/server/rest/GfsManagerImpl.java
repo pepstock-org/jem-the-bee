@@ -18,10 +18,12 @@ package org.pepstock.jem.gwt.server.rest;
 
 import java.util.Collection;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.GfsFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
@@ -29,9 +31,11 @@ import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsOutputContent;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
+import org.pepstock.jem.gwt.server.rest.entities.UploadedGfsFile;
 import org.pepstock.jem.gwt.server.services.GfsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+
 
 /**
  * Rest service to manage gfs.<br>
@@ -77,6 +81,11 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * "bin" parameter on url
 	 */
 	public static final String GFS_MANAGER_FILE_BINARY = "bin";
+	
+	/**
+	 * "bin" parameter on url
+	 */
+	public static final String GFS_MANAGER_FILE_UPLOAD = "upload";
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
@@ -347,6 +356,18 @@ public class GfsManagerImpl extends DefaultServerResource {
 		return gfsFile;
 	}
 
+	/**
+	 * Uploads a file. THIS IS STILL UNDER CONSTRUCTION 
+	 * @param file
+	 * @return
+	 */
+	@POST
+	@Path("/" + GFS_MANAGER_FILE_UPLOAD)
+	@Consumes({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response uploadFile(UploadedGfsFile file) {	
+		return Response.status(200).entity("OK").build();
+	}
+	
 	/**
 	 * Initializes a jobs manager
 	 */

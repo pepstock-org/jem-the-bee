@@ -23,11 +23,13 @@ import org.pepstock.jem.gwt.server.rest.GfsManagerImpl;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsOutputContent;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
+import org.pepstock.jem.gwt.server.rest.entities.UploadedGfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.AbstractRestManager;
 import org.pepstock.jem.util.RestClient;
 
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -202,4 +204,23 @@ public class GfsManager extends AbstractRestManager {
 		}
 	}
 
+	/**
+	 * Uploads a file. THIS IS STILL UNDER CONSTRUCTION
+	 * @param file
+	 * @return response status
+	 * @throws JemException
+	 */
+	public int upload(UploadedGfsFile file) throws JemException {
+		WebResource resource = getClient().getBaseWebResource();
+		try {
+			ClientResponse response =  resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_UPLOAD).post(ClientResponse.class, file);
+			return response.getStatus();
+		} catch (UniformInterfaceException e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			if (e.getResponse().getStatus() != 204) {
+				throw new JemException(e.getMessage(), e);
+			}
+			return e.getResponse().getStatus();
+		}
+	}
 }
