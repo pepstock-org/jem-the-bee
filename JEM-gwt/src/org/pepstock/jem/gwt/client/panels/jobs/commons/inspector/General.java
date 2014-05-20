@@ -18,8 +18,8 @@ package org.pepstock.jem.gwt.client.panels.jobs.commons.inspector;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 
@@ -126,12 +126,20 @@ public final class General extends DefaultInspectorItem {
 	    	if (job.getResult().getExceptionMessage() != null){
 	    		layoutJob.setHTML(9, 0, "Exception");
 	    		String fullMessage = job.getResult().getExceptionMessage();
+	    		
+	    		// extract the main exception, otherwise the message is too long
 	    		int indexFirstRow = fullMessage.indexOf('\n');
+	    		int indexFirstException = fullMessage.indexOf("nested exception");
 	    		String message = null;
-	    		if (indexFirstRow == -1){
-	    			message = fullMessage;
+	    		if (indexFirstException == -1){
+	    			if (indexFirstRow == -1){
+
+	    				message = fullMessage;
+	    			} else {
+	    				message = fullMessage.substring(0, indexFirstRow);	
+	    			}
 	    		} else {
-	    			message = fullMessage.substring(0, indexFirstRow);	
+	    			message = fullMessage.substring(0, indexFirstException);
 	    		}
 	    		layoutJob.setHTML(9, 1, message);
 	    	}

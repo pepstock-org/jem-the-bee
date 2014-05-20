@@ -9,6 +9,8 @@
 	<classpathentry kind="lib" path="lib/commons-io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-net/commons-net-3.3.jar"/>
+	<classpathentry kind="lib" path="lib/jms/jms-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-client.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-common-node.jar"/>
 	<classpathentry kind="lib" path="lib/jppf/jppf-common.jar"/>
@@ -44,7 +46,6 @@
 	<classpathentry kind="lib" path="lib/emailing/pop3-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/smtp-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/javax.mail-1.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/jms/javax.jms-api-2.0-b10.jar"/>
 	<classpathentry kind="lib" path="lib/gwt/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-launcher.jar"/>
@@ -144,7 +145,6 @@
 	<classpathentry kind="lib" path="lib/groovy/groovy-swing-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-templates-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-xml-2.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-net/commons-net-3.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
