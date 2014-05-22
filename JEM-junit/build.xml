@@ -35,6 +35,7 @@
 					<include name="jms/lib/*.jar" />
 				</fileset>
 				<fileset dir="${jem.workspace}/${jem.library.directory}">
+					<include name="lang/*.jar" />
 					<include name="commons-io/*.jar" />
 					<include name="xstream/*.jar" />
 					<include name="logging/*.jar" />

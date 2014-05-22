@@ -64,28 +64,33 @@ public class GfsManager extends DefaultService{
 		DistributedTaskExecutor<Collection<GfsFile>> task = new DistributedTaskExecutor<Collection<GfsFile>>(new GetFilesList(type, path, pathName), getMember());
 		Collection<GfsFile> result = task.getResult();
 		
-		// checks if the list is empty.
-		// if not and after authorization check is empty, means that the use doesn't have the right authorization
-		boolean checkAuth = !result.isEmpty();
-		for (Iterator<GfsFile> iter = result.iterator(); iter.hasNext();){
-			GfsFile file = iter.next();
-			boolean match = match(file);
-			// renoves teh file because not authorized
-			if (!match){
-				iter.remove();
+		// checks authentication only if 
+		// the request is for data. All other file systems 
+		// are always available in READ
+		if (type == GfsFile.DATA){
+			// checks if the list is empty.
+			// if not and after authorization check is empty, means that the use doesn't have the right authorization
+			boolean checkAuth = !result.isEmpty();
+			for (Iterator<GfsFile> iter = result.iterator(); iter.hasNext();){
+				GfsFile file = iter.next();
+				boolean match = match(file);
+				// renoves teh file because not authorized
+				if (!match){
+					iter.remove();
+				}
 			}
-		}
-		// if now is empty, it means that the user
-		// doesn't have any authorization
-		// and thorws an exception
-		if (checkAuth && result.isEmpty()){
-			Subject currentUser = SecurityUtils.getSubject();
-			Session shiroSession = currentUser.getSession();
-			// gets user from session
-			LoggedUser user = (LoggedUser)shiroSession.getAttribute(LoginManager.USER_KEY);
-			String userid = (user != null) ? user.toString() : currentUser.toString();
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG008E, userid, path);
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG008E, userid, path);
+			// if now is empty, it means that the user
+			// doesn't have any authorization
+			// and thorws an exception
+			if (checkAuth && result.isEmpty()){
+				Subject currentUser = SecurityUtils.getSubject();
+				Session shiroSession = currentUser.getSession();
+				// gets user from session
+				LoggedUser user = (LoggedUser)shiroSession.getAttribute(LoginManager.USER_KEY);
+				String userid = (user != null) ? user.toString() : currentUser.toString();
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG008E, userid, path);
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG008E, userid, path);
+			}
 		}
 		// return collections of GFS files
 		return result;
@@ -104,12 +109,16 @@ public class GfsManager extends DefaultService{
      * @throws Exception if any error occurs
      */
     public String getFile(int type, String file, String pathName) throws ServiceMessageException {
-    	// creates the permission by file name
-       	String filesPermission = Permissions.FILES_READ + file; 
-		// checks user authentication
-		// if not, this method throws an exception
-       	checkAuthorization(new StringPermission(filesPermission));
-       	
+    	// checks authentication only if 
+    	// the request is for data. All other file systems 
+    	// are always available in READ
+    	if (type == GfsFile.DATA){
+    		// creates the permission by file name
+    		String filesPermission = Permissions.FILES_READ + file; 
+    		// checks user authentication
+    		// if not, this method throws an exception
+    		checkAuthorization(new StringPermission(filesPermission));
+    	}
 		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
     }
