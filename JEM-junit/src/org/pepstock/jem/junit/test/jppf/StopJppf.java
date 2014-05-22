@@ -23,7 +23,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jppf.management.JMXDriverConnectionWrapper;
 import org.jppf.management.JMXNodeConnectionWrapper;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;

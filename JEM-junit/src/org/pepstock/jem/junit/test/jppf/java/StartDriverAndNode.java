@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * @author Andrea "Stock" Stocchero
