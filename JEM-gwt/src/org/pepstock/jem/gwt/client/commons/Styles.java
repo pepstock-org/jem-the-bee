@@ -74,7 +74,7 @@ public interface Styles extends ClientBundle {
 	CssResource tabPanel();
 
 	@Source("../resources/css/Loading.css")
-	CssResource loading();
+	Loading loading();
 	
 	@Source("../resources/css/StackPanelHeader.css")
 	CssResource stackpanelHeader();
@@ -192,5 +192,9 @@ public interface Styles extends ClientBundle {
 	
 	interface TextBox extends CssResource {
 		String mandatoryError();		
+	}
+	
+	interface Loading extends CssResource {
+		String padding();
 	}
 }

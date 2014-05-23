@@ -43,6 +43,7 @@ public final class Loading {
 	};
 	
 	static {
+		POPUP.addStyleName(Styles.INSTANCE.loading().padding());
 		POPUP.setGlassEnabled(true);
 		POPUP.setAnimationEnabled(false);
 		// animated image
