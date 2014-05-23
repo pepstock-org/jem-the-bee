@@ -80,6 +80,7 @@ public abstract class AbstractGridBasedChart extends AbstractChart<Double, Doubl
 	}
 
 	/**
+	 * Set the max value of X axis. <b>Note:</b> setting this value prevents automatic axis scale redrawing
 	 * @param maxX the maximum X value
 	 */
 	public void setMaxX(Long maxX) {
@@ -143,6 +144,7 @@ public abstract class AbstractGridBasedChart extends AbstractChart<Double, Doubl
 	}
 
 	/**
+	 * Set the max value of Y axis. <b>Note:</b> setting this value prevents automatic axis scale redrawing
 	 * @param maxY  the maximum Y value
 	 */
 	public void setMaxY(Long maxY) {

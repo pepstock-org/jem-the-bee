@@ -41,7 +41,6 @@ public class CounterHBarChart extends BarChart {
 		setTickDecimalsY(0);
 		setMinX(0L);
 		setMinY(-1L);
-		setTickSizeX(1d);
 	}
 
 	/**
