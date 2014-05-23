@@ -19,8 +19,6 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pepstock.jem.gwt.client.charts.gflot.listeners.PercentPlotHoverListener;
-
 
 /**
  * A line chart that has timestamps on X axis and a percent in Y axis  
@@ -28,6 +26,25 @@ import org.pepstock.jem.gwt.client.charts.gflot.listeners.PercentPlotHoverListen
  */
 public class TimePercentLineChart extends TimeCountLineChart {
 
+	/**
+	 * Build the chart
+	 */
+	public TimePercentLineChart() {
+		// set X axis
+		setMinX(0l);
+		setMinXTickSize(1l);
+		setTickSizeX(1d);
+		
+		// set Y axis
+		setMinY(0l);
+		setMaxY(100l);
+		setTickSizeY(10d);
+		setTickDecimalsY(0d);
+		
+		// time tick formatter
+		setTickFormatterX(new TimeTickFormatter());
+	}
+	
 	/**
 	 * Build the chart with the provided values
 	 * @param times the times
@@ -41,25 +58,16 @@ public class TimePercentLineChart extends TimeCountLineChart {
 		if (times.length != values.length) {
 			throw new IllegalArgumentException("Times and Values must have the same size!");
 		}
-		
-		setHoverListener(new PercentPlotHoverListener());
-
 		// set the labels
 		if (timesLabel != null && !timesLabel.trim().isEmpty()) setLabelX(timesLabel);
 		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelY(valuesLabel);
-		// set X axis tick formatter
-		setTickFormatterX(new TimeTickFormatter(times));
-		// set X axis min and max
-		setMinX(0l);
+		/*
+		// set X axis max
 		setMaxX((long)times.length-1);
-		setMinXTickSize(1l);
-		setTickSizeX(1d);
-		// set Y axis min and max
-		setMinY(0l);
-		setMaxY(100l);
-		setTickSizeY(10d);
-		setTickDecimalsY(0d);
-		
+		*/
+		// set times
+		((TimeTickFormatter)getTickFormatterX()).setTimes(times);
+		// build the series
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
 		SeriesData<Double, Double> series = new SeriesData<Double, Double>();
 		// set the bars color and fill

@@ -19,8 +19,6 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pepstock.jem.gwt.client.Toolbox;
-
 import com.googlecode.gflot.client.Axis;
 import com.googlecode.gflot.client.options.TickFormatter;
 
@@ -43,6 +41,7 @@ public class CounterHBarChart extends BarChart {
 		setTickDecimalsY(0);
 		setMinX(0L);
 		setMinY(-1L);
+		setTickSizeX(1d);
 	}
 
 	/**
@@ -63,8 +62,7 @@ public class CounterHBarChart extends BarChart {
 		if (namesLabel != null && !namesLabel.trim().isEmpty()) setLabelY(namesLabel);
 		// set Y axis tick formatter
 		setTickFormatterY(new NamesTickFormatter(names));
-		// set X and Y axis max values
-		setMaxX((long)Math.ceil(Toolbox.maxLong(values)*1.10));
+		// set Y axis max value
 		setMaxY((long)names.length);
 		// build dataponts
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);

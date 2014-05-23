@@ -87,6 +87,7 @@ public class PieChart extends AbstractChart<String, Double> {
 			}
 			sh.add(PieDataPoint.of(dataPoint.getY()));
 		}
+		redraw();
 	}
 	
 	/**

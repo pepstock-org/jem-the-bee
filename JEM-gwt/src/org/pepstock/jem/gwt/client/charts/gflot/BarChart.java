@@ -102,6 +102,7 @@ public class BarChart extends AbstractGridBasedChart {
 				sh.add(com.googlecode.gflot.client.DataPoint.of(dp.getX(), dp.getY()));
 			}
 		}
+		redraw();
 	}
 
 	/**

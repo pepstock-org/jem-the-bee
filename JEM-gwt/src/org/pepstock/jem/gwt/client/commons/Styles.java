@@ -178,6 +178,7 @@ public interface Styles extends ClientBundle {
 		String pointer();
 		String bigButtonPadding();
 		String noMinMaxHeightWidth();
+		String chartTickLabel();
 	}
 	
 	interface Administration extends CssResource {

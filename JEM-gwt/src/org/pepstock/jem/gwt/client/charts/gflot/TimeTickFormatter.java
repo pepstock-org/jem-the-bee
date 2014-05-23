@@ -29,12 +29,20 @@ public class TimeTickFormatter implements TickFormatter {
 	private String[] times;
 
 	/**
-	 * Build the formatter
+	 * @return the times
+	 */
+	public String[] getTimes() {
+		return times;
+	}
+
+	/**
 	 * @param times the times
 	 */
-	public TimeTickFormatter(String[] times) {
+	public void setTimes(String[] times) {
 		this.times = times;
 	}
+
+
 
 	@Override
 	public String formatTickValue(double tickValue, Axis axis) {

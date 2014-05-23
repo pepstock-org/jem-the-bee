@@ -49,7 +49,7 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 		switch(getIndex()){
 			case 0: 
 				// sorts by time
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = o1.getTime().compareTo(o2.getTime());
 				break;
 			case 1: 
 				// sorts by entries
@@ -81,7 +81,7 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 				break;
 			default:
 				// sorts by time
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = o1.getTime().compareTo(o2.getTime());
 				break;
 		}
 		// checks if Ascending otherwise negative

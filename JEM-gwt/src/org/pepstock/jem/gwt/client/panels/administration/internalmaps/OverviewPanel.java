@@ -22,6 +22,7 @@ import java.util.Map;
 import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.Toolbox;
 import org.pepstock.jem.gwt.client.charts.gflot.CounterHBarChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
@@ -65,16 +66,13 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	for (LightMemberSample msample : Instances.getCurrentSample().getMembers()){
     		if (msample != null){
     			for (LightMapStats map : msample.getInternalMapsStats().values()){
-    				if (map !=null){
+    				if (map !=null) {
     					QueueData data = null;
     					if (mapData.containsKey(map.getName())){
     						data = mapData.get(map.getName());
     					} else {
     						data = new QueueData();
-    						data.setQueue(map.getName());
-    						int lastDot = map.getName().lastIndexOf('.') + 1;
-    						String key = map.getName().substring(lastDot);
-    						data.setKey(key);
+    						data.setFullName(map.getName());
     						data.setTime(msample.getTime());
     					}
 
@@ -93,14 +91,14 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		String[] names = new String[mapData.size()];
 		long[] values = new long[mapData.size()];
 		int i=0;
-		for (String key : mapData.keySet()) {
-			names[i] = key;
-			values[i] = mapData.get(key).getEntries();
+		for (String name : mapData.keySet()) {
+			names[i] = name;
+			values[i] = mapData.get(name).getEntries();
 			i++;
 		}
 
-		chart.setCountData(names, values, ColorsHex.VIOLET.getCode(), "Entries", "Queues");
-		
+		chart.setCountData(Toolbox.getFromLastDoth(names), values, ColorsHex.VIOLET.getCode(), "Entries", "Queues");
+
 		// add chart to panel
 		if (entriesPanel.getWidgetCount() == 0){
 			entriesPanel.add(chart.asWidget());

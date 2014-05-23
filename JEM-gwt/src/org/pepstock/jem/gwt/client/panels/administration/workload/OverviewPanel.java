@@ -113,7 +113,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     			}
     		}
     		Workload data = new Workload();
-    		data.setKey(sample.getTime());
+    		data.setTime(sample.getTime());
     		data.setJobsSubmitted(totJob);
     		data.setJclsChecked(totJcl);
     		listData.add(data);
@@ -130,7 +130,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		long[] values = new long[listData.size()];
 		for (int i=0; i<listData.size(); i++) {
 			Workload w = listData.get(i);
-			times[i] = w.getKey();
+			times[i] = w.getTime();
 		}
 		
 		if (selected == SUBMITTED_JOBS) {

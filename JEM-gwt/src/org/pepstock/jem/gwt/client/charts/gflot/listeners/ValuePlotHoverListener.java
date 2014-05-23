@@ -16,7 +16,11 @@
 */
 package org.pepstock.jem.gwt.client.charts.gflot.listeners;
 
+
+import org.pepstock.jem.gwt.client.commons.Styles;
+
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.googlecode.gflot.client.event.PlotClickListener;
@@ -26,11 +30,15 @@ import com.googlecode.gflot.client.event.PlotPosition;
 import com.googlecode.gflot.client.jsni.Plot;
 
 /**
- * {@link PlotClickListener} that show the percentage values 
+ * {@link PlotClickListener} that show the values 
  * @author Marco "Fuzzo" Cuccato
  */
-public class PercentPlotHoverListener implements PlotHoverListener {
+public class ValuePlotHoverListener implements PlotHoverListener {
 
+	static {
+		Styles.INSTANCE.common().ensureInjected();
+	}
+	
 	private static final NumberFormat FORMATTER = NumberFormat.getFormat("#0.##");
 	
 	final PopupPanel popup = new PopupPanel();
@@ -39,7 +47,9 @@ public class PercentPlotHoverListener implements PlotHoverListener {
 	/**
 	 * 
 	 */
-	public PercentPlotHoverListener() {
+	public ValuePlotHoverListener() {
+		popup.addStyleName(Styles.INSTANCE.common().chartTickLabel());
+		label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		popup.add(label);
 	}
 	
@@ -48,7 +58,7 @@ public class PercentPlotHoverListener implements PlotHoverListener {
 		if (item != null) {
 			String text = FORMATTER.format(item.getDataPoint().getY());
 			label.setText(text);
-			popup.setPopupPosition(item.getPageX() + 10, item.getPageY() - 25);
+			popup.setPopupPosition(item.getPageX() - 26, item.getPageY() - 45);
 			popup.show();
 		} else {
 			popup.hide();

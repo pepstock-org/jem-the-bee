@@ -112,6 +112,15 @@ public abstract class AbstractChart<X, Y> implements IsWidget, HasSizes {
 	}
 
 	/**
+	 * Redraw the plot
+	 */
+	public void redraw() {
+		if (plot != null) {
+			plot.redraw();
+		}
+	}
+	
+	/**
 	 * @return <code>true</code> if the legend will be displayed, <code>false</code> otherwise
 	 */
 	public boolean isShowLegend() {

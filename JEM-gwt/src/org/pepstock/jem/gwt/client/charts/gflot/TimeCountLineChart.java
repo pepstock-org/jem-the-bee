@@ -19,7 +19,7 @@ package org.pepstock.jem.gwt.client.charts.gflot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pepstock.jem.gwt.client.Toolbox;
+import org.pepstock.jem.gwt.client.charts.gflot.listeners.ValuePlotHoverListener;
 
 import com.googlecode.gflot.client.options.PointsSeriesOptions.PointSymbol;
 
@@ -35,6 +35,20 @@ public class TimeCountLineChart extends LineChart {
 	public TimeCountLineChart() {
 		setShowPoints(true);
 		setPointSymbol(PointSymbol.DIAMOND);
+		setHoverListener(new ValuePlotHoverListener());
+		
+		// fixed options X axis
+		setMinX(0l);
+		setMinXTickSize(1l);
+		setTickSizeX(1d);
+		
+		// fixed options Y axis
+		setMinY(0l);
+		setMinYTickSize(1l);
+		setTickDecimalsY(0d);
+
+		// set the X axis tick formatter
+		setTickFormatterX(new TimeTickFormatter());
 	}
 
 	/**
@@ -53,23 +67,9 @@ public class TimeCountLineChart extends LineChart {
 		// set the labels
 		if (timesLabel != null && !timesLabel.trim().isEmpty()) setLabelX(timesLabel);
 		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelY(valuesLabel);
-		// set X axis tick formatter
-		setTickFormatterX(new TimeTickFormatter(times));
-		// set X axis min and max
-		setMinX(0l);
-		setMaxX((long)times.length-1);
-		setMinXTickSize(1l);
-		setTickSizeX(1d);
-		// set Y axis min and max
-		setMinY(0l);
-		long maxY = (long)Math.ceil(Toolbox.maxLong(values)*1.10);
-		// 2 is the max Y axis value if the values are too small
-		maxY = Toolbox.maxLong(maxY, 3l);
-		setMaxY(maxY);
-		setMinYTickSize(1l);
-		//setTickSizeY(1d);
-		setTickDecimalsY(0d);
-		
+		// set times
+		((TimeTickFormatter)getTickFormatterX()).setTimes(times);
+		// build the series
 		List<SeriesData<Double, Double>> chartData = new ArrayList<SeriesData<Double,Double>>(1);
 		SeriesData<Double, Double> series = new SeriesData<Double, Double>();
 		// set the bars color and fill

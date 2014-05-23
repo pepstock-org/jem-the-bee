@@ -38,8 +38,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -67,9 +67,9 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	
 	private List<SystemData> listData = new ArrayList<SystemData>();
 	
-	private VerticalPanel mCpuPanel = new VerticalPanel();
-	private VerticalPanel pCpuPanel = new VerticalPanel();
-	private VerticalPanel pMemPanel = new VerticalPanel();
+	private SimplePanel mCpuPanel = new SimplePanel();
+	private SimplePanel pCpuPanel = new SimplePanel();
+	private SimplePanel pMemPanel = new SimplePanel();
 	
 	/**
 	 * 
@@ -121,11 +121,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		for (LightMemberSample msample : sample.getMembers()){
     			if (msample.getMemberKey().equalsIgnoreCase(memberKey)){
     	    		SystemData data = new SystemData();
-    	    		data.setKey(sample.getTime());
+    	    		data.setTime(sample.getTime());
     	    		
     	    		data.setMachineCpuPercent(msample.getCpuPercent()*100);
     	    		data.setProcessCpuPercent(msample.getProcessCpuPercent()*100);
-    	    		data.setProcessMemoryUtil(msample.getProcessMemoryUsed()/1024/1024);
+    	    		data.setProcessMemoryUtil((long) ((double)msample.getProcessMemoryUsed()/1024d/1024d));
     	    		
     	    		listData.add(data);
     				list.add(msample);
@@ -149,9 +149,8 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		String[] times = new String[listData.size()];
 		for (int i=0; i<listData.size(); i++) {
 			SystemData sd = listData.get(i);
-			times[i] = sd.getKey();
+			times[i] = sd.getTime();
 		}
-		
 		if (selected == MACHINE_CPU_PERCENT){
 			if (!machineCpuPercentChartLoaded){
 				double[] values = new double[listData.size()];
@@ -160,9 +159,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				}
 				machineCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Cpu %");
 
-				if (mCpuPanel.getWidgetCount() == 0) {
-					mCpuPanel.add(machineCpuPercentChart);
-				}
+				mCpuPanel.setWidget(machineCpuPercentChart);
 				machineCpuPercentChartLoaded = true;
 			}
 		} else if (selected == PROCESS_CPU_PERCENT){
@@ -173,9 +170,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				}
 				processCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Cpu %");
 
-				if (pCpuPanel.getWidgetCount() == 0) {
-					pCpuPanel.add(processCpuPercentChart);
-				}
+				pCpuPanel.setWidget(processCpuPercentChart);
 				processCpuPercentChartLoaded = true;
 			}
 		} else {
@@ -185,10 +180,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 					values[i] = listData.get(i).getProcessMemoryUtil();
 				}
 				processMemoryUsedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Megabytes");
-				
-				if (pMemPanel.getWidgetCount() == 0) {
-					pMemPanel.add(processMemoryUsedChart);
-				}
+				pMemPanel.setWidget(processMemoryUsedChart);
 				processMemoryUsedChartLoaded = true;
 			}	
 		}

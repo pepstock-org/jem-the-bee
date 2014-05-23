@@ -116,10 +116,10 @@ public class LineChart extends AbstractGridBasedChart {
 
 	@Override
 	public void setData(List<SeriesData<Double, Double>> data) {
-		// save the data
-		super.setData(data);
 		// reset model
 		getModel().removeAllSeries();
+		// save the data
+		super.setData(data);
 		// create model
 		for (SeriesData<Double, Double> s : data) {
 			// build the series
@@ -133,6 +133,7 @@ public class LineChart extends AbstractGridBasedChart {
 				sh.add(com.googlecode.gflot.client.DataPoint.of(dp.getX(), dp.getY()));
 			}
 		}
+		redraw();
 	}
 
 	@Override

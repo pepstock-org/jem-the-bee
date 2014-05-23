@@ -17,6 +17,8 @@
 */
 package org.pepstock.jem.gwt.client;
 
+import java.util.Collection;
+
 /**
  * Utility class
  * @author Marco "Fuzzo" Cuccato
@@ -25,6 +27,44 @@ package org.pepstock.jem.gwt.client;
 public final class Toolbox {
 
 	private Toolbox() {}
+	
+	/**
+	 * Utility that return le last part of a string collection containing a doth <code>.</code>, or the string itself
+	 * @param stringCollection the input strings
+	 * @return an array of substring beginning from last <code>.</code> to end, or the string itself if it doesn't contains doths.
+	 */
+	public static String[] getFromLastDoth(Collection<String> stringCollection) {
+		return getFromLastDoth(stringCollection.toArray(new String[stringCollection.size()]));
+	}
+	
+	/**
+	 * Utility that return le last part of a string[] containing a doth <code>.</code>, or the string itself
+	 * @param array the input strings
+	 * @return an array of substring beginning from last <code>.</code> to end, or the string itself if it doesn't contains doths. 
+	 */
+	public static String[] getFromLastDoth(String... array) {
+		String[] toReturn = new String[array.length];
+		for (int i=0; i<array.length; i++) {
+			toReturn[i] = getFromLastDoth(array[i]);
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Utility that return le last part of a string containing a doth <code>.</code>, or the string itself  
+	 * @param s the input string
+	 * @return a substring beginning from last <code>.</code> to end, or the string itself if it doesn't contains doths.
+	 */
+	public static String getFromLastDoth(String s) {
+		String toReturn;
+		int lastDot = s.lastIndexOf('.') + 1;
+		if (lastDot > 0) {
+			toReturn = s.substring(lastDot); 
+		} else {
+			toReturn = s;
+		}
+		return toReturn;
+	}
 	
 	/**
 	 * Returns the greatest value present in {@code array}.

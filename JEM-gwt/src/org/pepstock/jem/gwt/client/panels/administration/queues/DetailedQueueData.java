@@ -22,7 +22,7 @@ import org.pepstock.jem.gwt.client.panels.administration.current.QueueData;
  * @author Andrea "Stock" Stocchero
  *
  */
-public class DetailedQueueData extends QueueData{
+public class DetailedQueueData extends QueueData {
 
 	private long hits = 0;
 	
