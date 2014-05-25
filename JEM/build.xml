@@ -23,8 +23,8 @@
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
-					<!-- XStream is excluded from SPRING framework -->
-					<exclude name="spring/com.springsource.com.thoughtworks.xstream-1.3.0.jar" />
+					<!-- all SPRING-SOURCE jars are excluded from SPRING framework -->
+					<exclude name="spring/com.springsource.*.jar" />
 				</fileset>
 				<pathelement path="${java.class.path}" />
 			</classpath>
