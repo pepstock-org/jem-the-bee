@@ -30,7 +30,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class TaskletFactoryBean implements FactoryBean {
+public class TaskletFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_DESCRIPTIONS = "dataDescriptions";
 	

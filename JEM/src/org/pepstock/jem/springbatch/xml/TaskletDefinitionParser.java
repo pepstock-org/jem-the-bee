@@ -64,21 +64,18 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	 */
 	protected final void loadChildren(Element element, BeanDefinitionBuilder factory, ParserContext context){
 		// Reads all data description children and creates objects for next bindings
-		@SuppressWarnings("unchecked")
 		List<Element> childDataDescriptions = DomUtils.getChildElementsByTagName(element, DataDescriptionDefinitionParser.DATA_DESCRIPTION_ELEMENT);
 		if (childDataDescriptions != null && childDataDescriptions.size() > 0) {
 			parseDataDescriptions(childDataDescriptions, factory, context);
 		}
 
 		// Reads all data source children and creates objects for next bindings
-		@SuppressWarnings("unchecked")
 		List<Element> childDataSources = DomUtils.getChildElementsByTagName(element, DataSourceDefinitionParser.DATA_SOURCE_ELEMENT);
 		if (childDataSources != null && childDataSources.size() > 0) {
 			parseDataSources(childDataSources, factory, context);
 		}
 		
 		// Reads all locks children and creates objects for next bindings
-		@SuppressWarnings("unchecked")
 		List<Element> childLocks = DomUtils.getChildElementsByTagName(element, LockDefinitionParser.LOCK_ELEMENT);
 		if (childLocks != null && childLocks.size() > 0) {
 			parseLocks(childLocks, factory, context);
@@ -106,6 +103,7 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	@SuppressWarnings("unchecked")
 	private void parseDataDescriptions(List<Element> childElements, BeanDefinitionBuilder factory, ParserContext context) {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects
+		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
 
 		// creates data description parser 
@@ -124,6 +122,7 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	@SuppressWarnings("unchecked")
 	private void parseDataSources(List<Element> childElements, BeanDefinitionBuilder factory, ParserContext context) {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects		
+		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
 		
 		// creates data source parser 
@@ -142,6 +141,7 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	@SuppressWarnings("unchecked")
 	private void parseLocks(List<Element> childElements, BeanDefinitionBuilder factory, ParserContext context) {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects		
+		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
 
 		// creates lock parser 

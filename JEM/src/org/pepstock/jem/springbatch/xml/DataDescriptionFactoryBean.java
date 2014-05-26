@@ -28,7 +28,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class DataDescriptionFactoryBean implements FactoryBean {
+public class DataDescriptionFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_DESCRIPTION = "dataDescription";
 	

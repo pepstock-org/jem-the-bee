@@ -26,7 +26,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class DataSourceFactoryBean implements FactoryBean {
+public class DataSourceFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_SOURCE = "dataSource";
 	

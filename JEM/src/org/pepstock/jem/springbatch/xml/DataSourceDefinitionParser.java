@@ -61,7 +61,6 @@ public class DataSourceDefinitionParser extends AbstractBeanDefinitionParser {
 		factory.addPropertyValue(DataSourceFactoryBean.DATA_SOURCE, parseDataSource(element));
 
 		// scans all property definition
-		@SuppressWarnings("unchecked")
 		List<Element> childElements = DomUtils.getChildElementsByTagName(element, PROPERTY_ELEMENT);
 		if (childElements != null && childElements.size() > 0) {
 			parseProperty(childElements, factory);
@@ -89,6 +88,7 @@ public class DataSourceDefinitionParser extends AbstractBeanDefinitionParser {
 	@SuppressWarnings("unchecked")
 	private void parseProperty(List<Element> childElements, BeanDefinitionBuilder factory) {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects
+		@SuppressWarnings("rawtypes")
 		ManagedList properties = new ManagedList(childElements.size());
 
 		for (Element element : childElements) {

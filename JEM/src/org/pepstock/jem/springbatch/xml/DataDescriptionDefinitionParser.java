@@ -66,7 +66,6 @@ public class DataDescriptionDefinitionParser extends AbstractBeanDefinitionParse
 		factory.addPropertyValue(DataDescriptionFactoryBean.DATA_DESCRIPTION, parseDataDescription(element));
 
 		// scans all data sets definition
-		@SuppressWarnings("unchecked")
 		List<Element> childElements = DomUtils.getChildElementsByTagName(element, DATA_SET_ELEMENT);
 		if (childElements != null && childElements.size() > 0) {
 			parseDataSet(childElements, factory);
@@ -95,6 +94,7 @@ public class DataDescriptionDefinitionParser extends AbstractBeanDefinitionParse
 	@SuppressWarnings("unchecked")
 	private void parseDataSet(List<Element> childElements, BeanDefinitionBuilder factory) {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects
+		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
 
 		for (Element element : childElements) {
