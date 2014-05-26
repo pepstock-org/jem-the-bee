@@ -157,7 +157,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				for (int i=0; i<listData.size(); i++) {
 					values[i] = listData.get(i).getMachineCpuPercent();
 				}
-				machineCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Cpu %");
+				machineCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Cpu %");
 
 				mCpuPanel.setWidget(machineCpuPercentChart);
 				machineCpuPercentChartLoaded = true;
@@ -168,7 +168,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				for (int i=0; i<listData.size(); i++) {
 					values[i] = listData.get(i).getProcessCpuPercent();
 				}
-				processCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Cpu %");
+				processCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Cpu %");
 
 				pCpuPanel.setWidget(processCpuPercentChart);
 				processCpuPercentChartLoaded = true;
@@ -179,7 +179,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				for (int i=0; i<listData.size(); i++) {
 					values[i] = listData.get(i).getProcessMemoryUtil();
 				}
-				processMemoryUsedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Megabytes");
+				processMemoryUsedChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Megabytes");
 				pMemPanel.setWidget(processMemoryUsedChart);
 				processMemoryUsedChartLoaded = true;
 			}	

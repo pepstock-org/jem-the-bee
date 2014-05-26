@@ -178,7 +178,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				times[i] = nd.getTime();
 				values[i] = nd.getInput();
 			}
-			chartInput.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Entries");
+			chartInput.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
 			if (inputPanel.getWidgetCount() == 0) {
 				inputPanel.add(chartInput);
 			}
@@ -195,7 +195,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				times[i] = nd.getTime();
 				values[i] = nd.getRunning();
 			}
-			chartRunning.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Entries");
+			chartRunning.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
 			if (runningPanel.getWidgetCount() == 0) {
 				runningPanel.add(chartRunning);
 			}
@@ -212,7 +212,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				times[i] = nd.getTime();
 				values[i] = nd.getOutput();
 			}
-			chartOutput.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Entries");
+			chartOutput.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
 			if (outputPanel.getWidgetCount() == 0) {
 				outputPanel.add(chartOutput);
 			}
@@ -229,7 +229,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 				times[i] = nd.getTime();
 				values[i] = nd.getRouting();
 			}
-			chartRouting.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Entries");
+			chartRouting.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
 			if (routingPanel.getWidgetCount() == 0) {
 				routingPanel.add(chartRouting);
 			}

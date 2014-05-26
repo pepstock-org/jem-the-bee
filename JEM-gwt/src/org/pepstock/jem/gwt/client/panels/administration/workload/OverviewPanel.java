@@ -138,7 +138,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 				for (int i=0; i<listData.size(); i++) {
 					values[i] = listData.get(i).getJobsSubmitted();
 				}
-				jobsSubmittedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Jobs");
+				jobsSubmittedChart.setTimeAndDatas(times, values, ColorsHex.BLUE.getCode(), "Time", "Jobs");
 				
 				if (jobPanel.getWidgetCount() == 0) {
 					jobPanel.add(jobsSubmittedChart);
@@ -150,7 +150,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 				for (int i=0; i<listData.size(); i++) {
 					values[i] = listData.get(i).getJclsChecked();
 				}
-				jclsCheckedChart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", "Jcls");
+				jclsCheckedChart.setTimeAndDatas(times, values, ColorsHex.BLUE.getCode(), "Time", "Jcls");
 				
 				if (jclPanel.getWidgetCount() == 0) {
 					jclPanel.add(jclsCheckedChart);

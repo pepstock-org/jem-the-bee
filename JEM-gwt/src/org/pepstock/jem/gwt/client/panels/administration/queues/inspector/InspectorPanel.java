@@ -188,43 +188,43 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 			case ENTRIES:
 				if (!chartEntriesLoaded) {
 					values = getEntries();
-					setChartData(chartEntries, times, values, "Entries", entPanel, chartEntriesLoaded);
+					setChartData(chartEntries, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Entries", entPanel, chartEntriesLoaded);
 				}
 				break;
 			case HITS:
 				if (!chartHitsLoaded) {
 					values = getHits();
-					setChartData(chartHits, times, values, "Hits", hitPanel, chartHitsLoaded);
+					setChartData(chartHits, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Hits", hitPanel, chartHitsLoaded);
 				}
 				break;
 			case LOCKED:
 				if (!chartLockedLoaded) {
 					values = getLocked(); 
-					setChartData(chartLocked, times, values, "Locked", lokPanel, chartLockedLoaded);
+					setChartData(chartLocked, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Locked", lokPanel, chartLockedLoaded);
 				}
 				break;
 			case WAITS:
 				if (!chartWaitsLoaded) {
 					values = getWaits();
-					setChartData(chartWaits, times, values, "Waits", waitPanel, chartWaitsLoaded);
+					setChartData(chartWaits, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Waits", waitPanel, chartWaitsLoaded);
 				}
 				break;
 			case GETS:
 				if (!chartGetsLoaded) {
 					values = getGets();
-					setChartData(chartGets, times, values, "Gets", getPanel, chartGetsLoaded);
+					setChartData(chartGets, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Gets", getPanel, chartGetsLoaded);
 				}
 				break;
 			case PUTS:
 				if (!chartPutsLoaded) {
 					values = getPuts();
-					setChartData(chartPuts, times, values, "Puts", putPanel, chartPutsLoaded);
+					setChartData(chartPuts, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Puts", putPanel, chartPutsLoaded);
 				}
 				break;
 			case REMOVES:
 				if (!chartRemovesLoaded) {
 					values = getRemoves();
-					setChartData(chartRemoves, times, values, "Removes", remPanel, chartRemovesLoaded);
+					setChartData(chartRemoves, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Removes", remPanel, chartRemovesLoaded);
 				}
 				break;
 			default:
@@ -234,8 +234,8 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 
 	}
 
-	private void setChartData(TimeCountLineChart chart, String[] times, long[] values, String yAxixLabel, VerticalPanel container, boolean loadedFlag) {
-		chart.setTimeAndDatas(times, values, ColorsHex.randomColor().getCode(), "Time", yAxixLabel);
+	private void setChartData(TimeCountLineChart chart, String[] times, long[] values, String color, String yAxixLabel, VerticalPanel container, boolean loadedFlag) {
+		chart.setTimeAndDatas(times, values, color, "Time", yAxixLabel);
 		if (container.getWidgetCount() == 0) {
 			container.add(chart);
 		}
