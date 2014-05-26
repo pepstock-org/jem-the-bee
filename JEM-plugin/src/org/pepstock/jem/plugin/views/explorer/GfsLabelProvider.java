@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.plugin.util.Images;
 import org.pepstock.jem.plugin.util.TimeDisplayUtils;
 

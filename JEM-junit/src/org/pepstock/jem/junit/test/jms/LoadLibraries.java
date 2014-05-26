@@ -13,50 +13,41 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.junit.test.jms;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.junit.init.JemTestManager;
-import org.pepstock.jem.junit.test.rest.RestManager;
 
 import junit.framework.TestCase;
+
+import org.pepstock.jem.gfs.GfsFileType;
+import org.pepstock.jem.gfs.UploadedGfsFile;
+import org.pepstock.jem.junit.test.rest.RestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Clean extends TestCase{
+public class LoadLibraries extends TestCase {
 
 	/**
-	 * Clean jobs and resource before executing test
+	 * Load libraries, to the GFS classpath folder, needed by the test suite
 	 * 
 	 * @throws Exception
 	 */
-	public void testClean() throws Exception {		
-		// clean jobs
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_JMS_CLEAN_JOBS.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-		// remove resource
-		future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_JMS_REMOVE_RESOURCE.xml"), "ant", true,
-						false);
-		sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/" + name).toString();
+	public void test() throws Exception {
+		UploadedGfsFile uploaFile = new UploadedGfsFile();
+		File fileToUpload = new File("jms/lib/ffmq3-core.jar");
+		byte[] bytes = new byte[(int) fileToUpload.length()];
+		InputStream is = new FileInputStream(fileToUpload);
+		is.read(bytes);
+		is.close();
+		uploaFile.setUploadedFile(fileToUpload);
+		uploaFile.setType(GfsFileType.CLASS);
+		uploaFile.setGfsPath("jms/");
+		RestManager.getSharedInstance().getGfsManager().upload(uploaFile);
 	}
 }

@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.pepstock.jem.GfsFile;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.Factory;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.rest.GfsManager;
 import org.pepstock.jem.gwt.client.rest.JobsManager;
 import org.pepstock.jem.gwt.client.rest.LoginManager;

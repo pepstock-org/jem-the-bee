@@ -18,7 +18,7 @@ package org.pepstock.jem.gwt.client.services;
 
 import java.util.Collection;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.log.JemException;
 
 import com.google.gwt.user.client.rpc.RemoteService;

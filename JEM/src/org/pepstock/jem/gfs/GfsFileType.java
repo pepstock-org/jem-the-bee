@@ -13,35 +13,41 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.gwt.client.services;
+*/
+package org.pepstock.jem.gfs;
 
-import java.util.Collection;
-
-import org.pepstock.jem.gfs.GfsFile;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * @author Andrea "Stock" Stocchero
- * 
+ * @author Simone "Busy" Businaro
+ * @version 1.0	
+ *
  */
-public interface GfsManagerServiceAsync {
+public interface GfsFileType {
+		
+	/**
+	 * for the GFS/data folder
+	 */
+	public static final int DATA = 0;
 
 	/**
-	 * 
-	 * @param type
-	 * @param path
-	 * @param callback
+	 * for the GFS/library folder
 	 */
-	void getFilesList(int type, String path, String pathName, AsyncCallback<Collection<GfsFile>> callback);
-
+	public static final int LIBRARY = 1;
+	
 	/**
-	 * 
-	 * @param type
-	 * @param file
-	 * @param callback
+	 * for the GFS/source folder
 	 */
-	void getFile(int type, String file, String pathName, AsyncCallback<String> callback);
+	public static final int SOURCE = 2;
+	
+	/**
+	 * for the GFS/classpath folder
+	 */
+	public static final int CLASS = 3;
+	
+	/**
+	 * for the GFS/binary folder
+	 */
+	public static final int BINARY = 4;
+
 
 }

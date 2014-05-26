@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem;
+package org.pepstock.jem.gfs;
 
 import java.io.Serializable;
 
@@ -27,31 +27,6 @@ public class GfsFile implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * 
-	 */
-	public static final int DATA = 0;
-
-	/**
-	 * 
-	 */
-	public static final int LIBRARY = 1;
-	
-	/**
-	 * 
-	 */
-	public static final int SOURCE = 2;
-	
-	/**
-	 * 
-	 */
-	public static final int CLASS = 3;
-	
-	/**
-	 * 
-	 */
-	public static final int BINARY = 4;
-
 	private String name = null;
 	
 	private String longName = null;

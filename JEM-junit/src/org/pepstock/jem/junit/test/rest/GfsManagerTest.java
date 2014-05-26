@@ -13,6 +13,9 @@ import org.pepstock.jem.gwt.server.rest.entities.Jobs;
 
 public class GfsManagerTest extends TestCase {
 
+	public void testGfsUpload() throws Exception {
+	}
+
 	/**
 	 * This class will test the following:
 	 * <ul>
