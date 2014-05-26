@@ -6,13 +6,10 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-3.3.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-3.0.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-chart-3.0.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt-legacy-3.0.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gflot-3.2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-150.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15on-150.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.9.1.jar"/>
@@ -28,4 +25,5 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-bundle-1.18.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-json-1.18.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
 </classpath>

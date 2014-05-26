@@ -65,7 +65,7 @@ public class QueuesPanel extends VerticalPanel implements InspectListener<Detail
     public void inspect(DetailedQueueData object) {
     	remove(overview);
     	add(inspector);
-    	inspector.load(object.getQueue());
+    	inspector.load(object.getFullName());
     	selected = 1;
     }
 

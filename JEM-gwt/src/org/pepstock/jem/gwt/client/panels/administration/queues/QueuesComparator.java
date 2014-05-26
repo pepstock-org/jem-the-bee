@@ -48,7 +48,7 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 		switch(getIndex()){
 			case 0: 
 				// sorts by label of queue
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = o1.getFullName().compareTo(o2.getFullName());
 				break;
 			case 2: 
 				// sorts by entries
@@ -81,7 +81,7 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 				
 			default:
 				// sorts by label of queue
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = o1.getFullName().compareTo(o2.getFullName());
 				break;
 		}
 		// checks if Ascending otherwise negative

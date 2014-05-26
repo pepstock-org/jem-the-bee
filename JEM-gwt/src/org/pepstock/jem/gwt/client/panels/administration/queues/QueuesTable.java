@@ -52,7 +52,7 @@ public class QueuesTable extends AbstractTable<DetailedQueueData> {
 	    AnchorTextColumn<DetailedQueueData> name = new AnchorTextColumn<DetailedQueueData>() {
 			@Override
 			public String getValue(DetailedQueueData object) {
-				return object.getKey();
+				return object.getShortName();
 			}
 
 			@Override

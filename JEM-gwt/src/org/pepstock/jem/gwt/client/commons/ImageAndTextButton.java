@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.commons;
 
 import org.pepstock.jem.log.JemRuntimeException;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
@@ -82,7 +83,7 @@ public final class ImageAndTextButton extends Button {
 	@Override
 	public final void setText(String text) {
 		this.label = text;
-		com.google.gwt.user.client.Element textElement;
+		Element textElement;
 		switch (textPosition) {
 		case RIGHT:
 			textElement = DOM.createElement("span");

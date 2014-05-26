@@ -16,17 +16,32 @@
 */
 package org.pepstock.jem.gwt.client.panels.administration.workload;
 
-import org.pepstock.jem.gwt.client.charts.KeyData;
 
 /**
  * @author Andrea "Stock" Stocchero
  *
  */
-public class Workload extends KeyData{
+public class Workload {
 
+	private String time;
+	
 	private int jobsSubmitted = 0;
 	
 	private int jclsChecked = 0;
+
+	/**
+	 * @return the time
+	 */
+	public String getTime() {
+		return time;
+	}
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(String time) {
+		this.time = time;
+	}
 
 	/**
 	 * @return the jobsSubmitted

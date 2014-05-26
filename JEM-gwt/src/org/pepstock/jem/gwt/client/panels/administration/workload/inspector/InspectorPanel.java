@@ -20,14 +20,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.BackListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.InspectorHeader;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.administration.workload.Workload;
-import org.pepstock.jem.gwt.client.panels.administration.workload.WorkloadChart;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightMemberSampleComparator;
@@ -48,8 +49,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	
 	final TabPanel mainTabPanel = new TabPanel();
 	
-	private WorkloadChart chartJobs = new WorkloadChart(WorkloadChart.JOBS_SUBMITTED);
-	private WorkloadChart chartJcls = new WorkloadChart(WorkloadChart.JCLS_CHECKED);
+	private TimeCountLineChart jobsSubmittedChart = new TimeCountLineChart();
+	private TimeCountLineChart jclsCheckedChart = new TimeCountLineChart();
+	private boolean jobsSubmittedChartLoaded;
+	private boolean jclsCheckedChartLoaded;
+
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 	private ScrollPanel scroller = new ScrollPanel(nodes);
 	
@@ -107,7 +111,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		for (LightMemberSample msample : sample.getMembers()){
     			if (msample.getMemberKey().equalsIgnoreCase(memberKey)){
     	    		Workload data = new Workload();
-    	    		data.setKey(sample.getTime());
+    	    		data.setTime(sample.getTime());
 
     	    		data.setJobsSubmitted((int)msample.getNumberOfJOBSubmitted());
     	    		data.setJclsChecked((int)msample.getNumberOfJCLCheck());
@@ -124,28 +128,44 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     	}
     	Collections.sort(list, new LightMemberSampleComparator());
     	nodes.getUnderlyingTable().setRowData(list);
-    	chartJcls.setLoaded(false);
-    	chartJobs.setLoaded(false);
+    	jobsSubmittedChartLoaded = false;
+    	jclsCheckedChartLoaded = false;
     	
     	mainTabPanel.selectTab(0, true);
 	}
    
-	private void loadChart(int selected){
-		if (selected == WorkloadChart.JOBS_SUBMITTED){
-			if (!chartJobs.isLoaded()){
-				//
-				chartJobs.setData(listData);
-				if (jobPanel.getWidgetCount() == 0) {
-					jobPanel.add(chartJobs.asWidget());
+	private void loadChart(int selected) {
+		String[] times = new String[listData.size()];
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			Workload w = listData.get(i);
+			times[i] = w.getTime();
+		}
+		
+		if (selected == 0) {
+			if (!jobsSubmittedChartLoaded){
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getJobsSubmitted();
 				}
+				jobsSubmittedChart.setTimeAndDatas(times, values, ColorsHex.DARK_CYAN.getCode(), "Time", "Jobs");
+				
+				if (jobPanel.getWidgetCount() == 0) {
+					jobPanel.add(jobsSubmittedChart);
+				}
+				jobsSubmittedChartLoaded = true;
 			}
 		} else {
-			if (!chartJcls.isLoaded()){
-				chartJcls.setData(listData);
-				if (jclPanel.getWidgetCount() == 0) {
-					jclPanel.add(chartJcls);
+			if (!jclsCheckedChartLoaded){
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getJclsChecked();
 				}
-			}	
+				jclsCheckedChart.setTimeAndDatas(times, values, ColorsHex.DARK_CYAN.getCode(), "Time", "Jcls");
+				
+				if (jclPanel.getWidgetCount() == 0) {
+					jclPanel.add(jclsCheckedChart);
+				}
+				jclsCheckedChartLoaded = true;
+			}
 		}
     }
 	
@@ -173,12 +193,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		mainTabPanelHeight -= Sizes.TABBAR_HEIGHT_PX;
     	} 
     	
-		chartJcls.setWidth(chartWidth);
-		chartJobs.setWidth(chartWidth);
-		
-		chartJcls.setHeight(Sizes.CHART_HEIGHT);
-		chartJobs.setHeight(Sizes.CHART_HEIGHT);
-		
+		jobsSubmittedChart.setWidth(chartWidth);
+		jobsSubmittedChart.setHeight(Sizes.CHART_HEIGHT);
+		jclsCheckedChart.setWidth(chartWidth);
+		jclsCheckedChart.setHeight(Sizes.CHART_HEIGHT);
+
 		mainTabPanel.setWidth(Sizes.toString(getWidth()));
 		mainTabPanel.setHeight(Sizes.toString(mainTabPanelHeight));
 		

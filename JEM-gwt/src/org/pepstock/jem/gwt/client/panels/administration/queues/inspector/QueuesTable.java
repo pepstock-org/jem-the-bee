@@ -52,7 +52,7 @@ public class QueuesTable extends AbstractTable<DetailedQueueData> {
 		TextColumn<DetailedQueueData> time = new TextColumn<DetailedQueueData>() {
 			@Override
 			public String getValue(DetailedQueueData data) {
-				return data.getKey();
+				return data.getTime();
 			}
 		};
 		time.setSortable(true);

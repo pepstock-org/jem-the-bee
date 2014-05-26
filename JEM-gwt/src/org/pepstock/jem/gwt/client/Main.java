@@ -53,6 +53,7 @@ public class Main implements EntryPoint, LoggedListener {
 		GWT.create(I18N.class);
 		
 		// common styles
+		Styles.INSTANCE.overrideDefaultTheme().ensureInjected();
 		Styles.INSTANCE.common().ensureInjected();
 	}
 	

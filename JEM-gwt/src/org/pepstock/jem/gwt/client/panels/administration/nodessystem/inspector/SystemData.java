@@ -16,19 +16,34 @@
 */
 package org.pepstock.jem.gwt.client.panels.administration.nodessystem.inspector;
 
-import org.pepstock.jem.gwt.client.charts.KeyData;
 
 /**
  * @author Andrea "Stock" Stocchero
  *
  */
-public class SystemData extends KeyData {
+public class SystemData {
+	
+	private String time;
 	
 	private double machineCpuPercent = 0;
 	
 	private double processCpuPercent = 0;
 	
 	private long processMemoryUtil = 0;
+
+	/**
+	 * @return the time
+	 */
+	public String getTime() {
+		return time;
+	}
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(String time) {
+		this.time = time;
+	}
 
 	/**
 	 * @return the machineCpuPercent

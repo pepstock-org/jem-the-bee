@@ -44,6 +44,9 @@ public class JemCacheManager implements CacheManager {
     	return jemCache;
 	}
     
+    /**
+     * Update Jem cache
+     */
     public static void updateJemCache(){
 		// checks if hazeclast is available
 		if (SharedObjects.getInstance().isDataClusterAvailable()){

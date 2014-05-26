@@ -18,12 +18,11 @@ package org.pepstock.jem.gwt.client.panels.administration.gfs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.charts.PieData;
+import org.pepstock.jem.gwt.client.charts.gflot.UsedFreePieChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -36,16 +35,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Andrea "Stock" Stocchero
+ * @author Marco "Cuc" Cuccato
  *
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private GfsChart chart = new GfsChart();
+	private UsedFreePieChart chart = new UsedFreePieChart();
 	private TableContainer<LightMemberSample> gfs = new TableContainer<LightMemberSample>(new GfsTable());
 
 	private ScrollPanel scroller = new ScrollPanel(gfs);
-	private List<PieData> mapData = new LinkedList<PieData>();
-	
 	private VerticalPanel entriesPanel = new VerticalPanel();
 
 	/**
@@ -60,30 +58,13 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 * @param memberKey 
 	 * 
 	 */
-	public void load(){
-		mapData.clear();
-
+	public void load() {
 		LightMemberSample msample = Instances.getLastSample().getMembers().iterator().next();
-		if (msample != null){
-			long tot = msample.getGfsFree() + msample.getGfsUsed();
-			
-			PieData dataFree = new PieData();
-			dataFree.setKey("Free");
-			dataFree.setValue(msample.getGfsFree());
-			dataFree.setPercent(msample.getGfsFree()/(double)tot);
-			
-			
-			PieData dataUsed = new PieData();
-			dataUsed.setKey("Used");
-			dataUsed.setValue(msample.getGfsUsed());
-			dataUsed.setPercent(msample.getGfsUsed()/(double)tot);
-			
-			mapData.add(0, dataFree);
-			mapData.add(mapData.size(), dataUsed);
+		if (msample != null) {
+			chart.setUsedFreeData(msample.getGfsUsed(), msample.getGfsFree());
  		}
 		
     	List<LightMemberSample> list = new ArrayList<LightMemberSample>();
-    	
     	for (LightSample sample : Instances.getSamples()){
     		for (LightMemberSample membersample : sample.getMembers()){
     			if (membersample.getMemberKey().equalsIgnoreCase(msample.getMemberKey())){
@@ -96,9 +77,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		loadChart();
 	}
 
-	private void loadChart(){
-		//
-		chart.setData(mapData);
+	private void loadChart() {
 		if (entriesPanel.getWidgetCount() == 0) {
 			entriesPanel.add(chart.asWidget());
 		}

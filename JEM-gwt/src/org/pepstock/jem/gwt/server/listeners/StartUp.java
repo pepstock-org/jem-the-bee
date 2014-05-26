@@ -98,7 +98,7 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		ServletContext context = event.getServletContext();
 		// gets servlet real path
 		String contextPath = context.getRealPath(".");
-		contextPath = contextPath.substring(0, contextPath.length() - 1);
+		contextPath = contextPath.substring(0, contextPath.length());
 		SharedObjects.getInstance().setContextPath(contextPath);
 		// reads Hazecast init parameter
 		String hazelcastFile = context.getInitParameter(ConfigKeys.HAZELCAST_CONFIG);

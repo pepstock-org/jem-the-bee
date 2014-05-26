@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.BackListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.InspectorHeader;
@@ -46,15 +48,27 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class InspectorPanel extends AdminPanel implements ResizeCapable {
 
+	@SuppressWarnings("javadoc")
+    public static final int ENTRIES = 0, HITS = 1, LOCKED = 2, WAITS = 3, GETS = 4, PUTS = 5, REMOVES = 6;
+
 	final TabPanel mainTabPanel = new TabPanel();
 	
-	private QueueDetailsChart chartEntries = new QueueDetailsChart(QueueDetailsChart.ENTRIES);
-	private QueueDetailsChart chartHits = new QueueDetailsChart(QueueDetailsChart.HITS);
-	private QueueDetailsChart chartLocked = new QueueDetailsChart(QueueDetailsChart.LOCKED);
-	private QueueDetailsChart chartWaits = new QueueDetailsChart(QueueDetailsChart.WAITS);
-	private QueueDetailsChart chartGets = new QueueDetailsChart(QueueDetailsChart.GETS);
-	private QueueDetailsChart chartPuts = new QueueDetailsChart(QueueDetailsChart.PUTS);
-	private QueueDetailsChart chartRemoves = new QueueDetailsChart(QueueDetailsChart.REMOVES);
+	private TimeCountLineChart chartEntries = new TimeCountLineChart();
+	private TimeCountLineChart chartHits = new TimeCountLineChart();
+	private TimeCountLineChart chartLocked = new TimeCountLineChart();
+	private TimeCountLineChart chartWaits = new TimeCountLineChart();
+	private TimeCountLineChart chartGets = new TimeCountLineChart();
+	private TimeCountLineChart chartPuts = new TimeCountLineChart();
+	private TimeCountLineChart chartRemoves = new TimeCountLineChart();
+
+	private boolean chartEntriesLoaded;
+	private boolean chartHitsLoaded;
+	private boolean chartLockedLoaded;
+	private boolean chartWaitsLoaded;
+	private boolean chartGetsLoaded;
+	private boolean chartPutsLoaded;
+	private boolean chartRemovesLoaded;
+	
 	private TableContainer<DetailedQueueData> queues = new TableContainer<DetailedQueueData>(new QueuesTable());
 
 	private ScrollPanel scroller = new ScrollPanel(queues);
@@ -120,8 +134,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
   	
     	for (LightSample sample : Instances.getSamples()){
     		DetailedQueueData data = new DetailedQueueData();
-    		data.setKey(sample.getTime());
-    		data.setTime(sample.getKey());
+    		data.setTime(sample.getTime());
 
     		for (LightMemberSample msample : sample.getMembers()){
     			LightMapStats map = msample.getMapsStats().get(queueName);
@@ -145,43 +158,151 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		});
     	queues.getUnderlyingTable().setRowData(listData);
     	
-		chartEntries.setLoaded(false);
-		chartHits.setLoaded(false);
-		chartLocked.setLoaded(false);
-		chartWaits.setLoaded(false);
-		chartGets.setLoaded(false);
-		chartPuts.setLoaded(false);
-		chartRemoves.setLoaded(false);
+		chartEntriesLoaded = false;
+		chartHitsLoaded = false;
+		chartLockedLoaded = false;
+		chartWaitsLoaded = false;
+		chartGetsLoaded = false;
+		chartPutsLoaded = false;
+		chartRemovesLoaded = false;
     	
     	mainTabPanel.selectTab(0, true);
 	}
     
-	private void loadChart(int selected){
-		if (selected == QueueDetailsChart.ENTRIES){
-			loadChart(entPanel, chartEntries);
-		} else if (selected == QueueDetailsChart.HITS){
-			loadChart(hitPanel, chartHits);
-		} else if (selected == QueueDetailsChart.LOCKED){
-			loadChart(lokPanel, chartLocked);
-		} else if (selected == QueueDetailsChart.WAITS){
-			loadChart(waitPanel, chartWaits);
-		} else if (selected == QueueDetailsChart.GETS){
-			loadChart(getPanel, chartGets);
-		} else if (selected == QueueDetailsChart.PUTS){
-			loadChart(putPanel, chartPuts);
-		} else if (selected == QueueDetailsChart.REMOVES){
-			loadChart(remPanel, chartRemoves);
-		}
-    }
-	
-	private void loadChart(VerticalPanel parent, QueueDetailsChart chart){
-		if (!chart.isLoaded()){
-			//
-			chart.setData(listData);
-			if (parent.getWidgetCount() == 0) {
-				parent.add(chart.asWidget());
+	private void loadChart(int selected) {
+
+		boolean allLoaded = chartEntriesLoaded && chartHitsLoaded
+				&& chartLockedLoaded && chartWaitsLoaded && chartGetsLoaded
+				&& chartPutsLoaded && chartRemovesLoaded;
+
+		if (!allLoaded) {
+			String[] times = new String[listData.size()];
+			long[] values;
+			// load times
+			for (int i=0; i<listData.size(); i++) {
+				DetailedQueueData dqd = listData.get(i);
+				times[i] = dqd.getTime();
+			}
+
+			switch (selected) {
+			case ENTRIES:
+				if (!chartEntriesLoaded) {
+					values = getEntries();
+					setChartData(chartEntries, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Entries", entPanel, chartEntriesLoaded);
+				}
+				break;
+			case HITS:
+				if (!chartHitsLoaded) {
+					values = getHits();
+					setChartData(chartHits, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Hits", hitPanel, chartHitsLoaded);
+				}
+				break;
+			case LOCKED:
+				if (!chartLockedLoaded) {
+					values = getLocked(); 
+					setChartData(chartLocked, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Locked", lokPanel, chartLockedLoaded);
+				}
+				break;
+			case WAITS:
+				if (!chartWaitsLoaded) {
+					values = getWaits();
+					setChartData(chartWaits, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Waits", waitPanel, chartWaitsLoaded);
+				}
+				break;
+			case GETS:
+				if (!chartGetsLoaded) {
+					values = getGets();
+					setChartData(chartGets, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Gets", getPanel, chartGetsLoaded);
+				}
+				break;
+			case PUTS:
+				if (!chartPutsLoaded) {
+					values = getPuts();
+					setChartData(chartPuts, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Puts", putPanel, chartPutsLoaded);
+				}
+				break;
+			case REMOVES:
+				if (!chartRemovesLoaded) {
+					values = getRemoves();
+					setChartData(chartRemoves, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Removes", remPanel, chartRemovesLoaded);
+				}
+				break;
+			default:
+				break;
 			}
 		}
+
+	}
+
+	private void setChartData(TimeCountLineChart chart, String[] times, long[] values, String color, String yAxixLabel, VerticalPanel container, boolean loadedFlag) {
+		chart.setTimeAndDatas(times, values, color, "Time", yAxixLabel);
+		if (container.getWidgetCount() == 0) {
+			container.add(chart);
+		}
+		loadedFlag = true;
+	}
+	
+	private long[] getEntries() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getEntries();
+		}
+		return values;
+	}
+
+	private long[] getHits() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getHits();
+		}
+		return values;
+	}
+
+	private long[] getLocked() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getLocked();
+		}
+		return values;
+	}
+
+	private long[] getWaits() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getLockWaits();
+		}
+		return values;
+	}
+
+	private long[] getGets() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getGets();
+		}
+		return values;
+	}
+
+	private long[] getPuts() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getPuts();
+		}
+		return values;
+	}
+	
+	private long[] getRemoves() {
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			DetailedQueueData dqd = listData.get(i);
+			values[i] = dqd.getRemoves();
+		}
+		return values;
 	}
 	
 	/* (non-Javadoc)

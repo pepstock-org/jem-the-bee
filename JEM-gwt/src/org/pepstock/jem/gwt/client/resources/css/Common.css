@@ -266,3 +266,11 @@
 	min-width: 0px;
 	max-width: none;
 }
+
+.chartTickLabel {
+	min-width: 25px;
+}
+
+.loadingPadding {
+	padding: 7px;
+}

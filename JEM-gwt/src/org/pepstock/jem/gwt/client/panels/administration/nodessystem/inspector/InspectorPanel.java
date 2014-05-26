@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
+import org.pepstock.jem.gwt.client.charts.gflot.TimePercentLineChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.BackListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.InspectorHeader;
@@ -35,8 +38,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -44,11 +47,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class InspectorPanel extends AdminPanel implements ResizeCapable {
 
+	@SuppressWarnings("javadoc")
+    public static final int MACHINE_CPU_PERCENT = 0, PROCESS_CPU_PERCENT = 1, PROCESS_MEMORY_UTIL = 2;
+
 	final TabPanel mainTabPanel = new TabPanel();
 	
-	private SystemDataChart chartMCpu = new SystemDataChart(SystemDataChart.MACHINE_CPU_PERCENT);
-	private SystemDataChart chartPCpu = new SystemDataChart(SystemDataChart.PROCESS_CPU_PERCENT);
-	private SystemDataChart chartPMem = new SystemDataChart(SystemDataChart.PROCESS_MEMORY_UTIL);
+	private TimePercentLineChart machineCpuPercentChart = new TimePercentLineChart();
+	private TimePercentLineChart processCpuPercentChart = new TimePercentLineChart();
+	private TimeCountLineChart processMemoryUsedChart = new TimeCountLineChart();
+
+	private boolean machineCpuPercentChartLoaded;
+	private boolean processCpuPercentChartLoaded;
+	private boolean processMemoryUsedChartLoaded;
 
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 	private ScrollPanel scroller = new ScrollPanel(nodes);
@@ -57,9 +67,9 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	
 	private List<SystemData> listData = new ArrayList<SystemData>();
 	
-	private VerticalPanel mCpuPanel = new VerticalPanel();
-	private VerticalPanel pCpuPanel = new VerticalPanel();
-	private VerticalPanel pMemPanel = new VerticalPanel();
+	private SimplePanel mCpuPanel = new SimplePanel();
+	private SimplePanel pCpuPanel = new SimplePanel();
+	private SimplePanel pMemPanel = new SimplePanel();
 	
 	/**
 	 * 
@@ -111,11 +121,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		for (LightMemberSample msample : sample.getMembers()){
     			if (msample.getMemberKey().equalsIgnoreCase(memberKey)){
     	    		SystemData data = new SystemData();
-    	    		data.setKey(sample.getTime());
+    	    		data.setTime(sample.getTime());
     	    		
     	    		data.setMachineCpuPercent(msample.getCpuPercent()*100);
     	    		data.setProcessCpuPercent(msample.getProcessCpuPercent()*100);
-    	    		data.setProcessMemoryUtil(msample.getProcessMemoryUsed()/1024/1024);
+    	    		data.setProcessMemoryUtil((long) ((double)msample.getProcessMemoryUsed()/1024d/1024d));
     	    		
     	    		listData.add(data);
     				list.add(msample);
@@ -129,35 +139,49 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     	}
     	Collections.sort(list, new LightMemberSampleComparator());
     	nodes.getUnderlyingTable().setRowData(list);
-    	chartMCpu.setLoaded(false);
-    	chartPCpu.setLoaded(false);
-    	chartPMem.setLoaded(false);
+    	machineCpuPercentChartLoaded = false;
+    	processCpuPercentChartLoaded = false;
+    	processMemoryUsedChartLoaded = false;
     	mainTabPanel.selectTab(0, true);
 	}
 
-	private void loadChart(int selected){
-		if (selected == SystemDataChart.MACHINE_CPU_PERCENT){
-			if (!chartMCpu.isLoaded()){
-				//
-				chartMCpu.setData(listData);
-				if (mCpuPanel.getWidgetCount() == 0) {
-					mCpuPanel.add(chartMCpu.asWidget());
+	private void loadChart(int selected) {
+		String[] times = new String[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			SystemData sd = listData.get(i);
+			times[i] = sd.getTime();
+		}
+		if (selected == MACHINE_CPU_PERCENT){
+			if (!machineCpuPercentChartLoaded){
+				double[] values = new double[listData.size()];
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getMachineCpuPercent();
 				}
+				machineCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Cpu %");
+
+				mCpuPanel.setWidget(machineCpuPercentChart);
+				machineCpuPercentChartLoaded = true;
 			}
-		} else if (selected == SystemDataChart.PROCESS_CPU_PERCENT){
-			if (!chartPCpu.isLoaded()){
-				//
-				chartPCpu.setData(listData);
-				if (pCpuPanel.getWidgetCount() == 0) {
-					pCpuPanel.add(chartPCpu.asWidget());
+		} else if (selected == PROCESS_CPU_PERCENT){
+			if (!processCpuPercentChartLoaded){
+				double[] values = new double[listData.size()];
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getProcessCpuPercent();
 				}
+				processCpuPercentChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Cpu %");
+
+				pCpuPanel.setWidget(processCpuPercentChart);
+				processCpuPercentChartLoaded = true;
 			}
 		} else {
-			if (!chartPMem.isLoaded()){
-				chartPMem.setData(listData);
-				if (pMemPanel.getWidgetCount() == 0) {
-					pMemPanel.add(chartPMem);
+			if (!processMemoryUsedChartLoaded){
+				long[] values = new long[listData.size()];
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getProcessMemoryUtil();
 				}
+				processMemoryUsedChart.setTimeAndDatas(times, values, ColorsHex.LIGHT_RED.getCode(), "Time", "Megabytes");
+				pMemPanel.setWidget(processMemoryUsedChart);
+				processMemoryUsedChartLoaded = true;
 			}	
 		}
     }
@@ -186,13 +210,13 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		mainTabPanelHeight -= Sizes.TABBAR_HEIGHT_PX;
     	} 
     	
-		chartMCpu.setWidth(chartWidth);
-		chartPCpu.setWidth(chartWidth);
-		chartPMem.setWidth(chartWidth);
+		machineCpuPercentChart.setWidth(chartWidth);
+		processCpuPercentChart.setWidth(chartWidth);
+		processMemoryUsedChart.setWidth(chartWidth);
 		
-		chartMCpu.setHeight(Sizes.CHART_HEIGHT);
-		chartPCpu.setHeight(Sizes.CHART_HEIGHT);
-		chartPMem.setHeight(Sizes.CHART_HEIGHT);
+		machineCpuPercentChart.setHeight(Sizes.CHART_HEIGHT);
+		processCpuPercentChart.setHeight(Sizes.CHART_HEIGHT);
+		processMemoryUsedChart.setHeight(Sizes.CHART_HEIGHT);
 		
 		mainTabPanel.setWidth(Sizes.toString(getWidth()));
 		mainTabPanel.setHeight(Sizes.toString(mainTabPanelHeight));

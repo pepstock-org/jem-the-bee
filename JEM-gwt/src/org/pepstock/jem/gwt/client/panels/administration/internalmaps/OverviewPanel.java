@@ -16,15 +16,16 @@
 */
 package org.pepstock.jem.gwt.client.panels.administration.internalmaps;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.Toolbox;
+import org.pepstock.jem.gwt.client.charts.gflot.CounterHBarChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
-import org.pepstock.jem.gwt.client.panels.administration.current.EntriesChart;
 import org.pepstock.jem.gwt.client.panels.administration.current.QueueData;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
 import org.pepstock.jem.node.stats.LightMapStats;
@@ -39,7 +40,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private EntriesChart chartEntries = new EntriesChart();
+	private CounterHBarChart chart = new CounterHBarChart();
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 
 	private ScrollPanel scroller = new ScrollPanel(nodes);
@@ -65,16 +66,13 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	for (LightMemberSample msample : Instances.getCurrentSample().getMembers()){
     		if (msample != null){
     			for (LightMapStats map : msample.getInternalMapsStats().values()){
-    				if (map !=null){
+    				if (map !=null) {
     					QueueData data = null;
     					if (mapData.containsKey(map.getName())){
     						data = mapData.get(map.getName());
     					} else {
     						data = new QueueData();
-    						data.setQueue(map.getName());
-    						int lastDot = map.getName().lastIndexOf('.') + 1;
-    						String key = map.getName().substring(lastDot);
-    						data.setKey(key);
+    						data.setFullName(map.getName());
     						data.setTime(msample.getTime());
     					}
 
@@ -88,11 +86,22 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	loadChart();
 	}
 
-	private void loadChart(){
-		//
-		chartEntries.setData(new ArrayList<QueueData>(mapData.values()));
+	private void loadChart() {
+		// convert from mapdata to datapoint
+		String[] names = new String[mapData.size()];
+		long[] values = new long[mapData.size()];
+		int i=0;
+		for (String name : mapData.keySet()) {
+			names[i] = name;
+			values[i] = mapData.get(name).getEntries();
+			i++;
+		}
+
+		chart.setCountData(Toolbox.getFromLastDoth(names), values, ColorsHex.VIOLET.getCode(), "Entries", "Queues");
+
+		// add chart to panel
 		if (entriesPanel.getWidgetCount() == 0){
-			entriesPanel.add(chartEntries.asWidget());
+			entriesPanel.add(chart.asWidget());
 		}
     }
 
@@ -105,9 +114,8 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	
     	int chartWidth = getWidth();
    	
-		chartEntries.setWidth(chartWidth);
-		chartEntries.setHeight(Sizes.CHART_HEIGHT);
-		
+		chart.setWidth(chartWidth);
+		chart.setHeight(Sizes.CHART_HEIGHT);
 	
 		int height = getHeight() - Sizes.CHART_HEIGHT;
     	height = Math.max(height, 1);
