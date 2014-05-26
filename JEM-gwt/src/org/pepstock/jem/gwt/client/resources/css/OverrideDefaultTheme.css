@@ -1,5 +1,20 @@
 /** CSS rules here for your application. */
 
+@external .gwt-*;
+
+/* popup panel */
+
+.gwt-PopupPanel {
+	border: 3px solid #ffc266;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+	padding: 0px;
+	background: white;
+}
+
+/* Fix textbox outline browser default color */
+
 .gwt-TextBox:focus {
 	outline-color: #ffc266;
 	outline-offset: -2px;
@@ -7,7 +22,7 @@
 	outline-width: 5px;
 }
 
-/* this fix different font between TextBox and PasswordTextBox that cause misalignment in forms */
+/* Fix different font between TextBox and PasswordTextBox that cause misalignment in forms */
 
 .gwt-PasswordTextBox {
 	font-family: 'Arial Unicode MS', Arial, sans-serif;
@@ -19,6 +34,8 @@
 	outline-style: auto;
 	outline-width: 5px;
 }
+
+/* Button minimun width */
 
 .gwt-Button {
 	min-width: 85px;

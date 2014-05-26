@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.commons;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
@@ -63,7 +64,7 @@ public final class ImageAndTextAnchor extends Anchor {
 	@Override
 	public final void setText(String text) {
 		this.label = text;
-		com.google.gwt.user.client.Element textElement;
+		Element textElement;
 		textElement = DOM.createElement("span");
 		textElement.setInnerText(TEXT_LEFT_PADDING + text);
 		textElement.addClassName(Styles.INSTANCE.common().verticalAlignMiddle());

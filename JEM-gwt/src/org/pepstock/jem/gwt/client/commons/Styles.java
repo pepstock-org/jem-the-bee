@@ -30,6 +30,9 @@ public interface Styles extends ClientBundle {
 
 	Styles INSTANCE = GWT.create(Styles.class);
 	
+	@Source("../resources/css/OverrideDefaultTheme.css")
+	CssResource overrideDefaultTheme();
+	
 	@Source("../resources/css/Administration.css")
 	Administration administration();
 	
@@ -73,9 +76,6 @@ public interface Styles extends ClientBundle {
 	@Source("../resources/css/TabPanel.css")
 	CssResource tabPanel();
 
-	@Source("../resources/css/Loading.css")
-	Loading loading();
-	
 	@Source("../resources/css/StackPanelHeader.css")
 	CssResource stackpanelHeader();
 	
@@ -179,6 +179,7 @@ public interface Styles extends ClientBundle {
 		String bigButtonPadding();
 		String noMinMaxHeightWidth();
 		String chartTickLabel();
+		String loadingPadding();
 	}
 	
 	interface Administration extends CssResource {

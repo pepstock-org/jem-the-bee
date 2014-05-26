@@ -270,3 +270,7 @@
 .chartTickLabel {
 	min-width: 25px;
 }
+
+.loadingPadding {
+	padding: 7px;
+}

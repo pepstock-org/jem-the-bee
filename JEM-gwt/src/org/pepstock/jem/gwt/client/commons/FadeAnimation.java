@@ -3,7 +3,7 @@ package org.pepstock.jem.gwt.client.commons;
 import java.math.BigDecimal;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Animation that provide fade in/out effect 
