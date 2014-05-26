@@ -25,5 +25,9 @@ public class PasswordFieldDescriptor extends TextFieldDescriptor {
 		super.setVisible(false);
 	}
 
+	@Override
+	public String toString() {
+		return "PasswordFieldDescriptor [toString()=" + super.toString() + "]";
+	}
 	
 }

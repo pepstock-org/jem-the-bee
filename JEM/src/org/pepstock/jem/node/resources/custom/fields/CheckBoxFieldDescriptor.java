@@ -41,5 +41,10 @@ public class CheckBoxFieldDescriptor extends SingleValueFieldDescriptor implemen
 	public void setDefaultValue(boolean defaultValue) {
 		super.setDefaultValue(String.valueOf(defaultValue));
 	}
+
+	@Override
+	public String toString() {
+		return "CheckBoxFieldDescriptor [toString()=" + super.toString() + "]";
+	}
 	
 }

@@ -1,12 +1,18 @@
 package org.pepstock.jem.node.resources.custom;
 
+import java.io.Serializable;
+
 
 /**
  * This class represent a generic custom resource field. 
  * @author Marco "Fuzzo" Cuccato
  */
-public abstract class AbstractField {
+public abstract class AbstractField implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7534734681440242850L;
 
 	/**
 	 * The key of the resource field.
@@ -92,6 +98,11 @@ public abstract class AbstractField {
 	 */
 	public void setMandatory(boolean mandatory) {
 		this.mandatory = mandatory;
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractField [key=" + key + ", label=" + label + ", description=" + description + ", mandatory=" + mandatory + "]";
 	}
 
 }

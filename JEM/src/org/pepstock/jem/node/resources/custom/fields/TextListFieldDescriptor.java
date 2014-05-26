@@ -73,5 +73,10 @@ public class TextListFieldDescriptor extends MultiSelectableListFieldDescriptor 
 	public void setInputLabel(String inputLabel) {
 		setLabel(inputLabel);
 	}
+
+	@Override
+	public String toString() {
+		return "TextListFieldDescriptor [toString()=" + super.toString() + ", regExValidator=" + regExValidator + ", listLabel=" + listLabel + "]";
+	}
 	
 }

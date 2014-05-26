@@ -53,5 +53,10 @@ public abstract class AbstractFieldDescriptor extends AbstractField implements S
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "AbstractFieldDescriptor [toString()=" + super.toString() + ", override=" + override + ", visible=" + visible + "]";
+	}
+
 }
