@@ -152,8 +152,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		try {
 			SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
 			// checks if datasource is well defined
-			if ((getName() == null) || (getResource() == null)){
+			if (getResource() == null){
 				throw new SQLException(SpringBatchMessage.JEMS016E.toMessage().getFormattedMessage());
+			} else if (getName() == null) {
+				// if name is missing, it uses the same string 
+				// used to define the resource
+				setName(getResource());
 			}
 			// gets the RMi object to get resources
 			CommonResourcer resourcer = InitiatorManager.getCommonResourcer();

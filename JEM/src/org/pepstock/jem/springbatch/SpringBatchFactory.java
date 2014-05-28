@@ -27,7 +27,8 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.tasks.JobTask;
 import org.pepstock.jem.util.CharSet;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
@@ -99,7 +100,11 @@ public class SpringBatchFactory extends AbstractFactory {
 
 		// loads beans
 		Resource res = new ByteArrayResource(jcl.getContent().getBytes(CharSet.DEFAULT));
-		XmlBeanFactory factory = new XmlBeanFactory(res);
+		
+		DefaultListableBeanFactory factory = new  DefaultListableBeanFactory();
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+		reader.loadBeanDefinitions(res);
+		
 		// checks if bean is present. if not, exception
 		if (!factory.containsBean(SpringBatchKeys.BEAN_ID)){
 			throw new SpringBatchException(SpringBatchMessage.JEMS035E, SpringBatchKeys.BEAN_ID);
