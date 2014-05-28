@@ -20,6 +20,7 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.node.Main;
 
 /**
@@ -116,13 +117,14 @@ public class JavaUtils {
 	}
 
 	/**
-	 * Returns classpath with absolute path of libraries (only for java process).
+	 * Returns classpath with absolute parent path of libraries and java wildcard (only for java process).
 	 * 
 	 * @param additionalFolders additional folders to add 
 	 * @return the classpath
 	 */
 	public static String getClassPath(String[] additionalFolders) {
 		String classPath = null;
+		String fileSeparator = File.separator;
 		String pathSeparator = System.getProperty("path.separator");
 		String classPathProperty = System.getProperty("java.class.path");
 		String[] filesNames = classPathProperty.split(pathSeparator);
@@ -132,11 +134,22 @@ public class JavaUtils {
 			// here checks if the file is to add to classpath for new process or not
 			if (isToAdd(file, additionalFolders)){
 				String ext = FilenameUtils.getExtension(file.getAbsolutePath());
-				if ("jar".equalsIgnoreCase(ext) || "zip".equalsIgnoreCase(ext) || file.isDirectory()){
-					if (i==0) {
-						classPath = file.getAbsolutePath();
-					} else { 
-						classPath = classPath + pathSeparator + file.getAbsolutePath();
+				String parent = null;
+				// if is a directory, use it as is
+				if (file.isDirectory()){
+					parent = file.getAbsolutePath();
+				} else if ("jar".equalsIgnoreCase(ext) || "zip".equalsIgnoreCase(ext)){
+					// if is ajr or zip, use WILDCARD of java
+					parent = file.getParent() + fileSeparator + "*";
+				}
+				// if parent == null means that no jar/zip and no folder
+				if (parent != null){
+					if (!StringUtils.contains(classPath, parent)){
+						if (i==0) {
+							classPath = parent;
+						} else { 
+							classPath = classPath + pathSeparator + parent;
+						}
 					}
 				}
 			}

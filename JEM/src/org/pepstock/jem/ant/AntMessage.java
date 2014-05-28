@@ -209,9 +209,9 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 * "Data source is not well defined: 'name' or 'resource' is null", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when data source element doesn't contain <code>name</code> or <code>resource</code>."+
+	@Description(explanation = "It occurs when data source element doesn't contain <code>resource</code>."+
 	 "<br>Check JCL data source definition.")
-	JEMA027E(27, "Data source is not well defined: 'name' or 'resource' is null", MessageLevel.ERROR),
+	JEMA027E(27, "Data source is not well defined: 'resource' is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Datasource is not well defined: 'name' or 'resource' is null", MessageLevel.ERROR

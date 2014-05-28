@@ -97,7 +97,7 @@
 					<xsd:choice minOccurs="0" maxOccurs="unbounded">
 						<xsd:element ref="property" />
 					</xsd:choice>
-					<xsd:attribute name="name" type="xsd:string" use="required" />
+					<xsd:attribute name="name" type="xsd:string" />
 					<xsd:attribute name="resource" type="xsd:string" use="required" />
 				</xsd:extension>
 			</xsd:complexContent>
