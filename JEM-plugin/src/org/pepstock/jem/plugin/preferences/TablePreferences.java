@@ -94,7 +94,7 @@ public class TablePreferences  {
 				return StringUtils.repeat("*", (int) (random.nextInt() * 16));
 			case 5:
 				// is defaut
-				return element.isDefault() ? "v" : "";
+				return element.isDefault() ? "√" : "";
 			default:
 				// nothing
 				return null;
