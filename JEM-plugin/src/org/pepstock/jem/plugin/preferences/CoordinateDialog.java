@@ -185,12 +185,12 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 
 		// userid
 		Label useridLabel = new Label(composite, SWT.NONE);
-		useridLabel.setText("Userid:");
+		useridLabel.setText("UserId:");
 		userid = new Text(composite, SWT.BORDER);
 		userid.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		// adds value if is not adding and not null
-		if (!isAdding() && (coordinate.getUserid() != null)) {
-			userid.setText(coordinate.getUserid());
+		if (!isAdding() && (coordinate.getUserId() != null)) {
+			userid.setText(coordinate.getUserId());
 		}
 		// adds listener to update password
 		// text field because yu can inserted a password
@@ -333,7 +333,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		}
 		coordinate.setName(envName);
 		coordinate.setHost(host.getText());
-		coordinate.setUserid(userid.getText());
+		coordinate.setUserId(userid.getText());
 		coordinate.setPassword(password.getText());
 		coordinate.setRestContext(restContext.getText());
 		coordinate.setDefault(def.getSelection());

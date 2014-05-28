@@ -107,7 +107,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 				initManager();
 			}
 			try {
-				LoggedUser user = loginManager.login(account.getUserid(), account.getPassword());
+				LoggedUser user = loginManager.login(account.getUserId(), account.getPassword());
 				content.setLoggedUser(user);
             } catch (Exception e) {
             	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());

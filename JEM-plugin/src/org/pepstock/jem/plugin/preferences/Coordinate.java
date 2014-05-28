@@ -31,7 +31,7 @@ public final class Coordinate implements Serializable{
 	
 	private String name = null;
 	
-	private String userid = null;
+	private String userId = null;
 	
 	private String password = null;
 	
@@ -64,16 +64,16 @@ public final class Coordinate implements Serializable{
 		this.name = name;
 	}
 	/**
-	 * @return the userid
+	 * @return the user id
 	 */
-	public String getUserid() {
-		return userid;
+	public String getUserId() {
+		return userId;
 	}
 	/**
 	 * @param userid the userid to set
 	 */
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	/**
 	 * @return the password
@@ -122,7 +122,7 @@ public final class Coordinate implements Serializable{
 		Coordinate coordinate = new Coordinate();
 		coordinate.setHost(host);
 		coordinate.setName(name);
-		coordinate.setUserid(userid);
+		coordinate.setUserId(userId);
 		coordinate.setPassword(password);
 		coordinate.setRestContext(restContext);
 		coordinate.setDefault(isDefault);
@@ -134,7 +134,7 @@ public final class Coordinate implements Serializable{
 	 */
     @Override
     public String toString() {
-	    return "Coordinate [host=" + host + ", name=" + name + ", userid=" + userid + ", restContext=" + restContext + ", isDefault=" + isDefault + "]";
+	    return "Coordinate [host=" + host + ", name=" + name + ", userid=" + userId + ", restContext=" + restContext + ", isDefault=" + isDefault + "]";
     }
 
 }

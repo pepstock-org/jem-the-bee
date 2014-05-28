@@ -13,9 +13,7 @@ package org.pepstock.jem.plugin.preferences;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Random;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Image;
 import org.pepstock.jem.plugin.commons.JemColumnSorter;
 import org.pepstock.jem.plugin.commons.JemLabelProvider;
@@ -33,11 +31,13 @@ public class TablePreferences  {
 			new JemTableColumn("Host", 175),
 			new JemTableColumn("REST context", 80),
 			new JemTableColumn("Name", 90),
-			new JemTableColumn("Userid", 60),
+			new JemTableColumn("User Id", 60),
 			new JemTableColumn("Password", 90),
 			new JemTableColumn("Default", 80)
 	}));
 
+	private static final String HIDDEN = "(hidden)";
+	
 	/**
 	 * Returns the list of columns
 	 * @return the list of columns
@@ -69,8 +69,6 @@ public class TablePreferences  {
 	 */
 	private static class LabelProvider extends JemLabelProvider<Coordinate>{
 		
-		private final Random random = new Random();
-		
 		/* (non-Javadoc)
 		 * @see org.pepstock.jem.plugin.commons.JemLabelProvider#getTextColumn(java.lang.Object, int)
 		 */
@@ -88,10 +86,10 @@ public class TablePreferences  {
 				return element.getName();
 			case 3:
 				// userid to use to connect
-				return element.getUserid();
+				return element.getUserId();
 			case 4:
 				// crypted password
-				return StringUtils.repeat("*", (int) (random.nextInt() * 16));
+				return HIDDEN;
 			case 5:
 				// is defaut
 				return element.isDefault() ? "√" : "";
@@ -140,7 +138,7 @@ public class TablePreferences  {
 				break;
 			case 3:
 				// sorts by userid
-				diff = o1.getUserid().compareTo(o2.getUserid());
+				diff = o1.getUserId().compareTo(o2.getUserId());
 				break;
 			case 4:
 				// sorts by password

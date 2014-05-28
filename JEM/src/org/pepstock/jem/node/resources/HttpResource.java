@@ -50,9 +50,9 @@ import org.apache.http.params.CoreProtocolPNames;
  * REQUEST_PORT = &quot;requestPort&quot;;
  * PROTOCOL_TYPE = &quot;protocolType&quot;;
  * REQUEST_LOGIN_QUERY_STRING = &quot;requestLoginQueryString&quot;;
- * REQUEST_LOGIN_USERID = &quot;requestLoginUserid&quot;;
+ * REQUEST_LOGIN_USERID = &quot;requestLoginUserId&quot;;
  * REQUEST_LOGIN_PASSWORD = &quot;requestLoginPassword&quot;;
- * REQUEST_LOGIN_PARAM_USERID = &quot;requestLoginParamUserid&quot;;
+ * REQUEST_LOGIN_PARAM_USERID = &quot;requestLoginParamUserId&quot;;
  * REQUEST_LOGIN_PARAM_PASSWORD = &quot;requestLoginParamPassword&quot;;
  * REQUEST_LOGOUT_QUERY_STRING = &quot;requestLogoutQueryString&quot;;
  * USERID = &quot;username&quot;;
@@ -233,14 +233,14 @@ public class HttpResource extends Resource {
 	public static final String REQUEST_LOGIN_QUERY_STRING = "requestLoginQueryString";
 	
 	/**
-	 * Constant property containing the optional <code>Login Userid</code>
+	 * Constant property containing the optional <code>Login UserId</code>
 	 * if login is necessary. <br>
 	 * If not present, {@link Resource#USERID} is used. <br>
 	 * Configuration property. <br>
 	 * Property useful to perform login if it is necessary before to connect to the
 	 * <code>Http Source</code> to get the desired data.
 	 */	
-	public static final String REQUEST_LOGIN_USERID = "requestLoginUserid";
+	public static final String REQUEST_LOGIN_USERID = "requestLoginUserId";
 
 	/**
 	 * Constant property containing the optional <code>Login Password</code>
@@ -253,13 +253,13 @@ public class HttpResource extends Resource {
 	public static final String REQUEST_LOGIN_PASSWORD = "requestLoginPassword";
 
 	/**
-	 * Constant property containing the optional <code>Login Parameter Userid</code>
+	 * Constant property containing the optional <code>Login Parameter UserId</code>
 	 * if login is necessary. <br>
 	 * Configuration property. <br>
 	 * Property useful to perform login if it is necessary before to connect to the
 	 * <code>Http Source</code> to get the desired data.
 	 */	
-	public static final String REQUEST_LOGIN_PARAM_USERID = "requestLoginParamUserid";
+	public static final String REQUEST_LOGIN_PARAM_USERID = "requestLoginParamUserId";
 	
 	/**
 	 * Constant property containing the optional <code>Login Parameter Password</code>
