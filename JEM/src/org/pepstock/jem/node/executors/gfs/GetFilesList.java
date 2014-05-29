@@ -106,7 +106,7 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 					}
 					return this.getResult(parentPath, file);
 				} catch (InvalidDatasetNameException e) {
-					throw new ExecutorException(e.getMessageInterface(), getItem());
+					throw new ExecutorException(e.getMessageInterface(), e, getItem());
 				}
 			}
 		}

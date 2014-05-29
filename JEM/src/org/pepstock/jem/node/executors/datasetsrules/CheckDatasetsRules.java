@@ -54,8 +54,7 @@ public class CheckDatasetsRules extends DefaultExecutor<Boolean> {
 			Main.DATA_PATHS_MANAGER.testRules(content);
 			return Boolean.TRUE;
 		} catch (MessageException e) {
-			e.printStackTrace();
-			throw new ExecutorException(e.getMessageInterface(), e.getObjects());
+			throw new ExecutorException(e.getMessageInterface(), e, e.getObjects());
 		}
 	}
 }

@@ -33,9 +33,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class MultiSelectableListFieldTemplate extends AbstractFieldTemplate {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

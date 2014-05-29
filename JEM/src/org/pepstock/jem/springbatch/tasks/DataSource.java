@@ -167,12 +167,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 				throw new SQLException(SpringBatchMessage.JEMS017E.toMessage().getFormattedMessage(res.toString()));
 			}
 			// all properties create all StringRefAddrs necessary
-			Map<String, ResourceProperty> properties = res.getProperties();
+			Map<String, ResourceProperty> props = res.getProperties();
 
 			// scans all properteis set by JCL
 			for (Property property : getProperties()){
 				// if a key is defined FINAL, throw an exception
-				for (ResourceProperty resProperty : properties.values()){
+				for (ResourceProperty resProperty : props.values()){
 					if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
 						throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));
 					}
@@ -193,12 +193,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 						throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
 					}
 				} catch (Exception e) {
-					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
 				} 
 			}
 
 			// loads all properties into RefAddr
-			for (ResourceProperty property : properties.values()){
+			for (ResourceProperty property : props.values()){
 				ref.add(new StringRefAddr(property.getName(), property.getValue()));
 			}
 			

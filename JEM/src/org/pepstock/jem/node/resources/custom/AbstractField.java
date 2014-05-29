@@ -9,10 +9,7 @@ import java.io.Serializable;
  */
 public abstract class AbstractField implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7534734681440242850L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The key of the resource field.

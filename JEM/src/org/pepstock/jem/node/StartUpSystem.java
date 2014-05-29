@@ -331,7 +331,7 @@ public class StartUpSystem {
 				// cluster
 				Main.IS_COORDINATOR.set(false);
 				// gets the datapaths to check if they are the same
-				checkDataPaths(JEM_NODE_CONFIG);
+				checkDataPaths();
 			}
 			checkIfEnoughMembers();
 			// load data paths rules
@@ -1283,7 +1283,7 @@ public class StartUpSystem {
 	 * @param conf
 	 * @throws ConfigurationException
 	 */
-	private static void checkDataPaths(Configuration conf) throws ConfigurationException {
+	private static void checkDataPaths() throws ConfigurationException {
         DistributedTask<List<String>> task = new DistributedTask<List<String>>(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
         ExecutorService executorService = Main.getHazelcast().getExecutorService();
         executorService.execute(task);

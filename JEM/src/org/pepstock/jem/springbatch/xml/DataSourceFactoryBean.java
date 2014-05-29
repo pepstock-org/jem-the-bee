@@ -70,7 +70,7 @@ public class DataSourceFactoryBean implements FactoryBean<Object> {
 	@Override
 	public Object getObject() throws Exception {
 		// if properties are set, loads into data source
-	    if (this.properties != null && this.properties.size() > 0) {
+	    if (this.properties != null && !this.properties.isEmpty()) {
 	    	dataSource.setProperties(properties);
 	    }
 		return dataSource;

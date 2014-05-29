@@ -108,15 +108,15 @@ public class TaskletFactoryBean implements FactoryBean<Object> {
 	@Override
 	public Object getObject() throws Exception {
 		// checks if datadescriptions are set
-	    if (this.dataDescriptions != null && this.dataDescriptions.size() > 0) {
+	    if (this.dataDescriptions != null && !this.dataDescriptions.isEmpty()) {
 	    	tasklet.setDataDescriptionList(dataDescriptions);
 	    }
 		// checks if datasources are set
-	    if (this.dataSources != null && this.dataSources.size() > 0) {
+	    if (this.dataSources != null && !this.dataSources.isEmpty()) {
 	    	tasklet.setDataSourceList(dataSources);
 	    }
 		// checks if locks are set
-		if (this.locks != null && this.locks.size() > 0) {
+		if (this.locks != null && !this.locks.isEmpty()) {
 	    	tasklet.setLocks(locks);
 	    }
 		return tasklet;

@@ -22,6 +22,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.pepstock.jem.util.CharSet;
 
 /**
@@ -30,6 +32,7 @@ import org.pepstock.jem.util.CharSet;
  * @author Andrea "Stock" Stocchero
  * 
  */
+@XmlRootElement
 public class BytesArray implements Serializable {
 
 	private static final long serialVersionUID = 1L;
