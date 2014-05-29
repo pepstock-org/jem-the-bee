@@ -1,5 +1,4 @@
-<resource-templates>
-	<resource-template type="customJDBC">
+<resource-template type="customJDBC">
 	
 		<section name="MainSection">
 		
@@ -18,26 +17,21 @@
 						description="The database user on whose behalf the connection is being made" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
 
-			<text-field key="password" 
+			<password-field key="password" 
 						label="Password" 
 						description="The user's password" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
-			
-			<multi-selectable-list-field key="defaultAutoCommit"
+						
+			<check-box-field key="defaultAutoCommit"
   				label="Auto Commit"
   				description="If a connection is in auto-commit mode, then all its SQL statements will be executed and committed as individual transactions"
-  				mandatory="false">
-  				<value>true</value>
-			</multi-selectable-list-field>
+  				mandatory="false" />
 			
-			<multi-selectable-list-field key="defaultReadOnly"
+			<check-box-field key="defaultReadOnly"
   				label="Read Only"
   				description="If connections are readOnly by default"
-  				mandatory="false">
-  				<value>true</value>
-			</multi-selectable-list-field>
+  				mandatory="false" />
 		
 		</section>		
 		
-	</resource-template>
-</resource-templates>
+</resource-template>

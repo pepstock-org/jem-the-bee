@@ -362,7 +362,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 
 	/**
 	 * Uploads a file. THIS IS STILL UNDER CONSTRUCTION 
-	 * @param file
+	 * @param chunk chunk file to upload
 	 * @return
 	 */
 	@POST

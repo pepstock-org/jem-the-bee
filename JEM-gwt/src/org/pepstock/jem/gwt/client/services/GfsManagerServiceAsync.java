@@ -32,6 +32,7 @@ public interface GfsManagerServiceAsync {
 	 * 
 	 * @param type
 	 * @param path
+	 * @param pathName 
 	 * @param callback
 	 */
 	void getFilesList(int type, String path, String pathName, AsyncCallback<Collection<GfsFile>> callback);
@@ -40,6 +41,7 @@ public interface GfsManagerServiceAsync {
 	 * 
 	 * @param type
 	 * @param file
+	 * @param pathName 
 	 * @param callback
 	 */
 	void getFile(int type, String file, String pathName, AsyncCallback<String> callback);

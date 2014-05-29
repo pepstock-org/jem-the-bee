@@ -79,7 +79,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 	
 	private DataPaths dataPaths = null;
 
-	private final Map<Pattern, PathsContainer> datasets_rules = new LinkedHashMap<Pattern, PathsContainer>();
+	private final Map<Pattern, PathsContainer> datasetsRules = new LinkedHashMap<Pattern, PathsContainer>();
 	
 	private File datasetRulesFile = null;
 	
@@ -182,13 +182,13 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 					throw new MessageException(NodeMessage.JEMC254E);
 				} else {
 					// sets new rules only if the parsing is correct
-					datasets_rules.clear();
-					datasets_rules.putAll(rules.getRules());
+					datasetsRules.clear();
+					datasetsRules.putAll(rules.getRules());
 				}
 			} catch (Exception e) {
 				throw new MessageException(NodeMessage.JEMC257E, e, datasetRulesFile.getAbsolutePath());
 			}
-			LogAppl.getInstance().emit(NodeMessage.JEMC252I, datasets_rules.size());
+			LogAppl.getInstance().emit(NodeMessage.JEMC252I, datasetsRules.size());
 		} catch (LockException e) {
 			throw new MessageException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
 		} finally {
@@ -361,7 +361,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
      */
     public PathsContainer getPaths(String fileName) throws InvalidDatasetNameException{
     	if (fileName != null){
-    		for (Entry<Pattern, PathsContainer> entry : datasets_rules.entrySet()){
+    		for (Entry<Pattern, PathsContainer> entry : datasetsRules.entrySet()){
     			if (entry.getKey().matcher(fileName).matches()){
     				return entry.getValue();
     			}

@@ -87,36 +87,45 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 		// the temporary file
 		file = new File(parentPath, chunk.getFilePath() + "." + chunk.getFileCode());
 		try {
+			// test the parent folder exists
+			if (!file.getParentFile().exists()){
+				FileUtils.forceMkdir(file.getParentFile());
+			}
 			// if tmp file does not exists create it with all directory structure
-			if (!file.exists()) {
-				if (!file.getParentFile().mkdirs() || !file.createNewFile()){
+			if (!file.exists()){
+				if (!file.createNewFile()){
 					throw new ExecutorException(NodeMessage.JEMC266E, file.getAbsolutePath());
 				}
 			}
 			// if the transferred is complete just rename the tmp file
 			if (chunk.isTransferComplete()) {
 				File finalFile = new File(parentPath, chunk.getFilePath());
+				// removes final file if exists
+				if (finalFile.exists() && !finalFile.delete()){
+					throw new ExecutorException(NodeMessage.JEMC268E, finalFile.getAbsolutePath());
+				}
+				// renames the uploaded file to final one
 				if (!file.renameTo(finalFile)){
-					throw new ExecutorException(NodeMessage.JEMC267E, finalFile.getAbsolutePath(), file.getAbsolutePath());
+					throw new ExecutorException(NodeMessage.JEMC267E, file.getAbsolutePath(), finalFile.getAbsolutePath());
 				}
 				return true;
 			}
 			// write to the temporary file
 			FileOutputStream output = new FileOutputStream(file.getAbsolutePath(), true);
 			try {
-				chunk.getChunk().writeTo(output);
-				//output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
+				output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
 			} finally {
 				output.close();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			// upload get an exception so delete tmp file
 			try {
 				FileUtils.deleteDirectory(file);
 			} catch (IOException e1) {
 				LogAppl.getInstance().ignore(e1.getMessage(), e1);
 			}
-			throw new ExecutorException(NodeMessage.JEMC265E, file.getAbsolutePath(), e);
+			throw new ExecutorException(NodeMessage.JEMC265E, file.getAbsolutePath(), e.getMessage());
 		}
 		return true;
 	}

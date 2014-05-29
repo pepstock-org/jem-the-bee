@@ -143,13 +143,11 @@ public class JavaUtils {
 					parent = file.getParent() + fileSeparator + "*";
 				}
 				// if parent == null means that no jar/zip and no folder
-				if (parent != null){
-					if (!StringUtils.contains(classPath, parent)){
-						if (i==0) {
-							classPath = parent;
-						} else { 
-							classPath = classPath + pathSeparator + parent;
-						}
+				if ((parent != null) && (!StringUtils.contains(classPath, parent))){
+					if (i==0) {
+						classPath = parent;
+					} else { 
+						classPath = classPath + pathSeparator + parent;
 					}
 				}
 			}
