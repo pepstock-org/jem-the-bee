@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.pepstock.jem.plugin;singleton:=true
-Bundle-Version: 1.5
+Bundle-Version: 1.5.1
 Bundle-Activator: org.pepstock.jem.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
