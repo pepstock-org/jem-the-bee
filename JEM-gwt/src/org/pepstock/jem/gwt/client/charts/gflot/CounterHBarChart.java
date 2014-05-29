@@ -85,7 +85,7 @@ public class CounterHBarChart extends BarChart {
 	 * @author Marco "Fuzzo" Cuccato
 	 *
 	 */
-	private class NamesTickFormatter implements TickFormatter {
+	private static class NamesTickFormatter implements TickFormatter {
 
 		public static final String DOTH = ".";
 		private String[] names;

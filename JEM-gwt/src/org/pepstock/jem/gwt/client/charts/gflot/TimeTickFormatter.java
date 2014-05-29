@@ -32,17 +32,23 @@ public class TimeTickFormatter implements TickFormatter {
 	 * @return the times
 	 */
 	public String[] getTimes() {
-		return times;
+		String[] toReturn = null;
+		if (times != null) {
+			toReturn = new String[times.length];
+			System.arraycopy(times, 0, toReturn, 0, times.length);
+		}
+		return toReturn;
 	}
 
 	/**
 	 * @param times the times
 	 */
 	public void setTimes(String[] times) {
-		this.times = times;
+		if (times != null) {
+			this.times = new String[times.length];
+			System.arraycopy(times, 0, this.times, 0, times.length);
+		}
 	}
-
-
 
 	@Override
 	public String formatTickValue(double tickValue, Axis axis) {
