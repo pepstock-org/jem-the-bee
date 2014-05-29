@@ -62,7 +62,7 @@ public class DataSourceDefinitionParser extends AbstractBeanDefinitionParser {
 
 		// scans all property definition
 		List<Element> childElements = DomUtils.getChildElementsByTagName(element, PROPERTY_ELEMENT);
-		if (childElements != null && childElements.size() > 0) {
+		if (childElements != null && !childElements.isEmpty()) {
 			parseProperty(childElements, factory);
 		}
 		return factory.getBeanDefinition();

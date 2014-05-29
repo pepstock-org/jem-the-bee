@@ -411,7 +411,7 @@ public final class HttpUtil {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 */
-	public final static CloseableHttpClient createHttpClient(String uri) throws URISyntaxException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+	public static final CloseableHttpClient createHttpClient(String uri) throws URISyntaxException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		URI uriObject = URI.create(uri);
 		return HttpUtil.createHttpClient(uriObject);
 	}
@@ -426,7 +426,7 @@ public final class HttpUtil {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 */
-	public final static CloseableHttpClient createHttpClient(URI uri) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+	public static final CloseableHttpClient createHttpClient(URI uri) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
 		return createHttpClientByScheme(uri.getScheme()).build();
 	}
@@ -440,7 +440,7 @@ public final class HttpUtil {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 */
-	public final static HttpClientBuilder createHttpClientByScheme(String scheme) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+	public static final HttpClientBuilder createHttpClientByScheme(String scheme) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
 		if (scheme != null && HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(scheme)) {
 	        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());

@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node.resources.custom.engine.xml;
 
+import java.io.Serializable;
+
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -24,8 +26,10 @@ import com.thoughtworks.xstream.XStream;
 
  * @author Alessandro Zambrini
  */
-public class ValueTemplate {
+public class ValueTemplate implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Corresponding tag in the resource templates <code>xml</code> file.
 	 * @see XStream

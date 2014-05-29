@@ -31,9 +31,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class SingleSelectableListFieldTemplate extends SingleValueFieldTemplate {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

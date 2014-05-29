@@ -25,10 +25,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Alessandro Zambrini
  */
 public class TextFieldTemplate extends SingleValueFieldTemplate{
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	/**

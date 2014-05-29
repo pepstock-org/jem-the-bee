@@ -1,7 +1,7 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
     Copyright (C) 2012-2014   Andrea "Stock" Stocchero
-    This program is free software: you can redistribute it and/or modify
+    This program is free software: you can redistibute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     any later version.
@@ -22,7 +22,7 @@ package org.pepstock.jem.gfs;
  * @version 1.0	
  *
  */
-public interface GfsFileType {
+public final class GfsFileType {
 		
 	/**
 	 * for the GFS/data folder
@@ -49,5 +49,9 @@ public interface GfsFileType {
 	 */
 	public static final int BINARY = 4;
 
-
+	/**
+	 * To avoid any instantiation
+	 */
+	private GfsFileType() {
+	}
 }

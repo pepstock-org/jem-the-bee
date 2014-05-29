@@ -16,10 +16,8 @@
  */
 package org.pepstock.jem.gwt.server.services;
 
-import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -29,7 +27,6 @@ import org.apache.shiro.subject.Subject;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
-import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
@@ -214,47 +211,6 @@ public class GfsManager extends DefaultService {
 		}
 		// doesn't match! Not authorized
 		return false;
-	}
-
-	/**
-	 * 
-	 * @param file
-	 *            the file to be uploaded.
-	 * @return
-	 */
-	public void uploadFile(UploadedGfsFile file) throws ServiceMessageException {
-		try {
-			FileInputStream fis = new FileInputStream(file.getUploadedFile());
-			byte[] chunk = new byte[UploadedGfsChunkFile.MAX_CHUNK_SIZE];
-			Random random = new Random();
-			int randomNumber = random.nextInt(Integer.MAX_VALUE);
-			// read and write file in chunks
-			for (int readNum; (readNum = fis.read(chunk)) != -1;) {
-				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
-				chunkFile.setChunk(chunk);
-				chunkFile.setFileCode(randomNumber);
-				chunkFile.setFilePath(file.getGfsPath()
-						+ file.getUploadedFile().getName());
-				chunkFile.setTransferComplete(false);
-				chunkFile.setNumByteToWrite(readNum);
-				chunkFile.setType(file.getType());
-				uploadChunk(chunkFile);
-			}
-			fis.close();
-			// the last chunk was read
-			UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
-			chunkFile.setFileCode(randomNumber);
-			chunkFile.setFilePath(file.getGfsPath()
-					+ file.getUploadedFile().getName());
-			chunkFile.setTransferComplete(true);
-			chunkFile.setType(file.getType());
-			uploadChunk(chunkFile);
-		} catch (Exception e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC265E,
-					file.getUploadedFile().getAbsolutePath());
-			throw new ServiceMessageException(NodeMessage.JEMC265E, file
-					.getUploadedFile().getAbsolutePath(), e);
-		}
 	}
 
 	/**
