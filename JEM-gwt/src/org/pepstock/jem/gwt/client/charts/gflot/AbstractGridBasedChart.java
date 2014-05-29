@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.charts.gflot;
 
+import com.googlecode.gflot.client.options.AxisOptions;
 import com.googlecode.gflot.client.options.TickFormatter;
 
 /**
@@ -51,6 +52,61 @@ public abstract class AbstractGridBasedChart extends AbstractChart<Double, Doubl
 		super(width, height);
 	}
 
+	/**
+	 * Apply common chart axis options, this method is intended to be called in a applyOptions() subclass implementation
+	 */
+	protected void applyAxisOptions() {
+		// axis X options
+		AxisOptions optionsX = AxisOptions.create();
+		if (hasMinXTickSize()) {
+			optionsX.setMinTickSize(getMinXTickSize());
+		}
+		if (hasMinX()) {
+			optionsX.setMinimum(getMinX());
+		}
+		if (hasMaxX()) {
+			optionsX.setMaximum(getMaxX());
+		}
+		if (hasLabelX()) {
+			optionsX.setLabel(getLabelX());
+		}
+		if (hasTickFormatterX()) {
+			optionsX.setTickFormatter(getTickFormatterX());
+		}
+		if (hasTickDecimalsX()) {
+			optionsX.setTickDecimals(getTickDecimalsX());
+		}
+		if (hasTickSizeX()) {
+			optionsX.setTickSize(getTickSizeX());
+		}
+		getOptions().addXAxisOptions(optionsX);
+		
+		// axis Y options
+		AxisOptions optionsY = AxisOptions.create();
+		if (hasMinYTickSize()) {
+			optionsY.setMinTickSize(getMinYTickSize());
+		}
+		if (hasMinY()) {
+			optionsY.setMinimum(getMinY());
+		}
+		if (hasMaxY()) {
+			optionsY.setMaximum(getMaxY());
+		}
+		if (hasLabelY()) {
+			optionsY.setLabel(getLabelY());
+		}
+		if (hasTickFormatterY()) {
+			optionsY.setTickFormatter(getTickFormatterY());
+		}
+		if (hasTickDecimalsY()) {
+			optionsY.setTickDecimals(getTickDecimalsY());
+		}
+		if (hasTickSizeY()) {
+			optionsY.setTickSize(getTickSizeY());
+		}
+		getOptions().addYAxisOptions(optionsY);
+	}
+	
 	/**
 	 * @return the minimum X value
 	 */

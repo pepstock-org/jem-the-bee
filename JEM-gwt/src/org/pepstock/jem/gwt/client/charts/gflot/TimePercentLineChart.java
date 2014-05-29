@@ -31,13 +31,13 @@ public class TimePercentLineChart extends TimeCountLineChart {
 	 */
 	public TimePercentLineChart() {
 		// set X axis
-		setMinX(0l);
-		setMinXTickSize(1l);
+		setMinX(0L);
+		setMinXTickSize(1L);
 		setTickSizeX(1d);
 		
 		// set Y axis
-		setMinY(0l);
-		setMaxY(100l);
+		setMinY(0L);
+		setMaxY(100L);
 		setTickSizeY(10d);
 		setTickDecimalsY(0d);
 		
@@ -61,10 +61,6 @@ public class TimePercentLineChart extends TimeCountLineChart {
 		// set the labels
 		if (timesLabel != null && !timesLabel.trim().isEmpty()) setLabelX(timesLabel);
 		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelY(valuesLabel);
-		/*
-		// set X axis max
-		setMaxX((long)times.length-1);
-		*/
 		// set times
 		((TimeTickFormatter)getTickFormatterX()).setTimes(times);
 		// build the series

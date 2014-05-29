@@ -49,14 +49,6 @@ public enum ColorsHex {
 	 */
 	YELLOW("#FFE920");	
 	
-	/**
-	 * @return a random color :) 
-	 */
-	public static final ColorsHex randomColor() {
-		ColorsHex[] allColors = ColorsHex.values();
-		return allColors[Random.nextInt(allColors.length)];
-	}
-	
 	private String hexCode;
 	
 	private ColorsHex(String hexCode) {
@@ -69,4 +61,13 @@ public enum ColorsHex {
 	public String getCode() {
 		return hexCode;
 	}
+	
+	/**
+	 * @return a random color :) 
+	 */
+	public static final ColorsHex randomColor() {
+		ColorsHex[] allColors = ColorsHex.values();
+		return allColors[Random.nextInt(allColors.length)];
+	}
+
 }

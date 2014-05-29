@@ -67,7 +67,6 @@ public class PieChart extends AbstractChart<String, Double> {
 						Background.create().setOpacity(labelBackgroundOpacity)).setThreshold(labelThreshold).setFormatter(labelFormatter)
 					)));
 		getOptions().setLegendOptions(LegendOptions.create().setShow(isShowLegend()));
-		//options.setGridOptions(GridOptions.create().setHoverable(true));
 	}
 	
 	@Override

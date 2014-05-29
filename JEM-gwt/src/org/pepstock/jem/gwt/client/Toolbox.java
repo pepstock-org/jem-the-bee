@@ -26,7 +26,8 @@ import java.util.Collection;
  */
 public final class Toolbox {
 
-	private Toolbox() {}
+	private Toolbox() {
+	}
 	
 	/**
 	 * Utility that return le last part of a string collection containing a doth <code>.</code>, or the string itself

@@ -38,13 +38,13 @@ public class TimeCountLineChart extends LineChart {
 		setHoverListener(new ValuePlotHoverListener());
 		
 		// fixed options X axis
-		setMinX(0l);
-		setMinXTickSize(1l);
+		setMinX(0L);
+		setMinXTickSize(1L);
 		setTickSizeX(1d);
 		
 		// fixed options Y axis
-		setMinY(0l);
-		setMinYTickSize(1l);
+		setMinY(0L);
+		setMinYTickSize(1L);
 		setTickDecimalsY(0d);
 
 		// set the X axis tick formatter

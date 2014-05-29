@@ -23,7 +23,6 @@ import com.googlecode.gflot.client.Series;
 import com.googlecode.gflot.client.SeriesHandler;
 import com.googlecode.gflot.client.event.PlotClickListener;
 import com.googlecode.gflot.client.event.PlotHoverListener;
-import com.googlecode.gflot.client.options.AxisOptions;
 import com.googlecode.gflot.client.options.GlobalSeriesOptions;
 import com.googlecode.gflot.client.options.GridOptions;
 import com.googlecode.gflot.client.options.LegendOptions;
@@ -91,27 +90,8 @@ public class LineChart extends AbstractGridBasedChart {
 			getOptions().setGlobalSeriesOptions(globalSeriesOptions);
 		}
 		
-		// axis X options
-		AxisOptions optionsX = AxisOptions.create();
-		if (hasMinXTickSize()) optionsX.setMinTickSize(getMinXTickSize());
-		if (hasMinX()) optionsX.setMinimum(getMinX());
-		if (hasMaxX()) optionsX.setMaximum(getMaxX());
-		if (hasLabelX()) optionsX.setLabel(getLabelX());
-		if (hasTickFormatterX()) optionsX.setTickFormatter(getTickFormatterX());
-		if (hasTickDecimalsX()) optionsX.setTickDecimals(getTickDecimalsX());
-		if (hasTickSizeX()) optionsX.setTickSize(getTickSizeX());
-		getOptions().addXAxisOptions(optionsX);
-		
-		// axis Y options
-		AxisOptions optionsY = AxisOptions.create();
-		if (hasMinYTickSize()) optionsY.setMinTickSize(getMinYTickSize());
-		if (hasMinY()) optionsY.setMinimum(getMinY());
-		if (hasMaxY()) optionsY.setMaximum(getMaxY());
-		if (hasLabelY()) optionsY.setLabel(getLabelY());
-		if (hasTickFormatterY()) optionsY.setTickFormatter(getTickFormatterY());
-		if (hasTickDecimalsY()) optionsY.setTickDecimals(getTickDecimalsY());
-		if (hasTickSizeY()) optionsY.setTickSize(getTickSizeY());
-		getOptions().addYAxisOptions(optionsY);
+		// axis
+		applyAxisOptions();
 	}
 
 	@Override

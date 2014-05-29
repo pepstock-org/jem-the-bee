@@ -124,33 +124,44 @@ public class SeriesData<X, Y> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		SeriesData<?, ?> other = (SeriesData<?, ?>) obj;
 		if (color == null) {
-			if (other.color != null)
+			if (other.color != null) {
 				return false;
-		} else if (!color.equals(other.color))
+			}
+		} else if (!color.equals(other.color)) {
 			return false;
+		}
 		if (dataPoints == null) {
-			if (other.dataPoints != null)
+			if (other.dataPoints != null) {
 				return false;
-		} else if (!dataPoints.equals(other.dataPoints))
+			}
+		} else if (!dataPoints.equals(other.dataPoints)) {
 			return false;
+		}
 		if (fill == null) {
-			if (other.fill != null)
+			if (other.fill != null) {
 				return false;
-		} else if (!fill.equals(other.fill))
+			}
+		} else if (!fill.equals(other.fill)) {
 			return false;
+		}
 		if (label == null) {
-			if (other.label != null)
+			if (other.label != null) {
 				return false;
-		} else if (!label.equals(other.label))
+			}
+		} else if (!label.equals(other.label)) {
 			return false;
+		}
 		return true;
 	}
 	

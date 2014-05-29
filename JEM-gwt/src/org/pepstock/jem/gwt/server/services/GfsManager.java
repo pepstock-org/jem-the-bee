@@ -319,7 +319,7 @@ public class GfsManager extends DefaultService {
 			throw new ServiceMessageException(NodeMessage.JEMC264E);
 		}
 		// if not permitted throw exception
-		if (permitted == false) {
+		if (!permitted) {
 			Session shiroSession = currentUser.getSession();
 			LoggedUser user = (LoggedUser) shiroSession
 					.getAttribute(LoginManager.USER_KEY);
