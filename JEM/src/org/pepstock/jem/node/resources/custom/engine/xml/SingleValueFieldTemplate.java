@@ -27,9 +27,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public abstract class SingleValueFieldTemplate extends AbstractFieldTemplate {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

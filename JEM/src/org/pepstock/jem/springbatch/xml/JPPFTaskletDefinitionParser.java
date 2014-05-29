@@ -39,7 +39,7 @@ public class JPPFTaskletDefinitionParser extends TaskletDefinitionParser {
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext context) {
 		// creates a factory which containes all root and children objects
 		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JPPFTaskletFactoryBean.class);
-		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet(element));
+		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet());
 
 		Element config = DomUtils.getChildElementByTagName(element, JPPFBeanDefinitionParser.CONFIGURATION_ELEMENT);
 		if (config != null){
@@ -55,7 +55,7 @@ public class JPPFTaskletDefinitionParser extends TaskletDefinitionParser {
 	 * @param element XML element to parse
 	 * @return tasklet object using the class of bean
 	 */
-	private BeanDefinition parseTasklet(Element element) {
+	private BeanDefinition parseTasklet() {
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(JPPFTasklet.class);
 		return component.getBeanDefinition();
 	}

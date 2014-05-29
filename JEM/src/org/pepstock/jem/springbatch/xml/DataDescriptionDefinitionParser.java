@@ -67,7 +67,7 @@ public class DataDescriptionDefinitionParser extends AbstractBeanDefinitionParse
 
 		// scans all data sets definition
 		List<Element> childElements = DomUtils.getChildElementsByTagName(element, DATA_SET_ELEMENT);
-		if (childElements != null && childElements.size() > 0) {
+		if (childElements != null && !childElements.isEmpty()) {
 			parseDataSet(childElements, factory);
 		}
 		return factory.getBeanDefinition();

@@ -73,7 +73,7 @@ public class DataDescriptionFactoryBean implements FactoryBean<Object> {
 	@Override
 	public Object getObject() throws Exception {
 		// if datasets are set, loads into data description
-	    if (this.dataSets != null && this.dataSets.size() > 0) {
+	    if (this.dataSets != null && !this.dataSets.isEmpty()) {
 	    	dataDescription.setDatasets(dataSets);
 	    }
 		return dataDescription;

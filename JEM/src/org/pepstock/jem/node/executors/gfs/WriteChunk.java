@@ -18,9 +18,12 @@ package org.pepstock.jem.node.executors.gfs;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.executors.DefaultExecutor;
@@ -82,29 +85,37 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 				throw new ExecutorException(NodeMessage.JEMC264E);
 		}
 		// the temporary file
+		file = new File(parentPath, chunk.getFilePath() + "." + chunk.getFileCode());
 		try {
-			file = new File(parentPath, chunk.getFilePath() + "." + chunk.getFileCode());
 			// if tmp file does not exists create it with all directory structure
 			if (!file.exists()) {
-				file.getParentFile().mkdirs();
-				file.createNewFile();
+				if (!file.getParentFile().mkdirs() || !file.createNewFile()){
+					throw new ExecutorException(NodeMessage.JEMC266E, file.getAbsolutePath());
+				}
 			}
 			// if the transferred is complete just rename the tmp file
 			if (chunk.isTransferComplete()) {
 				File finalFile = new File(parentPath, chunk.getFilePath());
-				file.renameTo(finalFile);
+				if (!file.renameTo(finalFile)){
+					throw new ExecutorException(NodeMessage.JEMC267E, finalFile.getAbsolutePath(), file.getAbsolutePath());
+				}
 				return true;
 			}
 			// write to the temporary file
 			FileOutputStream output = new FileOutputStream(file.getAbsolutePath(), true);
 			try {
-				output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
+				chunk.getChunk().writeTo(output);
+				//output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
 			} finally {
 				output.close();
 			}
 		} catch (Exception e) {
 			// upload get an exception so delete tmp file
-			file.delete();
+			try {
+				FileUtils.deleteDirectory(file);
+			} catch (IOException e1) {
+				LogAppl.getInstance().ignore(e1.getMessage(), e1);
+			}
 			throw new ExecutorException(NodeMessage.JEMC265E, file.getAbsolutePath(), e);
 		}
 		return true;

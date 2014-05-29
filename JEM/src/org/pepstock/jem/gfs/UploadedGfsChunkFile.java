@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.pepstock.jem.io.BytesArray;
+
 /**
  * 
  * This class represents a chunk of file that is being uploaded. We use chunk so
@@ -36,9 +38,11 @@ public class UploadedGfsChunkFile implements Serializable {
 	/**
 	 * is the max size of a chunk in byte
 	 */
-	public static int MAX_CHUNK_SIZE = 262144;
+	public static final int MAX_CHUNK_SIZE = 262144;
 
-	private byte[] chunk;
+//	private byte[] chunk;
+	
+	private BytesArray chunk;
 
 	private int type;
 
@@ -50,22 +54,24 @@ public class UploadedGfsChunkFile implements Serializable {
 
 	private int numByteToWrite;
 
-	/**
-	 * 
-	 * @return the chunk of the file that is currently been uploaded
-	 */
-	public byte[] getChunk() {
-		return chunk;
-	}
+//	/**
+//	 * 
+//	 * @return the chunk of the file that is currently been uploaded
+//	 */
+//	public byte[] getChunk() {
+//		return chunk;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param chunk of the file that is currently been uploaded
+//	 */
+//	public void setChunk(byte[] chunk) {
+//		this.chunk = chunk;
+//	}
 
-	/**
-	 * 
-	 * @param chunk of the file that is currently been uploaded
-	 */
-	public void setChunk(byte[] chunk) {
-		this.chunk = chunk;
-	}
-
+	
+	
 	/**
 	 * 
 	 * @return an integer that identifies the folder of the GFS.
@@ -73,6 +79,20 @@ public class UploadedGfsChunkFile implements Serializable {
 	 */
 	public int getType() {
 		return type;
+	}
+
+	/**
+	 * @return the chunk
+	 */
+	public BytesArray getChunk() {
+		return chunk;
+	}
+
+	/**
+	 * @param chunk the chunk to set
+	 */
+	public void setChunk(BytesArray chunk) {
+		this.chunk = chunk;
 	}
 
 	/**
@@ -162,9 +182,7 @@ public class UploadedGfsChunkFile implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		return "UploadedGfsChunkFile [type=" + type + ", filePath=" + filePath + ", fileCode=" + fileCode + "]";
 	}
-
-
+	
 }

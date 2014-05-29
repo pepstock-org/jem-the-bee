@@ -117,6 +117,7 @@ public class StatisticsManager {
 				}
 			}
 		} catch (InvalidDatasetNameException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
 		}
 		if (!enable){

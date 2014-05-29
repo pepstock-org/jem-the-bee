@@ -65,19 +65,19 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	protected final void loadChildren(Element element, BeanDefinitionBuilder factory, ParserContext context){
 		// Reads all data description children and creates objects for next bindings
 		List<Element> childDataDescriptions = DomUtils.getChildElementsByTagName(element, DataDescriptionDefinitionParser.DATA_DESCRIPTION_ELEMENT);
-		if (childDataDescriptions != null && childDataDescriptions.size() > 0) {
+		if (childDataDescriptions != null && !childDataDescriptions.isEmpty()) {
 			parseDataDescriptions(childDataDescriptions, factory, context);
 		}
 
 		// Reads all data source children and creates objects for next bindings
 		List<Element> childDataSources = DomUtils.getChildElementsByTagName(element, DataSourceDefinitionParser.DATA_SOURCE_ELEMENT);
-		if (childDataSources != null && childDataSources.size() > 0) {
+		if (childDataSources != null && !childDataSources.isEmpty()) {
 			parseDataSources(childDataSources, factory, context);
 		}
 		
 		// Reads all locks children and creates objects for next bindings
 		List<Element> childLocks = DomUtils.getChildElementsByTagName(element, LockDefinitionParser.LOCK_ELEMENT);
-		if (childLocks != null && childLocks.size() > 0) {
+		if (childLocks != null && !childLocks.isEmpty()) {
 			parseLocks(childLocks, factory, context);
 		}
 	}

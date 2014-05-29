@@ -1587,7 +1587,19 @@ public enum NodeMessage implements MessageInterface {
 	 *  "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs there is an exception during the upload of a file.")
-	JEMC265E(265, "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR);
+	JEMC265E(265, "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to create complete path of uploade file {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception during the creation of upload of a file.")
+	JEMC266E(266, "Error while trying to create complete path of uploaded file {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception during the rename of temporary file to final final during uploading.")
+	JEMC267E(267, "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
