@@ -32,6 +32,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface GfsManagerService extends RemoteService {
 
 	/**
+	 * @param type 
+	 * @param path 
+	 * @param pathName 
 	 * @return
 	 * @throws JemException
 	 */
@@ -41,6 +44,7 @@ public interface GfsManagerService extends RemoteService {
 	 * 
 	 * @param type
 	 * @param file
+	 * @param pathName 
 	 * @return
 	 * @throws JemException
 	 */

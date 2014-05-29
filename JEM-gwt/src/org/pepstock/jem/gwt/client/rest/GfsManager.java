@@ -30,7 +30,6 @@ import org.pepstock.jem.gwt.server.rest.GfsManagerImpl;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsOutputContent;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
-import org.pepstock.jem.io.BytesArray;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
@@ -230,9 +229,7 @@ public class GfsManager extends AbstractRestManager {
 				WebResource resource = client.getBaseWebResource();
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				
-				BytesArray ba = new BytesArray(UploadedGfsChunkFile.MAX_CHUNK_SIZE);
-				ba.write(chunk, 0, UploadedGfsChunkFile.MAX_CHUNK_SIZE);
-				chunkFile.setChunk(ba);
+				chunkFile.setChunk(chunk);
 				chunkFile.setFileCode(randomNumber);
 				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 				chunkFile.setTransferComplete(false);

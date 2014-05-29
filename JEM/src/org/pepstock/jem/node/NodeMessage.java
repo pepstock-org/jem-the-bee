@@ -1598,8 +1598,14 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 *  "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs there is an exception during the rename of temporary file to final final during uploading.")
-	JEMC267E(267, "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR);
+	@Description(explanation = "It occurs there is an exception renaming temporary file to final one during uploading.")
+	JEMC267E(267, "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to delete uploaded file {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception deleting to final file after upload.")
+	JEMC268E(268, "Error while trying to delete uploaded file {0}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
