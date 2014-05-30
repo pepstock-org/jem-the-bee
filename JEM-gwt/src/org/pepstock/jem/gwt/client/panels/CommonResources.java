@@ -23,9 +23,6 @@ import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.FilterEvent;
-import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
 import org.pepstock.jem.gwt.client.panels.components.CommandPanel;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -61,14 +58,7 @@ public class CommonResources extends BasePanel<Resource> implements SearchListen
 	public CommonResources() {
 		super(new TableContainer<Resource>(new ResourcesTable()),
 				new CommandPanel<Resource>(new ResourcesSearcher(), new ResourcesActions()));
-		
-		// sets itself as listener
-		getCommandPanel().getSearcher().setSearchListener(this);
-		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
 		getTableContainer().getUnderlyingTable().setInspectListener(this);
-
-		// subscribe the basic filter event handler to eventbus
-		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
 	}
 
 	/*

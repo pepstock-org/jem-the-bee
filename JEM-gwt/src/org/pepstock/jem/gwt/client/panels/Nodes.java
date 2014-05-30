@@ -25,9 +25,6 @@ import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.UpdateListener;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.FilterEvent;
-import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.gwt.client.panels.administration.commons.NodeInspectListener;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
@@ -61,14 +58,7 @@ public class Nodes extends BasePanel<NodeInfoBean> implements SearchListener, Up
 	public Nodes() {
 		super(new TableContainer<NodeInfoBean>(new NodesTable()),
 				new CommandPanel<NodeInfoBean>(new NodesSearcher(), new NodesActions()));
-
-		// sets itself as listener
-		getCommandPanel().getSearcher().setSearchListener(this);
-		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
-		getCommandPanel().getActions().getUnderlyingTable().setInspectListener(this);
-
-		// subscribe the basic filter event handler to eventbus
-		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
+		getTableContainer().getUnderlyingTable().setInspectListener(this);
 	}
 
 	/**
