@@ -42,6 +42,7 @@ public final class TextFieldPanel extends AbstractFieldPanel<TextFieldDescriptor
 		
 		inputObject.addKeyUpHandler(handler);
 		inputObject.addValueChangeHandler(handler);
+		inputObject.setWidth("98%");
 		
 		ResourceProperty existingProperty = getPanel().getResource().getProperties().get(getDescriptor().getKey());
 		if (existingProperty != null) {

@@ -57,8 +57,12 @@ public class CounterHBarChart extends BarChart {
 			throw new IllegalArgumentException("Names and Values must have the same size!");
 		}
 		// set the labels
-		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelX(valuesLabel);
-		if (namesLabel != null && !namesLabel.trim().isEmpty()) setLabelY(namesLabel);
+		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) {
+			setLabelX(valuesLabel);
+		}
+		if (namesLabel != null && !namesLabel.trim().isEmpty()) {
+			setLabelY(namesLabel);
+		}
 		// set Y axis tick formatter
 		setTickFormatterY(new NamesTickFormatter(names));
 		// set Y axis max value

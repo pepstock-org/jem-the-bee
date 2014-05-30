@@ -23,9 +23,6 @@ import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.FilterEvent;
-import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
 import org.pepstock.jem.gwt.client.panels.components.CommandPanel;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -60,14 +57,7 @@ public class Roles extends BasePanel<Role> implements SearchListener, InspectLis
 	public Roles() {
 		super(new TableContainer<Role>(new RolesTable()),
 			new CommandPanel<Role>(new RolesSearcher(), new RolesActions()));
-		
-		// sets itself as listener
-		getCommandPanel().getSearcher().setSearchListener(this);
-		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
 		getTableContainer().getUnderlyingTable().setInspectListener(this);
-		
-		// subscribe the basic filter event handler to eventbus
-		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
 	}
 
 	/*

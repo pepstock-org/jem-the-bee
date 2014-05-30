@@ -23,9 +23,6 @@ import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.UpdateListener;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.FilterEvent;
-import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.gwt.client.panels.common.GetQueueAsyncCallback;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
 import org.pepstock.jem.gwt.client.panels.components.CommandPanel;
@@ -60,14 +57,7 @@ public class Output extends BasePanel<Job> implements SearchListener, UpdateList
 	public Output() {
 		super(new TableContainer<Job>(new OutputTable(true)),
 				new CommandPanel<Job>(new JobsSearcher(PreferencesKeys.JOB_SEARCH_OUTPUT), new OutputActions()));
-		
-		// sets listeners
-		getCommandPanel().getSearcher().setSearchListener(this);
-		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
 		getTableContainer().getUnderlyingTable().setInspectListener(this);
-
-		// subscribe the basic filter event handler to eventbus
-		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
 	}
 
 	/**
