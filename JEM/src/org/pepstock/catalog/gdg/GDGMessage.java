@@ -35,9 +35,9 @@ import org.pepstock.jem.log.MessageLevel;
 public enum GDGMessage implements MessageInterface{
 	
 	/**
-	 * "dd={0}, dsn={1} doesn't exist.", MessageLevel.ERROR
+	 * "dd={0}, dsn={1} doesn't exist", MessageLevel.ERROR
 	 */
-	JEMD001E(1, "dd={0}, dsn={1} doesn't exist.", MessageLevel.ERROR),
+	JEMD001E(1, "dd={0}, dsn={1} doesn't exist", MessageLevel.ERROR),
 
 	/**
 	 * "dd={0}, dsn={1} Offset greater than 0 and not allowed in {2}", MessageLevel.ERROR
@@ -45,59 +45,59 @@ public enum GDGMessage implements MessageInterface{
 	JEMD002E(2, "dd={0}, dsn={1} Offset greater than 0 and not allowed in {2}", MessageLevel.ERROR),
 
 	/**
-	 * "dd={0}, dsn={1} Offset equals or less than 0 and not allowed in NEW.", MessageLevel.ERROR
+	 * "dd={0}, dsn={1} Offset equals or less than 0 and not allowed in NEW", MessageLevel.ERROR
 	 */
-	JEMD003E(3, "dd={0}, dsn={1} Offset equals or less than 0 and not allowed in NEW.", MessageLevel.ERROR),
+	JEMD003E(3, "dd={0}, dsn={1} Offset equals or less than 0 and not allowed in NEW", MessageLevel.ERROR),
 
 	/**
-	 * "dd={0}, dsn={1} exists.", MessageLevel.ERROR
+	 * "dd={0}, dsn={1} exists", MessageLevel.ERROR
 	 */
-	JEMD004E(4, "dd={0}, dsn={1} exists.", MessageLevel.ERROR),
+	JEMD004E(4, "dd={0}, dsn={1} exists", MessageLevel.ERROR),
 	
 	/**
-	 * "Relative position {0} is too high.", MessageLevel.ERROR
+	 * "Relative position {0} is too high", MessageLevel.ERROR
 	 */
-	JEMD005E(5, "Relative position {0} is too high.", MessageLevel.ERROR),
+	JEMD005E(5, "Relative position {0} is too high", MessageLevel.ERROR),
 	
 	/**
-	 * "File is null.", MessageLevel.ERROR
+	 * "File is null", MessageLevel.ERROR
 	 */
-	JEMD006E(6, "File is null.", MessageLevel.ERROR),
+	JEMD006E(6, "File is null", MessageLevel.ERROR),
 	
 	/**
-	 * "{0} already exists.", MessageLevel.ERROR
+	 * "{0} already exists", MessageLevel.ERROR
 	 */
-	JEMD007E(7, "{0} already exists.", MessageLevel.ERROR),
+	JEMD007E(7, "{0} already exists", MessageLevel.ERROR),
 	
 	/**
-	 * "{0} unable to create generation 0.", MessageLevel.ERROR
+	 * "{0} unable to create generation 0", MessageLevel.ERROR
 	 */
-	JEMD008E(8, "{0} unable to create generation 0.", MessageLevel.ERROR),	
+	JEMD008E(8, "{0} unable to create generation 0", MessageLevel.ERROR),	
 	
 	/**
-	 * "{0} unable to create directories.", MessageLevel.ERROR
+	 * "{0} unable to create directories", MessageLevel.ERROR
 	 */
-	JEMD009E(9, "{0} unable to create directories.", MessageLevel.ERROR),	
+	JEMD009E(9, "{0} unable to create directories", MessageLevel.ERROR),	
 	
 	/**
-	 * "{0}.", MessageLevel.ERROR
+	 * "{0}", MessageLevel.ERROR
 	 */
-	JEMD010E(10, "{0}.", MessageLevel.ERROR),
+	JEMD010E(10, "File {0} not found", MessageLevel.ERROR),
 	
 	/**
-	 * "{0} is not a directory.", MessageLevel.ERROR
+	 * "{0} is not a directory", MessageLevel.ERROR
 	 */
-	JEMD011E(11, "{0} is not a directory.", MessageLevel.ERROR),
+	JEMD011E(11, "{0} is not a directory", MessageLevel.ERROR),
 	
 	/**
-	 * "Last Generation is not an Integer: {0}.", MessageLevel.ERROR
+	 * "Last Generation is not an Integer: {0}", MessageLevel.ERROR
 	 */
-	JEMD012E(12, "Last Generation is not an Integer: {0}.", MessageLevel.ERROR),
+	JEMD012E(12, "Last Generation is not an Integer: {0}", MessageLevel.ERROR),
 	
 	/**
-	 * "Last Generation is not setted.", MessageLevel.ERROR
+	 * "Last Generation is not setted", MessageLevel.ERROR
 	 */
-	JEMD013E(13, "Last Generation is not setted.", MessageLevel.ERROR);
+	JEMD013E(13, "Last Generation is not setted", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>GDGMessage</code>. 

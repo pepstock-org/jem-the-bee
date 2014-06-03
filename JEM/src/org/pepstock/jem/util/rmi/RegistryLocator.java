@@ -76,9 +76,9 @@ public class RegistryLocator {
 		try {
 			return (RmiObject) registry.lookup(name);
 		} catch (NotBoundException nbe) {
-			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage(nbe.getMessage()), nbe);
+			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage("lookup", nbe.getMessage()), nbe);
 		} catch (AccessException ae) {
-			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage(ae.getMessage()), ae);
+			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage("lookup", ae.getMessage()), ae);
 		} catch (RemoteException re) {
 			throw re;
 		}
@@ -94,7 +94,7 @@ public class RegistryLocator {
 		try {
 			return registry.list();
 		} catch (AccessException ae) {
-			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage(ae.getMessage()), ae);
+			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage("list", ae.getMessage()), ae);
 		} catch (RemoteException re) {
 			throw re;
 		}
