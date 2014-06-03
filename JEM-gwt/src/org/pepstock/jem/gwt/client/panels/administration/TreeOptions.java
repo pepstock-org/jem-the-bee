@@ -80,8 +80,6 @@ public class TreeOptions extends ScrollPanel {
 	
 	public static final String GFS_PANEL_OPTION = "gfs-panel";
 	
-	public static final String MEMORY_PANEL_OPTION = "memory-panel";
-	
 	public static final String CERTIFICATES_PANEL_OPTION = "certificate-panel";
 	
 	public static final String CLUSTER_CONFIG_OPTION = "cluster-configuration";
@@ -112,7 +110,6 @@ public class TreeOptions extends ScrollPanel {
 		CellPanel nqueues = createItem("Queues status", NODES_QUEUES_STATUS_OPTION, null, Permissions.ADMINISTRATION_NODES_QUEUES);
 		CellPanel redo = createItem("Redo statements", REDO_PANEL_OPTION, null, Permissions.ADMINISTRATION_CLUSTER_REDO);
 		CellPanel gfs = createItem("GFS usage", GFS_PANEL_OPTION, null, Permissions.ADMINISTRATION_CLUSTER_GFS_USAGE);
-		CellPanel memory = createItem("Memory usage", MEMORY_PANEL_OPTION, null, Permissions.ADMINISTRATION_CLUSTER_MEMORY_USAGE);
 		CellPanel certificate = createItem("Certificates manager", CERTIFICATES_PANEL_OPTION, null, Permissions.ADMINISTRATION_SECURITY_CERTIFICATE);
 
 		List<CellPanel> panels = new LinkedList<CellPanel>();
@@ -127,9 +124,6 @@ public class TreeOptions extends ScrollPanel {
 			}
 			if (gfs != null) {
 				panels.add(gfs);
-			}
-			if (memory != null) {
-				panels.add(memory);
 			}
 			if (grs != null) {
 				panels.add(grs);

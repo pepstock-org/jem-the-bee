@@ -28,6 +28,7 @@ public class NodesSearcher extends SearcherListenerWidget {
 	
 	/**
 	 *  Construct the panel, with label for text field
+	 * @param preferences 
 	 */
 	public NodesSearcher(String preferences) {
 		super("Nodes pattern (regEx): ", -1, "*", preferences);

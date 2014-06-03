@@ -70,7 +70,7 @@ public final class Coordinate implements Serializable{
 		return userId;
 	}
 	/**
-	 * @param userid the userid to set
+	 * @param userId the userId to set
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;

@@ -9,6 +9,7 @@ import org.pepstock.jem.node.resources.custom.ResourcePartDescriptor;
  * Base abstract class for custom resource property panel. Has support for {@link ResourceDescriptor}.
  * <code>D</code> is the type of configuration descriptor
  * @author Marco "Fuzzo" Cuccato
+ * @param <D> 
  *
  */
 public abstract class CustomResourcePropertiesPanel<D extends ResourcePartDescriptor> extends ResourcesPropertiesPanel {
@@ -19,6 +20,7 @@ public abstract class CustomResourcePropertiesPanel<D extends ResourcePartDescri
 	 * Builds the panel
 	 * @param resource the underlying resource
 	 * @param descriptor the descriptor, contains rendering information
+	 * @param hasComplexWidget 
 	 */
 	public CustomResourcePropertiesPanel(Resource resource, D descriptor, boolean hasComplexWidget) {
 		super(resource, hasComplexWidget);

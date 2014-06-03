@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Component which contains the result underlyingTable 
  * 
  * @author Marco "Cuc" Cuccato
+ * @param <T> 
  *
  */
 public class TableContainer<T> extends ScrollPanel implements HasAbstractTable<T>, ResizeCapable {

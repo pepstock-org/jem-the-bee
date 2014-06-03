@@ -61,8 +61,21 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	public void load(){
 		long free = 0L;
 		long used = 0L;
+		String hosts = null;
 		for (LightMemberSample msample : Instances.getLastSample().getMembers()){
-			if (msample != null){
+			boolean calculate = true;
+			// extract IP with : that is used as separator in the string
+			// with all ip addresses
+			String ip = msample.getMemberLabel().substring(0, msample.getMemberLabel().indexOf(":")+1);
+			if (hosts == null){
+				hosts = ip;
+			} else if (!hosts.contains(ip)){
+				hosts = hosts + ip;
+			} else {
+				calculate = false;
+			}
+			
+			if (msample != null && calculate){
 				free += msample.getProcessMemoryFree(); 
 				used += msample.getProcessMemoryUsed();
 	 		}
