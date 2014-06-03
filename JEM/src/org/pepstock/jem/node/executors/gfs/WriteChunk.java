@@ -92,10 +92,8 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 				FileUtils.forceMkdir(file.getParentFile());
 			}
 			// if tmp file does not exists create it with all directory structure
-			if (!file.exists()){
-				if (!file.createNewFile()){
-					throw new ExecutorException(NodeMessage.JEMC266E, file.getAbsolutePath());
-				}
+			if (!file.exists() && !file.createNewFile()){
+				throw new ExecutorException(NodeMessage.JEMC266E, file.getAbsolutePath());
 			}
 			// if the transferred is complete just rename the tmp file
 			if (chunk.isTransferComplete()) {
@@ -118,14 +116,13 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 				output.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			// upload get an exception so delete tmp file
 			try {
 				FileUtils.deleteDirectory(file);
 			} catch (IOException e1) {
 				LogAppl.getInstance().ignore(e1.getMessage(), e1);
 			}
-			throw new ExecutorException(NodeMessage.JEMC265E, file.getAbsolutePath(), e.getMessage());
+			throw new ExecutorException(NodeMessage.JEMC265E, e, file.getAbsolutePath(), e.getMessage());
 		}
 		return true;
 	}
