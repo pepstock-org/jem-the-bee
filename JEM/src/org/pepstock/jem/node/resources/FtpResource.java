@@ -40,8 +40,12 @@ public class FtpResource extends Resource {
 	public static final String ACTION_READ = "read";
 	public static final String ACTION_WRITE = "write";
 	public static final String REMOTE_FILE = "remoteFile";
+	
+	public static final String RESTART_OFFSET = "restartOffset";
+	public static final String BUFFER_SIZE = "bufferSize";
 
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(USERID, PASSWORD, URL, BINARY, REMOTE_FILE, ACTION_MODE));
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(USERID, PASSWORD, URL, BINARY, REMOTE_FILE, ACTION_MODE, 
+			RESTART_OFFSET, BUFFER_SIZE));
 
 	/**
 	 * Type for FTP data sources

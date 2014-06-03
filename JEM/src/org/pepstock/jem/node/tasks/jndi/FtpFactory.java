@@ -123,6 +123,10 @@ public class FtpFactory implements ObjectFactory {
 		FTPClient ftp = ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) ? new FTPClient() : new FTPSClient();
 
 		boolean binaryTransfer = Parser.parseBoolean(properties.getProperty(FtpResource.BINARY, "false"), false);
+		
+		long restartOffset = Parser.parseLong(properties.getProperty(FtpResource.RESTART_OFFSET, "-1"), -1);
+		
+		int bufferSize = Parser.parseInt(properties.getProperty(FtpResource.BUFFER_SIZE, "-1"), -1);
 
 		try {
 			int reply;
@@ -149,7 +153,15 @@ public class FtpFactory implements ObjectFactory {
 			if (binaryTransfer) {
 				ftp.setFileType(FTP.BINARY_FILE_TYPE);
 			}
-
+			
+			if (restartOffset >= 0){
+				ftp.setRestartOffset(restartOffset);
+			}
+			
+			if (bufferSize >= 0){
+				ftp.setBufferSize(bufferSize);
+			}
+			
 			if (accessMode.equalsIgnoreCase(FtpResource.ACTION_WRITE)){
 				OutputStream os = ftp.storeFileStream(remoteFile);
 				if (os == null){
