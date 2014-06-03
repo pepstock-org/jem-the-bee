@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
+
 /**
  * 
  * This class represents a chunk of file that is being uploaded. We use chunk so
@@ -38,7 +40,7 @@ public class UploadedGfsChunkFile implements Serializable {
 	 */
 	public static final int MAX_CHUNK_SIZE = 262144;
 
-	private byte[] chunk;
+	private byte[] chunk = null;
 
 	private int type;
 
@@ -60,10 +62,10 @@ public class UploadedGfsChunkFile implements Serializable {
 
 	/**
 	 * 
-	 * @param chunk of the file that is currently been uploaded
+	 * @param chunkParm of the file that is currently been uploaded
 	 */
-	public void setChunk(byte[] chunk) {
-		this.chunk = chunk;
+	public void setChunk(byte[] chunkParm) {
+		this.chunk = Arrays.copyOf(chunkParm, chunkParm.length);
 	}
 	
 	/**
