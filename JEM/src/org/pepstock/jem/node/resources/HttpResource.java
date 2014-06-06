@@ -23,11 +23,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.HttpVersion;
-import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.params.CoreProtocolPNames;
 
 
 /**
@@ -36,12 +34,8 @@ import org.apache.http.params.CoreProtocolPNames;
  * <br>
  * <pre>
  * HTTP_CONTENT_CHARSET = &quot;{@link CoreProtocolPNames.HTTP_CONTENT_CHARSET}&quot;;
- * HTTP_ELEMENT_CHARSET = &quot;{@link CoreProtocolPNames.HTTP_ELEMENT_CHARSET}&quot;;
- * STRICT_TRANSFER_ENCODING = &quot;{@link CoreProtocolPNames.STRICT_TRANSFER_ENCODING}&quot;;
  * PROTOCOL_VERSION = &quot;{@link CoreProtocolPNames.PROTOCOL_VERSION}&quot;;
  * USE_EXPECT_CONTINUE = &quot;{@link CoreProtocolPNames.USE_EXPECT_CONTINUE}&quot;;
- * WAIT_FOR_CONTINUE = &quot;{@link CoreProtocolPNames.WAIT_FOR_CONTINUE}&quot;;
- * CREDENTIAL_CHARSET = &quot;{@link AuthPNames.CREDENTIAL_CHARSET}&quot;;
  * USER_AGENT  = &quot;{@link CoreProtocolPNames.USER_AGENT}&quot;;
  * PROXY_URL = &quot;proxyUrl&quot;;
  * PROXY_PROTOCOL = &quot;proxyProtocol&quot;;
@@ -110,25 +104,7 @@ public class HttpResource extends Resource {
 	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
 	 * @see CoreProtocolPNames.HTTP_CONTENT_CHARSET
 	 */
-	public static final String HTTP_CONTENT_CHARSET = CoreProtocolPNames.HTTP_CONTENT_CHARSET;
-	
-	/**
-	 * Constant property containing the format for encoding <code>HTTP protocol elements</code>,
-	 * for example: <code>UTF-8</code>. Default is: <code>US-ASCII</code>. <br>
-	 * Configuration property. <br>
-	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
-	 * @see CoreProtocolPNames.HTTP_ELEMENT_CHARSET
-	 */
-	public static final String HTTP_ELEMENT_CHARSET = CoreProtocolPNames.HTTP_ELEMENT_CHARSET;
-	
-	/**
-	 * Constant property containing the boolean that defines whether responses with an invalid 
-	 * <code>Transfer-Encoding</code> header should be rejected. <br>
-	 * Configuration property. <br>
-	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
-	 * @see CoreProtocolPNames.STRICT_TRANSFER_ENCODING
-	 */
-	public static final String STRICT_TRANSFER_ENCODING = CoreProtocolPNames.STRICT_TRANSFER_ENCODING;
+	public static final String HTTP_CONTENT_CHARSET = "httpContentCharset";
 	
 	/**
 	 * Constant property containing the protocol version to use: <br>
@@ -140,7 +116,7 @@ public class HttpResource extends Resource {
 	 * @see HttpVersion
 	 * @see CoreProtocolPNames.PROTOCOL_VERSION
 	 */
-	public static final String PROTOCOL_VERSION = CoreProtocolPNames.PROTOCOL_VERSION;
+	public static final String PROTOCOL_VERSION = "protocolVersion";
 	
 	/**
 	 * Constant property containing the boolean that defines whether use <code>Expect: 100-continue</code>
@@ -149,34 +125,15 @@ public class HttpResource extends Resource {
 	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
 	 * @see CoreProtocolPNames.USE_EXPECT_CONTINUE
 	 */
-	public static final String USE_EXPECT_CONTINUE = CoreProtocolPNames.USE_EXPECT_CONTINUE;
-	
-	/**
-	 * Constant property containing the maximum period of time in milliseconds the client should
-	 * spend waiting for a 100-continue response. <br>
-	 * Used if {@link #USE_EXPECT_CONTINUE} value is <code>true</code> <br>
-	 * Configuration property. <br>
-	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
-	 * @see CoreProtocolPNames.WAIT_FOR_CONTINUE
-	 */
-	public static final String WAIT_FOR_CONTINUE = CoreProtocolPNames.WAIT_FOR_CONTINUE;
-	
-	/**
-	 * Constant property containing the charset to be used when encoding credentials. 
-	 * For example: <code>UTF-8</code><br>
-	 * Configuration property. <br>
-	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
-	 * @see AuthPNames.CREDENTIAL_CHARSET
-	 */
-	public static final String CREDENTIAL_CHARSET = AuthPNames.CREDENTIAL_CHARSET;
-	
+	public static final String USE_EXPECT_CONTINUE = "useExpectContinue";
+
 	/**
 	 * Constant property containing the content of the <code>User-Agent</code> header if needed. <br>
 	 * Configuration property. <br>
 	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
 	 * @see CoreProtocolPNames.USER_AGENT
 	 */
-	public static final String USER_AGENT  = CoreProtocolPNames.USER_AGENT;
+	public static final String USER_AGENT  = "userAgent";
 	
 	/**
 	 * Constant property containing the <code>Proxy url</code> if proxy is needed. <br>
@@ -323,14 +280,10 @@ public class HttpResource extends Resource {
 		PROXY_URL, 
 		PROXY_PROTOCOL,
 		PROXY_PORT,
-		CREDENTIAL_CHARSET,
 		PROTOCOL_VERSION,
-		HTTP_ELEMENT_CHARSET,
 		HTTP_CONTENT_CHARSET,
 		USER_AGENT,
-		STRICT_TRANSFER_ENCODING,
 		USE_EXPECT_CONTINUE,
-		WAIT_FOR_CONTINUE,
 		REQUEST_HOST_NAME,
 		REQUEST_PORT,
 		PROTOCOL_TYPE,
