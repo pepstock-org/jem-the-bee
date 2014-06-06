@@ -75,4 +75,9 @@ public class SingleSelectableListFieldDescriptor extends SingleValueFieldDescrip
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "SingleSelectableListFieldDescriptor [toString()=" + super.toString() + ", values=" + values + ", renderAsRadio=" + renderAsRadio + "]";
+	}
+
 }

@@ -47,9 +47,7 @@
 				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA-sources.jar" />
 				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-dev.jar" />
 				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-user.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gxt-3.0.1.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gxt-chart-3.0.1.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gxt-legacy-3.0.1.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gflot-3.2.1.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.source.directory}" />
 				<pathelement location="${jem.workspace}/${jem.project.directory}/src" />
 				<pathelement location="${jem.workspace}/${jem.gwt.classes.directory}" />

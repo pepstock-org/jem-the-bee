@@ -58,7 +58,7 @@ public class RestManager {
 		if (user == null) {
 			// Creo l'oggetto account con uid e pwd
 			Account account = new Account();
-			account.setUserid(conf.getUser());
+			account.setUserId(conf.getUser());
 			account.setPassword(conf.getPassword());
 			// faccio login e mi salvo logged user
 			user = man.login(account);

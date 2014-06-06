@@ -5,9 +5,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
            http://www.springframework.org/schema/batch 
-           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
            http://www.pepstock.org/schema/jem
            http://www.pepstock.org/schema/jem/jem.xsd">
 
@@ -63,6 +63,20 @@
 			<jem:property name="binary">true</jem:property>
 		</jem:dataSource>
 	</jem:tasklet>
+
+	<jem:tasklet id="dump-tasklet-noName" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
+	
+		<jem:dataDescription name="INPUT" disposition="SHR">
+			<jem:dataSet name="sample.data" datasource="JUNIT-FTP-RESOURCE" />
+		</jem:dataDescription>
+
+		<jem:dataDescription name="OUTPUT" disposition="NEW" sysout="true">
+		</jem:dataDescription>
+		
+		<jem:dataSource resource="JUNIT-FTP-RESOURCE">
+			<jem:property name="binary">true</jem:property>
+		</jem:dataSource>
+	</jem:tasklet>
 	
 	<jem:tasklet id="write-tasklet" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 	
@@ -86,8 +100,11 @@
 		<step id="read" next="dump">
 			<tasklet ref="read-tasklet" />
 		</step>
-		<step id="dump" next="write">
+		<step id="dump" next="dumpNoName">
 			<tasklet ref="dump-tasklet" />
+		</step>
+		<step id="dumpNoName" next="write">
+			<tasklet ref="dump-tasklet-noName" />
 		</step>
 		<step id="write">
 			<tasklet ref="write-tasklet" />

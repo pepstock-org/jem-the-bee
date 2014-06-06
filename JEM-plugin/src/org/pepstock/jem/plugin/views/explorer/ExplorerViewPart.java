@@ -17,7 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.plugin.Client;
@@ -98,11 +98,11 @@ public class ExplorerViewPart extends LoginViewPart {
 						@Override
 						public void run() {
 							// creates here the tabs based on authorization of client
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFile.DATA), Permissions.GFS_DATA);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFile.LIBRARY), Permissions.GFS_LIBRARY);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFile.CLASS), Permissions.GFS_CLASS);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFile.SOURCE), Permissions.GFS_SOURCES);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFile.BINARY), Permissions.GFS_BINARY);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.DATA), Permissions.GFS_DATA);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.LIBRARY), Permissions.GFS_LIBRARY);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.CLASS), Permissions.GFS_CLASS);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.SOURCE), Permissions.GFS_SOURCES);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.BINARY), Permissions.GFS_BINARY);
 						}
 					});
 				} else {

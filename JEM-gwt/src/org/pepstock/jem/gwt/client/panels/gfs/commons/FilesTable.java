@@ -18,7 +18,7 @@ package org.pepstock.jem.gwt.client.panels.gfs.commons;
 
 import java.util.Date;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.FileSystemTableStyle;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;

@@ -22,9 +22,6 @@ import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.FilterEvent;
-import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
 import org.pepstock.jem.gwt.client.panels.components.CommandPanel;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -52,14 +49,6 @@ public class CertificatesTableContainerPanel extends BasePanel<CertificateEntry>
 	public CertificatesTableContainerPanel() {
 		super(new TableContainer<CertificateEntry>(new CertificateEntriesTable()),
 			new CommandPanel<CertificateEntry>(new CertificateEntrySearcher(), new CertificateEntryActions()));
-
-		
-		// sets itself as listener for searching
-		getCommandPanel().getSearcher().setSearchListener(this);
-		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
-		
-		// subscribe the basic filter event handler to eventbus
-		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
 	}
 
 	/*
@@ -106,5 +95,5 @@ public class CertificatesTableContainerPanel extends BasePanel<CertificateEntry>
         }
 		
 	}
-	
+
 }

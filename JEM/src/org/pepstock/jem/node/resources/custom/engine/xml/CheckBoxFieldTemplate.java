@@ -30,6 +30,10 @@ import com.thoughtworks.xstream.XStream;
 public class CheckBoxFieldTemplate extends SingleValueFieldTemplate{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * Corresponding tag in the resource templates <code>xml</code> file.
 	 * @see XStream
 	 */

@@ -29,20 +29,21 @@ import com.google.gwt.user.client.ui.Image;
  */
 public final class Loading {
 
+	static {
+		Styles.INSTANCE.common().ensureInjected();
+	}
+	
 	/**
 	 * No delay
 	 */
 	public static final int NO_DELAY = -1;
-
-	static {
-		Styles.INSTANCE.loading().ensureInjected();
-	}
 
 	private static final DelayedPopupPanel POPUP = new DelayedPopupPanel(true, 100) {
 		// no code
 	};
 	
 	static {
+		POPUP.addStyleName(Styles.INSTANCE.common().loadingPadding());
 		POPUP.setGlassEnabled(true);
 		POPUP.setAnimationEnabled(false);
 		// animated image

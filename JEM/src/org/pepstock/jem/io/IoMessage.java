@@ -51,13 +51,8 @@ public enum IoMessage implements MessageInterface{
 	/**
 	 * "Stream Closed.", MessageLevel.ERROR
 	 */
-	JEMI004E(4, "Stream Closed.", MessageLevel.ERROR),
+	JEMI004E(4, "Stream Closed.", MessageLevel.ERROR);
 
-	/**
-	 * "{0}.", MessageLevel.ERROR
-	 */
-	JEMI005E(5, "{0}.", MessageLevel.ERROR);
-	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>IoMessage</code>. 
 	 * @see Message

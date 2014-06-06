@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.BackListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.InspectorHeader;
@@ -45,12 +47,21 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	
+	@SuppressWarnings("javadoc")
+    public static final int INPUT = 0, RUNNING = 1, OUTPUT = 2, ROUTING = 3;
+
 	final TabPanel mainTabPanel = new TabPanel();
 	
-	private NodeDataChart chartInput = new NodeDataChart(NodeDataChart.INPUT);
-	private NodeDataChart chartRunning = new NodeDataChart(NodeDataChart.RUNNING);
-	private NodeDataChart chartOutput = new NodeDataChart(NodeDataChart.OUTPUT);
-	private NodeDataChart chartRouting = new NodeDataChart(NodeDataChart.ROUTING);
+	private TimeCountLineChart chartInput = new TimeCountLineChart();
+	private TimeCountLineChart chartRunning = new TimeCountLineChart();
+	private TimeCountLineChart chartOutput = new TimeCountLineChart();
+	private TimeCountLineChart chartRouting = new TimeCountLineChart();
+	
+	private boolean chartInputLoaded;
+	private boolean chartRunningLoaded;
+	private boolean chartOutputLoaded;
+	private boolean chartRoutingLoaded;
+	
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 	private ScrollPanel scroller = new ScrollPanel(nodes);
 	
@@ -62,7 +73,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	private VerticalPanel runningPanel = new VerticalPanel();
 	private VerticalPanel outputPanel = new VerticalPanel();
 	private VerticalPanel routingPanel = new VerticalPanel();
-
 
 	/**
 	 * 
@@ -113,7 +123,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		for (LightMemberSample msample : sample.getMembers()){
     			if (msample.getMemberKey().equalsIgnoreCase(memberKey)){
     	    		NodeData data = new NodeData();
-    	    		data.setKey(sample.getTime());
+    	    		data.setTime(sample.getTime());
   
     	    		data.setInput(msample.getMapsStats().get(Queues.INPUT_QUEUE).getOwnedEntryCount());
     	    		data.setRunning(msample.getMapsStats().get(Queues.RUNNING_QUEUE).getOwnedEntryCount());
@@ -132,32 +142,98 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     	Collections.sort(list, new LightMemberSampleComparator());
     	nodes.getUnderlyingTable().setRowData(list);
 
-    	chartInput.setLoaded(false);
-    	chartRunning.setLoaded(false);
-    	chartOutput.setLoaded(false);
-    	chartRouting.setLoaded(false);
+    	chartInputLoaded = false;
+    	chartRunningLoaded = false;
+    	chartOutputLoaded = false;
+    	chartRoutingLoaded = false;
+    	
     	mainTabPanel.selectTab(0, true);
 	}
 	
-	private void loadChart(int selected){
-		if (selected == NodeDataChart.INPUT){
-			loadChart(inputPanel, chartInput);
-		} else if (selected == NodeDataChart.RUNNING){
-			loadChart(runningPanel, chartRunning);
-		} else if (selected == NodeDataChart.OUTPUT){
-			loadChart(outputPanel, chartOutput);
-		} else if (selected == NodeDataChart.ROUTING){
-			loadChart(routingPanel, chartRouting);
+	private void loadChart(int selected) {
+		switch (selected) {
+		case INPUT:
+			loadInputChart();
+			break;
+		case RUNNING:
+			loadRunningChart();
+			break;
+		case OUTPUT:
+			loadOutputChart();
+			break;
+		case ROUTING:
+			loadRoutingChart();
+			break;
+		default:
+			break;
 		}
     }
 	
-	private void loadChart(VerticalPanel parent, NodeDataChart chart){
-		if (!chart.isLoaded()){
-			//
-			chart.setData(listData);
-			if (parent.getWidgetCount() == 0) {
-				parent.add(chart.asWidget());
+	private void loadInputChart() {
+		if (!chartInputLoaded) {
+			String[] times = new String[listData.size()];
+			long[] values = new long[listData.size()];
+			for (int i=0; i<listData.size(); i++) {
+				NodeData nd = listData.get(i);
+				times[i] = nd.getTime();
+				values[i] = nd.getInput();
 			}
+			chartInput.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
+			if (inputPanel.getWidgetCount() == 0) {
+				inputPanel.add(chartInput);
+			}
+			chartInputLoaded = true;
+		}
+	}
+	
+	private void loadRunningChart() {
+		if (!chartRunningLoaded) {
+			String[] times = new String[listData.size()];
+			long[] values = new long[listData.size()];
+			for (int i=0; i<listData.size(); i++) {
+				NodeData nd = listData.get(i);
+				times[i] = nd.getTime();
+				values[i] = nd.getRunning();
+			}
+			chartRunning.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
+			if (runningPanel.getWidgetCount() == 0) {
+				runningPanel.add(chartRunning);
+			}
+			chartRunningLoaded = true;
+		}
+	}
+
+	private void loadOutputChart() {
+		if (!chartOutputLoaded) {
+			String[] times = new String[listData.size()];
+			long[] values = new long[listData.size()];
+			for (int i=0; i<listData.size(); i++) {
+				NodeData nd = listData.get(i);
+				times[i] = nd.getTime();
+				values[i] = nd.getOutput();
+			}
+			chartOutput.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
+			if (outputPanel.getWidgetCount() == 0) {
+				outputPanel.add(chartOutput);
+			}
+			chartOutputLoaded = true;
+		}
+	}
+
+	private void loadRoutingChart() {
+		if (!chartRoutingLoaded) {
+			String[] times = new String[listData.size()];
+			long[] values = new long[listData.size()];
+			for (int i=0; i<listData.size(); i++) {
+				NodeData nd = listData.get(i);
+				times[i] = nd.getTime();
+				values[i] = nd.getRouting();
+			}
+			chartRouting.setTimeAndDatas(times, values, ColorsHex.YELLOW.getCode(), "Time", "Entries");
+			if (routingPanel.getWidgetCount() == 0) {
+				routingPanel.add(chartRouting);
+			}
+			chartRoutingLoaded = true;
 		}
 	}
 

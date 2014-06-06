@@ -19,7 +19,7 @@ package org.pepstock.jem.gwt.client.panels.gfs.commons;
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;

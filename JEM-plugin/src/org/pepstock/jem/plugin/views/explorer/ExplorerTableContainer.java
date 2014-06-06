@@ -38,7 +38,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -216,7 +217,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 						refresh(file.getLongName(), file.getDataPathName());
 					} else {
 						//only DATA and SOURCE can be downloaded
-						if ((type == GfsFile.DATA) || (type == GfsFile.SOURCE)){
+						if ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE)){
 							// load file 
 							FileLoading loading = new GFSLoading(ExplorerTableContainer.this, type, file);
 							loading.run();
@@ -291,9 +292,9 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		public void execute() throws JemException {
 			try {
 				String content = null;
-				if (type == GfsFile.DATA){
+				if (type == GfsFileType.DATA){
 					content = Client.getInstance().getGfsFileData(getFile().getLongName(), getFile().getDataPathName());
-				} else if (type == GfsFile.SOURCE){
+				} else if (type == GfsFileType.SOURCE){
 					content = Client.getInstance().getGfsFileSource(getFile().getLongName(), getFile().getDataPathName());
 				} else { 
 					return;

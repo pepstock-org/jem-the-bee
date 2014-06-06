@@ -25,16 +25,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.pepstock.jem.GfsFile;
+import org.apache.http.HttpStatus;
+import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
+import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsOutputContent;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
-import org.pepstock.jem.gwt.server.rest.entities.UploadedGfsFile;
 import org.pepstock.jem.gwt.server.services.GfsManager;
+import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.NodeMessage;
 
 
 /**
@@ -111,7 +115,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsFileList getFilesListData(GfsRequest request) throws JemException {
-		return getFilesList(GfsFile.DATA, request);
+		return getFilesList(GfsFileType.DATA, request);
 	}
 
 	/**
@@ -132,7 +136,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_LIBRARY)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsFileList getFilesListLibrary(GfsRequest request) throws JemException {
-		return getFilesList(GfsFile.LIBRARY, request);
+		return getFilesList(GfsFileType.LIBRARY, request);
 	}
 
 	/**
@@ -153,7 +157,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_SOURCE)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsFileList getFilesListSource(GfsRequest request) throws JemException {
-		return getFilesList(GfsFile.SOURCE, request);
+		return getFilesList(GfsFileType.SOURCE, request);
 	}
 
 	/**
@@ -174,7 +178,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_CLASS)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsFileList getFilesListClass(GfsRequest request) throws JemException {
-		return getFilesList(GfsFile.CLASS, request);
+		return getFilesList(GfsFileType.CLASS, request);
 	}
 
 	/**
@@ -195,7 +199,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_FILE_LIST + "/" + GFS_MANAGER_FILE_BINARY)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsFileList getFilesListBinary(GfsRequest request) throws JemException {
-		return getFilesList(GfsFile.BINARY, request);
+		return getFilesList(GfsFileType.BINARY, request);
 	}
 
 	/**
@@ -252,7 +256,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileData(GfsRequest request) throws JemException {
-		return getFile(GfsFile.DATA, request);
+		return getFile(GfsFileType.DATA, request);
 	}
 
 	/**
@@ -268,7 +272,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_LIBRARY)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileLibrary(GfsRequest request) throws JemException {
-		return getFile(GfsFile.LIBRARY, request);
+		return getFile(GfsFileType.LIBRARY, request);
 	}
 
 	/**
@@ -284,7 +288,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_SOURCE)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileSource(GfsRequest request) throws JemException {
-		return getFile(GfsFile.SOURCE, request);
+		return getFile(GfsFileType.SOURCE, request);
 	}
 
 	/**
@@ -300,7 +304,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_CLASS)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileClass(GfsRequest request) throws JemException {
-		return getFile(GfsFile.CLASS, request);
+		return getFile(GfsFileType.CLASS, request);
 	}
 
 	/**
@@ -316,7 +320,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	@Path("/" + GFS_MANAGER_OUTPUT_FILE_CONTENT_PATH + "/" + GFS_MANAGER_FILE_BINARY)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public GfsOutputContent getFileBinary(GfsRequest request) throws JemException {
-		return getFile(GfsFile.BINARY, request);
+		return getFile(GfsFileType.BINARY, request);
 	}
 
 	/**
@@ -358,14 +362,30 @@ public class GfsManagerImpl extends DefaultServerResource {
 
 	/**
 	 * Uploads a file. THIS IS STILL UNDER CONSTRUCTION 
-	 * @param file
+	 * @param chunk chunk file to upload
 	 * @return
 	 */
 	@POST
 	@Path("/" + GFS_MANAGER_FILE_UPLOAD)
 	@Consumes({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response uploadFile(UploadedGfsFile file) {	
-		return Response.status(200).entity("OK").build();
+	public Response uploadFile(UploadedGfsChunkFile chunk) {
+		if (isEnable()) {
+			if (gfsManager == null) {
+				initManager();
+			}
+			try {
+				gfsManager.uploadChunk(chunk);
+			} catch (ServiceMessageException e) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC265E, chunk.getFilePath(),e);
+				String msg = NodeMessage.JEMC265E.toMessage().getFormattedMessage(chunk.getFilePath());
+				return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(msg).build();
+			}
+		} else {
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
+			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
+			return Response.status(HttpStatus.SC_SERVICE_UNAVAILABLE).entity(msg).build();
+		}		
+		return Response.status(HttpStatus.SC_OK).entity("OK").build();
 	}
 	
 	/**

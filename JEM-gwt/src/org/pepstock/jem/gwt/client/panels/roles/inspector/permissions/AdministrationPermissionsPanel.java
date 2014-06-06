@@ -42,7 +42,6 @@ public class AdministrationPermissionsPanel extends CheckBoxPermissionsPanel {
 	private PermissionItem adminClusterGrs = new PermissionItem("Cluster GRS", "allows to see all active contentions in the cluster", Permissions.ADMINISTRATION_CLUSTER_GRS);
 	private PermissionItem adminClusterRedo = new PermissionItem("Cluster Redo", "allows to see all REDO statements, if there are", Permissions.ADMINISTRATION_CLUSTER_REDO);
 	private PermissionItem adminClusterGfs = new PermissionItem("Cluster GFS usage", "allows to see the global file system usage", Permissions.ADMINISTRATION_CLUSTER_GFS_USAGE);
-	private PermissionItem adminClusterMemory = new PermissionItem("Cluster Memory usage", "allows to see the memory usage in the cluster", Permissions.ADMINISTRATION_CLUSTER_MEMORY_USAGE);
 	private PermissionItem adminClusterConfig = new PermissionItem("Cluster configuration", "allows to manage environment configurations (both JEM and Hazelcast)", Permissions.ADMINISTRATION_CLUSTER_CONFIGURATION);
 	
 	private PermissionItem adminNodesConfig = new PermissionItem("Nodes configuration", "allows to manage nodes configurations (both JEM and affinity loader)", Permissions.ADMINISTRATION_NODES_CONFIGURATION);
@@ -100,7 +99,6 @@ public class AdministrationPermissionsPanel extends CheckBoxPermissionsPanel {
 		loadCheckBoxAction(adminClusterGrs);
 		loadCheckBoxAction(adminClusterRedo);
 		loadCheckBoxAction(adminClusterGfs);
-		loadCheckBoxAction(adminClusterMemory);
 		loadCheckBoxAction(adminNodesConfig);
 		loadCheckBoxAction(adminNodesCommand);
 		loadCheckBoxAction(adminNodesSystem);
@@ -117,7 +115,6 @@ public class AdministrationPermissionsPanel extends CheckBoxPermissionsPanel {
 				adminClusterGrs,
 				adminClusterRedo,
 				adminClusterGfs,
-				adminClusterMemory,
 				adminNodesConfig,
 				adminNodesCommand,
 				adminNodesSystem,
@@ -228,8 +225,6 @@ public class AdministrationPermissionsPanel extends CheckBoxPermissionsPanel {
 			return adminSecurityCertificate;
 		} else if (permission.equalsIgnoreCase(Permissions.ADMINISTRATION_CLUSTER_GFS_USAGE)){
 			return adminClusterGfs;
-		} else if (permission.equalsIgnoreCase(Permissions.ADMINISTRATION_CLUSTER_MEMORY_USAGE)){
-			return adminClusterMemory;
 		} else if (permission.equalsIgnoreCase(Permissions.ADMINISTRATION_CLUSTER_CONFIGURATION)){
 			return adminClusterConfig;
 		} else if (permission.equalsIgnoreCase(Permissions.ADMINISTRATION_NODES_CONFIGURATION)){

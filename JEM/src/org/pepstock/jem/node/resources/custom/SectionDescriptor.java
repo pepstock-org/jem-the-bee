@@ -64,6 +64,9 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 		}
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "SectionDescriptor [name=" + name + ", fields=" + fields + "]";
+	}
+
 }

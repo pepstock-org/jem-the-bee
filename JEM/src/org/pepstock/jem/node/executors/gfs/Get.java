@@ -18,7 +18,8 @@ package org.pepstock.jem.node.executors.gfs;
 
 import java.io.File;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.executors.DefaultExecutor;
@@ -40,7 +41,7 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 	
 	private String pathName = null;
 	
-	private int type = GfsFile.DATA;
+	private int type = GfsFileType.DATA;
 	
 	/**
 	 * Saves the type of GFS to read and the folder
@@ -89,18 +90,18 @@ public abstract class Get<T> extends DefaultExecutor<T> {
 		
 		// checks here the type of file-system to scan
 		switch (type) {
-			case GfsFile.DATA:
+			case GfsFileType.DATA:
 				return getResultForDataPath();
-			case GfsFile.LIBRARY:
+			case GfsFileType.LIBRARY:
 				parentPath = System.getProperty(ConfigKeys.JEM_LIBRARY_PATH_NAME);
 				break;
-			case GfsFile.SOURCE:
+			case GfsFileType.SOURCE:
 				parentPath = System.getProperty(ConfigKeys.JEM_SOURCE_PATH_NAME);
 				break;
-			case GfsFile.CLASS:
+			case GfsFileType.CLASS:
 				parentPath = System.getProperty(ConfigKeys.JEM_CLASSPATH_PATH_NAME);
 				break;
-			case GfsFile.BINARY:
+			case GfsFileType.BINARY:
 				parentPath = System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME);
 				break;
 			default:

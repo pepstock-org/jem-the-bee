@@ -16,13 +16,14 @@
 */
 package org.pepstock.jem.gwt.client.panels.administration.nodesqueues.inspector;
 
-import org.pepstock.jem.gwt.client.charts.KeyData;
 
 /**
  * @author Andrea "Stock" Stocchero
  *
  */
-public class NodeData extends KeyData {
+public class NodeData {
+	
+	private String time;
 	
 	private long input = 0;
 	
@@ -31,7 +32,21 @@ public class NodeData extends KeyData {
 	private long output = 0;
 
 	private long routing = 0;
-	
+
+	/**
+	 * @return the time
+	 */
+	public String getTime() {
+		return time;
+	}
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(String time) {
+		this.time = time;
+	}
+
 	/**
 	 * @return the input
 	 */

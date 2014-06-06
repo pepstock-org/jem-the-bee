@@ -77,11 +77,11 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 	
 	private TextBox requestLoginQueryString = new TextBox();
 
-	private TextBox requestLoginUserid = new TextBox();
+	private TextBox requestLoginUserId = new TextBox();
 
 	private PasswordTextBox requestLoginPassword = new PasswordTextBox();
 
-	private TextBox requestLoginParamUserid = new TextBox();
+	private TextBox requestLoginParamUserId = new TextBox();
 
 	private TextBox requestLoginParamPassword = new TextBox();
 	
@@ -210,9 +210,9 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 		proxyPropertiesTable.setWidget(2, 1, proxyPort);
 		proxyPropertiesTable.setHTML(2, 2, "The Port of the proxy.");
 
-		proxyPropertiesTable.setHTML(3, 0, "Proxy User ID:");
+		proxyPropertiesTable.setHTML(3, 0, "Proxy User Id:");
 		proxyPropertiesTable.setWidget(3, 1, userid);
-		proxyPropertiesTable.setHTML(3, 2, " The Proxy Userid if proxy authorization is need.");	    
+		proxyPropertiesTable.setHTML(3, 2, " The Proxy User Id if proxy authorization is need.");	    
 
 		proxyPropertiesTable.setHTML(4, 0, "Proxy Password:");
 		proxyPropertiesTable.setWidget(4, 1, password);
@@ -300,17 +300,17 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 		loginLogoutPropertiesTable.setWidget(0, 1, requestLoginQueryString);
 		loginLogoutPropertiesTable.setHTML(0, 2, " The Query String of the optional Login Request.");	    
 	    
-		loginLogoutPropertiesTable.setHTML(1, 0, "Request Login Userid:");
-		loginLogoutPropertiesTable.setWidget(1, 1, requestLoginUserid);
-		loginLogoutPropertiesTable.setHTML(1, 2, " The Login Userid if different from proxy Userid.");	    
+		loginLogoutPropertiesTable.setHTML(1, 0, "Request Login User Id:");
+		loginLogoutPropertiesTable.setWidget(1, 1, requestLoginUserId);
+		loginLogoutPropertiesTable.setHTML(1, 2, " The Login User Id if different from proxy User Id.");	    
 
 		loginLogoutPropertiesTable.setHTML(2, 0, "Request Login Password:");
 		loginLogoutPropertiesTable.setWidget(2, 1, requestLoginPassword);
 		loginLogoutPropertiesTable.setHTML(2, 2, " The Login Password if different from proxy Password.");		    
 	    
-		loginLogoutPropertiesTable.setHTML(3, 0, "Request Login Parameter Userid:");
-		loginLogoutPropertiesTable.setWidget(3, 1, requestLoginParamUserid);
-		loginLogoutPropertiesTable.setHTML(3, 2, " The Parameter name of the Userid for Login Request.");		
+		loginLogoutPropertiesTable.setHTML(3, 0, "Request Login Parameter User Id:");
+		loginLogoutPropertiesTable.setWidget(3, 1, requestLoginParamUserId);
+		loginLogoutPropertiesTable.setHTML(3, 2, " The Parameter name of the User Id for Login Request.");		
 	    
 		loginLogoutPropertiesTable.setHTML(4, 0, "Request Login Parameter Password:");
 		loginLogoutPropertiesTable.setWidget(4, 1, requestLoginParamPassword);
@@ -341,16 +341,16 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 			}
 	    });
 	    
-	    requestLoginUserid.addKeyUpHandler(new KeyUpHandler() {
+	    requestLoginUserId.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				setPropertyValue(HttpResource.REQUEST_LOGIN_USERID, requestLoginUserid.getText());
+				setPropertyValue(HttpResource.REQUEST_LOGIN_USERID, requestLoginUserId.getText());
 			}
 		});
-	    requestLoginUserid.addValueChangeHandler(new ValueChangeHandler<String>() {
+	    requestLoginUserId.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				setPropertyValue(HttpResource.REQUEST_LOGIN_USERID, requestLoginUserid.getText());
+				setPropertyValue(HttpResource.REQUEST_LOGIN_USERID, requestLoginUserId.getText());
 			}
 	    });
 	    
@@ -367,16 +367,16 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 			}
 	    });
 	    
-	    requestLoginParamUserid.addKeyUpHandler(new KeyUpHandler() {
+	    requestLoginParamUserId.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				setPropertyValue(HttpResource.REQUEST_LOGIN_PARAM_USERID, requestLoginParamUserid.getText());
+				setPropertyValue(HttpResource.REQUEST_LOGIN_PARAM_USERID, requestLoginParamUserId.getText());
 			}
 		});
-	    requestLoginParamUserid.addValueChangeHandler(new ValueChangeHandler<String>() {
+	    requestLoginParamUserId.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				setPropertyValue(HttpResource.REQUEST_LOGIN_PARAM_USERID, requestLoginParamUserid.getText());
+				setPropertyValue(HttpResource.REQUEST_LOGIN_PARAM_USERID, requestLoginParamUserId.getText());
 			}
 	    });
 	    
@@ -435,11 +435,11 @@ public final class HTTPAttributesPanel extends ResourcesPropertiesPanel {
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGIN_QUERY_STRING)) {
 				requestLoginQueryString.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGIN_USERID)) {
-				requestLoginUserid.setText(property.getValue());
+				requestLoginUserId.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGIN_PASSWORD)) {
 				requestLoginPassword.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGIN_PARAM_USERID)) {
-				requestLoginParamUserid.setText(property.getValue());
+				requestLoginParamUserId.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGIN_PARAM_PASSWORD)) {
 				requestLoginParamPassword.setText(property.getValue());
 			} else if (property.getName().equalsIgnoreCase(HttpResource.REQUEST_LOGOUT_QUERY_STRING)) {

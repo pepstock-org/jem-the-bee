@@ -32,6 +32,11 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
  *
  */
 public class SecurityUtils {
+	
+	/**
+	 * if the file name must be checked with permissions of GFS
+	 */
+	public static final int TO_BE_GFS_CHECKED = 2;
 
 	/**
 	 * if the file name must be checked with permissions 
@@ -47,8 +52,6 @@ public class SecurityUtils {
 	 * Not authorized! Exception!
 	 */
 	public static final int TO_BE_REJECTED = -1;
-	
-//	private static final String DATA_PATH = System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME);
 
 	private static final String OUTPUT_PATH = System.getProperty(ConfigKeys.JEM_OUTPUT_PATH_NAME);
 	
@@ -86,7 +89,6 @@ public class SecurityUtils {
 	 */
 	public int checkReadFileName(String fileName){
 		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
-//		if (fileName.startsWith(DATA_PATH)){
 		if (dataPath != null){
 			return TO_BE_CHECKED;
 		}
@@ -130,16 +132,18 @@ public class SecurityUtils {
 		}
 		
 		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
-//		boolean textFolder = fileName.startsWith(DATA_PATH) ||
-		boolean textFolder = dataPath != null ||
+
+		if (dataPath != null){
+			return TO_BE_CHECKED;
+		}
+		
+		boolean gfsFolder = fileName.startsWith(LIBRARY_PATH) ||
+				fileName.startsWith(BINARY_PATH) ||
+				fileName.startsWith(CLASS_PATH) ||
 				fileName.startsWith(SOURCE_PATH);
 		
-		boolean binaryFolder = fileName.startsWith(LIBRARY_PATH) ||
-				fileName.startsWith(BINARY_PATH) ||
-				fileName.startsWith(CLASS_PATH);
-		
-		if (textFolder || binaryFolder){
-			return TO_BE_CHECKED;
+		if (gfsFolder){
+			return TO_BE_GFS_CHECKED;
 		}
 		
 		if (fileName.startsWith(temp)){
@@ -168,6 +172,24 @@ public class SecurityUtils {
 
 		return TO_BE_REJECTED;
 	}
+	
+	/**
+	 * Based on filename, it returns the permission to check when the file is not located to DATA path.
+	 * @param fileName to check!
+	 * @return permission of GFS to check
+	 */
+	public String getGfsPermission(String fileName){
+		if (fileName.startsWith(LIBRARY_PATH)){
+			return Permissions.GFS_LIBRARY;
+		} else if(fileName.startsWith(BINARY_PATH)){
+			return Permissions.GFS_BINARY;
+		} else if(fileName.startsWith(CLASS_PATH)){
+			return Permissions.GFS_CLASS;
+		} else if(fileName.startsWith(SOURCE_PATH)){
+			return Permissions.GFS_SOURCES;
+		} 
+		return Permissions.GFS_LIBRARY;
+	}
 	/**
 	 * Extract the right file name, used inside the permissions
 	 * @param fileName complete path
@@ -175,7 +197,7 @@ public class SecurityUtils {
 	 */
 	public String normalizeFileName(String fileName){
 		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
-//		if (fileName.startsWith(DATA_PATH)){
+
 		if (dataPath != null){
 			String file = StringUtils.substringAfter(fileName, dataPath);
 			if (FilenameUtils.separatorsToSystem(file).startsWith(File.separator)){

@@ -19,8 +19,10 @@ package org.pepstock.jem.gwt.client.panels.administration.workload;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pepstock.jem.gwt.client.ColorsHex;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.charts.gflot.TimeCountLineChart;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
@@ -41,10 +43,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
+	@SuppressWarnings("javadoc")
+    public static final int SUBMITTED_JOBS = 0, JCLS_CHACKED = 1;
+
 	private final TabPanel mainTabPanel = new TabPanel();
 
-	private WorkloadChart chartJobs = new WorkloadChart(WorkloadChart.JOBS_SUBMITTED);
-	private WorkloadChart chartJcls = new WorkloadChart(WorkloadChart.JCLS_CHECKED);
+	private TimeCountLineChart jobsSubmittedChart = new TimeCountLineChart();
+	private TimeCountLineChart jclsCheckedChart = new TimeCountLineChart();
+	private boolean jobsSubmittedChartLoaded;
+	private boolean jclsCheckedChartLoaded;
 	
 	private TableContainer<LightMemberSample> nodes = new TableContainer<LightMemberSample>(new NodesTable());
 	private ScrollPanel scroller = new ScrollPanel(nodes);
@@ -106,36 +113,52 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     			}
     		}
     		Workload data = new Workload();
-    		data.setKey(sample.getTime());
+    		data.setTime(sample.getTime());
     		data.setJobsSubmitted(totJob);
     		data.setJclsChecked(totJcl);
     		listData.add(data);
     	}
     	nodes.getUnderlyingTable().setRowData(Instances.getLastSample().getMembers());
-    	chartJcls.setLoaded(false);
-    	chartJobs.setLoaded(false);
+    	jobsSubmittedChartLoaded = false;
+    	jclsCheckedChartLoaded = false;
+    	
     	mainTabPanel.selectTab(0, true);
 	}
 	
-	private void loadChart(int selected){
-		if (selected == WorkloadChart.JOBS_SUBMITTED){
-			if (!chartJobs.isLoaded()){
-				//
-				chartJobs.setData(listData);
-				if (jobPanel.getWidgetCount() == 0) {
-					jobPanel.add(chartJobs.asWidget());
+	private void loadChart(int selected) {
+		String[] times = new String[listData.size()];
+		long[] values = new long[listData.size()];
+		for (int i=0; i<listData.size(); i++) {
+			Workload w = listData.get(i);
+			times[i] = w.getTime();
+		}
+		
+		if (selected == SUBMITTED_JOBS) {
+			if (!jobsSubmittedChartLoaded){
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getJobsSubmitted();
 				}
+				jobsSubmittedChart.setTimeAndDatas(times, values, ColorsHex.BLUE.getCode(), "Time", "Jobs");
+				
+				if (jobPanel.getWidgetCount() == 0) {
+					jobPanel.add(jobsSubmittedChart);
+				}
+				jobsSubmittedChartLoaded = true;
 			}
 		} else {
-			if (!chartJcls.isLoaded()){
-				chartJcls.setData(listData);
-				if (jclPanel.getWidgetCount() == 0) {
-					jclPanel.add(chartJcls);
+			if (!jclsCheckedChartLoaded){
+				for (int i=0; i<listData.size(); i++) {
+					values[i] = listData.get(i).getJclsChecked();
 				}
+				jclsCheckedChart.setTimeAndDatas(times, values, ColorsHex.BLUE.getCode(), "Time", "Jcls");
+				
+				if (jclPanel.getWidgetCount() == 0) {
+					jclPanel.add(jclsCheckedChart);
+				}
+				jclsCheckedChartLoaded = true;
 			}
 		}
     }
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.gwt.client.ResizeCapable#onResize(int, int)
@@ -161,10 +184,10 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     		mainTabPanelHeight -= Sizes.TABBAR_HEIGHT_PX;
     	} 
     	
-		chartJcls.setWidth(chartWidth);
-		chartJobs.setWidth(chartWidth);
-		chartJcls.setHeight(Sizes.CHART_HEIGHT);
-		chartJobs.setHeight(Sizes.CHART_HEIGHT);
+		jobsSubmittedChart.setWidth(chartWidth);
+		jobsSubmittedChart.setHeight(Sizes.CHART_HEIGHT);
+		jclsCheckedChart.setWidth(chartWidth);
+		jclsCheckedChart.setHeight(Sizes.CHART_HEIGHT);
 		
 		mainTabPanel.setWidth(Sizes.toString(getWidth()));
 		mainTabPanel.setHeight(Sizes.toString(mainTabPanelHeight));

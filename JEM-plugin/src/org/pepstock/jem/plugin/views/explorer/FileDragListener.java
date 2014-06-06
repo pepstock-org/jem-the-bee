@@ -19,7 +19,8 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.widgets.Shell;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -100,7 +101,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 				GfsFile file = (GfsFile) selectedNode;
 				// is not able to download directory. It's too riskly
 				// only data or source
-				if (!file.isDirectory() && ((type == GfsFile.DATA) || (type == GfsFile.SOURCE))) {
+				if (!file.isDirectory() && ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE))) {
 					// creates loading...
 					FileLoading loading = new GFSFileLoading(getShell(), event, type, file);
 					loading.run();
@@ -126,7 +127,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 			// is not able to download directory. It's too riskly
 			if (file.isDirectory()) {
 				event.doit = false;
-			} else if ((type != GfsFile.DATA) && (type != GfsFile.SOURCE)) {
+			} else if ((type != GfsFileType.DATA) && (type != GfsFileType.SOURCE)) {
 				event.doit = false;
 			}
 		}
@@ -164,9 +165,9 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 			try {
 				// gets content from JEM
 				String content = null;
-				if (type == GfsFile.DATA) {
+				if (type == GfsFileType.DATA) {
 					content = Client.getInstance().getGfsFileData(getFile().getLongName(), getFile().getDataPathName());
-				} else if (type == GfsFile.SOURCE) {
+				} else if (type == GfsFileType.SOURCE) {
 					content = Client.getInstance().getGfsFileSource(getFile().getLongName(), getFile().getDataPathName());
 				} else {
 					return;

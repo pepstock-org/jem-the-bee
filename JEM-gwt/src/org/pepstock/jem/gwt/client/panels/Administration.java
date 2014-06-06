@@ -32,7 +32,6 @@ import org.pepstock.jem.gwt.client.panels.administration.CurrentQueuesPanel;
 import org.pepstock.jem.gwt.client.panels.administration.GfsPanel;
 import org.pepstock.jem.gwt.client.panels.administration.GrsPanel;
 import org.pepstock.jem.gwt.client.panels.administration.InternalMapsPanel;
-import org.pepstock.jem.gwt.client.panels.administration.MemoryPanel;
 import org.pepstock.jem.gwt.client.panels.administration.NodesCommandsPanel;
 import org.pepstock.jem.gwt.client.panels.administration.NodesConfigPanel;
 import org.pepstock.jem.gwt.client.panels.administration.NodesQueuesPanel;
@@ -90,8 +89,6 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
 	
 	private GfsPanel gfs = new GfsPanel();
 	
-	private MemoryPanel memory = new MemoryPanel();
-	
 	private CertificatesPanel certificate = new CertificatesPanel();
 	
 	private ClusterConfigPanel clusterConfig = new ClusterConfigPanel();
@@ -117,7 +114,6 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
 		viewStack.add(sec);
 		viewStack.add(redos);
 		viewStack.add(gfs);
-		viewStack.add(memory);
 		viewStack.add(certificate);
 		viewStack.add(internals);
 		viewStack.add(clusterConfig);
@@ -186,16 +182,13 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
 		} else if (option.equalsIgnoreCase(TreeOptions.GFS_PANEL_OPTION)) {
 			viewStack.showStack(11);
 			gfs.load();
-		} else if (option.equalsIgnoreCase(TreeOptions.MEMORY_PANEL_OPTION)) {
-			viewStack.showStack(12);
-			memory.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CERTIFICATES_PANEL_OPTION)) {
-			viewStack.showStack(13);
+			viewStack.showStack(12);
 		} else if (option.equalsIgnoreCase(TreeOptions.INTERNAL_MAPS_OPTION)) {
-			viewStack.showStack(14);
+			viewStack.showStack(13);
 			internals.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CLUSTER_CONFIG_OPTION)) {
-			viewStack.showStack(15);
+			viewStack.showStack(14);
 			clusterConfig.load();
 		}
 	}

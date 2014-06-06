@@ -16,33 +16,50 @@
 */
 package org.pepstock.jem.gwt.client.panels.administration.current;
 
-import org.pepstock.jem.gwt.client.charts.KeyData;
 
 /**
  * @author Andrea "Stock" Stocchero
  *
  */
-public class QueueData extends KeyData{
+public class QueueData {
 	
-	private String queue = null;
+	private String shortName = null;
+	
+	private String fullName = null;
 	
 	private String time = null;
 	
 	private long entries = 0;
 	
+	
 	/**
-	 * @return the queue
+	 * @return the queue shoer name
 	 */
-	public String getQueue() {
-		return queue;
+	public String getShortName() {
+		return shortName;
+	}
+
+	/**
+	 * @param shortName the queue short name
+	 */
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 
 	/**
-	 * @param queue the queue to set
+	 * @return the queue full name
 	 */
-	public void setQueue(String queue) {
-		this.queue = queue;
+	public String getFullName() {
+		return fullName;
+	}
+
+
+	/**
+	 * @param fullName the queue full name to set
+	 */
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 

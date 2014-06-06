@@ -28,7 +28,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class DataDescriptionFactoryBean implements FactoryBean {
+public class DataDescriptionFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_DESCRIPTION = "dataDescription";
 	
@@ -73,7 +73,7 @@ public class DataDescriptionFactoryBean implements FactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		// if datasets are set, loads into data description
-	    if (this.dataSets != null && this.dataSets.size() > 0) {
+	    if (this.dataSets != null && !this.dataSets.isEmpty()) {
 	    	dataDescription.setDatasets(dataSets);
 	    }
 		return dataDescription;

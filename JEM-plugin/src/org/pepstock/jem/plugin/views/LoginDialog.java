@@ -107,10 +107,10 @@ public class LoginDialog extends Dialog implements ShellContainer {
 
 		// USER
 		Label useridLabel = new Label(main, SWT.NONE);
-		useridLabel.setText("Userid:");
+		useridLabel.setText("UserId:");
 		userid = new Text(main, SWT.BORDER);
 		userid.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		userid.setText(coordinate.getUserid());
+		userid.setText(coordinate.getUserId());
 		userid.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
@@ -153,7 +153,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
     @Override
     protected void okPressed() {
     	// saves userid and password in clone of coordinate
-		coordinate.setUserid(userid.getText());
+		coordinate.setUserId(userid.getText());
 		coordinate.setPassword(password.getText());
 		super.okPressed();
 	}

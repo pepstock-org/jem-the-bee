@@ -153,31 +153,39 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 	private void inspect(final int what) {
 		Loading.startProcessing();
 		Scheduler scheduler = Scheduler.get();
-		scheduler.scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				String parm = null;
-				switch(what){
-				case 0:
-					parm = ConfigKeys.JEM_ENV_CONF;
-					break;
-				case 1:
-					parm = ConfigKeys.HAZELCAST_CONFIG;
-					break;
-				case 2:
-					parm = ConfigKeys.DATASETS_RULES;
-					break;
-				default:
-					parm = ConfigKeys.JEM_ENV_CONF;
-					break;
-				}
-				// get configuration file
-				Services.NODES_MANAGER.getEnvConfigFile(parm, new GetEnvConfigFileAsyncCallback(what));
-			}
-		});
+		scheduler.scheduleDeferred(new GetEnvConfigFileScheduledCommand(what));
 	}
 
+	private class GetEnvConfigFileScheduledCommand implements ScheduledCommand {
+
+		private final int what;
+		
+		public GetEnvConfigFileScheduledCommand(int what) {
+			this.what = what;
+		}
+		
+		@Override
+		public void execute() {
+			String parm = null;
+			switch(what) {
+			case 0:
+				parm = ConfigKeys.JEM_ENV_CONF;
+				break;
+			case 1:
+				parm = ConfigKeys.HAZELCAST_CONFIG;
+				break;
+			case 2:
+				parm = ConfigKeys.DATASETS_RULES;
+				break;
+			default:
+				parm = ConfigKeys.JEM_ENV_CONF;
+				break;
+			}
+			// get configuration file
+			Services.NODES_MANAGER.getEnvConfigFile(parm, new GetEnvConfigFileAsyncCallback(what));
+		}
+	}
+	
 	private class GetEnvConfigFileAsyncCallback extends ServiceAsyncCallback<ConfigurationFile> {
 		
 		private final int what;

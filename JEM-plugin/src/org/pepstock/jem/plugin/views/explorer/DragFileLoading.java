@@ -12,7 +12,7 @@ package org.pepstock.jem.plugin.views.explorer;
 
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.widgets.Shell;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.plugin.util.ShellContainer;
 
 /**

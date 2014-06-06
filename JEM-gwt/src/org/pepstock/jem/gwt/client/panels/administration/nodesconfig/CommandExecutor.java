@@ -37,6 +37,8 @@ public abstract class CommandExecutor {
 	
 	/**
 	 * 
+	 * @param node 
+	 * @param resultPanel 
 	 * @param command
 	 */
 	public abstract void execute(NodeInfoBean node, ResultPanel resultPanel);

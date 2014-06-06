@@ -30,7 +30,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class TaskletFactoryBean implements FactoryBean {
+public class TaskletFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_DESCRIPTIONS = "dataDescriptions";
 	
@@ -108,15 +108,15 @@ public class TaskletFactoryBean implements FactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		// checks if datadescriptions are set
-	    if (this.dataDescriptions != null && this.dataDescriptions.size() > 0) {
+	    if (this.dataDescriptions != null && !this.dataDescriptions.isEmpty()) {
 	    	tasklet.setDataDescriptionList(dataDescriptions);
 	    }
 		// checks if datasources are set
-	    if (this.dataSources != null && this.dataSources.size() > 0) {
+	    if (this.dataSources != null && !this.dataSources.isEmpty()) {
 	    	tasklet.setDataSourceList(dataSources);
 	    }
 		// checks if locks are set
-		if (this.locks != null && this.locks.size() > 0) {
+		if (this.locks != null && !this.locks.isEmpty()) {
 	    	tasklet.setLocks(locks);
 	    }
 		return tasklet;

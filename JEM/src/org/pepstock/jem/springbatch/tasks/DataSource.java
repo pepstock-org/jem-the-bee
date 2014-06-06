@@ -21,11 +21,9 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
@@ -154,8 +152,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		try {
 			SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
 			// checks if datasource is well defined
-			if ((getName() == null) || (getResource() == null)){
+			if (getResource() == null){
 				throw new SQLException(SpringBatchMessage.JEMS016E.toMessage().getFormattedMessage());
+			} else if (getName() == null) {
+				// if name is missing, it uses the same string 
+				// used to define the resource
+				setName(getResource());
 			}
 			// gets the RMi object to get resources
 			CommonResourcer resourcer = InitiatorManager.getCommonResourcer();
@@ -165,12 +167,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 				throw new SQLException(SpringBatchMessage.JEMS017E.toMessage().getFormattedMessage(res.toString()));
 			}
 			// all properties create all StringRefAddrs necessary
-			Map<String, ResourceProperty> properties = res.getProperties();
+			Map<String, ResourceProperty> props = res.getProperties();
 
 			// scans all properteis set by JCL
 			for (Property property : getProperties()){
 				// if a key is defined FINAL, throw an exception
-				for (ResourceProperty resProperty : properties.values()){
+				for (ResourceProperty resProperty : props.values()){
 					if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
 						throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));
 					}
@@ -191,12 +193,12 @@ public class DataSource extends AbstractDataSource implements Serializable {
 						throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
 					}
 				} catch (Exception e) {
-					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
 				} 
 			}
 
 			// loads all properties into RefAddr
-			for (ResourceProperty property : properties.values()){
+			for (ResourceProperty property : props.values()){
 				ref.add(new StringRefAddr(property.getName(), property.getValue()));
 			}
 			
@@ -224,13 +226,4 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		return "[datasource=" + getName() + ", resource=" + getResource() + "]";
 	}
 	
-	/**
-	 * Compatibility with version 6 and 7. This is JDBC 4.1 in Java 7 
-	 * @return null, always exception
-	 * @throws SQLFeatureNotSupportedException always throws
-	 */
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException{
-		throw new SQLFeatureNotSupportedException("Not supported");
-		
-	}
 }

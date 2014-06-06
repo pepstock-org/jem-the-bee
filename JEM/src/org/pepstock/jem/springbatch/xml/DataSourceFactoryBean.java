@@ -26,7 +26,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class DataSourceFactoryBean implements FactoryBean {
+public class DataSourceFactoryBean implements FactoryBean<Object> {
 	
 	static final String DATA_SOURCE = "dataSource";
 	
@@ -70,7 +70,7 @@ public class DataSourceFactoryBean implements FactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		// if properties are set, loads into data source
-	    if (this.properties != null && this.properties.size() > 0) {
+	    if (this.properties != null && !this.properties.isEmpty()) {
 	    	dataSource.setProperties(properties);
 	    }
 		return dataSource;

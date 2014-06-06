@@ -1572,10 +1572,40 @@ public enum NodeMessage implements MessageInterface {
 	JEMC262E(262, "No rule has been defined", MessageLevel.ERROR),
 	
 	/**
-	 *  "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERRO
+	 *  "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM node is not able to load rule definition. Please have a look at JEM environment configuration folder.")
-	JEMC263E(263, "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERROR);
+	JEMC263E(263, "No datasets pattern has been defined for rule with pathName {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Upload are allowed only on the following GFS folder: LIBRARY, SOURCE, CLASS, BINARY", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when user try to upload a file in the GFS in a folder different from LIBRARY, SOURCE, CLASS or BINARY.")
+	JEMC264E(264, "Upload are allowed only on the following GFS folder: LIBRARY, SOURCE, CLASS, BINARY", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception during the upload of a file.")
+	JEMC265E(265, "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to create complete path of uploade file {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception during the creation of upload of a file.")
+	JEMC266E(266, "Error while trying to create complete path of uploaded file {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception renaming temporary file to final one during uploading.")
+	JEMC267E(267, "Error while trying to rename  temp file {0} to uploaded file {1}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Error while trying to delete uploaded file {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs there is an exception deleting to final file after upload.")
+	JEMC268E(268, "Error while trying to delete uploaded file {0}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.pepstock.jem.plugin.views.explorer;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.plugin.commons.JemColumnSorter;
 
 /**

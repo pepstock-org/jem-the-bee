@@ -80,7 +80,7 @@ public abstract class NewObjectHeader extends FlexTable {
 		});
 		setWidth(Sizes.HUNDRED_PERCENT);
 		setCellSpacing(3);
-		setCellPadding(1);
+		//setCellPadding(1);
 		addStyleName(Styles.INSTANCE.inspector().gradientBackground());
 		
 		/* 			0	1						2
@@ -94,16 +94,19 @@ public abstract class NewObjectHeader extends FlexTable {
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
 		// 0-0 > icona
+		cf.addStyleName(0, 0, Styles.INSTANCE.inspector().headerDefaultPadding());
 		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
 		setWidget(0, 0, new Image(icon));
 
 		// 0-1 > title
+		cf.addStyleName(0, 1, Styles.INSTANCE.inspector().headerDefaultPadding());
 		cf.setWidth(0, 1, Sizes.HUNDRED_PERCENT);
 		cf.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT);
 		name.setStylePrimaryName(Styles.INSTANCE.inspector().inputMain());
 		setWidget(0, 1, name);
 		
 		// 0-2 > close icon
+		cf.addStyleName(0, 2, Styles.INSTANCE.inspector().headerClosePadding());
 		Image closeImage = new Image(Images.INSTANCE.close24()); 
 		closeImage.addStyleName(Styles.INSTANCE.common().pointer());
 		closeImage.addClickHandler(new ClickHandler() {

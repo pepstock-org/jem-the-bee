@@ -25,4 +25,9 @@ public class CheckBoxesListFieldDescriptor extends MultiSelectableListFieldDescr
 		super(key, label);
 	}
 
+	@Override
+	public String toString() {
+		return "CheckBoxesListFieldDescriptor [toString()=" + super.toString() + "]";
+	}
+
 }

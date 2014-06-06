@@ -19,12 +19,11 @@ package org.pepstock.jem.gwt.client.panels.administration.memory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.charts.PieData;
+import org.pepstock.jem.gwt.client.charts.gflot.UsedFreePieChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
@@ -36,16 +35,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Andrea "Stock" Stocchero
- *
+ * @author Marco "Cuc" Cuccato
+ * 
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
-	private MemoryChart chart = new MemoryChart();
+	private UsedFreePieChart chart = new UsedFreePieChart();
 	private TableContainer<Detail> gfs = new TableContainer<Detail>(new MemoryTable());
 
 	private ScrollPanel scroller = new ScrollPanel(gfs);
-	private List<PieData> mapData = new LinkedList<PieData>();
-	
 	private VerticalPanel entriesPanel = new VerticalPanel();
 
 	/**
@@ -61,36 +59,31 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	 * 
 	 */
 	public void load(){
-		mapData.clear();
-		
-		PieData dataFree = new PieData();
-		dataFree.setKey("Free");
-		PieData dataUsed = new PieData();
-		dataUsed.setKey("Used");
-		
 		long free = 0L;
 		long used = 0L;
-
-		
-		
+		String hosts = null;
 		for (LightMemberSample msample : Instances.getLastSample().getMembers()){
-			if (msample != null){
+			boolean calculate = true;
+			// extract IP with : that is used as separator in the string
+			// with all ip addresses
+			String ip = msample.getMemberLabel().substring(0, msample.getMemberLabel().indexOf(":")+1);
+			if (hosts == null){
+				hosts = ip;
+			} else if (!hosts.contains(ip)){
+				hosts = hosts + ip;
+			} else {
+				calculate = false;
+			}
+			
+			if (msample != null && calculate){
 				free += msample.getProcessMemoryFree(); 
 				used += msample.getProcessMemoryUsed();
 	 		}
 		}
 		
+		chart.setUsedFreeData(used, free);
+		
 		long tot = free + used;
-		
-		dataFree.setValue(free);
-		dataFree.setPercent(free/(double)tot);
-		
-		dataUsed.setValue(used);
-		dataUsed.setPercent(used/(double)tot);
-		
-		mapData.add(0, dataFree);
-		mapData.add(mapData.size(), dataUsed);
-		
 		List<Detail> list = new ArrayList<Detail>();
     	
     	for (LightSample sample : Instances.getSamples()){
@@ -124,8 +117,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	}
 
 	private void loadChart(){
-		//
-		chart.setData(mapData);
 		if (entriesPanel.getWidgetCount() == 0) {
 			entriesPanel.add(chart.asWidget());
 		}
@@ -143,7 +134,6 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 		chart.setWidth(chartWidth);
 		chart.setHeight(Sizes.CHART_HEIGHT);
 		
-	
 		int height = getHeight() - Sizes.CHART_HEIGHT;
     	height = Math.max(height, 1);
 		

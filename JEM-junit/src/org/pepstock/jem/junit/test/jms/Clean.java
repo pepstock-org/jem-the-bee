@@ -16,10 +16,16 @@
 */
 package org.pepstock.jem.junit.test.jms;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.concurrent.Future;
 
 import org.pepstock.jem.commands.SubmitResult;
+import org.pepstock.jem.gfs.GfsFileType;
+import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.junit.test.rest.RestManager;
 
 import junit.framework.TestCase;
 
@@ -35,7 +41,7 @@ public class Clean extends TestCase{
 	 * 
 	 * @throws Exception
 	 */
-	public void testClean() throws Exception {
+	public void testClean() throws Exception {		
 		// clean jobs
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
 				.submit(getJcl("TEST_JMS_CLEAN_JOBS.xml"), "ant", true,

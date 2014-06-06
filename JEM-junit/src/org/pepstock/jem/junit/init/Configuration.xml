@@ -1,6 +1,6 @@
 <configuration>
 	<restconf>
-		<url>http://localhost:8888/rest</url>
+		<url>https://localhost:8888/rest</url>
 		<user>root</user>
 		<password>pwd</password>
 	</restconf>

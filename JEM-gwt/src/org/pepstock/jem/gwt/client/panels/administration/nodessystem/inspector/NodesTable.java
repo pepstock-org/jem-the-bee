@@ -120,7 +120,7 @@ public class NodesTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> processMemoryUsed = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getProcessMemoryUsed()/1024D/1024D);
+				return NumberFormat.getFormat("###,##0 MB").format(memberSample.getProcessMemoryUsed()/1024d/1024d);
 			}
 		};
 		processMemoryUsed.setSortable(true);

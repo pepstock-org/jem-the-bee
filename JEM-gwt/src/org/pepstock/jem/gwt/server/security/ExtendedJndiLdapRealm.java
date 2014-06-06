@@ -70,7 +70,7 @@ public class ExtendedJndiLdapRealm extends JndiLdapRealm {
 	
 	private String userNameAttribute = null;
 	
-	private String firstInstallationUserid = null;
+	private String firstInstallationUserId = null;
 	
 	/**
 	 * Creates the search controls and authorization of JEM 
@@ -158,19 +158,19 @@ public class ExtendedJndiLdapRealm extends JndiLdapRealm {
 	}
 	
 	/**
-	 * @return the firstInstallationUserid
+	 * @return the firstInstallationUserId
 	 */
-	public String getFirstInstallationUserid() {
-		return firstInstallationUserid;
+	public String getFirstInstallationUserId() {
+		return firstInstallationUserId;
 	}
 
 
 
 	/**
-	 * @param firstInstallationUserid the firstInstallationUserid to set
+	 * @param firstInstallationUserId the firstInstallationUserId to set
 	 */
-	public void setFirstInstallationUserid(String firstInstallationUserid) {
-		this.firstInstallationUserid = firstInstallationUserid;
+	public void setFirstInstallationUserId(String firstInstallationUserId) {
+		this.firstInstallationUserId = firstInstallationUserId;
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class ExtendedJndiLdapRealm extends JndiLdapRealm {
 	protected void onInit() {
 		super.onInit();
 		FirstInstallationManager manager = FirstInstallationManager.getInstance();
-		manager.setToken(new FirstInstallationToken(getFirstInstallationUserid(), (String)null));
+		manager.setToken(new FirstInstallationToken(getFirstInstallationUserId(), (String)null));
 	}
 
 	/**

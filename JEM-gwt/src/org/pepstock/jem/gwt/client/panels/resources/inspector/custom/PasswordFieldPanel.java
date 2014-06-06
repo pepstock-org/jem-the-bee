@@ -40,6 +40,7 @@ public final class PasswordFieldPanel extends AbstractFieldPanel<PasswordFieldDe
 		
 		inputObject.addKeyUpHandler(handler);
 		inputObject.addValueChangeHandler(handler);
+		inputObject.setWidth("98%");
 		
 		ResourceProperty existingProperty = getPanel().getResource().getProperties().get(getDescriptor().getKey());
 		if (existingProperty != null) {

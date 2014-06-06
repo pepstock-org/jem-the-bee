@@ -580,8 +580,8 @@ public class HttpFactory implements ObjectFactory {
 				LogAppl.getInstance().emit(NodeMessage.JEMC159E, HttpResource.REQUEST_LOGIN_PASSWORD, HttpResource.PASSWORD);
 				throw new JNDIException(NodeMessage.JEMC159E, HttpResource.REQUEST_LOGIN_PASSWORD, HttpResource.PASSWORD);
 			}
-			String paramUserid = properties.getProperty(HttpResource.REQUEST_LOGIN_PARAM_USERID);
-			if (null == paramUserid) {
+			String paramUserId = properties.getProperty(HttpResource.REQUEST_LOGIN_PARAM_USERID);
+			if (null == paramUserId) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC160E, HttpResource.REQUEST_LOGIN_PARAM_USERID);
 				throw new JNDIException(NodeMessage.JEMC160E, HttpResource.REQUEST_LOGIN_PARAM_USERID);
 			}
@@ -592,7 +592,7 @@ public class HttpFactory implements ObjectFactory {
 			}
 			String url = createRequestUrl(properties, loginQueryString);
 			Properties parameters = new Properties();
-			parameters.setProperty(paramUserid, userid);
+			parameters.setProperty(paramUserId, userid);
 			parameters.setProperty(paramPassword, password);
 			String parametersCharsetFormat = properties.getProperty(HttpResource.HTTP_CONTENT_CHARSET);
 			HttpPost request = createHttpPostMethod(parameters, url, parametersCharsetFormat);

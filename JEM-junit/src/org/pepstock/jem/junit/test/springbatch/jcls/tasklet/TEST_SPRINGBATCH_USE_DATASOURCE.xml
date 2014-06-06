@@ -3,9 +3,9 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
            http://www.springframework.org/schema/batch 
-           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
 
 	<!-- Needed to get access to system variable e.g. ${jem.output} -->
 	<beans:bean
@@ -34,7 +34,7 @@
 	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="TEST_SPRINGBATCH_USE_DATASOURCE" />
 		<beans:property name="lockingScope" value="step" />
-		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar" />
+		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar;${JEM_HOME}/lib/db/*" />
 		<!-- <beans:property name="environment" value="ENV1"/> <beans:property 
 			name="domain" value="domain"/> <beans:property name="affinity" value="classA"/> 
 			<beans:property name="user" value="newUser"/> <beans:property name="hold" 

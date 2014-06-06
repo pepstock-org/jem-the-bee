@@ -26,6 +26,8 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ListFieldTemplate extends MultiSelectableListFieldTemplate {
 
+	private static final long serialVersionUID = -6580958988417969907L;
+
 	/**
 	 * Corresponding tag in the resource templates <code>xml</code> file.
 	 * @see XStream

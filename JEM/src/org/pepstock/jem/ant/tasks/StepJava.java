@@ -266,8 +266,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// scans all datasource passed
 			for (DataSource source : sources){
 				// checks if datasource is well defined
-				if ((source.getName() == null) || (source.getResource() == null)){
+				if (source.getResource() == null){
 					throw new BuildException(AntMessage.JEMA027E.toMessage().getFormattedMessage());
+				} else if (source.getName() == null) {
+					// if name is missing, it uses the same string 
+					// used to define the resource
+					source.setName(source.getResource());
 				}
 				
 				// gets the RMi object to get resources

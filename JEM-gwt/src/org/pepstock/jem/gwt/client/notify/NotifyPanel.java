@@ -18,7 +18,6 @@ package org.pepstock.jem.gwt.client.notify;
 
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.AbstractInspector;
-import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
 
 import com.google.gwt.user.client.ui.FlexTable;
@@ -33,11 +32,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class NotifyPanel extends AbstractInspector {
 
-	static {
-		Styles.INSTANCE.common().ensureInjected();
-		Styles.INSTANCE.inspector().ensureInjected();
-	}
-	
 	private TableContainer<ToastMessage> main = new TableContainer<ToastMessage>(new NotifyTable());
 	
 	private VerticalPanel tableContainer = new VerticalPanel();

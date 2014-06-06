@@ -44,8 +44,21 @@
 
 		</icegener>
 	</target>
+	
+	<target name="dumpNoName" depends="dump">
+		<icegener>
+			<dataSource resource="JUNIT-FTP-RESOURCE"/>
+			
+			<dataDescription name="OUTPUT" disposition="NEW" sysout="true"/>
 
-	<target name="write"  depends="dump">
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="sample.data" datasource="JUNIT-FTP-RESOURCE"/>
+			</dataDescription>
+
+		</icegener>
+	</target>
+
+	<target name="write"  depends="dumpNoName">
 		<icegener>
 			<dataSource name="localhost" resource="JUNIT-FTP-RESOURCE"/>
 			

@@ -10,11 +10,13 @@ public interface I18N extends Constants {
 
 	  /**
 	   * Returns the localized decimal separator.
+	 * @return 
 	   */
 	  String decimalSeparator();
 
 	  /**
 	   * Returns the localized thousands separator.
+	 * @return 
 	   */
 	  String thousandsSeparator();
 	

@@ -10,7 +10,7 @@
 ******************************************************************************/
 package org.pepstock.jem.plugin.views.explorer;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 
 /**
  * Utility that returns the path name based on data type of GFS folder.
@@ -34,19 +34,19 @@ public class PathName {
 	public static final String getPathName(int type){
 		String name = null;
 		switch (type) {
-		case GfsFile.DATA:
+		case GfsFileType.DATA:
 			name = "Data";
 			break;
-		case GfsFile.LIBRARY:
+		case GfsFileType.LIBRARY:
 			name = "Library";
 			break;
-		case GfsFile.SOURCE:
+		case GfsFileType.SOURCE:
 			name = "Source";
 			break;
-		case GfsFile.CLASS:
+		case GfsFileType.CLASS:
 			name = "Class";
 			break;
-		case GfsFile.BINARY:
+		case GfsFileType.BINARY:
 			name = "Binary";
 			break;
 		default:

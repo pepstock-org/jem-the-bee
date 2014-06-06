@@ -48,7 +48,7 @@ public enum UtilMessage implements MessageInterface{
 	/**
 	 * "{0}.", MessageLevel.ERROR
 	 */
-	JEMB003E(3, "{0}", MessageLevel.ERROR),
+	JEMB003E(3, "RMI {0} error: {1}", MessageLevel.ERROR),
 
 	/**
 	 * "Error building MapVariableDereferencer for: [{0}].", MessageLevel.ERROR

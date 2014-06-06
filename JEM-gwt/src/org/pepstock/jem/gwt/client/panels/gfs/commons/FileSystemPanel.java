@@ -21,7 +21,7 @@ package org.pepstock.jem.gwt.client.panels.gfs.commons;
 import java.util.Collection;
 import java.util.List;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.InspectListener;

@@ -36,8 +36,9 @@ public class BytesArray implements Serializable {
 
 	private static final int BUFFER_SIZE = 2048;
 
-	byte[] buf;
-	int count = 0;
+	private byte[] buf;
+	
+	private int count = 0;
 
 	/**
 	 * Constructs a new array of bytes, with default dimension of 32.
@@ -46,6 +47,8 @@ public class BytesArray implements Serializable {
 		this(BUFFER_SIZE);
 	}
 
+	
+	
 	/**
 	 * Constructs a new array of bytes and the size is a parameter.
 	 * 

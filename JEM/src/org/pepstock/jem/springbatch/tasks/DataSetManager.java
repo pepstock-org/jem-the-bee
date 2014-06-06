@@ -256,7 +256,7 @@ public class DataSetManager {
 					// creates a file with dataPath as parent, plus file name  
 					file = new File(paths.getCurrent().getContent(), fileName);
 				} catch (InvalidDatasetNameException e) {
-					throw new SpringBatchException(e.getMessageInterface(), e.getObjects());
+					throw new SpringBatchException(e.getMessageInterface(), e, e.getObjects());
 				}
 			}
 		} else {
@@ -283,7 +283,7 @@ public class DataSetManager {
 					// normalizes using UNIX rules
 					fileName = FilenameUtils.normalize(ds.getName(), true);
 				} catch (InvalidDatasetNameException e) {
-					throw new SpringBatchException(e.getMessageInterface(), e.getObjects());
+					throw new SpringBatchException(e.getMessageInterface(), e,  e.getObjects());
 				}
 			}
 		}

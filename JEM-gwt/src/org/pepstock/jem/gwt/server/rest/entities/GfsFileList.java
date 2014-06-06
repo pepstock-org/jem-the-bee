@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 
 /**
  * POJO container of gfsFile list and the list which is containing the GFS file.<br>

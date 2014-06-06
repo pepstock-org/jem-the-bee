@@ -94,4 +94,9 @@ public abstract class MultiSelectableListFieldDescriptor extends AbstractFieldDe
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "MultiSelectableListFieldDescriptor [toString()=" + super.toString() + ", values=" + values + ", defaultValues=" + defaultValues + ", selectedValues=" + selectedValues + "]";
+	}
+
 }

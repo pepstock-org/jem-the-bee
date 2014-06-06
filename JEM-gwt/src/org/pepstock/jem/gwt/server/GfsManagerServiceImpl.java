@@ -18,7 +18,7 @@ package org.pepstock.jem.gwt.server;
 
 import java.util.Collection;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.services.GfsManagerService;
 import org.pepstock.jem.gwt.server.services.GfsManager;
 import org.pepstock.jem.log.JemException;

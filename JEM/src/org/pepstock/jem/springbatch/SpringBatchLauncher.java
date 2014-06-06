@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.springbatch;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
@@ -34,10 +35,16 @@ public class SpringBatchLauncher {
 	/**
 	 * </p>
 	 * @param args 
+	 * @throws JemException 
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JemException  {
 		LogAppl.getInstance();
-		CommandLineJobRunner.main(args);
+		try {
+			CommandLineJobRunner.main(args);
+		} catch (Exception e) {
+			throw new JemException(e);
+		}
 	}
 
 }

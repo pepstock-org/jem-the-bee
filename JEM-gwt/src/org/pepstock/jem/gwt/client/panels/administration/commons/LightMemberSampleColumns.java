@@ -12,62 +12,6 @@ import com.google.gwt.user.cellview.client.TextColumn;
  */
 public final class LightMemberSampleColumns {
 	
-	
-
-	/**
-	 * To avoid any instantiation
-	 */
-    private LightMemberSampleColumns() {
-
-    }
-
-	/**
-	 * PID (unsortable)
-	 */
-	public static final TextColumn<LightMemberSample> PID = new TextColumn<LightMemberSample>() {
-		@Override
-		public String getValue(LightMemberSample memberSample) {
-			return String.valueOf(memberSample.getPid());
-		}
-	};
-
-	/**
-	 * TIME (unsortable)
-	 */
-	public static final TextColumn<LightMemberSample> TIME = new TextColumn<LightMemberSample>() {
-		@Override
-		public String getValue(LightMemberSample memberSample) {
-			return memberSample.getTime();
-		}
-	};
-
-	/**
-	 * IP ADDRESS AND PORT
-	 */
-	public static final TextColumn<LightMemberSample> IP_ADDRESS_AND_PORT_SORTABLE = new TextColumn<LightMemberSample>() {
-		@Override
-		public String getValue(LightMemberSample object) {
-			return object.getMemberLabel() + " - " + object.getMemberHostname();
-		}
-	};
-	static {
-		IP_ADDRESS_AND_PORT_SORTABLE.setSortable(true);
-	}
-
-	/**
-	 * TIME
-	 */
-	public static final TextColumn<LightMemberSample> TIME_SORTABLE = new TextColumn<LightMemberSample>() {
-		@Override
-		public String getValue(LightMemberSample memberSample) {
-			return memberSample.getTime();
-		}
-	};
-	
-	static {
-		TIME_SORTABLE.setSortable(true);
-	}
-
 	/*
 	 * ENTRIES
 	 */
@@ -165,6 +109,60 @@ public final class LightMemberSampleColumns {
 	 * USER PREF MEMORY COST
 	 */
 	public static final TextColumn<LightMemberSample> USER_PREF_MEMORY_COST_SORTABLE = new MemoryCostSortableInternalColumn(Queues.USER_PREFERENCES_MAP);
+
+	/**
+	 * To avoid any instantiation
+	 */
+    private LightMemberSampleColumns() {
+
+    }
+
+	/**
+	 * PID (unsortable)
+	 */
+	public static final TextColumn<LightMemberSample> PID = new TextColumn<LightMemberSample>() {
+		@Override
+		public String getValue(LightMemberSample memberSample) {
+			return String.valueOf(memberSample.getPid());
+		}
+	};
+
+	/**
+	 * TIME (unsortable)
+	 */
+	public static final TextColumn<LightMemberSample> TIME = new TextColumn<LightMemberSample>() {
+		@Override
+		public String getValue(LightMemberSample memberSample) {
+			return memberSample.getTime();
+		}
+	};
+
+	/**
+	 * IP ADDRESS AND PORT
+	 */
+	public static final TextColumn<LightMemberSample> IP_ADDRESS_AND_PORT_SORTABLE = new TextColumn<LightMemberSample>() {
+		@Override
+		public String getValue(LightMemberSample object) {
+			return object.getMemberLabel() + " - " + object.getMemberHostname();
+		}
+	};
+	static {
+		IP_ADDRESS_AND_PORT_SORTABLE.setSortable(true);
+	}
+
+	/**
+	 * TIME
+	 */
+	public static final TextColumn<LightMemberSample> TIME_SORTABLE = new TextColumn<LightMemberSample>() {
+		@Override
+		public String getValue(LightMemberSample memberSample) {
+			return memberSample.getTime();
+		}
+	};
+	
+	static {
+		TIME_SORTABLE.setSortable(true);
+	}
 
 	/*
 	 * Implementations  

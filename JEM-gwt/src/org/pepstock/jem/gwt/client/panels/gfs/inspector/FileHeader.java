@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class FileHeader extends Header {
 
 	/**
-	 * @param jobName
-	 * @param parent
+	 * @param fileName 
+	 * @param parent 
 	 */
 	public FileHeader(String fileName, PopupPanel parent) {
 		super(Images.INSTANCE.file64(), fileName, parent);

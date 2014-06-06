@@ -18,7 +18,11 @@ package org.pepstock.jem.gwt.client.panels.components;
 
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.SearcherListenerWidget;
+import org.pepstock.jem.gwt.client.events.EventBus;
+import org.pepstock.jem.gwt.client.events.FilterEvent;
+import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,7 +32,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Marco "Cuc" Cuccato
  * @param <T> 
  */
-public abstract class BasePanel<T> extends VerticalPanel implements ResizeCapable {
+public abstract class BasePanel<T> extends VerticalPanel implements ResizeCapable, SearchListener {
 	
 	private TableContainer<T> tableContainer = null;
 	private CommandPanel<T> commandPanel = null;
@@ -43,6 +47,13 @@ public abstract class BasePanel<T> extends VerticalPanel implements ResizeCapabl
 		add(commandPanel);
 		add(tableContainer);
 		setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		
+		// sets listeners
+		getCommandPanel().getSearcher().setSearchListener(this);
+		getCommandPanel().getActions().setUnderlyingTable(getTableContainer().getUnderlyingTable());
+
+		// subscribe the basic filter event handler to eventbus
+		EventBus.INSTANCE.addHandler(FilterEvent.TYPE, (FilterEventHandler)getCommandPanel().getSearcher());
 	}
 
 	/**

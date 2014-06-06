@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.panels.gfs.commons;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.InspectListener;

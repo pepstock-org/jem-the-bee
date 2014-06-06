@@ -13,12 +13,24 @@ public final class JobFieldsComparator {
 	private JobFieldsComparator() {
 	}
 
+	/**
+	 * Sort jobs by user
+	 * @param o1
+	 * @param o2
+	 * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object 
+	 */
 	public static int sortByUser(Job o1, Job o2) {
 		String userO1= (o1.isUserSurrogated()) ? o1.getJcl().getUser() : o1.getUser() ;
 		String userO2= (o2.isUserSurrogated()) ? o2.getJcl().getUser() : o2.getUser() ;
 		return userO1.compareTo(userO2);
 	}
 	
+	/**
+	 * Sort jobs by route status
+	 * @param o1
+	 * @param o2
+	 * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object
+	 */
 	public static int sortByRouteStatus(Job o1, Job o2) {
 		int diff;
 		Boolean committed1 = o1.getRoutingInfo().isRoutingCommitted();
@@ -36,6 +48,12 @@ public final class JobFieldsComparator {
 		return diff;
 	}
 	
+	/**
+	 * Sort jobs by routed time
+	 * @param o1
+	 * @param o2
+	 * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object
+	 */
 	public static int sortByRoutedTime(Job o1, Job o2) {
 		int diff;
 		Date routedTime1 = o1.getRoutingInfo().getRoutedTime();

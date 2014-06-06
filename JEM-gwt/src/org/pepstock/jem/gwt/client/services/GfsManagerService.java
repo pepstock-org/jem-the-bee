@@ -18,7 +18,7 @@ package org.pepstock.jem.gwt.client.services;
 
 import java.util.Collection;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.log.JemException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -32,6 +32,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface GfsManagerService extends RemoteService {
 
 	/**
+	 * @param type 
+	 * @param path 
+	 * @param pathName 
 	 * @return
 	 * @throws JemException
 	 */
@@ -41,6 +44,7 @@ public interface GfsManagerService extends RemoteService {
 	 * 
 	 * @param type
 	 * @param file
+	 * @param pathName 
 	 * @return
 	 * @throws JemException
 	 */

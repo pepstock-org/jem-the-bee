@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.executors.ExecutorException;
@@ -90,7 +90,7 @@ public class GetFile extends Get<String> {
 				}
 				return this.getResult(parentPath, file);
 			} catch (InvalidDatasetNameException e) {
-				throw new ExecutorException(e.getMessageInterface(), getItem());
+				throw new ExecutorException(e.getMessageInterface(), e, getItem());
 			}
 		}
 	}

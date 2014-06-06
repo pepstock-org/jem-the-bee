@@ -18,7 +18,7 @@ package org.pepstock.jem.gwt.client.services;
 
 import java.util.Collection;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -32,6 +32,7 @@ public interface GfsManagerServiceAsync {
 	 * 
 	 * @param type
 	 * @param path
+	 * @param pathName 
 	 * @param callback
 	 */
 	void getFilesList(int type, String path, String pathName, AsyncCallback<Collection<GfsFile>> callback);
@@ -40,6 +41,7 @@ public interface GfsManagerServiceAsync {
 	 * 
 	 * @param type
 	 * @param file
+	 * @param pathName 
 	 * @param callback
 	 */
 	void getFile(int type, String file, String pathName, AsyncCallback<String> callback);

@@ -16,7 +16,8 @@
 */
 package org.pepstock.jem.gwt.client.panels.gfs;
 
-import org.pepstock.jem.GfsFile;
+import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.panels.gfs.commons.FileSystemPanel;
 import org.pepstock.jem.gwt.client.panels.gfs.commons.FilesComparator;
@@ -54,7 +55,7 @@ public class SourcesViewer extends FileSystemPanel {
 	 */
     @Override
     public int getFilesType() {
-	    return GfsFile.SOURCE;
+	    return GfsFileType.SOURCE;
     }
 
 	/* (non-Javadoc)

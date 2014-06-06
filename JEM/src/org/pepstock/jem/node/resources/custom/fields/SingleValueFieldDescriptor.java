@@ -65,5 +65,10 @@ public abstract class SingleValueFieldDescriptor extends AbstractFieldDescriptor
 	public boolean hasDefaultValue() {
 		return defaultValue != null;
 	}
+
+	@Override
+	public String toString() {
+		return "SingleValueFieldDescriptor [toString()=" + super.toString() + ", selectedValue=" + selectedValue + ", defaultValue=" + defaultValue + "]";
+	}
 	
 }

@@ -45,5 +45,9 @@ public class TextFieldDescriptor extends SingleValueFieldDescriptor implements S
 		this.regExValidator = regExValidator;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "TextFieldDescriptor [toString()=" + super.toString() + ", regExValidator=" + regExValidator + "]";
+	}
+
 }

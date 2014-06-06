@@ -3,9 +3,9 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
            http://www.springframework.org/schema/batch 
-           http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
 
 	<!-- 
 		Application Context
@@ -84,7 +84,6 @@
 	 -->
 
 	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
-		<beans:property name="name" value="localhost" />
 		<beans:property name="resource" value="JUNIT-FTP-RESOURCE" />
 		<beans:property name="properties">
 				<beans:list>
@@ -108,7 +107,7 @@
 				<beans:list>
 					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="sample.data" />
-			        	<beans:property name="datasource" value="localhost" />
+			        	<beans:property name="datasource" value="JUNIT-FTP-RESOURCE" />
 			        </beans:bean>
 				</beans:list>
 		</beans:property>
@@ -163,7 +162,7 @@
 				<beans:list>
 					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="sample-new-sb.data" />
-			        	<beans:property name="datasource" value="localhost" />
+			        	<beans:property name="datasource" value="JUNIT-FTP-RESOURCE" />
 			        </beans:bean>
 				</beans:list>
 		</beans:property>

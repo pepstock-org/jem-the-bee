@@ -62,5 +62,10 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	public boolean hasSections() {
 		return sections.size() > 1;
 	}
+
+	@Override
+	public String toString() {
+		return "ResourceDescriptor [type=" + type + ", sections=" + sections + "]";
+	}
 	
 }

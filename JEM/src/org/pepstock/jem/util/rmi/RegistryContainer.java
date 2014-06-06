@@ -134,9 +134,9 @@ public class RegistryContainer {
 		try {
 			registry.bind(name, obj);
 		} catch (AlreadyBoundException abe) {
-			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage(abe.getMessage()), abe);
+			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage("bind", abe.getMessage()), abe);
 		} catch (AccessException ae) {
-			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage(ae.getMessage()), ae);
+			throw new RemoteException(UtilMessage.JEMB003E.toMessage().getFormattedMessage("bind", ae.getMessage()), ae);
 		} catch (RemoteException re) {
 			throw re;
 		}

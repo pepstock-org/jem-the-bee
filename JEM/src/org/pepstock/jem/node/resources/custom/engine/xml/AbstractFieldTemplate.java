@@ -30,6 +30,8 @@ import com.thoughtworks.xstream.XStream;
  */
 public class AbstractFieldTemplate extends AbstractField  {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Name of the key attribute. 
 	 * @see XStream
