@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -152,7 +152,7 @@ public class HttpFactory implements ObjectFactory {
 			}
 		}
 		CloseableHttpClient httpClient = (CloseableHttpClient) createHttpClient(properties);
-		HttpRequestBase request = createRequestMethod(httpClient, properties, environment);
+		HttpRequestBase request = createRequestMethod(properties, environment);
 		// Execute request
 		return execute(httpClient, request, properties);
 	}
@@ -183,7 +183,7 @@ public class HttpFactory implements ObjectFactory {
 	 * @see HttpPost
 	 * @see Context
 	 */
-	private HttpRequestBase createRequestMethod(HttpClient httpClient, Properties properties, Map<?, ?> environment) throws JNDIException {
+	private HttpRequestBase createRequestMethod(Properties properties, Map<?, ?> environment) throws JNDIException {
 		try{
 			String path = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_PATH);
 			@SuppressWarnings("unchecked")
@@ -273,8 +273,7 @@ public class HttpFactory implements ObjectFactory {
         builder.setHost(hostName);
         if (null != port) {
                 builder.setPort(Parser.parseInt(port));
-        }
-        else if(protocolType == HttpResource.HTTPS_PROTOCOL){
+        } else if(protocolType == HttpResource.HTTPS_PROTOCOL){
                 builder.setPort(DEFAULT_HTTPS_PORT);
         }
         if (null != requestPath) {
@@ -302,10 +301,11 @@ public class HttpFactory implements ObjectFactory {
 	 */
 	private HttpGet createHttpGetMethod(Map<String, String> parameters, String url, String queryString) throws JNDIException {
 		try {
+			String newUrl = url;
 			if (null != queryString) {
-				url = url + "?" + queryString;
+				newUrl = newUrl + "?" + queryString;
 			}
-			URIBuilder builder = new URIBuilder(url);
+			URIBuilder builder = new URIBuilder(newUrl);
 			if (null != parameters && !parameters.isEmpty()) {
 				for (Entry<String, String> entry : parameters.entrySet()) {
 					builder.setParameter(entry.getKey(), entry.getValue());
@@ -335,10 +335,11 @@ public class HttpFactory implements ObjectFactory {
 	 */
 	private HttpPost createHttpPostMethod(Map<String, String> parameters, String url, String queryString, String parametersCharsetFormat) throws JNDIException {
 		try {
+			String newUrl = url;
 			if (null != queryString) {
-				url = url + "?" + queryString;
+				newUrl = newUrl + "?" + queryString;
 			}
-			URIBuilder builder = new URIBuilder(url);
+			URIBuilder builder = new URIBuilder(newUrl);
 			URI uri = builder.build();
 			HttpPost request = new HttpPost(uri.toString());
 			if (null != parameters && !parameters.isEmpty()) {
@@ -399,8 +400,9 @@ public class HttpFactory implements ObjectFactory {
 			String logoutQueryString = properties.getProperty(HttpResource.REQUEST_LOGOUT_QUERY_STRING);
 			CloseableHttpClient httpClient = null;
 			HttpClientBuilder httpClientBuilder = HttpClients.custom();
-			if (null != loginQueryString || null != logoutQueryString)
+			if (null != loginQueryString || null != logoutQueryString){
 				httpClientBuilder.setConnectionManager(conMan);
+			}
 			httpClientBuilder.setRedirectStrategy(new LaxRedirectStrategy());
 			String proxyUrl = properties.getProperty(HttpResource.PROXY_URL);
 			String proxyPortStr = properties.getProperty(HttpResource.PROXY_PORT);

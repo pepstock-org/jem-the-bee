@@ -114,6 +114,10 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		viewer.addDragSupport(operations, transferTypes, dragListener);
 		dragListener.setTableViewer(viewer);
 		dragListener.setType(type);
+		
+		// adds drop listener
+		// viewer.addDropSupport(operations, transferTypes, new FilesUploadDropListener(viewer, searcher, type));
+
 
 		// total amount of items
 		Composite compositeTot = new Composite(this.composite, SWT.NONE);
@@ -339,7 +343,6 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				} else {
 					filter = "*".equalsIgnoreCase(getFilter()) ? GetFilesList.ROOT_PATH : getFilter();
 				}
-				
 				// gets  data
 				data = DataLoader.loadData(type, filter, getPathName());
 				Display.getDefault().syncExec(new Runnable() {

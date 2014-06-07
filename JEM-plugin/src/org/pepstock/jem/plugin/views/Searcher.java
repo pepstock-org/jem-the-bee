@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -92,6 +93,21 @@ public class Searcher extends Composite{
 	 */
 	public void setText(String text){
 		searchText.setText(text);
+	}
+	
+	/**
+	 * returns the value of searcher text field
+	 * @return  the value of searcher text field
+	 */
+	public String getText(){
+		return searchText.getText();
+	}
+	
+	/**
+	 * Re-search using the text 
+	 */
+	public void refresh(){
+		reload.notifyListeners(SWT.Selection, new Event());
 	}
 
 	/* (non-Javadoc)

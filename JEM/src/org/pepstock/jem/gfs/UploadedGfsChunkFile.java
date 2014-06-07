@@ -17,10 +17,10 @@
 package org.pepstock.jem.gfs;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * 

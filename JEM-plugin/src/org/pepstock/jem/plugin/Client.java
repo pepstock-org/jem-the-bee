@@ -22,6 +22,7 @@ import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.gwt.client.rest.GfsManager;
 import org.pepstock.jem.gwt.client.rest.JobsManager;
 import org.pepstock.jem.gwt.client.rest.LoginManager;
@@ -377,6 +378,16 @@ public class Client {
 	 */
 	public Collection<GfsFile> getGfsFileListBinary(String path, String pathName) throws JemException {
 		return gfsManager.getFilesListBinary(createGfsRequest(path, pathName)).getGfsFiles();
+	}
+	
+	/**
+	 * Upload a file to GFS
+	 * @param file file coordinates necessary to upload file
+	 * @return REST status
+	 * @throws JemException if any exception occurs
+	 */
+	public int upload(UploadedGfsFile file) throws JemException {
+		return gfsManager.upload(file);
 	}
 	
 	/**

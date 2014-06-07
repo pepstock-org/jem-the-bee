@@ -218,45 +218,40 @@ public class GfsManager extends AbstractRestManager {
 	 * @throws JemException
 	 */
 	public int upload(UploadedGfsFile file) throws JemException {
+		WebResource resource = getClient().getBaseWebResource().path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_UPLOAD);
+		FileInputStream fis = null;
 		try {
-			FileInputStream fis = new FileInputStream(file.getUploadedFile());
+			fis = new FileInputStream(file.getUploadedFile());
 			byte[] chunk = new byte[UploadedGfsChunkFile.MAX_CHUNK_SIZE];
 			Random random = new Random();
 			int randomNumber = random.nextInt(Integer.MAX_VALUE);
 			// read and write file in chunks
 			for (int readNum; (readNum = fis.read(chunk)) != -1;) {
-				RestClient client= getClient();
-				WebResource resource = client.getBaseWebResource();
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
-				
 				chunkFile.setChunk(chunk);
 				chunkFile.setFileCode(randomNumber);
 				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 				chunkFile.setTransferComplete(false);
 				chunkFile.setNumByteToWrite(readNum);
 				chunkFile.setType(file.getType());
-				ClientResponse response =  resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_UPLOAD).post(ClientResponse.class, chunkFile);
+				ClientResponse response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
 				if(response.getStatus()!=HttpStatus.SC_OK){
-					fis.close();
 					throw new JemException(NodeMessage.JEMC265E.toMessage()
 							.getFormattedMessage(
 									file.getUploadedFile().getAbsolutePath(), response.getStatus()));
 				}
-				response.close();
+			//	response.close();
 			}
-			fis.close();
-			WebResource resource = getClient().getBaseWebResource();
+			//WebResource resource = getClient().getBaseWebResource();
 			// the last chunk was read
 			UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 			chunkFile.setFileCode(randomNumber);
 			chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			chunkFile.setTransferComplete(true);
 			chunkFile.setType(file.getType());
-			ClientResponse response =  resource.path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_UPLOAD).post(ClientResponse.class, chunkFile);		
-			if(response.getStatus()!=HttpStatus.SC_OK){
-				throw new JemException(NodeMessage.JEMC265E.toMessage()
-						.getFormattedMessage(
-								file.getUploadedFile().getAbsolutePath()));
+			ClientResponse response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);		
+			if (response.getStatus() != HttpStatus.SC_OK) {
+				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath()));
 			}
 			return response.getStatus();
 		} catch (UniformInterfaceException e) {
@@ -268,6 +263,14 @@ public class GfsManager extends AbstractRestManager {
 		} catch (IOException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new JemException(e.getMessage(), e);
+		} finally {
+			if (fis != null){
+				try {
+	                fis.close();
+                } catch (IOException e) {
+	                LogAppl.getInstance().ignore(e.getMessage(), e);
+                }
+			}
 		}
 	}
 }

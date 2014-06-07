@@ -89,4 +89,13 @@ public class UploadedGfsFile implements Serializable {
 	public void setType(int type) {
 		this.type = type;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UploadedGfsFile [uploadedFile=" + uploadedFile + ", gfsPath=" + gfsPath + ", type=" + type + "]";
+	}
+	
 }
