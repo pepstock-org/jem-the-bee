@@ -107,7 +107,12 @@ public final class AntKeys {
 	 * project element, to add libs to ANt classptah process. Is optional.
 	 */
 	public static final String ANT_CLASSPATH = "jem.job.classPath";
-
+	
+	/**
+	 * Is the <code>name</code> attribute value for property element inside of
+	 * project element, to add libs to ANT classptah process, at the beginning of classpath. Is optional.
+	 */
+	public static final String ANT_PRIOR_CLASSPATH = "jem.job.priorClassPath";
 
 	/**
 	 * Is the attribute <code>name</code> for property element inside of

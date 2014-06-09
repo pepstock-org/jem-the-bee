@@ -164,7 +164,13 @@ public class SpringBatchFactory extends AbstractFactory {
 			String classPath = bean.getClassPath();
 			bean.setClassPath(super.resolvePathNames(classPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
-	
+
+		// if priorclasspath is not set, changes if some variables are in
+		if (bean.getPriorClassPath() != null) {
+			String classPath = bean.getPriorClassPath();
+			bean.setPriorClassPath(super.resolvePathNames(classPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
+		}
+
 		// load all information inside JCL object
 		jcl.setJobName(bean.getJobName());
 		jcl.setEnvironment(bean.getEnvironment());
@@ -175,6 +181,7 @@ public class SpringBatchFactory extends AbstractFactory {
 		jcl.setMemory(bean.getMemory());
 		
 		jcl.setClassPath(bean.getClassPath());
+		jcl.setPriorClassPath(bean.getPriorClassPath());
 		
 		// if options are set, add to JCL
 		if (bean.getOptions() != null) {

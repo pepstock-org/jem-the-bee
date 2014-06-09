@@ -32,6 +32,8 @@ public class SpringBatchJcl extends Jcl {
 
 	private String classPath = null;
 	
+	private String priorClassPath = null;
+	
 	private String options = null;
 	
 	private String parameters = null;
@@ -55,6 +57,20 @@ public class SpringBatchJcl extends Jcl {
 	 */
 	public void setClassPath(String classPath) {
 		this.classPath = classPath;
+	}
+	
+	/**
+	 * @return the priorClassPath
+	 */
+	public String getPriorClassPath() {
+		return priorClassPath;
+	}
+
+	/**
+	 * @param priorClassPath the priorClassPath to set
+	 */
+	public void setPriorClassPath(String priorClassPath) {
+		this.priorClassPath = priorClassPath;
 	}
 
 	/**

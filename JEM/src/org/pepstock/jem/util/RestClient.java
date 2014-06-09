@@ -74,6 +74,7 @@ public abstract class RestClient {
 	 */
 	ApacheHttpClient4 initialHttpClient() {
 	    ClientConfig config = new DefaultClientConfig();
+	    
 	    ApacheHttpClient4 client = null;
 	    if (HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(baseURI.getScheme())){
 	    	try {
@@ -91,6 +92,7 @@ public abstract class RestClient {
 	    } else {
 	    	client = ApacheHttpClient4.create(config);
 	    }
+	    // to add log, use addFilter method with LoggingFilter to std output
 		return client;
 	}
 }

@@ -43,6 +43,8 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	private static final long serialVersionUID = 1L;
 
 	private String classPath = null;
+	
+	private String priorClassPath = null;
 
 	private String lockingScope = SpringBatchKeys.JOB_SCOPE;
 	
@@ -75,6 +77,20 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	 */
 	public void setClassPath(String classPath) {
 		this.classPath = classPath;
+	}
+
+	/**
+	 * @return the priorClassPath
+	 */
+	public String getPriorClassPath() {
+		return priorClassPath;
+	}
+
+	/**
+	 * @param priorClassPath the priorClassPath to set
+	 */
+	public void setPriorClassPath(String priorClassPath) {
+		this.priorClassPath = priorClassPath;
 	}
 
 	/**
@@ -155,10 +171,10 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	 */
 	@Override
 	public String toString() {
-		return "JemBean [classPath=" + classPath + ", lockingScope=" + lockingScope + ", options=" + options + ", parameters=" + parameters + ", getJobName()=" + getJobName() + ", getAffinity()=" + getAffinity() + ", getEmailNotificationAddresses()="
-				+ getEmailNotificationAddresses() + ", getMemory()=" + getMemory() + ", getPriority()=" + getPriority() + ", isHold()=" + isHold() + ", getUser()=" + getUser() + ", getEnvironment()=" + getEnvironment() + ", getDomain()=" + getDomain()
-				+ ", getClass()=" + getClass() + "]";
+		return "JemBean [classPath=" + classPath + ", priorClassPath=" + priorClassPath + ", lockingScope=" + lockingScope + ", options=" + options + ", parameters=" + parameters + ", getJobName()=" + getJobName() + ", getAffinity()=" + getAffinity()
+				+ ", getEmailNotificationAddresses()=" + getEmailNotificationAddresses() + ", getMemory()=" + getMemory() + ", getPriority()=" + getPriority() + ", isHold()=" + isHold() + ", getUser()=" + getUser() + ", getEnvironment()="
+				+ getEnvironment() + ", getDomain()=" + getDomain() + "]";
 	}
-	
+
 	
 }

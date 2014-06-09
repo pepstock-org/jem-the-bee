@@ -116,7 +116,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		dragListener.setType(type);
 		
 		// adds drop listener
-		// viewer.addDropSupport(operations, transferTypes, new FilesUploadDropListener(viewer, searcher, type));
+		 viewer.addDropSupport(operations, transferTypes, new FilesUploadDropListener(viewer, searcher, type));
 
 
 		// total amount of items

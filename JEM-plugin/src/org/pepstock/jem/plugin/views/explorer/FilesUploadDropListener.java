@@ -159,7 +159,6 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 
 					try {
                        int status = Client.getInstance().upload(fileToupload);
-                       
                        if (status != 200){
                     	   throw new JemException("Status code incorrect: "+status);
                        }

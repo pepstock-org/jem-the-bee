@@ -219,6 +219,7 @@ public class GfsManager extends AbstractRestManager {
 	 */
 	public int upload(UploadedGfsFile file) throws JemException {
 		WebResource resource = getClient().getBaseWebResource().path(GfsManagerImpl.GFS_MANAGER_PATH).path(GfsManagerImpl.GFS_MANAGER_FILE_UPLOAD);
+		ClientResponse response = null;
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(file.getUploadedFile());
@@ -234,13 +235,11 @@ public class GfsManager extends AbstractRestManager {
 				chunkFile.setTransferComplete(false);
 				chunkFile.setNumByteToWrite(readNum);
 				chunkFile.setType(file.getType());
-				ClientResponse response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
-				if(response.getStatus()!=HttpStatus.SC_OK){
-					throw new JemException(NodeMessage.JEMC265E.toMessage()
-							.getFormattedMessage(
-									file.getUploadedFile().getAbsolutePath(), response.getStatus()));
+				response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
+				if (response.getStatus() != HttpStatus.SC_OK) {
+					throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 				}
-			//	response.close();
+				response.close();
 			}
 			//WebResource resource = getClient().getBaseWebResource();
 			// the last chunk was read
@@ -249,9 +248,9 @@ public class GfsManager extends AbstractRestManager {
 			chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			chunkFile.setTransferComplete(true);
 			chunkFile.setType(file.getType());
-			ClientResponse response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);		
+			response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);		
 			if (response.getStatus() != HttpStatus.SC_OK) {
-				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath()));
+				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 			}
 			return response.getStatus();
 		} catch (UniformInterfaceException e) {
@@ -270,6 +269,10 @@ public class GfsManager extends AbstractRestManager {
                 } catch (IOException e) {
 	                LogAppl.getInstance().ignore(e.getMessage(), e);
                 }
+			}
+			// important to CLOSE ALWAYS the response
+			if (response != null){
+				response.close();
 			}
 		}
 	}

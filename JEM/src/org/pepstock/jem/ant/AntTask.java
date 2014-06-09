@@ -75,6 +75,12 @@ public class AntTask extends DefaultJobTask {
 		
 		// adds the custom classpath if not null
 		AntJcl jcl = (AntJcl) job.getJcl();
+		
+		if (jcl.getPriorClassPath() != null){
+			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
+			getEnv().put("CLASSPATH", currentClassPath);
+		}
+		
 		if (jcl.getClassPath() != null){
 			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
 			getEnv().put("CLASSPATH", currentClassPath);

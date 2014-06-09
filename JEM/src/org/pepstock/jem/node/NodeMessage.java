@@ -1584,10 +1584,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC264E(264, "Upload are allowed only on the following GFS folder: LIBRARY, SOURCE, CLASS, BINARY", MessageLevel.ERROR),
 	
 	/**
-	 *  "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR
+	 *  "Error while trying to upload file {0}.Exception {1}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs there is an exception during the upload of a file.")
-	JEMC265E(265, "Error while trying to upload file {0}. Error code {1}", MessageLevel.ERROR),
+	JEMC265E(265, "Error while trying to upload file {0}. Exception {1}", MessageLevel.ERROR),
 	
 	/**
 	 *  "Error while trying to create complete path of uploade file {0}", MessageLevel.ERROR

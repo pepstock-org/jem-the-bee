@@ -145,7 +145,7 @@ public class Client {
 	 */
 	public void login(Coordinate coordinate) throws JemException {
 		// creates a RESTclient, using host and REST context
-		RestClient client = RestClientFactory.getClient(coordinate.getHost() + "/" + coordinate.getRestContext());
+		RestClient client = RestClientFactory.getClient(coordinate.getHost() + "/" + coordinate.getRestContext(), true);
 		// creates managers instance
 		loginManager = new LoginManager(client);
 		jobsManager = new JobsManager(client);

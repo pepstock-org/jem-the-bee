@@ -31,6 +31,8 @@ public class AntJcl extends Jcl {
 	private static final long serialVersionUID = 1L;
 
 	private String classPath = null;
+	
+	private String priorClassPath = null;
 
 	/**
 	 * Empty constructor
@@ -51,6 +53,20 @@ public class AntJcl extends Jcl {
 	 */
 	public void setClassPath(String classPath) {
 		this.classPath = classPath;
+	}
+
+	/**
+	 * @return the priorClassPath
+	 */
+	public String getPriorClassPath() {
+		return priorClassPath;
+	}
+
+	/**
+	 * @param priorClassPath the priorClassPath to set
+	 */
+	public void setPriorClassPath(String priorClassPath) {
+		this.priorClassPath = priorClassPath;
 	}
 
 }

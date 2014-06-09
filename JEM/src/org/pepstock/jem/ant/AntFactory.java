@@ -236,6 +236,13 @@ public class AntFactory extends AbstractFactory {
 			jcl.setClassPath(super.resolvePathNames(classPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
 
+		// Extracts from ANT prior classpath property
+		String priorClassPath = p.getProperty(AntKeys.ANT_PRIOR_CLASSPATH);
+		// if classpath is not set, changes if some variables are in
+		if (priorClassPath != null) {
+			jcl.setPriorClassPath(super.resolvePathNames(priorClassPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
+		}
+
 		// Extracts from ANT memory property. If missing, default is 256 
 		int memory = Parser.parseInt(p.getProperty(AntKeys.ANT_MEMORY), Jcl.DEFAULT_MEMORY);
 		// Extracts from ANT hold property. If missing, default is FALSE
