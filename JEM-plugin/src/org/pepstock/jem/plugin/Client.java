@@ -26,6 +26,7 @@ import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.gwt.client.rest.GfsManager;
 import org.pepstock.jem.gwt.client.rest.JobsManager;
 import org.pepstock.jem.gwt.client.rest.LoginManager;
+import org.pepstock.jem.gwt.client.rest.UploadListener;
 import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.server.rest.entities.Account;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
@@ -145,7 +146,7 @@ public class Client {
 	 */
 	public void login(Coordinate coordinate) throws JemException {
 		// creates a RESTclient, using host and REST context
-		RestClient client = RestClientFactory.getClient(coordinate.getHost() + "/" + coordinate.getRestContext(), true);
+		RestClient client = RestClientFactory.getClient(coordinate.getHost() + "/" + coordinate.getRestContext());
 		// creates managers instance
 		loginManager = new LoginManager(client);
 		jobsManager = new JobsManager(client);
@@ -388,6 +389,24 @@ public class Client {
 	 */
 	public int upload(UploadedGfsFile file) throws JemException {
 		return gfsManager.upload(file);
+	}
+	
+	/**
+	 * Adds a upload listener. Used for upload
+	 * 
+	 * @param listener upload listeners
+	 */
+	public void addUploadListener(UploadListener listener){
+		gfsManager.addUploadListener(listener);
+	}
+	
+	/**
+	 * Removes a upload listener. Used for upload
+	 * 
+	 * @param listener upload listeners
+	 */
+	public void removeUploadListener(UploadListener listener){
+		gfsManager.removeUploadListener(listener);
 	}
 	
 	/**

@@ -106,6 +106,7 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 				if (!file.renameTo(finalFile)){
 					throw new ExecutorException(NodeMessage.JEMC267E, file.getAbsolutePath(), finalFile.getAbsolutePath());
 				}
+				finalFile.setLastModified(chunk.getLastUpdate());
 				return true;
 			}
 			// write to the temporary file

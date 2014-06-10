@@ -51,7 +51,23 @@ public class UploadedGfsChunkFile implements Serializable {
 	private int fileCode;
 
 	private int numByteToWrite;
+	
+	private long lastUpdate = 0L;
 
+	
+	/**
+	 * @return the lastUpdate
+	 */
+	public long getLastUpdate() {
+		return lastUpdate;
+	}
+
+	/**
+	 * @param lastUpdate the lastUpdate to set
+	 */
+	public void setLastUpdate(long lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 	/**
 	 * 
 	 * @return the chunk of the file that is currently been uploaded

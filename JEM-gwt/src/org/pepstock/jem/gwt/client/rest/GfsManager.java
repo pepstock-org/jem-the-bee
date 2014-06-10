@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.rest;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Random;
 
 import javax.ws.rs.core.MediaType;
@@ -46,6 +47,8 @@ import com.sun.jersey.api.client.WebResource;
  * 
  */
 public class GfsManager extends AbstractRestManager {
+	
+	private LinkedList<UploadListener> listeners = new LinkedList<UploadListener>();
 
 	/**
 	 * Creates a new REST manager using a RestClient
@@ -55,6 +58,28 @@ public class GfsManager extends AbstractRestManager {
 	 */
 	public GfsManager(RestClient restClient) {
 		super(restClient);
+	}
+	
+	/**
+	 * Adds a upload listener. Used for upload
+	 * 
+	 * @param listener upload listeners
+	 */
+	public void addUploadListener(UploadListener listener){
+		if (!listeners.contains(listener)){
+			listeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a upload listener. Used for upload
+	 * 
+	 * @param listener upload listeners
+	 */
+	public void removeUploadListener(UploadListener listener){
+		if (listeners.contains(listener)){
+			listeners.remove(listener);
+		}
 	}
 
 	/**
@@ -227,7 +252,8 @@ public class GfsManager extends AbstractRestManager {
 			Random random = new Random();
 			int randomNumber = random.nextInt(Integer.MAX_VALUE);
 			// read and write file in chunks
-			for (int readNum; (readNum = fis.read(chunk)) != -1;) {
+			int readNum = 0;
+			for (; (readNum = fis.read(chunk)) != -1;) {
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				chunkFile.setChunk(chunk);
 				chunkFile.setFileCode(randomNumber);
@@ -235,23 +261,28 @@ public class GfsManager extends AbstractRestManager {
 				chunkFile.setTransferComplete(false);
 				chunkFile.setNumByteToWrite(readNum);
 				chunkFile.setType(file.getType());
+				chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
+				
 				response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
 				if (response.getStatus() != HttpStatus.SC_OK) {
 					throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 				}
 				response.close();
+				fireUploadListeners(readNum);
 			}
-			//WebResource resource = getClient().getBaseWebResource();
 			// the last chunk was read
 			UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
+			chunkFile.setChunk(chunk);
 			chunkFile.setFileCode(randomNumber);
 			chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			chunkFile.setTransferComplete(true);
 			chunkFile.setType(file.getType());
+			chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
 			response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);		
 			if (response.getStatus() != HttpStatus.SC_OK) {
 				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 			}
+			fireUploadListeners(readNum);
 			return response.getStatus();
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
@@ -274,6 +305,16 @@ public class GfsManager extends AbstractRestManager {
 			if (response != null){
 				response.close();
 			}
+		}
+	}
+	
+	/**
+	 * notifies upload listener
+	 * @param units number of byte uploaded
+	 */
+	private void fireUploadListeners(int units){
+		for (UploadListener listener : listeners){
+			listener.setUnitsDone(units);
 		}
 	}
 }
