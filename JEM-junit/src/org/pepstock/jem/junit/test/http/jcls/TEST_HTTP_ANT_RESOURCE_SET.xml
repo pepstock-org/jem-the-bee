@@ -1,0 +1,41 @@
+<project name="TEST_HTTP_ANT_RESOURCE_SET" default="set-http" basedir=".">
+	<description>
+		Set an HTTP resource that will be used for test
+	</description>
+
+	<property name="jem.job.name" value="TEST_HTTP_ANT_RESOURCE_SET" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/> 
+	<property name="jem.job.environment" value="environment"/> 
+	<property name="jem.job.affinity" value="affinity"/> 
+	-->
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	
+	<!-- set resource HTTP -->
+	<target name="set-http">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="HTTP" disposition="SHR">
+				<dataset>
+					<![CDATA[
+						 <resource name="JUNIT-HTTP-RESOURCE" type="http" user="root" lastModified="2014-02-02 13:02:23.458 UTC">
+					       <property name="protocolType" visible="true" override="true">http</property>
+					       <property name="requestHostName" visible="true" override="true">www.auto.it</property>
+					       <property name="requestPort" visible="true" override="true">80</property>
+					       <property name="proxyUrl" visible="true" override="true">proxyver.internal.unicredit.eu</property>
+					       <property name="proxyPort" visible="true" override="true">3128</property>
+					       <property name="proxyProtocol" visible="true" override="true">http</property>
+					       <property name="username" visible="true" override="true">c304993</property>
+					       <property name="password" visible="false" override="true">PWD</property>
+						 </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE HTTP NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+</project>

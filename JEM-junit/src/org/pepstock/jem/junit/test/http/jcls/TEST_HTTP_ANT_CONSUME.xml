@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="TEST_JMS_ANT_CONSUME_MESSAGE" default="consume-message" basedir=".">
+	<description>
+		This is an example of how to make use of datasource in JEM.
+    </description>
+
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+
+	<target name="consume-message">
+		<step-java classname="org.pepstock.jem.junit.test.http.java.HttpConsumeAnt">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<!-- 
+					this will load all the libraries set by the application server JEM
+					and is needed in this case for access the jms resource
+				-->
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<!-- JMS resource reference -->
+			<datasource name="jem-http" resource="JUNIT-HTTP-RESOURCE"/>
+		</step-java>
+	</target>
+</project>
