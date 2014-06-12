@@ -117,6 +117,7 @@ public class Submitter2 extends PopupPanel {
         setUploaderAreaBeforeDrop();  
         dropFilesLabel.setVisible(false);
         
+        //TODO check this BEFORE
         if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
         	dropFilesLabel.setVisible(true);
         	// add handlers
@@ -128,11 +129,12 @@ public class Submitter2 extends PopupPanel {
         // Uploader area
         
 		VerticalPanel uploaderArea = new VerticalPanel();
+		uploaderArea.setSpacing(5);
 		uploaderArea.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
 		
 		uploaderArea.add(dropFilesLabel);
 		uploaderArea.setCellVerticalAlignment(dropFilesLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		uploaderArea.setCellHeight(dropFilesLabel, "100%");
+		uploaderArea.setCellHeight(dropFilesLabel, Sizes.HUNDRED_PERCENT);
 		
 		uploaderArea.add(uploader);
 		uploaderArea.setCellHeight(uploader, "0%");
@@ -140,6 +142,7 @@ public class Submitter2 extends PopupPanel {
 		// Progress area
 		
 		VerticalPanel progressArea = new VerticalPanel();
+		progressArea.setSpacing(5);
 		progressArea.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
 		
 		Label progressLabel = new Label("Progress");
@@ -149,6 +152,7 @@ public class Submitter2 extends PopupPanel {
 		progressArea.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		progressArea.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		progressArea.add(progressLabel);
+		progressBarPanel.setSpacing(2);
 		progressArea.add(progressBarPanel);
 		progressArea.setCellHeight(progressBarPanel, Sizes.HUNDRED_PERCENT);
 		
@@ -175,6 +179,7 @@ public class Submitter2 extends PopupPanel {
             	"Upload of file " + uploadErrorEvent.getFile().getName() + " failed due to " + uploadErrorEvent.getErrorCode().toString() + ": " + uploadErrorEvent.getMessage(), 
             	"Upload Error");
             toast.show();
+            setUploaderAreaBeforeDrop();
             return true;  
         }  
 	}
@@ -185,17 +190,31 @@ public class Submitter2 extends PopupPanel {
            		"Upload of file " + fileQueueErrorEvent.getFile().getName() + " failed due to " + fileQueueErrorEvent.getErrorCode().toString() + ": " + fileQueueErrorEvent.getMessage(), 
                	"Upload Error");
             toast.show();
+            setUploaderAreaBeforeDrop();
             return true;  
         }  
 	}
 	
 	private class MyFileDialogCompleteHandler implements FileDialogCompleteHandler {
-        public boolean onFileDialogComplete(FileDialogCompleteEvent fileDialogCompleteEvent) {  
+        public boolean onFileDialogComplete(FileDialogCompleteEvent fileDialogCompleteEvent) {
+        	int queued = fileDialogCompleteEvent.getNumberOfFilesQueued();
+        	int selected = fileDialogCompleteEvent.getNumberOfFilesSelected();
+        	int total = fileDialogCompleteEvent.getTotalFilesInQueue();
+        	
+        	System.out.println("\nQueued: " + queued + "; Selected: " + selected + "; Total: " + total);
+        	
             if (fileDialogCompleteEvent.getTotalFilesInQueue() > 0) {  
                 if (uploader.getStats().getUploadsInProgress() <= 0) {  
                     uploader.startUpload();  
                 }  
-            }  
+            } else {
+            	// FIXME si vede anche in casi di errore
+                Toast toast = new Toast(MessageLevel.INFO, 
+                    	"Upload " + fileDialogCompleteEvent.getNumberOfFilesSelected() + " file completed", 
+                    	"Upload Completed");
+                    toast.show();
+                    setUploaderAreaBeforeDrop();
+            }
             return true;  
         }  
 	}
@@ -215,7 +234,7 @@ public class Submitter2 extends PopupPanel {
 	private class MyUploadCompleteHanlder implements UploadCompleteHandler {
         public boolean onUploadComplete(UploadCompleteEvent uploadCompleteEvent) {  
             cancelButtons.get(uploadCompleteEvent.getFile().getId()).removeFromParent();  
-            uploader.startUpload();  
+            uploader.startUpload();
             return true;  
         }  
 	}
@@ -223,9 +242,7 @@ public class Submitter2 extends PopupPanel {
 	private class MyUploadProgressHandler implements UploadProgressHandler {
 		public boolean onUploadProgress(UploadProgressEvent uploadProgressEvent) {  
             ProgressBar progressBar = progressBars.get(uploadProgressEvent.getFile().getId());  
-            progressBar.setProgress(  
-                    (double) uploadProgressEvent.getBytesComplete() / uploadProgressEvent.getBytesTotal()  
-            );  
+            progressBar.setProgress((double) uploadProgressEvent.getBytesComplete() / uploadProgressEvent.getBytesTotal());  
             return true;  
         }	
 	}
@@ -236,7 +253,7 @@ public class Submitter2 extends PopupPanel {
             final ProgressBar progressBar = new ProgressBar(0.0, 1.0, 0.0, new ProgressBarTextFormatter());
             progressBar.setTitle(fileQueuedEvent.getFile().getName());  
             progressBar.setHeight("18px");  
-            progressBar.setWidth("200px");  
+            progressBar.setWidth("100%");  
             progressBars.put(fileQueuedEvent.getFile().getId(), progressBar);  
 
             // Add Cancel Button Image  
@@ -253,11 +270,13 @@ public class Submitter2 extends PopupPanel {
             // Add the Bar and Button to the progress bar panel
             HorizontalPanel progressBarAndCancelButtonPanel = new HorizontalPanel();  
             progressBarAndCancelButtonPanel.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-            progressBarAndCancelButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            progressBarAndCancelButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
             progressBarAndCancelButtonPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-            
             progressBarAndCancelButtonPanel.add(progressBar);  
-            progressBarAndCancelButtonPanel.add(cancelButton);  
+            progressBarAndCancelButtonPanel.add(cancelButton);
+            progressBarAndCancelButtonPanel.setCellWidth(progressBar, "80%");
+            progressBarAndCancelButtonPanel.setCellWidth(cancelButton, "80%");
+            progressBarAndCancelButtonPanel.setCellHeight(cancelButton, Sizes.HUNDRED_PERCENT);
             progressBarPanel.add(progressBarAndCancelButtonPanel);  
 
             return true;  
@@ -318,13 +337,22 @@ public class Submitter2 extends PopupPanel {
 	 * The progress bar text formatter 
 	 */
 	
-	private static class ProgressBarTextFormatter extends ProgressBar.TextFormatter {  
-        @Override  
-        protected String getText(ProgressBar bar, double curProgress) {  
+	private static class ProgressBarTextFormatter extends ProgressBar.TextFormatter {
+
+		@Override  
+        protected String getText(ProgressBar bar, double curProgress) {
+			String fileName = bar.getTitle();
+			// short filename if too long
+			if (bar.getTitle().length() > 20) {
+				fileName = fileName.substring(0, 11) + "..." + fileName.substring(fileName.length()-7, fileName.length());
+			}
+        	String text = fileName + " - ";
             if (curProgress < 0) {  
-                return "Cancelled";  
+                text += "Cancelled";  
             }  
-            return ((int) (100 * bar.getPercent())) + "%";  
+            text += ((int) (100 * bar.getPercent())) + "%";
+            // Text is: 'filename - xx%' (or 'filename - cancelled')
+            return text;
         }  
     }
 }
