@@ -1,0 +1,30 @@
+/*
+	CSS Style Rules
+	.gwt-ProgressBar-shell { primary style } 
+	.gwt-ProgressBar-shell .gwt-ProgressBar-bar { the actual progress bar } 
+	.gwt-ProgressBar-shell .gwt-ProgressBar-text { text on the bar } 
+	.gwt-ProgressBar-shell .gwt-ProgressBar-text-firstHalf { applied to text when progress is less than 50 percent } 
+	.gwt-ProgressBar-shell .gwt-ProgressBar-text-secondHalf { applied to text when progress is greater than 50 percent } 
+*/
+
+@external .gwt-*;
+
+.gwt-ProgressBar-shell {
+	border: 1px solid black;
+	-moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+	background-color: #AAAAAA;
+	height: 14pt;
+	width: 50%;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
+	background-color: #FFC266;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-text {
+	padding: 0px;
+	margin: 0px;
+	color: black;
+}

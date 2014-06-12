@@ -30,9 +30,6 @@ public interface Styles extends ClientBundle {
 
 	Styles INSTANCE = GWT.create(Styles.class);
 	
-	@Source("../resources/css/OverrideDefaultTheme.css")
-	CssResource overrideDefaultTheme();
-	
 	@Source("../resources/css/Administration.css")
 	Administration administration();
 	
@@ -66,7 +63,14 @@ public interface Styles extends ClientBundle {
 	@Source("../resources/css/TextBox.css")
 	TextBox textBox();
 	
+	@Source("../resources/css/DragDrop.css")
+	DragDrop dragDrop();
+	
 	/* Widget override */
+
+	@Source("../resources/css/OverrideDefaultTheme.css")
+	CssResource overrideDefaultTheme();
+
 	@Source("../resources/css/MenuBar.css")
 	CssResource menuBar();
 	
@@ -78,6 +82,9 @@ public interface Styles extends ClientBundle {
 
 	@Source("../resources/css/StackPanelHeader.css")
 	CssResource stackpanelHeader();
+	
+	@Source("../resources/css/ProgressBar.css")
+	CssResource progressBar();
 	
 	/* Interfaces */
 
@@ -197,5 +204,11 @@ public interface Styles extends ClientBundle {
 	
 	interface Loading extends CssResource {
 		String padding();
+	}
+	
+	interface DragDrop extends CssResource {
+		String beforeDrop();
+		String dropping();
+		String afterDrop();
 	}
 }

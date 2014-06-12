@@ -1,0 +1,30 @@
+
+.beforeDrop {
+	border-style: dashed;
+	border-width: 3px;
+	border-color: #FF6E7C;
+	color: #FF6E7C;
+	font-size: 3.5em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.dropping {
+	border-style: dashed;
+	border-width: 3px;
+	border-color: #32CD32;
+	color: #32CD32;
+	font-size: 3.5em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.afterDrop {
+	border-style: solid;
+	border-width: 3px;
+	border-color: lightgrey;
+	color: lightgrey;
+	font-size: 3.5em;
+	text-align: center;
+	vertical-align: middle;
+}

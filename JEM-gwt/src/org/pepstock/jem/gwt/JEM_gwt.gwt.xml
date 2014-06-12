@@ -29,6 +29,9 @@
 	<inherits name="com.googlecode.gflot.GFlot" />
 	<set-property name="gflot.load.flot.canvas" value="ENABLED" />
 	<set-property name="gflot.load.canvas2image" value="DISABLED" />
+	
+	<inherits name="org.moxieapps.gwt.uploader.Uploader"/>
+	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
     	
 	<!-- Specify the app ENTRY POINT class -->
 	<entry-point class='org.pepstock.jem.gwt.client.Main' />

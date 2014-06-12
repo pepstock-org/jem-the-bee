@@ -13,12 +13,12 @@
 }
 
 .cellListKeyboardSelectedItem {
-  background: #ffc;
+  background: #FFC;
 }
 
 @sprite .cellListSelectedItem {
   gwt-image: 'cellListSelectedBackground';
-  background: #ffc266;
+  background: #FFC266;
   color: black;
   height: auto;
   overflow: visible;

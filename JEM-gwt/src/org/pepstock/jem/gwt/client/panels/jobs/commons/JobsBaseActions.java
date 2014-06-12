@@ -251,10 +251,10 @@ public class JobsBaseActions extends AbstractJobsActions {
 		public void onClick(ClickEvent event) {
 			// do!
 			// creates the inspector and shows it
-			Submitter inspector = new Submitter();
+			Submitter2 inspector = new Submitter2();
 			// be carefully about the HEIGHT and WIDTH calculation
-			inspector.setWidth("600px");
-			inspector.setHeight("240px");
+			inspector.setWidth("1000px");
+			inspector.setHeight("600px");
 			inspector.setModal(true);
 			inspector.setTitle("Submit...");
 			inspector.center();

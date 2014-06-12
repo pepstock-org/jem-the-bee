@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * An android-style Toast message
  * @author Andrea "Stock" Stocchero
+ * @author Marco "Fuzzo" Cuccato
  */
 public class Toast extends PopupPanel {
 	
