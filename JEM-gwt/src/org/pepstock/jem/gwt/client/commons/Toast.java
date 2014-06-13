@@ -144,8 +144,8 @@ public class Toast extends PopupPanel {
 
 	@Override
 	public final void show() {
+		// test if an identic toast (level, message, title) is already showing. In this case, ignore the new one
 		if (ACTIVE_TOASTS.contains(this)) {
-			System.out.println("An identic Toast is already showed, aborting...");
 			return;
 		}
 		setVisible(false);
