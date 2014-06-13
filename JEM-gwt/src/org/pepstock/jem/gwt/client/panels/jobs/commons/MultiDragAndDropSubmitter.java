@@ -210,14 +210,13 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	private class MyFileDialogCompleteHandler implements FileDialogCompleteHandler {
         public boolean onFileDialogComplete(FileDialogCompleteEvent fileDialogCompleteEvent) {
             if (fileDialogCompleteEvent.getTotalFilesInQueue() > 0) {  
+            	setUploaderAreaDropping();
                 if (uploader.getStats().getUploadsInProgress() <= 0) {  
                     uploader.startUpload();  
                 }  
+            } else {
+            	setUploaderAreaBeforeDrop();
             }
-        	int selected = fileDialogCompleteEvent.getNumberOfFilesSelected();
-        	int queued = fileDialogCompleteEvent.getNumberOfFilesQueued();
-        	new Toast(queued != selected ? MessageLevel.WARNING : MessageLevel.INFO, "Uploaded " + queued + " file(s) of " + selected + " selected", "Upload completed").show();
-            setUploaderAreaBeforeDrop();
             return true;  
         }  
 	}
