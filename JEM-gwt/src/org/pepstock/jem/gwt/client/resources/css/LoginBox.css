@@ -1,6 +1,6 @@
 /*
-	Grigio chiaro:		#fcfcfc
-	Grigio scuro:		#bbbbbb
+	Grigio chiaro:		#FCFCFC
+	Grigio scuro:		#BBBBBB
 */
 
 .grid {
@@ -10,11 +10,11 @@
 	
 	width: 100%;
 	
-	border: 1px solid #bbbbbb;
+	border: 1px solid #BBBBBB;
 	-moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
-	background-color: #fcfcfc;
+	background-color: #FCFCFC;
 
 	padding: 7px 7px 20px 7px;
 	margin: 5px;
@@ -24,7 +24,7 @@
 }
 
 .invisibleMessage {
-	color: #fcfcfc;
+	color: #FCFCFC;
 }
 
 .logo:hover {

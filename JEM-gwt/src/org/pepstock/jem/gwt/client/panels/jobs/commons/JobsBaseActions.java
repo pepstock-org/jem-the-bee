@@ -18,7 +18,9 @@ package org.pepstock.jem.gwt.client.panels.jobs.commons;
 
 import java.util.Collection;
 
+import org.moxieapps.gwt.uploader.client.Uploader;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.ConfirmMessageBox;
 import org.pepstock.jem.gwt.client.commons.HideHandler;
 import org.pepstock.jem.gwt.client.commons.Loading;
@@ -251,10 +253,16 @@ public class JobsBaseActions extends AbstractJobsActions {
 		public void onClick(ClickEvent event) {
 			// do!
 			// creates the inspector and shows it
-			Submitter2 inspector = new Submitter2();
+			PopupPanel inspector;
+			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the simple one
+			if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
+				inspector = new MultiDragAndDropSubmitter();
+			} else {
+				inspector = new Submitter();
+			}
 			// be carefully about the HEIGHT and WIDTH calculation
-			inspector.setWidth("1000px");
-			inspector.setHeight("600px");
+			inspector.setWidth(Sizes.toString(600));
+			inspector.setHeight(Sizes.toString(240));
 			inspector.setModal(true);
 			inspector.setTitle("Submit...");
 			inspector.center();

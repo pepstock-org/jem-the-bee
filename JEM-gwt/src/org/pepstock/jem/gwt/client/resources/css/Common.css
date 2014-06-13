@@ -61,31 +61,31 @@
 	padding-right: 10px;
 	white-space: normal;
 
-	border: 1px solid #3079ed;
+	border: 1px solid #3079ED;
 	border-radious: 2px;
 	font-size: 13px;
 	color: white;
 	font-weight: bold;
 	text-align: center;
 
-	background: #4d90fe; /* Old browsers */
+	background: #4D90FE; /* Old browsers */
 }
 
 @if user.agent ie6 ie8 {
 	.defaultActionButton {
-		/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d90fe', endColorstr='#4d87ed',GradientType=0 );*/ /* IE6-8 */
-		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#4d90fe', endColorstr='#4d87ed',GradientType=0)";
+		/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4D90FE', endColorstr='#4D87ED',GradientType=0 );*/ /* IE6-8 */
+		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#4D90FE', endColorstr='#4D87ED',GradientType=0)";
 	}
 } @else {
 	.defaultActionButton {
 	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
 		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRkOTBmZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0ZDg3ZWQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-		background: -moz-linear-gradient(top,  #4d90fe 0%, #4d87ed 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4d90fe), color-stop(100%,#4d87ed)); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #4d90fe 0%,#4d87ed 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #4d90fe 0%,#4d87ed 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #4d90fe 0%,#4d87ed 100%); /* IE10+ */
-		background: linear-gradient(to bottom,  #4d90fe 0%,#4d87ed 100%); /* W3C */
+		background: -moz-linear-gradient(top,  #4D90FE 0%, #4D87ED 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4D90FE), color-stop(100%,#4D87ED)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  #4D90FE 0%,#4D87ED 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  #4D90FE 0%,#4D87ED 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  #4D90FE 0%,#4D87ED 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  #4D90FE 0%,#4D87ED 100%); /* W3C */
 	}
 }
 
@@ -101,7 +101,7 @@
 
 .defaultActionButton:focus {
 	-webkit-box-shadow: inset 0 0 0 1px white;
-	-moz-box-shadow: inset 0 0 0 1px #fff;
+	-moz-box-shadow: inset 0 0 0 1px #FFF;
 	box-shadow: inset 0 0 0 1px white;
 	-moz-border-radius: 0px;
     -webkit-border-radius: 0px;
@@ -139,7 +139,7 @@
 }
 
 .highligtherCustomRow {
-    color: #d0d0d0;
+    color: #D0D0D0;
 }
 
 .padding4424 {
@@ -152,7 +152,7 @@
 }
 
 .headerWithoutData {
-    color: #bbb;
+    color: #BBB;
     font-weight: bold;
 }
 
@@ -171,7 +171,7 @@
 }
 
 .permissionLabelDisabled{
-	color: #c0c0c0;
+	color: #C0C0C0;
 	font-size: 1.2em !important;
 }
 
@@ -182,7 +182,7 @@
 }
 
 .permissionDescription{
-	color: #c0c0c0;
+	color: #C0C0C0;
 	font-size: 1em !important;
 }
 
@@ -197,15 +197,15 @@
 
 .searcher {
 	width: 100%;
-	border: 1px solid #ccc;
+	border: 1px solid #CCC;
 	border-top: 1px solid #999;
 	padding: 0px;
 	background-color: white;
 }
 
 .searcherFocus {
-	/* border: 2px solid #ffe699; */
-	outline-color: #ffc266;
+	/* border: 2px solid #FFE699; */
+	outline-color: #FFC266;
 	outline-offset: -2px;
 	outline-style: auto;
 	outline-width: 5px;
@@ -213,7 +213,7 @@
 
 
 .searcherUnabled {
-	background-color: #ebebe4;
+	background-color: #EBEBE4;
 }
 
 .searcherTextBox {
@@ -226,21 +226,21 @@
 }
 
 .searcherHistory {
-	border: 1px solid #ccc;
+	border: 1px solid #CCC;
 	border-top: 0px;
 	padding: 0px;
 	background: white;
 }
 @if user.agent ie10 {
 	.searcherHistory{
-		border-top: 1px solid #ccc;
+		border-top: 1px solid #CCC;
 	}
 }
 
 .editMenuBar {
 	white-space: nowrap;
 	z-index:20;
-	background: #ffffff; /* Old browsers */
+	background: #FFFFFF; /* Old browsers */
 	border: 0px;
 	border-bottom: 1px solid rgb(159, 159, 159); 
 	font-weight: normal;  
@@ -248,7 +248,7 @@
 
 .editMenuItemDisabled {
 	font-style: italic;
-	color: #c9c9c9;
+	color: #C9C9C9;
 }
 
 .pointer {

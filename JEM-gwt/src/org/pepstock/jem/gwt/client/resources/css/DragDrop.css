@@ -10,7 +10,7 @@
 }
 
 .dropping {
-	border-style: dashed;
+	border-style: solid;
 	border-width: 3px;
 	border-color: #32CD32;
 	color: #32CD32;
