@@ -26,12 +26,20 @@
 	<inherits name='com.google.gwt.xml.XML'/>
 	<inherits name="com.google.gwt.i18n.I18N" />
 	
+	<!-- GFlot chart library -->
 	<inherits name="com.googlecode.gflot.GFlot" />
 	<set-property name="gflot.load.flot.canvas" value="ENABLED" />
 	<set-property name="gflot.load.canvas2image" value="DISABLED" />
 	
+	<!-- Multi file uploader with drag & drop support -->
 	<inherits name="org.moxieapps.gwt.uploader.Uploader"/>
 	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
+
+	<!-- Multi file uploader widgets (progress bar, ...) -->	
+	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
+
+	<!-- Guava -->
+	<inherits name='com.google.common.base.Base' />
     	
 	<!-- Specify the app ENTRY POINT class -->
 	<entry-point class='org.pepstock.jem.gwt.client.Main' />

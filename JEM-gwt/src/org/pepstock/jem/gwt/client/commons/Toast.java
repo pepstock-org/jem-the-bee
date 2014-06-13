@@ -24,6 +24,7 @@ import org.pepstock.jem.gwt.client.notify.MessagesCollection;
 import org.pepstock.jem.gwt.client.notify.ToastMessage;
 import org.pepstock.jem.log.MessageLevel;
 
+import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -53,6 +54,12 @@ public class Toast extends PopupPanel {
 	
 	private static final List<Toast> ACTIVE_TOASTS = new LinkedList<Toast>();
 	
+	private String message;
+	
+	private String title;
+	
+	private MessageLevel level;
+	
 	private boolean timerStopped = false;
 	
 	/**
@@ -61,30 +68,18 @@ public class Toast extends PopupPanel {
 	 * @param title the message box title
 	 */
 	public Toast(MessageLevel level, String message, String title) {
-		this(message, title);
-		String theStyle;
-		switch (level) {
-		case WARNING:
-			theStyle = Styles.INSTANCE.toast().yellow();
-			break;
-		case ERROR:
-			theStyle = Styles.INSTANCE.toast().red();
-			break;
-		default:
-			theStyle = Styles.INSTANCE.toast().lightGreen();
-			break;
-		}
-		addStyleName(theStyle);
-		
-		ToastMessage tMessage = new ToastMessage();
-		tMessage.setLevel(level);
-		tMessage.setMessage(message);
-		tMessage.setTitle(title);
-		
-		MessagesCollection.add(tMessage);
+		this.level = level;
+		this.message = message;
+		this.title = title;
+		// build the panel
+		build();
+		// set the style
+		setStyle();
+		// add this toast to message collection
+		addToMessageCollection();
 	}
 
-	protected Toast(String message, String title) {
+	protected void build() {
 		setStyleName(Styles.INSTANCE.toast().main());
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setSpacing(2);
@@ -106,13 +101,37 @@ public class Toast extends PopupPanel {
  		setWidget(panel);
 	}
 	
+	protected void setStyle() {
+		String theStyle;
+		switch (level) {
+		case WARNING:
+			theStyle = Styles.INSTANCE.toast().yellow();
+			break;
+		case ERROR:
+			theStyle = Styles.INSTANCE.toast().red();
+			break;
+		default:
+			theStyle = Styles.INSTANCE.toast().lightGreen();
+			break;
+		}
+		addStyleName(theStyle);
+	}
+	
+	protected void addToMessageCollection() {
+		ToastMessage tMessage = new ToastMessage();
+		tMessage.setLevel(level);
+		tMessage.setMessage(message);
+		tMessage.setTitle(title);
+		MessagesCollection.add(tMessage);
+	}
+	
 	protected static synchronized int getAvailableTop(Toast t) {
 		int lastTop = 0;
 		if (ACTIVE_TOASTS.isEmpty()) {
 			lastTop = Sizes.HEADER + (Sizes.TABBAR_HEIGHT_PX + Sizes.MAIN_VERTICAL_PANEL_PADDING_TOP_LEFT_RIGHT) /2 - t.getOffsetHeight();
 		} else {
 			Toast last = ((LinkedList<Toast>) ACTIVE_TOASTS).getLast();
-			lastTop = last.getOffsetHeight() + SEPARATOR;  
+			lastTop = last.getAbsoluteTop() + last.getOffsetHeight() + SEPARATOR;  
 		}
 		ACTIVE_TOASTS.add(t);
 		return lastTop;
@@ -125,6 +144,10 @@ public class Toast extends PopupPanel {
 
 	@Override
 	public final void show() {
+		if (ACTIVE_TOASTS.contains(this)) {
+			System.out.println("An identic Toast is already showed, aborting...");
+			return;
+		}
 		setVisible(false);
 		super.show();
 		// needs deferred task 
@@ -174,9 +197,6 @@ public class Toast extends PopupPanel {
 		case Event.ONKEYDOWN:
 			onKeyDown(event);
 			break;
-		case Event.ONCLICK:
-			onClick(event);
-			break;
 		case Event.ONMOUSEOVER:
 			onMouseOver(event);
 			break;
@@ -212,14 +232,40 @@ public class Toast extends PopupPanel {
 			}
 		}
 	}
-	
-	private void onClick(NativePreviewEvent event) {
-		if (isShowing()) {
-			boolean insidePopup = Sizes.isEventInsideWidget(event.getNativeEvent(), this);
-			if (!insidePopup){
-				hide();
-			}
+
+	@Override
+	public String toString() {
+		return "Toast [message=" + message + ", title=" + title + ", level="
+				+ level + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((level == null) ? 0 : level.hashCode());
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Toast) {
+			return equals((Toast)obj);
 		}
+		return false;
+	}
+	
+	/**
+	 * Determine if this {@link Toast} is equal to another one
+	 * @param other the other {@link Toast}
+	 * @return <code>true</code> if and only if level, message and title of both Toast are equal
+	 */
+	public boolean equals(Toast other) {
+		return Objects.equal(level, other.level) && 
+			Objects.equal(message, other.message) &&
+			Objects.equal(title, other.title);
 	}
 	
 }
