@@ -55,6 +55,6 @@ public abstract class Loading {
 	 * Executes all logic, calling REST services 
 	 * @throws JemException if any error occurs
 	 */
-	public abstract void execute() throws JemException;
+	protected abstract void execute() throws JemException;
 
 }

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.pepstock.jem.gfs.GfsFile;
-import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.plugin.Client;
 
@@ -43,29 +42,7 @@ public class DataLoader {
 	 */
 	public static Collection<GfsFile> loadData(int type, String longName, String pathName) throws JemException {
 		if (Client.getInstance().isLogged()){
-			Collection<GfsFile> filesList = null ;
-			switch (type) {
-			case GfsFileType.DATA:
-				filesList = Client.getInstance().getGfsFileListData(longName, pathName);
-				break;
-			case GfsFileType.LIBRARY:
-				filesList = Client.getInstance().getGfsFileListLibrary(longName, pathName);
-				break;
-			case GfsFileType.SOURCE:
-				filesList = Client.getInstance().getGfsFileListSource(longName, pathName);
-				break;
-			case GfsFileType.CLASS:
-				filesList = Client.getInstance().getGfsFileListClass(longName, pathName);
-				break;
-			case GfsFileType.BINARY:
-				filesList = Client.getInstance().getGfsFileListBinary(longName, pathName);
-				break;
-			default:
-				// default load DATA
-				filesList = Client.getInstance().getGfsFileListData(longName, pathName);
-				break;
-			}
-			return filesList;
+			return Client.getInstance().getGfsFileList(type, longName, pathName);
 		}
 		return new ArrayList<GfsFile>();
 	}

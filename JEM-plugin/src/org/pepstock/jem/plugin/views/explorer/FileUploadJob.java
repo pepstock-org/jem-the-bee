@@ -120,7 +120,9 @@ public class FileUploadJob extends Job {
 		int totUnits = 0;
 		for (String fullFile : getFileNames()){
 			File fileToGetLenght = new File(fullFile);
-			totUnits += fileToGetLenght.length();
+			if (!fileToGetLenght.isDirectory()){
+				totUnits += fileToGetLenght.length();
+			}
 		}
 		monitor.beginTask("Copying files ...", totUnits); 
 		
@@ -133,7 +135,7 @@ public class FileUploadJob extends Job {
 			for (String fullFile : getFileNames()){
 				file = new File(fullFile);
 	
-				if (file.exists()){
+				if (file.exists() && ! file.isDirectory()){
 					monitor.subTask("Copying " + file.getName());
 					String gfsPath = getSearcherText();
 					String path = null;
