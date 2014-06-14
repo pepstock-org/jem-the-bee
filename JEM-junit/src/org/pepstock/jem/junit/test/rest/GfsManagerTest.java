@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gwt.client.rest.GfsManager;
 import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
 import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
@@ -30,10 +31,12 @@ public class GfsManagerTest extends TestCase {
 		loadData();
 		GfsRequest gfsRequest = new GfsRequest();
 		gfsRequest.setItem("test_rest/Data1");
-		String resposnse=RestManager.getSharedInstance().getGfsManager().getFileData(gfsRequest);
+		gfsRequest.setType(GfsFileType.DATA);
+		String resposnse=RestManager.getSharedInstance().getGfsManager().getFile(gfsRequest);
 		assertNotNull(resposnse);
 		gfsRequest.setItem("test_rest/");
-		GfsFileList list=RestManager.getSharedInstance().getGfsManager().getFilesListData(gfsRequest);
+		gfsRequest.setType(GfsFileType.DATA);
+		GfsFileList list=RestManager.getSharedInstance().getGfsManager().getFilesList(gfsRequest);
 		assertNotNull(list);
 	}
 

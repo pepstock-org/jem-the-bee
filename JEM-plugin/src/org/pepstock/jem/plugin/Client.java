@@ -305,80 +305,27 @@ public class Client {
 	}
 
 	/**
-	 * Returns a file from GFS from data folder
+	 * Returns a file from GFS 
+	 * @param type GFS type
 	 * @param path relative path of file
 	 * @param pathName data path name
 	 * @return file content in string format
 	 * @throws JemException if any exception occurs
 	 */
-	public String getGfsFileData(String path, String pathName) throws JemException {
-		return gfsManager.getFileData(createGfsRequest(path, pathName));
+	public String getGfsFile(int type, String path, String pathName) throws JemException {
+		return gfsManager.getFile(createGfsRequest(type, path, pathName));
 	}
 
 	/**
-	 * Returns a file from GFS from source folder
-	 * @param path relative path of file
-	 * @param pathName data path name
-	 * @return file content in string format
-	 * @throws JemException if any exception occurs
-	 */
-	public String getGfsFileSource(String path, String pathName) throws JemException {
-		return gfsManager.getFileSource(createGfsRequest(path, pathName));
-	}
-
-	/**
-	 * Returns the list of files from GFS from a data folder
+	 * Returns the list of files from GFS 
+	 * @param type GFS type
 	 * @param path path relative path of folder
 	 * @param pathName data path name
 	 * @return list of files of GFS
 	 * @throws JemException if any exception occurs
 	 */
-	public Collection<GfsFile> getGfsFileListData(String path, String pathName) throws JemException {
-		return gfsManager.getFilesListData(createGfsRequest(path, pathName)).getGfsFiles();
-	}
-
-	/**
-	 * Returns the list of files from GFS from a library folder
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
-	 */
-	public Collection<GfsFile> getGfsFileListLibrary(String path, String pathName) throws JemException {
-		return gfsManager.getFilesListLibrary(createGfsRequest(path, pathName)).getGfsFiles();
-	}
-
-	/**
-	 * Returns the list of files from GFS from a source folder
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
-	 */
-	public Collection<GfsFile> getGfsFileListSource(String path, String pathName) throws JemException {
-		return gfsManager.getFilesListSource(createGfsRequest(path, pathName)).getGfsFiles();
-	}
-
-	/**
-	 * Returns the list of files from GFS from a class folder
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
-	 */
-	public Collection<GfsFile> getGfsFileListClass(String path, String pathName) throws JemException {
-		return gfsManager.getFilesListClass(createGfsRequest(path, pathName)).getGfsFiles();
-	}
-
-	/**
-	 * Returns the list of files from GFS from a binary folder
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
-	 */
-	public Collection<GfsFile> getGfsFileListBinary(String path, String pathName) throws JemException {
-		return gfsManager.getFilesListBinary(createGfsRequest(path, pathName)).getGfsFiles();
+	public Collection<GfsFile> getGfsFileList(int type, String path, String pathName) throws JemException {
+		return gfsManager.getFilesList(createGfsRequest(type, path, pathName)).getGfsFiles();
 	}
 	
 	/**
@@ -389,6 +336,18 @@ public class Client {
 	 */
 	public int upload(UploadedGfsFile file) throws JemException {
 		return gfsManager.upload(file);
+	}
+	
+	/**
+	 * Deletes a file from GFS 
+	 * @param type GFS type
+	 * @param path relative path of file
+	 * @param pathName data path name
+	 * @return file content in string format
+	 * @throws JemException if any exception occurs
+	 */
+	public void delete(int type, String path, String pathName) throws JemException {
+		gfsManager.delete(createGfsRequest(type, path, pathName));
 	}
 	
 	/**
@@ -415,10 +374,11 @@ public class Client {
 	 * @param pathName data path name
 	 * @return a gfs request
 	 */
-	private GfsRequest createGfsRequest(String path, String pathName){
+	private GfsRequest createGfsRequest(int type, String path, String pathName){
 		GfsRequest request = new GfsRequest();
 		request.setItem(path);
 		request.setPathName(pathName);
+		request.setType(type);
 		return request;
 	}
 

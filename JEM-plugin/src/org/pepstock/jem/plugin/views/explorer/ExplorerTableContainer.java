@@ -142,6 +142,12 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	}
 	
 	/**
+	 * @return the type
+	 */
+	public int getType() {
+		return type;
+	}
+	/**
 	 * Returns the collection of files 
 	 * @return the collection of files
 	 */
@@ -242,6 +248,13 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	    return composite;
     }
     
+    /**
+     * Method to refresh table with result
+     */
+    public void refresh(){
+    	refresh(searcher.getText());
+    }
+    
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.views.jobs.Refresher#refresh(java.lang.String)
 	 */
@@ -250,8 +263,10 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
     	refresh(filter, null);
     }
     
+    
+    
     /**
-     * Method to refreh table with result, using filter and data path name
+     * Method to refrseh table with result, using filter and data path name
 	 * @param filter the folder path to search in JEM.
 	 * @param pathName data path name
      */
@@ -275,6 +290,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 			count++;
 		}
 	}
+
 	
 	/**
 	 * 
@@ -296,10 +312,8 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		public void execute() throws JemException {
 			try {
 				String content = null;
-				if (type == GfsFileType.DATA){
-					content = Client.getInstance().getGfsFileData(getFile().getLongName(), getFile().getDataPathName());
-				} else if (type == GfsFileType.SOURCE){
-					content = Client.getInstance().getGfsFileSource(getFile().getLongName(), getFile().getDataPathName());
+				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE){
+					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
 				} else { 
 					return;
 				}

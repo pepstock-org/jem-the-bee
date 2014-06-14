@@ -32,6 +32,7 @@ import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.executors.gfs.DeleteFile;
 import org.pepstock.jem.node.executors.gfs.GetFile;
 import org.pepstock.jem.node.executors.gfs.GetFilesList;
 import org.pepstock.jem.node.executors.gfs.WriteChunk;
@@ -229,6 +230,30 @@ public class GfsManager extends DefaultService {
 		task.getResult();
 	}
 
+	/**
+	 * Sued to delete a file from GFS (no data path)
+	 * 
+	 * @param type
+	 *            could a integer value
+	 * @see GfsFile
+	 * @param file
+	 *            the file name to retrieve
+	 * @param pathName
+	 *            data path name or null
+	 * @return <code>true</code> if deleted
+	 * @throws ServiceMessageException
+	 * @throws Exception
+	 *             if any error occurs
+	 */
+	public boolean deleteFile(int type, String file, String pathName)
+			throws ServiceMessageException {
+		checkAuthentication();
+		checkGfsPermission(type);
+
+		DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(
+				new DeleteFile(type, file, pathName), getMember());
+		return task.getResult();
+	}
 	/**
 	 * 
 	 * @param type
