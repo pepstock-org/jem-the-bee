@@ -27,11 +27,9 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.plugin.Client;
-import org.pepstock.jem.plugin.util.Loading;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.views.LoginViewPart;
 
@@ -200,10 +198,8 @@ public class ExplorerViewPart extends LoginViewPart {
 	 * @version 2.1
 	 */
 	class DeleteAction extends Action {
-
-		private GfsFile file = null;
-
-		private ExplorerTableContainer container = null;
+		
+		private RemoveFileLoading loading = null;
 
 		/**
 		 * Constructs the action using the file to remove and the container
@@ -213,11 +209,9 @@ public class ExplorerViewPart extends LoginViewPart {
 		public DeleteAction(GfsFile file, ExplorerTableContainer container) {
 			if (file == null) {
 				setEnabled(false);
-			} else {
-				this.file = file;
-			}
-			this.container = container;
+			} 
 			setText("Remove " + file.getName());
+			loading = new RemoveFileLoading(file, container);
 		}
 
 		
@@ -226,46 +220,6 @@ public class ExplorerViewPart extends LoginViewPart {
 		 */
         @Override
         public void run() {
-        	//Uses a loading panel to delete file
-			Loading loading = new Loading() {
-				
-				/* (non-Javadoc)
-				 * @see org.pepstock.jem.plugin.util.Loading#getDisplay()
-				 */
-                @Override
-                public Display getDisplay() {
-					Control ctrl = container.getViewer().getControl();
-					if (ctrl == null || ctrl.isDisposed()) {
-						return null;
-					}
-					return ctrl.getDisplay();
-                }
-
-				/* (non-Javadoc)
-				 * @see org.pepstock.jem.plugin.util.Loading#execute()
-				 */
-                @Override
-                protected void execute() throws JemException {
-                	// removes the file by REST
-					try {
-						Client.getInstance().delete(container.getType(), file.getLongName(), file.getDataPathName());
-					} catch (JemException e) {
-						Notifier.showMessage(getDisplay().getActiveShell(), "Unable to delete " + file.getName(), e.getMessage(), MessageLevel.ERROR);
-					}
-
-					// refreshes teh list of GFS files
-					Control ctrl = container.getViewer().getControl();
-					if (ctrl == null || ctrl.isDisposed()) {
-						return;
-					}
-					ctrl.getDisplay().syncExec(new Runnable() {
-						@Override
-						public void run() {
-							container.refresh();
-						}
-					});
-				}
-			};
 			// performs the execute panels
 			loading.run();
 		}
