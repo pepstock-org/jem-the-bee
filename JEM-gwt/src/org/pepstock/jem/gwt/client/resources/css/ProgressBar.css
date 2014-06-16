@@ -9,22 +9,34 @@
 
 @external .gwt-*;
 
+/*
+	File progress bar main style
+*/
+
 .gwt-ProgressBar-shell {
 	border: 1px solid black;
 	-moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
-	background-color: #AAAAAA;
+	background-color: lightgrey;
 	height: 14pt;
 	width: 50%;
 }
 
 .gwt-ProgressBar-shell .gwt-ProgressBar-bar {
-	background-color: #FFC266;
+	background-color: #FFE699;
 }
 
 .gwt-ProgressBar-shell .gwt-ProgressBar-text {
 	padding: 0px;
 	margin: 0px;
 	color: black;
+}
+
+/*
+	Overall progress bar dependant styles
+*/
+
+.gwt-ProgressBar-shell-overall .gwt-ProgressBar-bar {
+	background-color: #FFC266;
 }

@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.moxieapps.gwt.uploader.client.File;
+import org.moxieapps.gwt.uploader.client.Stats;
 import org.moxieapps.gwt.uploader.client.Uploader;
 import org.moxieapps.gwt.uploader.client.events.FileDialogCompleteEvent;
 import org.moxieapps.gwt.uploader.client.events.FileDialogCompleteHandler;
@@ -27,8 +28,6 @@ import org.moxieapps.gwt.uploader.client.events.FileDialogStartEvent;
 import org.moxieapps.gwt.uploader.client.events.FileDialogStartHandler;
 import org.moxieapps.gwt.uploader.client.events.FileQueueErrorEvent;
 import org.moxieapps.gwt.uploader.client.events.FileQueueErrorHandler;
-import org.moxieapps.gwt.uploader.client.events.FileQueuedEvent;
-import org.moxieapps.gwt.uploader.client.events.FileQueuedHandler;
 import org.moxieapps.gwt.uploader.client.events.UploadCompleteEvent;
 import org.moxieapps.gwt.uploader.client.events.UploadCompleteHandler;
 import org.moxieapps.gwt.uploader.client.events.UploadErrorEvent;
@@ -43,6 +42,8 @@ import org.pepstock.jem.gwt.client.panels.jobs.commons.inspector.JobHeader;
 import org.pepstock.jem.log.MessageLevel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -60,7 +61,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.ProgressBar;
 
 /**
@@ -71,9 +71,11 @@ import com.google.gwt.widgetideas.client.ProgressBar;
 public class MultiDragAndDropSubmitter extends AbstractInspector {
 
 	static {
+		Styles.INSTANCE.common().ensureInjected();
 		Styles.INSTANCE.progressBar().ensureInjected();
 		Styles.INSTANCE.dragDrop().ensureInjected();
 	}
+	private static final String OVERALL_STYLE_SUFFIX = "overall";
 	
 	private static final String SERVICE_NAME = "submitter";
 	
@@ -82,45 +84,65 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	 */
 	public static final String FILE_SIZE_LIMIT = "5 MB";
 	
-	// header
-	private JobHeader header = new JobHeader("Submit Jobs", this);
-	// inspector content panel (under the header)
-	private HorizontalPanel mainPanel = new HorizontalPanel();
-	// the uploader object
-    final Uploader uploader = new Uploader();
-    // the drop area label
-    final Label dropFilesLabel = new Label();
-	// holds the progress bars
-	final VerticalPanel progressBarPanel = new VerticalPanel();
-    // progress bar panel scroll wrapper
-	final ScrollPanel progressBarPanelScroller = new ScrollPanel();
-    // left size of inspector, with file drop area
-	private VerticalPanel uploaderArea = new VerticalPanel();
-	// right size of inspector, with progress bar
-	private VerticalPanel progressArea = new VerticalPanel();
-	// progress label
-	private Label progressLabel = new Label("Progress");
-
-	// map file with progress bar
-    final Map<String, ProgressBar> progressBars = new LinkedHashMap<String, ProgressBar>();
-    // map file with cancel buttons
-    final Map<String, Button> cancelButtons = new LinkedHashMap<String, Button>();
-
 	/**
 	 * 
 	 */
+	public static final String FILE_TYPES = "*.xml;";
+	
+	// header
+	private JobHeader header = new JobHeader("Submit Jobs", this);
+	// footer panel, containing the switch submitter button
+	private HorizontalPanel footer = new HorizontalPanel();
+	// drop & progress panel
+	private HorizontalPanel mainHPanel = new HorizontalPanel();
+	// drop label description
+	private Label dropLabel = new Label("Drag & Drop"); 
+	// overall progress label
+	private Label overallProgressLabel = new Label("Overall Progress");
+	// the overall progress bar
+	private ProgressBar overallProgressBar = new ProgressBar();
+	// progress label
+	private Label fileProgressLabel = new Label("File Progress");
+	// the uploader object
+    private Uploader uploader = new Uploader();
+    // the drop area label
+    private Label dropFilesLabel = new Label();
+	// holds the progress bars
+	private VerticalPanel filesProgressBarPanel = new VerticalPanel();
+    // progress bar panel scroll wrapper
+	private ScrollPanel progressBarPanelScroller = new ScrollPanel();
+    // left size of inspector, with file drop area
+	private FlexTable uploaderArea = new FlexTable();
+	// right size of inspector, with progress bar
+	private VerticalPanel progressArea = new VerticalPanel();
+	// switch submitter button
+	private Button switchSubmitter = new Button("Use legacy Submitter");
+	// map file with progress bar
+    private Map<String, UploadFileItem> progressBars = new LinkedHashMap<String, UploadFileItem>();
+    // map file with cancel buttons
+    private Map<String, Button> cancelButtons = new LinkedHashMap<String, Button>();
+    
+    private boolean allowCancel;
+    
+    /**
+	 * 
+	 */
 	public MultiDragAndDropSubmitter() {
-		super();
-
+		this(false);
+	}
+    
+	/**
+	 * 
+	 */
+	public MultiDragAndDropSubmitter(boolean allowCancel) {
+		super(true);
+		// set the allow cancel flag
+		this.allowCancel = allowCancel;
+		
         // set uploader options
         uploader.setUploadURL(GWT.getModuleBaseURL()+SERVICE_NAME)  
-                /*.setButtonImageURL(GWT.getModuleBaseURL() + "resources/images/buttons/upload_new_version_button.png")*/  
-                /*.setButtonWidth(133)*/  
-                /*.setButtonHeight(22)*/  
-                .setFileSizeLimit(FILE_SIZE_LIMIT)  
-                .setButtonCursor(Uploader.Cursor.HAND)  
-                .setButtonAction(Uploader.ButtonAction.SELECT_FILES)  
-                .setFileQueuedHandler(new MyFileQueuedHandler())  
+                .setFileSizeLimit(FILE_SIZE_LIMIT)
+                .setFileTypes(FILE_TYPES)
                 .setUploadProgressHandler(new MyUploadProgressHandler())  
                 .setUploadCompleteHandler(new MyUploadCompleteHanlder())  
                 .setFileDialogStartHandler(new MyFileDialogStartHandler())  
@@ -136,15 +158,20 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         dropFilesLabel.addDropHandler(new MyDropHandler());  
         
         // Uploader area
-		uploaderArea.setSpacing(5);
+        uploaderArea.setCellSpacing(5);
 		uploaderArea.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
 		
-		uploaderArea.add(dropFilesLabel);
-		uploaderArea.setCellVerticalAlignment(dropFilesLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		uploaderArea.setCellHeight(dropFilesLabel, Sizes.HUNDRED_PERCENT);
-		
-		uploaderArea.add(uploader);
-		uploaderArea.setCellHeight(uploader, "0%");
+		dropLabel.setWidth(Sizes.HUNDRED_PERCENT);
+		dropLabel.setStyleName(Styles.INSTANCE.inspector().title());
+		dropLabel.addStyleName(Styles.INSTANCE.common().bold());
+
+		uploaderArea.setWidget(0, 0, dropLabel);
+		uploaderArea.setWidget(0, 1, uploader);
+		uploaderArea.setWidget(1, 0, dropFilesLabel);
+		uploaderArea.getFlexCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+		uploaderArea.getFlexCellFormatter().setColSpan(1, 0, 2);
+		uploaderArea.getFlexCellFormatter().setHeight(1, 0, Sizes.HUNDRED_PERCENT);
+		uploaderArea.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 		
 		// Progress area
 		
@@ -153,32 +180,64 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		progressArea.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		progressArea.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		
-		progressLabel.setWidth(Sizes.HUNDRED_PERCENT);
-		progressLabel.setStyleName(Styles.INSTANCE.inspector().title());
-		progressLabel.addStyleName(Styles.INSTANCE.common().bold());
-		progressArea.add(progressLabel);
-		progressBarPanel.setSpacing(2);
-		progressBarPanel.setWidth(Sizes.HUNDRED_PERCENT);
-		progressBarPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		overallProgressLabel.setWidth(Sizes.HUNDRED_PERCENT);
+		overallProgressLabel.setStyleName(Styles.INSTANCE.inspector().title());
+		overallProgressLabel.addStyleName(Styles.INSTANCE.common().bold());
+		progressArea.add(overallProgressLabel);
+		overallProgressBar.addStyleDependentName(OVERALL_STYLE_SUFFIX);
+        overallProgressBar.setTitle("Overall Progress");  
+        overallProgressBar.setHeight(Sizes.toString(20));
+        overallProgressBar.setWidth(Sizes.HUNDRED_PERCENT);  
+		overallProgressBar.setTextFormatter(new OverallProgressBarTextFormatter());
+		overallProgressBar.setMinProgress(0.0d);
+		overallProgressBar.setProgress(-1.0d);
+		progressArea.add(overallProgressBar);
+		fileProgressLabel.setWidth(Sizes.HUNDRED_PERCENT);
+		fileProgressLabel.setStyleName(Styles.INSTANCE.inspector().title());
+		fileProgressLabel.addStyleName(Styles.INSTANCE.common().bold());
+		progressArea.add(fileProgressLabel);
+		filesProgressBarPanel.setSpacing(2);
+		filesProgressBarPanel.setWidth(Sizes.HUNDRED_PERCENT);
+		filesProgressBarPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		progressBarPanelScroller.setAlwaysShowScrollBars(false);
-		progressBarPanelScroller.setWidget(progressBarPanel);
+		progressBarPanelScroller.setWidget(filesProgressBarPanel);
 		progressArea.add(progressBarPanelScroller);
-		progressArea.setCellHeight(progressBarPanel, Sizes.HUNDRED_PERCENT);
+		progressArea.setCellHeight(filesProgressBarPanel, Sizes.HUNDRED_PERCENT);
 		
+		// Footer
+		
+		switchSubmitter.addStyleName(Styles.INSTANCE.common().defaultActionButton());
+		switchSubmitter.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				MultiDragAndDropSubmitter.this.hide();
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						new Submitter().show();
+					}
+				});
+			}
+		});
+		footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		footer.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		footer.setWidth(Sizes.HUNDRED_PERCENT);
+		footer.add(switchSubmitter);
+
 		// Main
 		
-		mainPanel.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-		mainPanel.setSpacing(5);
-		mainPanel.add(uploaderArea);
-		mainPanel.add(progressArea);
-		mainPanel.setCellWidth(uploaderArea, "50%");
-		mainPanel.setCellWidth(progressArea, "50%");
+		mainHPanel.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
+		mainHPanel.setSpacing(5);
+		mainHPanel.add(uploaderArea);
+		mainHPanel.add(progressArea);
+		mainHPanel.setCellWidth(uploaderArea, "50%");
+		mainHPanel.setCellWidth(progressArea, "50%");
 	}
 
 	@Override
 	protected void onLoad() {
 		int scrollerHeight;
-		scrollerHeight = getAvailableHeight() - progressLabel.getOffsetHeight() - 4*progressArea.getSpacing();
+		scrollerHeight = getAvailableHeight() - overallProgressLabel.getOffsetHeight() - 4*progressArea.getSpacing();
 		progressBarPanelScroller.setHeight(Sizes.toString(scrollerHeight));
 	}
 
@@ -187,8 +246,10 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	 */
 	
 	private class MyUploadErrorHandler implements UploadErrorHandler {
-        public boolean onUploadError(UploadErrorEvent uploadErrorEvent) {  
-            cancelButtons.get(uploadErrorEvent.getFile().getId()).setEnabled(false);
+        public boolean onUploadError(UploadErrorEvent uploadErrorEvent) {
+        	if (allowCancel) {
+        		cancelButtons.get(uploadErrorEvent.getFile().getId()).setEnabled(false);
+        	}
             new Toast(MessageLevel.ERROR, 
             	"Upload of file " + uploadErrorEvent.getFile().getName() + " failed due to " + uploadErrorEvent.getErrorCode().toString() + ": " + uploadErrorEvent.getMessage(), 
             	"Upload Error").show();
@@ -209,97 +270,135 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	
 	private class MyFileDialogCompleteHandler implements FileDialogCompleteHandler {
         public boolean onFileDialogComplete(FileDialogCompleteEvent fileDialogCompleteEvent) {
-            if (fileDialogCompleteEvent.getTotalFilesInQueue() > 0) {  
-            	setUploaderAreaDropping();
-                if (uploader.getStats().getUploadsInProgress() <= 0) {  
-                    uploader.startUpload();  
+        	int totalFilesInQueue = fileDialogCompleteEvent.getTotalFilesInQueue();
+        	// reset the overall progress bar values
+        	overallProgressBar.setProgress(-1);
+        	overallProgressBar.setMaxProgress(totalFilesInQueue);
+        	// check and start uploads
+            if (totalFilesInQueue > 0) {  
+                if (uploader.getStats().getUploadsInProgress() <= 0) {
+                    uploader.startUpload();
+                    setUploaderAreaAfterDrop();
                 }  
-            } else {
-            	setUploaderAreaBeforeDrop();
             }
             return true;  
         }  
 	}
 	
 	private class MyFileDialogStartHandler implements FileDialogStartHandler {
-        public boolean onFileDialogStartEvent(FileDialogStartEvent fileDialogStartEvent) {  
+        public boolean onFileDialogStartEvent(FileDialogStartEvent fileDialogStartEvent) {
+            // Clear the uploads that have completed, if none are in process  
             if (uploader.getStats().getUploadsInProgress() <= 0) {  
-                // Clear the uploads that have completed, if none are in process  
-                progressBarPanel.clear();  
-                progressBars.clear();  
-                cancelButtons.clear();  
+                filesProgressBarPanel.clear();  
+                progressBars.clear();
+                if (allowCancel) {
+                	cancelButtons.clear();
+                }
             }  
             return true;  
         }  
 	}
 	
 	private class MyUploadCompleteHanlder implements UploadCompleteHandler {
-        public boolean onUploadComplete(UploadCompleteEvent uploadCompleteEvent) {  
-            cancelButtons.get(uploadCompleteEvent.getFile().getId()).setEnabled(false);  
+        public boolean onUploadComplete(UploadCompleteEvent uploadCompleteEvent) {
+        	if (allowCancel) {
+        		cancelButtons.get(uploadCompleteEvent.getFile().getId()).setEnabled(false);
+        	}
+            // increment the overall progress bar progress
+            overallProgressBar.setProgress(overallProgressBar.getProgress()+1);
+            // do next upload if any
             uploader.startUpload();
+    		// test if no files left in queue, change style to be ready to another upload
+        	Stats stats = uploader.getStats();
+        	if (stats.getFilesQueued() == 0) {
+                setUploaderAreaBeforeDrop();
+                // display a Toast that summarize uploads
+                MessageLevel level = (stats.getUploadErrors() > 0 || stats.getUploadsCancelled() > 0) ? MessageLevel.WARNING : MessageLevel.INFO;
+                String message = stats.getSuccessfulUploads() + " file(s) uploaded, " + stats.getUploadErrors() + " error(s)";
+                new Toast(level, message, "Upload completed").show();
+        	}
             return true;  
         }  
 	}
 	
 	private class MyUploadProgressHandler implements UploadProgressHandler {
-		public boolean onUploadProgress(UploadProgressEvent uploadProgressEvent) {  
-            ProgressBar progressBar = progressBars.get(uploadProgressEvent.getFile().getId());  
+		public boolean onUploadProgress(UploadProgressEvent uploadProgressEvent) {
+			File file = uploadProgressEvent.getFile();
+			UploadFileItem uploadFileItem;
+			if (!progressBars.containsKey(file.getId())) {
+				uploadFileItem = new UploadFileItem(file);
+				progressBars.put(file.getId(), uploadFileItem);
+				filesProgressBarPanel.insert(uploadFileItem, 0);
+			} else {
+				uploadFileItem = progressBars.get(file.getId());
+			}
+            ProgressBar progressBar = uploadFileItem.getProgressBar();
             progressBar.setProgress((double) uploadProgressEvent.getBytesComplete() / uploadProgressEvent.getBytesTotal());  
             return true;  
         }	
 	}
 	
-	private class MyFileQueuedHandler implements FileQueuedHandler {
-		public boolean onFileQueued(final FileQueuedEvent fileQueuedEvent) {  
-			Widget item = buildUploadFileItem(fileQueuedEvent.getFile());
-            progressBarPanel.add(item);
-            progressBarPanelScroller.setVerticalScrollPosition(progressBarPanelScroller.getMaximumVerticalScrollPosition());
-            return true;  
-        }  	
-	}
-	
-	private Widget buildUploadFileItem(final File file) {
-        // Create a Progress Bar for this file  
-        final ProgressBar progressBar = new ProgressBar(0.0, 1.0, 0.0, new ProgressBarTextFormatter());
-        progressBar.setTitle(file.getName());  
-        progressBar.setHeight(Sizes.toString(20));
-        progressBar.setWidth(Sizes.HUNDRED_PERCENT);  
-        progressBars.put(file.getId(), progressBar);  
+	private class UploadFileItem extends FlexTable {
+		
+		private final File file;
+		private ProgressBar progressBar;
+		
+		public UploadFileItem(final File file) {
+			this.file = file;
+	        // Create a Progress Bar for this file  
+	        progressBar = new ProgressBar(0.0, 1.0, 0.0, new FileProgressBarTextFormatter());
+	        progressBar.setTitle(file.getName());  
+	        progressBar.setHeight(Sizes.toString(20));
+	        progressBar.setWidth(Sizes.HUNDRED_PERCENT);  
 
-        // Add Cancel Button Image  
-        final Button cancelButton = new Button("Cancel");  
-        cancelButton.addClickHandler(new ClickHandler() {  
-            public void onClick(ClickEvent event) {  
-                uploader.cancelUpload(file.getId(), false);  
-                progressBars.get(file.getId()).setProgress(-1.0d);  
-                cancelButton.setEnabled(false);  
-            }  
-        });  
-        cancelButtons.put(file.getId(), cancelButton);  
+	        // Add Cancel Button Image
+	        Button cancelButton = null;
+	        if (allowCancel) {
+		        final Button button = new Button("Cancel");  
+		        button.addClickHandler(new ClickHandler() {  
+		            public void onClick(ClickEvent event) {  
+		                uploader.cancelUpload(file.getId(), false);  
+		                progressBars.get(file.getId()).getProgressBar().setProgress(-1.0d);  
+		                button.setEnabled(false);  
+		            }  
+		        });  
+		        cancelButtons.put(file.getId(), button);
+		        cancelButton = button;
+	        }
 
-        // Add the Bar and Button to the progress bar panel
-        // +--------------------------+
-        // | File Name				  |
-        // | ProgressBar     | Cancel |
-        // +--------------------------+
-        
-        // first row
-        FlexTable itemTable = new FlexTable();
-        itemTable.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-        itemTable.setCellSpacing(3);
-        Label fileName = new Label(file.getName()); 
-        itemTable.setWidget(0, 0, fileName);
-        itemTable.setWidget(0, 1, cancelButton);
-        
-        itemTable.getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
-        itemTable.getFlexCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
-        
-        // second row
-        itemTable.setWidget(1, 0, progressBar);
-        
-        itemTable.getFlexCellFormatter().setColSpan(1, 0, 2);
-        itemTable.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
-        return itemTable;
+	        // Add the Bar and Button to the progress bar panel
+	        // +--------------------------+
+	        // | File Name		 | Cancel |
+	        // | ProgressBar              |      
+	        // +--------------------------+
+	        
+			// first row
+	        setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
+	        setCellSpacing(3);
+	        Label fileName = new Label(file.getName()); 
+	        setWidget(0, 0, fileName);
+	        getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+	        if (allowCancel) {
+	        	setWidget(0, 1, cancelButton);
+	            getFlexCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+	        }
+	        
+	        // second row
+	        setWidget(1, 0, progressBar);
+	        
+	        getFlexCellFormatter().setColSpan(1, 0, 2);
+	        getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		}
+
+		@SuppressWarnings("unused")
+		public File getFile() {
+			return file;
+		}
+		
+		public ProgressBar getProgressBar() {
+			return progressBar;
+		}
+
 	}
 	
 	/*
@@ -324,9 +423,11 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		public void onDrop(DropEvent event) {
         	setUploaderAreaAfterDrop();
             if (uploader.getStats().getUploadsInProgress() <= 0) {  
-                progressBarPanel.clear();  
-                progressBars.clear();  
-                cancelButtons.clear();  
+                filesProgressBarPanel.clear();  
+                progressBars.clear();
+                if (allowCancel) {
+                	cancelButtons.clear();
+                }
             }  
             uploader.addFilesToQueue(Uploader.getDroppedFiles(event.getNativeEvent()));  
             event.preventDefault();
@@ -354,10 +455,9 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	}
 
 	/*
-	 * The progress bar text formatter 
+	 * The single file progress bar text formatter  
 	 */
-	
-	private class ProgressBarTextFormatter extends ProgressBar.TextFormatter {
+	private static class FileProgressBarTextFormatter extends ProgressBar.TextFormatter {
 
 		@Override  
         protected String getText(ProgressBar bar, double curProgress) {
@@ -371,6 +471,25 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         }  
     }
 
+	/*
+	 *	The overall progress bar text formatter 
+	 */
+	private static class OverallProgressBarTextFormatter extends ProgressBar.TextFormatter {
+
+		@Override
+		protected String getText(ProgressBar bar, double curProgress) {
+			String text;
+			if (curProgress < 0) {
+				text = "None";
+			} else {
+				text = new Double(curProgress).intValue() + "/" + new Double(bar.getMaxProgress()).intValue();
+			}
+			return text;
+		}
+		
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.pepstock.jem.gwt.client.commons.AbstractInspector#getHeader()
@@ -386,7 +505,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	 */
 	@Override
 	public Panel getContent() {
-		return mainPanel;
+		return mainHPanel;
 	}
 
 	/*
@@ -395,7 +514,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	 */
 	@Override
 	public Panel getActions() {
-		return null;
+		return footer;
 	}
 	
 }

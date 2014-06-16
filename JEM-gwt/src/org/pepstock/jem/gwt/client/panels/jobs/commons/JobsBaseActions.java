@@ -254,7 +254,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 			// do!
 			// creates the inspector and shows it
 			PopupPanel inspector;
-			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the simple one
+			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the legacy one
 			if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
 				inspector = new MultiDragAndDropSubmitter();
 			} else {

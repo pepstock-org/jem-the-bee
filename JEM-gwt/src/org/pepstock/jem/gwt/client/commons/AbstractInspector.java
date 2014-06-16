@@ -84,6 +84,7 @@ public abstract class AbstractInspector extends PopupPanel {
 	 */
 	public final void setWidth(int width) {
 		this.width = width;
+		this.availableWidth = width;
 	}
 
 	/**
