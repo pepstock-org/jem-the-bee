@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.gwt.client.panels.jobs.commons;
+package org.pepstock.jem.gwt.client.panels.jobs.input;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,12 +38,11 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
+import org.pepstock.jem.gwt.client.events.EventBus;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.inspector.JobHeader;
 import org.pepstock.jem.log.MessageLevel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -124,15 +123,20 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
     
     private boolean allowCancel;
     
+    private int uploadedCount = 0;
+    private int errorCount = 0;
+    private int cancelledCount = 0;
+    
     /**
-	 * 
+	 * Build the wigdet, with cancel upload not permitted
 	 */
 	public MultiDragAndDropSubmitter() {
 		this(false);
 	}
     
 	/**
-	 * 
+	 * Build the wigdet
+	 * @param allowCancel <code>true</code> if you want the user be able to cancel uploads, <code>false</code> otherwhise
 	 */
 	public MultiDragAndDropSubmitter(boolean allowCancel) {
 		super(true);
@@ -205,18 +209,12 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		progressArea.setCellHeight(filesProgressBarPanel, Sizes.HUNDRED_PERCENT);
 		
 		// Footer
-		
-		switchSubmitter.addStyleName(Styles.INSTANCE.common().defaultActionButton());
 		switchSubmitter.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MultiDragAndDropSubmitter.this.hide();
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						new Submitter().show();
-					}
-				});
+				//MultiDragAndDropSubmitter.this.hide();
+				System.out.println("Event fired from Multi");
+				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), MultiDragAndDropSubmitter.this);
 			}
 		});
 		footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -254,6 +252,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
             	"Upload of file " + uploadErrorEvent.getFile().getName() + " failed due to " + uploadErrorEvent.getErrorCode().toString() + ": " + uploadErrorEvent.getMessage(), 
             	"Upload Error").show();
             setUploaderAreaBeforeDrop();
+            errorCount++;
             return true;  
         }  
 	}
@@ -264,6 +263,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
            		"Upload of file " + fileQueueErrorEvent.getFile().getName() + " failed due to " + fileQueueErrorEvent.getErrorCode().toString() + ": " + fileQueueErrorEvent.getMessage(), 
                	"Upload Error").show();
             setUploaderAreaBeforeDrop();
+            errorCount++;
             return true;  
         }  
 	}
@@ -274,6 +274,10 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         	// reset the overall progress bar values
         	overallProgressBar.setProgress(-1);
         	overallProgressBar.setMaxProgress(totalFilesInQueue);
+        	// reset the counters
+        	uploadedCount = 0;
+        	errorCount = 0;
+        	cancelledCount = 0;
         	// check and start uploads
             if (totalFilesInQueue > 0) {  
                 if (uploader.getStats().getUploadsInProgress() <= 0) {
@@ -313,8 +317,8 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         	if (stats.getFilesQueued() == 0) {
                 setUploaderAreaBeforeDrop();
                 // display a Toast that summarize uploads
-                MessageLevel level = (stats.getUploadErrors() > 0 || stats.getUploadsCancelled() > 0) ? MessageLevel.WARNING : MessageLevel.INFO;
-                String message = stats.getSuccessfulUploads() + " file(s) uploaded, " + stats.getUploadErrors() + " error(s)";
+                MessageLevel level = (errorCount > 0) ? MessageLevel.WARNING : MessageLevel.INFO;
+                String message = uploadedCount + " file(s) uploaded, " + errorCount + " error(s), " + cancelledCount + " cancelled";
                 new Toast(level, message, "Upload completed").show();
         	}
             return true;  
@@ -359,7 +363,8 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		            public void onClick(ClickEvent event) {  
 		                uploader.cancelUpload(file.getId(), false);  
 		                progressBars.get(file.getId()).getProgressBar().setProgress(-1.0d);  
-		                button.setEnabled(false);  
+		                button.setEnabled(false);
+		                cancelledCount++;
 		            }  
 		        });  
 		        cancelButtons.put(file.getId(), button);
@@ -488,7 +493,6 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		}
 		
 	}
-	
 	
 	/*
 	 * (non-Javadoc)

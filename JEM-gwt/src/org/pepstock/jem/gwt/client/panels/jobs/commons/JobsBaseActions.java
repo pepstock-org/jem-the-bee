@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.moxieapps.gwt.uploader.client.Uploader;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.ConfirmMessageBox;
 import org.pepstock.jem.gwt.client.commons.HideHandler;
 import org.pepstock.jem.gwt.client.commons.Loading;
@@ -29,6 +28,11 @@ import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.Tooltip;
+import org.pepstock.jem.gwt.client.events.EventBus;
+import org.pepstock.jem.gwt.client.events.SubmitterClosedEvent;
+import org.pepstock.jem.gwt.client.events.SubmitterClosedEventHandler;
+import org.pepstock.jem.gwt.client.panels.jobs.input.MultiDragAndDropSubmitter;
+import org.pepstock.jem.gwt.client.panels.jobs.input.Submitter;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
@@ -39,8 +43,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -64,6 +66,22 @@ public class JobsBaseActions extends AbstractJobsActions {
 	public JobsBaseActions(String queueName) {
 		this.queueName = queueName;
 		init();
+		
+		// add handler to manage submitter switch
+		EventBus.INSTANCE.addHandler(SubmitterClosedEvent.TYPE, new SubmitterClosedEventHandler() {
+			@Override
+			public void onSubmitterClosed(SubmitterClosedEvent event) {
+				if (event.isSwitchSubmitter()) {
+					if (event.getSource() instanceof MultiDragAndDropSubmitter) {
+						openSubmitter(true);
+					} else {
+						openSubmitter(false);
+					}
+				} else {
+					getSearcher().refresh();
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -251,33 +269,29 @@ public class JobsBaseActions extends AbstractJobsActions {
 	class Submit implements ClickHandler{
 		@Override
 		public void onClick(ClickEvent event) {
-			// do!
-			// creates the inspector and shows it
-			PopupPanel inspector;
 			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the legacy one
 			if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
-				inspector = new MultiDragAndDropSubmitter();
+				openSubmitter(false);
 			} else {
-				inspector = new Submitter();
+				openSubmitter(true);
 			}
-			// be carefully about the HEIGHT and WIDTH calculation
-			inspector.setWidth(Sizes.toString(600));
-			inspector.setHeight(Sizes.toString(240));
-			inspector.setModal(true);
-			inspector.setTitle("Submit...");
-			inspector.center();
+		};
+	}
 
-			// adds for closing
-			inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-				@Override
-				public void onClose(CloseEvent<PopupPanel> arg0) {
-					if (getSearcher() != null){
-						getSearcher().refresh();
-					}
-				}
-			});
+	private static void openSubmitter(boolean legacy) {
+		PopupPanel submitter;
+		if (legacy) {
+			submitter = new Submitter();
+			((Submitter)submitter).setWidth(600);
+			((Submitter)submitter).setHeight(240);
+		} else {
+			submitter = new MultiDragAndDropSubmitter();
+			((MultiDragAndDropSubmitter)submitter).setWidth(1000);
+			((MultiDragAndDropSubmitter)submitter).setHeight(600);
 		}
+		// be carefully about the HEIGHT and WIDTH calculation
+		submitter.setModal(true);
+		submitter.center();
 	}
 
 	/**

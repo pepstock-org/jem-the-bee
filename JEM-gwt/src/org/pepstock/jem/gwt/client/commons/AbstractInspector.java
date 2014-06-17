@@ -83,6 +83,7 @@ public abstract class AbstractInspector extends PopupPanel {
 	 * @param width the width to set
 	 */
 	public final void setWidth(int width) {
+		super.setWidth(Sizes.toString(width));
 		this.width = width;
 		this.availableWidth = width;
 	}
@@ -91,7 +92,9 @@ public abstract class AbstractInspector extends PopupPanel {
 	 * @param height the height to set
 	 */
 	public final void setHeight(int height) {
+		super.setHeight(Sizes.toString(height));
 		this.height = height;
+		this.availableHeight = height - Sizes.INSPECTOR_HEADER_HEIGHT_PX;
 	}
 
 	/**
