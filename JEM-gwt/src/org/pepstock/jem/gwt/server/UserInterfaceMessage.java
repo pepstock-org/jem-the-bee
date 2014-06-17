@@ -232,10 +232,10 @@ public enum UserInterfaceMessage implements MessageInterface {
 	JEMG034I(34, "Job \"{0}\" has been correctly submitted. The job ID is \"{1}\" ", MessageLevel.INFO),
 	
 	/**
-	 * "No job jcl has been submitted. Please check JCL file you choosed", MessageLevel.ERROR
+	 * "No job JCL has been submitted. Please check JCL file you choosed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the submit service is not able to create a job because same arguments are missing.<br>Contact JEM administrator.")
-	JEMG035E(35, "No job jcl has been submitted. Please check JCL file you choosed", MessageLevel.ERROR),
+	JEMG035E(35, "No job JCL has been submitted. Please check JCL file you choosed", MessageLevel.ERROR),
 	
 	/**
 	 * "User id \"{0}\" configured for first installation", MessageLevel.INFO
@@ -312,7 +312,7 @@ public enum UserInterfaceMessage implements MessageInterface {
 	/**
 	 * "Job '\"{0}\"' has been correctly submitted. The job ID is '\"{1}\"'.", MessageLevel.INFO
 	 */
-	@Description(explanation = "It occurs when it wasn't able to put the job in checking jcl queue. Please check persistent engine (database down) and contact your JEM administrator.")
+	@Description(explanation = "It occurs when it wasn't able to put the job in checking JCL queue. Please check persistent engine (database down) and contact your JEM administrator.")
 	JEMG048E(48, "Unable to submit job. Exception: \"{0}\" ", MessageLevel.ERROR),
 	
 	/**
