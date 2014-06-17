@@ -28,9 +28,6 @@ import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.Tooltip;
-import org.pepstock.jem.gwt.client.events.EventBus;
-import org.pepstock.jem.gwt.client.events.SubmitterClosedEvent;
-import org.pepstock.jem.gwt.client.events.SubmitterClosedEventHandler;
 import org.pepstock.jem.gwt.client.panels.jobs.input.MultiDragAndDropSubmitter;
 import org.pepstock.jem.gwt.client.panels.jobs.input.Submitter;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
@@ -66,22 +63,6 @@ public class JobsBaseActions extends AbstractJobsActions {
 	public JobsBaseActions(String queueName) {
 		this.queueName = queueName;
 		init();
-		
-		// add handler to manage submitter switch
-		EventBus.INSTANCE.addHandler(SubmitterClosedEvent.TYPE, new SubmitterClosedEventHandler() {
-			@Override
-			public void onSubmitterClosed(SubmitterClosedEvent event) {
-				if (event.isSwitchSubmitter()) {
-					if (event.getSource() instanceof MultiDragAndDropSubmitter) {
-						openSubmitter(true);
-					} else {
-						openSubmitter(false);
-					}
-				} else {
-					getSearcher().refresh();
-				}
-			}
-		});
 	}
 	
 	@Override
@@ -278,7 +259,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 		};
 	}
 
-	private static void openSubmitter(boolean legacy) {
+	protected static void openSubmitter(boolean legacy) {
 		PopupPanel submitter;
 		if (legacy) {
 			submitter = new Submitter();
@@ -287,12 +268,13 @@ public class JobsBaseActions extends AbstractJobsActions {
 		} else {
 			submitter = new MultiDragAndDropSubmitter();
 			((MultiDragAndDropSubmitter)submitter).setWidth(1000);
-			((MultiDragAndDropSubmitter)submitter).setHeight(600);
+			((MultiDragAndDropSubmitter)submitter).setHeight(500);
 		}
 		// be carefully about the HEIGHT and WIDTH calculation
 		submitter.setModal(true);
 		submitter.center();
 	}
+
 
 	/**
 	 * 

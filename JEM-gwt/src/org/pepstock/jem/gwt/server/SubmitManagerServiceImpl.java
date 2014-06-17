@@ -54,7 +54,7 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        String fileName = null;
 	        PreJob preJob = null;
 	        // scans all files uploaded
-	        for (FileItem item : items){
+	        for (FileItem item : items) {
 	        	// works only with field of JEM
 	        	// other files are ignored
 	        	if (item.getFieldName().equalsIgnoreCase(Submitter.FILE_UPLOAD_FIELD)) {
@@ -81,13 +81,14 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        		preJob.setJob(job);
 	        	}
 	        }
+	        
 	        // if prejob is not instantiated, means not all 
 	        // attibutes (jcl file and type) are set
-	        if (preJob != null){
+	        if (preJob != null) {
 	        	String id;
 	        	// submits JOB and get job it to return
 	        	id = jobsManager.submit(preJob);
-	        	return  UserInterfaceMessage.JEMG034I.toMessage().getFormattedMessage(fileName, id);
+	        	return UserInterfaceMessage.JEMG034I.toMessage().getFormattedMessage(fileName, id);
 	        } else {
 	        	throw new JemException(UserInterfaceMessage.JEMG035E.toMessage().getFormattedMessage());
 	        }

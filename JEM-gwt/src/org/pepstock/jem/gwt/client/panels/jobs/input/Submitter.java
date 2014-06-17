@@ -65,7 +65,7 @@ public class Submitter extends AbstractInspector {
 	private FileUpload fileUpload = new FileUpload();
 	private HorizontalPanel actionButtonPanel = new HorizontalPanel();
 	private Button submitButton = new Button("Submit");
-	private Button switchButton = new Button("Use multi file Submitter");
+	private Button switchButton = new Button("Multi-file Submitter");
 	
 	/**
 	 * Construct the UI without output information.<br>
@@ -104,7 +104,6 @@ public class Submitter extends AbstractInspector {
 			@Override
 			public void onClick(ClickEvent event) {
 				//Submitter.this.hide();
-				System.out.println("Event fired from Legacy");
 				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), Submitter.this);
 			}
 		});

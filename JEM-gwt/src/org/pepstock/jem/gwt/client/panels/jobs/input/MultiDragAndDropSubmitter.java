@@ -115,7 +115,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 	// right size of inspector, with progress bar
 	private VerticalPanel progressArea = new VerticalPanel();
 	// switch submitter button
-	private Button switchSubmitter = new Button("Use legacy Submitter");
+	private Button switchSubmitter = new Button("Legacy Submitter");
 	// map file with progress bar
     private Map<String, UploadFileItem> progressBars = new LinkedHashMap<String, UploadFileItem>();
     // map file with cancel buttons
@@ -213,7 +213,6 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 			@Override
 			public void onClick(ClickEvent event) {
 				//MultiDragAndDropSubmitter.this.hide();
-				System.out.println("Event fired from Multi");
 				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), MultiDragAndDropSubmitter.this);
 			}
 		});
