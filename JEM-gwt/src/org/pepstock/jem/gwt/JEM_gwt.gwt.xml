@@ -33,7 +33,6 @@
 	
 	<!-- Multi file uploader with drag & drop support -->
 	<inherits name="org.moxieapps.gwt.uploader.Uploader"/>
-	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
 
 	<!-- Multi file uploader widgets (progress bar, ...) -->	
 	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
