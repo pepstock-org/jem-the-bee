@@ -20,6 +20,7 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
+import org.pepstock.jem.gwt.client.commons.XmlResultViewer;
 import org.pepstock.jem.gwt.client.events.EventBus;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.inspector.JobHeader;
 import org.pepstock.jem.log.MessageLevel;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -83,14 +85,23 @@ public class Submitter extends AbstractInspector {
 		// set form to use the POST method, and multipart MIME encoding.
 		form.setEncoding(FormPanel.ENCODING_MULTIPART);
 		form.setMethod(FormPanel.METHOD_POST);
+		fileUpload.setName(FILE_UPLOAD_FIELD);
+		form.add(fileUpload);
 
+		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+			@Override
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				XmlResultViewer.showResult("JOB submitted", event.getResults());
+				hide();
+			}
+		});
+		
 		// build the content panel
 		content.setCellSpacing(10);
 	    content.setWidth(Sizes.HUNDRED_PERCENT);
 
 	    content.setHTML(0, 0, "Job JCL file:");
-		fileUpload.setName(FILE_UPLOAD_FIELD);
-	    content.setWidget(0, 1, fileUpload);
+	    content.setWidget(0, 1, form);
 
 		// builds action buttons
 	    submitButton.addStyleName(Styles.INSTANCE.common().defaultActionButton());

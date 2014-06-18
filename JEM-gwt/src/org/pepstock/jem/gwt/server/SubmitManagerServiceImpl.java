@@ -82,8 +82,7 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        	}
 	        }
 	        
-	        // if prejob is not instantiated, means not all 
-	        // attibutes (jcl file and type) are set
+	        // if prejob is not instantiated means jcl file are not set
 	        if (preJob != null) {
 	        	String id;
 	        	// submits JOB and get job it to return
