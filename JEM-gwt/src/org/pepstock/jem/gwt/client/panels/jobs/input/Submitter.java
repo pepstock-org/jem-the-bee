@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.panels.jobs.input;
 
+import org.moxieapps.gwt.uploader.client.Uploader;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
@@ -67,7 +68,6 @@ public class Submitter extends AbstractInspector {
 	private FileUpload fileUpload = new FileUpload();
 	private HorizontalPanel actionButtonPanel = new HorizontalPanel();
 	private Button submitButton = new Button("Submit");
-	private Button switchButton = new Button("Multi-file Submitter");
 	
 	/**
 	 * Construct the UI without output information.<br>
@@ -111,20 +111,25 @@ public class Submitter extends AbstractInspector {
 				submit();
 			}
 		});
-	    switchButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				//Submitter.this.hide();
-				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), Submitter.this);
-			}
-		});
-	    
+
 	    // builds the action button panel
 	    actionButtonPanel.setSpacing(10);
 	    actionButtonPanel.add(submitButton);
-	    actionButtonPanel.add(switchButton);
-	    actionButtonPanel.setCellWidth(switchButton, Sizes.HUNDRED_PERCENT);
-	    actionButtonPanel.setCellHorizontalAlignment(switchButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    
+	    // propose the switch only if supported by client browser
+	    if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
+	    	Button switchButton = new Button("Multi-file Submitter");
+		    switchButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					//Submitter.this.hide();
+					EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), Submitter.this);
+				}
+			});
+		    actionButtonPanel.add(switchButton);
+		    actionButtonPanel.setCellWidth(switchButton, Sizes.HUNDRED_PERCENT);
+		    actionButtonPanel.setCellHorizontalAlignment(switchButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    }
 	}
 
 	/**
