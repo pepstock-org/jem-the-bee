@@ -28,8 +28,8 @@ import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.Tooltip;
+import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
 import org.pepstock.jem.gwt.client.panels.jobs.input.MultiDragAndDropSubmitter;
-import org.pepstock.jem.gwt.client.panels.jobs.input.Submitter;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
@@ -119,7 +119,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collection of jobs to hold
 	 */
-	private void hold(final Collection<Job> jobs){
+	private void hold(final Collection<Job> jobs) {
 		Loading.startProcessing();
 		
 	    Scheduler scheduler = Scheduler.get();
@@ -137,7 +137,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collections of jobs to release (if they are in hold)
 	 */
-	private void release(final Collection<Job> jobs){
+	private void release(final Collection<Job> jobs) {
 		Loading.startProcessing();
 	    Scheduler scheduler = Scheduler.get();
 	    scheduler.scheduleDeferred(new ScheduledCommand() {
@@ -154,7 +154,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collections of jobs to purge
 	 */
-	private void purge(final Collection<Job> jobs){
+	private void purge(final Collection<Job> jobs) {
 		Loading.startProcessing();
 	    Scheduler scheduler = Scheduler.get();
 	    scheduler.scheduleDeferred(new ScheduledCommand() {
@@ -171,7 +171,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Release implements ClickHandler{
+	class Release implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -193,7 +193,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Hold implements ClickHandler{
+	class Hold implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -215,7 +215,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Purge implements ClickHandler{
+	class Purge implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -247,7 +247,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Submit implements ClickHandler{
+	class Submit implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the legacy one
@@ -262,13 +262,13 @@ public class JobsBaseActions extends AbstractJobsActions {
 	protected static void openSubmitter(boolean legacy) {
 		PopupPanel submitter;
 		if (legacy) {
-			submitter = new Submitter();
-			((Submitter)submitter).setWidth(600);
-			((Submitter)submitter).setHeight(240);
+			submitter = new LegacySubmitter();
+			((LegacySubmitter)submitter).setWidth(600);
+			((LegacySubmitter)submitter).setHeight(240);
 		} else {
 			submitter = new MultiDragAndDropSubmitter();
-			((MultiDragAndDropSubmitter)submitter).setWidth(1000);
-			((MultiDragAndDropSubmitter)submitter).setHeight(500);
+			((MultiDragAndDropSubmitter)submitter).setWidth(700);
+			((MultiDragAndDropSubmitter)submitter).setHeight(340);
 		}
 		// be carefully about the HEIGHT and WIDTH calculation
 		submitter.setModal(true);
@@ -281,7 +281,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class ActionAsyncCall extends ServiceAsyncCallback<Boolean>{
+	class ActionAsyncCall extends ServiceAsyncCallback<Boolean> {
 		
 		private String action = null;
 		

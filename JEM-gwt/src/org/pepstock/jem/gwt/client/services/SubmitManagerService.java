@@ -16,7 +16,7 @@
  */
 package org.pepstock.jem.gwt.client.services;
 
-import org.pepstock.jem.gwt.client.panels.jobs.input.Submitter;
+import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * The client side stub for the RPC service. Provides all actions for common
  * resources management
  */
-@RemoteServiceRelativePath(Submitter.SERVICE_NAME)
+@RemoteServiceRelativePath(LegacySubmitter.SERVICE_NAME)
 public interface SubmitManagerService extends RemoteService {
 
 }

@@ -25,7 +25,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
-import org.pepstock.jem.gwt.client.panels.jobs.input.Submitter;
+import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
 import org.pepstock.jem.gwt.client.services.SubmitManagerService;
 import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
@@ -57,7 +57,7 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        for (FileItem item : items) {
 	        	// works only with field of JEM
 	        	// other files are ignored
-	        	if (item.getFieldName().equalsIgnoreCase(Submitter.FILE_UPLOAD_FIELD)) {
+	        	if (item.getFieldName().equalsIgnoreCase(LegacySubmitter.FILE_UPLOAD_FIELD)) {
 	        		// 
 	        		fileName = item.getName();
 	        		

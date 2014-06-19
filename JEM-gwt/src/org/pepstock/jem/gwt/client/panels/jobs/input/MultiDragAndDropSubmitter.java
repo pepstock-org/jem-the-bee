@@ -67,7 +67,7 @@ import com.google.gwt.widgetideas.client.ProgressBar;
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public class MultiDragAndDropSubmitter extends AbstractInspector {
+public class MultiDragAndDropSubmitter extends AbstractInspector implements Submitter {
 
 	static {
 		Styles.INSTANCE.common().ensureInjected();
@@ -75,18 +75,6 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 		Styles.INSTANCE.dragDrop().ensureInjected();
 	}
 	private static final String OVERALL_STYLE_SUFFIX = "overall";
-	
-	private static final String SERVICE_NAME = "submitter";
-	
-	/**
-	 * 
-	 */
-	public static final String FILE_SIZE_LIMIT = "5 MB";
-	
-	/**
-	 * 
-	 */
-	public static final String FILE_TYPES = "*.xml;";
 	
 	// header
 	private JobHeader header = new JobHeader("Submit Jobs", this);
@@ -147,6 +135,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         uploader.setUploadURL(GWT.getModuleBaseURL()+SERVICE_NAME)  
                 .setFileSizeLimit(FILE_SIZE_LIMIT)
                 .setFileTypes(FILE_TYPES)
+                .setFilePostName(LegacySubmitter.FILE_UPLOAD_FIELD)
                 .setUploadProgressHandler(new MyUploadProgressHandler())  
                 .setUploadCompleteHandler(new MyUploadCompleteHanlder())  
                 .setFileDialogStartHandler(new MyFileDialogStartHandler())  
@@ -216,7 +205,8 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
 				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), MultiDragAndDropSubmitter.this);
 			}
 		});
-		footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		footer.setSpacing(10);
+		footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		footer.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		footer.setWidth(Sizes.HUNDRED_PERCENT);
 		footer.add(switchSubmitter);
@@ -273,10 +263,6 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         	// reset the overall progress bar values
         	overallProgressBar.setProgress(-1);
         	overallProgressBar.setMaxProgress(totalFilesInQueue);
-        	// reset the counters
-        	uploadedCount = 0;
-        	errorCount = 0;
-        	cancelledCount = 0;
         	// check and start uploads
             if (totalFilesInQueue > 0) {  
                 if (uploader.getStats().getUploadsInProgress() <= 0) {
@@ -309,6 +295,8 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
         	}
             // increment the overall progress bar progress
             overallProgressBar.setProgress(overallProgressBar.getProgress()+1);
+            // increment counter
+            uploadedCount++;
             // do next upload if any
             uploader.startUpload();
     		// test if no files left in queue, change style to be ready to another upload
@@ -319,6 +307,10 @@ public class MultiDragAndDropSubmitter extends AbstractInspector {
                 MessageLevel level = (errorCount > 0) ? MessageLevel.WARNING : MessageLevel.INFO;
                 String message = uploadedCount + " file(s) uploaded, " + errorCount + " error(s), " + cancelledCount + " cancelled";
                 new Toast(level, message, "Upload completed").show();
+            	// reset the counters
+            	uploadedCount = 0;
+            	errorCount = 0;
+            	cancelledCount = 0;
         	}
             return true;  
         }  
