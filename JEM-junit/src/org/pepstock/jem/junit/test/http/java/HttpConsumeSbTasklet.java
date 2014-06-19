@@ -60,11 +60,11 @@ public class HttpConsumeSbTasklet extends JemTasklet {
 			// get http resource, note that jem-http is the name of the resource
 			// present in the JCL
 			InputStream httpStream = (InputStream) context.lookup("jem-http");
-            StringWriter writer = new StringWriter();
-            IOUtils.copy(httpStream, writer);
-            String theString = writer.toString();
-            System.out.println("Read Http: " + theString);
-            httpStream.close();
+	        StringWriter writer = new StringWriter();
+	        IOUtils.copy(httpStream, writer);
+	        String theString = writer.toString();
+	        System.out.println("Read Http: " + theString);
+	        httpStream.close();
 		} catch (Exception e) {
 			throw new TaskletException(e);
 		}
@@ -79,8 +79,8 @@ public class HttpConsumeSbTasklet extends JemTasklet {
 	 */
 	private  Hashtable<String, String> createEnvironment(){
 		Hashtable<String, String> environment = new Hashtable<String, String>();
-		environment.put(HttpResource.REQUEST_PATH, "/ricerca-prove/");
-		environment.put(HttpResource.REQUEST_QUERY_STRING, "_b=12160&_m=12605");
+		environment.put(HttpResource.REQUEST_PATH, "/search");
+		environment.put(HttpResource.REQUEST_QUERY_STRING, "q=pepstock");
 		return environment;
 	}
 

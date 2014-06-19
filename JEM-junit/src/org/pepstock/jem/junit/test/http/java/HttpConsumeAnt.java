@@ -63,8 +63,8 @@ public class HttpConsumeAnt {
 	 */
 	private static Hashtable<String, String> createEnvironment(){
 		Hashtable<String, String> environment = new Hashtable<String, String>();
-		environment.put(HttpResource.REQUEST_PATH, "/ricerca-prove/");
-		environment.put(HttpResource.REQUEST_QUERY_STRING, "_b=12160&_m=12605");
+		environment.put(HttpResource.REQUEST_PATH, "/search");
+		environment.put(HttpResource.REQUEST_QUERY_STRING, "q=pepstock");
 		return environment;
 	}
 

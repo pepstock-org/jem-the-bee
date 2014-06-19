@@ -13,17 +13,15 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.node.tasks.jndi;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +29,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +70,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreProtocolPNames;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.resources.HttpResource;
@@ -79,12 +79,16 @@ import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
 
 /**
- * Factory useful to create a {@link HttpClient} in particular a {@link CloseableHttpClient} and the {@link InputStream} of the 
- * relative request call, that is the <code>HTTP</code> datasource object to be used inside the java programs. <br>
- * It uses a <code>HttpReference</code>, containing the properties of the <code>HttpClient</code> object. <br>
- * The <code>HttpClient</code> object allows to connect to a <code>HTTP</code> provider
- * such as <code>Servlet</code>, or generally <code>HTTP URL</code>, and call a <code>GET</CODE>
- * or a <code>POST</code> method and it returns the <code>Response</code> content inside the <code>InputStream</code>. <br>
+ * Factory useful to create a {@link HttpClient} in particular a
+ * {@link CloseableHttpClient} and the {@link InputStream} of the relative
+ * request call, that is the <code>HTTP</code> datasource object to be used
+ * inside the java programs. <br>
+ * It uses a <code>HttpReference</code>, containing the properties of the
+ * <code>HttpClient</code> object. <br>
+ * The <code>HttpClient</code> object allows to connect to a <code>HTTP</code>
+ * provider such as <code>Servlet</code>, or generally <code>HTTP URL</code>,
+ * and call a <code>GET</CODE> or a <code>POST</code> method and it returns the
+ * <code>Response</code> content inside the <code>InputStream</code>. <br>
  * In some cases <code>Login</code> and <code>Logout</code> may be necessary. <br>
  * It implements the <code>ObjectFactory</code>.
  * 
@@ -94,8 +98,8 @@ import org.pepstock.jem.util.Parser;
  * @see CloseableHttpClient
  * @see InputStream
  * @author Alessandro Zambrini
- * @version 1.0	
- *
+ * @version 1.0
+ * 
  */
 public class HttpFactory implements ObjectFactory {
 
@@ -103,15 +107,18 @@ public class HttpFactory implements ObjectFactory {
 	 * Default value of the <code>port</code> of the <code>HTTPS Schema</code>.
 	 */
 	public static final int DEFAULT_HTTPS_PORT = 443;
-	
-	
+
 	/**
-	 * It search the value of the property named <code>propertyName</code> inside the
-	 * <code>Hashtable</code> in the parameter <code>environment</code>. <br>
+	 * It search the value of the property named <code>propertyName</code>
+	 * inside the <code>Hashtable</code> in the parameter
+	 * <code>environment</code>. <br>
 	 * These properties are not configuration properties, but applicative.
-	 * @param environment the <code>Hashtable</code> in which it searches the property called <code>propertyName</code>.
+	 * 
+	 * @param environment the <code>Hashtable</code> in which it searches the
+	 *            property called <code>propertyName</code>.
 	 * @param propertyName the name of the property to search.
-	 * @return the value of the property searched if found, <code>null</code> otherwise.
+	 * @return the value of the property searched if found, <code>null</code>
+	 *         otherwise.
 	 * @see Hashtable
 	 */
 	private Object findEnvironmentProperty(Map<?, ?> environment, String propertyName) {
@@ -123,17 +130,21 @@ public class HttpFactory implements ObjectFactory {
 		}
 		return properyValue;
 	}
-	
-	
+
 	/**
-	 * This method creates a {@link InputStream} for <code>HTTP</code> purposes, starting from
-	 * the {@link HttpReference} in the parameter <code>object</code>. <br>
-	 * The <code>InputStream</code> contains the <code>Response</code> content produced
-	 * calling an <code>HTTP</code> datasource, using a {@link CloseableHttpClient} (an <code>HttpClient</code>). <br>
-	 * The <code>HttpClient</code> allows to connect to a <code>HTTP</code> provider, 
-	 * such as <code>Servlet</code>, or generally <code>HTTP URL</code>, call a <code>GET</CODE>
-	 * or a <code>POST</code> method and puts the <code>Response</code> content inside the <code>InputStream</code>. <br>
-	 * In some cases <code>Login</code> and <code>Logout</code> may be necessary. <br>
+	 * This method creates a {@link InputStream} for <code>HTTP</code> purposes,
+	 * starting from the {@link HttpReference} in the parameter
+	 * <code>object</code>. <br>
+	 * The <code>InputStream</code> contains the <code>Response</code> content
+	 * produced calling an <code>HTTP</code> datasource, using a
+	 * {@link CloseableHttpClient} (an <code>HttpClient</code>). <br>
+	 * The <code>HttpClient</code> allows to connect to a <code>HTTP</code>
+	 * provider, such as <code>Servlet</code>, or generally
+	 * <code>HTTP URL</code>, call a <code>GET</CODE> or a <code>POST</code>
+	 * method and puts the <code>Response</code> content inside the
+	 * <code>InputStream</code>. <br>
+	 * In some cases <code>Login</code> and <code>Logout</code> may be
+	 * necessary. <br>
 	 * 
 	 * @see ObjectFactory
 	 */
@@ -156,27 +167,34 @@ public class HttpFactory implements ObjectFactory {
 		// Execute request
 		return execute(httpClient, request, properties);
 	}
-	
-	
+
 	/**
-	 * This method creates the <code>Http Request</code> that is the {@link HttpRequestBase} to be performed by
-	 * the <code>HttpClient</code>. <br>
-	 * The resulting <code>Http Request</code> may be a {@link HttpGet} (default) or a {@link HttpPost} depending
-	 * on the value of the property {@link HttpResource#REQUEST_METHOD}. <br>
-	 * It uses also the following properties to create the <code>Http Request</code>:
-	 * <li> {@link HttpResource#REQUEST_PATH} : the optional path of the <code>Request URL</code>
-	 * <li> {@link HttpResource#REQUEST_PARAMETERS} : the optional parameters
-	 * <li> {@link HttpResource#REQUEST_QUERY_STRING} : the optional <code>Query String</code>
-	 * <li> {@link CoreProtocolPNames#HTTP_CONTENT_CHARSET} : the format of the <code>HTTP content charset</code>
-	 * <li> {@link HttpResource#REQUEST_HOST_NAME} : the <b>mandatory</b> host name
-	 * <li> {@link HttpResource#REQUEST_HOST_PORT} : the optional host port
-	 * <li> {@link HttpResource#PROTOCOL_TYPE} : the protocol type, {@link HttpResource#HTTP_PROTOCOL}
-	 * (as default) or {@link HttpResource#HTTPS_PROTOCOL}.
+	 * This method creates the <code>Http Request</code> that is the
+	 * {@link HttpRequestBase} to be performed by the <code>HttpClient</code>. <br>
+	 * The resulting <code>Http Request</code> may be a {@link HttpGet}
+	 * (default) or a {@link HttpPost} depending on the value of the property
+	 * {@link HttpResource#REQUEST_METHOD}. <br>
+	 * It uses also the following properties to create the
+	 * <code>Http Request</code>: <li> {@link HttpResource#REQUEST_PATH} : the
+	 * optional path of the <code>Request URL</code> <li>
+	 * {@link HttpResource#REQUEST_PARAMETERS} : the optional parameters <li>
+	 * {@link HttpResource#REQUEST_QUERY_STRING} : the optional
+	 * <code>Query String</code> <li>
+	 * {@link CoreProtocolPNames#HTTP_CONTENT_CHARSET} : the format of the
+	 * <code>HTTP content charset</code> <li>
+	 * {@link HttpResource#REQUEST_HOST_NAME} : the <b>mandatory</b> host name
+	 * <li> {@link HttpResource#REQUEST_HOST_PORT} : the optional host port <li>
+	 * {@link HttpResource#PROTOCOL_TYPE} : the protocol type,
+	 * {@link HttpResource#HTTP_PROTOCOL} (as default) or
+	 * {@link HttpResource#HTTPS_PROTOCOL}.
 	 * 
-	 * @param httpClient the <code>HttpClient</code> containing the {@link CoreProtocolPNames#HTTP_CONTENT_CHARSET}.
-	 * @param properties  the <code>Properties</code> object containing the useful configuration properties.
-	 * @param environment the <code>Hashtable</code> in which to search applicative (not configuration) properties. 
-	 * It is the <code>Environment</code> of the {@link Context}.
+	 * @param httpClient the <code>HttpClient</code> containing the
+	 *            {@link CoreProtocolPNames#HTTP_CONTENT_CHARSET}.
+	 * @param properties the <code>Properties</code> object containing the
+	 *            useful configuration properties.
+	 * @param environment the <code>Hashtable</code> in which to search
+	 *            applicative (not configuration) properties. It is the
+	 *            <code>Environment</code> of the {@link Context}.
 	 * @return <code>Http Request</code> generated.
 	 * @throws JNDIException if an error occurs.
 	 * @see HttpGet
@@ -184,53 +202,51 @@ public class HttpFactory implements ObjectFactory {
 	 * @see Context
 	 */
 	private HttpRequestBase createRequestMethod(Properties properties, Map<?, ?> environment) throws JNDIException {
-		try{
-			String path = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_PATH);
-			@SuppressWarnings("unchecked")
-			Map<String, String> parameters = (Map<String, String>) findEnvironmentProperty(environment, HttpResource.REQUEST_PARAMETERS);
-			String queryString = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_QUERY_STRING);
-			String requestMethod = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_METHOD);
-			String parametersCharsetFormat = properties.getProperty(HttpResource.HTTP_CONTENT_CHARSET);
-			String url = createRequestUrl(properties, path);
-			if (null == requestMethod) {
-				requestMethod = HttpResource.REQUEST_GET_METHOD;
-			}
-			HttpRequestBase request = null;
-			if (requestMethod.equalsIgnoreCase(HttpResource.REQUEST_GET_METHOD)) {
-				request = createHttpGetMethod(parameters, url, queryString);
-			} else {
-				request = createHttpPostMethod(parameters, url, queryString, parametersCharsetFormat);
-			}
-			// Request configuration
-			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-			InetAddress localAddress = InetAddress.getLocalHost();
-			requestConfigBuilder.setLocalAddress(localAddress);
-			String useExpectContinueStr = properties.getProperty(HttpResource.USE_EXPECT_CONTINUE);
-			if (null != useExpectContinueStr) {
-				boolean useExpectContinue = Parser.parseBoolean(useExpectContinueStr, false);
-				requestConfigBuilder.setExpectContinueEnabled(useExpectContinue);
-			}
-			RequestConfig requestConfig = requestConfigBuilder.build();
-			request.setConfig(requestConfig);
-			String protocolVersion = properties.getProperty(HttpResource.PROTOCOL_VERSION);
-			if (null != protocolVersion) {
-				request.setProtocolVersion(getHttpVersion(protocolVersion));
-			}
-			return request;
-		} catch (UnknownHostException e) {
-			throw new JNDIException(NodeMessage.JEMC156E, e, e.getMessage());
+		String path = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_PATH);
+		@SuppressWarnings("unchecked")
+		Map<String, String> parameters = (Map<String, String>) findEnvironmentProperty(environment, HttpResource.REQUEST_PARAMETERS);
+		System.out.println("ENV="+environment);
+		String queryString = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_QUERY_STRING);
+		String requestMethod = (String) findEnvironmentProperty(environment, HttpResource.REQUEST_METHOD);
+		String parametersCharsetFormat = properties.getProperty(HttpResource.HTTP_CONTENT_CHARSET);
+		String url = createRequestUrl(properties, path);
+		if (null == requestMethod) {
+			requestMethod = HttpResource.REQUEST_GET_METHOD;
 		}
+		HttpRequestBase request = null;
+		if (requestMethod.equalsIgnoreCase(HttpResource.REQUEST_GET_METHOD)) {
+			request = createHttpGetMethod(parameters, url, queryString);
+		} else {
+			request = createHttpPostMethod(parameters, url, queryString, parametersCharsetFormat);
+		}
+		// Request configuration
+		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+		String useExpectContinueStr = properties.getProperty(HttpResource.USE_EXPECT_CONTINUE);
+		if (null != useExpectContinueStr) {
+			boolean useExpectContinue = Parser.parseBoolean(useExpectContinueStr, false);
+			requestConfigBuilder.setExpectContinueEnabled(useExpectContinue);
+		}
+		RequestConfig requestConfig = requestConfigBuilder.build();
+		request.setConfig(requestConfig);
+		String protocolVersion = properties.getProperty(HttpResource.PROTOCOL_VERSION);
+		if (null != protocolVersion) {
+			request.setProtocolVersion(getHttpVersion(protocolVersion));
+		}
+		return request;
 	}
-	
-	
+
 	/**
-	 * Return the {@link HttpVersion} corresponding to the parameter <code>httpVersionStr</code>. <br>
-	 * <li> HTTP/0.9 <code>String</code> corresponds to {@link HttpVersion#HTTP_0_9}
-	 * <li> HTTP/1.0 <code>String</code> corresponds to {@link HttpVersion#HTTP_1_0}
-	 * <li> HTTP/1.1 <code>String</code> corresponds to {@link HttpVersion#HTTP_1_1}
+	 * Return the {@link HttpVersion} corresponding to the parameter
+	 * <code>httpVersionStr</code>. <br>
+	 * <li>HTTP/0.9 <code>String</code> corresponds to
+	 * {@link HttpVersion#HTTP_0_9} <li>HTTP/1.0 <code>String</code> corresponds
+	 * to {@link HttpVersion#HTTP_1_0} <li>HTTP/1.1 <code>String</code>
+	 * corresponds to {@link HttpVersion#HTTP_1_1}
 	 * 
-	 * @param httpVersionStr the <code>Http Version</code> in <code>String</code> format.
-	 * @return the {@link HttpVersion} corresponding to the parameter <code>httpVersionStr</code>.
+	 * @param httpVersionStr the <code>Http Version</code> in
+	 *            <code>String</code> format.
+	 * @return the {@link HttpVersion} corresponding to the parameter
+	 *         <code>httpVersionStr</code>.
 	 * @see HttpVersion
 	 */
 	private static HttpVersion getHttpVersion(String httpVersionStr) {
@@ -244,63 +260,67 @@ public class HttpFactory implements ObjectFactory {
 		}
 		return version;
 	}
-	
+
 	/**
 	 * This method creates the <code>Http Request URL</code> to be called. <br>
-	 * It uses the following properties:
-	 * <li> {@link HttpResource#REQUEST_HOST_NAME} : the <b>mandatory</b> host name
-	 * <li> {@link HttpResource#REQUEST_HOST_PORT} : the optional host port
-	 * <li> {@link HttpResource#PROTOCOL_TYPE} : the protocol type, {@link HttpResource#HTTP_PROTOCOL}
-	 * (as default) or {@link HttpResource#HTTPS_PROTOCOL}.
+	 * It uses the following properties: <li>
+	 * {@link HttpResource#REQUEST_HOST_NAME} : the <b>mandatory</b> host name
+	 * <li> {@link HttpResource#REQUEST_HOST_PORT} : the optional host port <li>
+	 * {@link HttpResource#PROTOCOL_TYPE} : the protocol type,
+	 * {@link HttpResource#HTTP_PROTOCOL} (as default) or
+	 * {@link HttpResource#HTTPS_PROTOCOL}.
 	 * 
-	 * @param properties the <code>Properties</code> object containing the useful configuration properties.
+	 * @param properties the <code>Properties</code> object containing the
+	 *            useful configuration properties.
 	 * @param requestPath the path of the request.
 	 * @return the resulting <code>Http Request URL</code>.
 	 * @throws JNDIException if the <b>Host name</b> was not found.
 	 */
 	private String createRequestUrl(Properties properties, String requestPath) throws JNDIException {
-        String hostName = properties.getProperty(HttpResource.REQUEST_HOST_NAME);
-        if (null == hostName) {
-                throw new JNDIException(NodeMessage.JEMC136E, HttpResource.REQUEST_HOST_NAME);
-        }
-        String port = properties.getProperty(HttpResource.REQUEST_PORT);
-        String protocolType = properties.getProperty(HttpResource.PROTOCOL_TYPE);
-        if (null == protocolType) {
-                protocolType = HttpResource.HTTP_PROTOCOL;
-        }
-        URIBuilder builder = new URIBuilder();
-        builder.setScheme(protocolType);
-        builder.setHost(hostName);
-        if (null != port) {
-                builder.setPort(Parser.parseInt(port));
-        } else if(protocolType == HttpResource.HTTPS_PROTOCOL){
-                builder.setPort(DEFAULT_HTTPS_PORT);
-        }
-        if (null != requestPath) {
-                builder.setPath(requestPath);
-        }
-        try {
-                return builder.build().toString();
-        } catch (URISyntaxException e) {
-                throw new JNDIException(NodeMessage.JEMC156E, e, e.getMessage());
-        }
+		String hostName = properties.getProperty(HttpResource.REQUEST_HOST_NAME);
+		if (null == hostName) {
+			throw new JNDIException(NodeMessage.JEMC136E, HttpResource.REQUEST_HOST_NAME);
+		}
+		String port = properties.getProperty(HttpResource.REQUEST_PORT);
+		String protocolType = properties.getProperty(HttpResource.PROTOCOL_TYPE);
+		if (null == protocolType) {
+			protocolType = HttpResource.HTTP_PROTOCOL;
+		}
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme(protocolType);
+		builder.setHost(hostName);
+		if (null != port) {
+			builder.setPort(Parser.parseInt(port));
+		} else if (protocolType == HttpResource.HTTPS_PROTOCOL) {
+			builder.setPort(DEFAULT_HTTPS_PORT);
+		}
+		if (null != requestPath) {
+			builder.setPath(requestPath);
+		}
+		try {
+			return builder.build().toString();
+		} catch (URISyntaxException e) {
+			throw new JNDIException(NodeMessage.JEMC156E, e, e.getMessage());
+		}
 	}
-	
-	
+
 	/**
-	 * This method creates the {@link HttpGet} that is the <code>Http Request</code>
-	 * starting from the parameter <code>url</code>, the optional <code>Query String</code>
-	 * (the parameter <code>queryString</code>) and the optional <code>Http Request</code>
+	 * This method creates the {@link HttpGet} that is the
+	 * <code>Http Request</code> starting from the parameter <code>url</code>,
+	 * the optional <code>Query String</code> (the parameter
+	 * <code>queryString</code>) and the optional <code>Http Request</code>
 	 * parameters <code>parameters</code>.
 	 * 
 	 * @param parameters the optional <code>Http Request Parameters</code>.
 	 * @param url the <b>mandatory</b> url.
 	 * @param queryString the optional <code>Query String</code>.
-	 * @return the {@link HttpGet} that is the <code>Http Request</code> to be called.
+	 * @return the {@link HttpGet} that is the <code>Http Request</code> to be
+	 *         called.
 	 * @throws JNDIException if an error occurs.
 	 */
 	private HttpGet createHttpGetMethod(Map<String, String> parameters, String url, String queryString) throws JNDIException {
 		try {
+			System.out.println("PARAMITERS="+queryString);
 			String newUrl = url;
 			if (null != queryString) {
 				newUrl = newUrl + "?" + queryString;
@@ -317,20 +337,22 @@ public class HttpFactory implements ObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC156E, e, e.getMessage());
 		}
 	}
-	
-	
+
 	/**
-	 * This method creates the {@link HttpPost} that is the <code>Http Request</code>
-	 * starting from the parameter <code>url</code>, the optional <code>Http Request</code>
-	 * parameters <code>parameters</code> and the optional <code>Query String</code>
-	 * (the parameter <code>queryString</code>). <br>
+	 * This method creates the {@link HttpPost} that is the
+	 * <code>Http Request</code> starting from the parameter <code>url</code>,
+	 * the optional <code>Http Request</code> parameters <code>parameters</code>
+	 * and the optional <code>Query String</code> (the parameter
+	 * <code>queryString</code>). <br>
 	 * It uses the format of the <code>HTTP content charset</code>.
 	 * 
 	 * @param parameters the optional <code>Http Request Parameters</code>.
 	 * @param url the <b>mandatory</b> url.
 	 * @param queryString the optional <code>Query String</code>.
-	 * @param parametersCharsetFormat the format of the <code>HTTP content charset</code>.
-	 * @return the {@link HttpPost} that is the <code>Http Request</code> to be called.
+	 * @param parametersCharsetFormat the format of the
+	 *            <code>HTTP content charset</code>.
+	 * @return the {@link HttpPost} that is the <code>Http Request</code> to be
+	 *         called.
 	 * @throws JNDIException if an error occurs.
 	 */
 	private HttpPost createHttpPostMethod(Map<String, String> parameters, String url, String queryString, String parametersCharsetFormat) throws JNDIException {
@@ -361,32 +383,35 @@ public class HttpFactory implements ObjectFactory {
 		}
 	}
 
-	
 	/**
-	 * This method creates the {@link HttpPost} that is the <code>Http Request</code>
-	 * starting from the parameter <code>url</code>, and the optional <code>Http Request</code>
-	 * parameters <code>parameters</code> without the <code>Query String</code>. <br>
+	 * This method creates the {@link HttpPost} that is the
+	 * <code>Http Request</code> starting from the parameter <code>url</code>,
+	 * and the optional <code>Http Request</code> parameters
+	 * <code>parameters</code> without the <code>Query String</code>. <br>
 	 * It uses the format of the <code>HTTP content charset</code>.
 	 * 
 	 * @param parameters the optional <code>Http Request Parameters</code>.
 	 * @param url the <b>mandatory</b> url.
-	 * @param parametersCharsetFormat the format of the <code>HTTP content charset</code>.
-	 * @return the {@link HttpPost} that is the <code>Http Request</code> to be called.
+	 * @param parametersCharsetFormat the format of the
+	 *            <code>HTTP content charset</code>.
+	 * @return the {@link HttpPost} that is the <code>Http Request</code> to be
+	 *         called.
 	 * @throws JNDIException if an error occurs.
 	 */
 	@SuppressWarnings("unchecked")
-	private HttpPost createHttpPostMethod(@SuppressWarnings("rawtypes") Map parameters, String url, String parametersCharsetFormat) throws JNDIException{
+	private HttpPost createHttpPostMethod(@SuppressWarnings("rawtypes") Map parameters, String url, String parametersCharsetFormat) throws JNDIException {
 		return createHttpPostMethod(parameters, url, null, parametersCharsetFormat);
 	}
-	
-	
+
 	/**
-	 * Creates and configures a {@link CloseableHttpClient} instance based on the given optional properties <code>properties</code>. <br>
+	 * Creates and configures a {@link CloseableHttpClient} instance based on
+	 * the given optional properties <code>properties</code>. <br>
 	 * Configure the: <br>
-	 * <li> the connection pooling configuration if <code>Login</code> and/or <code>Logout</code> is needed.
-	 * <li> the optional <code>Proxy</code> configuration if needed (proxy url, port, proxy protocol, useranme, password)
-	 * <li> the optional <code>SSL</code> configuration if needed (https port)
-	 * <li> the content of the <code>User-Agent</code> header
+	 * <li>the connection pooling configuration if <code>Login</code> and/or
+	 * <code>Logout</code> is needed. <li>the optional <code>Proxy</code>
+	 * configuration if needed (proxy url, port, proxy protocol, useranme,
+	 * password) <li>the optional <code>SSL</code> configuration if needed
+	 * (https port) <li>the content of the <code>User-Agent</code> header
 	 * 
 	 * @param properties the http client configuration properties
 	 * @return the {@link CloseableHttpClient}
@@ -400,7 +425,7 @@ public class HttpFactory implements ObjectFactory {
 			String logoutQueryString = properties.getProperty(HttpResource.REQUEST_LOGOUT_QUERY_STRING);
 			CloseableHttpClient httpClient = null;
 			HttpClientBuilder httpClientBuilder = HttpClients.custom();
-			if (null != loginQueryString || null != logoutQueryString){
+			if (null != loginQueryString || null != logoutQueryString) {
 				httpClientBuilder.setConnectionManager(conMan);
 			}
 			httpClientBuilder.setRedirectStrategy(new LaxRedirectStrategy());
@@ -433,13 +458,14 @@ public class HttpFactory implements ObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC156E, e, e.getMessage());
 		}
 	}
-	
-	
+
 	/**
-	 * Sets the <code>proxy</code> in the <code>HttpClientBuilder httpClientBuilder</code> 
-	 * with all its properties, if proxy is needed.
+	 * Sets the <code>proxy</code> in the
+	 * <code>HttpClientBuilder httpClientBuilder</code> with all its properties,
+	 * if proxy is needed.
 	 * 
-	 * @param httpClientBuilder the {@link HttpClientBuilder} in which to set the <code>proxy</code>.
+	 * @param httpClientBuilder the {@link HttpClientBuilder} in which to set
+	 *            the <code>proxy</code>.
 	 * @param proxyUrl the <code>URL</code> of the <code>proxy</code>.
 	 * @param proxyPort the <code>port</code> of the <code>proxy</code>.
 	 * @param proxyProtocol the protocol of the <code>proxy</code>.
@@ -448,30 +474,32 @@ public class HttpFactory implements ObjectFactory {
 	 * @see HttpClientBuilder#setProxy(HttpHost)
 	 */
 	private void configureProxy(HttpClientBuilder httpClientBuilder, String proxyUrl, int proxyPort, String proxyProtocol, String userid, String password) {
-        HttpHost proxy = null;
-        if(null != proxyProtocol){
-                proxy = new HttpHost(proxyUrl, proxyPort, proxyProtocol);
-        } else {
-                proxy = new HttpHost(proxyUrl, proxyPort);
-        }
-        if(null != userid && null != password){
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(proxy), new UsernamePasswordCredentials(userid, password));
-                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-        }
-        httpClientBuilder.setProxy(proxy);
+		HttpHost proxy = null;
+		if (null != proxyProtocol) {
+			proxy = new HttpHost(proxyUrl, proxyPort, proxyProtocol);
+		} else {
+			proxy = new HttpHost(proxyUrl, proxyPort);
+		}
+		if (null != userid && null != password) {
+			CredentialsProvider credsProvider = new BasicCredentialsProvider();
+			credsProvider.setCredentials(new AuthScope(proxy), new UsernamePasswordCredentials(userid, password));
+			httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+		}
+		httpClientBuilder.setProxy(proxy);
 	}
-	
-	
+
 	/**
-	 * Configures SSL in the parameter <code>httpClientBuilder</code>, if necessary,
-	 * that is if the <code>protocolType</code> is {@link HttpResource#HTTPS_PROTOCOL}. <br>
-	 * If <code>port</code> is <code>null</code>, {@link #DEFAULT_HTTPS_PORT} is used.
+	 * Configures SSL in the parameter <code>httpClientBuilder</code>, if
+	 * necessary, that is if the <code>protocolType</code> is
+	 * {@link HttpResource#HTTPS_PROTOCOL}. <br>
+	 * If <code>port</code> is <code>null</code>, {@link #DEFAULT_HTTPS_PORT} is
+	 * used.
 	 * 
-	 * @param httpClientBuilder http client builder already created in which to set SSL property.
-	 * @param protocolType the protocol type:
-	 * <li> {@link HttpResource#HTTP_PROTOCOL}
-	 * <li> {@link HttpResource#HTTPS_PROTOCOL}
+	 * @param httpClientBuilder http client builder already created in which to
+	 *            set SSL property.
+	 * @param protocolType the protocol type: <li>
+	 *            {@link HttpResource#HTTP_PROTOCOL} <li>
+	 *            {@link HttpResource#HTTPS_PROTOCOL}
 	 * @throws KeyStoreException if an error occurs
 	 * @throws NoSuchAlgorithmException if an error occurs
 	 * @throws UnrecoverableKeyException if an error occurs
@@ -479,15 +507,15 @@ public class HttpFactory implements ObjectFactory {
 	 */
 	private void configureSSL(HttpClientBuilder httpClientBuilder, String protocolType) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
-		if (protocolType.equalsIgnoreCase(HttpResource.HTTPS_PROTOCOL)){
+		if (protocolType.equalsIgnoreCase(HttpResource.HTTPS_PROTOCOL)) {
 			SSLConnectionSocketFactory sf = buildSSLConnectionSocketFactory();
 			httpClientBuilder.setSSLSocketFactory(sf);
 		}
 	}
-	
-	
+
 	/**
 	 * It builds a {@link SSLConnectionSocketFactory} if SSL is needed.
+	 * 
 	 * @return the {@link SSLConnectionSocketFactory} for SSL purposes.
 	 * @throws KeyManagementException
 	 * @throws UnrecoverableKeyException
@@ -508,26 +536,30 @@ public class HttpFactory implements ObjectFactory {
 		SSLContext sslContext = builder.build();
 		return new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 	}
-	
-	
+
 	/**
-	 * This method executes the desired <code>Http Request</code> and returns the <code>InputStream</code>
-	 * containing the Body content of the <code>Response</code>. <br>
-	 * In some cases <code>Login</code> and <code>Logout</code> may be necessary to
-	 * perform the desired <code>Http Request</code>. <br>
+	 * This method executes the desired <code>Http Request</code> and returns
+	 * the <code>InputStream</code> containing the Body content of the
+	 * <code>Response</code>. <br>
+	 * In some cases <code>Login</code> and <code>Logout</code> may be necessary
+	 * to perform the desired <code>Http Request</code>. <br>
 	 * 
-	 * @param httpClient the <code>CloseableHttpClient</code> that performs the <code>Http Request</code>.
+	 * @param httpClient the <code>CloseableHttpClient</code> that performs the
+	 *            <code>Http Request</code>.
 	 * @param request the <code>Http Request</code> to be performed.
-	 * @param properties the <code>Properties</code> object containing the useful configuration properties,
-	 * such as {@link HttpResource#REQUEST_LOGIN_QUERY_STRING} and {@link HttpResource#REQUEST_LOGOUT_QUERY_STRING}
-	 * if <code>Login</code> and <code>Logout</code> is necessary.
-	 * @return the <code>InputStream</code> containing the Body content of the <code>Response</code>
+	 * @param properties the <code>Properties</code> object containing the
+	 *            useful configuration properties, such as
+	 *            {@link HttpResource#REQUEST_LOGIN_QUERY_STRING} and
+	 *            {@link HttpResource#REQUEST_LOGOUT_QUERY_STRING} if
+	 *            <code>Login</code> and <code>Logout</code> is necessary.
+	 * @return the <code>InputStream</code> containing the Body content of the
+	 *         <code>Response</code>
 	 * @throws JNDIException if an error occurs.
 	 * 
 	 * @see HttpResource#REQUEST_LOGIN_QUERY_STRING
 	 * @see HttpResource#REQUEST_LOGOUT_QUERY_STRING
 	 */
-	private InputStream execute(CloseableHttpClient httpClient, HttpRequestBase request, Properties properties) throws JNDIException{
+	private InputStream execute(CloseableHttpClient httpClient, HttpRequestBase request, Properties properties) throws JNDIException {
 		String loginQueryString = properties.getProperty(HttpResource.REQUEST_LOGIN_QUERY_STRING);
 		String logoutQueryString = properties.getProperty(HttpResource.REQUEST_LOGOUT_QUERY_STRING);
 		try {
@@ -547,19 +579,23 @@ public class HttpFactory implements ObjectFactory {
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * This method executes the <code>Login</code> if necessary before to connect to the 
-	 * <code>HTTP</code> datasource and execute the desired <code>Http Request</code>.
+	 * This method executes the <code>Login</code> if necessary before to
+	 * connect to the <code>HTTP</code> datasource and execute the desired
+	 * <code>Http Request</code>.
 	 * 
-	 * @param httpClient httpClient the <code>HttpClient</code> that performs the <code>Login</code>.
-	 * @param properties the <code>Properties</code> object containing the useful configuration properties:
-	 * <li> {@link HttpResource#REQUEST_LOGIN_USERID} or {@link Resource#USERID}
-	 * <li> {@link HttpResource#REQUEST_LOGIN_PASSWORD} or {@link Resource#PASSWORD}
-	 * <li> {@link HttpResource#REQUEST_LOGIN_PARAM_USERID}
-	 * <li> {@link HttpResource#REQUEST_LOGIN_PARAM_PASSWORD}
-	 * and the properties to create the <code>Login Url</code>
+	 * @param httpClient httpClient the <code>HttpClient</code> that performs
+	 *            the <code>Login</code>.
+	 * @param properties the <code>Properties</code> object containing the
+	 *            useful configuration properties: <li>
+	 *            {@link HttpResource#REQUEST_LOGIN_USERID} or
+	 *            {@link Resource#USERID} <li>
+	 *            {@link HttpResource#REQUEST_LOGIN_PASSWORD} or
+	 *            {@link Resource#PASSWORD} <li>
+	 *            {@link HttpResource#REQUEST_LOGIN_PARAM_USERID} <li>
+	 *            {@link HttpResource#REQUEST_LOGIN_PARAM_PASSWORD} and the
+	 *            properties to create the <code>Login Url</code>
 	 * 
 	 * @param loginQueryString the <code>Login Query String</code>.
 	 * @throws JNDIException if an error occurs.
@@ -609,15 +645,17 @@ public class HttpFactory implements ObjectFactory {
 			request.abort();
 		}
 	}
-	
-	
+
 	/**
-	 * This method executes the <code>Logout</code> if necessary after the connection to the 
-	 * <code>HTTP</code> datasource and the execution of the desired <code>Http Request</code>.
+	 * This method executes the <code>Logout</code> if necessary after the
+	 * connection to the <code>HTTP</code> datasource and the execution of the
+	 * desired <code>Http Request</code>.
 	 * 
-	 * @param httpClient httpClient the <code>HttpClient</code> that performs the <code>Logout</code>.
-	 * @param properties the <code>Properties</code> object containing the useful configuration properties
-	 * to create the <code>Logout Url</code>.
+	 * @param httpClient httpClient the <code>HttpClient</code> that performs
+	 *            the <code>Logout</code>.
+	 * @param properties the <code>Properties</code> object containing the
+	 *            useful configuration properties to create the
+	 *            <code>Logout Url</code>.
 	 * @param logoutQueryString the <code>Logout Query String</code>.
 	 * @throws JNDIException if an error occurs.
 	 */
@@ -635,18 +673,24 @@ public class HttpFactory implements ObjectFactory {
 		}
 		request.abort();
 	}
-	
+
 	/**
-	 * It executes the <code>Http Request</code> in the parameter <code>request</code> 
-	 * (it may be a <code>GET</code> or a <code>POST</code>)
-	 * using the <code>HttpClient</code> in the parameter <code>httpClient</code>. <br>
-	 * It puts the <code>Response</code> content inside the <code>InputStream</code>. <br>
+	 * It executes the <code>Http Request</code> in the parameter
+	 * <code>request</code> (it may be a <code>GET</code> or a <code>POST</code>
+	 * ) using the <code>HttpClient</code> in the parameter
+	 * <code>httpClient</code>. <br>
+	 * It puts the <code>Response</code> content inside the
+	 * <code>InputStream</code>. <br>
 	 * 
-	 * @param httpClient the <code>HttpClient</code> that performs the <code>Http Request</code>.
-	 * @param request the <code>Http Request</code> performed by the <code>HttpClient</code> 
-	 * (it may be a <code>GET</code> or a <code>POST</code>).
-	 * @return the <code>InputStream</code> containing the <code>Response</code> content.
-	 * @throws JNDIException if an error occurs creating the <code>InputStream</code>.
+	 * @param httpClient the <code>HttpClient</code> that performs the
+	 *            <code>Http Request</code>.
+	 * @param request the <code>Http Request</code> performed by the
+	 *            <code>HttpClient</code> (it may be a <code>GET</code> or a
+	 *            <code>POST</code>).
+	 * @return the <code>InputStream</code> containing the <code>Response</code>
+	 *         content.
+	 * @throws JNDIException if an error occurs creating the
+	 *             <code>InputStream</code>.
 	 * @see HttpClient
 	 * @see HttpRequestBase
 	 */
@@ -654,6 +698,7 @@ public class HttpFactory implements ObjectFactory {
 		InputStream instream = null;
 		ResponseHandler<String> responseHandler = new BasicResponseHandler();
 		try {
+			System.out.println("REQUEST="+ request);
 			String responseBody = httpClient.execute(request, responseHandler);
 			instream = new ByteArrayInputStream(responseBody.getBytes(CharSet.DEFAULT));
 			request.abort();
@@ -670,4 +715,5 @@ public class HttpFactory implements ObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC157E, ex, ex.getMessage());
 		}
 	}
+
 }

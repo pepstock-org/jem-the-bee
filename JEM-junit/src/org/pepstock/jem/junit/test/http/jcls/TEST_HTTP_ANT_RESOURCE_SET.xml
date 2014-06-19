@@ -20,13 +20,13 @@
 					<![CDATA[
 						 <resource name="JUNIT-HTTP-RESOURCE" type="http" user="root" lastModified="2014-02-02 13:02:23.458 UTC">
 					       <property name="protocolType" visible="true" override="true">http</property>
-					       <property name="requestHostName" visible="true" override="true">www.auto.it</property>
+					       <property name="requestHostName" visible="true" override="true">www.google.it</property>
 					       <property name="requestPort" visible="true" override="true">80</property>
-					       <property name="proxyUrl" visible="true" override="true">proxyver.internal.unicredit.eu</property>
-					       <property name="proxyPort" visible="true" override="true">3128</property>
-					       <property name="proxyProtocol" visible="true" override="true">http</property>
-					       <property name="username" visible="true" override="true">c304993</property>
-					       <property name="password" visible="false" override="true">PWD</property>
+					       <!--property name="proxyUrl" visible="true" override="true">proxname</property-->
+					       <!--property name="proxyPort" visible="true" override="true">3128</property-->
+					       <!--property name="proxyProtocol" visible="true" override="true">http</property-->
+					       <!--property name="username" visible="true" override="true">username</property-->
+					       <!--property name="password" visible="false" override="true">passwd</property-->
 						 </resource>
 					]]>
 				</dataset>

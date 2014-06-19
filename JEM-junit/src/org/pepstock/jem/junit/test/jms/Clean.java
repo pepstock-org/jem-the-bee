@@ -16,18 +16,12 @@
 */
 package org.pepstock.jem.junit.test.jms;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.concurrent.Future;
 
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.junit.init.JemTestManager;
-import org.pepstock.jem.junit.test.rest.RestManager;
-
 import junit.framework.TestCase;
+
+import org.pepstock.jem.commands.SubmitResult;
+import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
