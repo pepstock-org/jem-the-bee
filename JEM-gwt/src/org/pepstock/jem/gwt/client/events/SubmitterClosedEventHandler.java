@@ -13,19 +13,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.gwt.client.services;
+*/
+package org.pepstock.jem.gwt.client.events;
 
-import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * The client side stub for the RPC service. Provides all actions for common
- * resources management
+ * Handler of {@link SubmitterClosedEvent} 
+ * @author Marco "Fuzzo" Cuccato
  */
-@RemoteServiceRelativePath(LegacySubmitter.SERVICE_NAME)
-public interface SubmitManagerService extends RemoteService {
+public interface SubmitterClosedEventHandler extends EventHandler {
 
+	/**
+	 * Triggered when a {@link SubmitterClosedEvent} occours
+	 * @param event the {@link SubmitterClosedEvent}
+	 */
+	void onSubmitterClosed(SubmitterClosedEvent event);
+	
 }

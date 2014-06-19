@@ -43,14 +43,18 @@
 	<target name="gwtc" depends="compile-backend">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA.jar" />
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA-sources.jar" />
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-dev.jar" />
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-user.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gflot-3.2.1.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.source.directory}" />
 				<pathelement location="${jem.workspace}/${jem.project.directory}/src" />
 				<pathelement location="${jem.workspace}/${jem.gwt.classes.directory}" />
+				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA.jar" />
+				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA-sources.jar" />
+				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/gwt-dev.jar" />
+				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/gwt-user.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gflot-3.2.1.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-uploader-1.1.0.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-incubator-20101117-r1766.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-17.0.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-gwt-17.0.jar" />
 			</classpath>
 			<jvmarg value="-Xmx700M" />
 			<arg line="-war" />

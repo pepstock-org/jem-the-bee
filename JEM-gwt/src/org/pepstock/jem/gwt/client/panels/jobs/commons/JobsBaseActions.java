@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.jobs.commons;
 
 import java.util.Collection;
 
+import org.moxieapps.gwt.uploader.client.Uploader;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.commons.ConfirmMessageBox;
 import org.pepstock.jem.gwt.client.commons.HideHandler;
@@ -27,6 +28,8 @@ import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.Tooltip;
+import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
+import org.pepstock.jem.gwt.client.panels.jobs.input.MultiDragAndDropSubmitter;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
@@ -37,8 +40,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -118,7 +119,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collection of jobs to hold
 	 */
-	private void hold(final Collection<Job> jobs){
+	private void hold(final Collection<Job> jobs) {
 		Loading.startProcessing();
 		
 	    Scheduler scheduler = Scheduler.get();
@@ -136,7 +137,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collections of jobs to release (if they are in hold)
 	 */
-	private void release(final Collection<Job> jobs){
+	private void release(final Collection<Job> jobs) {
 		Loading.startProcessing();
 	    Scheduler scheduler = Scheduler.get();
 	    scheduler.scheduleDeferred(new ScheduledCommand() {
@@ -153,7 +154,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	/**
 	 * @param jobs collections of jobs to purge
 	 */
-	private void purge(final Collection<Job> jobs){
+	private void purge(final Collection<Job> jobs) {
 		Loading.startProcessing();
 	    Scheduler scheduler = Scheduler.get();
 	    scheduler.scheduleDeferred(new ScheduledCommand() {
@@ -170,7 +171,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Release implements ClickHandler{
+	class Release implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -192,7 +193,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Hold implements ClickHandler{
+	class Hold implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -214,7 +215,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Purge implements ClickHandler{
+	class Purge implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// gets the selected jobs
@@ -246,38 +247,41 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Submit implements ClickHandler{
+	class Submit implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			// do!
-			// creates the inspector and shows it
-			Submitter inspector = new Submitter();
-			// be carefully about the HEIGHT and WIDTH calculation
-			inspector.setWidth("600px");
-			inspector.setHeight("240px");
-			inspector.setModal(true);
-			inspector.setTitle("Submit...");
-			inspector.center();
-
-			// adds for closing
-			inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-				@Override
-				public void onClose(CloseEvent<PopupPanel> arg0) {
-					if (getSearcher() != null){
-						getSearcher().refresh();
-					}
-				}
-			});
-		}
+			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the legacy one
+			if (Uploader.isAjaxUploadWithProgressEventsSupported()) {
+				openSubmitter(false);
+			} else {
+				openSubmitter(true);
+			}
+		};
 	}
+
+	protected static void openSubmitter(boolean legacy) {
+		PopupPanel submitter;
+		if (legacy) {
+			submitter = new LegacySubmitter();
+			((LegacySubmitter)submitter).setWidth(600);
+			((LegacySubmitter)submitter).setHeight(240);
+		} else {
+			submitter = new MultiDragAndDropSubmitter();
+			((MultiDragAndDropSubmitter)submitter).setWidth(700);
+			((MultiDragAndDropSubmitter)submitter).setHeight(340);
+		}
+		// be carefully about the HEIGHT and WIDTH calculation
+		submitter.setModal(true);
+		submitter.center();
+	}
+
 
 	/**
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class ActionAsyncCall extends ServiceAsyncCallback<Boolean>{
+	class ActionAsyncCall extends ServiceAsyncCallback<Boolean> {
 		
 		private String action = null;
 		

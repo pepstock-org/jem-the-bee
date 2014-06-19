@@ -35,67 +35,67 @@
 /*
 color		bordo		background
 ----------------------------------
-blue 		#3e6ddd		#9ab2ed
-green 		#44d78e		#9deac4
-grey 		#686868		#afafaf
-light blue 	#ffce19		#9acdff
-light green #79e03b		#b9ef98
-red 		#ff1d1d		#ff8989
-yellow 		#ffce19		#ffe489
+blue 		#3E6DDD		#9AB2ED
+green 		#44D78E		#9DEAC4
+grey 		#686868		#AFAFAF
+light blue 	#FFCE19		#9ACDFF
+light green #79E03B		#B9EF98
+red 		#FF1D1D		#FF8989
+yellow 		#FFCE19		#FFE489
 */
 
 .blue {
-	background: #9ab2ed;
-	border-color: #3e6ddd;
+	background: #9AB2ED;
+	border-color: #3E6DDD;
 	color: black; 
 }
 
 .green {
-	background: #9deac4;
-	border-color: #44d78e;
+	background: #9DEAC4;
+	border-color: #44D78E;
 	color: black; 
 }
 
 .grey {
-	background: #afafaf;
+	background: #AFAFAF;
 	border-color: #686868;
 	color: black; 
 }
 
 .yellow {
-	background: #ffe489;
-	border-color: #ffce19;
+	background: #FFE489;
+	border-color: #FFCE19;
 	color: black; 
 }
 
 .red {
-	background: #ff8989;
-	border-color: #ff1d1d;
+	background: #FF8989;
+	border-color: #FF1D1D;
 	color: black; 
 }
 
 .lightGreen {
-	background: #b9ef98;
-	border-color: #79e03b;
+	background: #B9EF98;
+	border-color: #79E03B;
 	color: black; 
 }
 
 .lightBlue {
-	background: #9acdff;
-	border-color: #ffce19;
+	background: #9ACDFF;
+	border-color: #FFCE19;
 	color: black; 
 }
 
 /*
 .info {
-	background: #22b14c;
+	background: #22B14C;
 }
 
 .warning {
-	background: #ffc90e;
+	background: #FFC90E;
 }
 
 .error {
-	background: #e60000;
+	background: #E60000;
 }
 */

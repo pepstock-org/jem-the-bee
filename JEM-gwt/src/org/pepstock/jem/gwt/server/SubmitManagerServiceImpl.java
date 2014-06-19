@@ -25,7 +25,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
-import org.pepstock.jem.gwt.client.panels.jobs.commons.Submitter;
+import org.pepstock.jem.gwt.client.panels.jobs.input.LegacySubmitter;
 import org.pepstock.jem.gwt.client.services.SubmitManagerService;
 import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
@@ -54,10 +54,10 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        String fileName = null;
 	        PreJob preJob = null;
 	        // scans all files uploaded
-	        for (FileItem item : items){
+	        for (FileItem item : items) {
 	        	// works only with field of JEM
 	        	// other files are ignored
-	        	if (item.getFieldName().equalsIgnoreCase(Submitter.FILE_UPLOAD_FIELD)){
+	        	if (item.getFieldName().equalsIgnoreCase(LegacySubmitter.FILE_UPLOAD_FIELD)) {
 	        		// 
 	        		fileName = item.getName();
 	        		
@@ -79,21 +79,15 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 
 	        		// loads prejob with job
 	        		preJob.setJob(job);
-
-	        	} else if (item.getFieldName().equalsIgnoreCase(Submitter.TYPE_FIELD)){
-	        		// reads JCl type
-	        		String type = item.getString();
-	        		// sets JCL type which was an argument
-	        		preJob.setJclType(type);
 	        	}
 	        }
-	        // if prejob is not instantiated, means not all 
-	        // attibutes (jcl file and type) are set
-	        if (preJob != null){
+	        
+	        // if prejob is not instantiated means jcl file are not set
+	        if (preJob != null) {
 	        	String id;
 	        	// submits JOB and get job it to return
 	        	id = jobsManager.submit(preJob);
-	        	return  UserInterfaceMessage.JEMG034I.toMessage().getFormattedMessage(fileName, id);
+	        	return UserInterfaceMessage.JEMG034I.toMessage().getFormattedMessage(fileName, id);
 	        } else {
 	        	throw new JemException(UserInterfaceMessage.JEMG035E.toMessage().getFormattedMessage());
 	        }

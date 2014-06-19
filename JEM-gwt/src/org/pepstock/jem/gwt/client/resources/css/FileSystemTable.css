@@ -1,29 +1,29 @@
 @def selectionBorderWidth 1px;
 
 .cellTableWidget {
-	border: 1px solid #bfbfbf;
+	border: 1px solid #BFBFBF;
 }
 
 .cellTableFooter {
-	border-top: 1px solid #bfbfbf;
+	border-top: 1px solid #BFBFBF;
 	padding: 4px 15px;
 	text-align: left;
 	color: black;
 	font-weight: bold;
 	text-shadow: none;
 	overflow: hidden;
-	background: #f5f5f5;
+	background: #F5F5F5;
 }
 
 .cellTableHeader {
-	border-bottom: 1px solid #bfbfbf;
+	border-bottom: 1px solid #BFBFBF;
 	padding: 4px 15px;
 	text-align: left;
 	color: black;
 	font-weight: bold;
 	text-shadow: none;
 	overflow: hidden;
-	background: #f5f5f5;
+	background: #F5F5F5;
 }
 
 .cellTableCell {
@@ -51,7 +51,7 @@
 
 .cellTableEvenRow {
 	border: 1px solid white;
-	background: #ffffff;
+	background: #FFFFFF;
 }
 
 .cellTableEvenRowCell {
@@ -59,8 +59,8 @@
 }
 
 .cellTableOddRow {
-	border: 1px solid #ecf4ff;
-	background: #ecf4ff;
+	border: 1px solid #ECF4FF;
+	background: #ECF4FF;
 }
 
 .cellTableOddRowCell {
@@ -75,7 +75,7 @@
 }
 
 .cellTableKeyboardSelectedRow {
-	background: #d0e6ff;
+	background: #D0E6FF;
 	text: white;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .cellTableSelectedRow {
-	background: #d0e6ff;
+	background: #D0E6FF;
 	color: white;
 	height: auto;
 	overflow: auto;
