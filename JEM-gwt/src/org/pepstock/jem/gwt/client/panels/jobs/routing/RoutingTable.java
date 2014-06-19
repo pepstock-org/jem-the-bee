@@ -20,8 +20,8 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.AnchorTextColumn;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.TextFilterableHeader;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
@@ -172,11 +172,11 @@ public class RoutingTable extends AbstractTable<Job> {
 				String status = null;
 				Boolean isRoutingCommited = job.getRoutingInfo().isRoutingCommitted();
 				if (isRoutingCommited == null) {
-					status = "to be routed";
+					status = "TO BE ROUTED";
 				} else if (!isRoutingCommited) {
-					status = "waiting confirm";
+					status = "WAITING CONFIRM";
 				} else if (isRoutingCommited) {
-					status = "routed";
+					status = "ROUTED";
 				} else {
 					status = JemConstants.UNKNOWN_BRACKETS;
 				}
