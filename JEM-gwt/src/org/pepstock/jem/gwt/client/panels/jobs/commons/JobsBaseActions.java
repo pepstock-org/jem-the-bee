@@ -256,7 +256,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 			} else {
 				openSubmitter(true);
 			}
-		};
+		}
 	}
 
 	protected static void openSubmitter(boolean legacy) {

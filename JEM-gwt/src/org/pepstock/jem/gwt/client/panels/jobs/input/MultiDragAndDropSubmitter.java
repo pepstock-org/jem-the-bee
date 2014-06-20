@@ -201,7 +201,6 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 		switchSubmitter.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//MultiDragAndDropSubmitter.this.hide();
 				EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), MultiDragAndDropSubmitter.this);
 			}
 		});
@@ -264,12 +263,10 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
         	overallProgressBar.setProgress(-1);
         	overallProgressBar.setMaxProgress(totalFilesInQueue);
         	// check and start uploads
-            if (totalFilesInQueue > 0) {  
-                if (uploader.getStats().getUploadsInProgress() <= 0) {
-                    uploader.startUpload();
-                    setUploaderAreaAfterDrop();
-                }  
-            }
+        	if (totalFilesInQueue > 0 && uploader.getStats().getUploadsInProgress() <= 0) {
+        		uploader.startUpload();
+        		setUploaderAreaAfterDrop();
+        	}
             return true;  
         }  
 	}

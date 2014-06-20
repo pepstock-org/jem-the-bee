@@ -113,7 +113,6 @@ public class LegacySubmitter extends AbstractInspector implements Submitter {
 		    switchButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					//Submitter.this.hide();
 					EventBus.INSTANCE.fireEventFromSource(new org.pepstock.jem.gwt.client.events.SubmitterClosedEvent(true), LegacySubmitter.this);
 				}
 			});

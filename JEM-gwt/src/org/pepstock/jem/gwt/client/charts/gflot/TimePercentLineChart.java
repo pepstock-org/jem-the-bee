@@ -59,8 +59,12 @@ public class TimePercentLineChart extends TimeCountLineChart {
 			throw new IllegalArgumentException("Times and Values must have the same size!");
 		}
 		// set the labels
-		if (timesLabel != null && !timesLabel.trim().isEmpty()) setLabelX(timesLabel);
-		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) setLabelY(valuesLabel);
+		if (timesLabel != null && !timesLabel.trim().isEmpty()) {
+			setLabelX(timesLabel);
+		}
+		if (valuesLabel != null && !valuesLabel.trim().isEmpty()) {
+			setLabelY(valuesLabel);
+		}
 		// set times
 		((TimeTickFormatter)getTickFormatterX()).setTimes(times);
 		// build the series
