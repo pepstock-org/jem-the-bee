@@ -475,7 +475,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 			if (curProgress < 0) {
 				text = "None";
 			} else {
-				text = new Double(curProgress).intValue() + "/" + new Double(bar.getMaxProgress()).intValue();
+				text = ((int)curProgress) + "/" + (int)bar.getMaxProgress();
 			}
 			return text;
 		}

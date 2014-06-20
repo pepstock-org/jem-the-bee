@@ -197,7 +197,7 @@ public class FileUploadJob extends Job {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.1
 	 */
-	class FileUploadListener implements UploadListener{
+	static class FileUploadListener implements UploadListener{
 		
 		private IProgressMonitor monitor = null;
 

@@ -247,7 +247,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
-	class Submit implements ClickHandler {
+	static class Submit implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
 			// if client browser supports it, propose the multi-file drag&drop uploader, otherwhise the legacy one
