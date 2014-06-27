@@ -1,6 +1,6 @@
 <project name="jem-common-properties" basedir=".">
 	<!-- COMMON PROPERTIES -->
-	<property name="jem.version" value="BERGAMOTTO-2.1" />
+	<property name="jem.version" value="HEAD" />
 	<property name="jem.built.by" value="www.pepstock.org" />
 	<tstamp>
 		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
