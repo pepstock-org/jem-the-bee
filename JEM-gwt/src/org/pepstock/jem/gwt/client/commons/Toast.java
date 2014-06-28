@@ -252,20 +252,12 @@ public class Toast extends PopupPanel {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Toast) {
-			return equals((Toast)obj);
+			Toast other = (Toast)obj;
+			return Objects.equal(level, other.level) && 
+					Objects.equal(message, other.message) &&
+					Objects.equal(title, other.title);
 		}
 		return false;
-	}
-	
-	/**
-	 * Determine if this {@link Toast} is equal to another one
-	 * @param other the other {@link Toast}
-	 * @return <code>true</code> if and only if level, message and title of both Toast are equal
-	 */
-	public boolean equals(Toast other) {
-		return Objects.equal(level, other.level) && 
-			Objects.equal(message, other.message) &&
-			Objects.equal(title, other.title);
 	}
 	
 }

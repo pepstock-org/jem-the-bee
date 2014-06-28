@@ -171,9 +171,9 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     
 	private void loadChart(int selected) {
 
-		boolean allLoaded = chartEntriesLoaded && chartHitsLoaded
-				&& chartLockedLoaded && chartWaitsLoaded && chartGetsLoaded
-				&& chartPutsLoaded && chartRemovesLoaded;
+		boolean allLoaded = chartEntriesLoaded && chartHitsLoaded && chartLockedLoaded;
+		allLoaded = allLoaded && chartWaitsLoaded && chartGetsLoaded;
+		allLoaded = allLoaded && chartPutsLoaded && chartRemovesLoaded;
 
 		if (!allLoaded) {
 			String[] times = new String[listData.size()];

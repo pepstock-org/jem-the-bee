@@ -20,26 +20,26 @@ package org.pepstock.jem.gwt.client.panels.jobs.input;
  *Interface thet holds constants for any file submitter 
  * @author Marco "Fuzzo" Cuccato
  */
-public interface Submitter {
+interface Submitter {
 
 	/**
 	 * 
 	 */
-	public static final String SERVICE_NAME = "submitter";
+	String SERVICE_NAME = "submitter";
 	
 	/**
 	 * 
 	 */
-	public static final String FILE_UPLOAD_FIELD = "jcl";
+	String FILE_UPLOAD_FIELD = "jcl";
 
 	/**
 	 * 
 	 */
-	public static final String FILE_SIZE_LIMIT = "5 MB";
+	String FILE_SIZE_LIMIT = "5 MB";
 	
 	/**
 	 * 
 	 */
-	public static final String FILE_TYPES = "*.xml;";
+	String FILE_TYPES = "*.xml;";
 
 }

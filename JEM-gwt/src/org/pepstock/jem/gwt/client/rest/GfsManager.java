@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.rest;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import javax.ws.rs.core.MediaType;
@@ -49,7 +50,7 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class GfsManager extends AbstractRestManager {
 	
-	private LinkedList<UploadListener> listeners = new LinkedList<UploadListener>();
+	private List<UploadListener> listeners = new LinkedList<UploadListener>();
 
 	/**
 	 * Creates a new REST manager using a RestClient

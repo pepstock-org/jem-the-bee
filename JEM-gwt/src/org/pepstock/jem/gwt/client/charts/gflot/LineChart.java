@@ -60,8 +60,12 @@ public class LineChart extends AbstractGridBasedChart {
 		LegendOptions legendOptions = LegendOptions.create();
 		legendOptions.setShow(isShowLegend());
 		legendOptions.setBackgroundOpacity(legendBackgroundOpacity).setPosition(legendPosition);
-		if (legendColumns != null) legendOptions.setNumOfColumns(legendColumns);
-		if (legendSorting != null) legendOptions.setSorted(legendSorting);
+		if (legendColumns != null) {
+			legendOptions.setNumOfColumns(legendColumns);
+		}
+		if (legendSorting != null) {
+			legendOptions.setSorted(legendSorting);
+		}
 		getOptions().setLegendOptions(legendOptions);
 
 		// grid
@@ -69,7 +73,9 @@ public class LineChart extends AbstractGridBasedChart {
 		gridOptions.setMargin(gridMargin);
 		// make the plot hoverable/clickable (needed for point labels)
 		gridOptions.setHoverable(true).setClickable(true);
-		if (gridColor != null) gridOptions.setColor(gridColor);
+		if (gridColor != null) {
+			gridOptions.setColor(gridColor);
+		}
 		getOptions().setGridOptions(gridOptions);
 
 		// point
@@ -83,8 +89,12 @@ public class LineChart extends AbstractGridBasedChart {
 			
 			PointsSeriesOptions pointOptions = PointsSeriesOptions.create();
 			pointOptions.setShow(true);
-			if (hasPointSymbol()) pointOptions.setSymbol(pointSymbol);
-			if (hasPointRadious()) pointOptions.setRadius(pointRadious);
+			if (hasPointSymbol()) {
+				pointOptions.setSymbol(pointSymbol);
+			}
+			if (hasPointRadious()) {
+				pointOptions.setRadius(pointRadious);
+			}
 			globalSeriesOptions.setPointsOptions(pointOptions);
 			
 			getOptions().setGlobalSeriesOptions(globalSeriesOptions);
@@ -104,7 +114,9 @@ public class LineChart extends AbstractGridBasedChart {
 		for (SeriesData<Double, Double> s : data) {
 			// build the series
 			Series series = Series.of(s.getLabel());
-			if (s.hasColor()) series.setColor(s.getColor());
+			if (s.hasColor()) {
+				series.setColor(s.getColor());
+			}
 			series.setLineSeriesOptions(LineSeriesOptions.create().setFill(s.getFill()).setLineWidth(1d));
 			// add series to model
 			SeriesHandler sh = getModel().addSeries(series);

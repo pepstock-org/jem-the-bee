@@ -80,7 +80,6 @@ public abstract class NewObjectHeader extends FlexTable {
 		});
 		setWidth(Sizes.HUNDRED_PERCENT);
 		setCellSpacing(3);
-		//setCellPadding(1);
 		addStyleName(Styles.INSTANCE.inspector().gradientBackground());
 		
 		/* 			0	1						2

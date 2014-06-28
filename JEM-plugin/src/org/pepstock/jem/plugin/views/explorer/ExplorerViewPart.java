@@ -197,7 +197,7 @@ public class ExplorerViewPart extends LoginViewPart {
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.1
 	 */
-	class DeleteAction extends Action {
+	static class DeleteAction extends Action {
 		
 		private RemoveFileLoading loading = null;
 
@@ -209,19 +209,22 @@ public class ExplorerViewPart extends LoginViewPart {
 		public DeleteAction(GfsFile file, ExplorerTableContainer container) {
 			if (file == null) {
 				setEnabled(false);
-			} 
-			setText("Remove " + file.getName());
-			loading = new RemoveFileLoading(file, container);
+			} else {
+				setText("Remove " + file.getName());
+				loading = new RemoveFileLoading(file, container);
+			}
 		}
 
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.action.Action#run()
 		 */
-        @Override
-        public void run() {
-			// performs the execute panels
-			loading.run();
+		@Override
+		public void run() {
+			if (loading != null){
+				// performs the execute panels
+				loading.run();
+			}
 		}
 	}
 
