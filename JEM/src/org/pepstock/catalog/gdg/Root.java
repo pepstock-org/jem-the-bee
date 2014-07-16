@@ -23,8 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.pepstock.jem.log.LogAppl;
-
 /**
  * It represents the root of GDG. Contains all information about the created
  * generation and the index of last one (gen 0).<br>
@@ -53,14 +51,7 @@ public class Root {
 	 */
 	public static final String ROOT_FILE_NAME = "root.properties";
 
-	/**
-	 * File name of root properties
-	 */
-	private static final String BACKUP_ROOT_FILE_NAME = "root.properties.back";
-
 	private File file = null;
-
-	private File backupFile = null;
 
 	private int lastVersion = 0;
 
@@ -102,7 +93,6 @@ public class Root {
 
 		// save file, adding root.properties to parent passed
 		this.file = new File(parent, ROOT_FILE_NAME);
-		this.backupFile = new File(parent, BACKUP_ROOT_FILE_NAME);
 
 		// checks if has to load
 		if (load) {
@@ -229,23 +219,24 @@ public class Root {
 		// load properties file
 		FileOutputStream fos = null;
 		// because in hadoop we cannot modify an existing file, in this case
-		// root.properties we use a backup file as workaround
+		// root.properties must be deleted and recreated
 		try {
-			if (backupFile.exists() && !backupFile.delete()){
-					throw new IOException("Unable to delete backup file "+backupFile.getAbsolutePath());
-			}
-			if (!file.exists() || file.renameTo(backupFile)){
+			// checks if exist because 
+			// when you're defining a new GDG could be it doesn't exists
+			if (file.exists()){
+				if (file.delete()){
+					fos = new FileOutputStream(file);
+					properties.store(fos, "new GDG version");
+					fos.flush();
+				} else {
+					throw new IOException("Unable to delete "+file.getAbsolutePath());
+				}
+			} else {
+				// if doesn't exists, creates a new one
 				fos = new FileOutputStream(file);
 				properties.store(fos, "new GDG version");
 				fos.flush();
-				if (backupFile.exists() && !backupFile.delete()){
-					LogAppl.getInstance().debug("Unable to delete backup file "+backupFile.getAbsolutePath());
-				}
-			} else {
-				throw new IOException("Unable to rename to backup file "+file.getAbsolutePath());
 			}
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			if (fos != null) {
 				fos.close();
