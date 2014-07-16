@@ -65,11 +65,17 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     	for (LightMemberSample msample : Instances.getCurrentSample().getMembers()) {
     		if (msample != null) {
     			for (LightMapStats map : msample.getMapsStats().values()) {
-    				if (map !=null) {
-    					QueueData data = new QueueData();
-						data.setFullName(map.getName());
-						data.setTime(msample.getTime());
-    					data.setEntries(map.getOwnedEntryCount() + data.getEntries());
+    				if (map != null) {
+    					QueueData data = null;
+    					if (mapData.containsKey(map.getName())) {
+    						data = mapData.get(map.getName());
+    					} else {
+	    					data = new QueueData();
+							data.setFullName(map.getName());
+							data.setTime(msample.getTime());
+    					}
+    					
+    					data.setEntries(data.getEntries() + map.getOwnedEntryCount());
     					mapData.put(map.getName(), data);
     				}
     			}

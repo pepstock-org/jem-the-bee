@@ -68,7 +68,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     			for (LightMapStats map : msample.getInternalMapsStats().values()){
     				if (map !=null) {
     					QueueData data = null;
-    					if (mapData.containsKey(map.getName())){
+    					if (mapData.containsKey(map.getName())) {
     						data = mapData.get(map.getName());
     					} else {
     						data = new QueueData();
@@ -76,7 +76,7 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     						data.setTime(msample.getTime());
     					}
 
-    					data.setEntries(map.getOwnedEntryCount() + data.getEntries());
+    					data.setEntries(data.getEntries() + map.getOwnedEntryCount());
     					mapData.put(map.getName(), data);
     				}
     			}
