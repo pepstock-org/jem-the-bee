@@ -193,4 +193,25 @@ public class GDGUtil {
 		}
 		return root;
 	}
+	
+	/**
+	 * Creates a new root.propeties file, empty.
+	 * 
+	 * @param parent path of GDG
+	 * @return new root created
+	 * @throws IOException if I/O occurs
+	 */
+	public static Root createGDGEmptyRoot(File parent) throws IOException {
+		// checks if is null
+		if (parent == null) {
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+		}
+
+		Root root = new Root(parent, false);
+		// sets version 0
+		root.setLastVersion(0);
+		// save the properties file
+		root.commit();
+		return root;
+	}
 }
