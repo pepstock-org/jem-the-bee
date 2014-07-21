@@ -52,6 +52,7 @@ public class Factory {
 	 */
 	public static void loadJob(PreJob prejob) throws JclFactoryException {
 		Jcl jcl = null;
+		System.err.println("Pre "+prejob.getJclType());
 		// prejob without type
 		if (prejob.getJclType() == null){
 			jcl = Factory.scanAllJclFactories(prejob);
@@ -98,7 +99,8 @@ public class Factory {
 				Jcl jcl =  Factory.createJcl(prejob.getJclContent(), factory);
 				prejob.setJclType(factory.getType());
 				return jcl;
-			} catch (JclFactoryException e) {
+				// Exception class must be caught 
+			} catch (Exception e) {
             	// debug
             	LogAppl.getInstance().debug(e.getMessage(), e);
 			}

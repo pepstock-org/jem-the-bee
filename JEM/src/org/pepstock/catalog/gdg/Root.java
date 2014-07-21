@@ -98,7 +98,19 @@ public class Root {
 		if (load) {
 			// checks if exists
 			if (!this.file.exists()) {
-				throw new FileNotFoundException(GDGMessage.JEMD010E.toMessage().getFormattedMessage(this.file.getAbsolutePath()));
+				// before to send a exception, try to have the list of directory
+				// in NFS environment because sometimes the "exists" method say false even if the file exists
+				// asking directory, NFS consolidates asynchronous operation 
+				File[] files = parent.listFiles();
+				// if no files, throw exception
+				if (files != null && files.length > 0){
+					// if I have the list of files, check again if file exists
+					if (!this.file.exists()) {
+						throw new FileNotFoundException(GDGMessage.JEMD010E.toMessage().getFormattedMessage(this.file.getAbsolutePath()));
+					}
+				} else {
+					throw new FileNotFoundException(GDGMessage.JEMD010E.toMessage().getFormattedMessage(this.file.getAbsolutePath()));
+				}
 			}
 
 			// load properties file
