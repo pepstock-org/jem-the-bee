@@ -24,7 +24,7 @@
 			<class-name>org.pepstock.jem.node.security.socketinterceptor.NodeInterceptor</class-name>
 			<properties>
 				<!-- is the path of the keystore that contains the symmetric key used to crypt the login process -->
-			    <property name="jem.keystore.path">./WEB-INF/config/keystores/#[jem.keystore.name]</property>
+			    <property name="jem.keystore.path">./WEB-INF/config/#[jem.keystore.name]</property>
 			    <!-- is password of the kesystore -->
 				<property name="jem.keystore.pwd">#[jem.keystore.pwd]</property>
 				<!-- is the alias of the symmetric key inside keystore -->
