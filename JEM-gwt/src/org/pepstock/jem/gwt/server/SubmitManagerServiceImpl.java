@@ -79,6 +79,11 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 
 	        		// loads prejob with job
 	        		preJob.setJob(job);
+	        	} else if (item.getFieldName().equalsIgnoreCase(LegacySubmitter.TYPE_FIELD)){
+	        		// reads JCl type
+	        		String type = item.getString();
+	        		// sets JCL type which was an argument
+	        		preJob.setJclType(type);
 	        	}
 	        }
 	        

@@ -35,6 +35,11 @@ interface Submitter {
 	/**
 	 * 
 	 */
+	String TYPE_FIELD = "type";
+
+	/**
+	 * 
+	 */
 	String FILE_SIZE_LIMIT = "5 MB";
 	
 	/**
