@@ -274,3 +274,7 @@
 .loadingPadding {
 	padding: 7px;
 }
+
+.noBorder {
+	border: 0px;
+}

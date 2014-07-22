@@ -260,7 +260,9 @@ public class TreeOptions extends ScrollPanel {
 		header.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		header.setSpacing(8);
 		if (icon != null) {
-			header.add(new Image(icon));
+			Image image = new Image(icon);
+			image.addStyleName(Styles.INSTANCE.common().noBorder());
+			header.add(image);
 		}
 		header.add(new Label(label));
 		

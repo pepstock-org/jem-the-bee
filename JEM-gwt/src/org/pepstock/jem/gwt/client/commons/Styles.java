@@ -187,6 +187,7 @@ public interface Styles extends ClientBundle {
 		String noMinMaxHeightWidth();
 		String chartTickLabel();
 		String loadingPadding();
+		String noBorder();
 	}
 	
 	interface Administration extends CssResource {
