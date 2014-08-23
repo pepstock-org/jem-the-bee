@@ -34,8 +34,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputListArgument;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputTreeContent;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -48,6 +46,8 @@ import org.pepstock.jem.plugin.views.JemViewPart;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
+import org.pepstock.jem.rest.entities.JobOutputListArgument;
+import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 
 /**
  *  Is a viewPart, activated to show the details of a job. It has got the job header to provide short info about job anme and JEM environment.

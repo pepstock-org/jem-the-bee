@@ -21,8 +21,8 @@ import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.i18n.I18N;
 import org.pepstock.jem.gwt.client.security.CurrentUser;
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.client.services.Services;
+import org.pepstock.jem.node.security.LoggedUser;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

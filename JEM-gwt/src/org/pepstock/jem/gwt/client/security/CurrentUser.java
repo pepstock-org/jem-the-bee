@@ -22,6 +22,7 @@ import java.util.List;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.gwt.client.services.Services;
+import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.util.TimeUtils;
 

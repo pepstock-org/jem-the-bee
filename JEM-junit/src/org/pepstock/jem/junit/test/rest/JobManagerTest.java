@@ -6,10 +6,10 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
-import org.pepstock.jem.gwt.client.rest.JobsManager;
-import org.pepstock.jem.gwt.server.rest.entities.JclContent;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.JclContent;
+import org.pepstock.jem.rest.entities.JobOutputTreeContent;
+import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.services.JobsManager;
 
 public class JobManagerTest extends TestCase {
 

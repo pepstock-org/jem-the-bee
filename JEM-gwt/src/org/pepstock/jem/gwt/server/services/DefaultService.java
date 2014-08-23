@@ -26,12 +26,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.security.Roles;
 
 import com.hazelcast.core.Cluster;

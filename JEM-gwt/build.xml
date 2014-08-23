@@ -8,7 +8,7 @@
 		<delete file="${jem.workspace}/${jem-gwt.library.directory}/${jem-gwt.jar.name}" />
 		<delete dir="${jem.workspace}/${jem-gwt.web.directory}/jem_gwt" includeemptydirs="true" />
 		<delete dir="${jem.workspace}/${jem-gwt.project.directory}/gwt-unitCache" includeemptydirs="true" />
-		<delete file="${jem.workspace}/${jem-gwt.library.directory}/${jem.jar.name}" />
+		<!--delete file="${jem.workspace}/${jem-gwt.library.directory}/${jem.jar.name}" /-->
 	</target>
 
 	<!-- create directory needed -->
@@ -55,6 +55,7 @@
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-incubator-20101117-r1766.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-17.0.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-gwt-17.0.jar" />
+				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/jem.jar" />
 			</classpath>
 			<jvmarg value="-Xmx700M" />
 			<arg line="-war" />

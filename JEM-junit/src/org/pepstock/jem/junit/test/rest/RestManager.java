@@ -6,15 +6,15 @@ import java.net.URL;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.Factory;
-import org.pepstock.jem.gwt.client.rest.GfsManager;
-import org.pepstock.jem.gwt.client.rest.JobsManager;
-import org.pepstock.jem.gwt.client.rest.LoginManager;
-import org.pepstock.jem.gwt.client.security.LoggedUser;
-import org.pepstock.jem.gwt.server.rest.entities.Account;
 import org.pepstock.jem.junit.init.JemTestManager;
 import org.pepstock.jem.junit.init.RestConf;
-import org.pepstock.jem.util.MultiRestClient;
-import org.pepstock.jem.util.RestClient;
+import org.pepstock.jem.node.security.LoggedUser;
+import org.pepstock.jem.rest.MultiRestClient;
+import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.entities.Account;
+import org.pepstock.jem.rest.services.GfsManager;
+import org.pepstock.jem.rest.services.JobsManager;
+import org.pepstock.jem.rest.services.LoginManager;
 
 public class RestManager {
 

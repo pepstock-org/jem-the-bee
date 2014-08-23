@@ -7,10 +7,10 @@ import junit.framework.TestCase;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.gwt.client.rest.GfsManager;
-import org.pepstock.jem.gwt.server.rest.entities.GfsFileList;
-import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.GfsFileList;
+import org.pepstock.jem.rest.entities.GfsRequest;
+import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.services.GfsManager;
 
 public class GfsManagerTest extends TestCase {
 

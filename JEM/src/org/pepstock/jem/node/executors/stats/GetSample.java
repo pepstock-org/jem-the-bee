@@ -360,6 +360,8 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	private void loadGFSUtilization(MemberSample sample, Sigar sigar){
 		try {
 			FileSystemUtilization fsUtil = sample.getFileSystem();
+			// uses only teh output path.
+			// TODO must be extended with all other GFS
 			FileSystemUsage usage = sigar.getFileSystemUsage(Main.getOutputSystem().getOutputPath().getAbsolutePath());
 			long free = usage.getFree();
 			long total  = usage.getTotal();

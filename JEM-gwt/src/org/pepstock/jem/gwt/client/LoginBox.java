@@ -21,10 +21,10 @@ import org.pepstock.jem.gwt.client.commons.LoggedListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.client.services.InfoService;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.security.LoggedUser;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

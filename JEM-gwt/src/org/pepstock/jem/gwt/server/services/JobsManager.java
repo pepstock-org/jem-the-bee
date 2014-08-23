@@ -38,6 +38,7 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
@@ -45,7 +46,6 @@ import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.util.Factory;
-import org.pepstock.jem.gwt.client.commons.JobStatus;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
@@ -405,11 +405,21 @@ public class JobsManager extends DefaultService {
 
 		// scans jobs
 		for (Job job : jobs) {
+			Job jobSearched = job;
 			String nodeKey = job.getMemberId();
+			if ((nodeKey == null || job.getProcessId() == null) && job.getId() != null){
+				jobSearched = getJobById(Queues.RUNNING_QUEUE, job.getId());
+				nodeKey = jobSearched.getMemberId();
+			} 
 			// gets Hazelcast member
 			// if is not able, an exception occurs
-			GenericDistributedTaskExecutor task = new GenericDistributedTaskExecutor(new Cancel(job, user.getId(), force), getMember(nodeKey));
-			task.execute();
+			GenericDistributedTaskExecutor task;
+            try {
+	            task = new GenericDistributedTaskExecutor(new Cancel(jobSearched, user.getId(), force), getMember(nodeKey));
+	            task.execute();
+            } catch (Exception e) {
+	            LogAppl.getInstance().ignore(e.getMessage(), e);
+            }
 		}
 		return Boolean.TRUE;
 	}
@@ -806,7 +816,22 @@ public class JobsManager extends DefaultService {
 		// if not, this method throws an exception
 		String permission = Permissions.SEARCH_JOBS + job.getName();
 		checkAuthorization(new StringPermission(permission));
-		DistributedTaskExecutor<JobSystemActivity> task = new DistributedTaskExecutor<JobSystemActivity>(new GetJobSystemActivity(job), getMember(job.getMemberId()));
+		
+		Job jobToSearch = job;
+		String nodeKey = job.getMemberId();
+		if (nodeKey == null || job.getProcessId() == null){
+			if (job.getId() == null){
+				System.err.println("nill "+job);
+				return null;
+			} else {
+				jobToSearch = getJobById(Queues.RUNNING_QUEUE, job.getId());
+				if (jobToSearch == null){
+					return null;
+				}
+				nodeKey = jobToSearch.getMemberId();
+			}
+		}
+		DistributedTaskExecutor<JobSystemActivity> task = new DistributedTaskExecutor<JobSystemActivity>(new GetJobSystemActivity(jobToSearch), getMember(nodeKey));
 		return task.getResult();
 
 	}

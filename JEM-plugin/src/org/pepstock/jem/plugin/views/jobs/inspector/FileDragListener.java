@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -36,6 +35,7 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
+import org.pepstock.jem.rest.entities.JobOutputListArgument;
 
 /**
  * File drag listener utility, enables to open files of output directory of a job., using DND.

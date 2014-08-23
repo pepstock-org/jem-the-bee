@@ -16,13 +16,13 @@ import java.util.Collections;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.TabFolder;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.commons.JemTableColumn;
 import org.pepstock.jem.plugin.views.jobs.JobColumnSorter;
 import org.pepstock.jem.plugin.views.jobs.JobsTableContainer;
+import org.pepstock.jem.rest.entities.Jobs;
 
 /**
  * Table container of jobs in RUNNING queue of JEM.

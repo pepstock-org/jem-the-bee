@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.gwt.client.commons;
 
-import org.pepstock.jem.gwt.client.security.LoggedUser;
+import org.pepstock.jem.node.security.LoggedUser;
 
 /**
  * Interface used to be notified when the user is logged in.

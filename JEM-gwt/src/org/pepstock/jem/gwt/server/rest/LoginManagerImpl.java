@@ -23,14 +23,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
-import org.pepstock.jem.gwt.server.rest.entities.Account;
-import org.pepstock.jem.gwt.server.rest.entities.LoggedUserContent;
 import org.pepstock.jem.gwt.server.services.LoginManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.security.LoggedUser;
+import org.pepstock.jem.rest.entities.Account;
+import org.pepstock.jem.rest.entities.LoggedUserContent;
+import org.pepstock.jem.rest.paths.LoginManagerPaths;
 
 /**
  * Rest service to get logged user, to log in and log out.
@@ -38,28 +39,8 @@ import org.pepstock.jem.log.LogAppl;
  * @author Andrea "Stock" Stocchero
  *
  */
-@Path("/"+LoginManagerImpl.LOGIN_MANAGER_PATH)
+@Path(LoginManagerPaths.MAIN)
 public class LoginManagerImpl extends DefaultServerResource  {
-	
-	/**
-	 * Key to define the path to bind this services
-	 */
-	public static final String LOGIN_MANAGER_PATH = "loginManager";
-	
-	/**
-	 * Key to define the path to bind user management method
-	 */
-	public static final String LOGIN_MANAGER_GET_USER_PATH = "getUser";
-	
-	/**
-	 * Key to define the path to bind login management method
-	 */
-	public static final String LOGIN_MANAGER_LOGIN_PATH = "login";
-	
-	/**
-	 * Key to define the path to bind logoff management method
-	 */
-	public static final String LOGIN_MANAGER_LOGOFF_PATH = "logoff";
 
 	private LoginManager loginManager = null;
 
@@ -70,7 +51,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path("/"+LOGIN_MANAGER_GET_USER_PATH)
+	@Path(LoginManagerPaths.GET_USER)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public LoggedUserContent getUser() throws JemException{
 		LoggedUserContent content = new LoggedUserContent();
@@ -98,7 +79,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@PUT
-	@Path("/"+LOGIN_MANAGER_LOGIN_PATH)
+	@Path(LoginManagerPaths.LOGIN)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public LoggedUserContent login(Account account) throws JemException{
 		LoggedUserContent content = new LoggedUserContent();
@@ -128,7 +109,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@DELETE
-	@Path("/"+LOGIN_MANAGER_LOGOFF_PATH)
+	@Path(LoginManagerPaths.LOGOFF)
 	public void logoff() throws JemException {
 		if (isEnable()){
 			if (loginManager == null){

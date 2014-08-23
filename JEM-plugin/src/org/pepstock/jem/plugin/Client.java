@@ -23,24 +23,24 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.gwt.client.rest.GfsManager;
-import org.pepstock.jem.gwt.client.rest.JobsManager;
-import org.pepstock.jem.gwt.client.rest.LoginManager;
-import org.pepstock.jem.gwt.client.rest.UploadListener;
-import org.pepstock.jem.gwt.client.security.LoggedUser;
-import org.pepstock.jem.gwt.server.rest.entities.Account;
-import org.pepstock.jem.gwt.server.rest.entities.GfsRequest;
-import org.pepstock.jem.gwt.server.rest.entities.JclContent;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputListArgument;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.plugin.event.EnvironmentEvent;
 import org.pepstock.jem.plugin.event.EnvironmentEventListener;
 import org.pepstock.jem.plugin.preferences.Coordinate;
-import org.pepstock.jem.util.RestClient;
-import org.pepstock.jem.util.RestClientFactory;
+import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.RestClientFactory;
+import org.pepstock.jem.rest.entities.Account;
+import org.pepstock.jem.rest.entities.GfsRequest;
+import org.pepstock.jem.rest.entities.JclContent;
+import org.pepstock.jem.rest.entities.JobOutputListArgument;
+import org.pepstock.jem.rest.entities.JobOutputTreeContent;
+import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.services.GfsManager;
+import org.pepstock.jem.rest.services.JobsManager;
+import org.pepstock.jem.rest.services.LoginManager;
+import org.pepstock.jem.rest.services.UploadListener;
 
 /**
  * Contains all necessary references to maintain the connection with JEm (by

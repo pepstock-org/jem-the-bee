@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
-import org.pepstock.jem.gwt.client.commons.JobStatus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
