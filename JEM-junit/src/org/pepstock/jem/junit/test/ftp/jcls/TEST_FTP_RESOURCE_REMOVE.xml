@@ -4,8 +4,6 @@
 		This job removes the FTP resource used to test FTP functionalities.
     </description>
 
-	<property name="jem.job.environment" value="TEST-Env"/>
-
 	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
 
 	<target name="remove">

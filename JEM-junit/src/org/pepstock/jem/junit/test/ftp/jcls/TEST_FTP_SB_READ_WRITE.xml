@@ -29,7 +29,6 @@
 
 	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="TEST_FTP_SB_READ_WRITE" />
-		<beans:property name="environment" value="TEST-Env" />
         <beans:property name="lockingScope" value="step" />
 	</beans:bean>
 

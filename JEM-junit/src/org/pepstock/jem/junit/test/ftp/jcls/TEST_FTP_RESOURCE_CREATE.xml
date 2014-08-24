@@ -4,9 +4,6 @@
 		This job creates a JPPF resource to use to test FTP functionalities.
     </description>
 
-	<property name="jem.job.environment" value="TEST-Env"/>
-	
-
 	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
 
 	<target name="create">
