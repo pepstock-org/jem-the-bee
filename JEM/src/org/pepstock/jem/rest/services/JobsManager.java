@@ -16,18 +16,22 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.xml.bind.JAXBElement;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputFileContent;
+import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.rest.AbstractRestManager;
 import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.entities.BooleanReturnedObject;
 import org.pepstock.jem.rest.entities.JclContent;
-import org.pepstock.jem.rest.entities.JobId;
 import org.pepstock.jem.rest.entities.JobOutputFileContent;
 import org.pepstock.jem.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.rest.entities.JobOutputTreeContent;
@@ -35,6 +39,7 @@ import org.pepstock.jem.rest.entities.JobStatusContent;
 import org.pepstock.jem.rest.entities.JobSystemActivityContent;
 import org.pepstock.jem.rest.entities.Jobs;
 import org.pepstock.jem.rest.entities.ReturnedObject;
+import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;
 
 import com.sun.jersey.api.client.GenericType;
@@ -102,8 +107,20 @@ public class JobsManager extends AbstractRestManager {
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	public void hold(Jobs jobs) throws JemException {
-		doAction(JobsManagerPaths.HOLD, jobs);
+	public Boolean hold(Collection<Job> jobs, String queueName) throws JemException {
+		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.HOLD);
+		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
+
+		};
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
+		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return false;
+		}
+		return result.isValue();
 	}
 
 	/**
@@ -111,8 +128,20 @@ public class JobsManager extends AbstractRestManager {
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	public void release(Jobs jobs) throws JemException {
-		doAction(JobsManagerPaths.RELEASE, jobs);
+	public Boolean release(Collection<Job> jobs, String queueName) throws JemException {
+		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.RELEASE);
+		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
+
+		};
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
+		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return false;
+		}
+		return result.isValue();
 	}
 
 	/**
@@ -120,27 +149,71 @@ public class JobsManager extends AbstractRestManager {
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	public void cancel(Jobs jobs) throws JemException {
-		doAction(JobsManagerPaths.CANCEL, jobs);
-	}
+	/**
+	 * 
+	 * @param jobs
+	 * @throws JemException if any exception occurs
+	 */
+	public Boolean cancel(Collection<Job> jobs, boolean force) throws JemException {
+		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.CANCEL);
+		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
+
+		};
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setCancelForce(force);
+		
+		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return false;
+		}
+		return result.isValue();
+	}	
 
 	/**
 	 * 
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	public void purge(Jobs jobs) throws JemException {
-		doAction(JobsManagerPaths.PURGE, jobs);
-	}
+	public Boolean purge(Collection<Job> jobs, String queueName) throws JemException {
+		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.PURGE);
+		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
 
+		};
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
+		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return false;
+		}
+		return result.isValue();
+	}
+	
 	/**
 	 * 
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	public void update(Jobs jobs) throws JemException {
-		doAction(JobsManagerPaths.UPDATE, jobs);
-	}
+	public Boolean update(Job job, String queueName) throws JemException {
+		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.UPDATE);
+		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
+
+		};
+		Collection<Job> jobs = new ArrayList<Job>();
+		jobs.add(job);
+
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
+		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return false;
+		}
+		return result.isValue();
+	}	
 
 	/**
 	 * 
@@ -149,16 +222,16 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public String submit(PreJob preJob) throws JemException {
-		GenericType<JAXBElement<JobId>> generic = new GenericType<JAXBElement<JobId>>() {
+		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
 
 		};
-		JobsPostService<JobId, PreJob> service = new JobsPostService<JobId, PreJob>(JobsManagerPaths.SUBMIT);
+		JobsPostService<StringReturnedObject, PreJob> service = new JobsPostService<StringReturnedObject, PreJob>(JobsManagerPaths.SUBMIT);
 
-		JobId jobid = service.execute(generic, preJob);
+		StringReturnedObject jobid = service.execute(generic, preJob);
 		if (jobid == null){
 			return null;
 		} else {
-			return jobid.getId();
+			return jobid.getValue();
 		}
 	}
 
@@ -167,12 +240,23 @@ public class JobsManager extends AbstractRestManager {
 	 * @return
 	 * @throws JemException if any exception occurs
 	 */
-	public JclContent getJcl(Jobs jobs) throws JemException {
+	public String getJcl(Job job, String queueName) throws JemException {
 		GenericType<JAXBElement<JclContent>> generic = new GenericType<JAXBElement<JclContent>>() {
 
 		};
+		Collection<Job> jobs = new ArrayList<Job>();
+		jobs.add(job);
+
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
 		JobsPostService<JclContent, Jobs> service = new JobsPostService<JclContent, Jobs>(JobsManagerPaths.JCL_CONTENT);
-		return service.execute(generic, jobs);
+		JclContent result = service.execute(generic, jobsEnvelop);
+		if (result == null){
+			return null;
+		}
+		return result.getContent();
 	}
 
 	/**
@@ -180,12 +264,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @return
 	 * @throws JemException if any exception occurs
 	 */
-	public JobOutputTreeContent getOutputTree(Jobs jobs) throws JemException {
+	public JobOutputTreeContent getOutputTree(Job job, String queueName) throws JemException {
 		JobsPostService<JobOutputTreeContent, Jobs> service = new JobsPostService<JobOutputTreeContent, Jobs>(JobsManagerPaths.OUTPUT_TREE);
 		GenericType<JAXBElement<JobOutputTreeContent>> generic = new GenericType<JAXBElement<JobOutputTreeContent>>() {
 
 		};
-		return service.execute(generic, jobs);
+		Collection<Job> jobs = new ArrayList<Job>();
+		jobs.add(job);
+
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		jobsEnvelop.setQueueName(queueName);
+		
+		return service.execute(generic, jobsEnvelop);
 	}
 
 	/**
@@ -193,10 +284,14 @@ public class JobsManager extends AbstractRestManager {
 	 * @return
 	 * @throws JemException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(JobOutputListArgument jobFileContent) throws JemException {
+	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
 		GenericType<JAXBElement<JobOutputFileContent>> generic = new GenericType<JAXBElement<JobOutputFileContent>>() {
 
 		};
+		JobOutputListArgument jobFileContent = new JobOutputListArgument();
+		jobFileContent.setJob(job);
+		jobFileContent.setItem(item);
+		
 		JobsPostService<JobOutputFileContent, JobOutputListArgument> service = new JobsPostService<JobOutputFileContent, JobOutputListArgument>(JobsManagerPaths.OUTPUT_FILE_CONTENT);
 		JobOutputFileContent ofc = service.execute(generic, jobFileContent);
 		
@@ -228,16 +323,22 @@ public class JobsManager extends AbstractRestManager {
 	
 	/**
 	 * 
+	 * @param queueName 
 	 * @param jobId
 	 * @return
 	 * @throws JemException if any exception occurs
 	 */
-	public Job getJobById(JobId jobId) throws JemException {
-		JobsPostService<Jobs, JobId> service = new JobsPostService<Jobs, JobId>(JobsManagerPaths.JOB_BY_ID);
+	// @FIXME 
+	public Job getJobById(String queueName, String jobId) throws JemException {
+		JobsPostService<Jobs, Jobs> service = new JobsPostService<Jobs, Jobs>(JobsManagerPaths.JOB_BY_ID);
 		GenericType<JAXBElement<Jobs>> generic = new GenericType<JAXBElement<Jobs>>() {
 
 		};
-		Jobs jobs = service.execute(generic, jobId);
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setId(jobId);
+		jobsEnvelop.setQueueName(queueName);
+		
+		Jobs jobs = service.execute(generic, jobsEnvelop);
 		if (jobs == null || jobs.getJobs() == null || jobs.getJobs().isEmpty()){
 			return null;
 		} else {
@@ -270,12 +371,18 @@ public class JobsManager extends AbstractRestManager {
 	 * @return
 	 * @throws JemException if any exception occurs
 	 */
-	public JobSystemActivity getJobSystemActivity(Jobs jobs) throws JemException {
+	public JobSystemActivity getJobSystemActivity(Job job) throws JemException {
 		GenericType<JAXBElement<JobSystemActivityContent>> generic = new GenericType<JAXBElement<JobSystemActivityContent>>() {
 
 		};
+		Collection<Job> jobs = new ArrayList<Job>();
+		jobs.add(job);
+
+		Jobs jobsEnvelop = new Jobs();
+		jobsEnvelop.setJobs(jobs);
+		
 		JobsPostService<JobSystemActivityContent, Jobs> service = new JobsPostService<JobSystemActivityContent, Jobs>(JobsManagerPaths.JOB_SYSTEM_ACTIVITY);
-		JobSystemActivityContent sa = service.execute(generic, jobs);
+		JobSystemActivityContent sa = service.execute(generic, jobsEnvelop);
 		
 		if (sa == null){
 			return null;
@@ -304,13 +411,7 @@ public class JobsManager extends AbstractRestManager {
 	 * @param jobs
 	 * @throws JemException if any exception occurs
 	 */
-	private void doAction(String method, Jobs jobs) throws JemException {
-		JobsPostService<ReturnedObject, Jobs> service = new JobsPostService<ReturnedObject, Jobs>(method);
-		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
 
-		};
-		service.execute(generic, jobs);
-	}
 	
 	
 	/**

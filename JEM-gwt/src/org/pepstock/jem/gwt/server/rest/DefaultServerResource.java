@@ -16,7 +16,10 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
+import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.rest.entities.ReturnedObject;
 
 /**
  * Abstract REST server resource, which provides a helpful method to check if the
@@ -34,5 +37,11 @@ public abstract class DefaultServerResource {
 	 */
 	protected boolean isEnable(){
 		return SharedObjects.getInstance().isDataClusterAvailable();
+	}
+	
+	void setUnableExcepton(ReturnedObject object){
+		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
+		String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
+		object.setExceptionMessage(msg);
 	}
 }

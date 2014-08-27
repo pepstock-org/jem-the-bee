@@ -16,63 +16,45 @@
 */
 package org.pepstock.jem.rest.entities;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.pepstock.jem.NodeInfoBean;
+
 /**
- * Represents JOB id, submitted by REST
+ * POJO container of nodes list.<br>
+ * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
  *
  */
 @XmlRootElement
-public class JobId extends ReturnedObject {
+public class Nodes extends ReturnedObject implements Serializable{
 
-	private String id = null;
-	
-	private String queueName = null;
-	
+    private static final long serialVersionUID = 1L;
+
+	private Collection<NodeInfoBean> nodes = null;
+
 	/**
 	 * Empty constructor
 	 */
-	public JobId() {
+	public Nodes() {
 	}
 
 	/**
-	 * Gets Job ID
-	 * @return the id
+	 * @return the nodes
 	 */
-	public String getId() {
-		return id;
+	public Collection<NodeInfoBean> getNodes() {
+		return nodes;
 	}
 
 	/**
-	 * Sets JOB id
-	 * @param id the id to set
+	 * @param nodes the nodes to set
 	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-
-	/**
-	 * @return the queueName
-	 */
-	public String getQueueName() {
-		return queueName;
+	public void setNodes(Collection<NodeInfoBean> nodes) {
+		this.nodes = nodes;
 	}
 
-	/**
-	 * @param queueName the queueName to set
-	 */
-	public void setQueueName(String queueName) {
-		this.queueName = queueName;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-    @Override
-    public String toString() {
-	    return "Id [id=" + id + "]";
-    }
 }

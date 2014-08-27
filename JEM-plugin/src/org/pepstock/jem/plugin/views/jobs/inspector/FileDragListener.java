@@ -35,7 +35,6 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
-import org.pepstock.jem.rest.entities.JobOutputListArgument;
 
 /**
  * File drag listener utility, enables to open files of output directory of a job., using DND.
@@ -175,12 +174,8 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
      */
     private File dragProducedOutput(ProducedOutput out) throws JemException, IOException{
     	OutputListItem item = out.getOutItem();
-    	// creates argument for REST call
-		JobOutputListArgument arg = new JobOutputListArgument();
-		arg.setJob(job);
-		arg.setItem(out.getOutItem());
 		// rest call
-		OutputFileContent ofc = Client.getInstance().getOutputFileContent(arg);
+		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, out.getOutItem());
 		String fileName = FilenameUtils.getName(item.getFileRelativePath());
 		return FilesUtil.writeToTempFile(fileName, ofc.getContent());
     }
@@ -205,7 +200,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 			try {
 				if (job.getJcl().getContent() == null){
 					// REST call to download JCL
-					job.getJcl().setContent(Client.getInstance().getJcl(job, getQueueName()).getContent());
+					job.getJcl().setContent(Client.getInstance().getJcl(job, getQueueName()));
 				}
 				// writes JCL
 				File file = FilesUtil.writeJcl(job);

@@ -18,19 +18,21 @@ package org.pepstock.jem.gwt.server.rest;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
-import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.services.LoginManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.entities.LoggedUserContent;
+import org.pepstock.jem.rest.entities.ReturnedObject;
+import org.pepstock.jem.rest.entities.UserPreferencesContent;
 import org.pepstock.jem.rest.paths.LoginManagerPaths;
 
 /**
@@ -59,12 +61,15 @@ public class LoginManagerImpl extends DefaultServerResource  {
 			if (loginManager == null){
 				initManager();
 			}
-			LoggedUser user = loginManager.getUser();
-			content.setLoggedUser(user);
+			try {
+	            LoggedUser user = loginManager.getUser();
+	            content.setLoggedUser(user);
+            } catch (Exception e) {
+            	LogAppl.getInstance().ignore(e.getMessage(), e);
+	            content.setExceptionMessage(e.getMessage());
+            }
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}
@@ -95,9 +100,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	            content.setExceptionMessage(e.getMessage());
             }
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}
@@ -119,6 +122,50 @@ public class LoginManagerImpl extends DefaultServerResource  {
 		}
 	}
 
+	/**
+	 * Logs off from JEM saving user preferences.
+	 * @param preferences user preferences to store
+	 * 
+	 * @throws JemException if JEM group is not available or not authorized 
+	 */
+	@DELETE
+	@Path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES)
+	public void logoff(UserPreferencesContent preferences) throws JemException {
+		if (isEnable()){
+			if (loginManager == null){
+				initManager();
+			}
+			loginManager.logoff(preferences.getPreferences());
+		}
+	}
+	
+	/**
+	 * Stores the user preferences in JEM.
+	 * @param preferences user preferences to store
+	 * @return 
+	 * 
+	 * @throws JemException if JEM group is not available or not authorized 
+	 */
+	@POST
+	@Path(LoginManagerPaths.SAVE_PREFERENCES)
+	public ReturnedObject storePreferences(UserPreferencesContent preferences) throws JemException {
+		ReturnedObject ro = new ReturnedObject();
+		if (isEnable()){
+			if (loginManager == null){
+				initManager();
+			}
+			try {
+	            loginManager.storePreferences(preferences.getPreferences());
+            } catch (Exception e) {
+            	LogAppl.getInstance().ignore(e.getMessage(), e);
+	            ro.setExceptionMessage(e.getMessage());
+            }
+		} else {
+			setUnableExcepton(ro);
+		}
+		return ro;
+	}
+	
 	/**
 	 * Initialize the manager
 	 */

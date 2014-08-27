@@ -77,7 +77,6 @@ public class GfsManagerImpl extends DefaultServerResource {
 			if (gfsManager == null) {
 				initManager();
 			}
-
 			Collection<GfsFile> gfsList;
 			try {
 				gfsList = gfsManager.getFilesList(request.getType(), request.getItem(), request.getPathName());
@@ -88,9 +87,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 				gfsContainer.setExceptionMessage(e.getMessage());
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			gfsContainer.setExceptionMessage(msg);
+			setUnableExcepton(gfsContainer);
 		}
 		return gfsContainer;
 	}
@@ -126,9 +123,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 				gfsContainer.setExceptionMessage(e.getMessage());
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			gfsContainer.setExceptionMessage(msg);
+			setUnableExcepton(gfsContainer);
 		}
 		return gfsFile;
 	}
@@ -193,9 +188,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 				object.setExceptionMessage(e.getMessage());
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			object.setExceptionMessage(msg);
+			setUnableExcepton(object);
 		}
 		return object;
 	}

@@ -41,6 +41,16 @@ public class LoginManagerPaths {
 	 * Key to define the path to bind logoff management method
 	 */
 	public static final String LOGOFF = CommonPaths.QUERYSTRING_SEPARATOR +   "logoff";
+	
+	/**
+	 * Key to define the path to bind logoff management method saving preferences
+	 */
+	public static final String LOGOFF_SAVING_PREFERENCES = CommonPaths.QUERYSTRING_SEPARATOR +   "logoffSavingPreferences";
+	
+	/**
+	 * Key to define the path to bind store prefences method
+	 */
+	public static final String SAVE_PREFERENCES = CommonPaths.QUERYSTRING_SEPARATOR +   "savePreferences";
 
 	/**
 	 * 

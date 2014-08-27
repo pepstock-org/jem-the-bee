@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
+import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gfs.GfsFile;
@@ -33,8 +34,6 @@ import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.RestClientFactory;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.entities.GfsRequest;
-import org.pepstock.jem.rest.entities.JclContent;
-import org.pepstock.jem.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 import org.pepstock.jem.rest.entities.Jobs;
 import org.pepstock.jem.rest.services.GfsManager;
@@ -258,29 +257,14 @@ public class Client {
 	}
 	
 	/**
-	 * Creates a jobs object used for RESTto getinformation
-	 * @param job job instance
-	 * @param queueName where to get info, queue name
-	 * @return jobs object with job and queue name fields
-	 */
-	private Jobs getJobs(Job job, String queueName){
-		Jobs jobs = new Jobs();
-		jobs.setQueueName(queueName);
-		List<Job> jobsList = new ArrayList<Job>();
-		jobsList.add(job);
-		jobs.setJobs(jobsList);
-		return jobs;
-	}
-
-	/**
 	 * Returns the JCL content of JOB
 	 * @param job job instance used to get JCL content
 	 * @param queueName where to get JCL, queue name
 	 * @return jcl content in string format
 	 * @throws JemException if any exception occurs
 	 */
-	public JclContent getJcl(Job job, String queueName) throws JemException {
-		return jobsManager.getJcl(getJobs(job, queueName));
+	public String getJcl(Job job, String queueName) throws JemException {
+		return jobsManager.getJcl(job, queueName);
 	}
 
 	/**
@@ -291,17 +275,18 @@ public class Client {
 	 * @throws JemException if any exception occurs
 	 */
 	public JobOutputTreeContent getOutputTree(Job job, String queueName) throws JemException {
-		return jobsManager.getOutputTree(getJobs(job, queueName));
+		return jobsManager.getOutputTree(job, queueName);
 	}
 
 	/**
 	 * Returns the content file from output folder in string format
-	 * @param jobOutputFileContent parameter with all job information and needed file
+	 * @param job Job used to search file content
+	 * @param item item to search
 	 * @return output file content
 	 * @throws JemException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(JobOutputListArgument jobOutputFileContent) throws JemException {
-		return jobsManager.getOutputFileContent(jobOutputFileContent);
+	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
+		return jobsManager.getOutputFileContent(job, item);
 	}
 
 	/**

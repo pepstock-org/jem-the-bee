@@ -26,6 +26,8 @@ import org.pepstock.jem.rest.AbstractRestManager;
 import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.entities.LoggedUserContent;
+import org.pepstock.jem.rest.entities.ReturnedObject;
+import org.pepstock.jem.rest.entities.UserPreferencesContent;
 import org.pepstock.jem.rest.paths.LoginManagerPaths;
 
 import com.sun.jersey.api.client.GenericType;
@@ -97,4 +99,31 @@ public class LoginManager extends AbstractRestManager {
 		WebResource resource = getClient().getBaseWebResource();
 		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF).accept(MediaType.APPLICATION_XML).delete();
 	}
+	
+	/**
+	 * 
+	 * @param userPreferences 
+	 * @throws JemException
+	 */
+	public void logoff(UserPreferencesContent userPreferences) throws JemException {
+		WebResource resource = getClient().getBaseWebResource();
+		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES).accept(MediaType.APPLICATION_XML).delete(userPreferences);
+	}
+	
+	/**
+	 * 
+	 * @param userPreferences 
+	 * @throws JemException
+	 */
+	public void storePreferences(UserPreferencesContent userPreferences) throws JemException {
+		WebResource resource = getClient().getBaseWebResource();
+		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
+		};
+		JAXBElement<ReturnedObject> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.SAVE_PREFERENCES).accept(MediaType.APPLICATION_XML).post(generic, userPreferences);
+    	ReturnedObject object = jaxbContact.getValue();
+		if (object.hasException()){
+			throw new JemException(object.getExceptionMessage());
+		}
+	}
+	
 }

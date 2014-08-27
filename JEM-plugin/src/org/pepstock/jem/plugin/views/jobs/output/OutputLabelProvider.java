@@ -11,7 +11,7 @@
 package org.pepstock.jem.plugin.views.jobs.output;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
+import org.pepstock.jem.plugin.commons.JemConstants;
 import org.pepstock.jem.plugin.views.jobs.JobLabelProvider;
 
 /**

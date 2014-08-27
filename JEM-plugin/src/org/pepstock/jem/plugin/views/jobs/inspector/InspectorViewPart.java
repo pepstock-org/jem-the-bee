@@ -46,7 +46,6 @@ import org.pepstock.jem.plugin.views.JemViewPart;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
-import org.pepstock.jem.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 
 /**
@@ -227,13 +226,9 @@ public class InspectorViewPart extends JemViewPart {
 		
 		@Override
 		public void execute() throws JemException {
-			// prepares arguments for rest call
-			JobOutputListArgument arg = new JobOutputListArgument();
-			arg.setJob(job);
-			arg.setItem(getOutput().getOutItem());
 			try {
 				// loads file content
-				OutputFileContent ofc = Client.getInstance().getOutputFileContent(arg);
+				OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, getOutput().getOutItem());
 				// open text plain editor
 				getSite().getWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(ofc.getContent(), getOutput().getName()), 
 						"org.eclipse.ui.DefaultTextEditor");
@@ -292,7 +287,7 @@ public class InspectorViewPart extends JemViewPart {
 						// serialized inside of JCL object
 						if (job.getJcl().getContent() == null){
 							// REST call to download JCL
-							job.getJcl().setContent(Client.getInstance().getJcl(job, queueName).getContent());
+							job.getJcl().setContent(Client.getInstance().getJcl(job, queueName));
 						}
 						// writes JCL on temp file
 						File file = FilesUtil.writeJcl(job);

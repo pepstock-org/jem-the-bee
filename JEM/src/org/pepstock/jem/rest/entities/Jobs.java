@@ -39,6 +39,10 @@ public class Jobs extends ReturnedObject implements Serializable{
 	
 	private String queueName = null;
 	
+	private String id = null;
+	
+	private boolean cancelForce = false;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -84,6 +88,37 @@ public class Jobs extends ReturnedObject implements Serializable{
 	public void setJobs(Collection<Job> jobs) {
 		this.jobs = jobs;
 	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the cancelForce
+	 */
+	public boolean isCancelForce() {
+		return cancelForce;
+	}
+
+
+	/**
+	 * @param cancelForce the cancelForce to set
+	 */
+	public void setCancelForce(boolean cancelForce) {
+		this.cancelForce = cancelForce;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

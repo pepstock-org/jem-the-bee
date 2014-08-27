@@ -33,20 +33,19 @@ import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
-import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.rest.entities.BooleanReturnedObject;
 import org.pepstock.jem.rest.entities.JclContent;
-import org.pepstock.jem.rest.entities.JobId;
 import org.pepstock.jem.rest.entities.JobOutputFileContent;
 import org.pepstock.jem.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 import org.pepstock.jem.rest.entities.JobStatusContent;
 import org.pepstock.jem.rest.entities.JobSystemActivityContent;
 import org.pepstock.jem.rest.entities.Jobs;
-import org.pepstock.jem.rest.entities.ReturnedObject;
+import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;
 
 /**
@@ -87,9 +86,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -120,9 +117,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -153,9 +148,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -186,9 +179,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -217,9 +208,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -227,37 +216,35 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * REST service which returns job, by job id filter
 	 * 
-	 * @param jobid job id filter
+	 * @param jobsParm job id filter
 	 * @return a jobs container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
 	@Path(JobsManagerPaths.JOB_BY_ID)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getJobById(JobId jobid) throws JemException {
+	public Jobs getJobById(Jobs jobsParm) throws JemException {
 		Jobs jobsContainer = new Jobs();
 		if (isEnable()){
-			if (jobid.getQueueName() != null && jobid.getId() != null){
+			if (jobsParm.getQueueName() != null && jobsParm.getId() != null){
 				if (jobsManager == null){
 					initManager();
 				}
 				Collection<Job> jobs = new ArrayList<Job>();
 				try {
-					Job job = jobsManager.getJobById(jobid.getQueueName(), jobid.getId());
+					Job job = jobsManager.getJobById(jobsParm.getQueueName(), jobsParm.getId());
 					if (job != null){
 						jobs.add(job);
 					}
 					jobsContainer.setJobs(jobs);
-					jobsContainer.setQueueName(jobid.getQueueName());	            
+					jobsContainer.setQueueName(jobsParm.getQueueName());	            
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 					jobsContainer.setExceptionMessage(e.getMessage());
 				}				
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -291,9 +278,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
             	jobsContainer.setExceptionMessage(e.getMessage());
             }				
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobsContainer.setExceptionMessage(msg);
+			setUnableExcepton(jobsContainer);
 		}
 		return jobsContainer;
 	}
@@ -308,24 +293,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.HOLD)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ReturnedObject hold(Jobs jobs) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
+	public BooleanReturnedObject hold(Jobs jobs) throws JemException {
+		BooleanReturnedObject ro = new BooleanReturnedObject();
+		ro.setValue(false);
 		if (isEnable()){
 			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
 				if (jobsManager == null){
 					initManager();
 				}
 				try {
-	                jobsManager.hold(jobs.getJobs(), jobs.getQueueName());
+	                ro.setValue(jobsManager.hold(jobs.getJobs(), jobs.getQueueName()));
                 } catch (Exception e) {
                 	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
                 	ro.setExceptionMessage(e.getMessage());
                 }
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			ro.setExceptionMessage(msg);
+			setUnableExcepton(ro);
 		}
 		return ro;
 	}
@@ -340,24 +324,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.RELEASE)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ReturnedObject release(Jobs jobs) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
+	public BooleanReturnedObject release(Jobs jobs) throws JemException {
+		BooleanReturnedObject ro = new BooleanReturnedObject();
+		ro.setValue(false);
 		if (isEnable()) {
 			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
 				if (jobsManager == null){
 					initManager();
 				}
 				try {
-					jobsManager.release(jobs.getJobs(), jobs.getQueueName());
+					ro.setValue(jobsManager.release(jobs.getJobs(), jobs.getQueueName()));
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 					ro.setExceptionMessage(e.getMessage());
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			ro.setExceptionMessage(msg);
+			setUnableExcepton(ro);
 		}
 		return ro;
 	}
@@ -372,25 +355,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.CANCEL)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ReturnedObject cancel(Jobs jobs) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
+	public BooleanReturnedObject cancel(Jobs jobs) throws JemException {
+		BooleanReturnedObject ro = new BooleanReturnedObject();
+		ro.setValue(false);
 		if (isEnable()){
 			if (!jobs.getJobs().isEmpty()){
 				if (jobsManager == null){
 					initManager();
 				}
 				try {
-					// TODO mettere il parametro FORCE
-					jobsManager.cancel(jobs.getJobs(), false);
+					ro.setValue(jobsManager.cancel(jobs.getJobs(), jobs.isCancelForce()));
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 					ro.setExceptionMessage(e.getMessage());
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			ro.setExceptionMessage(msg);
+			setUnableExcepton(ro);
 		}
 		return ro;
 	}
@@ -405,24 +386,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.PURGE)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ReturnedObject purge(Jobs jobs) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
+	public BooleanReturnedObject purge(Jobs jobs) throws JemException {
+		BooleanReturnedObject ro = new BooleanReturnedObject();
+		ro.setValue(false);
 		if (isEnable()){
 			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
 				if (jobsManager == null){
 					initManager();
 				}
 				try {
-					jobsManager.purge(jobs.getJobs(), jobs.getQueueName());
+					ro.setValue(jobsManager.purge(jobs.getJobs(), jobs.getQueueName()));
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 					ro.setExceptionMessage(e.getMessage());
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			ro.setExceptionMessage(msg);
+			setUnableExcepton(ro);
 		}
 		return ro;
 	}
@@ -437,8 +417,9 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.UPDATE)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ReturnedObject update(Jobs jobs) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
+	public BooleanReturnedObject update(Jobs jobs) throws JemException {
+		BooleanReturnedObject ro = new BooleanReturnedObject();
+		ro.setValue(false);
 		// only if there is a job and only 1
 		if (isEnable()){
 			if (jobs.getQueueName() != null && jobs.getJobs().size() == 1){
@@ -446,16 +427,14 @@ public class JobsManagerImpl extends DefaultServerResource  {
 					initManager();
 				}
 				try {
-					jobsManager.update(jobs.getJobs().iterator().next(), jobs.getQueueName());
+					ro.setValue(jobsManager.update(jobs.getJobs().iterator().next(), jobs.getQueueName()));
 				} catch (Exception e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 					ro.setExceptionMessage(e.getMessage());
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			ro.setExceptionMessage(msg);
+			setUnableExcepton(ro);
 		}
 		return ro;
 	}
@@ -470,23 +449,21 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.SUBMIT)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JobId submit(PreJob preJob) throws JemException {
-		JobId jobid = new JobId();
+	public StringReturnedObject submit(PreJob preJob) throws JemException {
+		StringReturnedObject jobid = new StringReturnedObject();
 		if (isEnable()){
 			if (jobsManager == null){
 				initManager();
 			}
 			try {
 				String id = jobsManager.submit(preJob);
-				jobid.setId(id);
+				jobid.setValue(id);
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
 				jobid.setExceptionMessage(e.getMessage());
 			}			
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			jobid.setExceptionMessage(msg);
+			setUnableExcepton(jobid);
 		}
 		return jobid;
 	}
@@ -527,9 +504,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}
@@ -559,9 +534,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				content.setExceptionMessage(e.getMessage());
             }
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}
@@ -593,9 +566,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}
@@ -627,9 +598,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				}
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			content.setExceptionMessage(msg);
+			setUnableExcepton(content);
 		}
 		return content;
 	}	
