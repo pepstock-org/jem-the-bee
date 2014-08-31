@@ -29,9 +29,10 @@ import com.sun.jersey.api.client.WebResource;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  * @param <T> Returned object
+ * @param <S>
  * @param <S> parameter for REST call
  */
-class DefaultPostService<T extends ReturnedObject, S> extends AbstractRestService<T, S> {
+class DefaultGetService<T extends ReturnedObject, S> extends AbstractRestService<T, S> {
 	
 
 	
@@ -65,7 +66,7 @@ class DefaultPostService<T extends ReturnedObject, S> extends AbstractRestServic
 	 * @param service
 	 * @param subService
 	 */
-	public DefaultPostService(RestClient client, String service, String subService) {
+	public DefaultGetService(RestClient client, String service, String subService) {
 		super(client, service, subService);
 	}
 
@@ -75,6 +76,6 @@ class DefaultPostService<T extends ReturnedObject, S> extends AbstractRestServic
 	@Override
 	public JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws Exception {
 		WebResource resource = getClient().getBaseWebResource();
-		return resource.path(getService()).path(getSubService()).accept(MediaType.APPLICATION_XML).post(type, parameter);
+		return resource.path(getService()).path(getSubService()).accept(MediaType.APPLICATION_XML).get(type);
 	}
 }

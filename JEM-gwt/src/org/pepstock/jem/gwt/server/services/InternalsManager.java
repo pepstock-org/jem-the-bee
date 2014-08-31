@@ -24,17 +24,24 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
+import org.pepstock.jem.Job;
+import org.pepstock.jem.gwt.client.services.InfoService.Indexes;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
+import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.node.About;
+import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.DisplayRequestors;
 import org.pepstock.jem.node.executors.GetAbout;
+import org.pepstock.jem.node.executors.clients.Count;
 import org.pepstock.jem.node.persistence.RedoStatement;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.Member;
 
 /**
  * This service gets information about internals engine of JEM, like GRS (if activated) or 
@@ -137,8 +144,8 @@ public class InternalsManager extends DefaultService{
     }
     
     /**
-     * Returns a baout object with information about version, creation and licenses
-     * @return about isntance
+     * Returns a about object with information about version, creation and licenses
+     * @return about instance
      * @throws ServiceMessageException 
      * @throws Exception if any exception occurs
      */
@@ -151,4 +158,67 @@ public class InternalsManager extends DefaultService{
 		return task.getResult();
     }
     
+    /**
+     * Returns the amount of clients connected to JEM
+     * @return amout of clients
+     * @throws ServiceMessageException if any exception occurs
+     */
+    public int getClients() throws ServiceMessageException {
+		DistributedTaskExecutor<Integer> task = new DistributedTaskExecutor<Integer>(new Count(), getMember());
+		return task.getResult();
+    } 
+    
+    /**
+     * Return
+     * @return
+     * @throws ServiceMessageException
+     */
+    public String[] getEnvironmentInformation() throws ServiceMessageException {
+
+		// creates array
+		String[] infos = new String[Indexes.INFO_SIZE.getIndex()];
+		
+		HazelcastInstance localMember = SharedObjects.getInstance().getHazelcastClient();
+		// Name of JEM GROUP
+		infos[Indexes.NAME.getIndex()] = SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName();
+
+		infos[Indexes.NODES_COUNT.getIndex()] = String.valueOf(localMember.getCluster().getMembers().size());
+
+		// Exec job count
+		IMap<String, Job> jobs = localMember.getMap(Queues.RUNNING_QUEUE);
+		infos[Indexes.EXECUTION_JOB_COUNT.getIndex()] = String.valueOf(jobs.size());
+
+		// Uptime
+		// gets the coordinator of JEM cluster (the oldest one)
+		Member oldest = localMember.getCluster().getMembers().iterator().next();
+		IMap<String, NodeInfo> nodes = localMember.getMap(Queues.NODES_MAP);
+
+		// to get the uptime
+		// uses the started time information of JEM node info
+		// try locks by uuid
+		if (nodes.tryLock(oldest.getUuid(), 10, TimeUnit.SECONDS)) {
+			try {
+				// if coordinator is not on map (mustn't be!!)
+				// set not available
+				NodeInfo oldestInfo = nodes.get(oldest.getUuid());
+				if (oldestInfo != null){
+					infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
+				} else {
+					infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+				}
+			} finally {
+				// unlocks always the key
+				nodes.unlock(oldest.getUuid());
+			}
+		} else {
+			infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+		}
+		
+		// gets the current time. 
+		// this is helpful because ould be some time differences 
+		// between client and servers
+		infos[Indexes.CURRENT_TIME.getIndex()] = String.valueOf(System.currentTimeMillis());
+
+		return infos;
+    }
 }

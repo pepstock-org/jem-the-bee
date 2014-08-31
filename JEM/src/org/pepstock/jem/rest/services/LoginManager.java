@@ -59,6 +59,7 @@ public class LoginManager extends AbstractRestManager {
 	    };
 	    try {
 	    	JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.GET_USER).accept(MediaType.APPLICATION_XML).get(generic);
+	 	    	
 	    	LoggedUserContent object = jaxbContact.getValue();
 			if (object.hasException()){
 				throw new JemException(object.getExceptionMessage());
