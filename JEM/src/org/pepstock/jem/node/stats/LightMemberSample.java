@@ -20,11 +20,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.pepstock.jem.rest.maps.StatsMapAdapter;
+
 /**
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LightMemberSample extends AbstractMemberSample implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -51,8 +58,12 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	
 	private long gfsFree = 0;
 
+	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
+	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> mapsStats = new HashMap<String, LightMapStats>();
 	
+	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
+	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> internalMapsStats = new HashMap<String, LightMapStats>();
 	/**
 	 * 

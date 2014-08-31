@@ -52,7 +52,6 @@ public class Factory {
 	 */
 	public static void loadJob(PreJob prejob) throws JclFactoryException {
 		Jcl jcl = null;
-		System.err.println("Pre "+prejob.getJclType());
 		// prejob without type
 		if (prejob.getJclType() == null){
 			jcl = Factory.scanAllJclFactories(prejob);

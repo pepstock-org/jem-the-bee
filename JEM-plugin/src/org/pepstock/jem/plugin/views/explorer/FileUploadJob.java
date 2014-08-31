@@ -25,13 +25,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.gwt.client.rest.UploadListener;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.views.Searcher;
+import org.pepstock.jem.rest.services.UploadListener;
 
 /**
  * Progress monitor when some files are uploading to GFS.

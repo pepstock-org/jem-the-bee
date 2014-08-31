@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -51,6 +49,8 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.inspector.InspectorViewPart;
+import org.pepstock.jem.rest.entities.JobOutputTreeContent;
+import org.pepstock.jem.rest.entities.Jobs;
 
 /**
  * Table container of jobs of JEM. It contains a table for each type of jobs queue of JEM.

@@ -12,7 +12,7 @@ package org.pepstock.jem.plugin.views.jobs.routing;
 
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
+import org.pepstock.jem.plugin.commons.JemConstants;
 import org.pepstock.jem.plugin.views.jobs.JobLabelProvider;
 /**
  * Provides the labels to use inside the ROUTING jobs table, for each job.

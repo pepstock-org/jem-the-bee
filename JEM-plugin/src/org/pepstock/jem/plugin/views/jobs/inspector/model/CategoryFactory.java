@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputTreeContent;
 import org.pepstock.jem.plugin.util.Images;
+import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 /**
  * Creates the complete tree of output directory of a job.
  * 

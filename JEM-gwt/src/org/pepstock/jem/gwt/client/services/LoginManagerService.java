@@ -18,8 +18,8 @@ package org.pepstock.jem.gwt.client.services;
 
 import java.util.Map;
 
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.security.UserPreference;
 
 import com.google.gwt.user.client.rpc.RemoteService;

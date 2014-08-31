@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.pepstock.jem.node.ExecutionEnvironment;
 
 
@@ -31,6 +33,7 @@ import org.pepstock.jem.node.ExecutionEnvironment;
  * @author Andrea "Stock" Stocchero
  * 
  */
+@XmlRootElement
 public class NodeInfoBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

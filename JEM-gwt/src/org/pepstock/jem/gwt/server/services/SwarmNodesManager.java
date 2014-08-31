@@ -79,8 +79,7 @@ public class SwarmNodesManager extends DefaultService {
 	 * @param nodesFilter
 	 *            ipaddress or hostname filter
 	 * @return collection of nodes
-	 * @throws ServiceMessageException 
-	 * @throws Exception
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodes(String nodesFilter) throws ServiceMessageException {
 		Collection<NodeInfoBean> list = new ArrayList<NodeInfoBean>();
@@ -143,10 +142,8 @@ public class SwarmNodesManager extends DefaultService {
 	/**
 	 * Starts swarm nodes, using a future task by executor service of Hazelcast.
 	 * 
-	 * @param nodes
-	 *            nodes list of members to start
 	 * @return always TRUE
-	 * @throws ServiceMessageException 
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Boolean start() throws ServiceMessageException {
 		// checks if the user is authorized to start nodes
@@ -200,10 +197,8 @@ public class SwarmNodesManager extends DefaultService {
 	 * Shuts down all the swarm nodes, using a future task by executor service
 	 * of Hazelcast.
 	 * 
-	 * @param nodes
-	 *            list of nodes
 	 * @return always true
-	 * @throws ServiceMessageException 
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Boolean drain() throws ServiceMessageException {
 		// checks if the user is authorized to stop nodes
@@ -238,9 +233,7 @@ public class SwarmNodesManager extends DefaultService {
 	 * Returns the status of swarm
 	 * 
 	 * @return status if swarm
-	 * @throws ServiceMessageException 
-	 * @throws Exception
-	 *             if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public String getStatus() throws ServiceMessageException {
 		// checks if the user is authenticated

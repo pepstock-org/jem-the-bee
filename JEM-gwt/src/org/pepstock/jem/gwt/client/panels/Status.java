@@ -19,11 +19,11 @@ package org.pepstock.jem.gwt.client.panels;
 import java.util.Collection;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
-import org.pepstock.jem.gwt.client.commons.JobStatus;
 import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;

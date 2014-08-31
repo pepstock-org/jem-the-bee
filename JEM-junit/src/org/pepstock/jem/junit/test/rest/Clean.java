@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.ant.AntFactory;
-import org.pepstock.jem.gwt.server.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.Jobs;
 
 public class Clean extends TestCase {
 

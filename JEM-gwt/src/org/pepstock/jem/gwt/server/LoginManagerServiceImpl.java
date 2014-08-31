@@ -20,11 +20,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.pepstock.jem.gwt.client.security.LoggedUser;
 import org.pepstock.jem.gwt.client.services.LoginManagerService;
 import org.pepstock.jem.gwt.server.services.LoginManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.security.UserPreference;
 
 /**

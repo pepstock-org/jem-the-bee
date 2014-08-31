@@ -58,8 +58,7 @@ public class StatisticsManager extends InternalsManager{
 	 * Returns the collection of all active samples in JEM. 
 	 * 
      * @return collection of samples
-	 * @throws ServiceMessageException 
-     * @throws Exception if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
      */
     public Collection<LightSample> getSamples() throws ServiceMessageException {
     	// Remember that it uses QUEUES CURRENT permission to check if
@@ -111,8 +110,7 @@ public class StatisticsManager extends InternalsManager{
 	 * Calculates and returns last sample of JEM statistics
 	 * 
      * @return last sample of statistics
-	 * @throws ServiceMessageException 
-     * @throws Exception if any exception occurs 
+	 * @throws ServiceMessageException if any exception occurs 
      */
     public LightSample getCurrentSample() throws ServiceMessageException {
     	// Remember that it uses QUEUES CURRENT permission to check if

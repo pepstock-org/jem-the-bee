@@ -47,6 +47,35 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="itemReader">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="dataDescription"/>
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+					<xsd:attribute name="delegate" type="xsd:string" use="required"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="itemWriter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="dataDescription"/>
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+					<xsd:attribute name="delegate" type="xsd:string" use="required"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
 
 	<xsd:element name="jppf-tasklet">
 		<xsd:complexType>

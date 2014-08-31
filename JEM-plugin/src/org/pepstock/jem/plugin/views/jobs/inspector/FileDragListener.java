@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.gwt.server.rest.entities.JobOutputListArgument;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -175,12 +174,8 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
      */
     private File dragProducedOutput(ProducedOutput out) throws JemException, IOException{
     	OutputListItem item = out.getOutItem();
-    	// creates argument for REST call
-		JobOutputListArgument arg = new JobOutputListArgument();
-		arg.setJob(job);
-		arg.setItem(out.getOutItem());
 		// rest call
-		OutputFileContent ofc = Client.getInstance().getOutputFileContent(arg);
+		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, out.getOutItem());
 		String fileName = FilenameUtils.getName(item.getFileRelativePath());
 		return FilesUtil.writeToTempFile(fileName, ofc.getContent());
     }
@@ -205,7 +200,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 			try {
 				if (job.getJcl().getContent() == null){
 					// REST call to download JCL
-					job.getJcl().setContent(Client.getInstance().getJcl(job, getQueueName()).getContent());
+					job.getJcl().setContent(Client.getInstance().getJcl(job, getQueueName()));
 				}
 				// writes JCL
 				File file = FilesUtil.writeJcl(job);

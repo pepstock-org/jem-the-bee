@@ -16,26 +16,13 @@
 */
 package org.pepstock.jem.gwt.server;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletContext;
 
-import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.services.InfoService;
-import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
-import org.pepstock.jem.gwt.server.commons.SharedObjects;
-import org.pepstock.jem.gwt.server.services.DefaultService;
 import org.pepstock.jem.gwt.server.services.InternalsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.About;
-import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.executors.clients.Count;
-
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.Member;
 
 /**
  * Is GWT server service which can provide general information to use on headers and
@@ -69,49 +56,8 @@ public class InfoServiceImpl extends DefaultManager implements InfoService {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();
-		// creates array
-		String[] infos = new String[Indexes.INFO_SIZE.getIndex()];
 		try {
-			HazelcastInstance localMember = SharedObjects.getInstance().getHazelcastClient();
-			// Name of JEM GROUP
-			infos[Indexes.NAME.getIndex()] = SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName();
-
-			infos[Indexes.NODES_COUNT.getIndex()] = String.valueOf(localMember.getCluster().getMembers().size());
-
-			// Exec job count
-			IMap<String, Job> jobs = localMember.getMap(Queues.RUNNING_QUEUE);
-			infos[Indexes.EXECUTION_JOB_COUNT.getIndex()] = String.valueOf(jobs.size());
-
-			// Uptime
-			// gets the coordinator of JEM cluster (the oldest one)
-			Member oldest = localMember.getCluster().getMembers().iterator().next();
-			IMap<String, NodeInfo> nodes = localMember.getMap(Queues.NODES_MAP);
-
-			// to get the uptime
-			// uses the started time information of JEM node info
-			// try locks by uuid
-			if (nodes.tryLock(oldest.getUuid(), 10, TimeUnit.SECONDS)) {
-				try {
-					// if coordinator is not on map (mustn't be!!)
-					// set not available
-					NodeInfo oldestInfo = nodes.get(oldest.getUuid());
-					if (oldestInfo != null){
-						infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
-					} else {
-						infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
-					}
-				} finally {
-					// unlocks always the key
-					nodes.unlock(oldest.getUuid());
-				}
-			} else {
-				infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
-			}
-			
-			// gets the current time. 
-			// this is helpful because ould be some time differences 
-			// between client and servers
-			infos[Indexes.CURRENT_TIME.getIndex()] = String.valueOf(System.currentTimeMillis());
+			return internalsManager.getEnvironmentInformation();
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG043E, ex);
 			// creates a new Exception to avoid to try
@@ -119,7 +65,6 @@ public class InfoServiceImpl extends DefaultManager implements InfoService {
 			// serializable
 			throw new JemException(ex.getMessage());
 		}
-		return infos;
 	}
 
 	/* (non-Javadoc)
@@ -170,9 +115,18 @@ public class InfoServiceImpl extends DefaultManager implements InfoService {
 	 * @throws JemException 
 	 */
 	public int getClients() throws JemException {
-		DefaultService ds = new DefaultService();
-		DistributedTaskExecutor<Integer> task = new DistributedTaskExecutor<Integer>(new Count(), ds.getMember());
-		return task.getResult();
+		// check if JEM is available
+		// if not, throws an exception
+		checkIsEnable();
+		try {
+			return internalsManager.getClients();
+		} catch (Exception ex) {
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG043E, ex);
+			// creates a new Exception to avoid to try
+			// to serialize Exception (like hazelcast ones) which are not
+			// serializable
+			throw new JemException(ex.getMessage());
+		}
 		
 	}
 }
