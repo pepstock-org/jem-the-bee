@@ -57,4 +57,11 @@ public class JobStatusContent extends ReturnedObject implements Serializable {
 		this.jobStatus = jobStatus;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JobStatusContent [jobStatus=" + jobStatus + "]";
+	}
 }

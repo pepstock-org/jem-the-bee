@@ -57,4 +57,12 @@ public class Nodes extends ReturnedObject implements Serializable{
 		this.nodes = nodes;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Nodes [nodes=" + nodes + "]";
+	}
+	
 }

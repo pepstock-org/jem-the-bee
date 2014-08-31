@@ -287,7 +287,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * Holds the jobs in a specific queue
 	 * 
 	 * @param jobs list and queue name of jobs to hold
-	 * @return returned object
+	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -318,7 +318,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * Releases holded jobs in a specific queue
 	 * 
 	 * @param jobs list and queue name of jobs to release
-	 * @return 
+	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -346,10 +346,10 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	}
 
 	/**
-	 * Cancel jobs in execution
+	 * Cancels jobs in execution
 	 * 
 	 * @param jobs list and queue name of jobs to cancel
-	 * @return 
+	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -380,7 +380,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * Purges jobs from queues
 	 * 
 	 * @param jobs list and queue name of jobs to purge
-	 * @return 
+	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -411,7 +411,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * Updates a job in queue
 	 * 
 	 * @param jobs list and queue name of jobs to update
-	 * @return 
+	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -572,10 +572,10 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	}
 	
 	/**
-	 * Returns the content of requested jcl for a specific job.
+	 * Returns the system information about the job in execution.
 	 * 
-	 * @param jobs job container with queue name
-	 * @return content JCL
+	 * @param jobs job container with JOB IDS, process ids and members
+	 * @return system information of job
 	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@POST

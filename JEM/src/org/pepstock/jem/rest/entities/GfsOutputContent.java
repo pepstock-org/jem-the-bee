@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.rest.entities;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,13 +22,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Represents output log content.
  * 
  * @author Andrea "Stock" Stocchero
- *
+ * 
  */
 @XmlRootElement
 public class GfsOutputContent extends ReturnedObject {
 
 	private String content = null;
-	
+
 	/**
 	 * Empty constructor
 	 */
@@ -37,6 +37,7 @@ public class GfsOutputContent extends ReturnedObject {
 
 	/**
 	 * Returns content of output log
+	 * 
 	 * @return the content
 	 */
 	public String getContent() {
@@ -45,11 +46,20 @@ public class GfsOutputContent extends ReturnedObject {
 
 	/**
 	 * Sets content of output log
+	 * 
 	 * @param content the content to set
 	 */
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "GfsOutputContent [content=" + content + "]";
+	}
 }

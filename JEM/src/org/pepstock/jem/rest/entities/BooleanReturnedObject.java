@@ -19,6 +19,8 @@ package org.pepstock.jem.rest.entities;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Is a POJO class used for all methods which return a boolean.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -45,5 +47,13 @@ public class BooleanReturnedObject extends ReturnedObject {
 	 */
 	public void setValue(boolean value) {
 		this.value = value;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "BooleanReturnedObject [value=" + value + "]";
 	}
 }

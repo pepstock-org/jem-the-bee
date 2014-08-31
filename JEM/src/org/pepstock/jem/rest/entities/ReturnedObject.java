@@ -19,7 +19,8 @@ package org.pepstock.jem.rest.entities;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents a POJO with exception information for REST client.
+ * Represents a POJO to return from method, with exception information for REST client.<br>
+ * In the exception filed there is root cexception.
  * 
  * @author Andrea "Stock" Stocchero
  *

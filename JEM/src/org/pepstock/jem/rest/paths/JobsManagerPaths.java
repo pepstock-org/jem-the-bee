@@ -18,8 +18,7 @@ package org.pepstock.jem.rest.paths;
 
 
 /**
- * Rest service to manage jobs queues.<br>
- * Pay attention to URL (@path) annotation
+ * Contains all labels for jobs service to use to create REST URL.
  * 
  * @author Andrea "Stock" Stocchero
  *

@@ -58,8 +58,7 @@ public class InternalsManager extends DefaultService{
 	 * 
      * @param resourceKey resource pattern to check 
      * @return a formatted string with all contentions information
-	 * @throws ServiceMessageException 
-     * @throws Exception if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
      */
     public String displayRequestors(String resourceKey) throws ServiceMessageException {
 		// checks if the user is authorized to see cluster grs view
@@ -84,11 +83,10 @@ public class InternalsManager extends DefaultService{
     
 	/**
 	 * Gets a collection of REDO statement if the cluster is waiting to store and persist objects.<br>
-	 * It happens when teh database to persist is not reachable.
+	 * It happens when the database to persist is not reachable.
 	 * 
-     * @return collaection of REDO statements
-	 * @throws ServiceMessageException 
-     * @throws Exception if it's not able to lock the map to have a consistent view
+     * @return collection of REDO statements
+	 * @throws ServiceMessageException if it's not able to lock the map to have a consistent view
      */
     public Collection<RedoStatement> getAllRedoStatements() throws ServiceMessageException{
 		// checks if the user is authorized to see cluster redo view
@@ -146,8 +144,7 @@ public class InternalsManager extends DefaultService{
     /**
      * Returns a about object with information about version, creation and licenses
      * @return about instance
-     * @throws ServiceMessageException 
-     * @throws Exception if any exception occurs
+     * @throws ServiceMessageException if any exception occurs
      */
     public About getAbout() throws ServiceMessageException {
 		// checks if the user is authenticated
@@ -160,7 +157,7 @@ public class InternalsManager extends DefaultService{
     
     /**
      * Returns the amount of clients connected to JEM
-     * @return amout of clients
+     * @return amount of clients
      * @throws ServiceMessageException if any exception occurs
      */
     public int getClients() throws ServiceMessageException {
@@ -169,9 +166,9 @@ public class InternalsManager extends DefaultService{
     } 
     
     /**
-     * Return
-     * @return
-     * @throws ServiceMessageException
+     * Returns an array of system information
+     * @return an array of system information
+     * @throws ServiceMessageException if any exception occurs
      */
     public String[] getEnvironmentInformation() throws ServiceMessageException {
 

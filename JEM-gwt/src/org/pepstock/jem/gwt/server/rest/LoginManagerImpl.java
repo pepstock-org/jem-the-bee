@@ -77,7 +77,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	/**
 	 * Logs in the user in JEM. 
 	 * 
-	 * @see Account
+	 * @see Account 
 	 * @see LoggedUser
 	 * @param account account object 
 	 * @return logged user with permissions
@@ -142,7 +142,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	/**
 	 * Stores the user preferences in JEM.
 	 * @param preferences user preferences to store
-	 * @return 
+	 * @return a empty object is everything went ok
 	 * 
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */

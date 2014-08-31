@@ -29,6 +29,8 @@ import org.pepstock.jem.rest.entities.Certificates;
 import org.pepstock.jem.rest.paths.CertificatesManagerPaths;
 
 /**
+ * REST services published in the web part, to manage certificates.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -38,10 +40,11 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	private CertificatesManager certificatesManager = null;
 
 	/**
-	 * REST service which returns list of collected sample in the JEM cluster
-	 * @param filterParm 
+	 * REST service which returns list of published certificates
 	 * 
-	 * @return a list of statistics from all nodes
+	 * @param filterParm filter for aliases
+	 * 
+	 * @return a list of published certificates
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
@@ -67,10 +70,12 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	}
 
 	/**
+	 * REST service which adds a new certificate
 	 * 
-	 * @param parm
-	 * @return
+	 * @param parm certificate to be added
+	 * @return returns <code>true</code> if added correctly, otherwise <code>false</code>
 	 * @throws JemException
+	 *             if JEM group is not available or not authorized
 	 */
 	@POST
 	@Path(CertificatesManagerPaths.ADD)
@@ -82,7 +87,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 			if (certificatesManager == null) {
 				initManager();
 			}
-			if (parm.getCertificate() != null && parm.getAlias() != null){
+			if (parm.getCertificate() != null && parm.getAlias() != null) {
 				try {
 					result.setValue(certificatesManager.addCertificate(parm.getCertificate(), parm.getAlias()));
 				} catch (Exception e) {
@@ -95,11 +100,14 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 		}
 		return result;
 	}
+
 	/**
+	 * REST service which removes a list of certificates
 	 * 
-	 * @param parm
-	 * @return
+	 * @param parm certificates to be removed
+	 * @return returns <code>true</code> if removed correctly, otherwise <code>false</code>
 	 * @throws JemException
+	 *             if JEM group is not available or not authorized
 	 */
 	@POST
 	@Path(CertificatesManagerPaths.REMOVE)
@@ -111,7 +119,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 			if (certificatesManager == null) {
 				initManager();
 			}
-			if (parm.getEntries() != null && !parm.getEntries().isEmpty()){
+			if (parm.getEntries() != null && !parm.getEntries().isEmpty()) {
 				try {
 					result.setValue(certificatesManager.removeCertificate(parm.getEntries()));
 				} catch (Exception e) {

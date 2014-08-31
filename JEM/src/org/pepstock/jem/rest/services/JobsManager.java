@@ -45,7 +45,7 @@ import org.pepstock.jem.rest.paths.JobsManagerPaths;
 import com.sun.jersey.api.client.GenericType;
 
 /**
- * Client side of JOBS service.
+ * REST Client side of JOBS service.
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -63,9 +63,11 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * Returns a list of jobs in input queue
-	 * @param jobNameFilter job name filter
-	 * @return list of jobs
+	 * Returns the list of jobs in INPUT, a filter string composed by UI filters
+	 * 
+	 * @param jobNameFilter
+	 *            filter string
+	 * @return collection of jobs
 	 * @throws JemException if any exception occurs
 	 */
 	public Jobs getInputQueue(String jobNameFilter) throws JemException {
@@ -73,9 +75,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns the list of jobs in RUNNING, a filter string composed by UI
+	 * filters
 	 * 
 	 * @param jobNameFilter
-	 * @return
+	 *            filter string
+	 * @return collection of jobs
 	 * @throws JemException if any exception occurs
 	 */
 	public Jobs getRunningQueue(String jobNameFilter) throws JemException {
@@ -83,9 +88,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns the list of jobs in OUTPUT, a filter string composed by UI
+	 * filters
 	 * 
 	 * @param jobNameFilter
-	 * @return
+	 *            filter string
+	 * @return collection of jobs
 	 * @throws JemException if any exception occurs
 	 */
 	public Jobs getOutputQueue(String jobNameFilter) throws JemException {
@@ -93,9 +101,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns the list of jobs in ROUTING, a filter string composed by UI
+	 * filters
 	 * 
 	 * @param jobNameFilter
-	 * @return
+	 *            filter string
+	 * @return collection of jobs
 	 * @throws JemException if any exception occurs
 	 */
 	public Jobs getRoutingQueue(String jobNameFilter) throws JemException {
@@ -103,8 +114,14 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Holds jobs in INPUT, OUTPUT or ROUTING queue. To set HOLD means that it
+	 * can't be executed or removed from queue.
 	 * 
 	 * @param jobs
+	 *            collections of jobs to hold
+	 * @param queueName
+	 *            map where jobs are
+	 * @return true is it holds them, otherwise false
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean hold(Collection<Job> jobs, String queueName) throws JemException {
@@ -124,8 +141,14 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Releases jobs in INPUT, OUTPUT or ROUTING queue, which were previously
+	 * hold.
 	 * 
 	 * @param jobs
+	 *            collections of jobs to hold
+	 * @param queueName
+	 *            map where jobs are
+	 * @return true is it holds them, otherwise false
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean release(Collection<Job> jobs, String queueName) throws JemException {
@@ -145,13 +168,14 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Cancel a set of jobs currently in running. If force is set to true, JEM
+	 * uses force mode to cancel jobs.
 	 * 
 	 * @param jobs
-	 * @throws JemException if any exception occurs
-	 */
-	/**
-	 * 
-	 * @param jobs
+	 *            list of jobs to cancel
+	 * @param force
+	 *            if true, uses force attribute to cancel jobs
+	 * @return always true!
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean cancel(Collection<Job> jobs, boolean force) throws JemException {
@@ -171,8 +195,13 @@ public class JobsManager extends AbstractRestManager {
 	}	
 
 	/**
+	 * Purge (removing any output) jobs from INPUT, OUTPUT or ROUTING queue.
 	 * 
 	 * @param jobs
+	 *            collections of jobs to purge
+	 * @param queueName
+	 *            map where jobs are
+	 * @return true is it holds them, otherwise false
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean purge(Collection<Job> jobs, String queueName) throws JemException {
@@ -192,8 +221,14 @@ public class JobsManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Updates some attributes of job. Usually is used in input queue to change
+	 * environment, domain, affinity, memory or priority.
 	 * 
-	 * @param jobs
+	 * @param job
+	 *            job to update
+	 * @param queueName
+	 *            map where job is
+	 * @return true if it updated, otherwise false
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean update(Job job, String queueName) throws JemException {
@@ -216,9 +251,11 @@ public class JobsManager extends AbstractRestManager {
 	}	
 
 	/**
+	 * Submits a new job (passed as argument) in JEM.
 	 * 
 	 * @param preJob
-	 * @return
+	 *            job to submit
+	 * @return Job id after submission
 	 * @throws JemException if any exception occurs
 	 */
 	public String submit(PreJob preJob) throws JemException {
@@ -236,8 +273,13 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * @param jobs
-	 * @return
+	 * Retrieves job JCL from INPUT, RUNNING, OUTPUT or ROUTING queue.
+	 * 
+	 * @param job
+	 *            job used to extract JCl
+	 * @param queueName
+	 *            map where job is
+	 * @return JCL content
 	 * @throws JemException if any exception occurs
 	 */
 	public String getJcl(Job job, String queueName) throws JemException {
@@ -260,8 +302,15 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * @param jobs
-	 * @return
+	 * Returns all folder in tree representation of job output folder.<br>
+	 * Retrieves folder structure only if job is RUNNING or OUTPUT queue.
+	 * 
+	 * @param job
+	 *            job used to extract folder structure. Needs to have output
+	 *            folder
+	 * @param queueName
+	 *            map where job is
+	 * @return object with all folder structure
 	 * @throws JemException if any exception occurs
 	 */
 	public JobOutputTreeContent getOutputTree(Job job, String queueName) throws JemException {
@@ -280,8 +329,13 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * @param jobFileContent
-	 * @return
+	 * Returns the content of specific file inside of job output folder.
+	 * 
+	 * @param job
+	 *            job used to extract file. Needs to have output folder
+	 * @param item
+	 *            file descriptor, created by a previous call to getOutputTree
+	 * @return object with file content
 	 * @throws JemException if any exception occurs
 	 */
 	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
@@ -303,8 +357,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * @param jobFileContent
-	 * @return
+	 * Returns a job status by filter.<br>
+	 * Filter must be job name (no pattern with wild-cards) or job id
+	 * 
+	 * @param filter
+	 *            job name (no pattern with wild-cards) or job id
+	 * @return job status
 	 * @throws JemException if any exception occurs
 	 */
 	public JobStatus getJobStatus(String filter) throws JemException {
@@ -322,10 +380,13 @@ public class JobsManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns a job by its job id.
 	 * 
-	 * @param queueName 
+	 * @param queueName
+	 *            map name
 	 * @param jobId
-	 * @return
+	 *            job id to search
+	 * @return job, if found, otherwise null
 	 * @throws JemException if any exception occurs
 	 */
 	// @FIXME 
@@ -347,9 +408,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 	
 	/**
-	 *  
+	 * Returns a job by its job id, searching it in OUTPUT and ROUTED maps.<br>
+	 * If job is not in output, tries searching it in ROUTED
+	 * 
 	 * @param jobId
-	 * @return
+	 *            job id
+	 * @return job instance
 	 * @throws JemException if any exception occurs
 	 */
 	public Job getEndedJobById(String jobId) throws JemException {
@@ -366,9 +430,12 @@ public class JobsManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns system information about resource consumption of job in running
+	 * phase.
 	 * 
-	 * @param jobs
-	 * @return
+	 * @param job
+	 *            job to use to gather system information
+	 * @return system activity information
 	 * @throws JemException if any exception occurs
 	 */
 	public JobSystemActivity getJobSystemActivity(Job job) throws JemException {
@@ -390,11 +457,16 @@ public class JobsManager extends AbstractRestManager {
 			return sa.getJobSystemActivity();
 		}
 	}
+	
 	/**
+	 * This is common method to extract jobs from different queues by filter
+	 * string
 	 * 
 	 * @param method
+	 *            queue name to use to get the right map
 	 * @param filter
-	 * @return
+	 *            filter string
+	 * @return collection of jobs
 	 * @throws JemException if any exception occurs
 	 */
 	private Jobs getJobs(String method, String filter) throws JemException {
@@ -404,27 +476,19 @@ public class JobsManager extends AbstractRestManager {
 		};
 		return service.execute(generic, filter);
 	}
-
-	/**
-	 * 
-	 * @param method
-	 * @param jobs
-	 * @throws JemException if any exception occurs
-	 */
-
-	
 	
 	/**
-	 * 
+	 * Inner service, which extends post the default post service.
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
 	 */
 	class JobsPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public JobsPostService(String subService) {
 			super(JobsManager.this.getClient(), JobsManagerPaths.MAIN, subService);

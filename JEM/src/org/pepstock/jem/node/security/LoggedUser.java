@@ -34,7 +34,7 @@ import org.pepstock.jem.rest.maps.UserPreferencesMapAdapter;
  * @author Andrea "Stock" Stocchero
  *
  */
-// uses Accessory Type to avoid to have REST error serializing upser preferences
+// uses Accessory Type to avoid to have REST error serializing user preferences
 @XmlAccessorType(XmlAccessType.FIELD) 
 @XmlRootElement
 public class LoggedUser extends Subject {
@@ -58,7 +58,7 @@ public class LoggedUser extends Subject {
 	 * Constructs a empty object
 	 */
 	public LoggedUser() {
-		super();
+
 	}
 	
 	/**
@@ -79,6 +79,7 @@ public class LoggedUser extends Subject {
 	
     
 	/**
+	 * Adds a permission and if authorized
 	 * @param key 
 	 * @param value 
 	 */
@@ -87,6 +88,7 @@ public class LoggedUser extends Subject {
 	}	
 	
 	/**
+	 * Gets all map with permissions with authorizations
 	 * @return the authorized
 	 */
 	public Map<String, Boolean> getAuthorized() {
@@ -94,6 +96,7 @@ public class LoggedUser extends Subject {
 	}
 
 	/**
+	 * Sets a map with permissions with authorizations
 	 * @param authorized the authorized to set
 	 */
 	public void setAuthorized(Map<String, Boolean> authorized) {
@@ -101,8 +104,10 @@ public class LoggedUser extends Subject {
 	}	
 
 	/**
-	 * @param key
-	 * @return
+	 * Returns <code>true</code> if the user is authotized, otherwise <code>false</code>;
+	 * 
+	 * @param key permission to check
+	 * @return <code>true</code> if the user is authotized, otherwise <code>false</code>;
 	 */
 	public Boolean isAuthorized(String key) {
 		Boolean result = authorized.get(key);

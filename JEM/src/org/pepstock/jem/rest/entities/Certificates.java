@@ -17,6 +17,7 @@
 package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,6 +26,7 @@ import org.pepstock.jem.node.security.CertificateEntry;
 
 /**
  * POJO container of certificates data.<br>
+ * Is used for CERTIFICATES REST service.<br>
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
@@ -88,7 +90,13 @@ public class Certificates extends ReturnedObject implements Serializable{
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-	
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Certificates [entries=" + entries + ", certificate=" + Arrays.toString(certificate) + ", alias=" + alias + "]";
+	}
 
 }

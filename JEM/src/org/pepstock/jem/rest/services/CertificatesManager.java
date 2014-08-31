@@ -32,7 +32,7 @@ import org.pepstock.jem.rest.paths.CertificatesManagerPaths;
 import com.sun.jersey.api.client.GenericType;
 
 /**
- * Client side of NODES service.
+ * REST service to manage certificates for users.
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -49,10 +49,9 @@ public class CertificatesManager extends AbstractRestManager {
 	}
 
 	/**
-	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * Returns all certificates for all users, using the filter 
+	 * @param filterParm filter to have a subset of certificates
+	 * @return a list of certificates
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<CertificateEntry> getCertificates(String filterParm) throws JemException {
@@ -65,10 +64,10 @@ public class CertificatesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @param certificate 
-	 * @param alias 
-	 * @return
+	 * Adds a new certificate for a specific alias. It returns <code>true</code> if it has been able to add it, otherwise <code>false</code>.
+	 * @param certificate a set of bytes which represents the certificates
+	 * @param alias userid associated to certificate
+	 * @return returns <code>true</code> if it has been able to add it, otherwise <code>false</code>
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean addCertificates(byte[] certificate, String alias) throws JemException {
@@ -76,6 +75,8 @@ public class CertificatesManager extends AbstractRestManager {
 		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
 
 		};
+		// only if parameters are not null the REST call will be performed, otherwise
+		// returns false
 		if (certificate != null && alias != null){
 			Certificates c = new Certificates();
 			c.setCertificate(certificate);
@@ -89,9 +90,9 @@ public class CertificatesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @param entries 
-	 * @return
+	 * Removes a list of certificates and their associated alias.
+	 * @param entries list of certificates to be removed
+	 * @return returns <code>true</code> if it has been able to remove the entries, otherwise <code>false</code>
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean removeCertificates(Collection<CertificateEntry> entries) throws JemException {
@@ -99,6 +100,8 @@ public class CertificatesManager extends AbstractRestManager {
 		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
 
 		};
+		// only if parameter is not null and not empty the REST call will be performed, otherwise
+		// returns false		
 		if (entries != null && !entries.isEmpty()){
 			Certificates c = new Certificates();
 			c.setEntries(entries);
@@ -111,6 +114,7 @@ public class CertificatesManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Inner service, which extends post the default post service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -118,9 +122,10 @@ public class CertificatesManager extends AbstractRestManager {
 	class CertificatesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public CertificatesPostService(String subService) {
 			super(CertificatesManager.this.getClient(), CertificatesManagerPaths.MAIN, subService);

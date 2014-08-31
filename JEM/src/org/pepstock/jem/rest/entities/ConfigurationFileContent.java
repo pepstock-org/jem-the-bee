@@ -25,7 +25,7 @@ import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.affinity.Result;
 
 /**
- * POJO container of nodes list.<br>
+ * POJO container of configuration services of nodes.<br>
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
@@ -121,7 +121,12 @@ public class ConfigurationFileContent extends ReturnedObject implements Serializ
 	public void setResult(Result result) {
 		this.result = result;
 	}
-	
-	
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ConfigurationFileContent [what=" + what + ", content=" + content + ", file=" + file + ", node=" + node + ", result=" + result + "]";
+	}
 }

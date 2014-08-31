@@ -39,6 +39,11 @@ public abstract class DefaultServerResource {
 		return SharedObjects.getInstance().isDataClusterAvailable();
 	}
 	
+	/**
+	 * Sets the exception for JEM cluster not available to returned object of REST call.
+	 * 
+	 * @param object returned object of REST call
+	 */
 	void setUnableExcepton(ReturnedObject object){
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
 		String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());

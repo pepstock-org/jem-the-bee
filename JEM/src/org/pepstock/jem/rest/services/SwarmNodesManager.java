@@ -31,11 +31,12 @@ import org.pepstock.jem.rest.entities.ReturnedObject;
 import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.entities.SwarmConfig;
 import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
+import org.pepstock.jem.util.filters.Filter;
 
 import com.sun.jersey.api.client.GenericType;
 
 /**
- * Client side of NODES service.
+ * REST Client side of SWARM NODES service.
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -54,10 +55,11 @@ public class SwarmNodesManager extends AbstractRestManager {
 
 
 	/**
+	 * Returns the list of all nodes joined the cluster.
 	 * 
-	 * @param method
 	 * @param filter
-	 * @return
+	 *            ipaddress or hostname filter
+	 * @return collection of nodes
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodes(String filter) throws JemException {
@@ -70,10 +72,12 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns the list of all nodes joined the cluster. UNKNOWN members are not
+	 * returned
 	 * 
-	 * @param method
 	 * @param filter
-	 * @return
+	 *            a String that will be parsed as a {@link Filter}
+	 * @return collection of nodes
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws JemException {
@@ -86,8 +90,9 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Starts swarm nodes, using a future task by executor service of Hazelcast.
 	 * 
-	 * @return 
+	 * @return always TRUE
 	 * @throws JemException if any exception occurs
 	 */
 	public boolean start() throws JemException {
@@ -100,8 +105,10 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Shuts down all the swarm nodes, using a future task by executor service
+	 * of Hazelcast.
 	 * 
-	 * @return 
+	 * @return always true
 	 * @throws JemException if any exception occurs
 	 */
 	public boolean drain() throws JemException {
@@ -114,8 +121,9 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the status of swarm
 	 * 
-	 * @return 
+	 * @return status if swarm
 	 * @throws JemException if any exception occurs
 	 */
 	public String getStatus() throws JemException {
@@ -128,10 +136,11 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the swarm configuration. It always exist because it always created after the first startup of JEM. 
+	 * It uses a name to use as a key in map, but this key is a constant
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+     * @param name key of configuration object
+     * @return swarm configuration item.
 	 * @throws JemException if any exception occurs
 	 */
 	public SwarmConfiguration getSwarmConfiguration(String name) throws JemException {
@@ -144,9 +153,10 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @param conf 
-	 * @return
+     * Updates the swarm configuration.  
+     * 
+     * @param conf configuration instance to update
+     * @return return the new object
 	 * @throws JemException if any exception occurs
 	 */
 	public SwarmConfiguration updateSwarmConfiguration(SwarmConfiguration conf) throws JemException {
@@ -164,6 +174,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Inner service, which extends post the default get service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -171,9 +182,10 @@ public class SwarmNodesManager extends AbstractRestManager {
 	class SwarmNodesGetService<T extends ReturnedObject> extends DefaultGetService<T, String> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public SwarmNodesGetService(String subService) {
 			super(SwarmNodesManager.this.getClient(), SwarmNodesManagerPaths.MAIN, subService);
@@ -182,6 +194,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Inner service, which extends post the default post service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -189,9 +202,10 @@ public class SwarmNodesManager extends AbstractRestManager {
 	class SwarmNodesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public SwarmNodesPostService(String subService) {
 			super(SwarmNodesManager.this.getClient(), SwarmNodesManagerPaths.MAIN, subService);

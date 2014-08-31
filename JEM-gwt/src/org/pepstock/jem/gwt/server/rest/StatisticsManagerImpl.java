@@ -30,6 +30,8 @@ import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 
 /**
+ * REST services published in the web part, to manage statistics and administration stuff.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -100,7 +102,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * @param resourceKey
 	 *            wild card of resources name
 	 * 
-	 * @return last statistics sample
+	 * @return list of requestors
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
@@ -126,12 +128,9 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	}
 
 	/**
-	 * REST service which list of requestors in GRS node when configured
+	 * REST service which list of REDo statements which are waiting of DB will be restarted
 	 * 
-	 * @param resourceKey
-	 *            wild card of resources name
-	 * 
-	 * @return last statistics sample
+	 * @return list of REDO statementes
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
@@ -157,12 +156,9 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	}
 
 	/**
-	 * REST service which list of requestors in GRS node when configured
+	 * REST service which returns the JEM "about", with licenses, versions, etc.
 	 * 
-	 * @param resourceKey
-	 *            wild card of resources name
-	 * 
-	 * @return last statistics sample
+	 * @return JEM "about", with licenses, versions, etc
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
@@ -188,12 +184,9 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which list of requestors in GRS node when configured
+	 * REST service which returns a list of information about JEM environment
 	 * 
-	 * @param resourceKey
-	 *            wild card of resources name
-	 * 
-	 * @return last statistics sample
+	 * @return a list of information about JEM environment
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */

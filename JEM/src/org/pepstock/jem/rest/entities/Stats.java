@@ -17,6 +17,7 @@
 package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -122,7 +123,12 @@ public class Stats extends ReturnedObject implements Serializable{
 	public void setInfos(String[] infos) {
 		this.infos = infos;
 	}
-	
-	
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Stats [samples=" + samples + ", currentSample=" + currentSample + ", redoStatements=" + redoStatements + ", about=" + about + ", infos=" + Arrays.toString(infos) + "]";
+	}
 }

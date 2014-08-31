@@ -34,7 +34,7 @@ import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 import com.sun.jersey.api.client.GenericType;
 
 /**
- * Client side of NODES service.
+ * REST Client side of STATISTICS or ADMINISTRATION services.
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -51,10 +51,9 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns the collection of all active samples in JEM. 
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+     * @return collection of samples
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<LightSample> getSamples() throws JemException {
@@ -67,9 +66,10 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Calculates and returns last sample of JEM statistics
 	 * 
-	 * @return
-	 * @throws JemException
+     * @return last sample of statistics
+	 * @throws JemException if any exception occurs
 	 */
 	public LightSample getCurrentSample() throws JemException {
 		StatsGetService service = new StatsGetService(StatisticsManagerPaths.GET_CURRENT_SAMPLE);
@@ -81,10 +81,12 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns a formatted string with all the contentions on resources.<br>
+	 * If GRS is not activated, return that GRS is not activated!
 	 * 
-	 * @param resourceKey
-	 * @return
-	 * @throws JemException
+     * @param resourceKey resource pattern to check 
+     * @return a formatted string with all contentions information
+	 * @throws JemException if any exception occurs
 	 */
 	public String displayRequestors(String resourceKey) throws JemException {
 		StatsPostService<StringReturnedObject, String> service = new StatsPostService<StringReturnedObject, String>(StatisticsManagerPaths.DISPLAY_REQUESTORS);
@@ -96,9 +98,11 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Gets a collection of REDO statement if the cluster is waiting to store and persist objects.<br>
+	 * It happens when the database to persist is not reachable.
 	 * 
-	 * @return
-	 * @throws JemException
+     * @return collection of REDO statements
+	 * @throws JemException if any exception occurs
 	 */
 	public Collection<RedoStatement> getAllRedoStatements() throws JemException {
 		StatsGetService service = new StatsGetService(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS);
@@ -110,9 +114,9 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * 
-	 * @return
-	 * @throws JemException
+     * Returns a about object with information about version, creation and licenses
+     * @return about instance
+	 * @throws JemException if any exception occurs
 	 */
 	public About getAbout() throws JemException {
 		StatsGetService service = new StatsGetService(StatisticsManagerPaths.ABOUT);
@@ -124,9 +128,9 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @return
-	 * @throws JemException
+     * Returns an array of system information
+     * @return an array of system information
+	 * @throws JemException if any exception occurs
 	 */
 	public String[] getEnvironmentInformation() throws JemException {
 		StatsGetService service = new StatsGetService(StatisticsManagerPaths.INFOS);
@@ -138,6 +142,7 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Inner service, which extends post the default get service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -145,9 +150,10 @@ public class StatisticsManager extends AbstractRestManager {
 	class StatsGetService extends DefaultGetService<Stats, String> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public StatsGetService(String subService) {
 			super(StatisticsManager.this.getClient(), StatisticsManagerPaths.MAIN, subService);
@@ -156,6 +162,7 @@ public class StatisticsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Inner service, which extends post the default post service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -163,9 +170,10 @@ public class StatisticsManager extends AbstractRestManager {
 	class StatsPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public StatsPostService(String subService) {
 			super(StatisticsManager.this.getClient(), StatisticsManagerPaths.MAIN, subService);

@@ -19,6 +19,8 @@ package org.pepstock.jem.rest.entities;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Is a POJO class used for all methods which return a string.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -46,5 +48,12 @@ public class StringReturnedObject extends ReturnedObject {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "StringReturnedObject [value=" + value + "]";
+	}
 }

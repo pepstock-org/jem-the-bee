@@ -26,6 +26,9 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
 /**
+ * Service for REST calls, which contains the HTTP client, the service and subservice paths.<br>
+ * It performs ONLY GET http method, using XML as protocol to de-serialize objects.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  * @param <T> Returned object
@@ -33,38 +36,14 @@ import com.sun.jersey.api.client.WebResource;
  * @param <S> parameter for REST call
  */
 class DefaultGetService<T extends ReturnedObject, S> extends AbstractRestService<T, S> {
-	
-
-	
-//	/**
-//	 * @param type 
-//	 * @param parameter
-//	 * @return
-//	 * @throws JemException
-//	 */
-//	public T execute(GenericType<JAXBElement<T>> type, S parameter) throws JemException{
-//		WebResource resource = getClient().getBaseWebResource();
-//		try {
-//			JAXBElement<T> jaxbContact = resource.path(getService()).path(getSubService()).accept(MediaType.APPLICATION_XML).post(type, parameter);
-//			T object = jaxbContact.getValue();
-//			ReturnedObject ro = (ReturnedObject) object;
-//			if (ro.hasException()) {
-//				throw new JemException(ro.getExceptionMessage());
-//			}
-//			return object;
-//		} catch (UniformInterfaceException e) {
-//			LogAppl.getInstance().debug(e.getMessage(), e);
-//			if (e.getResponse().getStatus() != 204) {
-//				throw new JemException(e.getMessage(), e);
-//			}
-//			return null;
-//		}
-//	}
 
 	/**
-	 * @param client
-	 * @param service
-	 * @param subService
+	 * Constructs the REST service, storing HTTP client, service and subservice paths
+	 * 
+	 * @param client HTTP client 
+	 * @param service service path
+	 * @param subService subservice path
+	 * 
 	 */
 	public DefaultGetService(RestClient client, String service, String subService) {
 		super(client, service, subService);

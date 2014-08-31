@@ -44,8 +44,7 @@ public class RoutingConfigManager extends DefaultService{
 	 * 
      * @param name key of configuration object
      * @return swarm configuration item.
-	 * @throws ServiceMessageException 
-     * @throws Exception if routing configuration doesn't exist
+	 * @throws ServiceMessageException if routing configuration doesn't exist
      */
     public SwarmConfiguration getSwarmConfiguration(String name) throws ServiceMessageException  {
 		// checks if the user is authorized to get swarm config
@@ -75,8 +74,7 @@ public class RoutingConfigManager extends DefaultService{
      * 
      * @param conf configuration instance to update
      * @return return the new object
-     * @throws ServiceMessageException 
-     * @throws Exception if routing configuration doesn't exist 
+     * @throws ServiceMessageException if routing configuration doesn't exist 
      */
     public SwarmConfiguration updateSwarmConfiguration(SwarmConfiguration conf) throws ServiceMessageException {
 		// checks if the user is authorized to update swarm config

@@ -21,6 +21,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Represents the parameter containing all info to perform a request about GFS.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
@@ -82,6 +84,14 @@ public class GfsRequest implements Serializable {
 	 */
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "GfsRequest [item=" + item + ", pathName=" + pathName + ", type=" + type + "]";
 	}
 	
 }

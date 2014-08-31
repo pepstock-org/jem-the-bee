@@ -27,6 +27,8 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
+ * Abstract service for REST calls, which contains the HTTP client, the service and subservice paths.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  * @param <T> Returned object
@@ -41,9 +43,11 @@ abstract class AbstractRestService<T extends ReturnedObject, S> {
 	private String subService = null;
 
 	/**
-	 * @param client 
-	 * @param service 
-	 * @param subService 
+	 * Constructs the REST service, storing HTTP client, service and subservice paths
+	 * 
+	 * @param client HTTP client 
+	 * @param service service path
+	 * @param subService subservice path
 	 * 
 	 */
 	public AbstractRestService(RestClient client, String service, String subService) {
@@ -74,17 +78,19 @@ abstract class AbstractRestService<T extends ReturnedObject, S> {
 	}
 	
 	/**
-	 * @param type 
-	 * @param parameter
-	 * @return
-	 * @throws JemException
+	 * Executes the REST calls, delegating the real call to run method. In this way is possible to extend it for different HTTP methods.
+	 * 
+	 * @param type returned generic type
+	 * @param parameter parms for REST call
+	 * @return Returned object
+	 * @throws JemException if any exception occurs
 	 */
 	public final T execute(GenericType<JAXBElement<T>> type, S parameter) throws JemException{
-		//WebResource resource = getClient().getBaseWebResource();
 		try {
-			//JAXBElement<T> jaxbContact = resource.path(getService()).path(getSubService()).accept(MediaType.APPLICATION_XML).post(type, parameter);
+			// calls run method. Extending and implementing it you can call a GET or POST methods
 			JAXBElement<T> jaxbContact = run(type, parameter);
 			T object = jaxbContact.getValue();
+			// checks if there is an excpetion
 			ReturnedObject ro = (ReturnedObject) object;
 			if (ro.hasException()) {
 				throw new JemException(ro.getExceptionMessage());
@@ -92,6 +98,7 @@ abstract class AbstractRestService<T extends ReturnedObject, S> {
 			return object;
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
+			// if rc = 204, return null instead of exception
 			if (e.getResponse().getStatus() != 204) {
 				throw new JemException(e.getMessage(), e);
 			}
@@ -102,5 +109,12 @@ abstract class AbstractRestService<T extends ReturnedObject, S> {
 		}
 	}
 	
+	/**
+	 * Executes the REST call, extending it is possible to have it for different HTTP methods.
+	 * @param type returned generic type
+	 * @param parameter parms for REST call
+	 * @return Returned object
+	 * @throws Exception if any exception occurs
+	 */
 	public abstract JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws Exception;
 }

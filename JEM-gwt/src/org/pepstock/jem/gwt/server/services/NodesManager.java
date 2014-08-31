@@ -148,8 +148,7 @@ public class NodesManager extends DefaultService {
 	 * 
 	 * @param nodesFilter a String that will be parsed as a {@link Filter}
 	 * @return collection of nodes
-	 * @throws ServiceMessageException 
-	 * @throws Exception  if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodesByFilter(String nodesFilter) throws ServiceMessageException {
 		// creates a filter object
@@ -214,8 +213,7 @@ public class NodesManager extends DefaultService {
 	 * 
 	 * @param nodes list of members to drain 
 	 * @return always <code>true</code>
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Boolean drain(Collection<NodeInfoBean> nodes) throws ServiceMessageException {
 		// checks if the user is authorized to drain nodes
@@ -229,8 +227,7 @@ public class NodesManager extends DefaultService {
 	 * 
 	 * @param nodes nodes list of members to start
 	 * @return always <code>true</code>
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Boolean start(Collection<NodeInfoBean> nodes) throws ServiceMessageException{
 		// checks if the user is authorized to start nodes
@@ -246,8 +243,7 @@ public class NodesManager extends DefaultService {
 	 *  
 	 * @param nodes list of nodes
 	 * @return always <code>true</code>
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any exception occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	@SuppressWarnings("unused")
     private Boolean shutdown(Collection<NodeInfoBean> nodes) throws ServiceMessageException{
@@ -294,10 +290,9 @@ public class NodesManager extends DefaultService {
 	
 	/**
 	 * Update the domain or static affinities of node
-	 * @param node niode to update
+	 * @param node node to update
 	 * @return always true
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any execption occurs
+	 * @throws ServiceMessageException if any exception occurs
 	 */
 	public Boolean update(NodeInfoBean node) throws ServiceMessageException{
 		// checks if the user is authorized to update a node
@@ -316,8 +311,7 @@ public class NodesManager extends DefaultService {
 	 * @param node node where execute a future task to get the config file 
 	 * @param what type of configuration file to return
 	 * @return Configuration file container
-	 * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+	 * @throws ServiceMessageException if exception occurs
 	 */
 	public ConfigurationFile getNodeConfigFile(NodeInfoBean node, String what) throws ServiceMessageException {
 		// checks if the user is authorized to read configuration
@@ -352,8 +346,7 @@ public class NodesManager extends DefaultService {
 	 * @param file configuration file to save
 	 * @param what type of configuration file to return
 	 * @return Configuration file container
-	 * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+	 * @throws ServiceMessageException if exception occurs
 	 */
 	public ConfigurationFile saveNodeConfigFile(NodeInfoBean node, ConfigurationFile file, String what) throws ServiceMessageException {
 		// checks if the user is authorized to read configuration
@@ -387,8 +380,7 @@ public class NodesManager extends DefaultService {
 	 * @param content content of configuration file
 	 * @param what type of config file
 	 * @return always true
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any error parsing content occurs
+	 * @throws ServiceMessageException if any error parsing content occurs
 	 */
 	public Boolean checkConfigFile(String content, String what) throws ServiceMessageException {
 		// checks if the user is authorized to read configuration
@@ -430,8 +422,7 @@ public class NodesManager extends DefaultService {
 	 * @param node node where execute a future task  
 	 * @param content type of affinity policy
 	 * @return always true
-	 * @throws ServiceMessageException 
-	 * @throws Exception if any error parsing content occurs
+	 * @throws ServiceMessageException if any error parsing content occurs
 	 */
 	public Result checkAffinityPolicy(NodeInfoBean node, String content) throws ServiceMessageException {
 		// checks if the user is authorized to read configuration
@@ -445,11 +436,9 @@ public class NodesManager extends DefaultService {
 	/**
 	 * Returns the configuration file for the environment
 	 * 
-	 * @param node node where execute a future task to get the config file 
 	 * @param what type of configuration file to return
 	 * @return Configuration file container
-	 * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+	 * @throws ServiceMessageException if exception occurs
 	 */
 	public ConfigurationFile getEnvConfigFile(String what) throws ServiceMessageException {
 		// checks if the user is authorized to read configuration
@@ -480,13 +469,12 @@ public class NodesManager extends DefaultService {
 	}
 	
 	/**
-	 * Returns the configuration file for the environment
+	 * Returns the configuration file for the environment after saving it
 	 * 
 	 * @param file configuration file to save 
 	 * @param what type of configuration file to return
-	 * @return Configuration file container
-	 * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+	 * @return Configuration new file container
+	 * @throws ServiceMessageException if exception occurs
 	 */
 	public ConfigurationFile saveEnvConfigFile(ConfigurationFile file, String what) throws ServiceMessageException{
 		// checks if the user is authorized to read configuration
@@ -541,8 +529,7 @@ public class NodesManager extends DefaultService {
 	 * 
 	 * @param node node where execute a future task to get top command 
 	 * @return content file in String
-	 * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+	 * @throws ServiceMessageException if exception occurs
 	 */
 	public String log(NodeInfoBean node) throws ServiceMessageException {
 		// checks if the user is authorized to performs commands
@@ -566,8 +553,7 @@ public class NodesManager extends DefaultService {
 	 * 
 	 * @param node node where execute a future task to get top command 
 	 * @return content file in String
-     * @throws ServiceMessageException 
-	 * @throws Exception if exception occurs
+     * @throws ServiceMessageException if exception occurs
      */
     public String displayCluster(NodeInfoBean node) throws ServiceMessageException {
 		// checks if the user is authorized to performs commands

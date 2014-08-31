@@ -56,5 +56,12 @@ public class SwarmConfig extends ReturnedObject implements Serializable{
 		this.configuration = configuration;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "SwarmConfig [configuration=" + configuration + "]";
+	}
 
 }

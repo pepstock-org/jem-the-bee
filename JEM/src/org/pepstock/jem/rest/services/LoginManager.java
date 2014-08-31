@@ -35,6 +35,8 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
+ * REST service to manage user authentication and get and set of user preferences
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  *
@@ -50,8 +52,10 @@ public class LoginManager extends AbstractRestManager {
     }
 
 	/**
-	 * @return logged user
-	 * @throws JemException
+	 * Returns the user already logged otherwise null.
+	 * 
+	 * @return the user already logged otherwise null
+	 * @throws JemException if any exception occurs
 	 */
 	public LoggedUser getUser() throws JemException{
 		WebResource resource = getClient().getBaseWebResource();
@@ -59,7 +63,6 @@ public class LoginManager extends AbstractRestManager {
 	    };
 	    try {
 	    	JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.GET_USER).accept(MediaType.APPLICATION_XML).get(generic);
-	 	    	
 	    	LoggedUserContent object = jaxbContact.getValue();
 			if (object.hasException()){
 				throw new JemException(object.getExceptionMessage());
@@ -75,10 +78,11 @@ public class LoginManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Performs the login to JEM, by userid and password.
 	 * 
-	 * @param account
+	 * @param account userid and password
 	 * @return logged user
-	 * @throws JemException
+	 * @throws JemException if any exception occurs
 	 */
 	public LoggedUser login(Account account) throws JemException{
 		WebResource resource = getClient().getBaseWebResource();
@@ -93,8 +97,9 @@ public class LoginManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Performs the logoff from JEM.
 	 * 
-	 * @throws JemException
+	 * @throws JemException if any exception occurs
 	 */
 	public void logoff() throws JemException {
 		WebResource resource = getClient().getBaseWebResource();
@@ -102,9 +107,10 @@ public class LoginManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Performs the logoff from JEM, storing the user preferences.
 	 * 
-	 * @param userPreferences 
-	 * @throws JemException
+	 * @param userPreferences map of user preferences
+	 * @throws JemException if any exception occurs
 	 */
 	public void logoff(UserPreferencesContent userPreferences) throws JemException {
 		WebResource resource = getClient().getBaseWebResource();
@@ -112,9 +118,10 @@ public class LoginManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Stores into JEM the user preferences.\
 	 * 
-	 * @param userPreferences 
-	 * @throws JemException
+	 * @param userPreferences map of user preferences
+	 * @throws JemException if any exception occurs
 	 */
 	public void storePreferences(UserPreferencesContent userPreferences) throws JemException {
 		WebResource resource = getClient().getBaseWebResource();

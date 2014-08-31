@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
@@ -28,30 +28,29 @@ import org.pepstock.jem.Job;
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
- *
+ * 
  */
 @XmlRootElement
-public class Jobs extends ReturnedObject implements Serializable{
+public class Jobs extends ReturnedObject implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Collection<Job> jobs = null;
-	
+
 	private String queueName = null;
-	
+
 	private String id = null;
-	
+
 	private boolean cancelForce = false;
-	
+
 	/**
 	 * Empty constructor
 	 */
 	public Jobs() {
 	}
-	
-	
+
 	/**
-	 * Returns the queue name 
+	 * Returns the queue name
 	 * 
 	 * @see org.pepstock.jem.node.Queues
 	 * @return the queueName
@@ -59,7 +58,6 @@ public class Jobs extends ReturnedObject implements Serializable{
 	public String getQueueName() {
 		return queueName;
 	}
-
 
 	/**
 	 * Sets the queue name
@@ -71,9 +69,9 @@ public class Jobs extends ReturnedObject implements Serializable{
 		this.queueName = queueName;
 	}
 
-
 	/**
-	 * Returns the jobs collection 
+	 * Returns the jobs collection
+	 * 
 	 * @return the jobs
 	 */
 	public Collection<Job> getJobs() {
@@ -96,7 +94,6 @@ public class Jobs extends ReturnedObject implements Serializable{
 		return id;
 	}
 
-
 	/**
 	 * @param id the id to set
 	 */
@@ -111,7 +108,6 @@ public class Jobs extends ReturnedObject implements Serializable{
 		return cancelForce;
 	}
 
-
 	/**
 	 * @param cancelForce the cancelForce to set
 	 */
@@ -119,13 +115,14 @@ public class Jobs extends ReturnedObject implements Serializable{
 		this.cancelForce = cancelForce;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
-    @Override
-    public String toString() {
-	    return "Jobs [jobs=" + jobs + "]";
-    }
+	@Override
+	public String toString() {
+		return "Jobs [jobs=" + jobs + ", queueName=" + queueName + ", id=" + id + ", cancelForce=" + cancelForce + "]";
+	}
 
 }

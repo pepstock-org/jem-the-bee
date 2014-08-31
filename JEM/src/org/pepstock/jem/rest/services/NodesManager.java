@@ -32,11 +32,12 @@ import org.pepstock.jem.rest.entities.Nodes;
 import org.pepstock.jem.rest.entities.ReturnedObject;
 import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
+import org.pepstock.jem.util.filters.Filter;
 
 import com.sun.jersey.api.client.GenericType;
 
 /**
- * Client side of NODES service.
+ * REST Client side of NODES service.
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -55,10 +56,10 @@ public class NodesManager extends AbstractRestManager {
 
 
 	/**
+	 * Returns the list of all normal nodes joined the cluster. UNKNOWN members are not returned.
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param filter filter contains all tokens to performs filtering
+	 * @return collection of nodes
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodes(String filter) throws JemException {
@@ -71,10 +72,10 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the list of all swarm nodes joined the cluster. UNKNOWN members are not returned.
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param filter filter contains all tokens to performs filtering
+	 * @return collection of nodes
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getSwarmNodes(String filter) throws JemException {
@@ -87,10 +88,10 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the list of all nodes joined the cluster. UNKNOWN members are not returned
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param filter a String that will be parsed as a {@link Filter}
+	 * @return collection of nodes
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws JemException {
@@ -103,9 +104,9 @@ public class NodesManager extends AbstractRestManager {
 	}
 
 	/**
-	 * 
-	 * @param method
-	 * @param jobs
+	 * Update the domain or static affinities of node
+	 * @param node node to update
+	 * @return always true
 	 * @throws JemException if any exception occurs
 	 */
 	public boolean update(NodeInfoBean node) throws JemException {
@@ -117,12 +118,11 @@ public class NodesManager extends AbstractRestManager {
 		return result.isValue();
 	}
 	
-	
 	/**
+	 * Returns the top command result
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param node node where execute a future task to get top command 
+	 * @return content file in String
 	 * @throws JemException if any exception occurs
 	 */
 	public String top(NodeInfoBean node) throws JemException {
@@ -135,10 +135,10 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns part of JEM node log
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param node node where execute a future task to get top command 
+	 * @return content file in String
 	 * @throws JemException if any exception occurs
 	 */
 	public String log(NodeInfoBean node) throws JemException {
@@ -151,10 +151,17 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the HAZELCAST cluster status which is the list of all members.<br>
+	 * This is a sampl output format:<br>
+	 * <code>
+	 *  Members [2] {
+    	    Member [127.0.0.1]:5710 this
+    	    Member [127.0.0.1]:5711 
+    	}
+	 * </code>
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param node node where execute a future task to get top command 
+	 * @return content file in String
 	 * @throws JemException if any exception occurs
 	 */
 	public String displayCluster(NodeInfoBean node) throws JemException {
@@ -167,15 +174,15 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the configuration file for the node
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param node node where execute a future task to get the config file 
+	 * @param what type of configuration file to return
+	 * @return Configuration file container
 	 * @throws JemException if any exception occurs
 	 */
 	public ConfigurationFile getNodeConfigFile(NodeInfoBean node, String what) throws JemException {
 		if (node == null || what == null){
-			// TODO message
 			throw new JemException("node or what is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -191,15 +198,16 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Saves the configuration file for the node
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param node node where execute a future task to get the config file 
+	 * @param file configuration file to save
+	 * @param what type of configuration file to return
+	 * @return Configuration file container
 	 * @throws JemException if any exception occurs
 	 */
 	public ConfigurationFile saveNodeConfigFile(NodeInfoBean node, ConfigurationFile file, String what) throws JemException {
 		if (node == null || what == null || file == null){
-			// TODO message
 			throw new JemException("node or what or file is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -216,15 +224,14 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the configuration file for the environment
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param what type of configuration file to return
+	 * @return Configuration file container
 	 * @throws JemException if any exception occurs
 	 */
 	public ConfigurationFile getEnvConfigFile(String what) throws JemException {
 		if (what == null){
-			// TODO message
 			throw new JemException("what is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -239,15 +246,15 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Returns the configuration file for the environment after saving it
 	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * @param file configuration file to save 
+	 * @param what type of configuration file to return
+	 * @return Configuration new file container
 	 * @throws JemException if any exception occurs
 	 */
 	public ConfigurationFile saveEnvConfigFile(ConfigurationFile file, String what) throws JemException {
 		if (what == null || file == null){
-			// TODO message
 			throw new JemException("what or file is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -263,15 +270,14 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * Checks if syntax of content is correct.
+	 * @param content content of configuration file
+	 * @param what type of config file
+	 * @return always true
 	 * @throws JemException if any exception occurs
 	 */
 	public Boolean checkConfigFile(String content, String what) throws JemException {
 		if (what == null || content == null){
-			// TODO message
 			throw new JemException("what or content is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -287,15 +293,14 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
-	 * @param method
-	 * @param filter
-	 * @return
+	 * Checks if syntax of affinity loader policy content is correct.
+	 * @param node node where execute a future task  
+	 * @param content type of affinity policy
+	 * @return always true
 	 * @throws JemException if any exception occurs
 	 */
 	public Result checkAffinityPolicy(NodeInfoBean node, String content) throws JemException {
 		if (node == null || content == null){
-			// TODO message
 			throw new JemException("node or content is null!");
 		}
 		ConfigurationFileContent parm = new ConfigurationFileContent();
@@ -311,16 +316,18 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * 
+	 * Inner service, which extends post the default post service.
+	 *  
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
 	 */
 	class NodesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public NodesPostService(String subService) {
 			super(NodesManager.this.getClient(), NodesManagerPaths.MAIN, subService);

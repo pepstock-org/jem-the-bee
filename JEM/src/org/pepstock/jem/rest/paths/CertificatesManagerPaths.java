@@ -17,6 +17,8 @@
 package org.pepstock.jem.rest.paths;
 
 /**
+ * Contains all labels for certificate service to use to create REST URL.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

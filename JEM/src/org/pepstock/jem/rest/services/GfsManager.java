@@ -45,6 +45,8 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
+ *  REST service to manage GFS.
+ * 
  * @author Enrico Frigo
  * 
  */
@@ -248,6 +250,7 @@ public class GfsManager extends AbstractRestManager {
 	}
 	
 	/**
+	 * Inner service, which extends post the default post service.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.2
@@ -255,9 +258,10 @@ public class GfsManager extends AbstractRestManager {
 	class GfsPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
 
 		/**
-		 * @param client
-		 * @param service
-		 * @param subService
+		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
+		 * 
+		 * @param subService subservice path
+		 * 
 		 */
 		public GfsPostService(String subService) {
 			super(GfsManager.this.getClient(), GfsManagerPaths.MAIN, subService);

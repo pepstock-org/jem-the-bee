@@ -33,6 +33,8 @@ import org.pepstock.jem.rest.entities.SwarmConfig;
 import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
 
 /**
+ *  REST services published in the web part, to manage swarm nodes and configuration.
+ *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -101,10 +103,9 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which updates node
+	 * REST service which starts SWARM!
 	 * 
-	 * @param node node to be updated
-	 * @return returned object
+	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
@@ -130,10 +131,9 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which updates node
+	 * REST service which drains SWARM!
 	 * 
-	 * @param node node to be updated
-	 * @return returned object
+	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
@@ -159,10 +159,9 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which updates node
+	 * REST service which returns the status of SWARM!
 	 * 
-	 * @param node node to be updated
-	 * @return returned object
+	 * @return the status of SWARM!
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
@@ -187,10 +186,10 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the configuration file of JEM environment
-	 * @param name 
+	 * REST service which return the configuration of SWARM environment
+	 * @param name name of swarm key of internal map
 	 * 
-	 * @return configuration file
+	 * @return configuration of SWARM
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST
@@ -215,10 +214,10 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the configuration file of JEM environment
-	 * @param config 
+	 * REST service which updates and returns the configuration of SWARM environment
+	 * @param config configuration of swarm
 	 * 
-	 * @return configuration file
+	 * @return configuration new configuration updated
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@POST

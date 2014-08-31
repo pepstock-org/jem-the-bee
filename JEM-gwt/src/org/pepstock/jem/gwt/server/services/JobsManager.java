@@ -131,7 +131,6 @@ public class JobsManager extends DefaultService {
 	 *            filter string
 	 * @return collection of jobs
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public Collection<Job> getRoutingQueue(String filter) throws ServiceMessageException{
@@ -148,7 +147,6 @@ public class JobsManager extends DefaultService {
 	 *            filter string
 	 * @return collection of jobs
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	private Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
@@ -190,7 +188,6 @@ public class JobsManager extends DefaultService {
 	 *            job name (no pattern with wild-cards) or job id
 	 * @return job status
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public JobStatus getJobStatus(String filter) throws ServiceMessageException {
@@ -296,7 +293,6 @@ public class JobsManager extends DefaultService {
 	 *            job id
 	 * @return job instance
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public Job getEndedJobById(String jobId) throws ServiceMessageException {
@@ -344,7 +340,6 @@ public class JobsManager extends DefaultService {
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public Boolean hold(Collection<Job> jobs, String queueName) throws ServiceMessageException {
@@ -391,8 +386,7 @@ public class JobsManager extends DefaultService {
 	 *            if true, uses force attribute to cancel jobs
 	 * @return always true!
 	 * @throws ServiceMessageException 
-	 * @throws Exception
-	 *             if any excetpion occurs
+	 *             if any exception occurs
 	 */
 	public Boolean cancel(Collection<Job> jobs, boolean force) throws ServiceMessageException {
 		// checks if the user is authorized to cancel or kill jobs
@@ -434,7 +428,6 @@ public class JobsManager extends DefaultService {
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public Boolean release(Collection<Job> jobs, String queueName) throws ServiceMessageException {
@@ -480,7 +473,6 @@ public class JobsManager extends DefaultService {
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public Boolean purge(Collection<Job> jobs, String queueName) throws ServiceMessageException {
@@ -604,7 +596,6 @@ public class JobsManager extends DefaultService {
 	 *            map where job is
 	 * @return JCL content
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public String getJcl(Job job, String queueName) throws ServiceMessageException {
@@ -653,7 +644,6 @@ public class JobsManager extends DefaultService {
 	 *            map where job is
 	 * @return object with all folder structure
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public OutputTree getOutputTree(Job job, String queueName) throws ServiceMessageException {
@@ -706,7 +696,6 @@ public class JobsManager extends DefaultService {
 	 *            file descriptor, created by a previous call to getOutputTree
 	 * @return object with file content
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
@@ -727,7 +716,6 @@ public class JobsManager extends DefaultService {
 	 *            job to submit
 	 * @return Job id after submission
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public String submit(PreJob preJob) throws ServiceMessageException {
@@ -808,7 +796,6 @@ public class JobsManager extends DefaultService {
 	 *            job to use to gather system information
 	 * @return system activity information
 	 * @throws ServiceMessageException 
-	 * @throws Exception
 	 *             if any exception occurs
 	 */
 	public JobSystemActivity getJobSystemActivity(Job job) throws ServiceMessageException{

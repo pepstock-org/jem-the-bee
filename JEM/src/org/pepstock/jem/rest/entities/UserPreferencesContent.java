@@ -66,4 +66,12 @@ public class UserPreferencesContent implements Serializable {
 	public void setPreferences(Map<String, UserPreference> preferences) {
 		this.preferences = preferences;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UserPreferencesContent [preferences=" + preferences + "]";
+	}
 }

@@ -34,6 +34,8 @@ import org.pepstock.jem.rest.entities.StringReturnedObject;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
 
 /**
+ * REST services published in the web part, to manage nodes.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -157,7 +159,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the result of TOP command
+	 * REST service which returns the result of TOP command
 	 * 
 	 * @param node node where executes command
 	 * @return returned object with value
@@ -186,7 +188,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the result of LOG command
+	 * REST service which returns the result of LOG command
 	 * 
 	 * @param node node where executes command
 	 * @return returned object with value
@@ -215,7 +217,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the result of DISPLAY CLUSTER command
+	 * REST service which returns the result of DISPLAY CLUSTER command
 	 * 
 	 * @param node node where executes command
 	 * @return returned object with value
@@ -244,7 +246,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which return the configuration file of node
+	 * REST service which returns the configuration file of node
 	 * 
 	 * @param content container with all parms to perform call
 	 * @return configuration file
@@ -311,9 +313,9 @@ public class NodesManagerImpl extends DefaultServerResource {
 	
 	
 	/**
-	 * REST service which return the configuration file of JEM environment
+	 * REST service which returns the configuration file of JEM environment
 	 * 
-	 * @param content container with all parms to perform call
+	 * @param content container with all params to perform call
 	 * @return configuration file
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
@@ -343,7 +345,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	}
 	
 	/**
-	 * REST service which save a new configuration file of JEM environment
+	 * REST service which saves a new configuration file of JEM environment
 	 * 
 	 * @param content container with all parms to perform call
 	 * @return configuration file

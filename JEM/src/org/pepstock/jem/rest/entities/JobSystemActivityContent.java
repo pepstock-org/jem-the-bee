@@ -24,7 +24,7 @@ import org.pepstock.jem.JobSystemActivity;
 
 
 /**
- * Represents job status content wrapper, necessary for rest calls.
+ * Represents job system activity content wrapper, for jobs which are running, necessary for rest calls.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -57,5 +57,12 @@ public class JobSystemActivityContent extends ReturnedObject implements Serializ
 		this.jobSystemActivity = jobSystemActivity;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JobSystemActivityContent [jobSystemActivity=" + jobSystemActivity + "]";
+	}
 
 }
