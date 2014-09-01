@@ -144,9 +144,26 @@ public class InputPanel extends VerticalPanel {
 	}
 	
 	/**
-	 * @param enabled
+	 * @param enabled enabled the text filed
 	 */
 	public void setEnabled(boolean enabled){
-		add.setEnabled(enabled);
+		setEnabled(enabled, true);
+	}
+	
+	/**
+	 * @param enabledTextBox enabled the text filed
+	 * @param enabledAdd enable the add button
+	 */
+	public void setEnabled(boolean enabledTextBox, boolean enabledAdd){
+		textBox.setEnabled(enabledTextBox);
+		if (enabledTextBox){
+			if (textBox.getText().length() > 0) {
+				add.setEnabled(true);
+			} else {
+				add.setEnabled(false);
+			}	
+		} else {
+			add.setEnabled(enabledAdd);
+		}
 	}
 }

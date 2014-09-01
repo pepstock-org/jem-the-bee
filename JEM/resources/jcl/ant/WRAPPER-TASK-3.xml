@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="WRAPPER" default="step0" basedir=".">
+	<description>
+		JCL to test all dataset types
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="PEPS"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<property name="jem.job.lockingScope" value="job"/>
+	<property name="jem.job.affinity" value="***"/>
+	<!--property name="jem.job.domain" value="domain"/-->
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<!-- 
+	STEP1: copy a GDG generation 0 in a new one
+	-->
+	<target name="step0">
+		<wrapper>
+
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			
+			<copy file="${DD_INPUT}" tofile="D:\\tmp\\test.txt"/>
+		</wrapper>
+
+			
+	</target>
+
+</project>
