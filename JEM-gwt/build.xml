@@ -55,7 +55,7 @@
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-incubator-20101117-r1766.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-17.0.jar" />
 				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-gwt-17.0.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/jem.jar" />
+				<pathelement location="${jem.workspace}/${jem.classes.directory}" />
 			</classpath>
 			<jvmarg value="-Xmx700M" />
 			<arg line="-war" />
