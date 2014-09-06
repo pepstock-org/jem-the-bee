@@ -50,7 +50,7 @@ public class JdbcResource extends Resource {
 
 	/**
 	 *  * 
-	 * Constructs the object adding user name, password, driver and URL as unchangeable properties.fs
+	 * Constructs the object adding user name, password, driver and URL as unchangeable properties.
 	 */
 	public JdbcResource() {
 		setType(TYPE);

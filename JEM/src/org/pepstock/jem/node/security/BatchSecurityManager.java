@@ -218,7 +218,10 @@ public abstract class BatchSecurityManager extends SecurityManager {
 		} else if ((result == SecurityUtils.TO_BE_GFS_CHECKED) && (!checkBatchPermission(utils.getGfsPermission(file)))){
 			LogAppl.getInstance().emit(NodeMessage.JEMC104E, normalizedFile);
 			throw new SecurityException(NodeMessage.JEMC104E.toMessage().getFormattedMessage(normalizedFile));
-		}
+		} else if ((result == SecurityUtils.TO_BE_LOCAL_FS_CHECKED) && (!checkBatchPermission(Permissions.LOCAL_FILE_SYSTEM_ACCESS))){
+			LogAppl.getInstance().emit(NodeMessage.JEMC104E, normalizedFile);
+			throw new SecurityException(NodeMessage.JEMC104E.toMessage().getFormattedMessage(normalizedFile));			
+		} 
 	}
 
 	/*

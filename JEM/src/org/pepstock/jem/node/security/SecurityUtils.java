@@ -34,6 +34,11 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
 public class SecurityUtils {
 	
 	/**
+	 * if the file name must be checked with permissions of local file system
+	 */
+	public static final int TO_BE_LOCAL_FS_CHECKED = 3;
+	
+	/**
 	 * if the file name must be checked with permissions of GFS
 	 */
 	public static final int TO_BE_GFS_CHECKED = 2;
@@ -88,6 +93,7 @@ public class SecurityUtils {
 	 * @return -1, 0, 1 if authorized or must be checked
 	 */
 	public int checkReadFileName(String fileName){
+		
 		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
 		if (dataPath != null){
 			return TO_BE_CHECKED;
@@ -107,7 +113,7 @@ public class SecurityUtils {
 		if (fileName.startsWith(PERSISTENCE_PATH)){
 			return TO_BE_REJECTED;
 		}
-		
+
 		String ext = FilenameUtils.getExtension(fileName);
 		if ("class".equalsIgnoreCase(ext) || "jar".equalsIgnoreCase(ext) || "zip".equalsIgnoreCase(ext)){
 			return TO_BE_IGNORED;
@@ -170,7 +176,8 @@ public class SecurityUtils {
 			return TO_BE_REJECTED;
 		}
 
-		return TO_BE_REJECTED;
+		// if arrives here, means is local file system
+		return TO_BE_LOCAL_FS_CHECKED ;
 	}
 	
 	/**

@@ -27,6 +27,7 @@ import org.pepstock.jem.gwt.client.panels.resources.inspector.Actions;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.FTPAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.HTTPAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.JDBCAttributesPanel;
+import org.pepstock.jem.gwt.client.panels.resources.inspector.JEMAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.JMSAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.JPPFAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourcesPropertiesPanel;
@@ -58,6 +59,7 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 	protected static final String JMS = "JMS";
 	protected static final String HTTP = "HTTP";
 	protected static final String JPPF = "JPPF";
+	protected static final String JEM = "JEM";
 	
 	protected static final Map<String, Class<? extends ResourcesPropertiesPanel>> RESOURCES_TYPES = new HashMap<String, Class<? extends ResourcesPropertiesPanel>>();
 	static {
@@ -66,6 +68,7 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 		RESOURCES_TYPES.put(JMS, JMSAttributesPanel.class);
 		RESOURCES_TYPES.put(HTTP, HTTPAttributesPanel.class);
 		RESOURCES_TYPES.put(JPPF, JPPFAttributesPanel.class);
+		RESOURCES_TYPES.put(JEM, JEMAttributesPanel.class);
 	}
 	
 	private Resource resource = null;
@@ -118,6 +121,8 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 			ootbPanel = new HTTPAttributesPanel(resource);
 		} else if (ootbResourceType.equals(JPPF)) {
 			ootbPanel = new JPPFAttributesPanel(resource);
+		} else if (ootbResourceType.equals(JEM)) {
+			ootbPanel = new JEMAttributesPanel(resource);
 		} else {
 			throw new IllegalArgumentException("I don't know the panel to render for resource type " + ootbResourceType);
 		}

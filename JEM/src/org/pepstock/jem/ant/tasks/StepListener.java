@@ -110,6 +110,13 @@ public class StepListener implements BuildListener {
 					// reference
 					// of realm
 					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+
+					// PAY attention: after creating data paths container
+					// calls a getabsolutepath method to load all necessary classes in classloader.
+					// This is MANDATORY to avoid StackOverFlow in teh SecurityManager 
+					// during the CheckRead on files.
+					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
+					DataPathsContainer.getInstance().getAbsoluteDataPath(JobId.VALUE);
 					
 					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing
@@ -118,7 +125,7 @@ public class StepListener implements BuildListener {
 					} else {
 						throw new BuildException(AntMessage.JEMA039E.toMessage().getMessage());
 					}
-					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
+					
 					
 				} else {
 					throw new BuildException(AntMessage.JEMA038E.toMessage().getFormattedMessage(TasksDoor.NAME));

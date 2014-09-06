@@ -45,6 +45,7 @@ import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.FtpResource;
 import org.pepstock.jem.node.resources.HttpResource;
 import org.pepstock.jem.node.resources.JdbcResource;
+import org.pepstock.jem.node.resources.JemResource;
 import org.pepstock.jem.node.resources.JmsResource;
 import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
@@ -57,6 +58,7 @@ import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.FtpReference;
 import org.pepstock.jem.node.tasks.jndi.HttpReference;
 import org.pepstock.jem.node.tasks.jndi.JdbcReference;
+import org.pepstock.jem.node.tasks.jndi.JemReference;
 import org.pepstock.jem.node.tasks.jndi.JmsReference;
 import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
@@ -306,6 +308,10 @@ public class StepJava extends Java  implements DataDescriptionStep {
 					// creates a JDBC reference (uses javax.jms)
 					ref = new JmsReference();
 
+				} else if (res.getType().equalsIgnoreCase(JemResource.TYPE)) {
+					// creates a JEM reference (uses jersey as REST library)
+					ref = new JemReference();
+					
 				} else if (res.getType().equalsIgnoreCase(HttpResource.TYPE)) {
 					// creates a HTTP reference (uses org.apache.http)
 					ref = new HttpReference();

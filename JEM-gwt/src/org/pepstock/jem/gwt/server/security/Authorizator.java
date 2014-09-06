@@ -110,7 +110,9 @@ public class Authorizator {
 					// expression permission
 					if (permission.startsWith(Permissions.SEARCH) || 
 							permission.startsWith(Permissions.DATASOURCES) || 
-							permission.startsWith(Permissions.FILES) || 
+							permission.startsWith(Permissions.FILES_READ) ||
+							permission.startsWith(Permissions.FILES_WRITE) ||
+							permission.startsWith(Permissions.FILES_EXECUTE) ||
 							permission.startsWith(Permissions.SURROGATE)) {
 						RegExpPermission perm = new RegExpPermission(permission);
 						account.addObjectPermission(perm);

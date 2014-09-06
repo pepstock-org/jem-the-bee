@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.ListBox;
 public final class NewResourceInspector extends AbstractResourceInspector {
 
 	 // the "select" one, plus concrete ootb types
-	private static int FIRST_CUSTOM_RESOURCE_INDEX = 6;
+	private static int FIRST_CUSTOM_RESOURCE_INDEX = 7;
 	private static final int LIST_HEIGHT = 40;
 
 	private HorizontalPanel typePanel = new HorizontalPanel(); 
@@ -57,6 +57,7 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 		typeCombo.addItem(JMS);
 		typeCombo.addItem(HTTP);
 		typeCombo.addItem(JPPF);
+		typeCombo.addItem(JEM);
 
 		// add custom names, if any
 		if (customResourceNames != null) {

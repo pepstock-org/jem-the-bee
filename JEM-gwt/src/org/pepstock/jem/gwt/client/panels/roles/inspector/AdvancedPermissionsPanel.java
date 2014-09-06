@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
 /**
- * Component to manage the  search permissions. 
+ * Component to manage the advanced permissions. 
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -45,10 +45,13 @@ public class AdvancedPermissionsPanel extends HorizontalPanel implements ResizeC
 		setSpacing(10);
 		
 		PermissionItem item = new PermissionItem("Internal Service", "Internal services necessary for Extended ANT utilities", Permissions.INTERNAL_SERVICES);
+		
+		PermissionItem item2 = new PermissionItem("Local File System Access", "Accessibility to local file system of node's machine", Permissions.LOCAL_FILE_SYSTEM_ACCESS);
 	
 		CheckBoxPermissionsPanel panel = new CheckBoxPermissionsPanel(role);
-		panel.setItems(item);
+		panel.setItems(item, item2);
 		panel.loadCheckBoxAction(item);
+		panel.loadCheckBoxAction(item2);
 		
 		add(panel);
 	}

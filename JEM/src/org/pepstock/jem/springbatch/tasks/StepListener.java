@@ -134,6 +134,13 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					// of realm
 					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
 					
+					// PAY attention: after creating data paths container
+					// calls a getabsolutepath method to load all necessary classes in classloader.
+					// This is MANDATORY to avoid StackOverFlow in teh SecurityManager 
+					// during the CheckRead on files.
+					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
+					DataPathsContainer.getInstance().getAbsoluteDataPath(JobId.VALUE);
+					
 					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing
 					if (System.getSecurityManager() == null) {
@@ -141,7 +148,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					} else {
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS027E);
 					}
-					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
+
 				} else {
 					throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS026E, TasksDoor.NAME);
 				}

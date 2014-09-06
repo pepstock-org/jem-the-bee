@@ -53,7 +53,25 @@ public class FilePermissionsPanel extends ListPermissionsPanel {
 		all.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				getInputPanel().setEnabled(false);
+				getInputPanel().setEnabled(false, true);
+			}
+		});
+		read.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getInputPanel().setEnabled(true);
+			}
+		});
+		write.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getInputPanel().setEnabled(true);
+			}
+		});
+		execute.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getInputPanel().setEnabled(true);
 			}
 		});
 		
