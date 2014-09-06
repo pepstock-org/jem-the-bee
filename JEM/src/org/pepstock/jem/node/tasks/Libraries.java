@@ -56,6 +56,10 @@ public enum Libraries {
 	/**
 	 * folder library
 	 */
+	JERSEY("jersey"),	
+	/**
+	 * folder library
+	 */
 	JMS("jms"),
 	/**
 	 * folder library

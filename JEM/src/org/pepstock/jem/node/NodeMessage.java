@@ -1605,7 +1605,13 @@ public enum NodeMessage implements MessageInterface {
 	 *  "Error while trying to delete uploaded file {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs there is an exception deleting to final file after upload.")
-	JEMC268E(268, "Error while trying to delete uploaded file {0}", MessageLevel.ERROR);
+	JEMC268E(268, "Error while trying to delete uploaded file {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to login to JEM by REST call.", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when JNDI JEM factory is not able to login to JEM.<br> Please check JEM login exception.")
+	JEMC269E(269, "Unable to login to JEM by REST call.", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

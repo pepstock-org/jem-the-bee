@@ -28,6 +28,7 @@ import org.pepstock.jem.node.configuration.CustomResourceDefinition;
 import org.pepstock.jem.node.resources.FtpResource;
 import org.pepstock.jem.node.resources.HttpResource;
 import org.pepstock.jem.node.resources.JdbcResource;
+import org.pepstock.jem.node.resources.JemResource;
 import org.pepstock.jem.node.resources.JmsResource;
 import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
@@ -326,6 +327,7 @@ public class ResourceDefinitionsManager {
 		// splitted in 2 boolean to avoid issue on code analyser
 		boolean protocolBasedResources = resourceType.equalsIgnoreCase(FtpResource.TYPE) || 
 				resourceType.equalsIgnoreCase(HttpResource.TYPE) || 
+				resourceType.equalsIgnoreCase(JemResource.TYPE) ||
 				resourceType.equalsIgnoreCase(JdbcResource.TYPE);
 		boolean complexResources = resourceType.equalsIgnoreCase(JmsResource.TYPE)	|| 
 				resourceType.equalsIgnoreCase(JppfResource.TYPE);

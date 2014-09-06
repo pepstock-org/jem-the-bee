@@ -14,38 +14,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.tasks.jndi;
+package org.pepstock.jem.node.resources;
 
-import java.io.InputStream;
-
-import javax.naming.Reference;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Sets constants for JNDI for FTPClient oject. It uses Apache common net classes.<br>
+ * Contains all information necessary to create a REST client for JEM by JNDI.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
- *
+ * @version 2.2
  */
-public class FtpReference extends Reference {
+@SuppressWarnings("javadoc")
+public class JemResource extends Resource {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Custom FTP factory
-	 */
-	public static final String FTP_FACTORY = FtpFactory.class.getName();
+	public static final String URL = "url";
 	
 	/**
-	 * Always returns a InoutStream
+	 * Type for JEM 
 	 */
-	public static final String FTP_OBJECT = InputStream.class.getName();
+	public static final String TYPE = "jem";
 	
-	/**
-	 * Creates a JNDI reference for FTP purposes
-	 */
-	public FtpReference() {
-		super(FTP_OBJECT, FTP_FACTORY, null);
-	}
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(USERID, PASSWORD, URL));
 
+	/**
+	 *  * 
+	 * Constructs the object adding user name, password, context and URL.
+	 */
+	public JemResource() {
+		setType(TYPE);
+		
+	}
 }

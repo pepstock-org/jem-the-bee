@@ -30,6 +30,7 @@ import javax.naming.StringRefAddr;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.HttpResource;
 import org.pepstock.jem.node.resources.JdbcResource;
+import org.pepstock.jem.node.resources.JemResource;
 import org.pepstock.jem.node.resources.JmsResource;
 import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
@@ -39,6 +40,7 @@ import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.HttpReference;
 import org.pepstock.jem.node.tasks.jndi.JdbcReference;
+import org.pepstock.jem.node.tasks.jndi.JemReference;
 import org.pepstock.jem.node.tasks.jndi.JmsReference;
 import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.springbatch.SpringBatchException;
@@ -136,6 +138,10 @@ public final class ChunkDataSourcesManager {
 			} else if (res.getType().equalsIgnoreCase(JmsResource.TYPE)) {
 				// creates a JMS reference (uses javax.jms)
 				ref = new JmsReference();
+				
+			} else if (res.getType().equalsIgnoreCase(JemResource.TYPE)) {
+				// creates a REST reference (uses jersey)
+				ref = new JemReference();				
 
 			} else if (res.getType().equalsIgnoreCase(HttpResource.TYPE)) {
 				// creates a HTTP reference (uses org.apache.http)

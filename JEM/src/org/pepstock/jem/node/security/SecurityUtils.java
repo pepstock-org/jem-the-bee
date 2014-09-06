@@ -93,6 +93,11 @@ public class SecurityUtils {
 	 * @return -1, 0, 1 if authorized or must be checked
 	 */
 	public int checkReadFileName(String fileName){
+		
+		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
+		if (dataPath != null){
+			return TO_BE_CHECKED;
+		}
 
 		boolean textFolder = fileName.startsWith(OUTPUT_PATH) ||
 				fileName.startsWith(SOURCE_PATH);
@@ -109,17 +114,9 @@ public class SecurityUtils {
 			return TO_BE_REJECTED;
 		}
 
-		// PAY attention: this check must be done
-		// before to call DATAPATH or other classes otherwise a StackOverflowException
-		// occurs because JAVA tries to load a class
 		String ext = FilenameUtils.getExtension(fileName);
 		if ("class".equalsIgnoreCase(ext) || "jar".equalsIgnoreCase(ext) || "zip".equalsIgnoreCase(ext)){
 			return TO_BE_IGNORED;
-		}
-		
-		String dataPath = DataPathsContainer.getInstance().getAbsoluteDataPath(fileName);
-		if (dataPath != null){
-			return TO_BE_CHECKED;
 		}
 		
 		if (fileName.startsWith(HOME) && FilenameUtils.wildcardMatch(fileName,HOME+File.separator+"*"+File.separator+"config*")){

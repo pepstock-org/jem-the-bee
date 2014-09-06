@@ -16,36 +16,36 @@
 */
 package org.pepstock.jem.node.tasks.jndi;
 
-import java.io.InputStream;
-
 import javax.naming.Reference;
 
+import org.pepstock.jem.rest.ResourceRestClient;
+
 /**
- * Sets constants for JNDI for FTPClient oject. It uses Apache common net classes.<br>
+ * Sets constants for JNDI for REST client object.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  *
  */
-public class FtpReference extends Reference {
+public class JemReference extends Reference {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Custom FTP factory
+	 * Jem factory
 	 */
-	public static final String FTP_FACTORY = FtpFactory.class.getName();
+	public static final String JEM_FACTORY = JemFactory.class.getName();
 	
 	/**
-	 * Always returns a InoutStream
+	 * REST client
 	 */
-	public static final String FTP_OBJECT = InputStream.class.getName();
+	public static final String JEM_OBJECT = ResourceRestClient.class.getName();
 	
 	/**
-	 * Creates a JNDI reference for FTP purposes
+	 * Creates a JNDI reference for JEM purposes
 	 */
-	public FtpReference() {
-		super(FTP_OBJECT, FTP_FACTORY, null);
+	public JemReference() {
+		super(JEM_OBJECT, JEM_FACTORY, null);
 	}
 
 }
