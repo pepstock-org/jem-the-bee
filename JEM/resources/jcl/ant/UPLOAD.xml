@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="YAUSTOX3" default="main" basedir=".">
+	<description>
+        test
+    </description>
+
+	<taskdef name="upload" classname="org.pepstock.jem.ant.tasks.Upload" />
+
+	<target name="main">
+		<upload>
+			<!--fileset dir="../../../lib" includes="**/*.jar"/-->
+			<fileset file="../../../lib/jem.jar" >
+				<filename name="**/*.jar"/>
+			</fileset>
+		</upload>
+
+	</target>
+
+</project>

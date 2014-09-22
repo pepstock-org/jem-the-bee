@@ -214,7 +214,7 @@ public abstract class AbstractDBManager<K, T>{
 
 			updateStmt.executeUpdate();
 			updatedRows = updateStmt.getUpdateCount();
-			
+
 			connection.commit();
 
 			if (updatedRows <= 0){
