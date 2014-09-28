@@ -244,6 +244,7 @@ public class Client {
 			// creates a prejob
 			PreJob preJob = Factory.createPreJob(url);
 			Job job = new Job();
+			job.setName(jcl.getName());
 			// BE AWARE: NO JCL type
 			job.setUser(user.getId());
 			preJob.setJob(job);
