@@ -3,15 +3,26 @@
 	<description>
         test
     </description>
+	
+	<property name="userid" value="root"/>
 
-	<taskdef name="upload" classname="org.pepstock.jem.ant.tasks.Upload" />
-
-	<target name="main">
-		<upload>
-			<!--fileset dir="../../../lib" includes="**/*.jar"/-->
-			<fileset file="../../../lib/jem.jar" >
+	<taskdef name="upload" classname="org.pepstock.jem.ant.tasks.utilities.Upload">
+		<classpath>
+			<pathelement location="../../../classes" />
+			<fileset dir="../../../lib">
 				<filename name="**/*.jar"/>
 			</fileset>
+			
+		</classpath>
+	</taskdef>
+
+	<target name="main">
+		<upload  url="https://localhost:8888/rest" userid="${userid}" password="sss">
+			<destination type="source" path="/stock/">
+				<fileset dir="../../../lib">
+					<filename name="**/jem*.jar"/>
+				</fileset>
+			</destination>	
 		</upload>
 
 	</target>

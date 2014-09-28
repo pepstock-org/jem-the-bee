@@ -162,7 +162,13 @@ public class GfsManager extends AbstractRestManager {
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				chunkFile.setChunk(chunk);
 				chunkFile.setFileCode(randomNumber);
-				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
+				// relative path must be used// when you want to upload the file
+				// maintaing a relative path of source file
+				if (file.getRelativePath() != null){
+					chunkFile.setFilePath(file.getGfsPath()+file.getRelativePath());
+				} else {
+					chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
+				}
 				chunkFile.setTransferComplete(false);
 				chunkFile.setNumByteToWrite(readNum);
 				chunkFile.setType(file.getType());
@@ -179,7 +185,11 @@ public class GfsManager extends AbstractRestManager {
 			UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 			chunkFile.setChunk(chunk);
 			chunkFile.setFileCode(randomNumber);
-			chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
+			if (file.getRelativePath() != null){
+				chunkFile.setFilePath(file.getGfsPath()+file.getRelativePath());
+			} else {
+				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
+			}
 			chunkFile.setTransferComplete(true);
 			chunkFile.setType(file.getType());
 			chunkFile.setLastUpdate(file.getUploadedFile().lastModified());

@@ -424,10 +424,51 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
-	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes has been written.")
-	JEMA062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO);
-
-
+	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
+	JEMA062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	
+	/**
+	 * "{0} parameter missing", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when an attribute is missing but mandatory.<br>Please check your ANT task.")
+	JEMA063E(63, "{0} parameter missing", MessageLevel.ERROR),
+	
+	/**
+	 * "GfsManager instance is null", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when GFS manager is null. If happems, there is an internal error.<br>Please contact your JEM administrators.")
+	JEMA064E(64, "GfsManager instance is null", MessageLevel.ERROR),
+	
+	/**
+	 * "\"{0}\" files have been uploaded", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the upload task is ended, showing how many files have been uploaded.")
+	JEMA065I(65, "{0} files have been uploaded", MessageLevel.INFO),
+	
+	/**
+	 * "\"{0}\" files haven't been uploaded due to an error", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the upload task is ended, showing how many files haven't been uploaded.<br>Please see ANT task log.")
+	JEMA066W(66, "{0} files haven't been uploaded due to an error", MessageLevel.WARNING),
+	
+	/**
+	 * "Destination GFS type:  \"{0}\" ", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the upload task is started, showing the GFS type where the files will be uploaded.")
+	JEMA067I(67, "Destination GFS type:  \"{0}\" ", MessageLevel.INFO),
+	
+	/**
+	 * "Local source folder:  \"{0}\" ", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the upload task is started, showing the folder where the files are.")
+	JEMA068I(68, "Local source folder:  \"{0}\" with {1} files to upload", MessageLevel.INFO),
+	
+	/**
+	 * "Copying file \"{0}\" to JEM", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the upload task starts uploading a file to JEM.")
+	JEMA069I(69, "Copying file \"{0}\" to JEM", MessageLevel.INFO);
+	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 
 	 * @see Message

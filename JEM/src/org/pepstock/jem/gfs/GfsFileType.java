@@ -16,6 +16,10 @@
 */
 package org.pepstock.jem.gfs;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * @author Simone "Busy" Businaro
@@ -48,10 +52,92 @@ public final class GfsFileType {
 	 * for the GFS/binary folder
 	 */
 	public static final int BINARY = 4;
+	
+	/**
+	 * for the GFS/data folder
+	 */
+	public static final String DATA_NAME = "Data";
+
+	/**
+	 * for the GFS/library folder
+	 */
+	public static final String LIBRARY_NAME = "Library";
+	
+	/**
+	 * for the GFS/source folder
+	 */
+	public static final String SOURCE_NAME = "Source";
+	
+	/**
+	 * for the GFS/classpath folder
+	 */
+	public static final String CLASS_NAME = "Class";
+	
+	/**
+	 * for the GFS/binary folder
+	 */
+	public static final String BINARY_NAME = "Binary";
+	
+	/**
+	 * Array with all disposition
+	 */
+	public static final List<String> VALUES = Collections.unmodifiableList(Arrays.asList(DATA_NAME.toLowerCase(), 
+			LIBRARY_NAME.toLowerCase(), SOURCE_NAME.toLowerCase(), CLASS_NAME.toLowerCase(), BINARY_NAME.toLowerCase()));
+	
 
 	/**
 	 * To avoid any instantiation
 	 */
 	private GfsFileType() {
+	}
+	
+	/**
+	 * Returns the type of path of GFS folder.
+	 * @param name data name (DATA, SOURCE, LIBRARY, CLASS, BINARY).
+	 * @return the type of path of GFS folder.
+	 */
+	public static final int getType(String name){
+		if (GfsFileType.DATA_NAME.equalsIgnoreCase(name)) {
+			return GfsFileType.DATA;
+		} else if (GfsFileType.LIBRARY_NAME.equalsIgnoreCase(name)) {
+			return GfsFileType.LIBRARY;
+		} else if (GfsFileType.SOURCE_NAME.equalsIgnoreCase(name)) {
+			return GfsFileType.SOURCE;
+		} else if (GfsFileType.CLASS_NAME.equalsIgnoreCase(name)) {
+			return GfsFileType.CLASS;
+		} else if (GfsFileType.BINARY_NAME.equalsIgnoreCase(name)) {
+			return GfsFileType.BINARY;
+		}
+		return GfsFileType.DATA;
+	}
+	
+	/**
+	 * Returns the name of path of GFS folder.
+	 * @param type data type (DATA, SOURCE, LIBRARY, CLASS, BINARY).
+	 * @return the name of path of GFS folder.
+	 */
+	public static final String getName(int type){
+		String name = null;
+		switch (type) {
+		case GfsFileType.DATA:
+			name = GfsFileType.DATA_NAME;
+			break;
+		case GfsFileType.LIBRARY:
+			name = GfsFileType.LIBRARY_NAME;
+			break;
+		case GfsFileType.SOURCE:
+			name = GfsFileType.SOURCE_NAME;
+			break;
+		case GfsFileType.CLASS:
+			name = GfsFileType.CLASS_NAME;
+			break;
+		case GfsFileType.BINARY:
+			name = GfsFileType.BINARY_NAME;
+			break;
+		default:
+			name = GfsFileType.DATA_NAME;
+			break;
+		}
+		return name;
 	}
 }

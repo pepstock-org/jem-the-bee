@@ -138,7 +138,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	 * @return the name
 	 */
 	public String getName() {
-		return PathName.getPathName(type);
+		return GfsFileType.getName(type);
 	}
 	
 	/**

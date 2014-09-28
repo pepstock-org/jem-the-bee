@@ -34,6 +34,8 @@ public class UploadedGfsFile implements Serializable {
 	private String gfsPath;
 	
 	private int type;
+	
+	private String relativePath = null;
 
 	/**
 	 * 
@@ -89,13 +91,27 @@ public class UploadedGfsFile implements Serializable {
 	public void setType(int type) {
 		this.type = type;
 	}
+	
+	/**
+	 * @return the relativePath
+	 */
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	/**
+	 * @param relativePath the relativePath to set
+	 */
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "UploadedGfsFile [uploadedFile=" + uploadedFile + ", gfsPath=" + gfsPath + ", type=" + type + "]";
+		return "UploadedGfsFile [uploadedFile=" + uploadedFile + ", gfsPath=" + gfsPath + ", type=" + type + ", relativePath=" + relativePath + "]";
 	}
 	
 }
