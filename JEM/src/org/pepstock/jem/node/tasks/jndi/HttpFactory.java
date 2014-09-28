@@ -26,10 +26,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +38,6 @@ import javax.naming.Name;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
-import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpVersion;
@@ -58,19 +54,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
+import org.pepstock.jem.commands.util.HttpUtil;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.resources.HttpResource;
@@ -101,6 +93,7 @@ import org.pepstock.jem.util.Parser;
  * @version 1.0
  * 
  */
+@SuppressWarnings("deprecation")
 public class HttpFactory implements ObjectFactory {
 
 	/**
@@ -424,7 +417,10 @@ public class HttpFactory implements ObjectFactory {
 			String loginQueryString = properties.getProperty(HttpResource.REQUEST_LOGIN_QUERY_STRING);
 			String logoutQueryString = properties.getProperty(HttpResource.REQUEST_LOGOUT_QUERY_STRING);
 			CloseableHttpClient httpClient = null;
-			HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+			String protocolType = properties.getProperty(HttpResource.PROTOCOL_TYPE);
+			HttpClientBuilder httpClientBuilder = HttpUtil.createHttpClientByScheme(protocolType);
+			
 			if (null != loginQueryString || null != logoutQueryString) {
 				httpClientBuilder.setConnectionManager(conMan);
 			}
@@ -438,10 +434,7 @@ public class HttpFactory implements ObjectFactory {
 			if (null != proxyUrl) {
 				configureProxy(httpClientBuilder, proxyUrl, proxyPort, proxyProtocol, username, password);
 			}
-			String protocolType = properties.getProperty(HttpResource.PROTOCOL_TYPE);
-			if (null != protocolType) {
-				configureSSL(httpClientBuilder, protocolType);
-			}
+
 			String userAgent = properties.getProperty(HttpResource.USER_AGENT);
 			if (null != userAgent) {
 				httpClientBuilder.setUserAgent(userAgent);
@@ -486,55 +479,6 @@ public class HttpFactory implements ObjectFactory {
 			httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
 		}
 		httpClientBuilder.setProxy(proxy);
-	}
-
-	/**
-	 * Configures SSL in the parameter <code>httpClientBuilder</code>, if
-	 * necessary, that is if the <code>protocolType</code> is
-	 * {@link HttpResource#HTTPS_PROTOCOL}. <br>
-	 * If <code>port</code> is <code>null</code>, {@link #DEFAULT_HTTPS_PORT} is
-	 * used.
-	 * 
-	 * @param httpClientBuilder http client builder already created in which to
-	 *            set SSL property.
-	 * @param protocolType the protocol type: <li>
-	 *            {@link HttpResource#HTTP_PROTOCOL} <li>
-	 *            {@link HttpResource#HTTPS_PROTOCOL}
-	 * @throws KeyStoreException if an error occurs
-	 * @throws NoSuchAlgorithmException if an error occurs
-	 * @throws UnrecoverableKeyException if an error occurs
-	 * @throws KeyManagementException if an error occurs
-	 */
-	private void configureSSL(HttpClientBuilder httpClientBuilder, String protocolType) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-		// sets SSL ONLY if the scheme is HTTPS
-		if (protocolType.equalsIgnoreCase(HttpResource.HTTPS_PROTOCOL)) {
-			SSLConnectionSocketFactory sf = buildSSLConnectionSocketFactory();
-			httpClientBuilder.setSSLSocketFactory(sf);
-		}
-	}
-
-	/**
-	 * It builds a {@link SSLConnectionSocketFactory} if SSL is needed.
-	 * 
-	 * @return the {@link SSLConnectionSocketFactory} for SSL purposes.
-	 * @throws KeyManagementException
-	 * @throws UnrecoverableKeyException
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyStoreException
-	 * @see SSLConnectionSocketFactory
-	 */
-	private SSLConnectionSocketFactory buildSSLConnectionSocketFactory() throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy ts = new TrustStrategy() {
-			@Override
-			public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-				// always true to avoid certicateunknow excpetion
-				return true;
-			}
-		};
-		SSLContextBuilder builder = SSLContexts.custom();
-		builder.loadTrustMaterial(null, ts);
-		SSLContext sslContext = builder.build();
-		return new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 	}
 
 	/**

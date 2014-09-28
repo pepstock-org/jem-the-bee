@@ -21,10 +21,11 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
@@ -37,8 +38,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -441,24 +443,76 @@ public final class HttpUtil {
 	 * @throws KeyStoreException
 	 */
 	public static final HttpClientBuilder createHttpClientByScheme(String scheme) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+		if (scheme != null){
+			configureSSL(httpClientBuilder, scheme);
+		}
+		return httpClientBuilder;
+	}
+	
+	/**
+	 * Configures SSL in the parameter <code>httpClientBuilder</code>, if
+	 * necessary, that is if the <code>protocolType</code> is
+	 * {@link HttpResource#HTTPS_PROTOCOL}. <br>
+	 * If <code>port</code> is <code>null</code>, {@link #DEFAULT_HTTPS_PORT} is
+	 * used.
+	 * 
+	 * @param httpClientBuilder http client builder already created in which to
+	 *            set SSL property.
+	 * @param protocolType the protocol type: <li>
+	 *            {@link HttpResource#HTTP_PROTOCOL} <li>
+	 *            {@link HttpResource#HTTPS_PROTOCOL}
+	 * @throws KeyStoreException if an error occurs
+	 * @throws NoSuchAlgorithmException if an error occurs
+	 * @throws UnrecoverableKeyException if an error occurs
+	 * @throws KeyManagementException if an error occurs
+	 */
+	private static void configureSSL(HttpClientBuilder httpClientBuilder, String protocolType) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
-		if (scheme != null && HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(scheme)) {
-	        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-	        // Trust own CA and all self-signed certs
-	        SSLContext sslcontext = SSLContexts.custom()
-	                .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
-	                .build();
-	        // Allow TLSv1 protocol only
-	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-	                sslcontext,
-	                new String[] { "TLSv1" },
-	                null,
-	                SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-	        return  HttpClients.custom().setSSLSocketFactory(sslsf);
-		} else {
-			return HttpClients.custom();
+		if (HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(protocolType)) {
+			SSLConnectionSocketFactory sf = buildSSLConnectionSocketFactory();
+			httpClientBuilder.setSSLSocketFactory(sf);
+		}
+	}
+
+	/**
+	 * It builds a {@link SSLConnectionSocketFactory} if SSL is needed.
+	 * 
+	 * @return the {@link SSLConnectionSocketFactory} for SSL purposes.
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @see SSLConnectionSocketFactory
+	 */
+	private static SSLConnectionSocketFactory buildSSLConnectionSocketFactory() throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+		TrustStrategy ts = new TrustStrategy() {
+			@Override
+			public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				// always true to avoid certificate unknown exception
+				return true;
+			}
+		};
+		SSLContextBuilder builder = SSLContexts.custom();
+		builder.loadTrustMaterial(null, ts);
+		SSLContext sslContext = builder.build();
+		return new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+	}
+	
+	/**
+	 * tests all method
+	 * @param argv host of Jem
+	 * @throws SubmitException 
+	 */
+	public static void main(String[] argv) throws SubmitException{
+		if (argv != null && argv.length == 1){
+			String url = argv[0];
+			if (url != null){
+				System.out.println("GroupName: "+HttpUtil.getGroupName(url));
+				System.out.println("Members: "+HttpUtil.getMembers(url).length);
+			}
+			
 		}
 	}
 	
-
 }
