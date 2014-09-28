@@ -147,11 +147,12 @@ public interface JobsManagerServiceAsync {
 
 	/**
 	 * 
+	 * @param jobName
 	 * @param content
 	 * @param type
 	 * @param callback
 	 */
-	void submit(String content, String type, AsyncCallback<String> callback);
+	void submit(String jobName, String content, String type, AsyncCallback<String> callback);
 
 	/**
 	 * 

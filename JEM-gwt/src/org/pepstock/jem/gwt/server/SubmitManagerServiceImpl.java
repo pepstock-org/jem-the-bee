@@ -76,6 +76,8 @@ public class SubmitManagerServiceImpl extends FileUploadManager implements Submi
 	        		// job execution to
 	        		// job itself
 	        		job.setInputArguments(ManagementFactory.getRuntimeMXBean().getInputArguments());
+	        		// uses file name as job name
+	        		job.setName(fileName);
 
 	        		// loads prejob with job
 	        		preJob.setJob(job);

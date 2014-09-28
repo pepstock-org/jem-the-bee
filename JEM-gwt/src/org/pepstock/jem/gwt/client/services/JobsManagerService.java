@@ -123,6 +123,7 @@ public interface JobsManagerService extends RemoteService {
 
 	/**
 	 * Submit a new job from inspector of a job
+	 * @param jobName Job name
 	 * 
 	 * @param content
 	 *            jcl content
@@ -132,7 +133,7 @@ public interface JobsManagerService extends RemoteService {
 	 * @throws JemException
 	 *             if cluster is not available or not authorized
 	 */
-	String submit(String content, String type) throws JemException;
+	String submit(String jobName, String content, String type) throws JemException;
 
 	/**
 	 * Indent JCL during editing

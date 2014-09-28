@@ -165,6 +165,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 	 */
 	@Override
 	public void jobSubmit() throws SubmitException {
+		String jobName= null;
 		// gets URL of JCL content, reads and loads it into Prejob object,
 		// setting the JCL type
 		URL url = null;
@@ -177,6 +178,8 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 			File jcl = new File(getJcl());
 			try {
 				url = jcl.toURI().toURL();
+				// loads file name. it will set as job name
+				jobName = jcl.getName();
 			} catch (MalformedURLException e) {
 				throw new SubmitException(SubmitMessage.JEMW006E, e, getJcl());
 			}
@@ -201,6 +204,12 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 		// could be useful to factories, listeners and during job execution to
 		// job itself
 		job.setInputArguments(ManagementFactory.getRuntimeMXBean().getInputArguments());
+		
+		
+		// uses file name as job name, if file name exists
+		if (jobName != null){
+			job.setName(jobName);
+		}
 
 		// loads prejob with job
 		preJob.setJob(job);

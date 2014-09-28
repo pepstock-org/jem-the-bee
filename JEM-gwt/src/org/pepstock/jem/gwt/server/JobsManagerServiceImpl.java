@@ -255,7 +255,7 @@ public class JobsManagerServiceImpl extends DefaultManager implements JobsManage
 	 * .String, java.lang.String)
 	 */
 	@Override
-	public String submit(String content, String type) throws JemException {
+	public String submit(String jobName, String content, String type) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();
@@ -270,6 +270,7 @@ public class JobsManagerServiceImpl extends DefaultManager implements JobsManage
 
 			// creates a empty job
 			Job job = new Job();
+			job.setName(jobName);
 			// loads prejob with job
 			preJob.setJob(job);
 			// sets JCL type which was an argument

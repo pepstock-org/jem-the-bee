@@ -128,7 +128,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		try {
 			// using the factory, validates, checks and loads JCL into JOB
 			Factory.loadJob(prejob);
-
+			
 			// check if user is grant for job submitting
 			User user = new User(job.getUser());
 			user.setOrgUnitId(job.getOrgUnit());
@@ -266,7 +266,13 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		job.setEndedTime(new Date());
 		// usually the parser can extract the jbname, anyway.
 		// if it is, it saves the jobname to job
-		job.setName((jcl.getJobName() == null) ? DefaultJcl.UNKNOWN : jcl.getJobName());
+		if (jcl.getJobName() != null && !DefaultJcl.UNKNOWN.equalsIgnoreCase(jcl.getJobName())){
+			job.setName(jcl.getJobName());
+		} else {
+			if (job.getName() == null){
+				job.setName(DefaultJcl.UNKNOWN);
+			}
+		}
 		job.setJcl(jcl);
 		
 		// writes output for error

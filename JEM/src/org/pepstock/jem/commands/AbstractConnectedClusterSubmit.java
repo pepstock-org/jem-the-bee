@@ -201,6 +201,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		// creates a new Client instance of Hazelcast
 		client = createClient();
 
+		String jobName= null;
 		// gets URL of JCL content, reads and loads it into Prejob object,
 		// setting the JCL type
 		URL urlJcl = null;
@@ -213,6 +214,8 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			File jclFile = new File(getJcl());
 			try {
 				urlJcl = jclFile.toURI().toURL();
+				// loads file name. it will set as job name
+				jobName = jclFile.getName();
 			} catch (MalformedURLException e) {
 				throw new SubmitException(SubmitMessage.JEMW006E, e, getJcl());
 			}
@@ -232,7 +235,12 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		// sets user
 		job.setUser(getUserID());
 		job.setOrgUnit(getGroupID());
-
+		
+		// uses file name as job name, if file name exists
+		if (jobName != null){
+			job.setName(jobName);
+		}
+	
 		IdGenerator generator = client.getIdGenerator(Queues.JOB_ID_GENERATOR);
 		long id = generator.newId();
 

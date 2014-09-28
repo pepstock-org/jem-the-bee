@@ -111,7 +111,7 @@ public class EditJcl extends XmlModifier{
 
 			@Override
 			public void execute() {
-				Services.QUEUES_MANAGER.submit(getEditor().getText(), type,
+				Services.QUEUES_MANAGER.submit(inspector.getJob().getName(), getEditor().getText(), type,
 						new SubmitAsyncCallback());
 			}
 		});
