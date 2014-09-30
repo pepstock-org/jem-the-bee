@@ -26,6 +26,7 @@ import com.hazelcast.core.Cluster;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MapEvent;
 import com.hazelcast.core.Member;
 
 /**
@@ -98,6 +99,18 @@ public class MapSwarmNodesManager implements EntryListener<String, NodeInfo> {
 			return null;
 		}
 		return null;
+	}
+
+	@Override
+	public void mapCleared(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mapEvicted(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

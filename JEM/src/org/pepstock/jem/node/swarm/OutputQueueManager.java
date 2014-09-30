@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
@@ -35,10 +35,11 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.swarm.executors.RouterOut;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MapEvent;
 import com.hazelcast.core.Member;
 
 /**
@@ -143,14 +144,13 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 					// check if member is still available otherwise do
 					// nothing
 					if (member != null) {
-						LogAppl.getInstance().emit(SwarmNodeMessage.JEMO006I, job);
-						DistributedTask<Boolean> task = new DistributedTask<Boolean>(new RouterOut(job), member);
-						ExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService();
+						LogAppl.getInstance().emit(SwarmNodeMessage.JEMO006I, job);						
+						IExecutorService executorServie = Main.SWARM.getHazelcastInstance().getExecutorService(SwarmQueues.SWARM_EXECUTOR_SERVICE);
 						// start 2 phase commit
 						job.getRoutingInfo().setOutputCommitted(false);
 						outputQueue.put(job.getId(), job);
-						executorService.execute(task);
-						if (task.get()) {
+						Future<Boolean> future = executorServie.submitToMember(new RouterOut(job), member);
+						if (future.get()) {
 							// now output is committed
 							job.getRoutingInfo().setOutputCommitted(true);
 							outputQueue.put(job.getId(), job);
@@ -182,6 +182,18 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 	 */
 	private void setNotifyOutputEnded(boolean notifyOutputEnded) {
 		this.notifyOutputEnded = notifyOutputEnded;
+	}
+
+	@Override
+	public void mapCleared(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mapEvicted(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

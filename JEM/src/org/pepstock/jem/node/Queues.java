@@ -330,6 +330,12 @@ public final class Queues {
 	 * 
 	 */
 	public static final String DATASETS_RULES_LOCK = "org.pepstock.jem.datasets.rules";
+	
+	/**
+	 * Key for asking default jem executor service 
+	 * 
+	 */
+	public static final String JEM_EXECUTOR_SERVICE = "org.pepstock.jem.executorservice";
 
 	/**
 	 * To avoid any instantiation

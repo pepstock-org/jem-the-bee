@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
@@ -32,8 +34,9 @@ import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JemFilterFields;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 
 /**
  * The {@link Predicate} of a {@link Job}
@@ -61,7 +64,7 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Map.Entry entry) {
 		// map entry value
 		Job job = (Job)entry.getValue();
 		
@@ -207,5 +210,11 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			return false;
 		}
+	}
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

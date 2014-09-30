@@ -52,11 +52,8 @@ public class WebInterceptor implements SocketInterceptor {
 
 	private KeyStoreInfo clusterKeystoreInfo;
 
-	/**
-	 * Build the web connector to JEM
-	 * @param configProperties
-	 */
-	public WebInterceptor(Properties configProperties) {
+	@Override
+	public void init(Properties configProperties) {
 		String keystorePath=configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
 		File clusterKeystoreFile = new File(SharedObjects.getInstance().getContextPath()+"/"+keystorePath);
 		// if the keystore is not in the war than try to solve as absolute path
@@ -72,6 +69,13 @@ public class WebInterceptor implements SocketInterceptor {
 		clusterKeystoreInfo.setPassword(keystorePasswd);
 		clusterKeystoreInfo.setSymmetricKeyAlias(keyAlias);
 		clusterKeystoreInfo.setSymmetricKeyPwd(keyPasswd);
+	}
+	
+	/**
+	 * Build the web connector to JEM
+	 * @param configProperties
+	 */
+	public WebInterceptor() {
 	}
 
 	/*

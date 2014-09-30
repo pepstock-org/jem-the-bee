@@ -17,16 +17,15 @@
 package org.pepstock.jem.commands.util;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.security.KeyException;
 
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
-import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.security.socketinterceptor.SubmitInterceptor;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientNetworkConfig;
+import com.hazelcast.config.SocketInterceptorConfig;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
@@ -63,22 +62,23 @@ public class HazelcastUtil {
 			// creates a client configuration for Hazelcast
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
-			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
+			ClientNetworkConfig networkConfig=new ClientNetworkConfig();
+			clientConfig.setNetworkConfig(networkConfig);
+			networkConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
-				try {
-					SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-					clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-				} catch (KeyException e) {
-					throw new SubmitException(SubmitMessage.JEMW005E, e);
-				} catch (MessageException e) {
-					throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
-				}
+				SocketInterceptorConfig socketInterceptorConfig=new SocketInterceptorConfig();
+				socketInterceptorConfig.setClassName(SubmitInterceptor.class.getName());
+				socketInterceptorConfig.setEnabled(true);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.PRIVATE_KEY_FILE_PATH, privateKeyPathFile);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.KEY_PASSWORD, privateKeyPassword);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.SUBJECT_ID, userId);
+				networkConfig.setSocketInterceptorConfig(socketInterceptorConfig);
 			}
 			// creates a new Client instance of Hazelcast
 			return HazelcastClient.newHazelcastClient(clientConfig);
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			throw new SubmitException(SubmitMessage.JEMW005E, e);
 		}
 	}
@@ -104,19 +104,24 @@ public class HazelcastUtil {
 		// sets the group name (received by http call) and sets the constant
 		// password
 		clientConfig.getGroupConfig().setName(groupName).setPassword(envPassword);
+		ClientNetworkConfig networkConfig=new ClientNetworkConfig();
+		clientConfig.setNetworkConfig(networkConfig);
 
 		// connect to Hazelcast using the complete list of current members
-		clientConfig.addAddress(HttpUtil.getMembers(url));
+		networkConfig.addAddress(HttpUtil.getMembers(url));
 
 		// if properties are not empyt, sets up SocketInterceptor.
 		if (privateKeyPathFile != null) {
 			try {
-				SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-				clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-			} catch (KeyException e) {
+				SocketInterceptorConfig socketInterceptorConfig=new SocketInterceptorConfig();
+				socketInterceptorConfig.setClassName(SubmitInterceptor.class.getName());
+				socketInterceptorConfig.setEnabled(true);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.PRIVATE_KEY_FILE_PATH, privateKeyPathFile);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.KEY_PASSWORD, privateKeyPassword);
+				socketInterceptorConfig.setProperty(SubmitInterceptor.SUBJECT_ID, userId);
+				networkConfig.setSocketInterceptorConfig(socketInterceptorConfig);
+			} catch (Exception e) {
 				throw new SubmitException(SubmitMessage.JEMW005E, e);
-			} catch (MessageException e) {
-				throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
 			}
 		}
 		// creates a new Client instance of Hazelcast

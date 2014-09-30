@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.Key;
+import java.util.Properties;
 
 import org.apache.shiro.codec.Base64;
 import org.pepstock.jem.log.LogAppl;
@@ -37,7 +38,6 @@ import org.pepstock.jem.node.security.loginprotocol.LoginRequest;
 import org.pepstock.jem.node.security.loginprotocol.ServerLoginProtocol;
 import org.pepstock.jem.util.CharSet;
 
-import com.hazelcast.config.SocketInterceptorConfig;
 import com.hazelcast.nio.MemberSocketInterceptor;
 
 /**
@@ -49,15 +49,9 @@ public class NodeInterceptor implements MemberSocketInterceptor {
 
 	private KeyStoresInfo keystoresInfo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hazelcast.nio.MemberSocketInterceptor#init(com.hazelcast.config.
-	 * SocketInterceptorConfig)
-	 */
 	@Override
-	public void init(SocketInterceptorConfig config) {
-		keystoresInfo = Factory.createKeyStoresInfo(config.getProperties());
+	public void init(Properties configProperties) {
+		keystoresInfo = Factory.createKeyStoresInfo(configProperties);
 	}
 
 	/*

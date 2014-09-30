@@ -34,7 +34,7 @@ import org.pepstock.jem.node.swarm.listeners.NodeListener;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.ExecutorConfig;
-import com.hazelcast.config.Join;
+import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.PartitionGroupConfig.MemberGroupType;
 import com.hazelcast.core.Cluster;
@@ -97,7 +97,7 @@ public class Swarm {
 	 * Constructor that initialized the MAIN instance
 	 */
 	public Swarm() {
-		
+
 	}
 
 	/**
@@ -150,8 +150,10 @@ public class Swarm {
 	 * is in the list of nodes present in the configuration and MainSwarm is in
 	 * {@link Status#DRAINED}. The swarm environment is the environment composed
 	 * by all the light members of different environments.
-	 * @return true if node is started or if node is node part of the configured swarm nodes.
-	 * @throws SwarmException 
+	 * 
+	 * @return true if node is started or if node is node part of the configured
+	 *         swarm nodes.
+	 * @throws SwarmException
 	 * 
 	 * @throws Exception
 	 * 
@@ -159,8 +161,8 @@ public class Swarm {
 	public boolean start() throws SwarmException {
 		getActiveConfiguration();
 		List<String> allowHosts = activeConfiguration.getNetworks();
-		String localHost = Main.getHazelcast().getCluster().getLocalMember().getInetSocketAddress().getAddress().getHostAddress();
-		
+		String localHost = Main.getHazelcast().getCluster().getLocalMember().getSocketAddress().getAddress().getHostAddress();
+
 		if (allowHosts.contains(localHost) && getStatus().equals(Status.DRAINED)) {
 			setStatus(Status.STARTING);
 			if (activeConfiguration.isEnabled()) {
@@ -204,6 +206,7 @@ public class Swarm {
 	 * Before shutting down check if a job is been routed or is been send back
 	 * to the routing environment. If so wait last operations and then shut down
 	 * the member.
+	 * 
 	 * @return <code>true</code> if it was able to close the swarm
 	 * 
 	 */
@@ -229,7 +232,7 @@ public class Swarm {
 			Main.getNode().setSwarmNode(false);
 			NodeInfoUtility.storeNodeInfo(Main.getNode());
 			return true;
-		} 
+		}
 		return false;
 	}
 
@@ -255,10 +258,10 @@ public class Swarm {
 		}
 
 		// JOIN
-		Join join = network.getJoin();
+		JoinConfig join = network.getJoin();
 		join.getTcpIpConfig().setEnabled(true);
 		join.getMulticastConfig().setEnabled(false);
-		if (activeConfiguration.getNetworks().isEmpty()) {
+		if (activeConfiguration.getNetworks().size() == 0) {
 			throw new SwarmException(SwarmNodeMessage.JEMO020E);
 		}
 		for (String tcpNode : activeConfiguration.getNetworks()) {
@@ -269,14 +272,15 @@ public class Swarm {
 		cfg.getPartitionGroupConfig().setEnabled(true);
 		cfg.getPartitionGroupConfig().setGroupType(MemberGroupType.HOST_AWARE);
 		cfg.getProperties().setProperty("hazelcast.logging.type", "log4j");
-		ExecutorConfig executor = new ExecutorConfig("pool", 16, 64, 60);
+		ExecutorConfig executor = new ExecutorConfig(SwarmQueues.SWARM_EXECUTOR_SERVICE, 60);
 		cfg.addExecutorConfig(executor);
 		swarmInstance = Hazelcast.newHazelcastInstance(cfg);
 		swarmInstance.getCluster().addMembershipListener(new NodeListener());
 	}
 
 	/**
-	 * Register the NodeInfo inside the SWARM NODES MAP	 * 
+	 * Register the NodeInfo inside the SWARM NODES MAP *
+	 * 
 	 * @see org.pepstock.jem.gwt.server.swarm.SwarmQueues#NODES_MAP
 	 */
 	private void registerNode() {
@@ -294,7 +298,7 @@ public class Swarm {
 		// set uuid of member of hazelcast as key
 		nodeInfo.setKey(member.getUuid());
 		// set port and ip address
-		InetSocketAddress address = member.getInetSocketAddress();
+		InetSocketAddress address = member.getSocketAddress();
 		nodeInfo.setPort(address.getPort());
 		nodeInfo.setIpaddress(address.getAddress().getHostAddress());
 		// sets label to be displayed by GRS

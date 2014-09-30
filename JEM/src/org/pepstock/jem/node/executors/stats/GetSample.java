@@ -46,9 +46,7 @@ import org.pepstock.jem.node.stats.QueueStats;
 import org.pepstock.jem.node.stats.Sample;
 import org.pepstock.jem.util.TimeUtils;
 
-import com.hazelcast.monitor.LocalMapOperationStats;
 import com.hazelcast.monitor.LocalMapStats;
-import com.hazelcast.monitor.LocalQueueOperationStats;
 import com.hazelcast.monitor.LocalQueueStats;
 
 
@@ -421,7 +419,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	 */
 	private MapStats loadMapStats(String mapName){
 			LocalMapStats stats = Main.getHazelcast().getMap(mapName).getLocalMapStats();
-			LocalMapOperationStats ostats = stats.getOperationStats();
 			
 			MapStats mstats = new MapStats();
 			mstats.setName(mapName);
@@ -431,20 +428,20 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 			mstats.setDirtyEntryCount(stats.getDirtyEntryCount());
 			mstats.setHits(stats.getHits());
 			mstats.setLockedEntryCount(stats.getLockedEntryCount());
-			mstats.setLockWaitCount(stats.getLockWaitCount());
+			mstats.setLockWaitCount(stats.getLockedEntryCount());
 			mstats.setOwnedEntryCount(stats.getOwnedEntryCount());
 			mstats.setOwnedEntryMemoryCost(stats.getOwnedEntryMemoryCost());
 			
 			MapOperationsStats mostats = mstats.getOperationsStats();
 			
-			mostats.setNumberOfEvents(ostats.getNumberOfEvents());
-			mostats.setNumberOfGets(ostats.getNumberOfGets());
-			mostats.setNumberOfOtherOperations(ostats.getNumberOfOtherOperations());
-			mostats.setNumberOfPuts(ostats.getNumberOfPuts());
-			mostats.setNumberOfRemoves(ostats.getNumberOfRemoves());
-			mostats.setTotalGetLatency(ostats.getTotalGetLatency());
-			mostats.setTotalPutLatency(ostats.getTotalPutLatency());
-			mostats.setTotalRemoveLatency(ostats.getTotalRemoveLatency());
+			mostats.setNumberOfEvents(stats.getEventOperationCount());
+			mostats.setNumberOfGets(stats.getGetOperationCount());
+			mostats.setNumberOfOtherOperations(stats.getOtherOperationCount());
+			mostats.setNumberOfPuts(stats.getPutOperationCount());
+			mostats.setNumberOfRemoves(stats.getRemoveOperationCount());
+			mostats.setTotalGetLatency(stats.getTotalGetLatency());
+			mostats.setTotalPutLatency(stats.getTotalPutLatency());
+			mostats.setTotalRemoveLatency(stats.getTotalRemoveLatency());
 			
 			return mstats;
 	}
@@ -457,22 +454,21 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	 */
 	private QueueStats loadQueueStats(String queueName){
 		LocalQueueStats stats = Main.getHazelcast().getQueue(queueName).getLocalQueueStats();
-		LocalQueueOperationStats ostats = stats.getOperationStats();
 		
 		QueueStats qstats = new QueueStats();
 		qstats.setName(queueName);
 		
-		qstats.setAveAge(stats.getAveAge());
+		qstats.setAveAge(stats.getAvgAge());
 		qstats.setBackupItemCount(stats.getBackupItemCount());
 		qstats.setMaxAge(stats.getMaxAge());
 		qstats.setMinAge(stats.getMinAge());
 		qstats.setOwnedItemCount(stats.getOwnedItemCount());
 		
 		QueueOperationsStats qostats = qstats.getOperationsStats();
-		qostats.setNumberOfEmptyPolls(ostats.getNumberOfEmptyPolls());
-		qostats.setNumberOfOffers(ostats.getNumberOfOffers());
-		qostats.setNumberOfPolls(ostats.getNumberOfPolls());
-		qostats.setNumberOfRejectedOffers(ostats.getNumberOfRejectedOffers());
+		qostats.setNumberOfEmptyPolls(stats.getEmptyPollOperationCount());
+		qostats.setNumberOfOffers(stats.getOfferOperationCount());
+		qostats.setNumberOfPolls(stats.getPollOperationCount());
+		qostats.setNumberOfRejectedOffers(stats.getRejectedOfferOperationCount());
 		
 		return qstats;
 	}

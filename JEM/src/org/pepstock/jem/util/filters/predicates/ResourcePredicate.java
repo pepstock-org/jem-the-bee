@@ -18,6 +18,8 @@ package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.JemRuntimeException;
@@ -29,8 +31,9 @@ import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.ResourceFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 
 /**
  * The {@link Predicate} of a {@link Resource}
@@ -58,7 +61,7 @@ public class ResourcePredicate extends JemFilterPredicate<Resource> implements S
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Map.Entry entry) {
 		Resource resource = (Resource)entry.getValue();
 		boolean includeThis = true;
 		FilterToken[] tokens = getFilter().toTokenArray();
@@ -153,5 +156,10 @@ public class ResourcePredicate extends JemFilterPredicate<Resource> implements S
 			// cannot parse the date, exclude this entry by default!
 			return false;
 		}		
+	}
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		return null;
 	}
 }

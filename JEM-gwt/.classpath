@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.7.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xstream-1.4.7.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/hazelcast-all-2.6.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-apache-client4-1.18.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-bundle-1.18.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-json-1.18.jar"/>
@@ -29,5 +28,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-17.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-gwt-17.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hazelcast-all-3.3.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

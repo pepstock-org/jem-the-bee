@@ -21,14 +21,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -48,9 +48,9 @@ import org.pepstock.jem.util.DateFormatter;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
-import com.hazelcast.core.MultiTask;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -278,13 +278,13 @@ public class StatisticsManager {
 					lightEnvironmentSample.setDate(times[0]);
 					lightEnvironmentSample.setTime(times[1]);
 
-					MultiTask<LightMemberSample> task = new MultiTask<LightMemberSample>(new GetSample(environmentSample), listOfNodes);
-					ExecutorService executorService = Main.getHazelcast().getExecutorService();
-					executorService.execute(task);
+					IExecutorService executorServie = Main.getHazelcast().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+					Map<Member, Future<LightMemberSample>> futures = executorServie.submitToMembers(new GetSample(environmentSample), listOfNodes);
+					
 					try {
 						isExecuting = true;
-						Collection<LightMemberSample> results = task.get();
-						for (LightMemberSample result : results) {
+						for (Future<LightMemberSample> future : futures.values()) {
+							LightMemberSample result = future.get();
 							if (result != null) {
 								lightEnvironmentSample.getMembers().add(result);
 							}

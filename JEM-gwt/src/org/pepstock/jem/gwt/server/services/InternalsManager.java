@@ -193,22 +193,26 @@ public class InternalsManager extends DefaultService{
 		// to get the uptime
 		// uses the started time information of JEM node info
 		// try locks by uuid
-		if (nodes.tryLock(oldest.getUuid(), 10, TimeUnit.SECONDS)) {
-			try {
-				// if coordinator is not on map (mustn't be!!)
-				// set not available
-				NodeInfo oldestInfo = nodes.get(oldest.getUuid());
-				if (oldestInfo != null){
-					infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
-				} else {
-					infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+		try {
+			if (nodes.tryLock(oldest.getUuid(), 10, TimeUnit.SECONDS)) {
+				try {
+					// if coordinator is not on map (mustn't be!!)
+					// set not available
+					NodeInfo oldestInfo = nodes.get(oldest.getUuid());
+					if (oldestInfo != null){
+						infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
+					} else {
+						infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+					}
+				} finally {
+					// unlocks always the key
+					nodes.unlock(oldest.getUuid());
 				}
-			} finally {
-				// unlocks always the key
-				nodes.unlock(oldest.getUuid());
+			} else {
+				infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
 			}
-		} else {
-			infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+		} catch (InterruptedException e) {
+			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.NODES_MAP);
 		}
 		
 		// gets the current time. 

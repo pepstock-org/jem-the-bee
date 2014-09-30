@@ -54,21 +54,21 @@ public class MulticastMessageFactory {
 			return multicastMessage;
 		} catch (NodeMessageException e) {
 			// debug
-			LogAppl.getInstance().debug(e.getMessage(), e);
+			LogAppl.getInstance().debug(e.getMessage());
 		}
 		try {
 			multicastMessage = NodeResponse.unmarshall(message);
 			return multicastMessage;
 		} catch (NodeMessageException e) {
 			// debug
-			LogAppl.getInstance().debug(e.getMessage(), e);
+			LogAppl.getInstance().debug(e.getMessage());
 		}
 		try {
 			multicastMessage = ShutDown.unmarshall(message);
 			return multicastMessage;
 		} catch (NodeMessageException e) {
 			// debug
-			LogAppl.getInstance().debug(e.getMessage(), e);
+			LogAppl.getInstance().debug(e.getMessage());
 		}
 		return null;
 	}

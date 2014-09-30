@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputFileContent;
@@ -40,8 +40,8 @@ import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
 
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
@@ -388,12 +388,11 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		Cluster cluster = client.getCluster();
 		Set<Member> set = cluster.getMembers();
 		Member member = set.iterator().next();
-		DistributedTask<OutputFileContent> task = new DistributedTask<OutputFileContent>(new GetMessagesLog(getJob()), member);
-		ExecutorService executorService = client.getExecutorService();
-		executorService.execute(task);
+		IExecutorService executorServie = client.getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+		Future<OutputFileContent> future = executorServie.submitToMember(new GetMessagesLog(getJob()), member);
 		OutputFileContent content;
 		try {
-			content = task.get();
+			content = future.get();
 			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content.getContent());
 		} catch (InterruptedException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());

@@ -35,11 +35,14 @@ import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.config.Config;
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
+import com.hazelcast.config.ListenerConfig;
 import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.SocketInterceptorConfig;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
@@ -74,7 +77,7 @@ public class WebMulticastListener implements Runnable {
 			String multicastGroup = multicastConfig.getMulticastGroup();
 			int multicastPort = multicastConfig.getMulticastPort();
 			socket = new MulticastSocket(multicastPort);
-			Interfaces interfaces = config.getNetworkConfig().getInterfaces();
+			InterfacesConfig interfaces = config.getNetworkConfig().getInterfaces();
 			if (interfaces != null && interfaces.isEnabled()) {
 				try {
 					socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));
@@ -108,14 +111,21 @@ public class WebMulticastListener implements Runnable {
 						// create client config
 						ClientConfig clientConfig = new ClientConfig();
 						clientConfig.setGroupConfig(config.getGroupConfig());
+						ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+						clientConfig.setNetworkConfig(networkConfig);
 						// check socket interceptor
 						if (isSocketInterceptor) {
-							clientConfig.setSocketInterceptor(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+							SocketInterceptorConfig socketInterceptorConfig=new SocketInterceptorConfig();
+							socketInterceptorConfig.setClassName(WebInterceptor.class.getName());
+							socketInterceptorConfig.setEnabled(true);
+							socketInterceptorConfig.setProperties(config.getNetworkConfig().getSocketInterceptorConfig().getProperties());
+							networkConfig.setSocketInterceptorConfig(socketInterceptorConfig);
 						}
-						clientConfig.setAddresses(message.getNodesMembers());
+						networkConfig.setAddresses(message.getNodesMembers());
 						MulticastLifeCycle lifeCycle = new MulticastLifeCycle();
-
-						clientConfig.getListeners().add(lifeCycle);
+						ListenerConfig listenerConfig = new ListenerConfig();
+						listenerConfig.setImplementation(lifeCycle);
+						clientConfig.addListenerConfig(listenerConfig);
 						HazelcastInstance instance = HazelcastClient.newHazelcastClient(clientConfig);
 						lifeCycle.atInstantiation(instance);
 					}

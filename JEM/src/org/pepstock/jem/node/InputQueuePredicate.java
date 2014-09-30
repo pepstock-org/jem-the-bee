@@ -16,16 +16,21 @@
  */
 package org.pepstock.jem.node;
 
-import java.io.DataInput;
-import java.io.DataOutput;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 
-import com.hazelcast.core.MapEntry;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.query.Predicates.AbstractPredicate;
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -91,7 +96,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
+	public boolean apply(@SuppressWarnings("rawtypes") Map.Entry entry) {
 		// gets job instance and JCL
 		Job job = (Job) entry.getValue();
 		if (job == null) {
@@ -141,8 +146,18 @@ public class InputQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
 	 */
 	@Override
-	public void readData(DataInput data) throws IOException {
-		String ee = data.readLine();
+	public void readData(ObjectDataInput data) throws IOException {
+		ByteArrayOutputStream ba = new ByteArrayOutputStream();
+		byte b = data.readByte();
+		while (b > -1) {
+			try {
+				ba.write(b);
+				b = data.readByte();
+			} catch (EOFException e) {
+				b = -1;
+			}
+		}
+		String ee = new String(ba.toByteArray());
 		executionEnviroment = (ExecutionEnvironment) stream.fromXML(ee);
 	}
 
@@ -152,7 +167,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
 	 */
 	@Override
-	public void writeData(DataOutput data) throws IOException {
+	public void writeData(ObjectDataOutput data) throws IOException {
 		// replace \n beacause are not supported from serialize engine
 		String ee = stream.toXML(executionEnviroment).replace('\n', ' ');
 		data.writeBytes(ee);
@@ -165,5 +180,10 @@ public class InputQueuePredicate extends AbstractPredicate {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		return null;
 	}
 }

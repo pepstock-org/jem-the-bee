@@ -17,8 +17,12 @@
 package org.pepstock.jem.node;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import org.pepstock.jem.Job;
+
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to
@@ -61,5 +65,10 @@ public class OutputQueuePredicate extends EnvironmentsPredicate {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		return null;
 	}
 }

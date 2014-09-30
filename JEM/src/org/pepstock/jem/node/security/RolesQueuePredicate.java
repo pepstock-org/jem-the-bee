@@ -16,15 +16,20 @@
 */
 package org.pepstock.jem.node.security;
 
-import java.io.DataInput;
-import java.io.DataOutput;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hazelcast.core.MapEntry;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.query.Predicates.AbstractPredicate;
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -73,7 +78,7 @@ public class RolesQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public boolean apply(@SuppressWarnings("rawtypes") MapEntry arg0) {
+	public boolean apply(@SuppressWarnings("rawtypes") Map.Entry arg0) {
 		// gets role instance
 		Role role = (Role) arg0.getValue();
 		// gets all users list
@@ -103,8 +108,18 @@ public class RolesQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
 	 */
 	@Override
-	public void readData(DataInput arg0) throws IOException {
-		String ee = arg0.readLine();
+	public void readData(ObjectDataInput arg0) throws IOException {
+		ByteArrayOutputStream ba = new ByteArrayOutputStream();
+		byte b = arg0.readByte();
+		while (b > -1) {
+			try {
+				ba.write(b);
+				b = arg0.readByte();
+			} catch (EOFException e) {
+				b = -1;
+			}
+		}
+		String ee = new String(ba.toByteArray());
 		user = (User) stream.fromXML(ee);
 	}
 
@@ -114,10 +129,18 @@ public class RolesQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
 	 */
 	@Override
-	public void writeData(DataOutput arg0) throws IOException {
+	public void writeData(ObjectDataOutput arg0) throws IOException {
 		// replace \n beacause are not supported from serialize engine
 		String ee = stream.toXML(user).replace('\n', ' ');
 		arg0.writeBytes(ee);
 	}
 
+
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		return null;
+	}
+
+	
 }

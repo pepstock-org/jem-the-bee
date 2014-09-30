@@ -48,7 +48,7 @@ import org.pepstock.jem.util.TimeUtils;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
-import com.hazelcast.core.Transaction;
+import com.hazelcast.transaction.TransactionContext;
 
 /**
  * Manages all activities related to JCL checking queue, after job job
@@ -80,8 +80,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			while (!Main.IS_SHUTTING_DOWN.get()) {
 				if (Main.getNode().isOperational() && !Main.IS_ACCESS_MAINT.get()) {
 
-					Transaction tran = Main.getHazelcast().getTransaction();
-					tran.begin();
+					TransactionContext tran = Main.getHazelcast().newTransactionContext();
+					tran.beginTransaction();
 					PreJob prejob = null;
 					try {
 						// poll on queue
@@ -96,11 +96,11 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 						checkAndLoadJcl(prejob);
 						// commit always! Rollback is never necessary
 						// Rollback is called automatically when node crashed
-						tran.commit();
+						tran.commitTransaction();
 					} else {
 						// commit always! Rollback is never necessary
 						// Rollback is called automatically when node crashed
-						tran.commit();
+						tran.commitTransaction();
 						Thread.sleep(2 * TimeUtils.SECOND);
 					}
 				} else {

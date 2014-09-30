@@ -18,7 +18,6 @@ package org.pepstock.jem.util.locks;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.InstanceDestroyedException;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -43,8 +42,6 @@ public class ReadLock extends ConcurrentLock{
 	public void acquire() throws LockException {
 		try {
 			getNoWaiting().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		}
@@ -70,9 +67,6 @@ public class ReadLock extends ConcurrentLock{
 		if (prev.longValue() == 0){
 			try {
 				getNoAccessing().acquire();
-			} catch (InstanceDestroyedException e) {
-				getNoWaiting().release();
-				throw new LockException(e);
 			} catch (InterruptedException e) {
 				getNoWaiting().release();
 				throw new LockException(e);

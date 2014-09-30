@@ -17,7 +17,6 @@
 package org.pepstock.jem.util.locks;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.InstanceDestroyedException;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -38,15 +37,11 @@ public class WriteLock extends ConcurrentLock{
 	public void acquire() throws LockException {
 		try {
 			getNoWaiting().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		}
 		try {
 			getNoAccessing().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		} finally {

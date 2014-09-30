@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
@@ -35,10 +35,11 @@ import org.pepstock.jem.node.RoutingQueuePredicate;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.swarm.executors.RouterIn;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MapEvent;
 import com.hazelcast.core.Member;
 
 /**
@@ -170,15 +171,14 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 					if (member != null) {
 						LogAppl.getInstance().emit(SwarmNodeMessage.JEMO009I, job);
 						// route the job to the specific member
-						DistributedTask<Boolean> task = new DistributedTask<Boolean>(new RouterIn(job, Main.EXECUTION_ENVIRONMENT.getEnvironment()), member);
-						ExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService();
+						IExecutorService executorServie = Main.SWARM.getHazelcastInstance().getExecutorService(SwarmQueues.SWARM_EXECUTOR_SERVICE);
 						// start 2 phase commit
 						job.getRoutingInfo().setRoutingCommitted(false);
 						routingQueue.put(job.getId(), job);
-						executorService.execute(task);
+						Future<Boolean> future = executorServie.submitToMember(new RouterIn(job, Main.EXECUTION_ENVIRONMENT.getEnvironment()), member);
 						// if get response from task remove job from routing
 						// queue
-						if (task.get()) {
+						if (future.get()) {
 							// now routing is commit
 							routingQueue.remove(job.getId());
 							LogAppl.getInstance().emit(SwarmNodeMessage.JEMO010I, job);
@@ -208,5 +208,17 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 	 */
 	private void setRouteEnded(boolean routeEnded) {
 		this.routeEnded = routeEnded;
+	}
+
+	@Override
+	public void mapCleared(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mapEvicted(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -25,6 +25,7 @@ import org.pepstock.jem.node.swarm.SwarmQueues;
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 
@@ -119,5 +120,10 @@ public class NodeListener implements MembershipListener {
 			// it means that the list NODES_MAP is not well-maintained
 			LogAppl.getInstance().emit(SwarmNodeMessage.JEMO017E, memberRemoved.toString(), SwarmQueues.NODES_MAP);
 		}
+	}
+
+	@Override
+	public void memberAttributeChanged(MemberAttributeEvent arg0) {
+		
 	}
 }

@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.Key;
 import java.security.KeyException;
+import java.util.Properties;
 
 import org.apache.shiro.codec.Base64;
 import org.pepstock.jem.log.LogAppl;
@@ -57,7 +58,33 @@ public class SubmitInterceptor implements SocketInterceptor {
 	private Key privateKey;
 
 	private String subjectId;
+	
+	/**
+	 * the private key for secure communication between client and cluster
+	 */
+	public static String PRIVATE_KEY_FILE_PATH="privateKeyFilePath";
+	
+	/**
+	 * the password for the private key for secure communication between client and cluster
+	 */
+	public static String KEY_PASSWORD="keyPassword";
 
+	/**
+	 * the subject id relative to the private key so to be able to search it in the keystore
+	 */
+	public static String SUBJECT_ID="subjectId";
+
+	@Override
+	public void init(Properties properties) {
+		// TODO Auto-generated method stub
+		subjectId=properties.getProperty(SUBJECT_ID);
+		try {
+			privateKey = Crypto.loadPrivateKeyFromFile(new File(properties.getProperty(PRIVATE_KEY_FILE_PATH)), properties.getProperty(KEY_PASSWORD));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param privateKeFilePath the path relative to the private key of the user
@@ -125,5 +152,6 @@ public class SubmitInterceptor implements SocketInterceptor {
 			System.exit(1);
 		}
 	}
+
 
 }

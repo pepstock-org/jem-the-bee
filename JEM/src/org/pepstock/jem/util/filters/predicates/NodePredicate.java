@@ -18,6 +18,8 @@ package org.pepstock.jem.util.filters.predicates;
 
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.NodeInfoBean;
@@ -27,8 +29,9 @@ import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.NodeFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
+import com.hazelcast.query.impl.QueryContext;
+import com.hazelcast.query.impl.QueryableEntry;
 
 /**
  * The {@link Predicate} of a {@link NodeInfoBean}
@@ -56,7 +59,7 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Map.Entry entry) {
 		NodeInfoBean node = ((NodeInfo)entry.getValue()).getNodeInfoBean();
 		boolean includeThis = true;
 		FilterToken[] tokens = getFilter().toTokenArray();
@@ -130,6 +133,11 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 			}
 			return StringUtils.containsIgnoreCase(node.getLabel(), newTokenValue);
 		}		
+	}
+
+	@Override
+	public Set<QueryableEntry> filter(QueryContext arg0) {
+		return null;
 	}
 
 }

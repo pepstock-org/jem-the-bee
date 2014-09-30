@@ -29,7 +29,6 @@
 	<classpathentry kind="lib" path="lib/quartz/quartz-2.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/shiro/shiro-core-1.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/shiro/shiro-web-1.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/hazelcast/hazelcast-all-2.6.6.jar"/>
 	<classpathentry kind="lib" path="lib/dbcp/commons-dbcp-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/dbcp/commons-pool-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/jersey/jersey-apache-client4-1.18.1.jar"/>
@@ -285,5 +284,6 @@
 	<classpathentry kind="lib" path="lib/spring/com.springsource.util.parser.manifest-2.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring/org.osgi.core-4.1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/hazelcast/hazelcast-all-3.3.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

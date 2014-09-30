@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -105,13 +105,13 @@ import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.SemaphoreConfig;
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ISemaphore;
 import com.hazelcast.core.Member;
-import com.hazelcast.partition.PartitionService;
+import com.hazelcast.core.PartitionService;
 
 /**
  * It starts up loading the configuration from a file, passed by a system
@@ -238,8 +238,12 @@ public class StartUpSystem {
 				}
 				
 				// defines here all read and writes locks 
-				SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig(ConcurrentLock.NO_WAITING_PREFIX+"*", Integer.MAX_VALUE);
-				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig(ConcurrentLock.NO_ACCESSING_PREFIX+"*", 1);
+				SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig();
+				semaphoreConfig1.setName(ConcurrentLock.NO_WAITING_PREFIX+"*");
+				semaphoreConfig1.setInitialPermits(Integer.MAX_VALUE);
+				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig();
+				semaphoreConfig2.setName(ConcurrentLock.NO_ACCESSING_PREFIX+"*");
+				semaphoreConfig2.setInitialPermits(1);
 				config.addSemaphoreConfig(semaphoreConfig1);
 				config.addSemaphoreConfig(semaphoreConfig2);
 						
@@ -1284,13 +1288,12 @@ public class StartUpSystem {
 	 * @throws ConfigurationException
 	 */
 	private static void checkDataPaths() throws ConfigurationException {
-        DistributedTask<List<String>> task = new DistributedTask<List<String>>(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
-        ExecutorService executorService = Main.getHazelcast().getExecutorService();
-        executorService.execute(task);
+        IExecutorService executorService = Main.getHazelcast().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+        Future<List<String>> future = executorService.submitToMember(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
 		// gets result
         try {
         	List<String> localDataPaths = Main.DATA_PATHS_MANAGER.getDataPathsNames();
-			List<String> dataPaths = task.get();
+			List<String> dataPaths = future.get();
 			// checks if the amount is the same
 			if (dataPaths.size() != localDataPaths.size()){
 				throw new ConfigurationException(NodeMessage.JEMC258E.toMessage().getFormattedMessage(dataPaths.size(), localDataPaths.size()));

@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
@@ -36,14 +35,13 @@ import org.hyperic.sigar.SigarException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.GenericCallBack;
 import org.pepstock.jem.node.executors.nodes.Drain;
 import org.pepstock.jem.node.executors.nodes.Start;
 import org.pepstock.jem.node.persistence.NodesMapManager;
 import org.pepstock.jem.util.Parser;
 
-import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
 import com.hazelcast.query.SqlPredicate;
@@ -91,7 +89,7 @@ public class NodeInfoUtility {
 
         // for net info of member, loads all info inside of nodeinfo
         // port of RMI will be set later
-        InetSocketAddress address = member.getInetSocketAddress();
+        InetSocketAddress address = member.getSocketAddress();
         info.setPort(address.getPort());
         info.setIpaddress(address.getAddress().getHostAddress());
 
@@ -319,19 +317,14 @@ public class NodeInfoUtility {
      * Drains the node
      */
     public static void drain() {
-        DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Drain(), Main.getHazelcast().getCluster().getLocalMember());
-        ExecutorService executorService = Main.getHazelcast().getExecutorService();
-        task.setExecutionCallback(new GenericCallBack());
-        executorService.execute(task);
-    }
-
+    	IExecutorService executorService = Main.getHazelcast().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+		executorService.submitToMember(new Drain(), Main.getHazelcast().getCluster().getLocalMember(), new GenericCallBack());
+	}
     /**
      * Drains the node
      */
     public static void start() {
-        DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Start(), Main.getHazelcast().getCluster().getLocalMember());
-        ExecutorService executorService = Main.getHazelcast().getExecutorService();
-        task.setExecutionCallback(new GenericCallBack());
-        executorService.execute(task);
+    	IExecutorService executorService = Main.getHazelcast().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+		executorService.submitToMember(new Start(), Main.getHazelcast().getCluster().getLocalMember(), new GenericCallBack());
     }
 }

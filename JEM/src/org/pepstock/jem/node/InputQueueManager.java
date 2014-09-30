@@ -36,6 +36,7 @@ import org.pepstock.jem.log.LogAppl;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MapEvent;
 
 /**
  * Manages all activities related to input queue. It's able to listen when new
@@ -428,6 +429,18 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 				LogAppl.getInstance().emit(NodeMessage.JEMC217E, runnable.getClass().getName());
 			}
 		}
+	}
+
+	@Override
+	public void mapCleared(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mapEvicted(MapEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

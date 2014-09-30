@@ -44,6 +44,12 @@ public final class SwarmQueues {
 	public static final String NODES_MAP_LOCK = "org.pepstock.jem.swarm.nodes.lock";
 
 	/**
+	 * Key for asking default swarm executor service 
+	 * 
+	 */
+	public static final String SWARM_EXECUTOR_SERVICE = "org.pepstock.jem.swarm.executorservice";
+	
+	/**
 	 * To avoid any instantiation
 	 */
 	private SwarmQueues() {

@@ -18,17 +18,17 @@ package org.pepstock.jem.gwt.server.commons;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.node.executors.SerializableException;
 
-import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.Member;
 
 /**
@@ -72,19 +72,16 @@ public class DistributedTaskExecutor<T>  {
      * @throws ServiceMessageException
      */
 	public T getResult() throws ServiceMessageException{
-		DistributedTask<T> task = new DistributedTask<T>(callable, member);
-		HazelcastInstance instance = SharedObjects.getHazelcastInstance();
-		ExecutorService executorService = instance.getExecutorService();
-		// executes it
-		executorService.execute(task);
+		IExecutorService executorService = SharedObjects.getHazelcastInstance().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+		Future<T> future = executorService.submitToMember(callable, member);
 		try {
 			// gets result
-			return task.get();
+			return future.get();
 		} catch (InterruptedException e) {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, future.getClass().getName());
+			throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, future.getClass().getName());
 		} catch (ExecutionException e) {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG063E, e, future.getClass().getName());
 			
 			Exception ex = getCustomException(e);		
 			if (ex instanceof SerializableException){
@@ -93,7 +90,7 @@ public class DistributedTaskExecutor<T>  {
 				ExecutorException me = (ExecutorException)ex;
 				throw new ServiceMessageException(me.getMessageInterface(), me.getObjects());
 			} else {
-				throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, task.getClass().getName());
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG063E, e, future.getClass().getName());
 			}
 		}
 	}

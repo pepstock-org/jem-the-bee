@@ -33,7 +33,7 @@ import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
 
 /**
  * Class responsible for sending multicast messages used by the
@@ -52,7 +52,7 @@ public class WebMulticastSender {
 		try {
 			Config config = SharedObjects.getInstance().getHazelcastConfig();
 			socket = new MulticastSocket();
-			Interfaces interfaces = config.getNetworkConfig().getInterfaces();
+			InterfacesConfig interfaces = config.getNetworkConfig().getInterfaces();
 			if (interfaces != null && interfaces.isEnabled()) {
 				try {
 					socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));

@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -40,9 +41,9 @@ import org.pepstock.jem.node.stats.SampleComparator;
 import org.pepstock.jem.util.DateFormatter;
 
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
-import com.hazelcast.core.MultiTask;
 
 /**
  * This service provides all statistics metrics to client about the status of JEM environment.
@@ -151,12 +152,15 @@ public class StatisticsManager extends InternalsManager{
 			lightSample.setTime(times[1]);
 			
 			// schedules a multi task on all memebers to get data
-			MultiTask<LightMemberSample> task = new MultiTask<LightMemberSample>(new GetRealtimeSample(lightSample), listOfNodes);
-			ExecutorService executorService = getInstance().getExecutorService();
-			executorService.execute(task);
+			IExecutorService executorService=getInstance().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+			Map<Member, Future<LightMemberSample>> map=executorService.submitToMembers(new GetRealtimeSample(lightSample), listOfNodes);
 			try {
+				Collection<LightMemberSample> results=new ArrayList<LightMemberSample>();
+				Collection<Future<LightMemberSample>> futures=map.values();
 				// gets the results from all members
-				Collection<LightMemberSample> results = task.get();
+				for(Future<LightMemberSample> future:futures){
+					results.add(future.get());
+				}
 				lightSample.getMembers().addAll(results);
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG018E, e);

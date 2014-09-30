@@ -17,14 +17,13 @@
 package org.pepstock.jem.gwt.server.commons;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.GenericCallBack;
 
-import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.Member;
 
 /**
@@ -53,13 +52,9 @@ public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<Exec
 	 * @throws ServiceMessageException
 	 */
 	public void execute() throws ServiceMessageException {
-		// creates cancel executor
-		DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(getCallable(), getMember());
-		HazelcastInstance instance = SharedObjects.getHazelcastInstance();
-		ExecutorService executorService = instance.getExecutorService();
-		task.setExecutionCallback(new GenericCallBack());
-		// executes it
-		executorService.execute(task);
+		// creates cancel executor and execute it
+		IExecutorService executorService = SharedObjects.getHazelcastInstance().getExecutorService(Queues.JEM_EXECUTOR_SERVICE);
+		executorService.submitToMember(getCallable(), getMember(), new GenericCallBack());
 	}
 
 }

@@ -19,8 +19,8 @@ package org.pepstock.jem.node.listeners;
 import org.pepstock.jem.node.Main;
 
 import com.hazelcast.core.Member;
-import com.hazelcast.partition.MigrationEvent;
-import com.hazelcast.partition.MigrationListener;
+import com.hazelcast.core.MigrationEvent;
+import com.hazelcast.core.MigrationListener;
 
 /**
  * Listen when a data migration in Hazelcast is started. Checks if OLD member is null because in this case

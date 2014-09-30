@@ -31,7 +31,7 @@ import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
 
 /**
  * Is a thread responsible for listening to the multicast client request and
@@ -58,7 +58,7 @@ public class NodeMulticastListener implements Runnable {
 		try {
 			// Prepare to join multicast group
 			socket = new MulticastSocket(Main.getMulticastService().getConfig().getMulticastPort());
-			Interfaces interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
+			InterfacesConfig interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
 			if (interfaces != null && interfaces.isEnabled()) {
 				try {
 					socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));

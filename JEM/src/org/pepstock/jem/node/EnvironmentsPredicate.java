@@ -16,16 +16,18 @@
 */
 package org.pepstock.jem.node;
 
-import java.io.DataInput;
-import java.io.DataOutput;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 
-import com.hazelcast.core.MapEntry;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.query.Predicates.AbstractPredicate;
 
 /**
@@ -79,7 +81,7 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public final boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
+	public final boolean apply(@SuppressWarnings("rawtypes") Map.Entry entry) {
 		// gets job instance and JCL
 		Job job = (Job) entry.getValue();
 		if (job == null){
@@ -105,8 +107,18 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
 	 */
 	@Override
-	public void readData(DataInput data) throws IOException {
-		String ee = data.readLine();
+	public void readData(ObjectDataInput data) throws IOException {
+		ByteArrayOutputStream ba = new ByteArrayOutputStream();
+		byte b = data.readByte();
+		while (b > -1) {
+			try {
+				ba.write(b);
+				b = data.readByte();
+			} catch (EOFException e) {
+				b = -1;
+			}
+		}
+		String ee = new String(ba.toByteArray());
 		String setString = ee.substring(1, ee.length() - 1);
 		String[] tokens = setString.split(",");
 		environments = new HashSet<String>();
@@ -121,7 +133,7 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
 	 */
 	@Override
-	public void writeData(DataOutput data) throws IOException {
+	public void writeData(ObjectDataOutput data) throws IOException {
 		String ee = environments.toString();
 		data.writeBytes(ee);
 	}

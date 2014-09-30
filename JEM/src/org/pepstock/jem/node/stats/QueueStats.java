@@ -35,9 +35,9 @@ public class QueueStats implements Serializable {
 
 	private long maxAge = Long.MIN_VALUE;
 
-	private int backupItemCount = Integer.MIN_VALUE;
+	private long backupItemCount = Integer.MIN_VALUE;
 
-	private int ownedItemCount = Integer.MIN_VALUE;
+	private long ownedItemCount = Integer.MIN_VALUE;
 	
 	private QueueOperationsStats operationsStats = new QueueOperationsStats();
 
@@ -106,28 +106,28 @@ public class QueueStats implements Serializable {
 	/**
 	 * @return the backupItemCount
 	 */
-	public int getBackupItemCount() {
+	public long getBackupItemCount() {
 		return backupItemCount;
 	}
 
 	/**
 	 * @param backupItemCount the backupItemCount to set
 	 */
-	public void setBackupItemCount(int backupItemCount) {
+	public void setBackupItemCount(long backupItemCount) {
 		this.backupItemCount = backupItemCount;
 	}
 
 	/**
 	 * @return the ownedItemCount
 	 */
-	public int getOwnedItemCount() {
+	public long getOwnedItemCount() {
 		return ownedItemCount;
 	}
 
 	/**
 	 * @param ownedItemCount the ownedItemCount to set
 	 */
-	public void setOwnedItemCount(int ownedItemCount) {
+	public void setOwnedItemCount(long ownedItemCount) {
 		this.ownedItemCount = ownedItemCount;
 	}
 

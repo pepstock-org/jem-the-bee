@@ -36,6 +36,7 @@ import com.hazelcast.core.Cluster;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 import com.hazelcast.core.Message;
@@ -264,5 +265,11 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 			}
 		}
 		LogAppl.getInstance().emit(NodeMessage.JEMC223W, event.getMessageObject().getMember());
+	}
+
+	@Override
+	public void memberAttributeChanged(MemberAttributeEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

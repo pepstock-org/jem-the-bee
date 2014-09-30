@@ -13,10 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.node.executors;
-
-import java.util.concurrent.Future;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
@@ -33,7 +31,7 @@ import com.hazelcast.core.ExecutionCallback;
  * 
  */
 public class GenericCallBack implements ExecutionCallback<ExecutionResult> {
-	
+
 	/**
 	 * Empty constructor
 	 */
@@ -41,22 +39,25 @@ public class GenericCallBack implements ExecutionCallback<ExecutionResult> {
 	}
 
 	/**
-	 * Method called when the execution is ended.<br>
-	 * It writes only information records if the task is canceled or if a
-	 * exception occurs.
+	 * Method called when the execution fail.<br>
 	 * 
 	 * @see ExecutionResult
-	 * @param future future task executed
+	 * @param response is the ExecutionResult
 	 */
 	@Override
-	public void done(Future<ExecutionResult> future) {
-		try {
-			if (!future.isCancelled()) {
-				ExecutionResult result = future.get();
-				LogAppl.getInstance().emit(NodeMessage.JEMC113I, result.getDescription());
-			}
-		} catch (Exception e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC112E, e);
-		}
+	public void onFailure(Throwable t) {
+		LogAppl.getInstance().emit(NodeMessage.JEMC112E, t);
+	}
+
+	/**
+	 * Method called when the execution is ended.<br>
+	 * It writes only information records on response
+	 * 
+	 * @see ExecutionResult
+	 * @param response is the ExecutionResult
+	 */
+	@Override
+	public void onResponse(ExecutionResult result) {
+		LogAppl.getInstance().emit(NodeMessage.JEMC113I, result.getDescription());
 	}
 }

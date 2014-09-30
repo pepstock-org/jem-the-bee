@@ -16,14 +16,16 @@
 */
 package org.pepstock.jem.util.filters.predicates;
 
-import java.io.DataInput;
-import java.io.DataOutput;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
 
 import org.pepstock.jem.util.filters.Filter;
 
-import com.hazelcast.core.MapEntry;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.Predicates.AbstractPredicate;
 import com.thoughtworks.xstream.XStream;
@@ -59,16 +61,26 @@ public abstract class JemFilterPredicate<T> extends AbstractPredicate implements
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public abstract boolean apply(MapEntry arg0);
+	public abstract boolean apply(Map.Entry arg0);
 
 	@Override
-	public void readData(DataInput dataInput) throws IOException {
-		String filterString = dataInput.readLine();
-		filter = (Filter) stream.fromXML(filterString);
+	public void readData(ObjectDataInput dataInput) throws IOException {
+		ByteArrayOutputStream ba = new ByteArrayOutputStream();
+		byte b = dataInput.readByte();
+		while (b > -1) {
+			try {
+				ba.write(b);
+				b = dataInput.readByte();
+			} catch (EOFException e) {
+				b = -1;
+			}
+		}
+		String filterString = new String(ba.toByteArray());
+		filter = (Filter) stream.fromXML(filterString);	
 	}
 
 	@Override
-	public void writeData(DataOutput dataOutput) throws IOException {
+	public void writeData(ObjectDataOutput dataOutput) throws IOException {
 		// replace \n beacause are not supported from serialize engine
 		String ee = stream.toXML(filter).replace('\n', ' ');
 		dataOutput.writeBytes(ee);
