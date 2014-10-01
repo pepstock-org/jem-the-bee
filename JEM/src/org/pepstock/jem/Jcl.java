@@ -33,6 +33,12 @@ import com.google.gwt.user.client.rpc.GwtTransient;
 public class Jcl extends AbstractJcl implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Describes teh language 
+	 */
+	public static final String DEFAULT_MODE = "xml";
+	
 
 	/**
 	 * Constant if JCL is not available. Happens often when you're looking at
@@ -40,6 +46,8 @@ public class Jcl extends AbstractJcl implements Serializable {
 	 */
 	public static final String CONTENT_NOT_AVAILABLE = "JCL not available";
 
+	private String mode = DEFAULT_MODE;
+	
 	private String type = null;
 
 	/**
@@ -48,6 +56,13 @@ public class Jcl extends AbstractJcl implements Serializable {
 	 */
 	@GwtTransient
 	private String content = null;
+	
+	/**
+	 * Put @GWTTransinet to improve serialization performance. Do not use java transient because 
+	 * JCL content must be serialize in Hazelcast but not in GWT
+	 */
+	@GwtTransient
+	private String contentToBeExecuted = null;
 
 	/**
 	 * Constructor without any arguments
@@ -77,6 +92,22 @@ public class Jcl extends AbstractJcl implements Serializable {
 	}
 
 	/**
+	 * Returns the language type used for this JCL
+	 * @return the mode
+	 */
+	public String getMode() {
+		return mode;
+	}
+
+	/**
+	 * Sets the language type used for this JCL
+	 * @param mode the mode to set
+	 */
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	/**
 	 * Sets the source code representing the JCL, by a string.
 	 * 
 	 * @param content the string representing source code
@@ -93,6 +124,31 @@ public class Jcl extends AbstractJcl implements Serializable {
 	@XmlTransient
 	public String getContent() {
 		return content;
+	}
+	
+	/**
+	 * Returns the source code string, representing the JCL, to be executed.
+	 * 
+	 * @param contentToBeExecuted the contentToBeExecuted to set
+	 */
+	public void setContentToBeExecuted(String contentToBeExecuted) {
+		this.contentToBeExecuted = contentToBeExecuted;
+	}
+
+	/**
+	 * Returns the source code string, representing the JCL, to be executed.
+	 * 
+	 * @return the string representing source code
+	 */
+	@XmlTransient
+	public String getContentToBeExecuted() {
+		// if thre isn't any content to be submitted
+		// that means content attribute must be used 
+		// to be executed
+		if (contentToBeExecuted == null){
+			return content;
+		}
+		return contentToBeExecuted;
 	}
 	
 }

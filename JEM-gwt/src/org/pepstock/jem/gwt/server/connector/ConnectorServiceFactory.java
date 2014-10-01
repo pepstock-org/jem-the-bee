@@ -61,7 +61,7 @@ public class ConnectorServiceFactory {
 	 * @return the right service, Multicast or TCP-IP, depending on the
 	 *         hazelcast configuration
 	 */
-	public static Service getConnectorServie() {
+	public static Service getConnectorService() {
 		Service service = null;
 		MulticastConfig multicastConfig = SharedObjects.getInstance().getHazelcastConfig()
 				.getNetworkConfig().getJoin().getMulticastConfig();

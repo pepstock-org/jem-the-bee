@@ -36,6 +36,7 @@ public interface JclFactory extends Serializable {
 	 * the syntax of JCL is not correct
 	 * 
 	 * @see org.pepstock.jem.Jcl#getContent()
+	 * @param job job to submit
 	 * @param content the string representing source code
 	 * @return jcl object
 	 * @throws JclFactoryException if the syntax of source code is not correct,

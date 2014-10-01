@@ -310,7 +310,7 @@ public class OutputSystem {
 	 */
 	public void writeJcl(Job job) throws IOException {
 		FileOutputStream fos = new FileOutputStream(getJclFile(job));
-		IOUtils.write(job.getJcl().getContent(), fos, CharSet.DEFAULT); 
+		IOUtils.write(job.getJcl().getContentToBeExecuted(), fos, CharSet.DEFAULT); 
 		fos.flush();
 		fos.close();
 	}

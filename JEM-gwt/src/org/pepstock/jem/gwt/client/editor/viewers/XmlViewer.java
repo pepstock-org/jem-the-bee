@@ -54,7 +54,7 @@ public class XmlViewer extends AbstractSyntaxHighlighter{
 	 */
     @Override
     public void setEditorAttributes(Editor editor) {
-    	// sets XML mode, readonly
+    	// sets XML mode (default), readonly
 		editor.setMode(Mode.XML);
 		editor.setReadOnly(true);
 		editor.setHighlightActiveLine(false);

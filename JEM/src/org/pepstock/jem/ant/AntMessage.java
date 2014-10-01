@@ -250,7 +250,7 @@ public enum AntMessage implements MessageInterface{
 	 * "Job name is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It informs what kind of locking scope the job is using.")
-	JEMA033I(33, "Job \"{0}\" is using \"{1}\" locking scope.", MessageLevel.INFO),
+	JEMA033I(33, "Job is using \"{0}\" locking scope.", MessageLevel.INFO),
 	
 	/**
 	 * "Data description reference: \"{0}\"", MessageLevel.INFO
@@ -467,7 +467,19 @@ public enum AntMessage implements MessageInterface{
 	 * "Copying file \"{0}\" to JEM", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the upload task starts uploading a file to JEM.")
-	JEMA069I(69, "Copying file \"{0}\" to JEM", MessageLevel.INFO);
+	JEMA069I(69, "Copying file \"{0}\" to JEM", MessageLevel.INFO),
+	
+	/**
+	 * "Invalid meta data area: duplicated tag \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the comments on the script to submit have got the begin element twice.<br/>Please have a look to the script and metadata part.")
+	JEMA070E(70, "Invalid meta data area: duplicated tag \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the comments on the script to submit doesn't have some elements.<br/>Please have a look to the script and metadata part.")
+	JEMA071E(71, "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

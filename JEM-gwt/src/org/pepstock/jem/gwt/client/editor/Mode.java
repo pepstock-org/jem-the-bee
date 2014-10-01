@@ -26,6 +26,8 @@ package org.pepstock.jem.gwt.client.editor;
 @SuppressWarnings("javadoc")
 public enum Mode {
 	
+	SH("sh"),
+	BATCHFILE("batchfile"),
     GROOVY("groovy"),
 	JAVA("java"),
 	JAVASCRIPT("javascript"),

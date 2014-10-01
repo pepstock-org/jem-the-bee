@@ -193,7 +193,7 @@ public class StepListener implements BuildListener {
 		if (isFirst){
 			// sets locking scope
 			setLockingScope(event.getProject());
-			event.getProject().log(AntMessage.JEMA033I.toMessage().getFormattedMessage(event.getProject().getName(), lockingScope));
+			event.getProject().log(AntMessage.JEMA033I.toMessage().getFormattedMessage(lockingScope));
 			
 			// if Job scope is set, loads all items to lock resources
 			if (isJobLockingScope()){

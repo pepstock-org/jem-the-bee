@@ -21,6 +21,7 @@ import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
+import org.pepstock.jem.gwt.client.editor.Editor;
 import org.pepstock.jem.gwt.client.editor.actions.Discard;
 import org.pepstock.jem.gwt.client.editor.actions.Indent;
 import org.pepstock.jem.gwt.client.editor.actions.SelectAll;
@@ -63,6 +64,18 @@ public class EditJcl extends XmlModifier{
 		this.type = type;
 		this.inspector = inspector;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.client.editor.AbstractSyntaxHighlighter#setEditorAttributes(org.pepstock.jem.gwt.client.editor.Editor)
+	 */
+    @Override
+    public void setEditorAttributes(Editor editor) {
+		super.setEditorAttributes(editor);
+		// sets mode returned by JCL
+		Jcl jcl = inspector.getJob().getJcl();
+		editor.setMode(jcl.getMode());
+		editor.setHighlightActiveLine(true);
+    }
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.gwt.client.editor.AbstractSyntaxHighlighter#setMenuItems(com.google.gwt.user.client.ui.MenuBar, boolean)

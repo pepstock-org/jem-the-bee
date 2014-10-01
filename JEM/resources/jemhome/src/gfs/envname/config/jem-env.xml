@@ -38,6 +38,20 @@
 				<!-- <property name="property.name" value="property.value"/> -->
 			</properties>
 		</factory>
+		<factory className="org.pepstock.jem.ant.BashFactory">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+		<factory className="org.pepstock.jem.ant.WindowsCmdFactory">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
 	</factories>
 
 	<listeners>

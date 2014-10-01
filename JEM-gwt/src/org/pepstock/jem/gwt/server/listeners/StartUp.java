@@ -139,7 +139,7 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		// start connector service
 		try {
 			SharedObjects.getInstance().setHazelcastConfig(config);
-			Service connectorService = ConnectorServiceFactory.getConnectorServie();
+			Service connectorService = ConnectorServiceFactory.getConnectorService();
 			SharedObjects.getInstance().setConnectorService(connectorService);
 			SharedObjects.getInstance().getConnectorService().start();
 		} catch (Exception e) {
