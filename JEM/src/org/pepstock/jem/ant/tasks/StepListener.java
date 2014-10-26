@@ -231,7 +231,7 @@ public class StepListener implements BuildListener {
 				Step step = new Step();
 				// sets step name and description
 				step.setName(event.getTarget().getName());
-				step.setDescritpion(event.getTarget().getDescription());
+				step.setDescription(event.getTarget().getDescription());
 
 				// send to JEM by RMI
 				door.setStepStarted(JobId.VALUE, step);
@@ -264,7 +264,7 @@ public class StepListener implements BuildListener {
 				Step step = new Step();
 				// sets step name and description
 				step.setName(event.getTarget().getName());
-				step.setDescritpion(event.getTarget().getDescription());
+				step.setDescription(event.getTarget().getDescription());
 
 				// checks if has an exception.If yes, sets ERROR, otherwise
 				// SUCCESS

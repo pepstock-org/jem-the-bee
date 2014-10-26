@@ -17,6 +17,7 @@
 package org.pepstock.jem.factories;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.node.tasks.JobTask;
@@ -46,5 +47,17 @@ public interface JobTaskFactory extends Serializable {
 	 * @return job task object, which represents the container of job to execute
 	 */
 	JobTask createJobTask(Job job);
+	
+	/**
+	 * Called to pass the classpath put in the factory, when a specific classloader is used.
+	 * @param classpath list of folder or files to use in classpath
+	 */
+	void setClassPath(List<String> classpath);
+	
+	/**
+	 * Called to return the classpath put in the factory, when a specific classloader is used.
+	 * @return list of folder or files to use in classpath 
+	 */
+	List<String> getClassPath();
 
 }

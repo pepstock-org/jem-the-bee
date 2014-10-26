@@ -37,7 +37,7 @@ public class Step implements Serializable {
 
 	private String name = null;
 
-	private String descritpion = null;
+	private String description = null;
 
 	private int returnCode = 0;
 
@@ -72,17 +72,17 @@ public class Step implements Serializable {
 	 * 
 	 * @return the description string for the step
 	 */
-	public String getDescritpion() {
-		return descritpion;
+	public String getDescription() {
+		return description;
 	}
 
 	/**
 	 * Sets the optional description string for the step.
 	 * 
-	 * @param descritpion the description string
+	 * @param description the description string
 	 */
-	public void setDescritpion(String descritpion) {
-		this.descritpion = descritpion;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
@@ -131,6 +131,6 @@ public class Step implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "Step [name=" + name + ", descritpion=" + descritpion + "]";
+		return "Step [name=" + name + ", descritpion=" + description + "]";
 	}
 }

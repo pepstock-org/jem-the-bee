@@ -78,7 +78,13 @@ public enum UtilMessage implements MessageInterface{
 	 * "Unable to unbind {0} object", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the client receives an execption during the SSL initialization.<br>Please contact your JEM administrators.")
-	JEMB008E(8, "Unable to activate SSL protocol for REST client", MessageLevel.ERROR);
+	JEMB008E(8, "Unable to activate SSL protocol for REST client", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to unbind {0} object", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the URLs list necessary for custom classloader is empty.<br>Please hve a look to JEM configuration.")
+	JEMB009E(9, "No URLS have been loaded! ", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UtilMessage</code>. 

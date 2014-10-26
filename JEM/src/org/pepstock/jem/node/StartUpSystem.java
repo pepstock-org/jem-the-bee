@@ -98,6 +98,8 @@ import org.pepstock.jem.node.security.keystore.KeysUtil;
 import org.pepstock.jem.node.sgm.DataPaths;
 import org.pepstock.jem.node.sgm.Path;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.ClassLoaderUtil;
+import org.pepstock.jem.util.ObjectAndClassPathContainer;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
 import org.pepstock.jem.util.locks.ConcurrentLock;
@@ -991,8 +993,9 @@ public class StartUpSystem {
 			if (factory.getClassName() != null) {
 				String className = factory.getClassName();
 				try {
-					// load by Class.forName of factory
-					Object objectFactory = Class.forName(className).newInstance();
+					
+					ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(factory, PROPERTIES);
+					Object objectFactory = oacp.getObject();
 
 					// check if it's a JemFactory. if not, exception occurs. if
 					// yes, it's loaded on a map
@@ -1022,6 +1025,8 @@ public class StartUpSystem {
 							// pointer
 							propsOfFactory = new Properties();
 						}
+						
+						jf.setClassPath(oacp.getClassPath());
 						// initializes the factory with properties defined
 						// and puts in the list if everything went good
 						jf.init(propsOfFactory);

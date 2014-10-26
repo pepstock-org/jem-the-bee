@@ -227,8 +227,10 @@ public class Configuration {
 		xstream.alias(ConfigKeys.DATABASE_ELEMENT, Database.class);
 		xstream.alias(ConfigKeys.FACTORY_ALIAS, Factory.class);
 		xstream.aliasAttribute(Factory.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
+		xstream.processAnnotations(ClassPath.class);
 		xstream.alias(ConfigKeys.LISTENER_ALIAS, Listener.class);
 		xstream.aliasAttribute(Listener.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
+		xstream.processAnnotations(ClassPath.class);
 		xstream.aliasAttribute(StatsManager.class, ConfigKeys.PATH_FIELD, ConfigKeys.PATH_ATTRIBUTE_ALIAS);
 		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CustomResourceDefinition.class);
 		xstream.aliasAttribute(CustomResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
@@ -253,5 +255,4 @@ public class Configuration {
 		}
 		return (Configuration) config;
 	}
-
 }

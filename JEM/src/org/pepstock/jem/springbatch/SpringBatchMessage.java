@@ -344,7 +344,25 @@ public enum SpringBatchMessage implements MessageInterface{
 	 */
 	@Description(explanation = "It occurs when you try to access to dataset using a disposition different from NEWbut the data does not exists."+
 	 "<br>Check data description definition and file system.")
-	JEMS049E(49, "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR);	
+	JEMS049E(49, "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR),
+	
+	/**
+	 * "Class \"{0}\" is not an instance of Tasklet", MessageLevel.ERROR
+	 */
+	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>" + "Check the class name and classpath of job because is not a Tasklet.")
+	JEMS050E(50, "Class \"{0}\" is not an instance of Tasklet", MessageLevel.ERROR),
+	
+	/**
+	 * "Mandatory variable \"className\" is missing", MessageLevel.ERRO
+	 */
+	@Description(explanation = "It occurs when the JEM work item doesn't have all necessary parameter.<br>Check JCL.")
+	JEMS051E(51, "Mandatory variable \"className\" is missing", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to load class \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>Check the class name and classpath of job")
+	JEMS052E(52, "Unable to load class \"{0}\"", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

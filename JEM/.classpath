@@ -24,6 +24,7 @@
 	<classpathentry kind="lib" path="lib/httpcomponents/httpmime-4.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/lang/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="lib/logging/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/logging/slf4j-simple-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/logging/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/logging/slf4j-log4j12-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/quartz/quartz-2.2.1.jar"/>

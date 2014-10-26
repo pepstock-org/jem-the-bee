@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class Factory extends AbstractPuginDefinition implements Serializable{
+public class Factory extends AbstractPluginDefinition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

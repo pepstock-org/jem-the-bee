@@ -17,6 +17,7 @@
 package org.pepstock.jem.factories;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,6 +43,8 @@ public abstract class AbstractFactory implements JemFactory {
 	private Properties properties = null;
 	
 	private boolean useSudo = false;
+	
+	private List<String> classpath = null;
 
 	/**
 	 * Loads all system properties
@@ -89,6 +92,24 @@ public abstract class AbstractFactory implements JemFactory {
 	 */
 	public void setUseSudo(boolean useSudo) {
 		this.useSudo = useSudo;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JobTaskFactory#setClassPath(java.util.List)
+	 */
+	@Override
+	public void setClassPath(List<String> classpath) {
+		this.classpath = classpath;
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JobTaskFactory#getClassPath()
+	 */
+	@Override
+	public List<String> getClassPath() {
+		return classpath;
 	}
 
 	/**

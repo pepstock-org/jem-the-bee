@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition" targetNamespace="http://www.example.org/MinimalExample"
+	typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools">
+	
+	<process processType="Private" isExecutable="true"
+		id="org.pepstock.jem.jbpm" name="Abend">
+
+		<!-- Metadata -->
+		<extensionElements>
+			<tns:metaData name="jem.job.name">
+				<tns:metaValue>IEFBR14</tns:metaValue>
+			</tns:metaData>
+			<tns:metaData name="jem.job.affinity">
+				<tns:metaValue>***</tns:metaValue>
+			</tns:metaData>
+		</extensionElements>
+
+		<!-- Start nodes -->
+		<startEvent id="_1" name="StartProcess" />
+
+		<!-- Copy task -->
+		<task id="_2" tns:taskName="Jem" name="Copy Task">
+			<ioSpecification id="InputOutputSpecification_1">
+				<dataInput id="_2_className" name="jem.workItem.className" />
+				<inputSet id="InputSet_1">
+					<dataInputRefs>_2_className</dataInputRefs>
+				</inputSet>
+				<outputSet id="OutputSet_1" />
+			</ioSpecification>
+			<dataInputAssociation id="DataInputAssociation_0">
+				<targetRef>_2_className</targetRef>
+				<assignment id="Assignment_0">
+					<from xs:type="tFormalExpression" id="FormalExpression_5">org.pepstock.jem.jbpm.tasks.utilities.Null</from>
+					<to xs:type="tFormalExpression" id="FormalExpression_6">_2_className</to>
+				</assignment>
+			</dataInputAssociation>
+		</task>
+
+		<!-- End node -->
+		<endEvent id="_3" name="EndProcess">
+			<terminateEventDefinition />
+		</endEvent>
+
+		<!-- connections -->
+		<sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+		<sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+	</process>
+</definitions>

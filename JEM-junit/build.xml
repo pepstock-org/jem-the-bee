@@ -49,6 +49,7 @@
 		</javac>
 		<copy todir="${jem.workspace}/${jem-junit.classes.directory}">
 			<fileset dir="${jem.workspace}/${jem-junit.project.directory}/src" includes="**/*.xml" />
+			<fileset dir="${jem.workspace}/${jem-junit.project.directory}/src" includes="**/*.bpmn" />
 		</copy>
 		<jar jarfile="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" basedir="${jem.workspace}/${jem-junit.classes.directory}">
 			<fileset dir="${jem.workspace}/${jem-junit.source.directory}" includes="**/*.key" />

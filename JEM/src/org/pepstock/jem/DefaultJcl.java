@@ -16,29 +16,73 @@
 */
 package org.pepstock.jem;
 
+import java.util.Map;
+
 /**
- * Is a JCL object with default values used after validating of submitted jobs.
+ * This is the JCL created for Ant. This has an additional attribute
+ * which represents the classpath to add to system one.
  * 
  * @author Andrea "Stock" Stocchero
- * 
+ * @version 1.0	
+ *
  */
-public final class DefaultJcl extends Jcl {
-
+public class DefaultJcl extends Jcl {
+	
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Unknown label used for all undefined attributes
-	 */
-	public static final String UNKNOWN = "UNKNOWN";
+	private String classPath = null;
+	
+	private String priorClassPath = null;
+	
+	private Map<String, String> properties = null;
 
 	/**
-	 * Standard constructor. Inside all mandatory attributes are set.
+	 * Empty constructor
 	 */
 	public DefaultJcl() {
-		super.setType(UNKNOWN);
-		super.setJobName(UNKNOWN);
-		super.setEnvironment(UNKNOWN);
-		super.setDomain(UNKNOWN);
-		super.setAffinity(UNKNOWN);
+		super();
 	}
+
+	/**
+	 * @return the classPath
+	 */
+	public String getClassPath() {
+		return classPath;
+	}
+
+	/**
+	 * @param classPath the classPath to set
+	 */
+	public void setClassPath(String classPath) {
+		this.classPath = classPath;
+	}
+
+	/**
+	 * @return the priorClassPath
+	 */
+	public String getPriorClassPath() {
+		return priorClassPath;
+	}
+
+	/**
+	 * @param priorClassPath the priorClassPath to set
+	 */
+	public void setPriorClassPath(String priorClassPath) {
+		this.priorClassPath = priorClassPath;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
+	}
+
 }

@@ -24,6 +24,10 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
+import org.pepstock.jem.ant.tasks.DataDescription;
+import org.pepstock.jem.ant.tasks.DataSet;
+import org.pepstock.jem.ant.tasks.Lock;
+import org.pepstock.jem.ant.tasks.ValueParser;
 import org.pepstock.jem.factories.JclFactoryException;
 
 /**
@@ -185,16 +189,24 @@ public abstract class ScriptFactory extends AntFactory {
 	 * @param content script content
 	 * @param jemProperties all JEM properties read from script comment
 	 * @return a string with ANT file
+	 * @throws AntException 
 	 */
-	private StringBuilder getAntJcl(String content, Properties jemProperties){
-		StringBuilder result = new StringBuilder();
+	private StringBuilder getAntJcl(String content, Properties jemProperties) throws AntException{
+		StringBuilder resultDD = new StringBuilder();
 		
+		StringBuilder result = new StringBuilder();
 	    result.append("<?xml version=\"1.0\"?>");
 	    result.append("<project default=\"exec\" basedir=\".\">");
 	    // loads all jem properties
 	    for (Object key : jemProperties.keySet()){
 	    	String value = jemProperties.getProperty(key.toString());
-	    	result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
+	    	if (key.toString().startsWith(AntKeys.ANT_DATA_DESCRIPTION_PREFIX)){
+	    		resultDD.append(createDataDescription(key.toString(), value));
+	    	} else if (key.toString().equalsIgnoreCase(AntKeys.ANT_LOCK_KEY)){
+	    		resultDD.append(createLocks(value));
+	    	} else {
+	    		result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
+	    	}
 	    }
 	    // sets teh ANT task which will execute the script
 	    result.append("<taskdef name=\"script\" classname=\""+getAntTask().getName()+"\" />");
@@ -202,11 +214,77 @@ public abstract class ScriptFactory extends AntFactory {
 	    // writes all script
 	    result.append("<script><![CDATA[");
 		result.append(content);
-	    result.append("]]></script>");
+	    result.append("]]>");
+	    result.append(resultDD);
+	    result.append("</script>");
 	    result.append("</target>");
 	    result.append("</project>");
-		
 	    return result;
 	}
 
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 * @throws AntException
+	 */
+	private String createDataDescription(String key, String value) throws AntException{
+		String ddName = StringUtils.substringAfter(key, AntKeys.ANT_DATA_DESCRIPTION_PREFIX);
+		if (ddName == null || ddName.trim().length() == 0){
+			throw new AntException(AntMessage.JEMA005E);
+		}
+		DataDescription dd = new DataDescription();
+		dd.setName(ddName.trim());
+		ValueParser.loadDataDescription(dd, value);
+		
+		if (dd.isMultiDataset()){
+			throw new AntException(AntMessage.JEMA006E, dd.getName(), dd.getDisposition());
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<dataDescription");
+		sb.append(" name=\"").append(dd.getName()).append("\" ");
+		if (dd.isSysout()){
+			sb.append(" disposition=\"NEW\">");
+			sb.append(" sysout=\"true\"/>");
+		} else {
+			sb.append(" disposition=\"").append(dd.getDisposition()).append("\">");
+			if (!dd.getDatasets().isEmpty()){
+				DataSet ds = dd.getDatasets().get(0);
+				sb.append("<dataSet");
+				if (ds.isInline()){
+					sb.append(">").append(ds.getText().toString()).append("</dataSet>");
+				} else {
+					if (ds.isGdg()){
+						sb.append(" name=\"").append(ds.getName()).append("(").append(ds.getOffset()).append(")").append("\"");
+					} else {
+						sb.append(" name=\"").append(ds.getName()).append("\"");
+					}
+					sb.append("/>");
+				}
+			}
+			sb.append("</dataDescription>");
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String createLocks(String value) {
+		List<Lock> locks = ValueParser.loadLocks(value);
+		if (locks.isEmpty()){
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		for (Lock lock : locks){
+			sb.append("<lock");
+			sb.append(" name=\"").append(lock.getName()).append("\"/>");
+		}
+		return sb.toString();
+	}
 }

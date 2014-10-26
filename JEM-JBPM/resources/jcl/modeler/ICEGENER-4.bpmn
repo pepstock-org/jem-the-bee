@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="org.pepstock.jem.jbpm" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Copy files" isExecutable="true" processType="Private">
+    <bpmn2:extensionElements>
+      <tns:metaData name="jem.job.name">
+				<tns:metaValue>ICEGENER-2</tns:metaValue>
+			</tns:metaData>
+      <tns:metaData name="jem.job.lockingScope">
+				<tns:metaValue>job</tns:metaValue>
+			</tns:metaData>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:task id="_2" tns:taskName="Jem" name="Copy Task 1">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_2_1">
+        <bpmn2:dataInput id="_2_className" name="jem.workItem.className"/>
+        <bpmn2:dataInput id="_2_input" name="jem.dataDescription.INPUT"/>
+        <bpmn2:dataInput id="_2_output" name="jem.dataDescription.OUTPUT"/>
+        <bpmn2:inputSet id="InputSet_2_1">
+          <bpmn2:dataInputRefs>_2_input</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_output</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_2_1"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2_0">
+        <bpmn2:targetRef>_2_className</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_2_0">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_5">org.pepstock.jem.jbpm.tasks.utilities.Copy</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_6">_2_className</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2_1">
+        <bpmn2:targetRef>_2_input</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_2_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_1">DSN=gdg/jemtest(0),DISP=SHR</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_2">_2_input</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2_2">
+        <bpmn2:targetRef>_2_output</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_2_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_3">DSN=gdg/jemtest(+1),DISP=NEW</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2_4">_2_output</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_2-_3" tns:priority="1" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:task id="_3" tns:taskName="Jem" name="Copy Task 2">
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3_1">
+        <bpmn2:dataInput id="_3_className" name="jem.workItem.className"/>
+        <bpmn2:dataInput id="_3_input" name="jem.dataDescription.INPUT"/>
+        <bpmn2:dataInput id="_3_output" name="jem.dataDescription.OUTPUT"/>
+        <bpmn2:inputSet id="InputSet_3_1">
+          <bpmn2:dataInputRefs>_3_input</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_output</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_3_1"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3_0">
+        <bpmn2:targetRef>_3_className</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_3_0">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_5">org.pepstock.jem.jbpm.tasks.utilities.Copy</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_6">_3_className</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3_1">
+        <bpmn2:targetRef>_3_input</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_3_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_1">DSN=*._2.OUTPUT,DISP=SHR</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_2">_3_input</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3_2">
+        <bpmn2:targetRef>_3_output</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_3_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_3">SYSOUT,DISP=NEW</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3_4">_3_output</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_3-_4" tns:priority="1" sourceRef="_3" targetRef="_4"/>
+    <bpmn2:task id="_4" tns:taskName="Jem" name="Copy Task 3">
+      <bpmn2:incoming>_3-_4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_4_1">
+        <bpmn2:dataInput id="_4_className" name="jem.workItem.className"/>
+        <bpmn2:dataInput id="_4_input" name="jem.dataDescription.INPUT"/>
+        <bpmn2:dataInput id="_4_output" name="jem.dataDescription.OUTPUT"/>
+        <bpmn2:inputSet id="InputSet_4_1">
+          <bpmn2:dataInputRefs>_4_input</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_4_output</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_4_1"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4_0">
+        <bpmn2:targetRef>_4_className</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_4_0">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_5">org.pepstock.jem.jbpm.tasks.utilities.Copy</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_6">_4_className</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4_1">
+        <bpmn2:targetRef>_4_input</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_4_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_1">DSN=*._2.OUTPUT,DISP=SHR</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_2">_4_input</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4_2">
+        <bpmn2:targetRef>_4_output</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_4_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_3">DSN=@@temp,DISP=NEW</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4_4">_4_output</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_4-_5" tns:priority="1" sourceRef="_4" targetRef="_5"/>
+    <bpmn2:task id="_5" tns:taskName="Jem" name="Copy Task 3">
+      <bpmn2:incoming>_4-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_99</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_5_1">
+        <bpmn2:dataInput id="_5_className" name="jem.workItem.className"/>
+        <bpmn2:dataInput id="_5_input" name="jem.dataDescription.INPUT"/>
+        <bpmn2:dataInput id="_5_output" name="jem.dataDescription.OUTPUT"/>
+        <bpmn2:inputSet id="InputSet_5_1">
+          <bpmn2:dataInputRefs>_5_input</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_output</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_5_1"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5_0">
+        <bpmn2:targetRef>_5_className</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_5_0">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_5">org.pepstock.jem.jbpm.tasks.utilities.Copy</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_6">_5_className</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5_1">
+        <bpmn2:targetRef>_5_input</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_5_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_1">DSN=*._4.OUTPUT,DISP=SHR</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_2">_5_input</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5_2">
+        <bpmn2:targetRef>_5_output</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_5_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_3">SYSOUT,DISP=NEW</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5_4">_5_output</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_5-_99" tns:priority="1" sourceRef="_5" targetRef="_99"/>
+    <bpmn2:endEvent id="_99" name="EndProcess">
+      <bpmn2:incoming>_5-_99</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="org.pepstock.jem.jbpm">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="36.0" width="36.0" x="50.0" y="57.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_99">
+        <dc:Bounds height="36.0" width="36.0" x="776.0" y="57.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="_2">
+        <dc:Bounds height="50.0" width="110.0" x="136.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_2" bpmnElement="_3">
+        <dc:Bounds height="50.0" width="110.0" x="296.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_3" bpmnElement="_4">
+        <dc:Bounds height="50.0" width="110.0" x="456.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_4" bpmnElement="_5">
+        <dc:Bounds height="50.0" width="110.0" x="616.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_Task_1">
+        <di:waypoint xsi:type="dc:Point" x="86.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="108.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="108.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_Task_1" targetElement="BPMNShape_Task_2">
+        <di:waypoint xsi:type="dc:Point" x="246.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="296.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_3-_4" sourceElement="BPMNShape_Task_2" targetElement="BPMNShape_Task_3">
+        <di:waypoint xsi:type="dc:Point" x="406.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="428.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="428.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="456.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_4-_5" sourceElement="BPMNShape_Task_3" targetElement="BPMNShape_Task_4">
+        <di:waypoint xsi:type="dc:Point" x="566.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="616.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_5-_99" sourceElement="BPMNShape_Task_4" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="726.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="748.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="748.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="776.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -198,7 +198,7 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 		}
 		super.checkRead(file);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

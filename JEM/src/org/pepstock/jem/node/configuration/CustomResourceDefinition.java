@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author Alessandro Zambrini
  * 
  */
-public class CustomResourceDefinition extends AbstractPuginDefinition implements Serializable{
+public class CustomResourceDefinition extends AbstractPluginDefinition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

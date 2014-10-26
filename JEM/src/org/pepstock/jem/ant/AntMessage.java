@@ -479,7 +479,37 @@ public enum AntMessage implements MessageInterface{
 	 * "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the comments on the script to submit doesn't have some elements.<br/>Please have a look to the script and metadata part.")
-	JEMA071E(71, "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR);
+	JEMA071E(71, "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 * "Disposition is missing for data description \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the dispostion of data description is missing.<br>Please have a look to JCL.")
+	JEMA072E(72, "Disposition is missing for data description \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 * "SYSOUT has been specified with a dataset for data description \"{0}\". Not allowed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you put both SYSOUT and a DSN parameters for a data description.<br>Please have a look to JCL.")
+	JEMA073E(73, "SYSOUT has been specified with a dataset for data description \"{0}\". Not allowed", MessageLevel.ERROR),
+	
+	/**
+	 * "More than 1 dataset has been specified with DATASOURCE key word for data description \"{0}\". Not allowed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you put both DATASOURE and more than 1 dataset for a data description.<br>Please have a look to JCL.")
+	JEMA074E(74, "More than 1 dataset has been specified with DATASOURCE key word for data description \"{0}\". Not allowed", MessageLevel.ERROR),
+	
+	/**
+	 * "Dataset name and content are null for data description \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you put nothing for a data description.<br>Please have a look to JCL.")
+	JEMA075E(75, "Dataset name and content are null for data description \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 * "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you put a wrong syntax for properteis for a data source.<br>Please have a look to JCL.")
+	JEMA076E(76, "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

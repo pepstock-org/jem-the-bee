@@ -31,12 +31,12 @@
 			<dataDescription name="INPUT" disposition="SHR">
 				<dataSet name="gdg/jemtest(-1)"/>
 				<dataSet name="gdg/jemtest(0)"/>
-				<dataset>
+				<dataSet>
 					These records are added to OUTPUT file:
 					Record1 test abcdefghjklilmnopqrstuvzxw
 					Record2 test abcdefghjklilmnopqrstuvzxw
 					Record3 test abcdefghjklilmnopqrstuvzxw
-				</dataset>	
+				</dataSet>	
 			</dataDescription>
 
 		</icegener>

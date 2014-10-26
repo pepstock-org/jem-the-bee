@@ -201,7 +201,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 		Step step = new Step();
 		// sets step name and description (uses summary information)
 		step.setName(stepExecution.getStepName());
-		step.setDescritpion(stepExecution.getSummary());
+		step.setDescription(stepExecution.getSummary());
 
 		// gets Spring Batch Exit status
 		ExitStatus eStatus = stepExecution.getExitStatus();
@@ -283,7 +283,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 
 		// sets step name and description (uses summary information)
 		step.setName(stepExecution.getStepName());
-		step.setDescritpion(stepExecution.getSummary());
+		step.setDescription(stepExecution.getSummary());
 
 		// send to JEM by RMI
 		try {

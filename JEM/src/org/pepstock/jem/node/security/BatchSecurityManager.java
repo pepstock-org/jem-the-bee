@@ -143,16 +143,6 @@ public abstract class BatchSecurityManager extends SecurityManager {
 	}
 
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.SecurityManager#checkExit(int)
-	 */
-	@Override
-	public void checkExit(int status) {
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

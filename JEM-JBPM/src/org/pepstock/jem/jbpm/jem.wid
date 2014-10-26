@@ -1,0 +1,8 @@
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+[
+  [
+    "name" : "Jem", 
+    "displayName" : "Jem workItem", 
+    "icon" : "org/pepstock/jem/jbpm/favicon.png" 
+  ]
+]

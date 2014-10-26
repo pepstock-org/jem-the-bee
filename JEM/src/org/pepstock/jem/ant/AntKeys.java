@@ -125,7 +125,21 @@ public final class AntKeys {
 	 */
 	public static final String ANT_DATAPATHS_BIND_NAME = "jem.dataPaths";
 	
-
+	
+	/**
+	 * Prefix of parameters for data description
+	 */
+	public static final String ANT_DATA_DESCRIPTION_PREFIX = "jem.dataDescription.";
+	
+	/**
+	 * Prefix of parameters for data sources
+	 */
+	public static final String ANT_DATA_SOURCE_PREFIX = "jem.dataSource.";
+	
+	/**
+	 * Name of parameter for locks
+	 */
+	public static final String ANT_LOCK_KEY = "jem.locks";
 
 	/**
 	 * To avoid any instantiation

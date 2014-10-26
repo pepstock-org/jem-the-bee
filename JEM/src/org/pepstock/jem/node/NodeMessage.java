@@ -1611,7 +1611,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to login to JEM by REST call.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JNDI JEM factory is not able to login to JEM.<br> Please check JEM login exception.")
-	JEMC269E(269, "Unable to login to JEM by REST call.", MessageLevel.ERROR);
+	JEMC269E(269, "Unable to login to JEM by REST call.", MessageLevel.ERROR),
+	
+	/**
+	 * "System.exit call is not allowed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when a java class call a System.exit inside the job execution.<br> Please check java code.")
+	JEMC270E(270, "System.exit call is not allowed", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

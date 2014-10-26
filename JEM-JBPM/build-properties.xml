@@ -1,0 +1,15 @@
+<project name="jem-jbpm-properties" basedir=".">
+	<!-- set the position of the jem repository relative to the enterprise one -->
+	<property name="jem.repository" value="../../jem-the-bee-GC" />
+	<!-- import common properties -->
+	<import file="${jem.repository}/JEM/build-common-properties.xml" />
+	<!--properties for JEM-enterprise project -->
+	<property name="jem-jbpm.project.directory" value="${jem.repository}/JEM-JBPM" />
+	<property name="jem-jbpm.library.directory" value="${jem-jbpm.project.directory}/lib" />
+	<property name="jem-jbpm.source.directory" value="${jem-jbpm.project.directory}/src" />
+	<property name="jem-jbpm.classes.directory" value="${jem-jbpm.project.directory}/classes" />
+	<property name="jem-jbpm.jar.name" value="jem-jbpm.jar" />
+	<property name="jem-jbpm.jar.file" location="${jem-jbpm.library.directory}/${jem-jbpm.jar.name}" />
+	<property name="jem-jbpm.distribute.directory" value="${jem-jbpm.project.directory}/dist" />
+	<property name="jem-jbpm.zip.name" value="jem-jbpm.zip" />
+</project>

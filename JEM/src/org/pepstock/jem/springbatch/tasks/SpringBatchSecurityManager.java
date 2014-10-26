@@ -186,6 +186,19 @@ public class SpringBatchSecurityManager extends BatchSecurityManager {
 		}
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.SecurityManager#checkExit(int)
+	 */
+	@Override
+	public void checkExit(int status) {
+		if (!isInternalAction()){
+			throw new SecurityException(NodeMessage.JEMC270E.toMessage().getFormattedMessage());
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

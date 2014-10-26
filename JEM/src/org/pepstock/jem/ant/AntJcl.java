@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.ant;
 
-import org.pepstock.jem.Jcl;
+import org.pepstock.jem.DefaultJcl;
 
 /**
  * This is the JCL created for Ant. This has an additional attribute
@@ -26,47 +26,8 @@ import org.pepstock.jem.Jcl;
  * @version 1.0	
  *
  */
-public class AntJcl extends Jcl {
+public class AntJcl extends DefaultJcl {
 	
 	private static final long serialVersionUID = 1L;
-
-	private String classPath = null;
-	
-	private String priorClassPath = null;
-
-	/**
-	 * Empty constructor
-	 */
-	public AntJcl() {
-		super();
-	}
-
-	/**
-	 * @return the classPath
-	 */
-	public String getClassPath() {
-		return classPath;
-	}
-
-	/**
-	 * @param classPath the classPath to set
-	 */
-	public void setClassPath(String classPath) {
-		this.classPath = classPath;
-	}
-
-	/**
-	 * @return the priorClassPath
-	 */
-	public String getPriorClassPath() {
-		return priorClassPath;
-	}
-
-	/**
-	 * @param priorClassPath the priorClassPath to set
-	 */
-	public void setPriorClassPath(String priorClassPath) {
-		this.priorClassPath = priorClassPath;
-	}
 
 }

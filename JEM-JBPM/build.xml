@@ -1,0 +1,56 @@
+<project name="jem-jbpm" default="build-distribution-jem-jbpm" basedir=".">
+	<!-- import properties -->
+	<import file="../JEM-JBPM/build-properties.xml" />
+
+	<!-- clean project JEM-enterprise -->
+	<target name="clean-jem-jbpm">
+		<delete dir="${jem-jbpm.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete dir="${jem-jbpm.distribute.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem-jbpm.jar.file}" />
+	</target>
+
+	<!-- create directory needed -->
+	<target name="make-jem-jbpm-directories" depends="clean-jem-jbpm">
+		<mkdir dir="${jem-jbpm.classes.directory}" />
+		<mkdir dir="${jem-jbpm.distribute.directory}" />
+	</target>
+	
+	<!-- copy JEM jar to JEM-JBPM -->
+	<target name="copy-jem-2-jemjbpm" depends="make-jem-jbpm-directories">
+		<delete file="${jem-jbpm.library.directory}/${jem.jar.name}" />
+		<copy file="${jem.repository}/${jem.library.directory}/${jem.jar.name}" toFile="${jem-jbpm.library.directory}/${jem.jar.name}" />
+	</target>
+
+
+	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
+	<target name="compile-jem-jbpm" depends="copy-jem-2-jemjbpm">
+		<javac srcdir="${jem-jbpm.source.directory}" destdir="${jem-jbpm.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+			<compilerarg value="-XDignore.symbol.file" />
+			<classpath>
+				<pathelement path="${jem-jbpm.library.directory}/${jem.jar.name}" />
+				<pathelement path="${jem-jbpm.classes.directory}" />
+				<fileset dir="${jem-jbpm.library.directory}">
+					<include name="jbpm/*.jar" />
+					<include name="jbpm/lib/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar jarfile="${jem-jbpm.jar.file}" basedir="${jem-jbpm.classes.directory}">
+			<manifest>
+				<section name="JEM_the_BEE_JBPM">
+					<attribute name="Jem_version" value="${jem.version}" />
+					<attribute name="Built-By" value="${jem.built.by}" />
+					<attribute name="Creation_time" value="${TODAY}" />
+				</section>
+			</manifest>
+			<metainf dir="${jem-jbpm.source.directory}/org/pepstock/jem/jbpm/" includes="jem.wid, drools.rulebase.conf"/>
+		</jar>
+	</target>
+	
+	<target name="build-distribution-jem-jbpm" depends="compile-jem-jbpm">
+		<zip destfile="${jem-jbpm.distribute.directory}/${jem-jbpm.zip.name}">
+			 <fileset dir="${jem-jbpm.library.directory}"/>
+			 <fileset dir="." includes="COPYING, COPYING-EXCEPTION"/>
+		</zip>
+	</target>
+</project>
