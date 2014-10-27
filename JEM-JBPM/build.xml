@@ -12,6 +12,7 @@
 	<!-- create directory needed -->
 	<target name="make-jem-jbpm-directories" depends="clean-jem-jbpm">
 		<mkdir dir="${jem-jbpm.classes.directory}" />
+		<mkdir dir="${jem-jbpm.classes.directory}/META-INF" />
 		<mkdir dir="${jem-jbpm.distribute.directory}" />
 	</target>
 	
@@ -24,6 +25,9 @@
 
 	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
 	<target name="compile-jem-jbpm" depends="copy-jem-2-jemjbpm">
+		<copy todir="${jem-jbpm.classes.directory}/META-INF">
+			<fileset dir="${jem-jbpm.source.directory}/META-INF"/>
+		</copy>
 		<javac srcdir="${jem-jbpm.source.directory}" destdir="${jem-jbpm.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
@@ -43,7 +47,7 @@
 					<attribute name="Creation_time" value="${TODAY}" />
 				</section>
 			</manifest>
-			<metainf dir="${jem-jbpm.source.directory}/org/pepstock/jem/jbpm/" includes="jem.wid, drools.rulebase.conf"/>
+			<!--metainf dir="${jem-jbpm.source.directory}/org/pepstock/jem/jbpm/" includes="jem.wid, drools.rulebase.conf"/-->
 		</jar>
 	</target>
 	

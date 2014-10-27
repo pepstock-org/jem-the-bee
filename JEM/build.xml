@@ -40,11 +40,6 @@
 				</section>
 			</manifest>
 			<metainf dir="${jem.workspace}/${jem.source.directory}/org/pepstock/jem/springbatch/xml" includes="spring.handlers, spring.schemas"/>
-			<!--metainf>
-				<fileset dir="">
-    				<include name="/spring.*"/>
-				</fileset>
-			</metainf-->
 		</jar>
 	</target>
 </project>

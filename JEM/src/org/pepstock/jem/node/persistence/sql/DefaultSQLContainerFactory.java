@@ -37,7 +37,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for checking table
 	 */
-	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (PRE_JOB_ID BIGINT primary key, PRE_JOB CLOB (1000000) not null)";
+	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (PRE_JOB_ID BIGINT primary key not null, PRE_JOB CLOB (1000000) not null)";
 	/**
 	 * Insert statement to put a pre job in CHECKING queue
 	 */
@@ -86,7 +86,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for input table
 	 */
-	private static final String CREATE_INPUT_QUEUE = "create table INPUT_QUEUE (JOB_ID char(39) primary key, JOB CLOB(1000000) not null)";
+	private static final String CREATE_INPUT_QUEUE = "create table INPUT_QUEUE (JOB_ID char(39) primary key not null, JOB CLOB(1000000) not null)";
 	
 	/**
 	 * Insert statement to put a job in INPUT queue
@@ -134,7 +134,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for input table
 	 */
-	private static final String CREATE_RUNNING_QUEUE = "create table RUNNING_QUEUE (JOB_ID char(39) primary key, JOB CLOB(1000000) not null)";
+	private static final String CREATE_RUNNING_QUEUE = "create table RUNNING_QUEUE (JOB_ID char(39) primary key not null, JOB CLOB(1000000) not null)";
 	
 	/**
 	 * Insert statement to put a job in INPUT queue
@@ -182,7 +182,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for output table
 	 */
-	private static final String CREATE_OUTPUT_QUEUE = "create table OUTPUT_QUEUE (JOB_ID char(39) primary key, JOB CLOB (1000000) not null)";
+	private static final String CREATE_OUTPUT_QUEUE = "create table OUTPUT_QUEUE (JOB_ID char(39) primary key not null, JOB CLOB (1000000) not null)";
 	
 	/**
 	 * Insert statement to put a job in OUTPUT queue
@@ -230,7 +230,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for routing table
 	 */
-	private static final String CREATE_ROUTING_QUEUE = "create table ROUTING_QUEUE (JOB_ID char(39) primary key,	JOB CLOB (1000000) not null)";
+	private static final String CREATE_ROUTING_QUEUE = "create table ROUTING_QUEUE (JOB_ID char(39) primary key not null,	JOB CLOB (1000000) not null)";
 
 	/**
 	 * Insert statement to put a job in ROUTING queue
@@ -279,7 +279,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for common resources table
 	 */
-	private static final String CREATE_COMMON_RESOURCES_MAP = "create table COMMON_RESOURCES_MAP (RESOURCE_NAME char(32) primary key, RESOURCE CLOB (500000) not null)";
+	private static final String CREATE_COMMON_RESOURCES_MAP = "create table COMMON_RESOURCES_MAP (RESOURCE_NAME char(32) primary key not null, RESOURCE CLOB (500000) not null)";
 
 	/**
 	 * Insert statement to put a resource in COMMON RESOURCES map
@@ -327,7 +327,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for ROLEs table
 	 */
-	private static final String CREATE_ROLES_MAP = "create table ROLES_MAP (ROLE_NAME char(32) primary key, ROLE CLOB (500000) not null)";
+	private static final String CREATE_ROLES_MAP = "create table ROLES_MAP (ROLE_NAME char(32) primary key not null, ROLE CLOB (500000) not null)";
 	
 	/**
 	 * Insert statement to put a ROLE in ROLES map
@@ -374,7 +374,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for NODEs table
 	 */
-	private static final String CREATE_NODES_MAP = "create table NODES_MAP (NODE_KEY char(40) primary key, NODE CLOB (500000) not null)";
+	private static final String CREATE_NODES_MAP = "create table NODES_MAP (NODE_KEY char(40) primary key not null, NODE CLOB (500000) not null)";
 	
 	/**
 	 * Insert statement to put a NODE in NODES map
@@ -421,7 +421,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for ROUTING_CONFIGs table
 	 */
-	private static final String CREATE_ROUTING_CONFIG_MAP = "create table ROUTING_CONFIG_MAP (ROUTING_CONFIG_NAME char(32) primary key, ROUTING_CONFIG CLOB (500000) not null)";
+	private static final String CREATE_ROUTING_CONFIG_MAP = "create table ROUTING_CONFIG_MAP (ROUTING_CONFIG_NAME char(32) primary key not null, ROUTING_CONFIG CLOB (500000) not null)";
 	
 	/**
 	 * Insert statement to put a ROUTING_CONFIG in ROUTING_CONFIGS map
@@ -469,7 +469,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for USER_PREFERENCESs table
 	 */
-	private static final String CREATE_USER_PREFERENCES_MAP = "create table USER_PREFERENCES_MAP (USER_ID char(32) primary key, USER_PREFERENCES CLOB (500000) not null)";
+	private static final String CREATE_USER_PREFERENCES_MAP = "create table USER_PREFERENCES_MAP (USER_ID char(32) primary key not null, USER_PREFERENCES CLOB (500000) not null)";
 	
 	/**
 	 * Insert statement to put a USER_PREFERENCES in USER_PREFERENCESS map

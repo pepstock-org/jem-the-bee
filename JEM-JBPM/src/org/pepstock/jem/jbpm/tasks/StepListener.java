@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -62,6 +63,8 @@ public class StepListener extends DefaultProcessEventListener{
 	private Map<Long, ProcessNodeEvent> nodeEvents = new ConcurrentHashMap<Long, ProcessNodeEvent>();
 	
 	private String lockingScope = JBpmKeys.JBPM_JOB_SCOPE;
+	
+	private boolean hasDivergingGateway = false;
 	
 	private Locker locker = null;
 	
@@ -337,6 +340,12 @@ public class StepListener extends DefaultProcessEventListener{
 	 * @param project JOB
 	 */
 	private void setLockingScope(Map<String, Object> metaData){
+		// if has got a gateway, force locking scope to JOB
+		if (hasDivergingGateway){
+			lockingScope = JBpmKeys.JBPM_JOB_SCOPE.toLowerCase();
+			return;
+		}
+		
 		// if locking is not present, uses default
 		Object lockingScopeProperty = metaData.get(JBpmKeys.JBPM_LOCKING_SCOPE);
 		if (lockingScopeProperty == null){
@@ -396,6 +405,11 @@ public class StepListener extends DefaultProcessEventListener{
 					if (objectId != null){
 						CompleteTasksList.getInstance().setNodeID(objectId.toString(), node.getId());
 					}
+				}
+				// means there is a Gateway// for this reason force
+				// lockingScope to JOB
+				if (node instanceof Split){
+					hasDivergingGateway = true;
 				}
 			}
 		}

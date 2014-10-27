@@ -85,6 +85,7 @@ import org.pepstock.jem.node.persistence.RunningDBManager;
 import org.pepstock.jem.node.persistence.SQLContainer;
 import org.pepstock.jem.node.persistence.SQLContainerFactory;
 import org.pepstock.jem.node.persistence.UserPreferencesDBManager;
+import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
@@ -868,6 +869,8 @@ public class StartUpSystem {
 			engine = new MySqlSQLContainerFactory();
 		} else if (dbType.equals(OracleSQLContainerFactory.DATABASE_TYPE)) {
 			engine = new OracleSQLContainerFactory();
+		} else if (dbType.equals(DB2SQLContainerFactory.DATABASE_TYPE)) {
+			engine = new DB2SQLContainerFactory();
 		} else {
 			engine = new DefaultSQLContainerFactory();
 		}

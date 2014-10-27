@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition" targetNamespace="http://www.example.org/MinimalExample"
+	typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools">
+	
+	<process processType="Private" isExecutable="true"
+		id="org.pepstock.jem.jbpm" name="Abend">
+
+		<!-- Metadata -->
+		<extensionElements>
+			<tns:metaData name="jem.job.name">
+				<tns:metaValue>IEFBR14</tns:metaValue>
+			</tns:metaData>
+			<tns:metaData name="jem.job.affinity">
+				<tns:metaValue>***</tns:metaValue>
+			</tns:metaData>
+			<tns:metaData name="jem.job.lockingScope">
+				<tns:metaValue>step</tns:metaValue>
+			</tns:metaData>
+		</extensionElements>
+
+		<!-- Start nodes -->
+		<startEvent id="Start" name="StartProcess" />
+
+		<sequenceFlow id="flow1" name="fromStartToSplit"
+			sourceRef="Start"
+			targetRef="parallelGatewaySplit"  />
+
+		<parallelGateway id="parallelGatewaySplit" name="Split" 
+		  gatewayDirection="Diverging"/>
+
+		<sequenceFlow id="flow2a" name="Leg 1"
+			sourceRef="parallelGatewaySplit"
+			targetRef="prepareShipment" />
+
+	<scriptTask id="prepareShipment" name="Prepare shipment">
+		<script>System.out.println("Hello World 1");</script>
+	</scriptTask>			
+		
+		<sequenceFlow id="flow2b" name="fromPrepareShipmentToJoin"
+			sourceRef="prepareShipment"
+			targetRef="parallelGatewayJoin"  />
+			
+		<sequenceFlow id="flow3a" name="Leg 2" 
+			sourceRef="parallelGatewaySplit"
+			targetRef="billCustomer" />
+
+	<scriptTask id="billCustomer" name="Bill customer">
+		<script>System.out.println("Hello World 2");</script>
+	</scriptTask>			
+	
+		<sequenceFlow id="flow3b" name="fromLeg2ToJoin"
+			sourceRef="billCustomer"
+			targetRef="parallelGatewayJoin"  />
+
+		<parallelGateway id="parallelGatewayJoin" name="Join" 
+			gatewayDirection="Converging"/>
+			
+		<sequenceFlow id="flow4" 
+			sourceRef="parallelGatewayJoin"
+			targetRef="End">
+		</sequenceFlow>
+
+		<!-- End node -->
+		<endEvent id="End" name="EndProcess">
+			<terminateEventDefinition />
+		</endEvent>
+	</process>
+</definitions>
