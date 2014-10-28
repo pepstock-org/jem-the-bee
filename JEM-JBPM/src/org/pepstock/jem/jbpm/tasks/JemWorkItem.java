@@ -19,17 +19,20 @@ package org.pepstock.jem.jbpm.tasks;
 import java.util.Map;
 
 /**
+ * Is a standard interface that you should extend to use the JEM work item.<br>
+ * The instance of this interface will be created by workitem and teh <code>execute</code> mthod will be performed.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
 public interface JemWorkItem {
 	
 	/**
-	 * 
-	 * @param parameters
-	 * @return
-	 * @throws Exception
+	 * This method is called by workitem, passing the parameters defined in BPMN file
+	 * @param parameters parameters defined for this task in BPMN file
+	 * @return return code
+	 * @throws Exception if any error occurs
 	 */
-	int execute(Map<String, Object> parameters) throws Exception ; 
+	int execute(Map<String, Object> parameters) throws Exception; 
 
 }

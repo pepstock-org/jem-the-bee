@@ -27,26 +27,20 @@ import org.pepstock.catalog.AbstractDataDescription;
  * <b>Sysout</b>: a file used in output way and in the same container of job-log
  * and message-log.<br>
  * Example:
- * <code>&lt;dataDescription name="FILEOUT" sysout="true" disposition="NEW"/&gt;</code>
+ * <code>SYSOUT,DISP=NEW</code>
  * <br>
  * <b>Single dataset</b>: a single dataset is defined which must accessible with
  * dispositions.<br>
  * Example: <br>
- * <code>&lt;dataDescription name="FILEIN" disposition="SHR"&gt;<br>
- *  		&lt;dataSet name="nas.rx.jemtest(0)"/&gt;<br>
- *  	 &lt;/dataDescription&gt;</code><br>
+ * <code>DSN=nas.rx.jemtest(0),DISP=SHR<br>
  * <b>Multi dataset</b>: more than one dataset are defined which must accessible
  * ONLY in SHR mode.<br>
- * Example: <code>&lt;dataDescription name="FILEIN" disposition="SHR"&gt;<br>
- *   		&lt;dataSet name="@@temp"/&gt;<br>
- *  		&lt;dataSet name="nas.rx.jemtest(0)"/&gt;<br>
- *       &lt;/dataDescription&gt;</code><br>
+ * Example: DSN=(@@temp;nas.rx.jemtest(0)),DISP=SHR<br>
  * <br>
  * Defines also how to access to file.
  * 
- * @see org.pepstock.catalog.Disposition
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public class DataDescription extends AbstractDataDescription<DataSet> {
@@ -60,9 +54,7 @@ public class DataDescription extends AbstractDataDescription<DataSet> {
 	}
 
 	/**
-	 * This overrides adds a dataset definition of super class.
-	 * MUST BE MAINTAINED AS IS, because otherwise ANT doesn't work.
-	 * 
+	 * helpful to add a single dataset
 	 * @param ds dataset definition
 	 */
 	public void addDataSet(DataSet ds) {

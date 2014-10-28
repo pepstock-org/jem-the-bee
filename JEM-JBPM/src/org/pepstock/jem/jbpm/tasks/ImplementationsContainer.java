@@ -35,7 +35,7 @@ import org.pepstock.jem.jbpm.Task;
  * 
  * @see org.pepstock.jem.jbpm.tasks.DataSet#isReference()
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public final class ImplementationsContainer {
@@ -53,7 +53,7 @@ public final class ImplementationsContainer {
 	private Map<String, DataDescriptionImpl> mapDataDescription = null;
 
 	/**
-	 * Private constructor which screates the map to save the references of data
+	 * Private constructor which creates the map to save the references of data
 	 * description
 	 */
 	private ImplementationsContainer() {
@@ -107,7 +107,7 @@ public final class ImplementationsContainer {
 	List<DataDescriptionImpl> getDataDescriptionsByItem(Task item) {
 		// creates a new list
 		List<DataDescriptionImpl> result = new ArrayList<DataDescriptionImpl>();
-		// creates a key usinf format for searching (without data description
+		// creates a key using format for searching (without data description
 		// name)
 		String keyPattern = createKey(item);
 		// scans all keys of map
@@ -164,9 +164,9 @@ public final class ImplementationsContainer {
 	}
 	
 	/**
-	 * 
-	 * @param reference
-	 * @return
+	 * Normalize the reference
+	 * @param reference reference
+	 * @return normalize reference
 	 */
 	private String normalizeReference(String reference){
 		String[] levels = StringUtils.split(reference, LEVEL_SEPARATOR);

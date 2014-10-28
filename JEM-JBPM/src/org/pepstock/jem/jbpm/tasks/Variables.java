@@ -19,6 +19,8 @@ package org.pepstock.jem.jbpm.tasks;
 import java.util.Properties;
 
 /**
+ * Singleton with all system properties and environmetn variables. THis is used for variable substitution, with variable format ${var}.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -29,7 +31,7 @@ public class Variables {
 	private final Properties properties = new Properties();
 
 	/**
-	 * Loads the system and env properties
+	 * Loads the system and environment properties
 	 */
 	private Variables() {
 		// loads JVM properties to Properties instance
@@ -39,8 +41,8 @@ public class Variables {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Returns the instance of singleton
+	 * @return the instance of singleton
 	 */
 	public static synchronized Variables getInstance(){
 		if (INSTANCE == null){

@@ -34,7 +34,7 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
  * Creates all data set implementation calling DataSetManager.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public class DataDescriptionManager {
@@ -50,13 +50,13 @@ public class DataDescriptionManager {
 	 * Creates a data description implementation from a data description, loaded
 	 * by JBpm.<br>
 	 * Checks different kinds of data description that you could have, so
-	 * sysout or single dataset.<br>
+	 * sysout, single dataset or multi dataset.<br>
 	 * 
 	 * @see org.pepstock.catalog.DataDescriptionImpl
 	 * @param dd data description instance
 	 * @param item JBpm task instance, caller
 	 * @return data description implementation
-	 * @throws JBpmException if data description is multi datasets this is not allowed
+	 * @throws JBpmException if any error occurs
 	 * @throws IOException if I/O error occurs
 	 */
 	public static DataDescriptionImpl createDataDescriptionImpl(DataDescription dd, Task item) throws JBpmException, IOException {
@@ -89,7 +89,7 @@ public class DataDescriptionManager {
 	 * Loads all info to have a SYSOUT data description.<br>
 	 * Uses the <code>output</code> path to create a folder with target name
 	 * and, for each task, a file with naem
-	 * <code>[task-name]-[data-description-name]</code><br>
+	 * <code>[task-ID]-[data-description-name]</code><br>
 	 * Is always defined in output mode.
 	 * 
 	 * @param ddImpl data description impl instance
@@ -145,7 +145,7 @@ public class DataDescriptionManager {
 	 * 
 	 * @param ddImpl data description implementation
 	 * @param dd data description instance
-	 * @param item ANT task, caller
+	 * @param item JBPM task, caller
 	 * @throws BuildException if errors occurs
 	 * @throws IOException if I/O occurs
 	 */
@@ -175,7 +175,7 @@ public class DataDescriptionManager {
 	 * 
 	 * @param ddImpl data description implementation
 	 * @param dd data description instance
-	 * @param item ANT task, caller
+	 * @param item JBPM task, caller
 	 * @throws BuildException if errors occurs
 	 * @throws IOException if I/O occurs
 	 */

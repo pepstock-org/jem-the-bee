@@ -31,6 +31,8 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
+ * JEM work item that copies a file or list of files (data description named INPUT) on other one (data description named OUTPUT).
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

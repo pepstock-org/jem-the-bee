@@ -71,10 +71,16 @@ import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Is a work item of JBPM which is able to call different kinds of JAVA class, managing their execution.
- * It creates all JEM structures (datasets, data sources, locks) all via JNDI for the executed classes.
+ * Is a work item of JBPM which is able to call different kinds of JAVA class, managing their execution.<br>
+ * Is able to call:<br>
+ * <ul>
+ * <li> Instance of <code>JemWorkItem</code> interface
+ * <li> Main java class
+ * <li> Any method of any class but with specific signatures
+ * </ul>
+ * It creates all JEM structures (data descriptions, data sources, locks) all via JNDI for the executed classes.
  * 
- * 	
+ * @see CustomMethodWorkItem	
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

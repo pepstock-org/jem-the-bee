@@ -36,7 +36,7 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.CharSet;
 
 /**
- * Default comparator used by SORT ANT utilities. It parses the command, extracting columns and type to sort the file.<br>
+ * Default comparator used by SORT JBPM utilities. It parses the command, extracting columns and type to sort the file.<br>
  * The SORT utility can accept class parameter to indicate a Comparator<String> implementation to use to sort the data. 
  * If class misses, it uses the default comparator which can parse a list of order-by statements, found inside a data description called 
  * COMMAND (be careful because is case sensitive). The format is:<br>
@@ -49,7 +49,7 @@ import org.pepstock.jem.util.CharSet;
  * used in case of the previous statements compares equals values.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.2	
+ * @version 2.2	
  *
  */
 public class DefaultComparator implements Comparator<String>, Serializable {
@@ -298,10 +298,10 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 	}
 	
 	/**
-	 * A bean which contains all information of command to perform teh right sort.
+	 * A bean which contains all information of command to perform the right sort.
 	 * 
 	 * @author Andrea "Stock" Stocchero
-	 * @version 1.0	
+	 * @version 2.2	
 	 *
 	 */
 	static class SingleComparator implements Serializable{

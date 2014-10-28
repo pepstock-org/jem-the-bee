@@ -26,10 +26,14 @@ import org.pepstock.jem.ant.AntMessage;
 
 
 /**
- * DSN=dsn1,DSIP=dis,DATASOURCE=dataource
- * DSN=(dsn1;dns2),DSIP=dis,DATASOURCE=dataource
- * 
- * 
+ * Parser of all information, extracted from metadata of SCRIPTS JCL, necessary to creates data description and locks.<br>
+ * This is the syntax to use for data description (all commands are not positionals):<br>
+ * <ul>
+ * <li> <code>DSN=<i>dsn</i>,DISP=[SHR|OLD|MOD|NEW]</code>
+ * <li> <code>DSN=(<i>dsn1</i>;<i>dsn2</i>),DISP=SHR</code>
+ * <li> <code>DSN=<i>dsn</i>,DISP=[SHR|OLD|MOD|NEW],DATASOURCE=<i>datasource</i></code>
+ * </ul>
+ * To set locks, it's enough to set the property with all locks names comma separated.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -57,10 +61,10 @@ public final class ValueParser {
 	}
 	
 	/**
-	 * Parses the value of variable in JBPM and load datasets into data description
-	 * @param dd
-	 * @param valueParm
-	 * @throws AntException
+	 * Parses the value of variables into SCRIPT JCL and loads datasets into data descriptions
+	 * @param dd data description to load
+	 * @param valueParm value of property in metadata
+	 * @throws AntException if any error occurs
 	 */
 	public static final void loadDataDescription(DataDescription dd, String valueParm) throws AntException{
 		// trim value
@@ -91,10 +95,10 @@ public final class ValueParser {
 						isText = false;
 						
 						String subValue = null;
-						// checks if teh content is inside of brackets
+						// checks if the content is inside of brackets
 						if (subToken.startsWith("(") && subToken.endsWith(")")){
 							// gets content inside brackets
-							subValue = StringUtils.substringBetween(subToken, "(", ")");
+							subValue = StringUtils.removeEnd(StringUtils.removeStart(subToken, "("), ")");
 						} else {
 							// only 1 datasets
 							subValue= subToken;
@@ -158,17 +162,19 @@ public final class ValueParser {
 		}
 	}
 	/**
-	 * 
-	 * @param dsn
-	 * @param content
-	 * @return
-	 * @throws AntException
+	 * Creates all data set using the dsn or content values.
+	 * @param dd data description object to be loaded of data sets. Passed only for the exception
+	 * @param dsn data set name or null if is a INLINE data set
+	 * @param content content of INLINE data set or null
+	 * @return a data set instance
+	 * @throws AntException if any error occurs
 	 */
 	private static DataSet createDataSet(DataDescription dd, String dsn, String content) throws AntException{
+		// if DSN = null and content is empty, exception
 		if (dsn == null && content == null){
 			throw new AntException(AntMessage.JEMA075E, dd.getName());
 		}
-		
+		// creates dataset and loads it
 		DataSet ds = new DataSet();
 		if (content != null){
 			ds.addText(content);
@@ -180,12 +186,13 @@ public final class ValueParser {
 	
 	/**
 	 * Extract the sub token (value) considering blanks between = and prefix
-	 * @param token
-	 * @param prefix
-	 * @return
+	 * @param token token to check inside the string
+	 * @param prefix prefix to check
+	 * @return the rest of the token string
 	 */
 	private static String getValue(String token, String prefix){
 		String subToken = StringUtils.substringAfter(token, prefix).trim();
+		// checks if there TOKEN=VALUE
 		if (subToken.startsWith("=")){
 			return StringUtils.substringAfter(subToken, "=").trim();
 		} else {
@@ -199,10 +206,15 @@ public final class ValueParser {
 	 * @return list of locks
 	 */
 	public static final List<Lock> loadLocks(String valueParm){
+		// list of locks to return
 		List<Lock> locks = new ArrayList<Lock>();
+		// list of locks are comma separated
 		String toParse = valueParm;
+		// checks if is a valid string
 		if (toParse != null && toParse.trim().length() > 0){
+			// parses using comma
 			String[] parsed = toParse.split(COMMAND_SEPARATOR);
+			// scans of all names creating all locks
 			for (String name : parsed){
 				Lock lock = new Lock();
 				lock.setName(name.trim());

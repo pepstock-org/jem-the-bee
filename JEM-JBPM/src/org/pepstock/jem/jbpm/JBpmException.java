@@ -20,8 +20,10 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.log.MessageInterface;
 
 /**
+ * Special Exception of JBPM integration
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.0
+ * @version 2.2
  */
 public class JBpmException extends MessageException {
 	

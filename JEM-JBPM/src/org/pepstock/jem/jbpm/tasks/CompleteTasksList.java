@@ -24,6 +24,8 @@ import org.pepstock.jem.jbpm.Task;
 import org.pepstock.jem.log.JemRuntimeException;
 
 /**
+ * Singleton which contains all tasks of a process, all tasks are JEM work items.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -77,9 +79,9 @@ public class CompleteTasksList {
 	}
 	
 	/**
-	 * Stes teh workItem ID to the task
+	 * Sets the workItem ID to the task
 	 * @param nodeId node id used to search task
-	 * @param workItemId workitem id, to assinged to task
+	 * @param workItemId workitem id, to assign to the task
 	 */
 	void setWorkItemID(long nodeId, long workItemId){
 		for (Task task : tasks.values()){
@@ -90,20 +92,21 @@ public class CompleteTasksList {
 	}
 	
 	/**
-	 * 
-	 * @param id
-	 * @return
+	 * Returns the task using the task ID as KEY
+	 * @param id task ID as KEY
+	 * @return task or <code>null</code> 
 	 */
 	Task getTaskByID(String id){
 		return tasks.get(id);
 	}
 	
 	/**
-	 * 
-	 * @param nodeId
-	 * @return
+	 * Gets the task using the node ID as key
+	 * @param nodeId node ID as KEY
+	 * @return task with node ID passed or <code>null</code>
 	 */
 	Task getTaskByNodeID(long nodeId){
+		// scans task because node ID is not the KEY of map
 		for (Task task : tasks.values()){
 			if (task.getNodeId() == nodeId){
 				return task;
@@ -113,11 +116,12 @@ public class CompleteTasksList {
 	}
 
 	/**
-	 * 
-	 * @param workItemId
-	 * @return
+	 * Gets the task using the workitem ID as key
+	 * @param workItemId work item ID as KEY
+	 * @return task with workitem ID passed or <code>null</code>
 	 */
 	Task getTaskByWorkItemID(long workItemId){
+		// scans task because work item ID is not the KEY of map
 		for (Task task : tasks.values()){
 			if (task.getWorkItemId() == workItemId){
 				return task;
@@ -127,8 +131,8 @@ public class CompleteTasksList {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Returns all tasks
+	 * @return all tasks
 	 */
 	Map<String, Task> getTasks(){
 		return tasks;

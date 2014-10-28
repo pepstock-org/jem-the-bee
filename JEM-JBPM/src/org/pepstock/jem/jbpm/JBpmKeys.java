@@ -23,69 +23,69 @@ import org.pepstock.jem.ant.AntKeys;
  * Contains all constants used inside of JBPM source code to be compliance JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  * 
  */
 public final class JBpmKeys {
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set job Name. If is missing, JEM uses
-	 * <code>name</code> attribute value for project element as job name.
+	 * Is the attribute value for property element inside of
+	 * process element, to set job Name. Is optional.
 	 */
 	public static final String JBPM_JOB_NAME = AntKeys.ANT_JOB_NAME;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set environment.
+	 * Is the attribute value for property element inside of
+	 * process element, to set environment. Is optional.
 	 */
 	public static final String JBPM_ENVIRONMENT = AntKeys.ANT_ENVIRONMENT;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set domain. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set domain. Is optional.
 	 */
 	public static final String JBPM_DOMAIN = AntKeys.ANT_DOMAIN;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set affinity. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set affinity. Is optional.
 	 */
 	public static final String JBPM_AFFINITY = AntKeys.ANT_AFFINITY;
 
 	/**
-	 * It is the <code>name</code> attribute value for property element inside of
-	 * project element, to set email addresses to send the notification of the end
+	 * It is the attribute value for property element inside of
+	 * process element, to set email addresses to send the notification of the end
 	 * of the Job. It is optional.
 	 */
 	public static final String JBPM_EMAILS_NOTIFICATION = AntKeys.ANT_EMAILS_NOTIFICATION;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set the user to use to executed the job. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set the user to use to executed the job. Is optional.
 	 */
 	public static final String JBPM_USER = AntKeys.ANT_USER;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set hold state of job. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set hold state of job. Is optional.
 	 */
 	public static final String JBPM_HOLD = AntKeys.ANT_HOLD;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set queue priority of job. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set queue priority of job. Is optional.
 	 */
 	public static final String JBPM_PRIORITY = AntKeys.ANT_PRIORITY;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set memory in MB for job. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to set memory in MB for job. Is optional.
 	 */
 	public static final String JBPM_MEMORY = AntKeys.ANT_MEMORY;
 
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set locjking scope. Must be "job", "step" or "task". Is optional. Default is "job"
+	 * Is the attribute value for property element inside of
+	 * process element, to set locking scope. Must be "job", "step" or "task". Is optional. Default is "job"
 	 */
 	public static final String JBPM_LOCKING_SCOPE = AntKeys.ANT_LOCKING_SCOPE;
 	
@@ -105,14 +105,14 @@ public final class JBpmKeys {
 	public static final String JBPM_TASK_SCOPE = AntKeys.ANT_ENVIRONMENT;
 	
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to add libs to ANt classptah process. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to add libraries to JBPM classpath process. Is optional.
 	 */
 	public static final String JBPM_CLASSPATH = AntKeys.ANT_CLASSPATH;
 	
 	/**
-	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to add libs to JBPM classptah process, at the beginning of classpath. Is optional.
+	 * Is the attribute value for property element inside of
+	 * process element, to add libraries to JBPM classpath process, at the beginning of classpath. Is optional.
 	 */
 	public static final String JBPM_PRIOR_CLASSPATH = AntKeys.ANT_PRIOR_CLASSPATH;
 

@@ -33,15 +33,15 @@ import org.pepstock.jem.log.JemRuntimeException;
  * Inlines are data put inside JCL.<br>
  * Examples:<br>
  * <br>
- * <b>GDG</b>: <code>&lt;dataSet name="nas.rx.jemtest(-1)"/&gt;</code><br>
+ * <b>GDG</b>: <code>DSN=nas.rx.jemtest(-1);</code><br>
  * <b>Reference</b>:
- * <code>&lt;dataSet name="*.step1.step-java.FILEIN"/&gt;</code><br>
- * <b>Temporary</b>: <code>&lt;dataSet name="@@temp"/&gt;</code><br>
- * <b>Inline</b>: <code>&lt;dataSet&gt inline data ;&lt;dataSet&gt;</code><br>
- * <b>Resource</b>: <code>&lt;dataSet name="foo.txt" resource="ftp/resource"/&gt;</code><br>
+ * <code>DSN=*._1.FILEIN</code><br>
+ * <b>Temporary</b>: <code>DSN=@@temp</code><br>
+ * <b>Inline</b>: <code>DSN=inline data</code><br>
+ * <b>Resource</b>: <code>DSN=foo.txt,DATASOURCE=ftpResource</code><br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public class DataSet implements Serializable {
@@ -141,7 +141,7 @@ public class DataSet implements Serializable {
 	 * referback to a dataset used and defined in a step previously configured.
 	 * Is a reference file if name has the following format:<br>
 	 * <br>
-	 * <code>*.[target-name].[task-name].[data-description-name]</code>.
+	 * <code>*.[task-ID].[data-description-name]</code>.
 	 * 
 	 * @return <code>true</code> is data description is defined for having a
 	 *         temporary file
@@ -168,9 +168,8 @@ public class DataSet implements Serializable {
 	}
 
 	/**
-	 * Calls by ANT engine during the JCL parsing. If ANT find a content text
-	 * inside the <code>dataset</code>, adds the text appending in a string
-	 * buffer. If it happens, the dataset is a Inline dataset, with data defined
+	 * Calls by parser when is not able to parse the value. 
+	 * If it happens, the dataset is a Inline dataset, with data defined
 	 * inside the JCL.
 	 * 
 	 * @param text content of dataset element

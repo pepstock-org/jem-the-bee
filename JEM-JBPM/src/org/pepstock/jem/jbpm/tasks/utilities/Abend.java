@@ -22,6 +22,8 @@ import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.log.JemException;
 
 /**
+ * JEM work item that goes always in exception, to simulate an abend.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

@@ -34,10 +34,10 @@ import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 
 /**
- * Utility to lock and unlock resources decalred on ANT JCL.
+ * Utility to lock and unlock resources declared on JBPM JCL.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  *
  */
 public class Locker {
@@ -50,7 +50,7 @@ public class Locker {
 	
 	/**
 	 * Gets resource locker instance to lock and unlock resources by RMI.<br>
-	 * Creates the implementation container, to look for dataste references.
+	 * Creates the implementation container, to look for dataset references.
 	 * 
 	 * @throws Exception if any RMI exception occurs
 	 */
@@ -84,7 +84,7 @@ public class Locker {
 		});
 		
 		try {
-			// scans all data description and locks by step repreentation
+			// scans all data description and locks by step representation
 			for (Task task : cloneTasks){
 				load(task);
 			}
@@ -106,11 +106,11 @@ public class Locker {
 	}
 	
 	/**
-	 * Loads all datadescription resources and locks ones.
+	 * Loads all data description resources and locks ones.
 	 * 
 	 * @param item step representation
 	 * @throws IOException if any exception occurs
-	 * @throws JBpmException 
+	 * @throws JBpmException if any exception occurs 
 	 */
 	private void load(Task item) throws IOException, JBpmException{
 		// scans all data description loaded
@@ -138,7 +138,7 @@ public class Locker {
 	/**
 	 * Unlocks all resources 
 	 * 
-	 * @throws JBpmException if any excpetion occurs
+	 * @throws JBpmException if any exception occurs
 	 */
 	void unlock() throws JBpmException{
 		try {
@@ -149,7 +149,7 @@ public class Locker {
 				// saved the list
 				// when this class asked
 				locker.unlock(JobId.VALUE);
-				// clears the contianers
+				// clears the containers
 				resources.clear();
 				TaskContainer.getInstance().getTasks().clear();
 			}

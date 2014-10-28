@@ -40,8 +40,8 @@ import org.pepstock.jem.util.rmi.RmiKeys;
  * The BatchSecurityManager verify if the job is doing what the user is
  * permitted to do.
  * 
- * @author Simone Businaro
- * @version 1.0
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
  * 
  */
 public class JBpmBatchSecurityManager extends BatchSecurityManager {
@@ -152,7 +152,7 @@ public class JBpmBatchSecurityManager extends BatchSecurityManager {
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
-		// checks teh file access
+		// checks the file access
 		if (perm instanceof FilePermission){
 			if ("read".equalsIgnoreCase(perm.getActions())){
 				checkRead(perm.getName());
@@ -193,6 +193,7 @@ public class JBpmBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkExit(int status) {
+		// if is not internal action, exit is not allowed
 		if (!isInternalAction()){
 			throw new SecurityException(NodeMessage.JEMC270E.toMessage().getFormattedMessage());
 		}

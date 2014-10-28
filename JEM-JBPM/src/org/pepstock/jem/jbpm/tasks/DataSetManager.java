@@ -42,7 +42,7 @@ import org.pepstock.jem.util.VariableSubstituter;
  * Creates all data set implementation called by DataDescriptionManager
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public class DataSetManager {
@@ -139,7 +139,7 @@ public class DataSetManager {
 			// calls load dataset but is a reference, so exception
 			throw new JBpmException(JBpmMessage.JEMM012E, ddImpl.getName(), ddImpl.getDisposition(), ds.toString());
 		} else if (ds.isTemporary()) {
-			// if dispostion is not new for temporary, exception!
+			// if disposition is not new for temporary, exception!
 			if (!ddImpl.getDisposition().equalsIgnoreCase(Disposition.NEW)){
 				throw new JBpmException(JBpmMessage.JEMM013E, ddImpl.getName(), ddImpl.getDisposition(), ds.toString());
 			}
@@ -226,7 +226,7 @@ public class DataSetManager {
 				if (file.exists()){
 					throw new JBpmException(JBpmMessage.JEMM015E, ddImpl.getName(), ddImpl.getDisposition(), ds.toString());
 				}
-				// file name could have a new dirctories. Create them here
+				// file name could have a new directories. Create them here
 				File parent = file.getParentFile();
 				if (!parent.exists()){
 					boolean isCreated = parent.mkdirs();
@@ -249,12 +249,12 @@ public class DataSetManager {
 		ddImpl.addDataSet(dataset);
 	}
 	/**
-	 * Creates a file wrapper, normalizing the name. That's necessary due to you can write on ANT JCL 
+	 * Creates a file wrapper, normalizing the name. That's necessary due to you can write on JBPM JCL 
 	 * both the relative or the absolute file name.
 	 * 
 	 * @param ds dataset instance
 	 * @return a file wrapper instance
-	 * @throws JBpmException if dataPath is null, returns ann exception
+	 * @throws JBpmException if dataPath is null, returns JBPM exception
 	 */
 	private static FileWrapper getFile(DataSet ds, String disposition) throws JBpmException{
 		// gets the data path and checks
@@ -294,7 +294,7 @@ public class DataSetManager {
 			// should be relative
 			file = new File(ds.getName());
 			// normalizes the full path and checks again with the name
-			// if equals means that is absolute because the previuos checks only if it's using the 
+			// if equals means that is absolute because the previous checks only if it's using the 
 			// data paths. here the absolute path IS NOT a data path
 			if (FilenameUtils.normalize(file.getAbsolutePath(), true).equalsIgnoreCase(ds.getName())){
 				// normalizes using UNIX rules
@@ -327,7 +327,7 @@ public class DataSetManager {
  * with absolute path, based on dataPath.  
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.2	
+ * @version 2.2
  *
  */
 final class FileWrapper{

@@ -101,10 +101,13 @@ public class JBpmFactory extends AbstractFactory {
 	 */
 	@Override
 	public Jcl createJcl(String content) throws JclFactoryException {
+		// creates a default JCL
 		DefaultJcl jcl = new DefaultJcl();
+		// sets type and content
 		jcl.setType(JBPM_TYPE);
 		jcl.setContent(content);
 		try {
+			// validates JCL
 	        validate(jcl, content);
         } catch (JBpmException e) {
         	throw new JclFactoryException(jcl, e);
@@ -120,16 +123,26 @@ public class JBpmFactory extends AbstractFactory {
 		return new JBpmTask(job, this);
 	}
 	
-	
+	/**
+	 * Validates the JCL content, calling the JBPM API 
+	 * @param jcl default JCL to store into job
+	 * @param content JCL content
+	 * @throws JBpmException if any error occurs
+	 */
 	private void validate(DefaultJcl jcl, String content) throws JBpmException{
+		// read the BPMN Metadata, loading in properties object
 		Properties p = new Properties();
 		
+		// creates all readers
 		StringReader reader = new StringReader(content);
 		InputSource source = new InputSource(reader);
 		SimpleRuntimeEnvironment jbpmEnvironment = null;
 		String jobName = null;
 
+		// SCANS JCL to get JOBNAME
+		// JOBNAME = attribute ID of PROCESS element
 		try {
+			// creates DOM objects
 	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	        dbf.setIgnoringComments(false);
 	        DocumentBuilder db = dbf.newDocumentBuilder();
@@ -137,7 +150,7 @@ public class JBpmFactory extends AbstractFactory {
 	        
 	        // scan XML to read comment
 	        NodeList nl = doc.getDocumentElement().getChildNodes();
-	        
+	        // scans all nodes
 	        for (int i = 0; i < nl.getLength(); i++) {
 	        	Node node = nl.item(i);
 	        	if (node.getNodeType() == Element.ELEMENT_NODE) {
@@ -150,9 +163,12 @@ public class JBpmFactory extends AbstractFactory {
 	            	} else {
 	            		tagName = el.getTagName();
 	            	}
+	            	// checks only if is a PROCESS element
 	            	if (tagName.equalsIgnoreCase(PROCESS_XML_ELEMENT)){
+	            		// gets ID attribute to set JOBNAME
 	            		String jobNameAttr = el.getAttribute(ID_XML_ATTRIBUTE);
 	            		if (jobNameAttr != null){
+	            			// puts on properties
 	            			p.setProperty(JBpmKeys.JBPM_JOB_NAME, jobNameAttr);
 	            		} else {
 	            			throw new JBpmException(JBpmMessage.JEMM031E);
@@ -169,24 +185,28 @@ public class JBpmFactory extends AbstractFactory {
 			if (jobName == null){
 				throw new JBpmException(JBpmMessage.JEMM031E);
 			}
+			// loads JCL jobname
 			jcl.setJobName(jobName);
 
+			// creates JBPM environment to check BPMN2 syntax
 			SimpleRegisterableItemsFactory factory = new SimpleRegisterableItemsFactory();
 			jbpmEnvironment = new SimpleRuntimeEnvironment(factory);
 			jbpmEnvironment.setUsePersistence(false);
 			Resource res = ResourceFactory.newReaderResource(new StringReader(content), CharSet.DEFAULT_CHARSET_NAME);
 			jbpmEnvironment.addAsset(res, ResourceType.BPMN2);
-			
+			// gets process to read metadata
 			org.kie.api.definition.process.Process process = jbpmEnvironment.getKieBase().getProcess(jobName);
-			
+			// if process is null, exception
 			if (process == null){
-				throw new JBpmException(JBpmMessage.JEMM031E);
+				throw new JBpmException(JBpmMessage.JEMM063E);
 			}
+			// loads all METADATA
 		    p.putAll(process.getMetaData());
 		    
 		    // check again because you could put the job name on metadata
 	    	jcl.setJobName(p.getProperty(JBpmKeys.JBPM_JOB_NAME));
 	    	
+	    	// loads the JBPM process ID in a map to reuse when a JBPM task will be scheduled
 	    	Map<String, String> jclMap = new HashMap<String, String>();
 	    	jclMap.put(JBpmKeys.JBPM_JOB_NAME, jobName);
 	    	jcl.setProperties(jclMap);
@@ -200,6 +220,7 @@ public class JBpmFactory extends AbstractFactory {
         } catch (Exception e) {
         	throw new JBpmException(JBpmMessage.JEMM047E, e, e.getMessage());
         } finally {
+        	// clean up of JBPM environment
         	if (jbpmEnvironment != null && jobName != null){
         		try {
 	                jbpmEnvironment.getKieBase().removeProcess(jobName);

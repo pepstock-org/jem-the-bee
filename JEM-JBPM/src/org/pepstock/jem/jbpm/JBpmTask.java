@@ -33,6 +33,7 @@ import org.pepstock.jem.node.tasks.shell.JavaCommand;
  * 
  * @see org.pepstock.jem.node.tasks.JobTask
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  * 
  */
 public class JBpmTask extends DefaultJobTask {
@@ -45,7 +46,7 @@ public class JBpmTask extends DefaultJobTask {
 	 * Constructs the object save job instance to execute
 	 * 
 	 * @param job job instance to execute
-	 * @param factory instance of factory of ANT task
+	 * @param factory instance of factory of JBPM task
 	 */
 	public JBpmTask(Job job, JemFactory factory) {
 		super(job, factory);
@@ -54,7 +55,7 @@ public class JBpmTask extends DefaultJobTask {
 	}
 	/**
 	 * Implementations of abstract method.<br>
-	 * Sets the command to start the ant Launcher
+	 * Sets the command to start the JBPM Launcher
 	 * 
 	 * @throws IOException occurs if there is any error
 	 */
@@ -66,6 +67,7 @@ public class JBpmTask extends DefaultJobTask {
 		// to process to launch
 		String currentClassPath = JavaUtils.getClassPath();
 		
+		// using a custom classloadr, CLASSPATH of factory couldn't be empty
 		if (getFactory().getClassPath() != null && !getFactory().getClassPath().isEmpty()){
 			for (String path : getFactory().getClassPath()){
 				currentClassPath = currentClassPath + File.pathSeparator + path;
@@ -73,10 +75,10 @@ public class JBpmTask extends DefaultJobTask {
 		} else {
 			throw new IOException("classPath is empty");
 		}
-		
+		// sets classpath
 		getEnv().put("CLASSPATH", currentClassPath);
 	
-		// get job instance and get JCL file, necessary to pass to ANT Batch
+		// get job instance and get JCL file, necessary to pass to JBPM Batch
 		Job job = getJob();
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		
@@ -98,12 +100,13 @@ public class JBpmTask extends DefaultJobTask {
 		// sests classpath
 		jCommand.setClassPath(currentClassPath);
 
-		// main class is ANT Laucnher
+		// main class is JBPM Laucnher
 		jCommand.setClassName(JBpmLauncher.class.getName());
 		
+		// gets from JCL the JBPM process ID 
 		String jobName = jcl.getProperties().get(JBpmKeys.JBPM_JOB_NAME);
 		
-		// sets JCL to execute and StepListener
+		// sets Process ID and JCL to execute
 		jCommand.setClassArguments((jobName == null) ? job.getName() : jobName, jclFile.getAbsolutePath());
 	}
 }

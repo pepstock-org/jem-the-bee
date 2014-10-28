@@ -22,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.pepstock.jem.jbpm.Task;
 
 /**
+ * Contains all task (JE work item implementation) currently in execution. When JOB lockingScope is set,
+ * it contains all JEM work items, otherwise only one instance of the task (JEM work item) in execution phase.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -39,7 +42,7 @@ public class TaskContainer {
 	}
 
 	/**
-	 * Return teh singleton instance
+	 * Return the singleton instance
 	 * @return
 	 */
 	public static TaskContainer getInstance(){

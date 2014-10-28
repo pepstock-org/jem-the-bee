@@ -53,6 +53,9 @@ import org.pepstock.jem.util.rmi.RegistryLocator;
 import org.pepstock.jem.util.rmi.RmiKeys;
 
 /**
+ * Implements the standard event listener of JBPM to prepare the right integration with the JEM.<br>
+ * It listen ONLY start and end of process and tasks.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -60,6 +63,8 @@ public class StepListener extends DefaultProcessEventListener{
 	
 	private TasksDoor door = null;
 	
+	// it contains all task events. This is necessary because if there is an exception, the method of task end
+	// is not called
 	private Map<Long, ProcessNodeEvent> nodeEvents = new ConcurrentHashMap<Long, ProcessNodeEvent>();
 	
 	private String lockingScope = JBpmKeys.JBPM_JOB_SCOPE;
@@ -107,11 +112,12 @@ public class StepListener extends DefaultProcessEventListener{
 	 * @param exception message exception
 	 */
 	public void beforeNodeLeft(ProcessNodeEvent processNodeEvent, int result, String exception) {
-		
+		// removes from the map the event, becaus ethe task is ended
 		nodeEvents.remove(processNodeEvent.getNodeInstance().getNodeId());
 		
 		LogAppl.getInstance().emit(JBpmMessage.JEMM019I, processNodeEvent.getNodeInstance().getNodeName(), processNodeEvent.getNodeInstance().getId());
 
+		// sets security manager internal action
 		JBpmBatchSecurityManager batchSM = (JBpmBatchSecurityManager)System.getSecurityManager();
 		batchSM.setInternalAction(true);
 
@@ -156,6 +162,7 @@ public class StepListener extends DefaultProcessEventListener{
 	 */
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent processNodeEvent) {
+    	// stores the event in a map to avoid inconsistent situation when an exception occurs
     	nodeEvents.put(processNodeEvent.getNodeInstance().getNodeId(), processNodeEvent);
     	
 		// - update TASk adding the workitem id
@@ -177,6 +184,7 @@ public class StepListener extends DefaultProcessEventListener{
     			}
     		}
     	}
+    	// sets security manager internal action
     	JBpmBatchSecurityManager batchSM = (JBpmBatchSecurityManager)System.getSecurityManager();
     	batchSM.setInternalAction(true);
 
@@ -207,8 +215,8 @@ public class StepListener extends DefaultProcessEventListener{
     }
     
     /**
-     * 
-     * @param processEvent
+     * This method is the same of JBPM one. But it can be called from a different Process event, when an exception occurs.
+     * @param processEvent event to use to clean up
      */
     public void afterProcessCompletedFinally(ProcessEvent processEvent) {
     	LogAppl.getInstance().emit(JBpmMessage.JEMM025I, processEvent.getProcessInstance().getProcessName());
@@ -337,7 +345,7 @@ public class StepListener extends DefaultProcessEventListener{
 	
 	/**
 	 * Reads the parameters and sets the locking scope
-	 * @param project JOB
+	 * @param process metadata
 	 */
 	private void setLockingScope(Map<String, Object> metaData){
 		// if has got a gateway, force locking scope to JOB
@@ -375,14 +383,19 @@ public class StepListener extends DefaultProcessEventListener{
 	 */
 	private void loadForLock(long taskId){
 		Map<String, Task> tasks = CompleteTasksList.getInstance().getTasks();
+		// if there isn't any JEM workitem, return
 		if (tasks.isEmpty()){
 			return;
 		}
+		// if -1, that means we have JOB lockingScope, so loads all tasks
 		if (taskId == Task.NO_ID){
 			TaskContainer.getInstance().getTasks().putAll(tasks);
 		} else {
+			// here there is a step or task lockingScope
+			// loads TASk only of current task in execution, by NODE ID
 			Task task = CompleteTasksList.getInstance().getTaskByNodeID(taskId);
 			if (task != null){
+				// stores the task in another singleton of current task in execution 
 				TaskContainer.getInstance().getTasks().put(task.getId(), task);
 			}
 		}
@@ -393,13 +406,15 @@ public class StepListener extends DefaultProcessEventListener{
 	 * @param process process to scan
 	 */
 	private void loadNodeIds(org.kie.api.definition.process.Process process){
+		// only WORKFLOW PROCESS can be managed because it has got 
+		// all nodes
 		if (process instanceof  WorkflowProcess){
 			WorkflowProcess wp = (WorkflowProcess)process;
-
+			// scans all nodes
 			for (Node node : wp.getNodes()){
 				if (node instanceof NodeImpl){
 					NodeImpl ni = (NodeImpl)node;
-					// JBPM uses this label "UniqueId" to save teh ID of XML
+					// JBPM uses this label "UniqueId" to save the ID of XML
 					// unfortunately there isn't any constant in JBPM to use
 					Object objectId = ni.getMetaData().get("UniqueId");
 					if (objectId != null){

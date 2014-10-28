@@ -18,6 +18,8 @@ package org.pepstock.jem.node.persistence.sql;
 
 
 /**
+ * Contains all DB2 SQL for Hazelcast persistence
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

@@ -28,10 +28,18 @@ import org.pepstock.jem.jbpm.JBpmMessage;
 import org.pepstock.jem.log.LogAppl;
 
 /**
- * DSN=dsn1,DSIP=dis,DATASOURCE=dataource
- * DSN=(dsn1;dns2),DSIP=dis,DATASOURCE=dataource
- * 
- * 
+ * Parser of all information, extracted from JBPM JCL, necessary to creates data description and data sources.<br>
+ * This is the syntax to use for data description (all commands are not positionals):<br>
+ * <ul>
+ * <li> <code>DSN=<i>dsn</i>,DISP=[SHR|OLD|MOD|NEW]</code>
+ * <li> <code>DSN=(<i>dsn1</i>;<i>dsn2</i>),DISP=SHR</code>
+ * <li> <code>DSN=<i>dsn</i>,DISP=[SHR|OLD|MOD|NEW],DATASOURCE=<i>datasource</i></code>
+ * </ul>
+ * This is the syntax to use for data source (all commands are not positionals):<br>
+ * <ul>
+ * <li> <code>RESOURCE=<i>resourceName</i>,PROPERTIES=(<i>key1=value1</i>;<i>key2=value2</i>)</code>
+ * </ul>
+ 
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -62,10 +70,10 @@ public final class ValueParser {
 	}
 	
 	/**
-	 * Parses the value of variable in JBPM and load datasets into data description
-	 * @param dd
-	 * @param valueParm
-	 * @throws JBpmException
+	 * Parses the value of variables in JBPM and loads datasets into data descriptions
+	 * @param dd data description to load
+	 * @param valueParm value of assignment in BPMN2 language
+	 * @throws JBpmException if any error occurs
 	 */
 	public static final void loadDataDescription(DataDescription dd, String valueParm) throws JBpmException{
 		// trim value
@@ -99,7 +107,7 @@ public final class ValueParser {
 						// checks if teh content is inside of brackets
 						if (subToken.startsWith("(") && subToken.endsWith(")")){
 							// gets content inside brackets
-							subValue = StringUtils.substringBetween(subToken, "(", ")");
+							subValue = StringUtils.removeEnd(StringUtils.removeStart(subToken, "("), ")");
 						} else {
 							// only 1 datasets
 							subValue= subToken;
@@ -162,18 +170,21 @@ public final class ValueParser {
 			}
 		}
 	}
+
 	/**
-	 * 
-	 * @param dsn
-	 * @param content
-	 * @return
-	 * @throws JBpmException
+	 * Creates all data set using the dsn or content values.
+	 * @param dd data description object to be loaded of data sets. Passed only for the exception
+	 * @param dsn data set name or null if is a INLINE data set
+	 * @param content content of INLINE data set or null
+	 * @return a data set instance
+	 * @throws JBpmException if dsn and content are null occurs
 	 */
 	private static DataSet createDataSet(DataDescription dd, String dsn, String content) throws JBpmException{
+		// if DSN = null and content is empty, exception
 		if (dsn == null && content == null){
 			throw new JBpmException(JBpmMessage.JEMM053E, dd.getName());
 		}
-		
+		// creates dataset and loads it
 		DataSet ds = new DataSet();
 		if (content != null){
 			ds.addText(content);
@@ -185,9 +196,9 @@ public final class ValueParser {
 	
 	/**
 	 * Parses the value of variable in JBPM and load all data source properties if there are
-	 * @param ds
-	 * @param valueParm
-	 * @throws JBpmException
+	 * @param ds data source to be loaded
+	 * @param valueParm value specified on JBPM xml assignment
+	 * @throws JBpmException if any error occurs
 	 */
 	public static final void loadDataSource(DataSource ds, String valueParm) throws JBpmException{
 		// trim value
@@ -203,21 +214,32 @@ public final class ValueParser {
 				if (StringUtils.startsWithIgnoreCase(token, PROPERTIES_PREFIX)){
 					// gets all string after DSN=
 					String subToken = getValue(token, PROPERTIES_PREFIX);
-					String subValue = StringUtils.substringBetween(subToken, "(", ")");
-					if (subValue != null){
-						subValue = subValue.replace(VALUE_SEPARATOR, System.getProperty("line.separator")).concat(System.getProperty("line.separator"));
-						StringReader reader = new StringReader(subValue);
-						Properties properties = new Properties();
-						try {
-							properties.load(reader);
-							for (Entry<Object, Object> entry : properties.entrySet()){
-								Property prop = new Property();
-								prop.setName(entry.getKey().toString());
-								prop.addText(entry.getValue().toString());
-								ds.addProperty(prop);
+					if (subToken.startsWith("(") && subToken.endsWith(")")){
+						// gets content inside brackets
+						String subValue = StringUtils.removeEnd(StringUtils.removeStart(subToken, "("), ")");
+						// if subvalue is null, exception
+						if (subValue != null){
+							// changes all ; in line separator because by areader it can load a properties object
+							subValue = subValue.replace(VALUE_SEPARATOR, System.getProperty("line.separator")).concat(System.getProperty("line.separator"));
+							// loads all properties from a reader
+							StringReader reader = new StringReader(subValue);
+							Properties properties = new Properties();
+							try {
+								// loads it
+								properties.load(reader);
+								// scans all properties to creates property object
+								for (Entry<Object, Object> entry : properties.entrySet()){
+									// creates properties
+									Property prop = new Property();
+									prop.setName(entry.getKey().toString());
+									prop.addText(entry.getValue().toString());
+									ds.addProperty(prop);
+								}
+							} catch (IOException e) {
+								LogAppl.getInstance().ignore(e.getMessage(), e);
 							}
-						} catch (IOException e) {
-							LogAppl.getInstance().ignore(e.getMessage(), e);
+						} else {
+							throw new JBpmException(JBpmMessage.JEMM054E, ds.getName());
 						}
 					} else {
 						throw new JBpmException(JBpmMessage.JEMM054E, ds.getName());
@@ -233,12 +255,13 @@ public final class ValueParser {
 	
 	/**
 	 * Extract the sub token (value) considering blanks between = and prefix
-	 * @param token
-	 * @param prefix
-	 * @return
+	 * @param token token to check inside the string
+	 * @param prefix prefix to check
+	 * @return the rest of the token string
 	 */
 	private static String getValue(String token, String prefix){
 		String subToken = StringUtils.substringAfter(token, prefix).trim();
+		// checks if there TOKEN=VALUE
 		if (subToken.startsWith("=")){
 			return StringUtils.substringAfter(subToken, "=").trim();
 		} else {

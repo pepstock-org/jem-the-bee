@@ -23,12 +23,12 @@ import org.pepstock.jem.log.MessageInterface;
 import org.pepstock.jem.log.MessageLevel;
 
 /**
- * It is an enumeration containing all the messages related to the ANT utilities. <br>
+ * It is an enumeration containing all the messages related to the JBPM utilities. <br>
  * It implements {@link MessageInterface}
  * 
  * @see Message
  * @author Andrea 'Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  */
 public enum JBpmMessage implements MessageInterface{
 
@@ -418,7 +418,13 @@ public enum JBpmMessage implements MessageInterface{
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
-	JEMM062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO);
+	JEMM062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	
+	/**
+	 * "Unable to get process", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you can't get the process.<br>Please contact your JEM administrators.")
+	JEMM063E(63, "Unable to get process", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

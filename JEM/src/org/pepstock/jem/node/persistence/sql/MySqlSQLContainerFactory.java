@@ -19,6 +19,8 @@ package org.pepstock.jem.node.persistence.sql;
 import org.pepstock.jem.node.persistence.SQLContainer;
 
 /**
+ * Contains all MySql for Hazelcast persistence
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *

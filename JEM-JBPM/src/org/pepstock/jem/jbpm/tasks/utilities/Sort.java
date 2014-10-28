@@ -27,7 +27,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
- * Is a utility (both a task ANT and a main program) that sort data.<br>
+ * Is a utility (both a task JBPM and a main program) that sort data.<br>
  */
 public class Sort implements JemWorkItem {
 	

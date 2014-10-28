@@ -25,7 +25,7 @@ import org.pepstock.jem.log.JemRuntimeException;
  * This lock is always in exclusive mode.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2
  *
  */
 public class Lock {

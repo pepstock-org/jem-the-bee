@@ -19,12 +19,11 @@ package org.pepstock.jem.jbpm.tasks;
 import java.io.Serializable;
 
 /**
- * ANT element definition used to get property values (key-value).<br>
- * Is used for data source definition, when you want to override a a defualt
- * value od resource defintion.
+ * Is used for data source definition, when you want to override a a default
+ * value of resource definition.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  *
  */
 public class Property implements Serializable{
@@ -52,8 +51,6 @@ public class Property implements Serializable{
 
 
 	/**
-	 * Calls by ANT engine during the JCL parsing. 
-	 * 
 	 * @param text content of dataset element
 	 */
 	public void addText(String text) {

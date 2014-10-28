@@ -46,30 +46,42 @@ import org.pepstock.jem.log.LogAppl;
 import org.xml.sax.SAXException;
 
 /**
+ * This is the main program to launch a JPBM process as JOB inside the JEM.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
 public class JBpmLauncher {
 
 	/**
-	 * @param args
+	 * Main method which receives in input 2 arguments:<br>
+	 * <ul>
+	 * <li> ProcessID: value of ID attribute of process element, necessary to load the process inside of JBPM 
+	 * <li> JCL file: the absolute path of JCL file 
+	 * </ul>
+	 * 
+	 * @param args processID and JCL file
 	 */
 	public static void main(String[] args) {
 		// initialize LOG
 		LogAppl.getInstance();
+		// checks if there is the right amount of arguments
 		if (args != null && args.length == 2){
 			
-			// args[0] is jobname
+			// args[0] is process ID
 			// args[1] is jcl file
-			String jobName = args[0];
+			String processID = args[0];
 			String jclFile = args[1];
 			
+			// scans the JCL to get all task descriptors for the JEM custom task
 			try {
 				Map<String, Task> tasks = new HashMap<String, Task>();
+				// scans all tak description to create a map of tasks
 	            for (TaskDescription taskDescription : XmlParser.getTaskDescription(jclFile)){
 	            	Task task = Factory.createTask(taskDescription);
 	            	tasks.put(task.getId(), task);
 	            }
+	            // loads all task in a singleton, to use in teh step listener
 	            CompleteTasksList.getInstance(tasks);
             } catch (ParserConfigurationException e) {
 	            throw new JemRuntimeException(e);
@@ -81,40 +93,51 @@ public class JBpmLauncher {
             	throw new JemRuntimeException(e);
             }
 			
+			// creates the step listener
 			StepListener listener = new StepListener();
 			
+			// creates teh JBPM environment and load JCL file
 			SimpleRegisterableItemsFactory factory = new SimpleRegisterableItemsFactory();
 			SimpleRuntimeEnvironment environment = new SimpleRuntimeEnvironment(factory);
 			environment.setUsePersistence(false);
 			Resource res = ResourceFactory.newFileResource(new File(jclFile));
 			environment.addAsset(res, ResourceType.BPMN2);
 
+			// gets runtime environment
 			RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 		    RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 			KieSession ksession = runtime.getKieSession();
+			// adds always the custom JEM workitem
 			ksession.getWorkItemManager().registerWorkItemHandler(JBpmKeys.JBPM_JEM_WORKITEM_NAME, new JemWorkItemHandler());
 			
 			// adds listener
 			ksession.addEventListener(listener);
 			try { 
 				// starts process
-				ksession.startProcess(jobName);
+				ksession.startProcess(processID);
 			
 				// check if are tasks are still pending
 				// if yes, there has been an errors
 				if (!listener.getNodeEvents().isEmpty()){
+					// scans all pending tasks and call end of them method
 					for (ProcessNodeEvent event : listener.getNodeEvents().values()){
 						listener.beforeNodeLeft(event, Result.ERROR, JBpmMessage.JEMM048E.toMessage().getFormattedMessage(event.getNodeInstance().getNodeName()));	
 					}
+					// calls the end of job method
 					listener.afterProcessCompletedFinally(listener.getProcessEvent());
+					// exits with error
 					System.exit(1);
 				}
 			} catch( WorkflowRuntimeException wfre ) {
+				// if we are here, means that a RUNTIME exception has been thrown by a work item
 				LogAppl.getInstance().emit(JBpmMessage.JEMM029E, wfre, wfre.getCause().getClass().getName(),wfre.getProcessInstanceId(),
 						wfre.getProcessId(), wfre.getNodeId(), wfre.getNodeName());
 				String msg = JBpmMessage.JEMM029E.toMessage().getFormattedMessage(wfre.getCause().getClass().getName(),wfre.getProcessInstanceId(),
 						wfre.getProcessId(), wfre.getNodeId(), wfre.getNodeName());
+
+				// check if are tasks are still pending
 				if (!listener.getNodeEvents().isEmpty()){
+					// scans all pending tasks and call end of them method
 					for (ProcessNodeEvent event : listener.getNodeEvents().values()){
 						if (event.getNodeInstance().getNodeId() == wfre.getNodeId()){
 							listener.beforeNodeLeft(event, Result.ERROR, msg);
@@ -123,10 +146,13 @@ public class JBpmLauncher {
 						}
 					}
 				}
+				// calls the end of job method
 				listener.afterProcessCompletedFinally(listener.getProcessEvent());
+				// exits with error
 				System.exit(1);
 			} finally {
-				environment.getKieBase().removeProcess(jobName);
+				// cleans up of JBPM environment 
+				environment.getKieBase().removeProcess(processID);
 				manager.disposeRuntimeEngine(runtime);
 			}
 		} else {

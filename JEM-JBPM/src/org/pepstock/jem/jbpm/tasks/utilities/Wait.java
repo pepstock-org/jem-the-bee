@@ -23,6 +23,9 @@ import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.TimeUtils;
 
 /**
+ * JEM work item that waits for a certain amount of seconds. Is able to get how many seconds to wait
+ * by a JBPM parameter.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

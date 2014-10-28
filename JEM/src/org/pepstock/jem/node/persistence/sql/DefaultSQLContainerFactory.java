@@ -20,6 +20,7 @@ import org.pepstock.jem.node.persistence.SQLContainer;
 import org.pepstock.jem.node.persistence.SQLContainerFactory;
 
 /**
+ * Container of all SQL statements for Hazelcast persistence. This is a default, based on DB2 SQL 
  * 
  * @author Andrea "Stock" Stocchero
  * 

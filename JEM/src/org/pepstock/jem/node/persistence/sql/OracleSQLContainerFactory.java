@@ -19,6 +19,8 @@ package org.pepstock.jem.node.persistence.sql;
 import org.pepstock.jem.node.persistence.SQLContainer;
 
 /**
+ * Contains all Oracle SQL for Hazelcast persistence
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

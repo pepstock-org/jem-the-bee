@@ -27,10 +27,10 @@ import org.pepstock.jem.log.JemRuntimeException;
  * Represents a logical name of a database, addressable by name both a java code
  * (JNDI).<br>
  * Example: <br>
- * <code>&lt;dataSource name="jndiname" database="logicalDBname" /&gt;<br>
+ * <code>RESOURCE=resource,PROPERTIES=(k1=v1,k2=v2)</code><br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 2.2
  * 
  */
 public class DataSource implements Serializable {

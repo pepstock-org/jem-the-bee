@@ -23,9 +23,14 @@ import org.pepstock.jem.jbpm.tasks.DataDescription;
 import org.pepstock.jem.jbpm.tasks.DataSource;
 import org.pepstock.jem.jbpm.tasks.Lock;
 
-
-
 /**
+ * Represents all task of JBPM process which implements a JEM workitem.<br>
+ * BY JEM workitem, is possible to set data description, data source and locks.<br>
+ * JBPM uses several ID (task ID, node ID and workitem ID). all these IDs are stored in the object.<br>
+ * Task ID is the main ID, set by the developer to the task.<br>
+ * Node ID is set by JBPM, is just a counter of all XML nodes.<br>
+ * WorkItem ID is set by JBPM, is just a counter of all work items.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */

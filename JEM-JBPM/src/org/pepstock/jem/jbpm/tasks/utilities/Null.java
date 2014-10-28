@@ -21,6 +21,8 @@ import java.util.Map;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 
 /**
+ * JEM work item that does nothing.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
