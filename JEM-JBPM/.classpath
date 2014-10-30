@@ -216,5 +216,5 @@
 	<classpathentry kind="lib" path="lib/jbpm/lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/jbpm/lib/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/jbpm/lib/xz-1.0.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>
