@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.jbpm;
 
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public final class XmlParser {
 	 */
 	public final static List<TaskDescription> getTaskDescription(String jclFile) throws ParserConfigurationException, SAXException, IOException{
 		// creates an input soure
-		InputSource source = new InputSource(new FileReader(jclFile));
+		InputSource source = new InputSource(new FileInputStream(jclFile));
 		
 		// DOM document and parsing
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

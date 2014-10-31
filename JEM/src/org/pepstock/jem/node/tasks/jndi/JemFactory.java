@@ -104,7 +104,7 @@ public class JemFactory implements ObjectFactory {
 				account.setUserId(username);
 				account.setPassword(password);
 				// log in
-				user = manager.login(account);
+				manager.login(account);
 			}
 
 		} catch (JemException e) {

@@ -27,6 +27,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.pepstock.jem.log.JemRuntimeException;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -96,6 +98,7 @@ public class HTTPBaseAuthRestClient extends RestClient {
 	        ctx = SSLContext.getInstance("TLS");
 	        ctx.init(null, certs, new SecureRandom());
 	    } catch (java.security.GeneralSecurityException ex) {
+	    	throw new JemRuntimeException(ex);
 	    }
 	    HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
 	    

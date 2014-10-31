@@ -369,6 +369,8 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			// setting the boolean to TRUE
 			isExecutionStarted = true;
 			return item.execute(parms);
+		} catch (RuntimeException e) {
+			throw e;			
 		} catch (Exception e) {
 			throw new JemException(e);
 		} finally {

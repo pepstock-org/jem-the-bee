@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.executors.stats;
 
 import java.lang.management.ManagementFactory;
+import java.util.List;
 
 import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.FileSystemUsage;
@@ -29,6 +30,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.node.stats.CpuUtilization;
@@ -178,8 +180,7 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		memberSample.setTotalNumberOfJCLCheck(msample.getTotalNumberOfJCLCheck());
 		memberSample.setTotalNumberOfJOBSubmitted(msample.getTotalNumberOfJOBSubmitted());
 		
-		memberSample.setGfsFree(msample.getFileSystem().getFree());
-		memberSample.setGfsUsed(msample.getFileSystem().getUsed());
+		memberSample.setFileSystems(msample.getFileSystems());
 		
 		/**
 		 * JOBS QUEUES
@@ -358,10 +359,31 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	 * @param sigar sigar instance to get system info
 	 */
 	private void loadGFSUtilization(MemberSample sample, Sigar sigar){
+//			FileSystemUtilization fsUtil = sample.getFileSystem();
+		sample.getFileSystems().add(getFileSystemUtilization("Output", System.getProperty(ConfigKeys.JEM_OUTPUT_PATH_NAME), sigar));
+		sample.getFileSystems().add(getFileSystemUtilization("Binary", System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME), sigar));
+		sample.getFileSystems().add(getFileSystemUtilization("Classpath", System.getProperty(ConfigKeys.JEM_CLASSPATH_PATH_NAME), sigar));
+		sample.getFileSystems().add(getFileSystemUtilization("Library", System.getProperty(ConfigKeys.JEM_LIBRARY_PATH_NAME), sigar));
+		sample.getFileSystems().add(getFileSystemUtilization("Source", System.getProperty(ConfigKeys.JEM_SOURCE_PATH_NAME), sigar));
+		sample.getFileSystems().add(getFileSystemUtilization("Persistence", System.getProperty(ConfigKeys.JEM_PERSISTENCE_PATH_NAME), sigar));
+
+		// it usesa LinkedList therefore the order is maintaned
+		List<String> dataPathNames = Main.DATA_PATHS_MANAGER.getDataPathsNames();
+		List<String> dataPaths = Main.DATA_PATHS_MANAGER.getDataPaths();
+		
+		for (int i=0; i<dataPathNames.size(); i++){
+			String name = dataPathNames.get(i);
+			String path = dataPaths.get(i);
+			sample.getFileSystems().add(getFileSystemUtilization("Data ["+name+"]", path, sigar));
+		}
+	}
+	
+	
+	private FileSystemUtilization getFileSystemUtilization(String name, String path, Sigar sigar){
+		FileSystemUtilization fsUtil = new FileSystemUtilization();
+		fsUtil.setName(name);
+		fsUtil.setPath(path);
 		try {
-			FileSystemUtilization fsUtil = sample.getFileSystem();
-			// uses only teh output path.
-			// TODO must be extended with all other GFS
 			FileSystemUsage usage = sigar.getFileSystemUsage(Main.getOutputSystem().getOutputPath().getAbsolutePath());
 			long free = usage.getFree();
 			long total  = usage.getTotal();
@@ -370,10 +392,10 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 			fsUtil.setFree(free);
 			fsUtil.setTotal(total);
 			fsUtil.setUsed(used);
-
 		} catch (SigarException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC169W, e);
-		}
+		}	
+		return fsUtil;
 	}
 
 	

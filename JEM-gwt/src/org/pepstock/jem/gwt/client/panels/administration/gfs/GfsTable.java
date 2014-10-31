@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.administration.gfs;
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.panels.administration.commons.LightMemberSampleColumns;
+import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
 
 import com.google.gwt.i18n.client.NumberFormat;
@@ -34,13 +35,32 @@ import com.google.gwt.user.cellview.client.TextColumn;
  */
 public class GfsTable extends AbstractTable<LightMemberSample> {
 	
+	private String fileSystemName = null;
+	
+	private GfsComparator comparator = null;
+	
 	protected static final NumberFormat MB_FORMAT = NumberFormat.getFormat("###,###,##0 MB");
 	protected static final NumberFormat PERCENT_FORMAT = NumberFormat.getFormat("##0.00 %"); 
-	
+
 	/**
-	 *  Empty constructor
+	 * Empty constructor
 	 */
-	public GfsTable() {
+    public GfsTable() {
+
+    }
+
+	/**
+	 * @return the fileSystemName
+	 */
+	public String getFileSystemName() {
+		return fileSystemName;
+	}
+
+	/**
+	 * @param fileSystemName the fileSystemName to set
+	 */
+	public void setFileSystemName(String fileSystemName) {
+		this.fileSystemName = fileSystemName;
 	}
 
 	/**
@@ -48,6 +68,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 	 */
 	@Override
 	public IndexedColumnComparator<LightMemberSample> initCellTable(CellTable<LightMemberSample> table) {
+		this.comparator = new GfsComparator(0, this);
 		
 		/*-------------------------+
 		 | TIME                    |
@@ -60,7 +81,8 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> freeMb = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return MB_FORMAT.format(memberSample.getGfsFree()/1024D);
+				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
+				return MB_FORMAT.format(futil.getFree()/1024D);
 			}
 		};
 		freeMb.setSortable(true);
@@ -72,8 +94,9 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> freePercent = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				long tot = memberSample.getGfsFree() + memberSample.getGfsUsed();
-				return PERCENT_FORMAT.format(memberSample.getGfsFree()/(double)tot);
+				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
+				long tot = futil.getFree() + futil.getUsed();
+				return PERCENT_FORMAT.format(futil.getFree()/(double)tot);
 			}
 		};
 		freePercent.setSortable(true);
@@ -85,7 +108,8 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> usedMb = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return MB_FORMAT.format(memberSample.getGfsUsed()/1024D);
+				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
+				return MB_FORMAT.format(futil.getUsed()/1024D);
 			}
 		};
 		usedMb.setSortable(true);
@@ -97,14 +121,15 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> usedPercent = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				long tot = memberSample.getGfsFree() + memberSample.getGfsUsed();
-				return PERCENT_FORMAT.format(memberSample.getGfsUsed()/(double)tot);
+				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
+				long tot = futil.getFree() + futil.getUsed();
+				return PERCENT_FORMAT.format(futil.getUsed()/(double)tot);
 			}
 		};
 		usedPercent.setSortable(true);
 		table.addColumn(usedPercent, "Used %");
 
-		return new GfsComparator(0);
+		return this.comparator;
 
 	}
 

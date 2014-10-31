@@ -26,6 +26,7 @@ import org.pepstock.jem.gwt.client.charts.gflot.UsedFreePieChart;
 import org.pepstock.jem.gwt.client.panels.administration.commons.AdminPanel;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
+import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightMemberSampleComparator;
 import org.pepstock.jem.node.stats.LightSample;
@@ -42,12 +43,11 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	
 	private UsedFreePieChart chart = new UsedFreePieChart();
 	private TableContainer<LightMemberSample> gfs = new TableContainer<LightMemberSample>(new GfsTable());
-
 	private ScrollPanel scroller = new ScrollPanel(gfs);
 	private VerticalPanel entriesPanel = new VerticalPanel();
-
+	
 	/**
-	 * 
+	 * @param fileSystemName file system name
 	 */
 	public OverviewPanel() {
 		add(entriesPanel);
@@ -55,15 +55,12 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 	}
 
 	/**
-	 * @param memberKey 
+	 * @param fsUtil 
 	 * 
 	 */
-	public void load() {
+	public void load(FileSystemUtilization fsUtil) {
+		chart.setUsedFreeData(fsUtil.getUsed(), fsUtil.getFree());
 		LightMemberSample msample = Instances.getLastSample().getMembers().iterator().next();
-		if (msample != null) {
-			chart.setUsedFreeData(msample.getGfsUsed(), msample.getGfsFree());
- 		}
-		
     	List<LightMemberSample> list = new ArrayList<LightMemberSample>();
     	for (LightSample sample : Instances.getSamples()){
     		for (LightMemberSample membersample : sample.getMembers()){
@@ -73,6 +70,8 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
     		}
     	}
     	Collections.sort(list, new LightMemberSampleComparator());
+    	GfsTable gTable = (GfsTable) gfs.getUnderlyingTable();
+    	gTable.setFileSystemName(fsUtil.getName());
 		gfs.getUnderlyingTable().setRowData(list);
 		loadChart();
 	}

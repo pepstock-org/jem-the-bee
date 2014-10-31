@@ -17,6 +17,7 @@
 package org.pepstock.jem.gwt.client.panels.administration.gfs;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
 
 /**
@@ -28,50 +29,67 @@ import org.pepstock.jem.node.stats.LightMemberSample;
 public class GfsComparator extends IndexedColumnComparator<LightMemberSample> {
 
     private static final long serialVersionUID = 1L;
+    
+    private GfsTable table = null;
 
 	/**
 	 * Constructs the comparator, saving the index of column, chosen for sorting
 	 * @param index index of column, chosen for sorting
+	 * @param table table instance to be sorted
 	 */
-	public GfsComparator(int index) {
+	public GfsComparator(int index, GfsTable table) {
 		super(index);
+		this.table = table;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public int compare(LightMemberSample o1, LightMemberSample o2) {
+		LightMemberSample one = isAscending() ? o1 : o2; 
+		LightMemberSample two = isAscending() ? o2 : o1;
+		
+		FileSystemUtilization fsu1 = null;
+		FileSystemUtilization fsu2 = null;
+		if (table.getFileSystemName() != null){
+			fsu1 = Util.getFileSystemUtilization(one, table.getFileSystemName());
+			fsu2 = Util.getFileSystemUtilization(two, table.getFileSystemName());
+		} else {
+			// if file system name, sort only by time
+			super.setIndex(0);
+		}
+		
 		int diff = 0;
 		switch(getIndex()){
 			case 0: 
 				// sorts by label of node
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = one.getKey().compareTo(two.getKey());
 				break;
 			case 1: 
-				// sorts by input
-				diff = (int)(o1.getGfsFree() - o2.getGfsFree());
+				// sorts by free
+				diff = (int)(fsu1.getFree() - fsu2.getFree());
 				break;
 			case 2: 
-				// sorts by input
-				diff = (int)(o1.getGfsFree() - o2.getGfsFree());
+				// sorts by free
+				diff = (int)(fsu1.getFree() - fsu2.getFree());
 				break;
 			case 3: 
-				// sorts by input
-				diff = (int)(o1.getGfsUsed() - o2.getGfsUsed());
+				// sorts by used
+				diff = (int)(fsu1.getUsed() - fsu2.getUsed());
 				break;
 			case 4: 
-				// sorts by input
-				diff = (int)(o1.getGfsUsed() - o2.getGfsUsed());
+				// sorts by used
+				diff = (int)(fsu1.getUsed() - fsu2.getUsed());
 				break;
 				
 			default:
 				// sorts by label of node
-				diff = o1.getKey().compareTo(o2.getKey());
+				diff = one.getKey().compareTo(two.getKey());
 				break;
 		}
 		// checks if Ascending otherwise negative
-		return isAscending() ? diff : -diff;
+		return diff;
 	}
 
 }

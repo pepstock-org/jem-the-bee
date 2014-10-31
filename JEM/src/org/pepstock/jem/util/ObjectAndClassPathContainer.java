@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This is the result when a plugin has been loaded, both using a custom class laode and using the standard one (in this case the classpath is empty). 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -30,7 +32,7 @@ public class ObjectAndClassPathContainer {
 	private List<String> classPath = new LinkedList<String>();
 
 	/**
-	 * 
+	 * Empty because is a bean
 	 */
 	public ObjectAndClassPathContainer() {
 	

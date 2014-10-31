@@ -39,8 +39,6 @@ import org.pepstock.jem.node.tasks.shell.JavaCommand;
 public class JBpmTask extends DefaultJobTask {
 
 	private static final long serialVersionUID = -1L;
-	
-	boolean useSU = false;
 
 	/**
 	 * Constructs the object save job instance to execute
@@ -69,9 +67,11 @@ public class JBpmTask extends DefaultJobTask {
 		
 		// using a custom classloadr, CLASSPATH of factory couldn't be empty
 		if (getFactory().getClassPath() != null && !getFactory().getClassPath().isEmpty()){
+			StringBuilder builder = new StringBuilder(currentClassPath);
 			for (String path : getFactory().getClassPath()){
-				currentClassPath = currentClassPath + File.pathSeparator + path;
+				 builder.append(File.pathSeparator).append(path);
 			}
+			currentClassPath = builder.toString();
 		} else {
 			throw new IOException("classPath is empty");
 		}

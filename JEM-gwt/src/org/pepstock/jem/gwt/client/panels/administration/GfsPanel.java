@@ -18,7 +18,10 @@ package org.pepstock.jem.gwt.client.panels.administration;
 
 import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.gwt.client.commons.InspectListener;
+import org.pepstock.jem.gwt.client.panels.administration.gfs.GfsHeader;
 import org.pepstock.jem.gwt.client.panels.administration.gfs.OverviewPanel;
+import org.pepstock.jem.gwt.client.panels.administration.gfs.Util;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -27,7 +30,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author Andrea "Stock" Stocchero
  *
  */
-public class GfsPanel extends VerticalPanel implements ResizeCapable {
+public class GfsPanel extends VerticalPanel implements ResizeCapable, InspectListener<String> {
+	
+	private GfsHeader header = new GfsHeader();
 	
 	private OverviewPanel overview = new OverviewPanel();
 	
@@ -36,14 +41,17 @@ public class GfsPanel extends VerticalPanel implements ResizeCapable {
 	 */
 	public GfsPanel() {
 		super();
+		add(header);
 		add(overview);
+		
+		header.setListener(this);
 	}
 	
 	/**
 	 * 
 	 */
 	public void load(){
-		overview.load();
+		header.load();
 	}
 
 	/* (non-Javadoc)
@@ -52,6 +60,14 @@ public class GfsPanel extends VerticalPanel implements ResizeCapable {
     @Override
     public void onResize(int availableWidth, int availableHeight) {
     	setSize(Sizes.toString(availableWidth), Sizes.toString(availableHeight));
-    	overview.onResize(availableWidth, availableHeight);
+    	overview.onResize(availableWidth, availableHeight - GfsHeader.HEIGHT);
+    }
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.client.commons.InspectListener#inspect(java.lang.Object)
+	 */
+    @Override
+    public void inspect(String name) {
+    	overview.load(Util.getFileSystemUtilization(name));
     }
 }

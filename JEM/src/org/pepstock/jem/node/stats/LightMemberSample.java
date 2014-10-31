@@ -18,6 +18,8 @@ package org.pepstock.jem.node.stats;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -54,9 +56,11 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 
 	private long processMemoryFree = 0;
 	
-	private long gfsUsed = 0;
+//	private long gfsUsed = 0;
+//	
+//	private long gfsFree = 0;
 	
-	private long gfsFree = 0;
+	private List<FileSystemUtilization> fileSystems = new LinkedList<FileSystemUtilization>();
 
 	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
 	@XmlJavaTypeAdapter(StatsMapAdapter.class)
@@ -189,33 +193,49 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	public void setProcessMemoryFree(long processMemoryFree) {
 		this.processMemoryFree = processMemoryFree;
 	}
+	
+	
+
+//	/**
+//	 * @return the gfsUsed
+//	 */
+//	public long getGfsUsed() {
+//		return gfsUsed;
+//	}
+//
+//	/**
+//	 * @param gfsUsed the gfsUsed to set
+//	 */
+//	public void setGfsUsed(long gfsUsed) {
+//		this.gfsUsed = gfsUsed;
+//	}
+//
+//	/**
+//	 * @return the gfsFree
+//	 */
+//	public long getGfsFree() {
+//		return gfsFree;
+//	}
+//
+//	/**
+//	 * @param gfsFree the gfsFree to set
+//	 */
+//	public void setGfsFree(long gfsFree) {
+//		this.gfsFree = gfsFree;
+//	}
 
 	/**
-	 * @return the gfsUsed
+	 * @return the fileSystems
 	 */
-	public long getGfsUsed() {
-		return gfsUsed;
+	public List<FileSystemUtilization> getFileSystems() {
+		return fileSystems;
 	}
 
 	/**
-	 * @param gfsUsed the gfsUsed to set
+	 * @param fileSystems the fileSystems to set
 	 */
-	public void setGfsUsed(long gfsUsed) {
-		this.gfsUsed = gfsUsed;
-	}
-
-	/**
-	 * @return the gfsFree
-	 */
-	public long getGfsFree() {
-		return gfsFree;
-	}
-
-	/**
-	 * @param gfsFree the gfsFree to set
-	 */
-	public void setGfsFree(long gfsFree) {
-		this.gfsFree = gfsFree;
+	public void setFileSystems(List<FileSystemUtilization> fileSystems) {
+		this.fileSystems = fileSystems;
 	}
 
 	/**

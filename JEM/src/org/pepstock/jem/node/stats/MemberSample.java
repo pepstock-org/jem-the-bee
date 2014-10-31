@@ -18,6 +18,8 @@ package org.pepstock.jem.node.stats;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +41,7 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 
 	private ProcessMemoryUtilization processMemory = new ProcessMemoryUtilization();
 	
-	private FileSystemUtilization fileSystem = new FileSystemUtilization();
+	private List<FileSystemUtilization> fileSystems = new LinkedList<FileSystemUtilization>();
 	
 	private Map<String, MapStats> mapsStats = new HashMap<String, MapStats>();
 
@@ -155,15 +157,15 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	/**
 	 * @return the fileSystem
 	 */
-	public FileSystemUtilization getFileSystem() {
-		return fileSystem;
+	public List<FileSystemUtilization> getFileSystems() {
+		return fileSystems;
 	}
 
 	/**
-	 * @param fileSystem the fileSystem to set
+	 * @param fileSystems the fileSystems to set
 	 */
-	public void setFileSystem(FileSystemUtilization fileSystem) {
-		this.fileSystem = fileSystem;
+	public void setFileSystems(List<FileSystemUtilization> fileSystems) {
+		this.fileSystems = fileSystems;
 	}
 
 }

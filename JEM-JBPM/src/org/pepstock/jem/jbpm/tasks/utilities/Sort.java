@@ -288,7 +288,7 @@ public class Sort implements JemWorkItem {
  * Buffer which contains data to sort
  */
 class JBpmBinaryFileBuffer {
-	private final int BUFFERSIZE = 2048;
+	private static final int BUFFERSIZE = 2048;
 	private BufferedReader bufferReader;
 	private File originalfile;
 	private String cache;

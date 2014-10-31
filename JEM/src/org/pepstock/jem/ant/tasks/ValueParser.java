@@ -145,17 +145,19 @@ public final class ValueParser {
 			// if not sysout, loads datasets
 			if (!isSysout){
 				// datasource can be set ONLY with 1 dataset
-				if (dsn != null && dsn.length > 1 && dataSource != null){
-					throw new AntException(AntMessage.JEMA074E, dd.getName());
-				}
-				// loads all datasets and set datasource
-				for(int k=0; k<dsn.length; k++){
-					DataSet ds = createDataSet(dd, dsn[k], null);
-					dd.addDataSet(ds);
-					// doesn't check anything because
-					// already done before
-					if (dataSource != null){
-						ds.setDatasource(dataSource);
+				if (dsn != null){
+					if (dsn.length > 1 && dataSource != null){
+						throw new AntException(AntMessage.JEMA074E, dd.getName());
+					}
+					// loads all datasets and set datasource
+					for(int k=0; k<dsn.length; k++){
+						DataSet ds = createDataSet(dd, dsn[k], null);
+						dd.addDataSet(ds);
+						// doesn't check anything because
+						// already done before
+						if (dataSource != null){
+							ds.setDatasource(dataSource);
+						}
 					}
 				}
 			}

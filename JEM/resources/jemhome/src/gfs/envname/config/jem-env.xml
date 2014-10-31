@@ -52,6 +52,14 @@
 				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
 			</properties>
 		</factory>
+		<!-- factory className="org.pepstock.jem.jbpm.JBpmFactory">
+			<properties>
+			</properties>
+			<classpath>
+				<pathElement>${jem.library}/jem-jbpm/jem-jbpm.jar</pathElement>
+				<pathElement>${jem.library}/jem-jbpm/jbpm/**</pathElement>
+			</classpath>
+		</factory-->
 	</factories>
 
 	<listeners>

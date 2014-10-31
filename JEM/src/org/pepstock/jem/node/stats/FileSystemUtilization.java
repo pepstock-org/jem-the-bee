@@ -26,6 +26,10 @@ import java.io.Serializable;
 public class FileSystemUtilization implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	private String name = null;
+	
+	private String path = null;
 
 	long free = Long.MIN_VALUE;
 	long total = Long.MIN_VALUE;
@@ -36,6 +40,36 @@ public class FileSystemUtilization implements Serializable {
 	 */
 	public FileSystemUtilization() {
 	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+
 
 	/**
 	 * @return the free
@@ -84,8 +118,6 @@ public class FileSystemUtilization implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "FileSystemUtilization [free=" + free + ", total=" + total + ", used=" + used + "]";
+		return "FileSystemUtilization [name=" + name + ", path=" + path + ", free=" + free + ", total=" + total + ", used=" + used + "]";
 	}
-
-
 }
