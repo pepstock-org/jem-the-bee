@@ -49,6 +49,8 @@ public class Task {
 	
 	private long workItemId = NO_ID;
 	
+	private int returnCode = 0;
+	
 	private final List<DataDescription> dataDescriptions = new ArrayList<DataDescription>();
 	
 	private final List<DataSource> dataSources = new ArrayList<DataSource>();
@@ -137,6 +139,20 @@ public class Task {
 	 */
 	public List<Lock> getLocks() {
 		return locks;
+	}
+
+	/**
+	 * @return the returnCode
+	 */
+	public int getReturnCode() {
+		return returnCode;
+	}
+
+	/**
+	 * @param returnCode the returnCode to set
+	 */
+	public void setReturnCode(int returnCode) {
+		this.returnCode = returnCode;
 	}
 
 	/* (non-Javadoc)

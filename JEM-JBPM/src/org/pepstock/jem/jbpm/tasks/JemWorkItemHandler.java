@@ -17,6 +17,7 @@
 package org.pepstock.jem.jbpm.tasks;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang.StringUtils;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -89,6 +89,8 @@ public class JemWorkItemHandler implements WorkItemHandler {
 	private static final String METHOD_DELIMITER = "#";
 
 	private static final String CLASS_NAME_KEY = "jem.workItem.className";
+	
+	private static final String RESULT_KEY = "jem.workItem.result";
 
 	/* (non-Javadoc)
 	 * @see org.kie.api.runtime.process.WorkItemHandler#abortWorkItem(org.kie.api.runtime.process.WorkItem, org.kie.api.runtime.process.WorkItemManager)
@@ -182,11 +184,10 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		try {
 			int returnCode = execute(currentTask, wrapper, workItem.getParameters());
 			LogAppl.getInstance().emit(JBpmMessage.JEMM057I, currentTask.getId(), returnCode);
-			if (returnCode == 0){
-				manager.completeWorkItem(workItem.getId(), null);	
-			} else {
-				manager.abortWorkItem(ProcessInstance.STATE_COMPLETED);
-			}
+			currentTask.setReturnCode(returnCode);
+			Map<String, Object> output = new HashMap<String, Object>();
+			output.put(RESULT_KEY, returnCode);
+			manager.completeWorkItem(workItem.getId(), output);	
 		} catch (Exception e) {
 			throw new JemRuntimeException(e);
 		}

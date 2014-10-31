@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
@@ -32,6 +33,8 @@ import org.pepstock.jem.node.resources.JemResource;
 import org.pepstock.jem.node.resources.JmsResource;
 import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.util.ClassLoaderUtil;
+import org.pepstock.jem.util.ObjectAndClassPathContainer;
 
 import com.hazelcast.core.IMap;
 
@@ -171,9 +174,10 @@ public class ResourceDefinitionsManager {
 	 *            {@link ResourceDefinition} to be loaded.
 	 * @param xmlResourceTemplateFile the optional <code>xml</code> resource
 	 *            template for user interface.
+	 * @param props propeties with all variable to substitute
 	 * @throws ResourceDefinitionException if some error occurs.
 	 */
-	public void loadCustomResourceDefinition(CustomResourceDefinition resourceDefinitionConfiguration, String xmlResourceTemplateFile) throws ResourceDefinitionException {
+	public void loadCustomResourceDefinition(CustomResourceDefinition resourceDefinitionConfiguration, String xmlResourceTemplateFile, Properties props) throws ResourceDefinitionException {
 		if (null == resourceDefinitionConfiguration) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "custom resource definition configuration");
 			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("custom resource definition configuration"));
@@ -181,8 +185,10 @@ public class ResourceDefinitionsManager {
 		String className = resourceDefinitionConfiguration.getClassName();
 		try {
 			// load by Class.forName of ResourceDefinition
-			Object object = Class.forName(className).newInstance();
-
+//			Object object = Class.forName(className).newInstance();
+			ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(resourceDefinitionConfiguration, props);
+			Object object = oacp.getObject();
+			
 			// check if it's a CustomResourceDefinition. if not,
 			// exception occurs. if yes, it's loaded.
 			if (object instanceof ResourceDefinition) {
@@ -204,13 +210,7 @@ public class ResourceDefinitionsManager {
 				LogAppl.getInstance().emit(ResourceMessage.JEMR011E, className);
 				throw new ResourceDefinitionException(ResourceMessage.JEMR011E.toMessage().getFormattedMessage(className));
 			}
-		} catch (ClassNotFoundException e) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
-			throw new ResourceDefinitionException(ResourceMessage.JEMR015E.toMessage().getFormattedMessage(className));
-		} catch (InstantiationException e) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
-			throw new ResourceDefinitionException(ResourceMessage.JEMR015E.toMessage().getFormattedMessage(className));
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
 			throw new ResourceDefinitionException(ResourceMessage.JEMR015E.toMessage().getFormattedMessage(className));
 		}

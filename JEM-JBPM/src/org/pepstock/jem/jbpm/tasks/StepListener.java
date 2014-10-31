@@ -128,10 +128,16 @@ public class StepListener extends DefaultProcessEventListener{
 			// sets step name and description
     		step.setName(processNodeEvent.getNodeInstance().getNodeName()+"["+processNodeEvent.getNodeInstance().getNodeId()+"]");
     		step.setDescription(processNodeEvent.getNodeInstance().getNodeName()+"["+processNodeEvent.getNodeInstance().getNodeId()+"]");
+    		
+    		Task currentTask = CompleteTasksList.getInstance().getTaskByNodeID(processNodeEvent.getNodeInstance().getNodeId());
+    		if (currentTask != null){
+    			step.setReturnCode(currentTask.getReturnCode());
+    		} else {
+    			// checks if has an exception.If yes, sets ERROR, otherwise
+    			// SUCCESS
+    			step.setReturnCode(result);
+    		}
 
-			// checks if has an exception.If yes, sets ERROR, otherwise
-			// SUCCESS
-			step.setReturnCode(result);
 			// checks if has an exception, sets the exception message
 			if (exception != null){
 				step.setException(exception);

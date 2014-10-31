@@ -720,7 +720,8 @@ public class StartUpSystem {
 					String className = listener.getClassName();
 					try {
 						// load by Class.forName of listener
-						Object objectListener = Class.forName(className).newInstance();
+						ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(listener, PROPERTIES);
+						Object objectListener = oacp.getObject();
 
 						// check if it's a JobLifecycleListener. if not,
 						// exception occurs. if yes, it's loaded on a
@@ -757,13 +758,7 @@ public class StartUpSystem {
 							LogAppl.getInstance().emit(NodeMessage.JEMC036E, className);
 							throw new ConfigurationException(NodeMessage.JEMC036E.toMessage().getFormattedMessage(className));
 						}
-					} catch (ClassNotFoundException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
-						throw new ConfigurationException(NodeMessage.JEMC031E.toMessage().getFormattedMessage(className));
-					} catch (InstantiationException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
-						throw new ConfigurationException(NodeMessage.JEMC031E.toMessage().getFormattedMessage(className));
-					} catch (IllegalAccessException e) {
+					} catch (Exception e) {
 						LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
 						throw new ConfigurationException(NodeMessage.JEMC031E.toMessage().getFormattedMessage(className));
 					}
@@ -805,7 +800,7 @@ public class StartUpSystem {
 						}
 					}
 					try {
-						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, xmlResourceTemplateFile);
+						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, xmlResourceTemplateFile, PROPERTIES);
 					} catch (ResourceDefinitionException e) {
 						throw new ConfigurationException(e);
 					}
