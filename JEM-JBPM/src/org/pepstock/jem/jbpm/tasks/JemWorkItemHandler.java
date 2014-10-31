@@ -36,6 +36,7 @@ import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.Result;
 import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.JBpmMessage;
 import org.pepstock.jem.jbpm.Task;
@@ -189,6 +190,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			output.put(RESULT_KEY, returnCode);
 			manager.completeWorkItem(workItem.getId(), output);	
 		} catch (Exception e) {
+			currentTask.setReturnCode(Result.ERROR);
 			throw new JemRuntimeException(e);
 		}
 	}

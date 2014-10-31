@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="YAUSTOX3" default="main" basedir=".">
+<project name="DEPLOY" default="main" basedir=".">
 	<description>
         test
     </description>
@@ -24,7 +24,6 @@
 				</fileset>
 			</destination>	
 		</upload>
-
 	</target>
 
 </project>

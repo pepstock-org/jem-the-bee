@@ -12,8 +12,8 @@
     <bpmn2:startEvent id="_1" name="StartProcess">
       <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" sourceRef="_1" targetRef="_2"/>
-    <bpmn2:task id="_2" tns:taskName="Jem" name="Copy Task">
+    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:task id="_2" tns:taskName="Jem" name="NULL1">
       <bpmn2:incoming>_1-_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
       <bpmn2:ioSpecification id="InputOutputSpecification_1">
@@ -35,7 +35,7 @@
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
     </bpmn2:endEvent>
-    <bpmn2:task id="Task_1" tns:taskName="Jem" tns:displayName="Jem workItem" tns:icon="org/pepstock/jem/jbpm/favicon.png" name="Jem">
+    <bpmn2:task id="Task_1" tns:taskName="Jem" tns:displayName="Jem workItem" tns:icon="org/pepstock/jem/jbpm/favicon.png" name="NULL2">
       <bpmn2:documentation id="Documentation_2">Null</bpmn2:documentation>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
