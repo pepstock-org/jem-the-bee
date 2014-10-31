@@ -30,7 +30,7 @@ public class GfsComparator extends IndexedColumnComparator<LightMemberSample> {
 
     private static final long serialVersionUID = 1L;
     
-    private GfsTable table = null;
+    private transient GfsTable table = null;
 
 	/**
 	 * Constructs the comparator, saving the index of column, chosen for sorting
