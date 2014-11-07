@@ -362,7 +362,13 @@ public enum SpringBatchMessage implements MessageInterface{
 	 * "Unable to load class \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>Check the class name and classpath of job")
-	JEMS052E(52, "Unable to load class \"{0}\"", MessageLevel.ERROR);
+	JEMS052E(52, "Unable to load class \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 *"\"{0}\" bytes have been written", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
+	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

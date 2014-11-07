@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.springbatch.tasks.utilities;
 
+import org.pepstock.jem.annotations.AssignDataDescription;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -29,6 +30,9 @@ import org.springframework.batch.repeat.RepeatStatus;
  *
  */
 public class NullTasklet extends JemTasklet {
+	
+	@AssignDataDescription("pippo")
+	private String pippo = null;
 
 	/**
 	 * Empty constructor

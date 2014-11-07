@@ -121,7 +121,7 @@ public class Stats extends ReturnedObject implements Serializable{
 	 * @param infos the infos to set
 	 */
 	public void setInfos(String[] infos) {
-		this.infos = infos;
+		System.arraycopy(infos, 0, this.infos, 0, infos.length);
 	}
 
 	/* (non-Javadoc)

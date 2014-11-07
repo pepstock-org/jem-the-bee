@@ -31,6 +31,7 @@ import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.jbpm.JBpmException;
 import org.pepstock.jem.jbpm.JBpmMessage;
 import org.pepstock.jem.jbpm.Task;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
@@ -287,6 +288,7 @@ public class DataSetManager {
 					file = new File(paths.getCurrent().getContent(), fileName);
 
 				} catch (InvalidDatasetNameException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 					new JBpmException(e.getMessageInterface(), e);
 				}
 			}
@@ -314,6 +316,7 @@ public class DataSetManager {
 					// normalizes using UNIX rules
 					fileName = FilenameUtils.normalize(ds.getName(), true);
 				} catch (InvalidDatasetNameException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 					new JBpmException(e.getMessageInterface(), e);
 				}
 			}

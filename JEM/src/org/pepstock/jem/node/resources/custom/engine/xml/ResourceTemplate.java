@@ -38,12 +38,6 @@ public class ResourceTemplate {
 	public static final String MAPPED_XML_TAG = "resource-template";
 
 	/**
-	 * Name of the type attribute. 
-	 * @see XStream
-	 */
-	public static final String TYPE_ATTRIBUTE = "type";
-	
-	/**
 	 * Name of the sections field. 
 	 * @see XStream
 	 */
@@ -53,6 +47,11 @@ public class ResourceTemplate {
 	 * Resource template type.
 	 */
 	private String type = null;
+	
+	/**
+	 * Resource template type.
+	 */
+	private String description = null;
 
 	/**
 	 * The list of the sections of the resource template. <br>
@@ -77,6 +76,20 @@ public class ResourceTemplate {
 		this.type = type;
 	}
 	
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/**
 	 * Adds a section in the list of the sections of the resource template.
 	 * @param section the section to be added in the sections list.

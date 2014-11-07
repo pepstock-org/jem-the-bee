@@ -63,6 +63,7 @@ import org.pepstock.jem.node.tasks.jndi.JmsReference;
 import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.util.Parser;
+import org.pepstock.jem.util.SetFields;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -101,6 +102,8 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	private final List<DataSource> sources = new ArrayList<DataSource>();
 	
 	private final List<Lock> locks = new ArrayList<Lock>(); 
+	
+	private String classname = null;
 
 	/**
 	 * Calls super constructor and set fail-on-error to <code>true</code>.
@@ -225,6 +228,23 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	public List<Lock> getLocks() {
 		return locks;
 	}
+
+	/**
+	 * @return the classname
+	 */
+	public String getClassname() {
+		return classname;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.taskdefs.Java#setClassname(java.lang.String)
+	 */
+	@Override
+	public void setClassname(String s) throws BuildException {
+		super.setClassname(s);
+		this.classname = s;
+	}
+
 
 	/**
 	 * Prepares the files required by ANT file using the data description, locks
@@ -407,6 +427,16 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// executes the java main class defined in JCL
 			// setting the boolean to TRUE
 			isExecutionStarted = true;
+			// tried to set fields where
+			// annotations are used
+			try {
+				Class<?> clazz = Class.forName(getClassname());
+				SetFields.applyByAnnotation(clazz);
+			} catch (ClassNotFoundException e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+			} catch (IllegalAccessException e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+			}
 			super.execute();
 		} catch (BuildException e1) {
 			returnCode = Result.ERROR;

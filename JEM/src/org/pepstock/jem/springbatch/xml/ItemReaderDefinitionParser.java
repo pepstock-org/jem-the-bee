@@ -52,7 +52,7 @@ public class ItemReaderDefinitionParser extends AbstractBeanDefinitionParser {
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext context) {
 		// creates a factory which containes all root and children objects
 		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ItemReaderFactoryBean.class);
-		factory.addPropertyValue(ITEM_READER_ELEMENT, parseItemReader(element));
+		factory.addPropertyValue(ITEM_READER_ELEMENT, parseItemReader());
 		// load delegate bean
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.genericBeanDefinition(element.getAttribute(DELEGATE_ATTRIBUTE));
 		factory.addPropertyValue(ItemReaderFactoryBean.DELEGATE, component.getBeanDefinition());
@@ -93,7 +93,7 @@ public class ItemReaderDefinitionParser extends AbstractBeanDefinitionParser {
 	 * @param element XML element to parse
 	 * @return item reader object using the class of bean
 	 */
-	private BeanDefinition parseItemReader(Element element) {
+	private BeanDefinition parseItemReader() {
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(DataDescriptionItemReader.class);
 		return component.getBeanDefinition();
 	}

@@ -55,11 +55,7 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	private long processMemoryUsed = 0;
 
 	private long processMemoryFree = 0;
-	
-//	private long gfsUsed = 0;
-//	
-//	private long gfsFree = 0;
-	
+
 	private List<FileSystemUtilization> fileSystems = new LinkedList<FileSystemUtilization>();
 
 	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
@@ -193,36 +189,6 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	public void setProcessMemoryFree(long processMemoryFree) {
 		this.processMemoryFree = processMemoryFree;
 	}
-	
-	
-
-//	/**
-//	 * @return the gfsUsed
-//	 */
-//	public long getGfsUsed() {
-//		return gfsUsed;
-//	}
-//
-//	/**
-//	 * @param gfsUsed the gfsUsed to set
-//	 */
-//	public void setGfsUsed(long gfsUsed) {
-//		this.gfsUsed = gfsUsed;
-//	}
-//
-//	/**
-//	 * @return the gfsFree
-//	 */
-//	public long getGfsFree() {
-//		return gfsFree;
-//	}
-//
-//	/**
-//	 * @param gfsFree the gfsFree to set
-//	 */
-//	public void setGfsFree(long gfsFree) {
-//		this.gfsFree = gfsFree;
-//	}
 
 	/**
 	 * @return the fileSystems

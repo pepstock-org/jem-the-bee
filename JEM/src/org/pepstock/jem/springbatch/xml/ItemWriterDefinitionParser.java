@@ -52,7 +52,7 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext context) {
 		// creates a factory which containes all root and children objects
 		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ItemWriterFactoryBean.class);
-		factory.addPropertyValue(ITEM_WRITER_ELEMENT, parseItemWriter(element));
+		factory.addPropertyValue(ITEM_WRITER_ELEMENT, parseItemWriter());
 		// load delegate bean
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.genericBeanDefinition(element.getAttribute(DELEGATE_ATTRIBUTE));
 		factory.addPropertyValue(ItemWriterFactoryBean.DELEGATE, component.getBeanDefinition());
@@ -93,7 +93,7 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 	 * @param element XML element to parse
 	 * @return item writer object using the class of bean
 	 */
-	private BeanDefinition parseItemWriter(Element element) {
+	private BeanDefinition parseItemWriter() {
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(DataDescriptionItemWriter.class);
 		return component.getBeanDefinition();
 	}

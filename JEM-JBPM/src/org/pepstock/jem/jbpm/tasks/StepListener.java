@@ -147,11 +147,9 @@ public class StepListener extends DefaultProcessEventListener{
 			door.setStepEnded(JobId.VALUE, step);
 
 			// only workitems JEM have JEM resources 
-			if (processNodeEvent.getNodeInstance() instanceof WorkItemNodeInstance){
-				// if step or task locking scope, unlocks resources
-				if (isStepLockingScope() || isTaskLockingScope()){
-					locker.unlock();
-				}
+			// if step or task locking scope, unlocks resources
+			if (processNodeEvent.getNodeInstance() instanceof WorkItemNodeInstance && (isStepLockingScope() || isTaskLockingScope())){
+				locker.unlock();
 			}
 
 		} catch (MessageException e) {

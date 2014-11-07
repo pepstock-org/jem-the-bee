@@ -94,14 +94,14 @@ public class CommonResourcerImpl extends AuthorizedDefaultRmiObject implements C
 	public Reference lookupCustomResource(String jobId, String resourceType) throws RemoteException {
 		// checks if you have resource read permission
 		checkAuthorization(jobId, Permissions.RESOURCES_READ);
-			try {
-				if (Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.hasCustomResourceDefinition(resourceType)) {
-					ResourceDefinition resourceDefinition = Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getCustomResourceDefinition(resourceType);
-					return resourceDefinition.getResourceReference();
-				}
-			} catch (ResourceDefinitionException e) {
-				throw new RemoteException(e.getMessage(), e);
+		try {
+			if (Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.hasCustomResourceDefinition(resourceType)) {
+				ResourceDefinition resourceDefinition = Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getCustomResourceDefinition(resourceType);
+				return resourceDefinition.getResourceReference();
 			}
+		} catch (ResourceDefinitionException e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
 		return null;
 	}
 

@@ -19,6 +19,7 @@ package org.pepstock.jem.jbpm;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -85,7 +86,7 @@ public final class XmlParser {
 	 * @throws SAXException if any exception occurs parsing XML
 	 * @throws IOException if any exception occurs reading file
 	 */
-	public final static List<TaskDescription> getTaskDescription(String jclFile) throws ParserConfigurationException, SAXException, IOException{
+	public static final List<TaskDescription> getTaskDescription(String jclFile) throws ParserConfigurationException, SAXException, IOException{
 		// creates an input soure
 		InputSource source = new InputSource(new FileInputStream(jclFile));
 		
@@ -110,7 +111,7 @@ public final class XmlParser {
         		}
         	}
         }
-        return null;
+        return Collections.emptyList();
 	}
 	
 	/**
@@ -204,30 +205,28 @@ public final class XmlParser {
 	 */
 	private static void loadDataInput(NodeList list, IoSpecification ioSpecification){
 		// scans all nodes
-        for (int i = 0; i < list.getLength(); i++) {
-        	Node node = list.item(i);
-        	// gets tag name
-        	String tagName = getElementName(node);
-        	// checks if data input element
-        	if (tagName != null && DATA_INPUT_ELEMENT.equalsIgnoreCase(tagName)){
-        		Element element = (Element)node;
-        		// gets ID and name
-        		String id = element.getAttribute(ID_ATTRIBUTE);
-        		String name = element.getAttribute(NAME_ATTRIBUTE);
-        		if (name != null){
-        			// checks if is a data description, data source and locks
-        			if (name.startsWith(JBpmKeys.JBPM_DATA_DESCRIPTION_PREFIX) || 
-        					name.startsWith(JBpmKeys.JBPM_DATA_SOURCE_PREFIX) || 
-        					name.equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY)){
-        				// loads the bean 
-        				DataInput input = new DataInput();
-        				input.setId(id);
-        				input.setName(name);
-        				ioSpecification.getDataInputs().add(input);
-        			}
-        		}
-        	}
-        }
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			// gets tag name
+			String tagName = getElementName(node);
+			// checks if data input element
+			if (tagName != null && DATA_INPUT_ELEMENT.equalsIgnoreCase(tagName)){
+				Element element = (Element)node;
+				// gets ID and name
+				String id = element.getAttribute(ID_ATTRIBUTE);
+				String name = element.getAttribute(NAME_ATTRIBUTE);
+				// checks if is a data description, data source and locks
+				if (name != null && name.startsWith(JBpmKeys.JBPM_DATA_DESCRIPTION_PREFIX) || 
+						name.startsWith(JBpmKeys.JBPM_DATA_SOURCE_PREFIX) || 
+						name.equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY)){
+					// loads the bean 
+					DataInput input = new DataInput();
+					input.setId(id);
+					input.setName(name);
+					ioSpecification.getDataInputs().add(input);
+				}
+			}
+		}
 	}
 
 	/**

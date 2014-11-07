@@ -15,6 +15,9 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	private static final long serialVersionUID = -6651706310600815923L;
 
 	private String type = null;
+	
+	private String description = null;
+	
 	private LinkedList<SectionDescriptor> sections = new LinkedList<SectionDescriptor>();
 	
 	/**
@@ -36,6 +39,20 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	 */
 	public String getType() {
 		return type;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**

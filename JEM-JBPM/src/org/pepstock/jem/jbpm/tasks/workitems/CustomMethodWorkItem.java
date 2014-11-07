@@ -23,6 +23,8 @@ import java.util.Map;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a Jem WorkItem which wraps whatever class calling a specific method.<br>
@@ -63,30 +65,19 @@ public class CustomMethodWorkItem implements JemWorkItem {
 	 */
 	@Override
 	public int execute(Map<String, Object> parameters) throws Exception {
+		// sets Fields if they are using annotations
+		SetFields.applyByAnnotation(instance);	
 		Method method = null;
-	    try {
-	        try {
-	        	// before try to get the method without parms
-	            method = clazz.getMethod(methodName);
-	            return executeMethod(method, null);
-	        } catch (NoSuchMethodException e) {
-	        	// if not finds the method without parms, try with a MAP as parm
-	        	method = clazz.getMethod(methodName, Map.class);
-	        	return executeMethod(method, parameters);
-	        }
-        } catch (SecurityException e) {
-	        throw e;
-        } catch (IllegalArgumentException e) {
-	        throw e;
-        } catch (JemException e) {
-	        throw e;
-        } catch (IllegalAccessException e) {
-	        throw e;
-        } catch (InvocationTargetException e) {
-	        throw e;
-        } catch (NoSuchMethodException e) {
-	        throw e;
-        }
+		try {
+			// before try to get the method without parms
+			method = clazz.getMethod(methodName);
+			return executeMethod(method, null);
+		} catch (NoSuchMethodException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			// if not finds the method without parms, try with a MAP as parm
+			method = clazz.getMethod(methodName, Map.class);
+			return executeMethod(method, parameters);
+		}
 	}
 	
 	/**

@@ -17,18 +17,17 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Properties;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
+import org.pepstock.jem.annotations.AssignDataDescription;
 import org.pepstock.jem.ant.AntException;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.tasks.utilities.sort.DefaultComparator;
 import org.pepstock.jem.commands.util.ArgumentsParser;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
  * Is a utility (both a task ANT and a main program) that sort data.<br>
@@ -41,6 +40,12 @@ public class SortTask extends AbstractIOTask {
 	 * Key for the class to load to transform and load data  
 	 */
 	private static String CLASS = "class";
+	
+	@AssignDataDescription(INPUT_DATA_DESCRIPTION_NAME)
+	private static FileInputStream istream = null;
+	
+	@AssignDataDescription(OUTPUT_DATA_DESCRIPTION_NAME)
+	private static FileOutputStream ostream = null;
 
 	/**
 	 * Empty constructor
@@ -254,8 +259,8 @@ public class SortTask extends AbstractIOTask {
 	 * @throws NamingException if an exception occurs
 	 * @throws IOException if an exception occurs
 	 */
-	@SuppressWarnings({ "resource", "static-access", "unchecked" })
-	public static void main(String[] args) throws ParseException, InstantiationException, IllegalAccessException, ClassNotFoundException, AntException, NamingException, IOException {
+	@SuppressWarnings({"static-access", "unchecked" })
+	public static void main(String[] args) throws ParseException, InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		// -class mandatory arg
 		Option classArg = OptionBuilder.withArgName(CLASS).hasArg().withDescription("class of Comparator<String> to invoke reading the objects").create(CLASS);
 		classArg.setRequired(false);
@@ -287,30 +292,6 @@ public class SortTask extends AbstractIOTask {
 		
 		int maxtmpfiles = DEFAULTMAXTEMPFILES;
 		Charset cs = Charset.defaultCharset();
-
-		// new initial context to access by JNDI to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
-
-		// gets inputstream
-		Object input = (Object) ic.lookup(INPUT_DATA_DESCRIPTION_NAME);
-		// gets outputstream
-		Object output = (Object) ic.lookup(OUTPUT_DATA_DESCRIPTION_NAME);
-
-		FileInputStream istream = null;
-		FileOutputStream ostream = null;
-
-		// checks if object is a inputstream otherwise error
-		if (input instanceof FileInputStream){
-			istream = (FileInputStream) input;
-		} else {
-			throw new AntException(AntMessage.JEMA017E, INPUT_DATA_DESCRIPTION_NAME, input.getClass().getName());
-		}
-		// checks if object is a outputstream otherwise error
-		if (output instanceof FileOutputStream){
-			ostream = (FileOutputStream) output;
-		} else {
-			throw new AntException(AntMessage.JEMA017E, OUTPUT_DATA_DESCRIPTION_NAME, output.getClass().getName());
-		}
 
 		if (istream.getChannel().size() > 0){
 			List<File> l = sortInBatch(istream, comparator, maxtmpfiles, cs, null);

@@ -37,6 +37,7 @@ import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
+import org.pepstock.jem.util.SetFields;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -169,6 +170,8 @@ public class RunnableTask extends JPPFTask {
 			UniqueInitialContext.setContext(ic);
 
 			System.out.println(JPPFMessage.JEMJ004I.toMessage().getFormattedMessage("Task["+getPosition()+"]", InetAddress.getLocalHost().getHostAddress()));
+			// sets fields using annotation
+			SetFields.applyByAnnotation(runnable, true);
 			// executes the runnable
 			runnable.run();
 		} catch (UnknownHostException e) {

@@ -54,6 +54,12 @@ import org.xml.sax.SAXException;
 public class JBpmLauncher {
 
 	/**
+	 * To avoid any instantiation
+	 */
+    private JBpmLauncher() {
+    }
+
+	/**
 	 * Main method which receives in input 2 arguments:<br>
 	 * <ul>
 	 * <li> ProcessID: value of ID attribute of process element, necessary to load the process inside of JBPM 

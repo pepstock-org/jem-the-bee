@@ -18,6 +18,9 @@ package org.pepstock.jem.node.resources.custom.sample;
 
 import javax.naming.Reference;
 
+import org.pepstock.jem.annotations.Mode;
+import org.pepstock.jem.annotations.ResourceMetaData;
+import org.pepstock.jem.annotations.ResourceTemplate;
 import org.pepstock.jem.node.resources.custom.XmlConfigurationResourceDefinition;
 import org.pepstock.jem.node.tasks.jndi.JdbcReference;
 
@@ -25,6 +28,9 @@ import org.pepstock.jem.node.tasks.jndi.JdbcReference;
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
+@ResourceMetaData(type = "customJDBC", description = "Custom implmentation of JDBC resource")
+@ResourceTemplate(value="org/pepstock/jem/node/resources/custom/sample/customJDBCResourcesConfiguration.xml",
+		mode = Mode.FROM_CLASSPATH)
 public class CustomJDBCResourceDefinition extends XmlConfigurationResourceDefinition {
 
 	private static final long serialVersionUID = 1L;

@@ -17,12 +17,12 @@
 package org.pepstock.jem.node.resources.custom.engine;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
@@ -69,14 +69,7 @@ import com.thoughtworks.xstream.XStream;
  * 
  * @author Alessandro Zambrini
  */
-public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
-
-	/**
-	 * The interval in millisecond between each file modification automatic
-	 * control. <br>
-	 * <b>60</b> seconds.
-	 */
-	private static final long CHECK_INTERVAL = 60000;
+public class ResourceTemplateReader {
 
 	/**
 	 * This field contains the the resource template ({@link ResourceTemplate})
@@ -100,7 +93,7 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * 
 	 * @see File
 	 */
-	private File resourceTemplateFile;
+	private URL resourceTemplateURL;
 
 	/**
 	 * <code>Xstream</code> field used to read <code>xml</code>.
@@ -108,13 +101,6 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * @see XStream
 	 */
 	private XStream xstream;
-
-	/**
-	 * Field that indicates whether the automatic file modifications control is
-	 * started: the value is <code>true</code> if the control is started
-	 * correctly, <code>false</code> otherwise.
-	 */
-	private boolean automaticControlStarted = false;
 
 	/**
 	 * Field that contains {@link XmlConfigurationResourceDefinition} in which
@@ -128,7 +114,7 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * {@link XmlConfigurationResourceDefinition} in which to save the
 	 * <code>ResourceDescriptor</code> every time it changes.
 	 * 
-	 * @param resourceTemplateFile the resource template file path.
+	 * @param resourceTemplateURL the resource template file path.
 	 * @param xmlConfigurationResourceDefinition the
 	 *            {@link XmlConfigurationResourceDefinition} in which to save
 	 *            the <code>ResourceDescriptor</code> every time it changes.
@@ -137,19 +123,10 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 *             root directory.
 	 * @see XStream
 	 */
-	public ResourceTemplateReader(String resourceTemplateFile, XmlConfigurationResourceDefinition xmlConfigurationResourceDefinition) throws ResourceTemplateException {
+	public ResourceTemplateReader(URL resourceTemplateURL, XmlConfigurationResourceDefinition xmlConfigurationResourceDefinition) throws ResourceTemplateException {
 		// Sets the resource template xml File field
-		this.resourceTemplateFile = new File(resourceTemplateFile);
+		this.resourceTemplateURL = resourceTemplateURL;
 		this.xmlConfigurationResourceDefinition = xmlConfigurationResourceDefinition;
-		if (null == this.resourceTemplateFile.getParentFile() || !this.resourceTemplateFile.getParentFile().exists() || !this.resourceTemplateFile.getParentFile().isDirectory()
-				|| this.resourceTemplateFile.getParentFile().toString().equalsIgnoreCase(File.separator)) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR001E, this.resourceTemplateFile.getParentFile());
-			throw new ResourceTemplateException(ResourceMessage.JEMR001E.toMessage().getFormattedMessage(this.resourceTemplateFile.getParentFile()));
-		}
-		if (!this.resourceTemplateFile.exists()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR002W, new Object[] { this.resourceTemplateFile, this.resourceTemplateFile.getParentFile() });
-			throw new ResourceTemplateException(ResourceMessage.JEMR002W.toMessage().getFormattedMessage(this.resourceTemplateFile, this.resourceTemplateFile.getParentFile()));
-		}
 		this.xstream = new XStream();
 	}
 
@@ -157,14 +134,14 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * Constructor. It receives the path of the <code>xml</code> file that
 	 * describes the custom resources template User interface.
 	 * 
-	 * @param resourceTemplateFile the resource template file path. changes.
+	 * @param resourceTemplateURL the resource template URL. changes.
 	 * @throws ResourceTemplateException if the resource template file directory
 	 *             does not exist, or is not a directory, or is the File System
 	 *             root directory.
 	 * @see XStream
 	 */
-	public ResourceTemplateReader(String resourceTemplateFile) throws ResourceTemplateException {
-		this(resourceTemplateFile, null);
+	public ResourceTemplateReader(URL resourceTemplateURL) throws ResourceTemplateException {
+		this(resourceTemplateURL, null);
 	}
 
 	/**
@@ -185,12 +162,9 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 *             occurred.
 	 */
 	private ResourceTemplate getResourceTemplate() throws ResourceTemplateException {
-		if (!this.automaticControlStarted) {
-			this.readResourceTemplate();
-		}
 		if (null == this.resourceTemplate) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateFile);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateFile));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateURL);
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL));
 		}
 		return this.resourceTemplate;
 	}
@@ -215,12 +189,9 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 *             occurred.
 	 */
 	public ResourceDescriptor getResourceDescriptor() throws ResourceTemplateException {
-		if (!this.automaticControlStarted) {
-			this.readResourceTemplate();
-		}
 		if (null == this.resourceDescriptor) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateFile);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateFile));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateURL);
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL));
 		}
 		return this.resourceDescriptor;
 	}
@@ -242,41 +213,21 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * <code>xml</code> file changes every {@link #CHECK_INTERVAL} milliseconds.
 	 * If the automatic file modifications control doesn't start correctly, the
 	 * field <code>automaticControlStarted</code> is set to <code>false</code>.
+	 * @param type set the custom resource type
+	 * @param description set the custom resource description 
+	 * @throws ResourceTemplateException if any error occurs reading the resource template
 	 * 
-	 * @see FileAlterationObserver
-	 * @see FileAlterationListener
-	 * @see FileAlterationMonitor
 	 */
-	public void initialize() {
+	public void initialize(String type, String description) throws ResourceTemplateException {
 		// Initializes a XStream object
 
-		this.aliasXml(xstream);
-		// This field is a FileAlterationObserver. It checks every change of
-		// the template xml file that describes the Custom Resource
-		// User interface. 
-		// It's important because if someone modifies the file,
-		// ResourceTemplateReader reloads it.
-		// Initializes the field this.resourceTemplateFileObserver with a
-		// new new FileAlterationObserver using the resource template xml file
-		// directory
-		FileAlterationObserver resourceTemplateFileObserver = new FileAlterationObserver(this.resourceTemplateFile.getParentFile());
-		// Add a listener (this) that listens the file changes
-		resourceTemplateFileObserver.addListener(this);
-		// Creates a FileAlterationMonitor that every CHECK_INTERVAL
-		// milliseconds
-		// checks the template xml file
-		FileAlterationMonitor fileMonitor = new FileAlterationMonitor(CHECK_INTERVAL);
-		fileMonitor.addObserver(resourceTemplateFileObserver);
-		try {
-			this.readResourceTemplate();
+		aliasXml(xstream);
+		// loads resource template
+		try{
+			readResourceTemplate(type, description);
 		} catch (ResourceTemplateException ex) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR003E, ex);
-		}
-		try {
-			fileMonitor.start();
-			this.automaticControlStarted = true;
-		} catch (Exception ex) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR004E, ex, this.resourceTemplateFile);
+			throw ex;
 		}
 	}
 
@@ -304,7 +255,6 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 		xstream.alias(ListFieldTemplate.MAPPED_XML_TAG, ListFieldTemplate.class);
 		xstream.alias(ValueTemplate.MAPPED_XML_TAG, ValueTemplate.class);
 
-		xstream.useAttributeFor(ResourceTemplate.class, ResourceTemplate.TYPE_ATTRIBUTE);
 		xstream.aliasField(SectionTemplate.MAPPED_XML_TAG, ResourceTemplate.class, ResourceTemplate.SECTIONS_FIELD);
 		xstream.addImplicitCollection(ResourceTemplate.class, ResourceTemplate.SECTIONS_FIELD);
 
@@ -354,27 +304,40 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 	 * @throws ResourceTemplateException throwed if a reading exception
 	 *             occurred.
 	 */
-	private void readResourceTemplate() throws ResourceTemplateException {
+	private void readResourceTemplate(String type, String description) throws ResourceTemplateException {
 		ResourceTemplate template = null;
-		FileInputStream fis = null;
+		InputStream is = null;
 		try {
-			fis = new FileInputStream(this.resourceTemplateFile);
-			template = (ResourceTemplate) this.xstream.fromXML(fis);
-			fis.close();
+			is = this.resourceTemplateURL.openStream();
+			template = (ResourceTemplate) this.xstream.fromXML(is);
 		} catch (Exception ex) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, ex, this.resourceTemplateFile);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateFile), ex);
+			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, ex, this.resourceTemplateURL);
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL), ex);
 		} finally {
-			if (fis != null) {
+			if (is != null) {
 				try {
-					fis.close();
+					is.close();
 				} catch (IOException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
+		// checks if type is null. Shouldn't be
+		if (type == null && template.getType() == null){
+			// throw an exception
+			throw new ResourceTemplateException(ResourceMessage.JEMR004E.toMessage().getFormattedMessage());
+			
+		} else if (type != null){
+			template.setType(type);	
+		}
+		
+		// sets description
+		if (description != null){
+			template.setDescription(description);
+		}
+		
 		ResourceDescriptor newResourceDescriptor = ResourceTemplatesFactory.buildResourceDescriptor(template);
-		LogAppl.getInstance().emit(ResourceMessage.JEMR021I, newResourceDescriptor.getType(), this.resourceTemplateFile);
+		LogAppl.getInstance().emit(ResourceMessage.JEMR021I, newResourceDescriptor.getType(), this.resourceTemplateURL);
 		if (null != this.xmlConfigurationResourceDefinition) {
 			this.xmlConfigurationResourceDefinition.setResourceDescriptor(newResourceDescriptor);
 			if (null != this.resourceDescriptor && !this.resourceDescriptor.getType().equalsIgnoreCase(newResourceDescriptor.getType())) {
@@ -412,59 +375,6 @@ public class ResourceTemplateReader extends FileAlterationListenerAdaptor {
 			// debug
 			LogAppl.getInstance().debug(rtEx.getMessage(), rtEx);
 			return "<null/>";
-		}
-	}
-
-	/**
-	 * Called if the parameter file <code>file</code> is changed. <br>
-	 * If the file changed is the resource template file, reloads the resource
-	 * template file.
-	 * 
-	 * @param file the <code>File</code> changed.
-	 * @see FileAlterationListener#onFileChange(File)
-	 * @override
-	 */
-	public void onFileChange(File file) {
-		if (file.equals(this.resourceTemplateFile)) {
-			try {
-				this.readResourceTemplate();
-			} catch (ResourceTemplateException ex) {
-				LogAppl.getInstance().emit(ResourceMessage.JEMR003E, ex);
-			}
-		}
-	}
-
-	/**
-	 * Called if the parameter file <code>file</code> is created. <br>
-	 * If the file created is the resource template file, reloads the resource
-	 * template.
-	 * 
-	 * @param file the <code>File</code> created.
-	 * @see FileAlterationListener#onFileCreate(File)
-	 * @override
-	 */
-	public void onFileCreate(File file) {
-		if (file.equals(this.resourceTemplateFile)) {
-			try {
-				this.readResourceTemplate();
-			} catch (ResourceTemplateException ex) {
-				LogAppl.getInstance().emit(ResourceMessage.JEMR003E, ex);
-			}
-		}
-	}
-
-	/**
-	 * Called if the parameter file <code>file</code> is deleted. <br>
-	 * If the file deleted is the resource template file, this method warns the
-	 * deletion.
-	 * 
-	 * @param file the <code>File</code> deleted.
-	 * @see FileAlterationListener#onFileDelete(File)
-	 * @override
-	 */
-	public void onFileDelete(File file) {
-		if (file.equals(this.resourceTemplateFile)) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR006W, new Object[] { this.resourceTemplateFile, this.resourceTemplateFile.getParentFile() });
 		}
 	}
 }

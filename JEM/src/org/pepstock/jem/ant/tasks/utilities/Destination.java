@@ -17,7 +17,8 @@
 package org.pepstock.jem.ant.tasks.utilities;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -27,6 +28,7 @@ import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.services.GfsManager;
 
 /**
@@ -41,7 +43,7 @@ public class Destination extends Task {
 	
 	private String path = null;
 	
-	private Vector<FileSet> filesets = new Vector<FileSet>();
+	private List<FileSet> filesets = new ArrayList<FileSet>();
 	
 	private GfsManager gfsManager = null;
 
@@ -139,6 +141,7 @@ public class Destination extends Task {
     					gfsManager.upload(uploadFile);
     					count++;
     				} catch (JemException e) {
+    					LogAppl.getInstance().ignore(e.getMessage(), e);
     					error++;
     					log(e.getMessage());
     				}

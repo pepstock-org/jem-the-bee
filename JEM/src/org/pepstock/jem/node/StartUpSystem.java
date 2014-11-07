@@ -92,7 +92,6 @@ import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesUtil;
 import org.pepstock.jem.node.resources.custom.ResourceDefinitionException;
-import org.pepstock.jem.node.resources.custom.ResourceDefinitionsManager;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
@@ -791,16 +790,17 @@ public class StartUpSystem {
 			// not, exception occurs, otherwise it's loaded
 			for (CustomResourceDefinition resourceDefinition : resourceDefinitions) {
 				if (resourceDefinition.getClassName() != null) {
-					Properties propsOfListener = resourceDefinition.getProperties();
-					String xmlResourceTemplateFile = null;
-					if (propsOfListener != null) {
-						xmlResourceTemplateFile = propsOfListener.getProperty(ResourceDefinitionsManager.XML_RESOURCE_TEMPLATE_FILE_PROPERTY);
-						if (null != xmlResourceTemplateFile) {
-							xmlResourceTemplateFile = substituteVariable(xmlResourceTemplateFile);
-						}
-					}
+//					Properties propsOfListener = resourceDefinition.getProperties();
+//					String xmlResourceTemplateFile = null;
+//					if (propsOfListener != null) {
+//						xmlResourceTemplateFile = propsOfListener.getProperty(ResourceDefinitionsManager.XML_RESOURCE_TEMPLATE_FILE_PROPERTY);
+//						if (null != xmlResourceTemplateFile) {
+//					FIXME
+//							xmlResourceTemplateFile = substituteVariable(xmlResourceTemplateFile);
+//						}
+//					}
 					try {
-						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, xmlResourceTemplateFile, PROPERTIES);
+						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, PROPERTIES);
 					} catch (ResourceDefinitionException e) {
 						throw new ConfigurationException(e);
 					}

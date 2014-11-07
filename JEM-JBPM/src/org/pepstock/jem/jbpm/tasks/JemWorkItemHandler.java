@@ -17,6 +17,7 @@
 package org.pepstock.jem.jbpm.tasks;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.JBpmMessage;
 import org.pepstock.jem.jbpm.Task;
+import org.pepstock.jem.jbpm.annotations.ToBeExecuted;
 import org.pepstock.jem.jbpm.tasks.workitems.CustomMethodWorkItem;
 import org.pepstock.jem.jbpm.tasks.workitems.DelegatedWorkItem;
 import org.pepstock.jem.jbpm.tasks.workitems.MainClassWorkItem;
@@ -134,6 +136,19 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		Class<?> clazz;
         try {
 	        clazz = Class.forName(className);
+	        // if not method has been set (and ONLY if there isn't) 
+	        // scans method to see if there the annotation
+	        // on the method to call
+	        if (methodName == null){
+	        	for (Method m : clazz.getDeclaredMethods()){
+	        		// checks if there is the annotation
+	        		// and not already set
+	        		if (m.isAnnotationPresent(ToBeExecuted.class) && methodName == null){
+	        			//set method name
+	        			methodName = m.getName();
+	        		}
+	        	}
+	        }
         } catch (ClassNotFoundException e) {
         	LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 			throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);

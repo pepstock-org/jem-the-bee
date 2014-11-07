@@ -808,7 +808,6 @@ public class JobsManager extends DefaultService {
 		String nodeKey = job.getMemberId();
 		if (nodeKey == null || job.getProcessId() == null){
 			if (job.getId() == null){
-				System.err.println("nill "+job);
 				return null;
 			} else {
 				jobToSearch = getJobById(Queues.RUNNING_QUEUE, job.getId());

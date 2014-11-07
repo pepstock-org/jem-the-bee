@@ -90,11 +90,11 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 			// loads commands
 			loadCommands(records);
 		} catch (NamingException e) {
-			LogAppl.getInstance().emit(AntMessage.JEMA044W, e.getMessage());
+			LogAppl.getInstance().emit(AntMessage.JEMA044W, e, e.getMessage());
 		} catch (ParseException e) {
-			LogAppl.getInstance().emit(AntMessage.JEMA058W, e.getMessage());
+			LogAppl.getInstance().emit(AntMessage.JEMA058W, e, e.getMessage());
 		} catch (IOException e) {
-			LogAppl.getInstance().emit(AntMessage.JEMA058W, e.getMessage());
+			LogAppl.getInstance().emit(AntMessage.JEMA058W, e, e.getMessage());
 		} 
 	}
 

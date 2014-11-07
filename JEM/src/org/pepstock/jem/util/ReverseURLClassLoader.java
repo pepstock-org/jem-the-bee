@@ -78,7 +78,8 @@ public class ReverseURLClassLoader extends URLClassLoader {
             try {
                 theClass = findClass(classname);
             } catch (ClassNotFoundException cnfe) {
-            	// if not found again, goess to the parent classloader
+            	LogAppl.getInstance().ignore(cnfe.getMessage(), cnfe);
+            	// if not found again, goes to the parent classloader
                 theClass =  getParent().loadClass(classname);
             }
         }

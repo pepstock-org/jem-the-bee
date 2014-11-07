@@ -55,6 +55,7 @@ import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
+import org.pepstock.jem.util.SetFields;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
@@ -304,6 +305,7 @@ public abstract class JemTasklet implements Tasklet {
 			// executes the java class defined in JCL
 			// setting the boolean to TRUE
 			isExecutionStarted = true;
+			SetFields.applyByAnnotation(this);
 			status = this.run(stepContribution, chunkContext);
 		} catch (NamingException e) {
 			isAbended = true;
@@ -365,6 +367,7 @@ public abstract class JemTasklet implements Tasklet {
 		}
 		return status;
 	}
+	
 
 	/**
 	 * Is abstract method to implement with business logic, where it's possible

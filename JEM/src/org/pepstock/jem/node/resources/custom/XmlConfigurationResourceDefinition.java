@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node.resources.custom;
 
+import java.net.URL;
+
 import org.pepstock.jem.node.resources.custom.engine.ResourceTemplateReader;
 
 /**
@@ -66,14 +68,16 @@ public abstract class XmlConfigurationResourceDefinition implements ResourceDefi
 	 * It loads the {@link ResourceDescriptor} from a <code>xml</code> resource template file for resource user interface.
 	 * 
 	 * @param resourceTemplateFile the resource template file path with the definition of the resource user interface.
+	 * @param type set type of custom resource
+	 * @param description set descritpion of custom resource
 	 * @throws ResourceDefinitionException if the resource template file directory does not exist, or is not a directory,
 	 * or is the File System root directory.
 	 * 
 	 * @see ResourceTemplateReader
 	 */
-	public void loadResourceTemplateFile(String resourceTemplateFile) throws ResourceDefinitionException{
+	public void loadResourceTemplateFile(URL resourceTemplateFile, String type, String description) throws ResourceDefinitionException{
 		ResourceTemplateReader resourceTemplateReader = new ResourceTemplateReader(resourceTemplateFile, this);
-		resourceTemplateReader.initialize();
+		resourceTemplateReader.initialize(type, description);
 	}
 
 }

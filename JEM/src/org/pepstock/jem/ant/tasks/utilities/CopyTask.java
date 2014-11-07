@@ -20,13 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.io.IOUtils;
+import org.pepstock.jem.annotations.AssignDataDescription;
 import org.pepstock.jem.ant.AntException;
 import org.pepstock.jem.ant.AntMessage;
-import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
  * Is a utility (both a task ANT and a main program) that copy data from and to a data description.<br>
@@ -37,6 +36,12 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
  */
 public class CopyTask extends AbstractIOTask {
 
+	@AssignDataDescription(INPUT_DATA_DESCRIPTION_NAME)
+	private static InputStream istream = null;
+	
+	@AssignDataDescription(OUTPUT_DATA_DESCRIPTION_NAME)
+	private static OutputStream ostream = null;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -53,31 +58,7 @@ public class CopyTask extends AbstractIOTask {
 	 * @throws Exception if data description data description doesn't exists, if an
 	 *             error occurs during copying
 	 */
-	@SuppressWarnings("resource")
-	public static void main(String[] args) throws AntException, NamingException, IOException  {
-		// new initial context to access by JNDI to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
-		// gets inputstream
-		Object input = (Object) ic.lookup(INPUT_DATA_DESCRIPTION_NAME);
-		// gets outputstream
-		Object output = (Object) ic.lookup(OUTPUT_DATA_DESCRIPTION_NAME);
-
-		InputStream istream = null;
-		OutputStream ostream = null;
-
-		// checks if object is a inputstream otherwise error
-		if (input instanceof InputStream){
-			istream = (InputStream) input;
-		} else {
-			throw new AntException(AntMessage.JEMA017E, INPUT_DATA_DESCRIPTION_NAME, input.getClass().getName());
-		}
-		// checks if object is a outputstream otherwise error
-		if (output instanceof OutputStream){
-			ostream = (OutputStream) output;
-		} else {
-			throw new AntException(AntMessage.JEMA016E, OUTPUT_DATA_DESCRIPTION_NAME, output.getClass().getName());
-		}
-
+	public static void main(String[] args) throws IOException  {
 		// copy
 		int bytes = IOUtils.copy(istream, ostream);
 		IOUtils.closeQuietly(istream);

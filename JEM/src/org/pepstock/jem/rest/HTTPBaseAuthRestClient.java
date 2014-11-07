@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.rest;
 
 import java.security.SecureRandom;
@@ -28,6 +28,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.pepstock.jem.log.JemRuntimeException;
+import org.pepstock.jem.log.LogAppl;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -37,21 +38,22 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 /**
- * Is a REST client which uses a HTTP basic authentication, closing the connection every time.
+ * Is a REST client which uses a HTTP basic authentication, closing the
+ * connection every time.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
 public class HTTPBaseAuthRestClient extends RestClient {
-	
+
 	private String userid = null;
-	
+
 	private String password = null;
 
 	/**
 	 * Constructs the object.
 	 * 
-	 * @param uriString REST context, restAuth 
+	 * @param uriString REST context, restAuth
 	 * @param userid user id to authenticate
 	 * @param password password of userid
 	 */
@@ -61,11 +63,13 @@ public class HTTPBaseAuthRestClient extends RestClient {
 		this.password = password;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.rest.RestClient#getBaseWebResource()
 	 */
 	@Override
-	public WebResource getBaseWebResource(){
+	public WebResource getBaseWebResource() {
 		WebResource resource = Client.create(configureClient()).resource(getBaseURI());
 		resource.addFilter(new HTTPBasicAuthFilter(userid, password));
 		return resource;
@@ -73,50 +77,48 @@ public class HTTPBaseAuthRestClient extends RestClient {
 
 	/**
 	 * Configure client to use baseauth autentication
+	 * 
 	 * @return
 	 */
 	private ClientConfig configureClient() {
-		TrustManager[ ] certs = new TrustManager[ ] {
-	            new X509TrustManager() {
-					
-					@Override
-					public X509Certificate[] getAcceptedIssuers() {
-						return null;
-					}
-					
-					@Override
-					public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-					}
-					
-					@Override
-					public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-					}
+		TrustManager[] certs = new TrustManager[] { new X509TrustManager() {
+
+			@Override
+			public X509Certificate[] getAcceptedIssuers() {
+				return new X509Certificate[0];
+			}
+
+			@Override
+			public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				// Do nothing
+			}
+
+			@Override
+			public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				// Do nothing
+			}
+		} };
+		SSLContext ctx = null;
+		try {
+			ctx = SSLContext.getInstance("TLS");
+			ctx.init(null, certs, new SecureRandom());
+		} catch (java.security.GeneralSecurityException ex) {
+			throw new JemRuntimeException(ex);
+		}
+		HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
+
+		ClientConfig config = new DefaultClientConfig();
+		try {
+			config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(new HostnameVerifier() {
+				@Override
+				public boolean verify(String hostname, SSLSession session) {
+					return true;
 				}
-	    };
-	    SSLContext ctx = null;
-	    try {
-	        ctx = SSLContext.getInstance("TLS");
-	        ctx.init(null, certs, new SecureRandom());
-	    } catch (java.security.GeneralSecurityException ex) {
-	    	throw new JemRuntimeException(ex);
-	    }
-	    HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
-	    
-	    ClientConfig config = new DefaultClientConfig();
-	    try {
-		    config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(
-		        new HostnameVerifier() {
-					@Override
-					public boolean verify(String hostname, SSLSession session) {
-						return true;
-					}
-		        }, 
-		        ctx
-		    ));
-	    } catch(Exception e) {
-	    }
-	    return config;
+			}, ctx));
+		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+		}
+		return config;
 	}
-	
-	
+
 }

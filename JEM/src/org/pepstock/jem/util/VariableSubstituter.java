@@ -45,6 +45,11 @@ public class VariableSubstituter {
 	 * @return text modified and feeded by values of variables
 	 */
 	public static String substitute(String text, Properties variables) {
+		// checks if the string to change is null
+		// or there are any properties
+		if (text == null || variables.isEmpty()){
+			return text;
+		}
 		// sets return value to initial text
 		String returnValue = text;
 		// gets variables

@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a JemWorkItem which is able to call the <code>public static void main</code> method.<br>
@@ -53,30 +55,34 @@ public class MainClassWorkItem implements JemWorkItem {
 	 */
 	@Override
 	public int execute(Map<String, Object> parameters) throws Exception {
-	    Method main = clazz.getMethod(MAIN_METHOD, String[].class);
-	    // init params accordingly
-	    String[] params = null; 
-	    if (!parameters.isEmpty()){
-	    	// creates a list because not all values of parameters MAP will be passed
-	    	List<String> paramsList = new LinkedList<String>();
-	    	// scans all entrys removing all JEM.* parameters and parameters which has got a key with =
-	    	for (Entry<String, Object> entry : parameters.entrySet()){
+		SetFields.applyByAnnotation(clazz);
+
+		// sets Fields if they are using annotations
+		Method main = clazz.getMethod(MAIN_METHOD, String[].class);
+
+		// init params accordingly
+		String[] params = null; 
+		if (!parameters.isEmpty()){
+			// creates a list because not all values of parameters MAP will be passed
+			List<String> paramsList = new LinkedList<String>();
+			// scans all entrys removing all JEM.* parameters and parameters which has got a key with =
+			for (Entry<String, Object> entry : parameters.entrySet()){
 				String name = entry.getKey();
 				if (!name.startsWith(JBpmKeys.JBPM_DATA_DESCRIPTION_PREFIX) && 
-    					!name.startsWith(JBpmKeys.JBPM_DATA_SOURCE_PREFIX) && 
-    					!name.equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY) &&
-    					!name.contains("=")){
+						!name.startsWith(JBpmKeys.JBPM_DATA_SOURCE_PREFIX) && 
+						!name.equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY) &&
+						!name.contains("=")){
 					// adds with format key=value
 					paramsList.add(entry.getKey()+"="+entry.getValue().toString());
 				}
-	    	}
-	    	if (!paramsList.isEmpty()){
-	    		// gets in Array format
-	    		params = paramsList.toArray(new String[0]);
-	    	}
-	    }
-	    // static method doesn't have an instance, for this reason the first parameter is null
-	    main.invoke(null, (Object) params); 
+			}
+			if (!paramsList.isEmpty()){
+				// gets in Array format
+				params = paramsList.toArray(new String[0]);
+			}
+		}
+		// static method doesn't have an instance, for this reason the first parameter is null
+		main.invoke(null, (Object) params); 
 		return Result.SUCCESS;
 	}
 	
@@ -90,6 +96,7 @@ public class MainClassWorkItem implements JemWorkItem {
 	        clazz.getMethod(MAIN_METHOD, String[].class);
 	        return true;
         } catch (Exception e) {
+        	LogAppl.getInstance().ignore(e.getMessage(), e);
         	return false;
         }
 	}

@@ -16,12 +16,19 @@
  */
 package org.pepstock.jem.node.resources.custom;
 
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.pepstock.jem.annotations.Mode;
+import org.pepstock.jem.annotations.ResourceMetaData;
+import org.pepstock.jem.annotations.ResourceTemplate;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.Queues;
@@ -33,8 +40,10 @@ import org.pepstock.jem.node.resources.JemResource;
 import org.pepstock.jem.node.resources.JmsResource;
 import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.custom.engine.ResourceTemplateException;
 import org.pepstock.jem.util.ClassLoaderUtil;
 import org.pepstock.jem.util.ObjectAndClassPathContainer;
+import org.pepstock.jem.util.VariableSubstituter;
 
 import com.hazelcast.core.IMap;
 
@@ -177,7 +186,7 @@ public class ResourceDefinitionsManager {
 	 * @param props propeties with all variable to substitute
 	 * @throws ResourceDefinitionException if some error occurs.
 	 */
-	public void loadCustomResourceDefinition(CustomResourceDefinition resourceDefinitionConfiguration, String xmlResourceTemplateFile, Properties props) throws ResourceDefinitionException {
+	public void loadCustomResourceDefinition(CustomResourceDefinition resourceDefinitionConfiguration, Properties props) throws ResourceDefinitionException {
 		if (null == resourceDefinitionConfiguration) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "custom resource definition configuration");
 			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("custom resource definition configuration"));
@@ -185,7 +194,6 @@ public class ResourceDefinitionsManager {
 		String className = resourceDefinitionConfiguration.getClassName();
 		try {
 			// load by Class.forName of ResourceDefinition
-//			Object object = Class.forName(className).newInstance();
 			ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(resourceDefinitionConfiguration, props);
 			Object object = oacp.getObject();
 			
@@ -193,10 +201,23 @@ public class ResourceDefinitionsManager {
 			// exception occurs. if yes, it's loaded.
 			if (object instanceof ResourceDefinition) {
 				ResourceDefinition resourceDefinition = (ResourceDefinition) object;
-				if (null != xmlResourceTemplateFile && resourceDefinition instanceof XmlConfigurationResourceDefinition) {
-					((XmlConfigurationResourceDefinition) resourceDefinition).loadResourceTemplateFile(xmlResourceTemplateFile);
-					LogAppl.getInstance().emit(ResourceMessage.JEMR020I, xmlResourceTemplateFile);
+				if (resourceDefinition instanceof XmlConfigurationResourceDefinition) {
+					// gets URL
+					URL resTemplate = getResourceTemplateURL(object, props);
+					String type = null;
+					String description = null;
+					Annotation ann = object.getClass().getAnnotation(ResourceMetaData.class);
+					if (ann != null){
+						ResourceMetaData metaData = (ResourceMetaData)ann;
+						type = metaData.type();
+						description = metaData.description();
+					}
+					
+					((XmlConfigurationResourceDefinition) resourceDefinition).loadResourceTemplateFile(resTemplate, type, description);
+					LogAppl.getInstance().emit(ResourceMessage.JEMR020I, resTemplate);
 				}
+				
+				
 				if (!hasCustomResourceDefinition(resourceDefinition.getResourceDescriptor().getType())) {
 					this.addCustomResourceDefinition(resourceDefinition);
 					LogAppl.getInstance().emit(ResourceMessage.JEMR016I, className, resourceDefinition.getResourceDescriptor().getType());
@@ -215,6 +236,52 @@ public class ResourceDefinitionsManager {
 			throw new ResourceDefinitionException(ResourceMessage.JEMR015E.toMessage().getFormattedMessage(className));
 		}
 	}
+	
+	/** 
+	 * Get the URL of resource template
+	 * @param object
+	 * @param props
+	 * @return
+	 * @throws ResourceTemplateException
+	 * @throws MalformedURLException 
+	 */
+	private URL getResourceTemplateURL(Object object, Properties props) throws ResourceTemplateException, MalformedURLException{
+		URL resTemplate = null;
+		Annotation ann = object.getClass().getAnnotation(ResourceTemplate.class);
+		if (ann != null){
+			ResourceTemplate p = (ResourceTemplate)ann;
+			String value = VariableSubstituter.substitute(p.value(), props);
+			if (value == null){
+				LogAppl.getInstance().emit(ResourceMessage.JEMR001E);
+				throw new ResourceTemplateException(ResourceMessage.JEMR001E.toMessage().getFormattedMessage());
+			}
+			if (Mode.FROM_CLASSPATH.equalsIgnoreCase(p.mode())){
+				resTemplate = this.getClass().getClassLoader().getResource(value);
+			} else if (Mode.FROM_FILESYSTEM.equalsIgnoreCase(p.mode())){
+				File file = new File(value);
+				if (!file.exists() || !file.isFile()){
+					LogAppl.getInstance().emit(ResourceMessage.JEMR002E, value);
+					throw new ResourceTemplateException(ResourceMessage.JEMR002E.toMessage().getFormattedMessage(value));
+				}
+				resTemplate = file.toURI().toURL();
+			} else if (Mode.FROM_URL.equalsIgnoreCase(p.mode())){
+				resTemplate = new URL(value);
+			} else {
+				LogAppl.getInstance().emit(ResourceMessage.JEMR027W, p.mode());
+				// by default it looks inside of classpath
+				resTemplate = this.getClass().getClassLoader().getResource(value);
+			}
+			if (resTemplate == null){
+				LogAppl.getInstance().emit(ResourceMessage.JEMR002E, value);
+				throw new ResourceTemplateException(ResourceMessage.JEMR002E.toMessage().getFormattedMessage(value));
+			}
+		} else {
+			LogAppl.getInstance().emit(ResourceMessage.JEMR001E);
+			throw new ResourceTemplateException(ResourceMessage.JEMR001E.toMessage().getFormattedMessage());
+		}
+		return resTemplate;
+	}
+	
 
 	/**
 	 * This method changes a resource type. It removes the old

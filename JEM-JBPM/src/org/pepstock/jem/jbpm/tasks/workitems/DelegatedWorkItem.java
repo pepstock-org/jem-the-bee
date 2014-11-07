@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
+import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a wrapper to another JemWorkItem, preparing a new map to pass as argument
@@ -47,6 +48,9 @@ public class DelegatedWorkItem implements JemWorkItem {
 	 */
 	@Override
 	public int execute(Map<String, Object> parameters) throws Exception {
+		// sets Fields if they are using annotations
+		SetFields.applyByAnnotation(instance);
+		
 		JemWorkItem jemWorkItem = (JemWorkItem) instance;
 		
 		// loads all parameters but not the "jem.*" ones

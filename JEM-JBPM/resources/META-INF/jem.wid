@@ -6,6 +6,6 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
       "jem.workItem.className" : new StringDataType(),
     ],
     "displayName" : "Jem workItem",
-    "icon" : "org/pepstock/jem/jbpm/favicon.png"
+    "icon" : "icons/jem-favicon.png"
   ]
 ]

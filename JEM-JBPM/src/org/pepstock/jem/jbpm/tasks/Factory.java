@@ -80,7 +80,7 @@ public final class Factory {
 						task.getDataSources().add(dSrc);
 					} else if (dataInput.getName().equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY)){
 						// checks if are locks
-						List<Lock> locks = createLocks(dataInput, association);
+						List<Lock> locks = createLocks(association);
 						if (!locks.isEmpty()){
 							task.getLocks().addAll(locks);
 						}
@@ -144,7 +144,7 @@ public final class Factory {
 	 * @return list of locks created using the parameters of the task
 	 * @throws JBpmException if any error occurs
 	 */
-	private static List<Lock> createLocks(DataInput dataInput, DataInputAssociation association) throws JBpmException{
+	private static List<Lock> createLocks(DataInputAssociation association) throws JBpmException{
 		// creates the list
 		List<Lock> locks = new ArrayList<Lock>();
 		String toParse = association.getAssignmentFrom();

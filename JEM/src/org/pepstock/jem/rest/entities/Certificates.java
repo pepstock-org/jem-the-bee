@@ -74,7 +74,7 @@ public class Certificates extends ReturnedObject implements Serializable{
 	 * @param certificate the certificate to set
 	 */
 	public void setCertificate(byte[] certificate) {
-		this.certificate = certificate;
+		System.arraycopy(certificate, 0, this.certificate, 0, certificate.length);
 	}
 
 	/**

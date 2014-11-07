@@ -56,7 +56,7 @@ public class CompleteTasksList {
 	 * @param tasks unmodifiable map of tasks
 	 * @return singleton instance
 	 */
-	public synchronized static CompleteTasksList getInstance(Map<String, Task> tasks){
+	public static synchronized CompleteTasksList getInstance(Map<String, Task> tasks){
 		if (INSTANCE != null){
 			return INSTANCE;
 		}

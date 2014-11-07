@@ -20,11 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.io.IOUtils;
-import org.pepstock.jem.node.tasks.jndi.ContextUtils;
+import org.pepstock.jem.annotations.AssignDataDescription;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
@@ -44,6 +41,12 @@ public class CopyTasklet extends JemTasklet {
 	
 	private static final String OUTPUT_DATA_DESCRIPTION_NAME = "OUTPUT";
 
+	@AssignDataDescription(INPUT_DATA_DESCRIPTION_NAME)
+	private InputStream istream = null;
+	
+	@AssignDataDescription(OUTPUT_DATA_DESCRIPTION_NAME)
+	private OutputStream ostream = null;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -53,46 +56,17 @@ public class CopyTasklet extends JemTasklet {
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.springbatch.tasks.JemTasklet#run(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
-	@SuppressWarnings("resource")
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
 
-		InputStream istream;
-		OutputStream ostream;
 		try {
-			// new initial context to access by JNDI to COMMAND DataDescription
-			InitialContext ic = ContextUtils.getContext();
-
-			// gets inputstream
-			Object input = (Object) ic.lookup(INPUT_DATA_DESCRIPTION_NAME);
-			// gets outputstream
-			Object output = (Object) ic.lookup(OUTPUT_DATA_DESCRIPTION_NAME);
-
-			istream = null;
-			ostream = null;
-
-			// checks if object is a inputstream otherwise error
-			if (input instanceof InputStream){
-				istream = (InputStream) input;
-			} else {
-				throw new TaskletException(SpringBatchMessage.JEMS011E.toMessage().getFormattedMessage(INPUT_DATA_DESCRIPTION_NAME, input.getClass().getName()));
-			}
-			// checks if object is a outputstream otherwise error
-			if (output instanceof OutputStream){
-				ostream = (OutputStream) output;
-			} else {
-				throw new TaskletException(SpringBatchMessage.JEMS010E.toMessage().getFormattedMessage(OUTPUT_DATA_DESCRIPTION_NAME, output.getClass().getName()));
-			}
-		} catch (NamingException e) {
-			throw new TaskletException(e.getMessage(), e);
-		}
-
-		try {
-			IOUtils.copy(istream, ostream);
+			int bytes = IOUtils.copy(istream, ostream);
+			IOUtils.closeQuietly(istream);
+			IOUtils.closeQuietly(ostream);
+			System.err.println(SpringBatchMessage.JEMS053I.toMessage().getFormattedMessage(bytes));
 		} catch (IOException e) {
 			throw new TaskletException(e.getMessage(), e);
 		}
-
 		return  RepeatStatus.FINISHED;
 	}
 

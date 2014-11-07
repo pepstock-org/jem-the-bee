@@ -25,9 +25,6 @@
 
 	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
 	<target name="compile-jem-jbpm" depends="copy-jem-2-jemjbpm">
-		<copy todir="${jem-jbpm.classes.directory}/META-INF">
-			<fileset dir="${jem-jbpm.source.directory}/META-INF"/>
-		</copy>
 		<javac srcdir="${jem-jbpm.source.directory}" destdir="${jem-jbpm.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
@@ -55,6 +52,8 @@
 		<zip destfile="${jem-jbpm.distribute.directory}/${jem-jbpm.zip.name}">
 			 <fileset dir="${jem-jbpm.library.directory}"/>
 			 <fileset dir="." includes="COPYING, COPYING-EXCEPTION"/>
+			<zipfileset dir="${jem-jbpm.resources.directory}/META-INF" prefix="${jem-jbpm-workitem.distribute.directory}/META-INF"/>
+			<zipfileset dir="${jem-jbpm.resources.directory}/icons" prefix="${jem-jbpm-workitem.distribute.directory}/icons"/>
 		</zip>
 	</target>
 </project>

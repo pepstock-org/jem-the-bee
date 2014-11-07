@@ -359,7 +359,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	 * @param sigar sigar instance to get system info
 	 */
 	private void loadGFSUtilization(MemberSample sample, Sigar sigar){
-//			FileSystemUtilization fsUtil = sample.getFileSystem();
 		sample.getFileSystems().add(getFileSystemUtilization("Output", System.getProperty(ConfigKeys.JEM_OUTPUT_PATH_NAME), sigar));
 		sample.getFileSystems().add(getFileSystemUtilization("Binary", System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME), sigar));
 		sample.getFileSystems().add(getFileSystemUtilization("Classpath", System.getProperty(ConfigKeys.JEM_CLASSPATH_PATH_NAME), sigar));

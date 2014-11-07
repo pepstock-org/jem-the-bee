@@ -389,7 +389,6 @@ public class JobsManager extends AbstractRestManager {
 	 * @return job, if found, otherwise null
 	 * @throws JemException if any exception occurs
 	 */
-	// @FIXME 
 	public Job getJobById(String queueName, String jobId) throws JemException {
 		JobsPostService<Jobs, Jobs> service = new JobsPostService<Jobs, Jobs>(JobsManagerPaths.JOB_BY_ID);
 		GenericType<JAXBElement<Jobs>> generic = new GenericType<JAXBElement<Jobs>>() {
