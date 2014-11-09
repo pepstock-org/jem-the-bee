@@ -60,7 +60,7 @@ public interface JemFactory extends JclFactory, JobTaskFactory, Serializable {
 	String getTypeDescription();
 	
 	/**
-	 * Returns all properties passed as argument on initilization.
+	 * Returns all properties passed as argument on initialization.
 	 * 
 	 * @return properties
 	 */

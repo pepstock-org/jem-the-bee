@@ -11,10 +11,6 @@
            http://www.pepstock.org/schema/jem
            http://www.pepstock.org/schema/jem/jem.xsd">
 
-	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
-	</beans:bean>
 	<!-- 
 		Application Context
 	 -->
@@ -31,25 +27,24 @@
     	<beans:property name="jobRepository" ref="jobRepository" />
 	</beans:bean>
 
-	<!-- 
-		Jem config
-	 -->
-    <jem:configuration jobName="ECHO" environment="TEST-Env" affinity="***" lockingScope="step" parameters="ciao=STOCK"/>
+	<!-- Jem config -->
+
+	<jem:configuration />
+
+
+	<!-- Tasklet Defintion -->
+
+	<jem:tasklet id="wait-1"
+		class="org.pepstock.jem.springbatch.tasks.utilities.WaitTasklet">
+		<beans:property name="seconds" value="1"/>
+	</jem:tasklet>
 
 	<!-- 
-		Tasklet Defintion
+		copy:  copy a GDG generation 0 in a new one
 	 -->
-
-	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.EchoTasklet">
-		<beans:property name="message" value="TEST ECHO MESSAGE!" />
-	</beans:bean>
-
-	<!-- 
-		null: does nothing
-	 -->
-	<job id="ECHO">
-		<step id="nothing">
-			<tasklet ref="null" />
+	<job id="WAIT">
+		<step id="step1">
+			<tasklet ref="wait-1" />
 		</step>
 	</job>
 	

@@ -40,6 +40,7 @@
 						<xsd:element ref="dataDescription" />
 						<xsd:element ref="dataSource" />
 						<xsd:element ref="lock" />
+						<xsd:element ref="beans:property"/>
 					</xsd:choice>
 					<xsd:attribute name="class" type="xsd:string" use="required" />
 				</xsd:extension>

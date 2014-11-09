@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.pepstock.jem.Result;
-import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.SetFields;
@@ -39,7 +38,7 @@ import org.pepstock.jem.util.SetFields;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class CustomMethodWorkItem implements JemWorkItem {
+public class CustomMethodWorkItem extends MapManager {
 
 	private Object instance = null;
 	
@@ -76,7 +75,7 @@ public class CustomMethodWorkItem implements JemWorkItem {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			// if not finds the method without parms, try with a MAP as parm
 			method = clazz.getMethod(methodName, Map.class);
-			return executeMethod(method, parameters);
+			return executeMethod(method, loadParameters(parameters));
 		}
 	}
 	

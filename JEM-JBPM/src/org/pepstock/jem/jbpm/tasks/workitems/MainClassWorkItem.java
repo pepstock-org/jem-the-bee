@@ -17,6 +17,7 @@
 package org.pepstock.jem.jbpm.tasks.workitems;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,8 @@ public class MainClassWorkItem implements JemWorkItem {
 	 */
 	public static final boolean hasMainMethod(Class<?> clazz){
 		try {
-	        clazz.getMethod(MAIN_METHOD, String[].class);
-	        return true;
+			Method method = clazz.getMethod(MAIN_METHOD, String[].class);
+			return Modifier.isStatic(method.getModifiers());
         } catch (Exception e) {
         	LogAppl.getInstance().ignore(e.getMessage(), e);
         	return false;

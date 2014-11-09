@@ -71,6 +71,8 @@ public class NodeInfoBean implements Serializable {
 	private boolean isOperational = true;
 
 	private boolean isSwarmNode = false;
+	
+	private String type = null;
 
 	private String jemVersion;
 
@@ -114,6 +116,24 @@ public class NodeInfoBean implements Serializable {
 	 */
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+	
+
+	/**
+	 * Returns the package of node implementation
+	 * @return the type the package of node implementation
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Sets the package of node implementation
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	/**

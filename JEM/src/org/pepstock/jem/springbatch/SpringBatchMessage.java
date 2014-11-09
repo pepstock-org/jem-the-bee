@@ -322,10 +322,10 @@ public enum SpringBatchMessage implements MessageInterface{
 	JEMS045E(45, "{0} ended with exception: {1}", MessageLevel.ERROR),
 	
 	/**
-	 * "Echo: {0}", MessageLevel.ERROR
+	 * "Echo: {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when Echotasklet is running.")
-	JEMS046E(46, "Echo: {0}", MessageLevel.ERROR),
+	JEMS046I(46, "Echo: {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR

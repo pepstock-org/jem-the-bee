@@ -790,15 +790,6 @@ public class StartUpSystem {
 			// not, exception occurs, otherwise it's loaded
 			for (CustomResourceDefinition resourceDefinition : resourceDefinitions) {
 				if (resourceDefinition.getClassName() != null) {
-//					Properties propsOfListener = resourceDefinition.getProperties();
-//					String xmlResourceTemplateFile = null;
-//					if (propsOfListener != null) {
-//						xmlResourceTemplateFile = propsOfListener.getProperty(ResourceDefinitionsManager.XML_RESOURCE_TEMPLATE_FILE_PROPERTY);
-//						if (null != xmlResourceTemplateFile) {
-//					FIXME
-//							xmlResourceTemplateFile = substituteVariable(xmlResourceTemplateFile);
-//						}
-//					}
 					try {
 						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, PROPERTIES);
 					} catch (ResourceDefinitionException e) {

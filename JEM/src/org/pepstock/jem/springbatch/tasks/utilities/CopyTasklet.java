@@ -58,7 +58,6 @@ public class CopyTasklet extends JemTasklet {
 	 */
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
-
 		try {
 			int bytes = IOUtils.copy(istream, ostream);
 			IOUtils.closeQuietly(istream);

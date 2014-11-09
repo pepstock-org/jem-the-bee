@@ -472,6 +472,7 @@ public class NodeInfo implements Serializable {
 		nodeInfoBean.setOperational(this.isOperational());
 		nodeInfoBean.setJemVersion(this.getJemVersion());
 		nodeInfoBean.setSwarmNode(this.isSwarmNode());
+		nodeInfoBean.setType(this.getClass().getName());
 		return nodeInfoBean;
 	}
 

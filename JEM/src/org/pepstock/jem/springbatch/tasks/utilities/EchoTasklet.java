@@ -17,7 +17,6 @@
 package org.pepstock.jem.springbatch.tasks.utilities;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.springbatch.JemBean;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
@@ -26,14 +25,14 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
 
 /**
- * Spring batch utility which display on standard output teh message passed.
+ * Spring batch utility which display on standard output the message passed.
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
  */
 public class EchoTasklet extends JemTasklet {
 	
-	private JemBean bean = null;
+	private String message = null;
 
 	/**
 	 * Empty constructor
@@ -42,17 +41,17 @@ public class EchoTasklet extends JemTasklet {
 	}
 
 	/**
-	 * @return the bean
+	 * @return the message
 	 */
-	public JemBean getBean() {
-		return bean;
+	public String getMessage() {
+		return message;
 	}
 
 	/**
-	 * @param bean the bean to set
+	 * @param message the message to set
 	 */
-	public void setBean(JemBean bean) {
-		this.bean = bean;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +59,7 @@ public class EchoTasklet extends JemTasklet {
 	 */
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
-		LogAppl.getInstance().emit(SpringBatchMessage.JEMS046E, bean.toString());
+		LogAppl.getInstance().emit(SpringBatchMessage.JEMS046I, getMessage());
 		return RepeatStatus.FINISHED;
 	}
 

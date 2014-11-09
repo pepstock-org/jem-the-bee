@@ -16,11 +16,8 @@
 */
 package org.pepstock.jem.jbpm.tasks.workitems;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.util.SetFields;
 
@@ -30,7 +27,7 @@ import org.pepstock.jem.util.SetFields;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class DelegatedWorkItem implements JemWorkItem {
+public class DelegatedWorkItem extends MapManager {
 	
 	private Object instance = null;
 
@@ -50,20 +47,9 @@ public class DelegatedWorkItem implements JemWorkItem {
 	public int execute(Map<String, Object> parameters) throws Exception {
 		// sets Fields if they are using annotations
 		SetFields.applyByAnnotation(instance);
-		
 		JemWorkItem jemWorkItem = (JemWorkItem) instance;
-		
-		// loads all parameters but not the "jem.*" ones
-		Map<String, Object> parms = new HashMap<String, Object>();
-		for (Entry<String, Object> entry : parms.entrySet()){
-			String name = entry.getKey();
-			if (!name.startsWith(JBpmKeys.JBPM_DATA_DESCRIPTION_PREFIX) && 
-					!name.startsWith(JBpmKeys.JBPM_DATA_SOURCE_PREFIX) && 
-					!name.equalsIgnoreCase(JBpmKeys.JBPM_LOCK_KEY)){
-				parms.put(name, entry.getValue());
-			}
-		}// executes the workItem
-		return jemWorkItem.execute(parameters);
+		// executes the workItem
+		return jemWorkItem.execute(loadParameters(parameters));
 	}
 
 }

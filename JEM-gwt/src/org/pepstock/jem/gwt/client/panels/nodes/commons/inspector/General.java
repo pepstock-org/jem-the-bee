@@ -18,8 +18,8 @@ package org.pepstock.jem.gwt.client.panels.nodes.commons.inspector;
 
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.TimeDisplayUtils;
 import org.pepstock.jem.gwt.client.commons.UITools;
@@ -162,6 +162,8 @@ public final class General extends DefaultInspectorItem{
 	    layoutEnvironment.setWidget(3, 1, new HTML(env.getDynamicAffinities().toString()));
 	    layoutEnvironment.setHTML(4, 0, "Parallel jobs");
 	    layoutEnvironment.setWidget(4, 1, new HTML(String.valueOf(env.getParallelJobs())));
+	    layoutEnvironment.setHTML(5, 0, "Node type");
+	    layoutEnvironment.setWidget(5, 1, new HTML(String.valueOf(node.getType())));
 
 	    
 	    UITools.setFlexTableStyles(layoutEnvironment, 

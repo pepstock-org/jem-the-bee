@@ -38,6 +38,14 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	static final String TASKLET_ELEMENT = "tasklet";
 	
 	static final String CLASS_ATTRIBUTE = "class";
+	
+	static final String PROPERTY_ELEMENT = "property";
+	
+	static final String PROPERTY_NAME_ATTRIBUTE = "name";
+	
+	static final String PROPERTY_VALUE_ATTRIBUTE = "value";
+	
+	static final String PROPERTY_REF_ATTRIBUTE = "ref";
 
 	/*
 	 * (non-Javadoc)
@@ -90,6 +98,11 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	 */
 	private BeanDefinition parseTasklet(Element element) {
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(element.getAttribute(CLASS_ATTRIBUTE));
+		// Reads all locks children and creates objects for next bindings
+		List<Element> childProps = DomUtils.getChildElementsByTagName(element, PROPERTY_ELEMENT);
+		if (childProps != null && !childProps.isEmpty()) {
+			parseProps(childProps, component);
+		}
 		return component.getBeanDefinition();
 	}
 
@@ -150,6 +163,27 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 			children.add(parser.parse(element, context));
 		}
 		factory.addPropertyValue(TaskletFactoryBean.LOCKS, children);
+	}
+	
+	/**
+	 * Loads all properties fields to add to the bean
+	 * @param childElements all elements property
+	 * @param factory factory to add properties
+	 */
+	private void parseProps(List<Element> childElements, BeanDefinitionBuilder factory) {
+		// scans all lements proeprty and add to teh tasklet 
+		for (Element element : childElements) {
+			// gets name attribute
+			if (element.hasAttribute(PROPERTY_NAME_ATTRIBUTE)){
+				String name = element.getAttribute(PROPERTY_NAME_ATTRIBUTE);
+				// checks if is a property to a reference or to a value
+				if (element.hasAttribute(PROPERTY_VALUE_ATTRIBUTE)){
+					factory.addPropertyValue(name, element.getAttribute(PROPERTY_VALUE_ATTRIBUTE));
+				} else if (element.hasAttribute(PROPERTY_REF_ATTRIBUTE)){
+					factory.addPropertyReference(name, element.getAttribute(PROPERTY_REF_ATTRIBUTE));
+				}
+			}
+		}
 	}
 
 }

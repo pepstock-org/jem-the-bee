@@ -94,7 +94,6 @@ public abstract class RestClient {
 	    	client = ApacheHttpClient4.create(config);
 	    }
 	    // to add log, use addFilter method with LoggingFilter to std output
-	    // c l i e n t . a d d F i l t e r ( n ew   L o g g i n g F i l t e r ( ) );
-		return client;
+	   	return client;
 	}
 }

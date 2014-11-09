@@ -18,6 +18,9 @@ package org.pepstock.jem.springbatch.tasks.utilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.naming.NamingException;
 
@@ -40,6 +43,8 @@ public final class LauncherTasklet extends JemTasklet {
 	private static final String MAIN_METHOD = "main";
 
 	private String className = null;
+	
+	private Object object = null;
 
 	/*
 	 * (non-Javadoc)
@@ -50,67 +55,98 @@ public final class LauncherTasklet extends JemTasklet {
 	 * org.springframework.batch.core.scope.context.ChunkContext)
 	 */
 	@Override
-	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
+	public RepeatStatus run(StepContribution stepContribution, ChunkContext chunkContext) throws TaskletException {
+		if (className == null && object == null){
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS051E, "className");
+			throw new TaskletException(SpringBatchMessage.JEMS051E.toMessage().getFormattedMessage("className"));
+		}
+		
+		// load by Class.forName
+		Class<?> clazz;
+		
+		// checks if I have to use the class name or the object
 		if (className != null) {
-			// load by Class.forName
-			Class<?> clazz;
+			// uses the class name
 			try {
 				clazz = Class.forName(className);
 			} catch (ClassNotFoundException e) {
 				LogAppl.getInstance().emit(SpringBatchMessage.JEMS052E, e, className);
 				throw new TaskletException(SpringBatchMessage.JEMS052E.toMessage().getFormattedMessage(className), e);
 			}
+		} else {
+			// here uses the object class
+			clazz = object.getClass();
+		}
 
-			if (hasMainMethod(clazz)) {
+		// checks if has got a public static void main
+		if (hasMainMethod(clazz)) {
+			try {
+				Map<String, Object> jobParms = chunkContext.getStepContext().getJobParameters();
+				// init params accordingly
+				String[] params = null; 
+				// loads alljob parms
+				if (!jobParms.isEmpty()){
+					params = new String[jobParms.size()];
+					int index = 0;
+					for (Entry<String, Object> entry : jobParms.entrySet()){
+						params[index] = entry.getKey()+"="+entry.getValue().toString();
+					}
+				}
+				// replaces filed annotations
+				SetFields.applyByAnnotation(clazz);
+				// invokes main method
+				Method main = clazz.getMethod(MAIN_METHOD, String[].class);
+				main.invoke(null, (Object) params);
+				return RepeatStatus.FINISHED;
+			} catch (SecurityException e) {
+				throw new TaskletException(e);
+			} catch (IllegalArgumentException e) {
+				throw new TaskletException(e);
+			} catch (NoSuchMethodException e) {
+				throw new TaskletException(e);
+			} catch (IllegalAccessException e) {
+				throw new TaskletException(e);
+			} catch (InvocationTargetException e) {
+				throw new TaskletException(e);
+			} catch (NamingException e) {
+				throw new TaskletException(e);
+			}
+		} else {
+			// gets the instance
+			Object instance;
+			try {
+				// if none set the object, load new object
+				if (object == null){
+					instance = Class.forName(className).newInstance();
+				} else {
+					// uses the reference
+					instance = object;
+				}
+				// applies all annotations
+				SetFields.applyByAnnotation(instance);
+			} catch (InstantiationException e) {
+				throw new TaskletException(e);
+			} catch (IllegalAccessException e) {
+				throw new TaskletException(e);
+			} catch (ClassNotFoundException e) {
+				throw new TaskletException(e);
+			} catch (NamingException e) {
+				throw new TaskletException(e);
+			}
+			// check if it's a JemWorkItem. if not,
+			// exception occurs.
+			if (instance instanceof Tasklet) {
+				Tasklet customtasklet = (Tasklet) instance;
 				try {
-					SetFields.applyByAnnotation(clazz);
-					Method main = clazz.getMethod(MAIN_METHOD, String[].class);
-					main.invoke(null, (Object) null);
-					return RepeatStatus.FINISHED;
-				} catch (SecurityException e) {
-					throw new TaskletException(e);
-				} catch (IllegalArgumentException e) {
-					throw new TaskletException(e);
-				} catch (NoSuchMethodException e) {
-					throw new TaskletException(e);
-				} catch (IllegalAccessException e) {
-					throw new TaskletException(e);
-				} catch (InvocationTargetException e) {
-					throw new TaskletException(e);
-				} catch (NamingException e) {
+					return customtasklet.execute(stepContribution, chunkContext);
+				} catch (Exception e) {
 					throw new TaskletException(e);
 				}
 			} else {
-				Object instance;
-				try {
-					instance = Class.forName(className).newInstance();
-					SetFields.applyByAnnotation(instance);
-				} catch (InstantiationException e) {
-					throw new TaskletException(e);
-				} catch (IllegalAccessException e) {
-					throw new TaskletException(e);
-				} catch (ClassNotFoundException e) {
-					throw new TaskletException(e);
-				} catch (NamingException e) {
-					throw new TaskletException(e);
-				}
-				// check if it's a JemWorkItem. if not,
-				// exception occurs.
-				if (instance instanceof Tasklet) {
-					Tasklet customtasklet = (Tasklet) instance;
-					try {
-						return customtasklet.execute(stepContribution, chuckContext);
-					} catch (Exception e) {
-						throw new TaskletException(e);
-					}
-				} else {
-					LogAppl.getInstance().emit(SpringBatchMessage.JEMS050E, className);
-					throw new TaskletException(SpringBatchMessage.JEMS050E.toMessage().getFormattedMessage(className));
-				}
+				LogAppl.getInstance().emit(SpringBatchMessage.JEMS050E, className);
+				throw new TaskletException(SpringBatchMessage.JEMS050E.toMessage().getFormattedMessage(className));
 			}
 		}
-		LogAppl.getInstance().emit(SpringBatchMessage.JEMS051E, "className");
-		throw new TaskletException(SpringBatchMessage.JEMS051E.toMessage().getFormattedMessage("className"));
 	}
 
 	/**
@@ -128,6 +164,20 @@ public final class LauncherTasklet extends JemTasklet {
 	}
 
 	/**
+	 * @return the object
+	 */
+	public Object getObject() {
+		return object;
+	}
+
+	/**
+	 * @param object the object to set
+	 */
+	public void setObject(Object object) {
+		this.object = object;
+	}
+
+	/**
 	 * Is a static method which checks if the passed class has got a
 	 * <code>main</code> method.
 	 * 
@@ -136,8 +186,8 @@ public final class LauncherTasklet extends JemTasklet {
 	 */
 	private boolean hasMainMethod(Class<?> clazz) {
 		try {
-			clazz.getMethod(MAIN_METHOD, String[].class);
-			return true;
+			Method method = clazz.getMethod(MAIN_METHOD, String[].class);
+			return Modifier.isStatic(method.getModifiers());
 		} catch (Exception e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			return false;

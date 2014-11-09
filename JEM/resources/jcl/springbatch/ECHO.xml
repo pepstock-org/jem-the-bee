@@ -44,7 +44,7 @@
 	 -->
 
 	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.EchoTasklet">
-		<beans:property name="bean" ref="jem.bean" />
+		<beans:property name="message" value="TEST ECHO MESSAGE!" />
 	</beans:bean>
 
 	<!-- 
