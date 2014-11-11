@@ -30,13 +30,11 @@ import javax.naming.StringRefAddr;
 
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.resources.JdbcResource;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
-import org.pepstock.jem.node.tasks.jndi.JdbcReference;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
 import org.springframework.jdbc.datasource.AbstractDataSource;
@@ -181,21 +179,14 @@ public class DataSource extends AbstractDataSource implements Serializable {
 			}
 			// creates a JNDI reference
 			Reference ref = null;
-			// only JBDC, JMS and FTP types are accepted
-			if (res.getType().equalsIgnoreCase(JdbcResource.TYPE)) {
-				// creates a JDBC reference (uses DBCP Apache)
-				ref = new JdbcReference();
-
-			} else {
-				try {
-					ref = resourcer.lookupCustomResource(JobId.VALUE, res.getType());
-					if (ref == null){
-						throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
-					}
-				} catch (Exception e) {
-					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
-				} 
-			}
+			try {
+				ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+				if (ref == null){
+					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+				}
+			} catch (Exception e) {
+				throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
+			} 
 
 			// loads all properties into RefAddr
 			for (ResourceProperty property : props.values()){

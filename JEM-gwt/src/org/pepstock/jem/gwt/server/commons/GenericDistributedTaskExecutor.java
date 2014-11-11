@@ -61,5 +61,4 @@ public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<Exec
 		// executes it
 		executorService.execute(task);
 	}
-
 }

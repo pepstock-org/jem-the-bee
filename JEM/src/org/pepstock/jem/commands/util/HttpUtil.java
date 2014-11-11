@@ -52,7 +52,7 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.resources.HttpResource;
+import org.pepstock.jem.node.resources.impl.http.HttpResourceKeys;
 import org.pepstock.jem.util.CharSet;
 
 import com.thoughtworks.xstream.XStream;
@@ -469,7 +469,7 @@ public final class HttpUtil {
 	 */
 	private static void configureSSL(HttpClientBuilder httpClientBuilder, String protocolType) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
 		// sets SSL ONLY if the scheme is HTTPS
-		if (HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(protocolType)) {
+		if (HttpResourceKeys.HTTPS_PROTOCOL.equalsIgnoreCase(protocolType)) {
 			SSLConnectionSocketFactory sf = buildSSLConnectionSocketFactory();
 			httpClientBuilder.setSSLSocketFactory(sf);
 		}

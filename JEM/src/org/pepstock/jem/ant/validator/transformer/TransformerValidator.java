@@ -38,7 +38,7 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.xalan.processor.TransformerFactoryImpl;
-import org.pepstock.jem.ant.AntJcl;
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.CharSet;
@@ -197,7 +197,7 @@ public class TransformerValidator extends FileAlterationListenerAdaptor {
 	 * @param jcl the jcl
 	 * @throws ValidationException the validation exception
 	 */
-	public void validate(AntJcl jcl) throws ValidationException {
+	public void validate(Jcl jcl) throws ValidationException {
 
 		if (jcl == null) {
 			throw new ValidationException("the jcl to validate is null");

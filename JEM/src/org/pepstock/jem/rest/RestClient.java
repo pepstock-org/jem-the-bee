@@ -27,7 +27,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.http.client.HttpClient;
 import org.pepstock.jem.commands.util.HttpUtil;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.resources.HttpResource;
+import org.pepstock.jem.node.resources.impl.http.HttpResourceKeys;
 import org.pepstock.jem.util.UtilMessage;
 
 import com.sun.jersey.api.client.WebResource;
@@ -77,7 +77,7 @@ public abstract class RestClient {
 	    ClientConfig config = new DefaultClientConfig();
 	    
 	    ApacheHttpClient4 client = null;
-	    if (HttpResource.HTTPS_PROTOCOL.equalsIgnoreCase(baseURI.getScheme())){
+	    if (HttpResourceKeys.HTTPS_PROTOCOL.equalsIgnoreCase(baseURI.getScheme())){
 	    	try {
 	    		HttpClient hc = HttpUtil.createHttpClient(baseURI);
 	    		client = new ApacheHttpClient4(new ApacheHttpClient4Handler(hc, null, false), config);

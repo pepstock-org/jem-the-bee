@@ -38,7 +38,7 @@ public class GetResourceNames extends DefaultExecutor<Collection<String>> {
 	 */
 	@Override
 	public Collection<String> execute() throws ExecutorException {
-		return Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getAllCustomResourceNames();
+		return Main.RESOURCE_DEFINITION_MANAGER.getAllResourceNames();
 	}
 
 }

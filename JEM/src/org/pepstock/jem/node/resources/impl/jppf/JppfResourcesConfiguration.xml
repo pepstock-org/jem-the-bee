@@ -1,0 +1,12 @@
+<resource-template>
+	
+		<section name="MainSection">
+		
+			<list-field key="addresses" 
+						label="Network address" 
+						description="List of JPPF serverd" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+		
+		</section>		
+		
+</resource-template>

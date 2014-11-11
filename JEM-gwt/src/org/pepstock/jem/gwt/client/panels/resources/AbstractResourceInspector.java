@@ -17,24 +17,15 @@
 package org.pepstock.jem.gwt.client.panels.resources;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.Actions;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.FTPAttributesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.HTTPAttributesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.JDBCAttributesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.JEMAttributesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.JMSAttributesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.JPPFAttributesPanel;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourcesPropertiesPanel;
-import org.pepstock.jem.gwt.client.panels.resources.inspector.custom.WidgetFactory;
+import org.pepstock.jem.gwt.client.panels.resources.inspector.widgets.WidgetFactory;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.custom.ResourceDescriptor;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Panel;
@@ -52,23 +43,6 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 	
 	static {
 		Styles.INSTANCE.common().ensureInjected();
-	}
-	
-	protected static final String JDBC = "JDBC";
-	protected static final String FTP = "FTP";
-	protected static final String JMS = "JMS";
-	protected static final String HTTP = "HTTP";
-	protected static final String JPPF = "JPPF";
-	protected static final String JEM = "JEM";
-	
-	protected static final Map<String, Class<? extends ResourcesPropertiesPanel>> RESOURCES_TYPES = new HashMap<String, Class<? extends ResourcesPropertiesPanel>>();
-	static {
-		RESOURCES_TYPES.put(JDBC, JDBCAttributesPanel.class);
-		RESOURCES_TYPES.put(FTP, FTPAttributesPanel.class);
-		RESOURCES_TYPES.put(JMS, JMSAttributesPanel.class);
-		RESOURCES_TYPES.put(HTTP, HTTPAttributesPanel.class);
-		RESOURCES_TYPES.put(JPPF, JPPFAttributesPanel.class);
-		RESOURCES_TYPES.put(JEM, JEMAttributesPanel.class);
 	}
 	
 	private Resource resource = null;
@@ -104,30 +78,30 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 		hide();
 	}
 
-	/**
-	 * Render the panel of a OOTB resource 
-	 * @param ootbResourceType the type of the resource panels
-	 * @return a {@link ResourcesPropertiesPanel}
-	 */
-	public ResourcesPropertiesPanel renderOOTBResourcePanel(String ootbResourceType) {
-		ResourcesPropertiesPanel ootbPanel = null;
-		if (ootbResourceType.equals(JDBC)) {
-			ootbPanel = new JDBCAttributesPanel(resource);
-		} else if (ootbResourceType.equals(FTP)) {
-			ootbPanel = new FTPAttributesPanel(resource);
-		} else if (ootbResourceType.equals(JMS)) {
-			ootbPanel = new JMSAttributesPanel(resource);
-		} else if (ootbResourceType.equals(HTTP)) {
-			ootbPanel = new HTTPAttributesPanel(resource);
-		} else if (ootbResourceType.equals(JPPF)) {
-			ootbPanel = new JPPFAttributesPanel(resource);
-		} else if (ootbResourceType.equals(JEM)) {
-			ootbPanel = new JEMAttributesPanel(resource);
-		} else {
-			throw new IllegalArgumentException("I don't know the panel to render for resource type " + ootbResourceType);
-		}
-		return ootbPanel;
-	}
+//	/**
+//	 * Render the panel of a OOTB resource 
+//	 * @param ootbResourceType the type of the resource panels
+//	 * @return a {@link ResourcesPropertiesPanel}
+//	 */
+//	public ResourcesPropertiesPanel renderOOTBResourcePanel(String ootbResourceType) {
+//		ResourcesPropertiesPanel ootbPanel = null;
+//		if (ootbResourceType.equals(JDBC)) {
+//			ootbPanel = new JDBCAttributesPanel(resource);
+//		} else if (ootbResourceType.equals(FTP)) {
+//			ootbPanel = new FTPAttributesPanel(resource);
+//		} else if (ootbResourceType.equals(JMS)) {
+//			ootbPanel = new JMSAttributesPanel(resource);
+//		} else if (ootbResourceType.equals(HTTP)) {
+//			ootbPanel = new HTTPAttributesPanel(resource);
+//		} else if (ootbResourceType.equals(JPPF)) {
+//			ootbPanel = new JPPFAttributesPanel(resource);
+//		} else if (ootbResourceType.equals(JEM)) {
+//			ootbPanel = new JEMAttributesPanel(resource);
+//		} else {
+//			throw new IllegalArgumentException("I don't know the panel to render for resource type " + ootbResourceType);
+//		}
+//		return ootbPanel;
+//	}
 	
 	/**
 	 * Render the panel that fit a CUSTOM reosuce

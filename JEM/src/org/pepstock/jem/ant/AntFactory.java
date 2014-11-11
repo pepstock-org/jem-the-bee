@@ -101,7 +101,7 @@ public class AntFactory extends AbstractFactory {
 	@Override
 	public Jcl createJcl(String content) throws JclFactoryException {
 		// creates JCL object setting the source code
-		AntJcl jcl = new AntJcl();
+		Jcl jcl = new Jcl();
 		jcl.setType(ANT_TYPE);
 		jcl.setContent(content);
 
@@ -148,7 +148,7 @@ public class AntFactory extends AbstractFactory {
 	 * @throws ValidationException if IO error or job name not set a exception
 	 *             occurs
 	 */
-	private void validate(AntJcl jcl, File file) throws AntException {
+	private void validate(Jcl jcl, File file) throws AntException {
 		// creates an ANT empty project
 		Project p = new Project();
 		// initializes properties

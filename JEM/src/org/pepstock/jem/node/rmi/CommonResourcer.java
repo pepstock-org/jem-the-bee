@@ -54,6 +54,6 @@ public interface CommonResourcer extends RmiObject {
 	 * @return JDNI reference of custom common resource
 	 * @throws RemoteException occurs if errors
 	 */
-	Reference lookupCustomResource(String jobId, String resourceType) throws RemoteException;
+	Reference lookupReference(String jobId, String resourceType) throws RemoteException;
 
 }

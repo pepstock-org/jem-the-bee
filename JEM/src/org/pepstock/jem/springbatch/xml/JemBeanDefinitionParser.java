@@ -57,9 +57,15 @@ public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
 	
 	static final String LOCKINGSCOPE_ATTRIBUTE =  "lockingScope";
 	
-	static final String OPTIONS_ATTRIBUTE =  "options";
-	
-	static final String PARAMETERS_ATTRIBUTE =  "parameters";
+	/**
+	 * Constant to define options of Springbatch
+	 */
+	public static final String OPTIONS_ATTRIBUTE =  "options";
+
+	/**
+	 * Constant to define parameters of Springbatch
+	 */
+	public static final String PARAMETERS_ATTRIBUTE =  "parameters";
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser#doParse(org.w3c.dom.Element, org.springframework.beans.factory.support.BeanDefinitionBuilder)

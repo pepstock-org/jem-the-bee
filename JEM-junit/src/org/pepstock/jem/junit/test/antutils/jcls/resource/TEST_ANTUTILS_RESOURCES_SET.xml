@@ -36,7 +36,7 @@
 						   <property name="defaultReadOnly" visible="true" override="true">true</property>
 						   <property name="driverClassName" visible="true" override="true">DRIVER</property>
 						   <property name="defaultAutoCommit" visible="true" override="true">true</property>
-						   <property name="username" visible="true" override="true">USERID</property>
+						   <property name="userid" visible="true" override="true">USERID</property>
 						   <property name="password" visible="false" override="true">PWD</property>
 						   <property name="url" visible="true" override="true">URL</property>
 						 </resource>
@@ -58,7 +58,7 @@
 				<dataset>
 					<![CDATA[
 						<resource name="JUNIT-FTP-RESOURCE" type="ftp" user="root" lastModified="2014-02-02 12:53:51.99 UTC">
-						   <property name="username" visible="true" override="true">USR</property>
+						   <property name="userid" visible="true" override="true">USR</property>
 						   <property name="binary" visible="true" override="true">true</property>
 						   <property name="password" visible="false" override="true">PWD</property>
 						   <property name="url" visible="true" override="true">URL</property>
@@ -82,7 +82,7 @@
 					<![CDATA[
 						 <resource name="JUNIT-JMS-RESOURCE" type="jms" user="root" lastModified="2014-02-02 12:54:25.927 UTC">
 						   <property name="java.naming.factory.initial" visible="true" override="true">CONTEXT-FACTORY</property>
-						   <property name="username" visible="true" override="true">USR</property>
+						   <property name="userid" visible="true" override="true">USR</property>
 						   <property name="password" visible="false" override="true">PWD</property>
 						   <property name="java.naming.provider.url" visible="true" override="true">URL</property>
 						 </resource>
@@ -101,7 +101,7 @@
 						   <property name="password" visible="false" override="true">PWD</property>
 						   <property name="requestLoginQueryString" visible="true" override="true">LOGIN-QUERY</property>
 						   <property name="proxyProtocol" visible="true" override="true">http</property>
-						   <property name="username" visible="true" override="true">PROXY-ID</property>
+						   <property name="userid" visible="true" override="true">PROXY-ID</property>
 						   <property name="requestLoginPassword" visible="false" override="true">PWD</property>
 						   <property name="proxyUrl" visible="true" override="true">URL</property>
 						   <property name="requestLoginUserid" visible="true" override="true">USER-ID</property>

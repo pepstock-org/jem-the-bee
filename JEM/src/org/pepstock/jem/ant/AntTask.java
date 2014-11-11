@@ -19,6 +19,7 @@ package org.pepstock.jem.ant;
 import java.io.File;
 import java.io.IOException;
 
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.ant.tasks.StepListener;
 import org.pepstock.jem.factories.JemFactory;
@@ -74,7 +75,7 @@ public class AntTask extends DefaultJobTask {
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		
 		// adds the custom classpath if not null
-		AntJcl jcl = (AntJcl) job.getJcl();
+		Jcl jcl = job.getJcl();
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;

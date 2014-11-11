@@ -31,8 +31,8 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.node.events.JobLifecycleListenersSystem;
 import org.pepstock.jem.node.multicast.MulticastService;
-import org.pepstock.jem.node.resources.custom.ResourceDefinition;
-import org.pepstock.jem.node.resources.custom.ResourceDefinitionsManager;
+import org.pepstock.jem.node.resources.definition.ResourceDefinition;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionsManager;
 import org.pepstock.jem.node.swarm.Swarm;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
 import org.pepstock.jem.util.Parser;
@@ -137,15 +137,15 @@ public class Main {
 	public static final JobLifecycleListenersSystem JOB_LIFECYCLE_LISTENERS_SYSTEM = new JobLifecycleListenersSystem();
 
 	/**
-	 * Contains all the custom resource definitions defined by the user, and has
+	 * Contains all the resource definitions defined by the user, and has
 	 * the method
-	 * {@link ResourceDefinitionsManager#loadCustomResourceDefinition(org.pepstock.jem.node.configuration.CustomResourceDefinition, String)}
+	 * {@link ResourceDefinitionsManager#loadResourceDefinition(org.pepstock.jem.node.configuration.CustomResourceDefinition, String)}
 	 * to load them.
 	 * 
 	 * @see ResourceDefinitionsManager
 	 * @see ResourceDefinition
 	 */
-	public static final ResourceDefinitionsManager CUSTOM_RESOURCE_DEFINITION_MANAGER = new ResourceDefinitionsManager();
+	public static final ResourceDefinitionsManager RESOURCE_DEFINITION_MANAGER = new ResourceDefinitionsManager();
 
 	/**
 	 * Saves Hazelcast instance to use on all classes which must access to

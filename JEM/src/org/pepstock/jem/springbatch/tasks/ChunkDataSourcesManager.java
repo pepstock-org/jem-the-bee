@@ -28,21 +28,11 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.resources.HttpResource;
-import org.pepstock.jem.node.resources.JdbcResource;
-import org.pepstock.jem.node.resources.JemResource;
-import org.pepstock.jem.node.resources.JmsResource;
-import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
-import org.pepstock.jem.node.tasks.jndi.HttpReference;
-import org.pepstock.jem.node.tasks.jndi.JdbcReference;
-import org.pepstock.jem.node.tasks.jndi.JemReference;
-import org.pepstock.jem.node.tasks.jndi.JmsReference;
-import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 
@@ -126,37 +116,16 @@ public final class ChunkDataSourcesManager {
 			}
 			// creates a JNDI reference
 			Reference ref = null;
-			// only JBDC, JMS and FTP types are accepted
-			if (res.getType().equalsIgnoreCase(JdbcResource.TYPE)) {
-				// creates a JDBC reference (uses DBCP Apache)
-				ref = new JdbcReference();
 
-			} else if (res.getType().equalsIgnoreCase(JppfResource.TYPE)) {
-				// creates a JPPF reference
-				ref = new JppfReference();
-
-			} else if (res.getType().equalsIgnoreCase(JmsResource.TYPE)) {
-				// creates a JMS reference (uses javax.jms)
-				ref = new JmsReference();
-				
-			} else if (res.getType().equalsIgnoreCase(JemResource.TYPE)) {
-				// creates a REST reference (uses jersey)
-				ref = new JemReference();				
-
-			} else if (res.getType().equalsIgnoreCase(HttpResource.TYPE)) {
-				// creates a HTTP reference (uses org.apache.http)
-				ref = new HttpReference();
-
-			} else {
-				try {
-					ref = resourcer.lookupCustomResource(JobId.VALUE, res.getType());
-					if (ref == null) {
-						throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
-					}
-				} catch (Exception e) {
-					throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
+			try {
+				ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+				if (ref == null) {
+					throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
 				}
+			} catch (Exception e) {
+				throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
 			}
+			
 
 			// loads all properties into RefAddr
 			for (ResourceProperty property : properties.values()) {

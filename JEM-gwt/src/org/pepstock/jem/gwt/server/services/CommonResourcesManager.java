@@ -29,6 +29,7 @@ import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.certificates.GetCryptedValueAndHash;
+import org.pepstock.jem.node.executors.resources.AddResource;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.security.Permissions;
@@ -119,26 +120,17 @@ public class CommonResourcesManager extends DefaultService {
 			// checks if the user is authorized to create resources
 			// if not, this method throws an exception
 			checkAuthorization(new StringPermission(Permissions.RESOURCES_CREATE));
-			try {
-				// locks the key
-				map.lock(resource.getName());
-
-				// gets user info and time storing that on
-				// object
-				Subject currentUser = SecurityUtils.getSubject();
-				User userPrincipal = (User) currentUser.getPrincipal();
-				String userId = userPrincipal.getId();
-				resource.setUser(userId);
-				resource.setLastModified(new Date());
-				// puts on map
-				map.put(resource.getName(), resource);
-			} finally {
-				// unlocks always the key
-				map.unlock(resource.getName());
-			}
-			// returns true because it creates
-			// new object
-			return true;
+			
+			// gets user info and time storing that on
+			// object
+			Subject currentUser = SecurityUtils.getSubject();
+			User userPrincipal = (User) currentUser.getPrincipal();
+			String userId = userPrincipal.getId();
+			resource.setUser(userId);
+			resource.setLastModified(new Date());
+			
+			DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(new AddResource(resource), getMember());
+			return task.getResult();
 		}
 	}
 

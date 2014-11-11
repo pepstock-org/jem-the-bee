@@ -19,7 +19,7 @@ package org.pepstock.jem.node.executors.resources;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
-import org.pepstock.jem.node.resources.custom.ResourceDescriptor;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 /**
  * Returns the resource descriptor for a specific resource type.
@@ -48,7 +48,7 @@ public class GetResourceDescriptor extends DefaultExecutor<ResourceDescriptor> {
 	 */
 	@Override
 	public ResourceDescriptor execute() throws ExecutorException {
-		return Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getResourceDescriptorOf(resourceType);
+		return Main.RESOURCE_DEFINITION_MANAGER.getResourceDescriptorOf(resourceType);
 	}
 
 }

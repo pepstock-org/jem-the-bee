@@ -25,7 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.apache.commons.io.IOUtils;
-import org.pepstock.jem.node.resources.HttpResource;
+import org.pepstock.jem.node.resources.impl.http.HttpResourceKeys;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -79,8 +79,8 @@ public class HttpConsumeSbTasklet extends JemTasklet {
 	 */
 	private  Hashtable<String, String> createEnvironment(){
 		Hashtable<String, String> environment = new Hashtable<String, String>();
-		environment.put(HttpResource.REQUEST_PATH, "/search");
-		environment.put(HttpResource.REQUEST_QUERY_STRING, "q=pepstock");
+		environment.put(HttpResourceKeys.REQUEST_PATH, "/search");
+		environment.put(HttpResourceKeys.REQUEST_QUERY_STRING, "q=pepstock");
 		return environment;
 	}
 

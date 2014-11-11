@@ -28,7 +28,6 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.Permission;
-import org.pepstock.jem.UnknownJcl;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
@@ -222,12 +221,12 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			Jcl jcl = e.getJcl();
 			if (jcl != null){
 				if (jcl.getType() == null){
-					jcl.setType(UnknownJcl.UNKNOWN);
+					jcl.setType(Jcl.UNKNOWN);
 				}
 			} else {
 				// doesn't have any JCL so that sets a default jcl (to avoid further
 				// Null point exception)
-				jcl = new UnknownJcl();
+				jcl = Jcl.createUnknownJcl();
 				jcl.setContent(prejob.getJclContent());
 				jcl.setType(prejob.getJclType());
 			}
@@ -235,7 +234,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		} catch (NodeMessageException e) {
 			performException(e, job, job.getJcl());			
 		} catch (Exception e) {
-			Jcl jcl = new UnknownJcl();
+			Jcl jcl = Jcl.createUnknownJcl();
 			jcl.setContent(prejob.getJclContent());
 			jcl.setType(prejob.getJclType());
 			performException(e, job, jcl);
@@ -266,11 +265,11 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		job.setEndedTime(new Date());
 		// usually the parser can extract the jbname, anyway.
 		// if it is, it saves the jobname to job
-		if (jcl.getJobName() != null && !UnknownJcl.UNKNOWN.equalsIgnoreCase(jcl.getJobName())){
+		if (jcl.getJobName() != null && !Jcl.UNKNOWN.equalsIgnoreCase(jcl.getJobName())){
 			job.setName(jcl.getJobName());
 		} else {
 			if (job.getName() == null){
-				job.setName(UnknownJcl.UNKNOWN);
+				job.setName(Jcl.UNKNOWN);
 			}
 		}
 		job.setJcl(jcl);

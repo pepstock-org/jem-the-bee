@@ -14,7 +14,7 @@ import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourcesPropertie
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.custom.ResourceDescriptor;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.ListBox;
 public final class NewResourceInspector extends AbstractResourceInspector {
 
 	 // the "select" one, plus concrete ootb types
-	private static int FIRST_CUSTOM_RESOURCE_INDEX = 7;
+//	private static int FIRST_CUSTOM_RESOURCE_INDEX = 7;
 	private static final int LIST_HEIGHT = 40;
 
 	private HorizontalPanel typePanel = new HorizontalPanel(); 
@@ -52,12 +52,12 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 		// add ootb names
 		typeCombo.addStyleName(Styles.INSTANCE.common().bold());
 		typeCombo.addItem("Select a Resource Type");
-		typeCombo.addItem(JDBC);
-		typeCombo.addItem(FTP);
-		typeCombo.addItem(JMS);
-		typeCombo.addItem(HTTP);
-		typeCombo.addItem(JPPF);
-		typeCombo.addItem(JEM);
+//		typeCombo.addItem(JDBC);
+//		typeCombo.addItem(FTP);
+//		typeCombo.addItem(JMS);
+//		typeCombo.addItem(HTTP);
+//		typeCombo.addItem(JPPF);
+//		typeCombo.addItem(JEM);
 
 		// add custom names, if any
 		if (customResourceNames != null) {
@@ -87,13 +87,13 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 				typeCombo.setEnabled(false);
 				String selectedResourceType = typeCombo.getItemText(selectedIndex); 
 				
-				if (selectedIndex < FIRST_CUSTOM_RESOURCE_INDEX) {
-					// a ootb resource is selected
-					ResourcesPropertiesPanel ootbPanel = renderOOTBResourcePanel(selectedResourceType);
-					showResourcePanel(ootbPanel);
-				} else {
+//				if (selectedIndex < FIRST_CUSTOM_RESOURCE_INDEX) {
+//					// a ootb resource is selected
+//					ResourcesPropertiesPanel ootbPanel = renderOOTBResourcePanel(selectedResourceType);
+//					showResourcePanel(ootbPanel);
+//				} else {
 					// a custom resource index is selected, i need to load appropriate descriptor and render panel
-					Services.CUSTOM_RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(selectedResourceType, new ServiceAsyncCallback<ResourceDescriptor>() {
+					Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(selectedResourceType, new ServiceAsyncCallback<ResourceDescriptor>() {
 
 						@Override
 						public void onJemFailure(Throwable caught) {
@@ -113,7 +113,7 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 							// do nothing
 	                    }
 					});
-				}
+//				}
 			}
 		}
 	}
@@ -136,7 +136,7 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 	}
 
 	private final void loadCustomResourceNames() {
-		Services.CUSTOM_RESOURCE_DEFINITIONS_MANAGER.getAllResourceNames(new ServiceAsyncCallback<Collection<String>>() {
+		Services.RESOURCE_DEFINITIONS_MANAGER.getAllResourceNames(new ServiceAsyncCallback<Collection<String>>() {
 			@Override
 			public void onJemFailure(Throwable caught) {
 				new Toast(MessageLevel.ERROR, "Unable to load cutom resource definitions: " + caught.getMessage(), "Custom Resource Definitions Error!").show();
@@ -167,17 +167,17 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 					public void onJemSuccess(Boolean result) {
 						// do nothing
 					}
-	
+
 					@Override
 					public void onJemFailure(Throwable caught) {
 						new Toast(MessageLevel.ERROR, caught.getMessage(), "Add resource command error!").show();
 					}
 					
 					@Override
-                    public void onJemExecuted() {
+		            public void onJemExecuted() {
 						// hide the popup
 						hide(); 
-                    }
+		            }
 				});
 			} else {
 				new Toast(MessageLevel.ERROR, "Please type a valid not-empty resource name", "Invalid resource name!").show();
@@ -189,5 +189,4 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 	public FlexTable getHeader() {
 		return new NewResourceHeader(getResource(), this);
 	}
-
 }

@@ -24,7 +24,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.apache.commons.io.IOUtils;
-import org.pepstock.jem.node.resources.HttpResource;
+import org.pepstock.jem.node.resources.impl.http.HttpResourceKeys;
 
 /**
  * This class consume a HTTP connection.
@@ -63,8 +63,8 @@ public class HttpConsumeAnt {
 	 */
 	private static Hashtable<String, String> createEnvironment(){
 		Hashtable<String, String> environment = new Hashtable<String, String>();
-		environment.put(HttpResource.REQUEST_PATH, "/search");
-		environment.put(HttpResource.REQUEST_QUERY_STRING, "q=pepstock");
+		environment.put(HttpResourceKeys.REQUEST_PATH, "/search");
+		environment.put(HttpResourceKeys.REQUEST_QUERY_STRING, "q=pepstock");
 		return environment;
 	}
 

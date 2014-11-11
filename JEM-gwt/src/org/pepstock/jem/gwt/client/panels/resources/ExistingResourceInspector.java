@@ -3,13 +3,12 @@ package org.pepstock.jem.gwt.client.panels.resources;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
-import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourceHeader;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourcesPropertiesPanel;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.custom.ResourceDescriptor;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -31,19 +30,19 @@ public class ExistingResourceInspector extends AbstractResourceInspector {
 
 	private final void buildExistingPanel() {
 		// obtain the ootb specific panel, if the resource is a custom type, it will be null 
-		Class<? extends ResourcesPropertiesPanel> panelClass = RESOURCES_TYPES.get(getResource().getType().toUpperCase());
-		if (panelClass != null) {
-			// it's a ootb resource 
-			try {
-				ResourcesPropertiesPanel ootbPanel = renderOOTBResourcePanel(getResource().getType().toUpperCase());
-				showResourcePanel(ootbPanel);
-			} catch (Exception e) {
-				LogClient.getInstance().warning(e.getMessage(), e);
-				new Toast(MessageLevel.ERROR, "Rendering error", "Cannot render custom resource panel!").show();
-			}
-		} else {
+//		Class<? extends ResourcesPropertiesPanel> panelClass = RESOURCES_TYPES.get(getResource().getType().toUpperCase());
+//		if (panelClass != null) {
+//			// it's a ootb resource 
+//			try {
+//				ResourcesPropertiesPanel ootbPanel = renderOOTBResourcePanel(getResource().getType().toUpperCase());
+//				showResourcePanel(ootbPanel);
+//			} catch (Exception e) {
+//				LogClient.getInstance().warning(e.getMessage(), e);
+//				new Toast(MessageLevel.ERROR, "Rendering error", "Cannot render custom resource panel!").show();
+//			}
+//		} else {
 			// it's a custom resource, need to load the descriptor and render the corrisponding panel
-			Services.CUSTOM_RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(getResource().getType(), new ServiceAsyncCallback<ResourceDescriptor>() {
+			Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(getResource().getType(), new ServiceAsyncCallback<ResourceDescriptor>() {
 				@Override
 				public void onJemFailure(Throwable caught) {
 					new Toast(MessageLevel.ERROR, "Unable to load cutom resource definition: " + caught.getMessage(), "Custom Resource Definitions Error!").show();
@@ -61,7 +60,7 @@ public class ExistingResourceInspector extends AbstractResourceInspector {
 					// do nothing
                 }
 			});
-		}
+//		}
 	}
 
 	public final void showResourcePanel(ResourcesPropertiesPanel activePanel) {

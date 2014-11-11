@@ -25,7 +25,7 @@
 					       <!--property name="proxyUrl" visible="true" override="true">proxname</property-->
 					       <!--property name="proxyPort" visible="true" override="true">3128</property-->
 					       <!--property name="proxyProtocol" visible="true" override="true">http</property-->
-					       <!--property name="username" visible="true" override="true">username</property-->
+					       <!--property name="userid" visible="true" override="true">username</property-->
 					       <!--property name="password" visible="false" override="true">passwd</property-->
 						 </resource>
 					]]>

@@ -128,8 +128,8 @@
 	</servlet>
 	
 	<servlet>
-	    <servlet-name>customResourceDefinitionsManager</servlet-name>
-	    <servlet-class>org.pepstock.jem.gwt.server.CustomResourceDefinitionsManagerServiceImpl</servlet-class>
+	    <servlet-name>resourceDefinitionsManager</servlet-name>
+	    <servlet-class>org.pepstock.jem.gwt.server.ResourceDefinitionsManagerServiceImpl</servlet-class>
 	</servlet>
 	
 	<servlet>    
@@ -233,8 +233,8 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>customResourceDefinitionsManager</servlet-name>
-		<url-pattern>/jem_gwt/customResourceDefinitionsManager</url-pattern>
+		<servlet-name>resourceDefinitionsManager</servlet-name>
+		<url-pattern>/jem_gwt/resourceDefinitionsManager</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

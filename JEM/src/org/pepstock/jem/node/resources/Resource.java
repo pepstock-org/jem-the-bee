@@ -27,23 +27,12 @@ import org.pepstock.jem.node.UpdateableItem;
  * 
  *  
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  *
  */
-public class Resource extends UpdateableItem implements Serializable{
+public final class Resource extends UpdateableItem implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-    /**
-     * 
-     */
-    public static final String USERID = "username";
-
-    /**
-     * 
-     */
-    public static final String PASSWORD = "password";
-
 	
 	private String type = null;
 

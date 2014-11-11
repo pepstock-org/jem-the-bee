@@ -18,6 +18,8 @@ package org.pepstock.jem.springbatch;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
@@ -26,6 +28,7 @@ import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.tasks.JobTask;
+import org.pepstock.jem.springbatch.xml.JemBeanDefinitionParser;
 import org.pepstock.jem.util.CharSet;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -66,7 +69,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	@Override
 	public Jcl createJcl(String content) throws JclFactoryException {
 		// creates JCL object setting the source code
-		SpringBatchJcl jcl = new SpringBatchJcl();
+		Jcl jcl = new Jcl();
 		jcl.setType(SPRINGBATCH_TYPE);
 		jcl.setContent(content);
 		
@@ -94,7 +97,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	 * @throws SAXException if any exception occurs
 	 * @throws IOException if any exception occurs
 	 */
-	private void validate(SpringBatchJcl jcl) throws SpringBatchException, SAXException, IOException{
+	private void validate(Jcl jcl) throws SpringBatchException, SAXException, IOException{
 		XMLParser parser;
 		JemBean bean = null;
 
@@ -183,15 +186,18 @@ public class SpringBatchFactory extends AbstractFactory {
 		jcl.setClassPath(bean.getClassPath());
 		jcl.setPriorClassPath(bean.getPriorClassPath());
 		
+		
+    	// loads the JBPM process ID in a map to reuse when a JBPM task will be scheduled
+    	Map<String, Object> jclMap = new HashMap<String, Object>();
 		// if options are set, add to JCL
 		if (bean.getOptions() != null) {
-			jcl.setOptions(bean.getOptions());
+			jclMap.put(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE, bean.getOptions());
 		}
-
 		// if parameters are set, add to JCL
 		if (bean.getParameters() != null) {
-			jcl.setParameters(bean.getParameters());
+			jclMap.put(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE, bean.getParameters());
 		}
+		jcl.setProperties(jclMap);
 	}
 
 	/**

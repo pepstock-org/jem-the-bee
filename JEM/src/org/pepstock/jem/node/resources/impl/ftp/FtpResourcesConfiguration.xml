@@ -1,0 +1,27 @@
+<resource-template>
+	
+		<section name="MainSection">
+		
+			<text-field key="url" 
+						label="URL" 
+						description="The FTP server URL of the form <code>&lt;scheme&gt;://&lt;authority&gt;</code>" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+			
+			<text-field key="userid" 
+						label="User ID" 
+						description="The FTP server user on whose behalf the connection is being made" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+
+			<password-field key="password" 
+						label="Password" 
+						description="The user's password" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+						
+			<check-box-field key="binary"
+  				label="Binary file type"
+  				description="Sets the file type to be transferred to BINARY, otherwise is ASCII"
+  				mandatory="false" />
+		
+		</section>		
+		
+</resource-template>

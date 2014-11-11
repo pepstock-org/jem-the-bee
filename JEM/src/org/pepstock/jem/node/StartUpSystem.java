@@ -56,7 +56,7 @@ import org.pepstock.jem.node.configuration.AffinityFactory;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.configuration.ConfigurationException;
-import org.pepstock.jem.node.configuration.CustomResourceDefinition;
+import org.pepstock.jem.node.configuration.CommonResourceDefinition;
 import org.pepstock.jem.node.configuration.Database;
 import org.pepstock.jem.node.configuration.Factory;
 import org.pepstock.jem.node.configuration.Listener;
@@ -91,7 +91,7 @@ import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesUtil;
-import org.pepstock.jem.node.resources.custom.ResourceDefinitionException;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
@@ -783,15 +783,15 @@ public class StartUpSystem {
 		// load custom resource definitions, checking if they are configured. If
 		// not, they are
 		// optional, so go ahead
-		List<CustomResourceDefinition> resourceDefinitions = JEM_ENV_CONFIG.getResourceDefinitions();
+		List<CommonResourceDefinition> resourceDefinitions = JEM_ENV_CONFIG.getResourceDefinitions();
 		if (resourceDefinitions != null && !resourceDefinitions.isEmpty()) {
 			// for all resource definitions checking which have the right
 			// className. If
 			// not, exception occurs, otherwise it's loaded
-			for (CustomResourceDefinition resourceDefinition : resourceDefinitions) {
+			for (CommonResourceDefinition resourceDefinition : resourceDefinitions) {
 				if (resourceDefinition.getClassName() != null) {
 					try {
-						Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.loadCustomResourceDefinition(resourceDefinition, PROPERTIES);
+						Main.RESOURCE_DEFINITION_MANAGER.loadResourceDefinition(resourceDefinition, PROPERTIES);
 					} catch (ResourceDefinitionException e) {
 						throw new ConfigurationException(e);
 					}
@@ -814,7 +814,7 @@ public class StartUpSystem {
 	 */
 	private static void deleteNotExistingTypesResources() throws ConfigurationException {
 		try {
-			Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.deleteNotExistingTypesResources();
+			Main.RESOURCE_DEFINITION_MANAGER.deleteNotExistingTypesResources();
 		} catch (ResourceDefinitionException e) {
 			throw new ConfigurationException(e);
 		}

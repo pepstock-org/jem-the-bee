@@ -89,7 +89,7 @@ public class CreateJemJdbcResource {
 		resource.setProperty("driverClassName", jemEnvConf.getDatabase()
 				.getDriver());
 		resource.setProperty("url", jemEnvConf.getDatabase().getUrl());
-		resource.setProperty("username", jemEnvConf.getDatabase().getUser());
+		resource.setProperty("userid", jemEnvConf.getDatabase().getUser());
 		resource.setProperty("password", jemEnvConf.getDatabase().getPassword());
 		resource.setProperty("defaultReadOnly", "true");
 		resource.setProperty("defaultAutoCommit", "true");

@@ -17,6 +17,7 @@
 package org.pepstock.jem;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,15 +31,19 @@ import com.google.gwt.user.client.rpc.GwtTransient;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class Jcl extends AbstractJcl implements Serializable {
+public final class Jcl extends AbstractJcl implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Unknown label used for all undefined attributes
+	 */
+	public static final String UNKNOWN = "UNKNOWN";
 	
 	/**
 	 * Describes teh language 
 	 */
 	public static final String DEFAULT_MODE = "xml";
-	
 
 	/**
 	 * Constant if JCL is not available. Happens often when you're looking at
@@ -49,6 +54,12 @@ public class Jcl extends AbstractJcl implements Serializable {
 	private String mode = DEFAULT_MODE;
 	
 	private String type = null;
+
+	private String classPath = null;
+	
+	private String priorClassPath = null;
+	
+	private Map<String, Object> properties = null;
 
 	/**
 	 * Put @GWTTransinet to improve serialization performance. Do not use java transient because 
@@ -106,6 +117,48 @@ public class Jcl extends AbstractJcl implements Serializable {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+	
+	/**
+	 * @return the classPath
+	 */
+	public String getClassPath() {
+		return classPath;
+	}
+
+	/**
+	 * @param classPath the classPath to set
+	 */
+	public void setClassPath(String classPath) {
+		this.classPath = classPath;
+	}
+
+	/**
+	 * @return the priorClassPath
+	 */
+	public String getPriorClassPath() {
+		return priorClassPath;
+	}
+
+	/**
+	 * @param priorClassPath the priorClassPath to set
+	 */
+	public void setPriorClassPath(String priorClassPath) {
+		this.priorClassPath = priorClassPath;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
+	}
 
 	/**
 	 * Sets the source code representing the JCL, by a string.
@@ -151,4 +204,13 @@ public class Jcl extends AbstractJcl implements Serializable {
 		return contentToBeExecuted;
 	}
 	
+	public static final Jcl createUnknownJcl(){
+		Jcl unknown = new Jcl();
+		unknown.setType(UNKNOWN);
+		unknown.setJobName(UNKNOWN);
+		unknown.setEnvironment(UNKNOWN);
+		unknown.setDomain(UNKNOWN);
+		unknown.setAffinity(UNKNOWN);
+		return unknown;
+	}
 }

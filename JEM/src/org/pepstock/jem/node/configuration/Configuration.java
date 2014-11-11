@@ -47,7 +47,7 @@ public class Configuration {
 
 	private StatsManager statsManager = null;
 
-	private List<CustomResourceDefinition> resourceDefinitions = null;
+	private List<CommonResourceDefinition> resourceDefinitions = null;
 	
 	private String datasetsRules = null;
 
@@ -138,7 +138,7 @@ public class Configuration {
 	 * @return the list of defined resource definitions for custom resources
 	 *         configuration.
 	 */
-	public List<CustomResourceDefinition> getResourceDefinitions() {
+	public List<CommonResourceDefinition> getResourceDefinitions() {
 		return resourceDefinitions;
 	}
 
@@ -149,7 +149,7 @@ public class Configuration {
 	 * @param resourceDefinitions the list of defined resource definitions for
 	 *            custom resources configuration.
 	 */
-	public void setResourceDefinitions(List<CustomResourceDefinition> resourceDefinitions) {
+	public void setResourceDefinitions(List<CommonResourceDefinition> resourceDefinitions) {
 		this.resourceDefinitions = resourceDefinitions;
 	}
 
@@ -232,8 +232,8 @@ public class Configuration {
 		xstream.aliasAttribute(Listener.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.processAnnotations(ClassPath.class);
 		xstream.aliasAttribute(StatsManager.class, ConfigKeys.PATH_FIELD, ConfigKeys.PATH_ATTRIBUTE_ALIAS);
-		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CustomResourceDefinition.class);
-		xstream.aliasAttribute(CustomResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
+		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CommonResourceDefinition.class);
+		xstream.aliasAttribute(CommonResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasField(ConfigKeys.RESOURCE_DEFINITIONS_ALIAS, Configuration.class, ConfigKeys.RESOURCE_DEFINITIONS_FIELD);
 		xstream.aliasField(ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS, Configuration.class, ConfigKeys.EXECUTION_ENVIRONMENT_FIELD);
 		xstream.aliasField(ConfigKeys.PARALLEL_JOBS_ALIAS, ExecutionEnvironment.class, ConfigKeys.PARALLEL_JOBS_FIELD);

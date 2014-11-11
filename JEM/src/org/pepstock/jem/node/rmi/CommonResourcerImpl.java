@@ -25,8 +25,8 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.custom.ResourceDefinition;
-import org.pepstock.jem.node.resources.custom.ResourceDefinitionException;
+import org.pepstock.jem.node.resources.definition.ResourceDefinition;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.security.Permissions;
 
 import com.hazelcast.core.IMap;
@@ -91,13 +91,13 @@ public class CommonResourcerImpl extends AuthorizedDefaultRmiObject implements C
 	 * @see org.pepstock.jem.node.rmi.CommonResourcer#lookupCustomResource(java.lang.String)
 	 */
 	@Override
-	public Reference lookupCustomResource(String jobId, String resourceType) throws RemoteException {
+	public Reference lookupReference(String jobId, String resourceType) throws RemoteException {
 		// checks if you have resource read permission
 		checkAuthorization(jobId, Permissions.RESOURCES_READ);
 		try {
-			if (Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.hasCustomResourceDefinition(resourceType)) {
-				ResourceDefinition resourceDefinition = Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getCustomResourceDefinition(resourceType);
-				return resourceDefinition.getResourceReference();
+			if (Main.RESOURCE_DEFINITION_MANAGER.hasResourceDefinition(resourceType)) {
+				ResourceDefinition resourceDefinition = Main.RESOURCE_DEFINITION_MANAGER.getResourceDefinition(resourceType);
+				return resourceDefinition.getReference();
 			}
 		} catch (ResourceDefinitionException e) {
 			throw new RemoteException(e.getMessage(), e);

@@ -55,7 +55,7 @@ public final class Services {
 	/**
 	 * 
 	 */
-	public static final String CUSTOM_RESOURCE_DEFINITIONS = "customResourceDefinitionsManager";
+	public static final String RESOURCE_DEFINITIONS = "resourceDefinitionsManager";
 	/**
 	 * 
 	 */
@@ -127,7 +127,7 @@ public final class Services {
 	/**
 	 * 
 	 */
-	public static final CustomResourceDefinitionsManagerServiceAsync CUSTOM_RESOURCE_DEFINITIONS_MANAGER = GWT.create(CustomResourceDefinitionsManagerService.class);
+	public static final ResourceDefinitionsManagerServiceAsync RESOURCE_DEFINITIONS_MANAGER = GWT.create(ResourceDefinitionsManagerService.class);
 	
 	/**
 	 * To avoid any instantiation

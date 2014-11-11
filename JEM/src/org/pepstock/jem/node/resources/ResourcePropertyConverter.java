@@ -17,7 +17,7 @@
 package org.pepstock.jem.node.resources;
 
 import org.pepstock.jem.node.configuration.ConfigKeys;
-import org.pepstock.jem.node.resources.custom.engine.xml.AbstractFieldTemplate;
+import org.pepstock.jem.node.resources.definition.engine.xml.AbstractFieldTemplate;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;

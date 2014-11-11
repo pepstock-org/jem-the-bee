@@ -31,7 +31,6 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
-import org.pepstock.jem.DefaultJcl;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.AbstractFactory;
@@ -102,7 +101,7 @@ public class JBpmFactory extends AbstractFactory {
 	@Override
 	public Jcl createJcl(String content) throws JclFactoryException {
 		// creates a default JCL
-		DefaultJcl jcl = new DefaultJcl();
+		Jcl jcl = new Jcl();
 		// sets type and content
 		jcl.setType(JBPM_TYPE);
 		jcl.setContent(content);
@@ -129,7 +128,7 @@ public class JBpmFactory extends AbstractFactory {
 	 * @param content JCL content
 	 * @throws JBpmException if any error occurs
 	 */
-	private void validate(DefaultJcl jcl, String content) throws JBpmException{
+	private void validate(Jcl jcl, String content) throws JBpmException{
 		// read the BPMN Metadata, loading in properties object
 		Properties p = new Properties();
 		
@@ -207,7 +206,7 @@ public class JBpmFactory extends AbstractFactory {
 	    	jcl.setJobName(p.getProperty(JBpmKeys.JBPM_JOB_NAME));
 	    	
 	    	// loads the JBPM process ID in a map to reuse when a JBPM task will be scheduled
-	    	Map<String, String> jclMap = new HashMap<String, String>();
+	    	Map<String, Object> jclMap = new HashMap<String, Object>();
 	    	jclMap.put(JBpmKeys.JBPM_JOB_NAME, jobName);
 	    	jcl.setProperties(jclMap);
 		

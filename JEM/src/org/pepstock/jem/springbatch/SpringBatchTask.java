@@ -18,14 +18,17 @@ package org.pepstock.jem.springbatch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.tasks.DefaultJobTask;
 import org.pepstock.jem.node.tasks.JavaUtils;
 import org.pepstock.jem.node.tasks.shell.JavaCommand;
+import org.pepstock.jem.springbatch.xml.JemBeanDefinitionParser;
 
 /**
  * Implements <code>JobTask</code> abstract class, and configure method to
@@ -73,7 +76,7 @@ public class SpringBatchTask extends DefaultJobTask {
 		getEnv().put("CLASSPATH", currentClassPath);
 
 		// adds the custom classpath if not null/
-		SpringBatchJcl jcl = (SpringBatchJcl) job.getJcl();
+		Jcl jcl = job.getJcl();
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
@@ -86,8 +89,11 @@ public class SpringBatchTask extends DefaultJobTask {
 
 		JavaCommand jCommand = getCommand();
 		jCommand.setClassPath(currentClassPath);
+		
+		Map<String, Object> jclMap = jcl.getProperties();
 
 		jCommand.setClassName(SpringBatchLauncher.class.getName());
-		jCommand.setClassArguments(jclFile.getName(), (jcl.getOptions()!= null) ? jcl.getOptions() : "", job.getName(), (jcl.getParameters()!= null) ? jcl.getParameters() : "");
+		jCommand.setClassArguments(jclFile.getName(), (jclMap.containsKey(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE)) ? jclMap.get(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE).toString() : "", 
+				job.getName(), (jclMap.containsKey(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE)) ? jclMap.get(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE).toString() : "");
 	}
 }

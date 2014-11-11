@@ -1,0 +1,22 @@
+<resource-template>
+	
+		<section name="MainSection">
+			
+			<text-field key="url" 
+						label="URL" 
+						description="The JEM server URL (REST context) of the form <code>&lt;scheme&gt;://&lt;authority&gt;</code>" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+
+			<text-field key="username" 
+						label="User ID" 
+						description="The JEM user on whose behalf the connection is being made" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+
+			<password-field key="password" 
+						label="Password" 
+						description="The user's password" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+		
+		</section>		
+		
+</resource-template>

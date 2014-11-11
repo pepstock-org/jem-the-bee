@@ -29,29 +29,15 @@ import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.catalog.DataDescriptionImpl;
-import org.pepstock.catalog.DataSetImpl;
-import org.pepstock.catalog.DataSetType;
-import org.pepstock.catalog.Disposition;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.resources.FtpResource;
-import org.pepstock.jem.node.resources.HttpResource;
-import org.pepstock.jem.node.resources.JdbcResource;
-import org.pepstock.jem.node.resources.JemResource;
-import org.pepstock.jem.node.resources.JmsResource;
-import org.pepstock.jem.node.resources.JppfResource;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
-import org.pepstock.jem.node.tasks.jndi.FtpReference;
-import org.pepstock.jem.node.tasks.jndi.HttpReference;
-import org.pepstock.jem.node.tasks.jndi.JdbcReference;
-import org.pepstock.jem.node.tasks.jndi.JemReference;
-import org.pepstock.jem.node.tasks.jndi.JmsReference;
-import org.pepstock.jem.node.tasks.jndi.JppfReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
@@ -213,60 +199,19 @@ public abstract class JemTasklet implements Tasklet {
 				}
 				// creates a JNDI reference
 				Reference ref = null;
-				// only JBDC, JMS and FTP types are accepted
-				if (res.getType().equalsIgnoreCase(JdbcResource.TYPE)) {
-					// creates a JDBC reference (uses DBCP Apache)
-					ref = new JdbcReference();
-
-				} else if (res.getType().equalsIgnoreCase(JppfResource.TYPE)) {
-					// creates a JPPF reference
-					ref = new JppfReference();
-
-				} else if (res.getType().equalsIgnoreCase(JmsResource.TYPE)) {
-					// creates a JMS reference (uses javax.jms)
-					ref = new JmsReference();
-
-				} else if (res.getType().equalsIgnoreCase(JemResource.TYPE)) {
-					// creates a REST reference (uses jersey)
-					ref = new JemReference();					
-
-				} else if (res.getType().equalsIgnoreCase(HttpResource.TYPE)) {
-					// creates a HTTP reference (uses org.apache.http)
-					ref = new HttpReference();
-
-				} else if (res.getType().equalsIgnoreCase(FtpResource.TYPE)) {
-					// creates a FTP reference (uses Commons net Apache)
-					ref = new FtpReference();
-					
-					// checks if I have a dataset linked to a datasource
-					for (DataDescriptionImpl ddImpl : dataDescriptionImplList) {
-						for (DataSetImpl ds: ddImpl.getDatasets()){
-							// if has resource linked
-							// checks if the name is the same
-							if (ds.getType() == DataSetType.RESOURCE && ds.getDataSource().equalsIgnoreCase(source.getName())){
-								// sets file name (remote one)
-								res.setProperty(FtpResource.REMOTE_FILE, ds.getName());
-								// sets if wants to have a OutputStream or InputStream using
-								// disposition of dataset
-								if (!ddImpl.getDisposition().equalsIgnoreCase(Disposition.SHR)){
-									res.setProperty(FtpResource.ACTION_MODE, FtpResource.ACTION_WRITE);
-								} else {
-									res.setProperty(FtpResource.ACTION_MODE, FtpResource.ACTION_READ);
-								}
-							}
-						}
+				try {
+					ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+					if (ref == null){
+						throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
 					}
-				} else {
-					try {
-						ref = resourcer.lookupCustomResource(JobId.VALUE, res.getType());
-						if (ref == null){
-							throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
-						}
-					} catch (Exception e) {
-						throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
-					} 
+					if (ref instanceof ResourceLoaderReference){
+						ResourceLoaderReference loader = (ResourceLoaderReference) ref;
+						loader.loadResource(res, dataDescriptionImplList, source.getName());
+					}
+				} catch (Exception e) {
+					throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
 				}
-
+					
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
 					ref.add(new StringRefAddr(property.getName(), property.getValue()));

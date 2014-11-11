@@ -12,7 +12,7 @@
 				<dataset>
 					<![CDATA[
 					<resource name="JUNIT-FTP-RESOURCE" type="ftp">
-					   <property name="username" visible="true" override="false">admin</property>
+					   <property name="userid" visible="true" override="false">admin</property>
 					   <property name="password" visible="false" override="false">admin</property>
 					   <property name="url" visible="true" override="false">ftp://localhost:2121</property>
 					</resource>

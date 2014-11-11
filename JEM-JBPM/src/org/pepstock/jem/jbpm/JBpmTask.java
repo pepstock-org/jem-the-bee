@@ -19,7 +19,7 @@ package org.pepstock.jem.jbpm;
 import java.io.File;
 import java.io.IOException;
 
-import org.pepstock.jem.DefaultJcl;
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.node.Main;
@@ -83,7 +83,7 @@ public class JBpmTask extends DefaultJobTask {
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		
 		// adds the custom classpath if not null
-		DefaultJcl jcl = (DefaultJcl) job.getJcl();
+		Jcl jcl =job.getJcl();
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
@@ -104,7 +104,7 @@ public class JBpmTask extends DefaultJobTask {
 		jCommand.setClassName(JBpmLauncher.class.getName());
 		
 		// gets from JCL the JBPM process ID 
-		String jobName = jcl.getProperties().get(JBpmKeys.JBPM_JOB_NAME);
+		String jobName = jcl.getProperties().get(JBpmKeys.JBPM_JOB_NAME).toString();
 		
 		// sets Process ID and JCL to execute
 		jCommand.setClassArguments((jobName == null) ? job.getName() : jobName, jclFile.getAbsolutePath());

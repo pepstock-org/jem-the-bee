@@ -1,0 +1,92 @@
+<resource-template>
+	
+		<section name="Connection Properties">
+		
+			<text-field key="requestHostName" 
+						label="Request Host Name" 
+						description="The Host Name of the Request URL" 
+						mandatory="true" defaultValue="" regExValidator=".*" />
+			
+			<text-field key="requestPort" 
+						label="Request Port" 
+						description="The optional Port of the Request URL" 
+						mandatory="true" defaultValue="" regExValidator="[0-9]*" />
+
+			<single-selectable-list-field key="protocolType" 
+						label="Protocol Type" 
+						description="The Protocol Type. The default value is HTTP" 
+						mandatory="true" defaultValue="http" renderAsRadio="false">
+						<value>http</value>
+                        <value>https</value>
+            </single-selectable-list-field>						
+
+		
+		</section>
+		
+		<section name="Proxy Properties">
+
+			<text-field key="proxyUrl" 
+						label="Proxy URL" 
+						description="The URL of the optional proxy" 
+						mandatory="false" defaultValue="" regExValidator=".*" />
+						
+			<text-field key="proxyPort" 
+						label="Proxy Request Port" 
+						description="The optional Proxy Port of the Request URL" 
+						mandatory="false" defaultValue="80" regExValidator="[0-9]*" />						
+						
+			<single-selectable-list-field key="proxyProtocol" 
+						label="Proxy Protocol Type" 
+						description="The Proxy Protocol Type. The default value is HTTP" 
+						mandatory="false" defaultValue="http">
+						<value>http</value>
+                        <value>https</value>
+            </single-selectable-list-field>							
+						
+			<text-field key="userid" 
+						label="Proxy User Id" 
+						description="The Proxy User Id if proxy authorization is need" 
+						mandatory="false" defaultValue="" regExValidator=".*" />
+			
+			<password-field key="password" 
+						label="Proxy Password" 
+						description="The Proxy Password if proxy authorization is need" 
+						mandatory="false" defaultValue="" regExValidator=".*" />
+
+		</section>
+		
+		<section name="Login/Logout Properties">
+		
+			<text-field key="requestLoginQueryString" 
+						label="Request Login Query String" 
+						description="The Query String of the optional Login Request" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+		
+			<text-field key="requestLoginUserId" 
+						label="Request Login User Id" 
+						description="The Login User Id if different from proxy User Id" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+
+			<password-field key="requestLoginPassword" 
+						label="Request Login Password" 
+						description="The Login Password if different from proxy Password" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+
+			<text-field key="requestLoginParamUserId" 
+						label="Request Login Parameter User Id" 
+						description="The Parameter name of the User Id for Login Request" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+
+			<text-field key="requestLoginParamPassword" 
+						label="Request Login Parameter Password" 
+						description="The Parameter name of the Password for Login Request" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+
+			<text-field key="requestLogoutQueryString" 
+						label="Request Logout Query String" 
+						description="The Query String of the optional Logout Request" 
+						mandatory="false" defaultValue="" regExValidator=".*" />		
+		
+		</section>
+		
+</resource-template>

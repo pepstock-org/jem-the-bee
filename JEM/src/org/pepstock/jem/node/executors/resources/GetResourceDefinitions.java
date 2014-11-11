@@ -23,7 +23,7 @@ import java.util.List;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
-import org.pepstock.jem.node.resources.custom.ResourceDefinition;
+import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 
 /**
  * Returns all resources definitions in JEM.
@@ -43,7 +43,7 @@ public class GetResourceDefinitions extends DefaultExecutor<Collection<ResourceD
 	@Override
 	public Collection<ResourceDefinition> execute() throws ExecutorException {
 		List<ResourceDefinition> toReturn = new ArrayList<ResourceDefinition>(); 
-		for (ResourceDefinition rd : Main.CUSTOM_RESOURCE_DEFINITION_MANAGER.getAllCustomResourceDefinitions()) {
+		for (ResourceDefinition rd : Main.RESOURCE_DEFINITION_MANAGER.getAllResourceDefinitions()) {
 			toReturn.add(rd);
 		}
 		return toReturn;
