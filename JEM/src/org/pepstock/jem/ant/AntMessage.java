@@ -146,7 +146,7 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 *  "Data description \"{0}\" is missing", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when a mandatory data descritpion is not defined in JCL."+
+	@Description(explanation = "It occurs when a mandatory data description is not defined in JCL."+
 	 "<br>Check data description definition.")
 	JEMA018E(18, "Data description \"{0}\" is missing", MessageLevel.ERROR),
 	
@@ -328,7 +328,7 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 * "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING
 	 */
-	@Description(explanation = "It occurs when you are using SORT utility and commands contain some mistakes.<br> Please check teh syntax of your command.")
+	@Description(explanation = "It occurs when you are using SORT utility and commands contain some mistakes.<br> Please check the syntax of your command.")
 	JEMA046W(46, "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING),
 	
 	/**

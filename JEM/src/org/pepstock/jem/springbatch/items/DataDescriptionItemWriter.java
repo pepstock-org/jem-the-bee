@@ -227,7 +227,7 @@ public class DataDescriptionItemWriter<T> implements ResourceAwareItemWriterItem
 	}
 
 	/**
-	 * Writes teh objects, calling <code>write</code> method of delegate
+	 * Writes the objects, calling <code>write</code> method of delegate
 	 * 
 	 * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
 	 * @param item list of object to write

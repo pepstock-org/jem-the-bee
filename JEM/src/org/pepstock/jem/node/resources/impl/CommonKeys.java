@@ -16,19 +16,33 @@
 */
 package org.pepstock.jem.node.resources.impl;
 
-
 /**
+ * Utility class with the most popular properties names
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
 public class CommonKeys {
 
+	/**
+	 * User id property name
+	 */
 	public static final String USERID = "userid";
-    
+    /**
+     * Password property name
+     */
     public static final String PASSWORD = "password";
-    
+    /**
+     * Url property name
+     */
     public static final String URL = "url";
 
+    /**
+     * Url property name
+     */
+    public static final String RESOURCE_CUSTOM_PROPERTIES = "jem.resource.custom.properties";
+
+    
 	/**
 	 * To avoid any instantiation
 	 */

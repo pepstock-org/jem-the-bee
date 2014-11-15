@@ -99,7 +99,7 @@ public abstract class ScriptFactory extends AntFactory {
 			jcl = super.createJcl(result.toString());
 		} catch (JclFactoryException e) {
 			// At this time type=ANT and it's not correct
-			// so overrides teh new type
+			// so overrides the new type
 			e.getJcl().setType(getType());
 			// sets JCL mode
 			e.getJcl().setMode(getMode());
@@ -185,7 +185,7 @@ public abstract class ScriptFactory extends AntFactory {
 	}
 	
 	/**
-	 * Creates a ANT file to execute teh script
+	 * Creates a ANT file to execute the script
 	 * @param content script content
 	 * @param jemProperties all JEM properties read from script comment
 	 * @return a string with ANT file
@@ -208,7 +208,7 @@ public abstract class ScriptFactory extends AntFactory {
 	    		result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
 	    	}
 	    }
-	    // sets teh ANT task which will execute the script
+	    // sets the ANT task which will execute the script
 	    result.append("<taskdef name=\"script\" classname=\""+getAntTask().getName()+"\" />");
 	    result.append("<target name=\"exec\">");
 	    // writes all script

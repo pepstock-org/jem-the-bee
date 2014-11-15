@@ -42,6 +42,7 @@ import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -306,10 +307,15 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				// creates a JNDI reference
 				Reference ref = null;
 				try {
+					// gets JNDI reference
 					ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+					// if null, exception
 					if (ref == null){
 						throw new BuildException(AntMessage.JEMA030E.toMessage().getFormattedMessage(res.getName(), res.getType()));
 					}
+					// if reference needs data set descriptions, because is possible to use it
+					// as data source on data description
+					// calls load method
 					if (ref instanceof ResourceLoaderReference){
 						ResourceLoaderReference loader = (ResourceLoaderReference) ref;
 						loader.loadResource(res, ddList, source.getName());
@@ -321,8 +327,13 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				for (ResourceProperty property : properties.values()){
 					ref.add(new StringRefAddr(property.getName(), property.getValue()));
 				}
+
+				// loads custom properties in a string format
+				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
+				}
 				
-				// binds the object with format [type]/[name]
+				// binds the object with [name]
 				log(AntMessage.JEMA035I.toMessage().getFormattedMessage(res));
 				ic.rebind(source.getName(), ref);
 			}

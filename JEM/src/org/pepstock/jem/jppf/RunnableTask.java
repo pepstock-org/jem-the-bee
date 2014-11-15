@@ -134,7 +134,7 @@ public class RunnableTask extends JPPFTask {
 
 			// gets all references because is to change the definition
 			// for data descriptions. This change is mandatory to set the remote
-			// stream and to add on reference teh JPPF task (necessary to call remotely task
+			// stream and to add on reference the JPPF task (necessary to call remotely task
 			// to read and write files.
 			NamingEnumeration<NameClassPair> list = ic.list("");
 			while(list.hasMore()){
@@ -144,7 +144,7 @@ public class RunnableTask extends JPPFTask {
 				if (pair instanceof DataStreamNameClassPair){
 					DataStreamNameClassPair dsPair = (DataStreamNameClassPair) pair;
 					DataStreamReference prevReference = (DataStreamReference)dsPair.getObject();
-					// gets data descritpion XML defintion
+					// gets data description XML defintion
 					// adding it to a new reference, for remote access
 					StringRefAddr sra = (StringRefAddr) prevReference.get(StringRefAddrKeys.DATASTREAMS_KEY);
 					RemoteDataStreamReference reference = new RemoteDataStreamReference();

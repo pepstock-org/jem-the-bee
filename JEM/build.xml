@@ -11,6 +11,11 @@
 	<!-- create directory needed -->
 	<target name="make-jem-directories" depends="clean-jem">
 		<mkdir dir="${jem.workspace}/${jem.classes.directory}" />
+		<copy todir="${jem.workspace}/${jem.classes.directory}">
+			<fileset dir="${jem.workspace}/${jem.source.directory}">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->

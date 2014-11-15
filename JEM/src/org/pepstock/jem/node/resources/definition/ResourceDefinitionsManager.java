@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.resources.definition;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -77,11 +78,11 @@ public class ResourceDefinitionsManager {
 	public void addResourceDefinition(String resourceType, ResourceDefinition resourceDefinition) throws ResourceDefinitionException {
 		if (null == resourceType || "".equalsIgnoreCase(resourceType.trim())) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource type");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("resource type"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource type");
 		}
 		if (null == resourceDefinition) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource definition class");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("resource definition class"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource definition class");
 		}
 		this.resourceDefinitions.put(resourceType, resourceDefinition);
 	}
@@ -98,13 +99,13 @@ public class ResourceDefinitionsManager {
 	public void addResourceDefinition(ResourceDefinition resourceDefinition) throws ResourceDefinitionException {
 		if (null == resourceDefinition) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource definition class");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("resource definition class"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource definition class");
 		}
-		if (null == resourceDefinition.getResourceDescriptor()) {
+		if (null == resourceDefinition.getDescriptor()) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource descriptor");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("resource descriptor"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource descriptor");
 		}
-		String type = resourceDefinition.getResourceDescriptor().getType();
+		String type = resourceDefinition.getDescriptor().getType();
 		this.addResourceDefinition(type, resourceDefinition);
 	}
 
@@ -124,12 +125,12 @@ public class ResourceDefinitionsManager {
 	public ResourceDefinition getResourceDefinition(String resourceType) throws ResourceDefinitionException {
 		if (null == resourceType) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR013E, "resource type");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR013E.toMessage().getFormattedMessage("resource type"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR013E, "resource type");
 		}
 		ResourceDefinition def = this.resourceDefinitions.get(resourceType);
 		if (null == def) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR014E, resourceType);
-			throw new ResourceDefinitionException(ResourceMessage.JEMR014E.toMessage().getFormattedMessage(resourceType));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR014E, resourceType);
 		}
 		return def;
 	}
@@ -149,7 +150,7 @@ public class ResourceDefinitionsManager {
 	public boolean hasResourceDefinition(String resourceType) throws ResourceDefinitionException {
 		if (null == resourceType) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR018E, "resource type");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR018E.toMessage().getFormattedMessage("resource type"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR018E, "resource type");
 		}
 		return this.resourceDefinitions.containsKey(resourceType);
 	}
@@ -173,7 +174,7 @@ public class ResourceDefinitionsManager {
 	public void loadResourceDefinition(CommonResourceDefinition resourceDefinitionConfiguration, Properties props) throws ResourceDefinitionException {
 		if (null == resourceDefinitionConfiguration) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource definition configuration");
-			throw new ResourceDefinitionException(ResourceMessage.JEMR012E.toMessage().getFormattedMessage("resource definition configuration"));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource definition configuration");
 		}
 		String className = resourceDefinitionConfiguration.getClassName();
 		try {
@@ -193,7 +194,6 @@ public class ResourceDefinitionsManager {
 					type = metaData.type();
 					description = metaData.description();
 				} 
-
 				if (resourceDefinition instanceof XmlConfigurationResourceDefinition) {
 					// gets URL
 					URL resTemplate = getResourceTemplateURL(object, props);
@@ -201,30 +201,42 @@ public class ResourceDefinitionsManager {
 					LogAppl.getInstance().emit(ResourceMessage.JEMR020I, resTemplate);
 				} else {
 					if (type == null){
-						throw new ResourceTemplateException(ResourceMessage.JEMR004E.toMessage().getFormattedMessage());
+						throw new ResourceTemplateException(ResourceMessage.JEMR004E);
 					}
-					resourceDefinition.getResourceDescriptor().setType(type);
+					resourceDefinition.getDescriptor().setType(type);
 					if (description != null){
-						resourceDefinition.getResourceDescriptor().setDescription(description);
+						resourceDefinition.getDescriptor().setDescription(description);
 					}
 				}
 				
-				if (!hasResourceDefinition(resourceDefinition.getResourceDescriptor().getType())) {
+				if (!hasResourceDefinition(resourceDefinition.getDescriptor().getType())) {
 					this.addResourceDefinition(resourceDefinition);
-					LogAppl.getInstance().emit(ResourceMessage.JEMR016I, className, resourceDefinition.getResourceDescriptor().getType());
+					LogAppl.getInstance().emit(ResourceMessage.JEMR016I, className, resourceDefinition.getDescriptor().getType());
 				} else {
 					// already loaded a resource with same type of current one,
 					// exiting!
-					LogAppl.getInstance().emit(ResourceMessage.JEMR023E, resourceDefinition.getResourceDescriptor().getType());
-					throw new ResourceDefinitionException(ResourceMessage.JEMR023E.toMessage().getFormattedMessage(resourceDefinition.getResourceDescriptor().getType()));
+					LogAppl.getInstance().emit(ResourceMessage.JEMR023E, resourceDefinition.getDescriptor().getType());
+					throw new ResourceDefinitionException(ResourceMessage.JEMR023E, resourceDefinition.getDescriptor().getType());
 				}
 			} else {
 				LogAppl.getInstance().emit(ResourceMessage.JEMR011E, className);
-				throw new ResourceDefinitionException(ResourceMessage.JEMR011E.toMessage().getFormattedMessage(className));
+				throw new ResourceDefinitionException(ResourceMessage.JEMR011E, className);
 			}
-		} catch (Exception e) {
+		} catch (MalformedURLException e) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
-			throw new ResourceDefinitionException(ResourceMessage.JEMR015E.toMessage().getFormattedMessage(className));
+			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
+		} catch (InstantiationException e) {
+			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
+			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
+		} catch (IllegalAccessException e) {
+			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
+			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
+		} catch (ClassNotFoundException e) {
+			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
+			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
+		} catch (IOException e) {
+			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
+			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
 		}
 	}
 	
@@ -244,7 +256,7 @@ public class ResourceDefinitionsManager {
 			String value = VariableSubstituter.substitute(p.value(), props);
 			if (value == null){
 				LogAppl.getInstance().emit(ResourceMessage.JEMR001E);
-				throw new ResourceTemplateException(ResourceMessage.JEMR001E.toMessage().getFormattedMessage());
+				throw new ResourceTemplateException(ResourceMessage.JEMR001E);
 			}
 			if (Mode.FROM_CLASSPATH.equalsIgnoreCase(p.mode())){
 				resTemplate = this.getClass().getClassLoader().getResource(value);
@@ -252,7 +264,7 @@ public class ResourceDefinitionsManager {
 				File file = new File(value);
 				if (!file.exists() || !file.isFile()){
 					LogAppl.getInstance().emit(ResourceMessage.JEMR002E, value);
-					throw new ResourceTemplateException(ResourceMessage.JEMR002E.toMessage().getFormattedMessage(value));
+					throw new ResourceTemplateException(ResourceMessage.JEMR002E, value);
 				}
 				resTemplate = file.toURI().toURL();
 			} else if (Mode.FROM_URL.equalsIgnoreCase(p.mode())){
@@ -264,11 +276,11 @@ public class ResourceDefinitionsManager {
 			}
 			if (resTemplate == null){
 				LogAppl.getInstance().emit(ResourceMessage.JEMR002E, value);
-				throw new ResourceTemplateException(ResourceMessage.JEMR002E.toMessage().getFormattedMessage(value));
+				throw new ResourceTemplateException(ResourceMessage.JEMR002E, value);
 			}
 		} else {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR001E);
-			throw new ResourceTemplateException(ResourceMessage.JEMR001E.toMessage().getFormattedMessage());
+			throw new ResourceTemplateException(ResourceMessage.JEMR001E);
 		}
 		return resTemplate;
 	}
@@ -285,19 +297,19 @@ public class ResourceDefinitionsManager {
 	 * @throws ResourceDefinitionException if some error occurs.
 	 */
 	public void changeResourceType(ResourceDefinition newResourceDefinition, String oldResourceType) throws ResourceDefinitionException {
-		if (!hasResourceDefinition(newResourceDefinition.getResourceDescriptor().getType())) {
-			this.resourceDefinitions.put(newResourceDefinition.getResourceDescriptor().getType(), newResourceDefinition);
+		if (!hasResourceDefinition(newResourceDefinition.getDescriptor().getType())) {
+			this.resourceDefinitions.put(newResourceDefinition.getDescriptor().getType(), newResourceDefinition);
 		} else {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR023E, newResourceDefinition.getResourceDescriptor().getType());
-			throw new ResourceDefinitionException(ResourceMessage.JEMR023E.toMessage().getFormattedMessage(newResourceDefinition.getResourceDescriptor().getType()));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR023E, newResourceDefinition.getDescriptor().getType());
+			throw new ResourceDefinitionException(ResourceMessage.JEMR023E, newResourceDefinition.getDescriptor().getType());
 		}
 		this.resourceDefinitions.remove(oldResourceType);
-		LogAppl.getInstance().emit(ResourceMessage.JEMR025I, oldResourceType, newResourceDefinition.getResourceDescriptor().getType());
+		LogAppl.getInstance().emit(ResourceMessage.JEMR025I, oldResourceType, newResourceDefinition.getDescriptor().getType());
 		try {
 			deleteAllResources(oldResourceType);
 			LogAppl.getInstance().emit(ResourceMessage.JEMR026I, oldResourceType);
 		} catch (ResourceDefinitionException rdEx) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR024W, rdEx, oldResourceType, newResourceDefinition.getResourceDescriptor().getType());
+			LogAppl.getInstance().emit(ResourceMessage.JEMR024W, rdEx, oldResourceType, newResourceDefinition.getDescriptor().getType());
 		}
 	}
 
@@ -399,7 +411,7 @@ public class ResourceDefinitionsManager {
 	 * @return a {@link ResourceDescriptor}
 	 */
 	public ResourceDescriptor getResourceDescriptorOf(String resourceType) {
-		return resourceDefinitions.get(resourceType).getResourceDescriptor();
+		return resourceDefinitions.get(resourceType).getDescriptor();
 	}
 
 }

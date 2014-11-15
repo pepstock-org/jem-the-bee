@@ -16,7 +16,7 @@ import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
 
 /**
- * This is teh label provider for the tree of job insopector. Returns default
+ * This is the label provider for the tree of job insopector. Returns default
  * image for folder when we have a category, default image for file for ouput
  * file.
  * 

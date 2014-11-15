@@ -4,7 +4,7 @@
 		
 			<list-field key="addresses" 
 						label="Network address" 
-						description="List of JPPF serverd" 
+						description="List of JPPF servers" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
 		
 		</section>		

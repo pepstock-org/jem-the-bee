@@ -131,6 +131,6 @@ public class Step implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "Step [name=" + name + ", descritpion=" + description + "]";
+		return "Step [name=" + name + ", description=" + description + "]";
 	}
 }

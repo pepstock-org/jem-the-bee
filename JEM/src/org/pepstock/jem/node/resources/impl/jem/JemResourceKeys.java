@@ -30,10 +30,8 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
  */
 @SuppressWarnings("javadoc")
 public class JemResourceKeys {
-
-	public static final String URL = "url";
 	
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, URL));
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL));
 
 	/**
 	 * To avoid any instantiation

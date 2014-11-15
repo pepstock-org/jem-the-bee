@@ -73,7 +73,7 @@ public class RemoveFileLoading  extends Loading {
 			Notifier.showMessage(getDisplay().getActiveShell(), "Unable to delete " + file.getName(), e.getMessage(), MessageLevel.ERROR);
 		}
 
-		// refreshes teh list of GFS files
+		// refreshes the list of GFS files
 		Control ctrl = container.getViewer().getControl();
 		if (ctrl == null || ctrl.isDisposed()) {
 			return;

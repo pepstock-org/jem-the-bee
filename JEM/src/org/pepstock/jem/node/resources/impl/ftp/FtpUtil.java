@@ -42,6 +42,7 @@ public final class FtpUtil {
 	 */
 	public static void close(FTPClient ftp) throws IOException{
 		try {
+			// checks if connected
 			if (ftp.isConnected()) {
 				// close FTP connection
 				ftp.logout();

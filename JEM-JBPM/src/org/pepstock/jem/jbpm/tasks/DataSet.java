@@ -93,7 +93,7 @@ public class DataSet implements Serializable {
 			// array object at index 0 is name
 			this.name = objects[0].toString();
 			// array object at index 1 is offset
-			// parse teh string into a number
+			// parse the string into a number
 			// BE AWARE that positive offset don't have to have the sign "+"
 			// otherwise java don't consider it a number
 			offset = Integer.parseInt(objects[1].toString());

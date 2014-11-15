@@ -319,7 +319,7 @@ public class NodeInfoBean implements Serializable {
 		this.availableProcessors = availableProcessors;
 	}
 	/**
-	 * Returns teh started time of node
+	 * Returns the started time of node
 	 * 
 	 * @return the startedTime
 	 */

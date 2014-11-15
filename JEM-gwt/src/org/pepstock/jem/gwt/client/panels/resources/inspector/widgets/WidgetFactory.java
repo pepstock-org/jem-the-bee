@@ -46,12 +46,17 @@ public class WidgetFactory {
 			toReturn = render((TabPropertiesPanel)new TabPropertiesPanel(resource, descriptor));
 			((TabPropertiesPanel)toReturn).getTabPanel().selectTab(0);
 		} else {
-			// if the section contains only a list field descriptor, render it properly
-			if (descriptor.getSections().getFirst().getFields().getFirst() instanceof TextListFieldDescriptor) {
-				toReturn = render(new ListFieldPagePanel(resource, descriptor.getSections().getFirst(), descriptor.getType()));
+			SectionDescriptor sd = descriptor.getSections().getFirst();
+			if (sd.isPropertiesEditor()){
+				toReturn = render (new CustomPropertiesEditor(resource, sd, descriptor.getType()));
 			} else {
-				// otherwise render as a simple page
-				toReturn = render(new PagePropertiesPanel(resource, descriptor.getSections().getFirst(), descriptor.getType()));
+				// if the section contains only a list field descriptor, render it properly
+				if (sd.getFields().getFirst() instanceof TextListFieldDescriptor) {
+					toReturn = render(new ListFieldPagePanel(resource, sd, descriptor.getType()));
+				} else {
+					// otherwise render as a simple page
+					toReturn = render(new PagePropertiesPanel(resource, sd, descriptor.getType()));
+				}
 			}
 		}
 		toReturn.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
@@ -61,29 +66,34 @@ public class WidgetFactory {
 	protected PagePropertiesPanel render(PagePropertiesPanel panel) {
 		SectionDescriptor section = panel.getDescriptor();
 		List<AbstractFieldDescriptor> fields = section.getFields();
-		for (AbstractFieldDescriptor afd : fields) {
-			AbstractFieldPanel<?,?,?> fieldPanel;
-			if (afd instanceof PasswordFieldDescriptor) {
-				fieldPanel = new PasswordFieldPanel((PasswordFieldDescriptor)afd, panel);
-			} else if (afd instanceof TextFieldDescriptor) {
-				fieldPanel = new TextFieldPanel((TextFieldDescriptor)afd, panel);
-			} else if (afd instanceof CheckBoxFieldDescriptor) {
-				fieldPanel = new CheckBoxFieldPanel((CheckBoxFieldDescriptor)afd, panel);
-			} else if (afd instanceof SingleSelectableListFieldDescriptor) {
-				SingleSelectableListFieldDescriptor sslfd = (SingleSelectableListFieldDescriptor) afd;
-				if (sslfd.isRenderAsRadio()){
-					fieldPanel = new RadioButtonsFieldPanel((SingleSelectableListFieldDescriptor)afd, panel);
+		
+		if (section.isPropertiesEditor()){
+			panel.addFieldPanel(null);
+		} else {
+			for (AbstractFieldDescriptor afd : fields) {
+				AbstractFieldPanel<?,?,?> fieldPanel;
+				if (afd instanceof PasswordFieldDescriptor) {
+					fieldPanel = new PasswordFieldPanel((PasswordFieldDescriptor)afd, panel);
+				} else if (afd instanceof TextFieldDescriptor) {
+					fieldPanel = new TextFieldPanel((TextFieldDescriptor)afd, panel);
+				} else if (afd instanceof CheckBoxFieldDescriptor) {
+					fieldPanel = new CheckBoxFieldPanel((CheckBoxFieldDescriptor)afd, panel);
+				} else if (afd instanceof SingleSelectableListFieldDescriptor) {
+					SingleSelectableListFieldDescriptor sslfd = (SingleSelectableListFieldDescriptor) afd;
+					if (sslfd.isRenderAsRadio()){
+						fieldPanel = new RadioButtonsFieldPanel((SingleSelectableListFieldDescriptor)afd, panel);
+					} else {
+						fieldPanel = new ComboBoxFieldPanel((SingleSelectableListFieldDescriptor)afd, panel);
+					}
+				} else if (afd instanceof CheckBoxesListFieldDescriptor) {
+					fieldPanel = new CheckBoxesFieldPanel((MultiSelectableListFieldDescriptor)afd, panel);
+				} else if (afd instanceof TextListFieldDescriptor) {
+					fieldPanel = new ListFieldPanel((TextListFieldDescriptor)afd, panel);
 				} else {
-					fieldPanel = new ComboBoxFieldPanel((SingleSelectableListFieldDescriptor)afd, panel);
+					throw new JemRuntimeException("I don't know how to build an AbstractField of runtime type " + afd.getClass().getName());
 				}
-			} else if (afd instanceof CheckBoxesListFieldDescriptor) {
-				fieldPanel = new CheckBoxesFieldPanel((MultiSelectableListFieldDescriptor)afd, panel);
-			} else if (afd instanceof TextListFieldDescriptor) {
-				fieldPanel = new ListFieldPanel((TextListFieldDescriptor)afd, panel);
-			} else {
-				throw new JemRuntimeException("I don't know how to build an AbstractField of runtime type " + afd.getClass().getName());
+				panel.addFieldPanel(fieldPanel);
 			}
-			panel.addFieldPanel(fieldPanel);
 		}
 		panel.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
 		return panel;
@@ -93,10 +103,14 @@ public class WidgetFactory {
 		List<SectionDescriptor> sections = panel.getDescriptor().getSections();
 		for (SectionDescriptor sd : sections) {
 			PagePropertiesPanel page = null;
-			if (sd.getFields().getFirst() instanceof TextListFieldDescriptor) {
-				page = render(new ListFieldPagePanel(panel.getResource(), sd));
+			if (sd.isPropertiesEditor()){
+				page = render(new CustomPropertiesEditor(panel.getResource(), sd));
 			} else {
-				page = render(new PagePropertiesPanel(panel.getResource(), sd));
+				if (sd.getFields().getFirst() instanceof TextListFieldDescriptor) {
+					page = render(new ListFieldPagePanel(panel.getResource(), sd));
+				} else {
+					page = render(new PagePropertiesPanel(panel.getResource(), sd));
+				}
 			}
 			panel.addTab(page, sd.getName());
 		}

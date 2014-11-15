@@ -53,6 +53,5 @@ public class FtpOutputStream extends ProxyOutputStream {
 		} finally {
 			FtpUtil.close(ftp);
 		}
-		
 	}
 }

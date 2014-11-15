@@ -93,7 +93,7 @@
 				<dataset>
 					<![CDATA[
 						 <resource name="JUNIT-HTTP-RESOURCE" type="http" user="root" lastModified="2014-02-02 13:02:23.458 UTC">
-						   <property name="requestLoginParamUserid" visible="true" override="true">USER-ID</property>
+						   <property name="requestLoginParamUserId" visible="true" override="true">USER-ID</property>
 						   <property name="protocolType" visible="true" override="true">http</property>
 						   <property name="requestHostName" visible="true" override="true">URL</property>
 						   <property name="proxyPort" visible="true" override="true">8080</property>
@@ -104,7 +104,7 @@
 						   <property name="userid" visible="true" override="true">PROXY-ID</property>
 						   <property name="requestLoginPassword" visible="false" override="true">PWD</property>
 						   <property name="proxyUrl" visible="true" override="true">URL</property>
-						   <property name="requestLoginUserid" visible="true" override="true">USER-ID</property>
+						   <property name="requestLoginUserId" visible="true" override="true">USER-ID</property>
 						   <property name="requestPort" visible="true" override="true">8080</property>
 						   <property name="requestLogoutQueryString" visible="true" override="true">LOGOUT</property>
 						 </resource>

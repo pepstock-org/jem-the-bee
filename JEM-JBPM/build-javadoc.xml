@@ -1,0 +1,37 @@
+<project name="jem-jbpm-javadoc" default="javadoc" basedir=".">
+
+	<!-- path for javadoc directory  -->
+	<property name="jem-jbpm.api.directory" value="./javadoc" />
+
+	<!-- make directories  -->
+	<target name="make-directories">
+		<mkdir dir="${jem-jbpm.api.directory}" />
+	</target>
+
+	<!-- clean directories  -->
+	<target name="clean" depends="make-directories">
+		<delete dir="${jem-jbpm.api.directory}"
+			includeemptydirs="true"
+			includes="**/*"
+			excludes="."/>
+	</target>
+
+	<!-- build javadoc for jem-gwt  -->
+	<target name="javadoc" depends="clean">
+		<javadoc destdir="${jem-jbpm.api.directory}"
+		         author="true"
+		         version="true"
+		           use="true"
+		           windowtitle="Job Entry Manager, the Batch Execution Environment API - JBPM module">
+			<classpath>
+				<fileset dir="./lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<packageset dir="./src" defaultexcludes="yes">
+				<include name="org/pepstock/**"/>
+			</packageset>
+		</javadoc>
+	</target>
+</project>

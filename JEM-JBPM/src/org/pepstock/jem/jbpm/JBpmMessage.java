@@ -321,7 +321,7 @@ public enum JBpmMessage implements MessageInterface{
 	/**
 	 * "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING
 	 */
-	@Description(explanation = "It occurs when you are using SORT utility and commands contain some mistakes.<br> Please check teh syntax of your command.")
+	@Description(explanation = "It occurs when you are using SORT utility and commands contain some mistakes.<br> Please check the syntax of your command.")
 	JEMM046W(46, "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING),
 	
 	/**

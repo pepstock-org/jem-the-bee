@@ -82,7 +82,7 @@ public class EditorContainer extends PopupPanel {
 			}
 			// if user clicks outside, checks if the content is changed 
 			if ((!insidePopup) && !(isOnSeparator)){
-				// returns editor descritpion 
+				// returns editor description 
 				// if editor changes content of file
 				// if null, no changes
 				StringBuilder fileChanged = getChanged();

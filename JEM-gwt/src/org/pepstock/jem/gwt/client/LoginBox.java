@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Is Login component, where is asking userid and password to log in JEM.
- * When receives teh logged user from server, calls teh listener that the user is logged in.
+ * When receives the logged user from server, calls the listener that the user is logged in.
  *  
  * @author Andrea "Stock" Stocchero
  */

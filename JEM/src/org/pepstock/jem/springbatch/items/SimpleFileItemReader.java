@@ -144,7 +144,7 @@ public class SimpleFileItemReader implements ResourceAwareItemReaderItemStream<S
 			throw new UnexpectedInputException(SpringBatchMessage.JEMS034E.toMessage().getFormattedMessage());
 		}
 
-		// reads teh line and increment linecount
+		// reads the line and increment linecount
 		String line = null;
 		try {
 			line = this.reader.readLine();

@@ -115,7 +115,7 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 
 				List<MembershipEvent> savedEvents = new LinkedList<MembershipEvent>(membersRemoved);
 				for (MembershipEvent savedEvent : savedEvents) {
-					// this node is the coordinator so ONLY teh coordinator must
+					// this node is the coordinator so ONLY the coordinator must
 					// work for all group
 					actionsForCoordinator(savedEvent);
 				}

@@ -16,6 +16,10 @@
 */
 package org.pepstock.jem.node.resources.impl.jms;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.naming.Context;
 
 import org.pepstock.jem.node.resources.impl.CommonKeys;
@@ -52,14 +56,36 @@ public final class JmsResourceKeys {
 	public static final String INITIAL_CONTEXT_FACTORY = Context.INITIAL_CONTEXT_FACTORY;
 	
 	/**
+	 * JNDI security principal
+	 */
+	public static final String SECURITY_PRINCIPAL = Context.SECURITY_PRINCIPAL;
+	
+	/**
+	 * JNDI security credentials
+	 */
+	public static final String SECURITY_CREDENTIALS = Context.SECURITY_CREDENTIALS;
+	
+	/**
 	 * <code>String Array</code> containing all the properties of <code>JmsResource</code>.
 	 */
-	public static final String[] PROPERTIES_ALL = new String[] { 
+	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList( 
+		CommonKeys.USERID, 
+		CommonKeys.PASSWORD, 
+		PROVIDER_URL,
+		INITIAL_CONTEXT_FACTORY
+	));
+	
+	/**
+	 * <code>String Array</code> containing all the properties of <code>JmsResource</code>.
+	 */
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList( 
 		CommonKeys.USERID, 
 		CommonKeys.PASSWORD, 
 		PROVIDER_URL,
 		INITIAL_CONTEXT_FACTORY,
-	};
+		SECURITY_PRINCIPAL,
+		SECURITY_CREDENTIALS
+	));
 
 	/**
 	 * To avoid any instantiation

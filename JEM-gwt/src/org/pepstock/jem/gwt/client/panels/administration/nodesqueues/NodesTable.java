@@ -25,7 +25,7 @@ import org.pepstock.jem.node.stats.LightMemberSample;
 import com.google.gwt.user.cellview.client.CellTable;
 
 /**
- * Creates all columns to show into table, defening teh sorter too.
+ * Creates all columns to show into table, defening the sorter too.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	

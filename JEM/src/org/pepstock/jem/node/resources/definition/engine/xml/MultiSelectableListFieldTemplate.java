@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * This class represent a custom resource field with multiple possible selections 
+ * This class represent a resource field with multiple possible selections 
  * in the resource templates <code>xml</code> file. <br>
  * That is, it is the representation of a field in which the user can select
  * more than an item.<br>

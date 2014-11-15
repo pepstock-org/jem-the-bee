@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * This class represent a single selection custom resource field in the resource templates <code>xml</code> file. <br>
+ * This class represent a single selection resource field in the resource templates <code>xml</code> file. <br>
  * This kind of field represent a field in which to make only one choice between many: radio button or combo box. <br>
  * It contains all of the possible values of this field. Only one can be selected.
  * @see XStream

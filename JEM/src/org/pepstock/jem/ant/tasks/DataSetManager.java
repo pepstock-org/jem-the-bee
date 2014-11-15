@@ -86,7 +86,7 @@ public class DataSetManager {
 
 			// gets data desription impl
 			DataDescriptionImpl referback = container.getDataDescription(ds.getName());
-			// if data descritpion is multi dataset, only accessible in SHR mod,
+			// if data description is multi dataset, only accessible in SHR mod,
 			// otherwise exception
 			if ((referback.getDatasets().size() > 1) && (!ddImpl.getDisposition().equalsIgnoreCase(Disposition.SHR))){
 				throw new BuildException(AntMessage.JEMA009E.toMessage().getFormattedMessage(ddImpl.getName(), ddImpl.getDisposition(), ds.toString()));
@@ -101,7 +101,7 @@ public class DataSetManager {
 				if (!file.exists()) {
 					throw new BuildException(AntMessage.JEMA011E.toMessage().getFormattedMessage(ddImpl.getName(), ddImpl.getDisposition(), ds.toString()), new FileNotFoundException(file.getAbsolutePath()));
 				}
-				// adds dataset to new data descritpion impl. created in this
+				// adds dataset to new data description impl. created in this
 				// task (then step)
 				ddImpl.addDataSet(dataset);
 			}

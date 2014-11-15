@@ -35,7 +35,7 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
 
 
 /**
- * With this HashMap you can share teh data of map across hierarchy of Classloaders.
+ * With this HashMap you can share the data of map across hierarchy of Classloaders.
  *  
  * @author Andrea "Stock" Stocchero
  * @version 1.0	

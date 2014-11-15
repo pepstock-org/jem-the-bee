@@ -47,11 +47,11 @@ public final class PermissionItem extends HorizontalPanel {
 
 	/**
 	 * @param label 
-	 * @param descritpion 
+	 * @param description 
 	 * @param permission 
 	 * 
 	 */
-	public PermissionItem(String label, String descritpion, String permission) {
+	public PermissionItem(String label, String description, String permission) {
 		this.permission = permission;
 		
 		VerticalPanel checkBoxPanel = new VerticalPanel();
@@ -62,7 +62,7 @@ public final class PermissionItem extends HorizontalPanel {
 		labelText.setText(label);
 		
 		changeStyle();
-		Label descriptionText = new Label(descritpion);
+		Label descriptionText = new Label(description);
 		descriptionText.addStyleName(Styles.INSTANCE.common().permissionDescription());
 		labelPanel.add(labelText);
 		labelPanel.add(descriptionText);

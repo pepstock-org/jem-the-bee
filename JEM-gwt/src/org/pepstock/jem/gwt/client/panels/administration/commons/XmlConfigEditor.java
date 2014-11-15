@@ -70,7 +70,7 @@ public class XmlConfigEditor extends XmlModifier implements AdminEditor{
 	 * 
 	 * @param id element ID of editor
 	 * @param editType type of file to edit
-	 * @param description descritpion of file 
+	 * @param description description of file 
 	 * 
 	 */
 	public XmlConfigEditor(String id, String editType, String description) {

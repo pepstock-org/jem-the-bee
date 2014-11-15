@@ -37,7 +37,7 @@ public class NotifyPanel extends AbstractInspector {
 	private VerticalPanel tableContainer = new VerticalPanel();
 	
 	/**
-	 * Constructs the object setting teh inspector without actions (no buttons)
+	 * Constructs the object setting the inspector without actions (no buttons)
 	 */
 	public NotifyPanel() {
 		super(false);

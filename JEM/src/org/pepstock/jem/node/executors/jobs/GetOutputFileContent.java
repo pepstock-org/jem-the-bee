@@ -47,7 +47,7 @@ public class GetOutputFileContent extends DefaultExecutor<OutputFileContent> {
 	 * Constructs the object passing the job which you need logs of, and relative file by item (relative to <code>ouptut</code> path to download.
 	 * 
 	 * @param job job instance
-	 * @param item item which represents teh file to download to UI
+	 * @param item item which represents the file to download to UI
 	 */
 	public GetOutputFileContent(OutputListItem item) {
 		this.item = item;

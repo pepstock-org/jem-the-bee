@@ -99,7 +99,7 @@ public abstract class FileUploadManager extends DefaultManager {
 	}
 	
 	/**
-	 * THis method should scan file item and apply the right logic and actions using teh data uploaded.
+	 * THis method should scan file item and apply the right logic and actions using the data uploaded.
 	 * @param items list of file item.
 	 * @return message to report on UI
 	 * @throws JemException if any exception occurs

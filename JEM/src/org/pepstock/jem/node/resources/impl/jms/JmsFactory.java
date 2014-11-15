@@ -28,6 +28,7 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 
@@ -47,7 +48,7 @@ import org.pepstock.jem.node.tasks.jndi.JNDIException;
  * @version 1.0
  * 
  */
-public class JmsFactory implements ObjectFactory {
+public class JmsFactory extends AbstractObjectFactory {
 	
 	/**
 	 * This method creates a {@link ConnectionFactory} for <code>JMS</code>

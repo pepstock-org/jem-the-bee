@@ -10,7 +10,7 @@ import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
  * This descriptor represents an abstract field that hold values in a list-based form and offer multiple selections.  
  * @author Marco "Fuzzo" Cuccato
  */
-public abstract class MultiSelectableListFieldDescriptor extends AbstractFieldDescriptor implements Serializable, ResourcePartDescriptor {
+public abstract class MultiSelectableListFieldDescriptor extends AbstractFieldDescriptor implements Serializable, ResourcePartDescriptor, MultiValuesField {
 
 	private static final long serialVersionUID = 9218545401365213862L;
 

@@ -87,7 +87,7 @@ public class JBpmLauncher {
 	            	Task task = Factory.createTask(taskDescription);
 	            	tasks.put(task.getId(), task);
 	            }
-	            // loads all task in a singleton, to use in teh step listener
+	            // loads all task in a singleton, to use in the step listener
 	            CompleteTasksList.getInstance(tasks);
             } catch (ParserConfigurationException e) {
 	            throw new JemRuntimeException(e);
@@ -102,7 +102,7 @@ public class JBpmLauncher {
 			// creates the step listener
 			StepListener listener = new StepListener();
 			
-			// creates teh JBPM environment and load JCL file
+			// creates the JBPM environment and load JCL file
 			SimpleRegisterableItemsFactory factory = new SimpleRegisterableItemsFactory();
 			SimpleRuntimeEnvironment environment = new SimpleRuntimeEnvironment(factory);
 			environment.setUsePersistence(false);

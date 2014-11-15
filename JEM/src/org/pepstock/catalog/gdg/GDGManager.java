@@ -149,7 +149,7 @@ public class GDGManager {
 							// version
 							// because could happen that has 2 new generation of
 							// same GDG and set last version
-							// methid could overrirde teh right last version
+							// methid could overrirde the right last version
 							if (key.compareTo(lastVersionKey) > 0) {
 								// if Key is last version, must compute the offset to 
 								// last version because offset could be more than 1

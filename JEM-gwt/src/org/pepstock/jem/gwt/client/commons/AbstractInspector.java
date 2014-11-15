@@ -158,6 +158,7 @@ public abstract class AbstractInspector extends PopupPanel {
 		
 		// gets contents, sets size and adds to popup panel
 		Panel c = getContent();
+		
 		if (c instanceof ResizeCapable){
 			ResizeCapable rc = (ResizeCapable)c;
 			rc.onResize(getAvailableWidth(), getAvailableHeight());

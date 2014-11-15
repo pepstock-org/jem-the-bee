@@ -143,7 +143,7 @@ public abstract class JobTask extends CommandLineTask {
 	}
 
 	/**
-	 * Sets teh roles of the job user
+	 * Sets the roles of the job user
 	 * 
 	 * @param roles the roles to set
 	 */
@@ -311,7 +311,7 @@ public abstract class JobTask extends CommandLineTask {
 	 *         false
 	 */
 	public final boolean cancel(String pid, boolean force) {
-		// PID is usually pass in teh format [pid]@[hostname] by JMX
+		// PID is usually pass in the format [pid]@[hostname] by JMX
 		// implementation of JDK.
 
 		String id = StringUtils.substringBefore(getJob().getProcessId(), "@");

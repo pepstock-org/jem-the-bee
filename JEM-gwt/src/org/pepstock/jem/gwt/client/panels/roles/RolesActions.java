@@ -91,7 +91,7 @@ public class RolesActions extends AbstractActionsButtonPanel<Role> {
 			// shows a popup to create new role
 			RoleInspector inspector = new RoleInspector();
 			inspector.center();
-			// adds itself to listener to refresh the lsit of roles seeing teh new one if added
+			// adds itself to listener to refresh the lsit of roles seeing the new one if added
 			inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
 				@Override
 				public void onClose(CloseEvent<PopupPanel> arg0) {
@@ -179,7 +179,7 @@ public class RolesActions extends AbstractActionsButtonPanel<Role> {
 			// shows a popup to create new role
 			RoleInspector inspector = new RoleInspector(clone, RoleInspector.CLONE);
 			inspector.center();
-			// adds itself to listener to refresh the lsit of roles seeing teh new one if added
+			// adds itself to listener to refresh the lsit of roles seeing the new one if added
 			inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
 				@Override
 				public void onClose(CloseEvent<PopupPanel> arg0) {

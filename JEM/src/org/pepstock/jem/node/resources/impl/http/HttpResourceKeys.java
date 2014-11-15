@@ -68,6 +68,7 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
  * @version 2.2	
  *
  */
+@SuppressWarnings("deprecation")
 public final class HttpResourceKeys {
 	/**
 	 * Constant indicating that the <code>Request Method</code> to use
@@ -267,6 +268,15 @@ public final class HttpResourceKeys {
 	 * Property  useful to create the {@link HttpClient} to use <code>HTTP</code> source.
 	 */
 	public static final String REQUEST_PARAMETERS = "requestParameters";
+	
+	/**
+	 * List of mandatory properties
+	 */
+	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(
+			REQUEST_HOST_NAME,
+			REQUEST_PORT,
+			PROTOCOL_TYPE
+	));
 	
 	/**
 	 * List of all configuration properties.

@@ -325,7 +325,7 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
         public void widgetSelected(SelectionEvent event) {
 			if (event.getSource() instanceof Combo){
 				Combo combo = (Combo)event.getSource();
-				// gets teh selected coordinate
+				// gets the selected coordinate
 				if (combo.getSelectionIndex() > 0){
 					String item = combo.getItem(combo.getSelectionIndex());
 					// copies the coordinate because one of them could be changed

@@ -142,7 +142,7 @@ public class RolesManager extends DefaultService{
     /**
      * Updates an already present role. Checks the role is consistent with 
      * the present one. That means role previously serialized to client must be
-     * the same in teh map. Otherwise means the someone else has already updated it,
+     * the same in the map. Otherwise means the someone else has already updated it,
      * so becomes inconsistent.
      * 
      * @param role updated role
@@ -161,7 +161,7 @@ public class RolesManager extends DefaultService{
     		throw new ServiceMessageException(UserInterfaceMessage.JEMG027E, role.getName());
     	}
     	try {
-    		// locks teh key (role name)
+    		// locks the key (role name)
     		roles.lock(role.getName());
     		// gets old role and checks if is consistent with the new one.
     		// checks if last user who updated it is the same

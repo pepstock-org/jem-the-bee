@@ -81,7 +81,7 @@ public class PreferencesManager {
 	}
 	
 	/**
-	 * Stores teh preferences 
+	 * Stores the preferences 
 	 * @throws StorageException if any Eclipse error occurs
 	 */
 	public static void store() throws StorageException{

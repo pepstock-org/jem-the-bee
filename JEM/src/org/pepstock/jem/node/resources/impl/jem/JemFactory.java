@@ -22,14 +22,13 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.RefAddr;
 import javax.naming.Reference;
-import javax.naming.spi.ObjectFactory;
 import javax.xml.bind.JAXBContext;
 
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
@@ -44,7 +43,7 @@ import org.pepstock.jem.rest.services.LoginManager;
  * @version 2.2
  * 
  */
-public class JemFactory implements ObjectFactory {
+public class JemFactory  extends AbstractObjectFactory {
 
 	/* (non-Javadoc)
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)
@@ -54,17 +53,7 @@ public class JemFactory implements ObjectFactory {
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
-		Reference ref = (Reference) object;
-		Properties properties = new Properties();
-		for (int i = 0; i < JemResourceKeys.PROPERTIES_ALL.size(); i++) {
-			String propertyName = JemResourceKeys.PROPERTIES_ALL.get(i);
-			RefAddr ra = ref.get(propertyName);
-			if (ra != null) {
-				String propertyValue = ra.getContent().toString();
-				properties.setProperty(propertyName, propertyValue);
-			}
-		}
-		return createRestClient(properties);
+		return createRestClient(loadProperties(object, JemResourceKeys.PROPERTIES_ALL));
 	}
 
 	/**
@@ -76,9 +65,9 @@ public class JemFactory implements ObjectFactory {
 	 * @throws JNDIException if an error occurs creating the rest client
 	 */
 	public static Object createRestClient(Properties properties) throws JNDIException {
-		String urlString = properties.getProperty(JemResourceKeys.URL);
+		String urlString = properties.getProperty(CommonKeys.URL);
 		if (urlString == null){
-			throw new JNDIException(NodeMessage.JEMC136E, JemResourceKeys.URL);
+			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
 
 		String username = properties.getProperty(CommonKeys.USERID);

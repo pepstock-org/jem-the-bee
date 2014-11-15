@@ -171,7 +171,7 @@ public class TaskletDefinitionParser extends AbstractBeanDefinitionParser {
 	 * @param factory factory to add properties
 	 */
 	private void parseProps(List<Element> childElements, BeanDefinitionBuilder factory) {
-		// scans all lements proeprty and add to teh tasklet 
+		// scans all lements proeprty and add to the tasklet 
 		for (Element element : childElements) {
 			// gets name attribute
 			if (element.hasAttribute(PROPERTY_NAME_ATTRIBUTE)){

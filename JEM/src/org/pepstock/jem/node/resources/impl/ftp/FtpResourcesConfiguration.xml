@@ -4,7 +4,7 @@
 		
 			<text-field key="url" 
 						label="URL" 
-						description="The FTP server URL of the form <code>&lt;scheme&gt;://&lt;authority&gt;</code>" 
+						description="The FTP server URL of the form scheme://authority" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
 			
 			<text-field key="userid" 

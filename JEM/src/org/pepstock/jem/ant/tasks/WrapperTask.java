@@ -226,7 +226,7 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 				}
 
 			}
-			// calls super-method to execute teh command configured into JCL
+			// calls super-method to execute the command configured into JCL
 			batchSM.setInternalAction(false);
 			// executes the program defined in JCL
 			// setting the boolean to TRUE

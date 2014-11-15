@@ -35,7 +35,6 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 
@@ -66,6 +65,7 @@ import org.pepstock.jem.commands.util.HttpUtil;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 import org.pepstock.jem.util.CharSet;
@@ -95,7 +95,7 @@ import org.pepstock.jem.util.Parser;
  * 
  */
 @SuppressWarnings("deprecation")
-public class HttpFactory implements ObjectFactory {
+public class HttpFactory  extends AbstractObjectFactory {
 
 	/**
 	 * Default value of the <code>port</code> of the <code>HTTPS Schema</code>.
@@ -147,15 +147,7 @@ public class HttpFactory implements ObjectFactory {
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
-		Reference ref = (Reference) object;
-		Properties properties = new Properties();
-		for (String propertyName : HttpResourceKeys.PROPERTIES_ALL) {
-			RefAddr ra = ref.get(propertyName);
-			if (ra != null) {
-				String propertyValue = ra.getContent().toString().trim();
-				properties.setProperty(propertyName, propertyValue);
-			}
-		}
+		Properties properties = loadProperties(object, HttpResourceKeys.PROPERTIES_ALL);
 		CloseableHttpClient httpClient = (CloseableHttpClient) createHttpClient(properties);
 		HttpRequestBase request = createRequestMethod(properties, environment);
 		// Execute request
@@ -199,7 +191,6 @@ public class HttpFactory implements ObjectFactory {
 		String path = (String) findEnvironmentProperty(environment, HttpResourceKeys.REQUEST_PATH);
 		@SuppressWarnings("unchecked")
 		Map<String, String> parameters = (Map<String, String>) findEnvironmentProperty(environment, HttpResourceKeys.REQUEST_PARAMETERS);
-		System.out.println("ENV="+environment);
 		String queryString = (String) findEnvironmentProperty(environment, HttpResourceKeys.REQUEST_QUERY_STRING);
 		String requestMethod = (String) findEnvironmentProperty(environment, HttpResourceKeys.REQUEST_METHOD);
 		String parametersCharsetFormat = properties.getProperty(HttpResourceKeys.HTTP_CONTENT_CHARSET);
@@ -314,7 +305,6 @@ public class HttpFactory implements ObjectFactory {
 	 */
 	private HttpGet createHttpGetMethod(Map<String, String> parameters, String url, String queryString) throws JNDIException {
 		try {
-			System.out.println("PARAMITERS="+queryString);
 			String newUrl = url;
 			if (null != queryString) {
 				newUrl = newUrl + "?" + queryString;
@@ -643,7 +633,6 @@ public class HttpFactory implements ObjectFactory {
 		InputStream instream = null;
 		ResponseHandler<String> responseHandler = new BasicResponseHandler();
 		try {
-			System.out.println("REQUEST="+ request);
 			String responseBody = httpClient.execute(request, responseHandler);
 			instream = new ByteArrayInputStream(responseBody.getBytes(CharSet.DEFAULT));
 			request.abort();

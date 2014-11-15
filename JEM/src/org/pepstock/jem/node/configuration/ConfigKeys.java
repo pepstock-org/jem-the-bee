@@ -235,7 +235,7 @@ public final class ConfigKeys {
 	 * Attribute name for <code>name</code> fields
 	 */
 	public static final String NAME_FIELD = "name";
-
+	
 	/**
 	 * Tag name used for factories
 	 */
@@ -356,6 +356,12 @@ public final class ConfigKeys {
 	 * <code>resources-def</code>
 	 */
 	public static final String RESOURCE_DEFINITIONS_FIELD = "resourceDefinitions";
+	
+	/**
+	 * Field name use for resources to define <code>customProperties</code>. In XML file, there is the alias
+	 * <code>customProperties</code>
+	 */
+	public static final String RESOURCE_CUSTOM_PROPERTIES_FIELD = "customProperties";
 	
 	/**
 	 * Attribute name for <code>type</code> fields

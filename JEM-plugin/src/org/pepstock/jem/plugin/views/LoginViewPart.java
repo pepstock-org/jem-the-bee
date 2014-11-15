@@ -83,7 +83,7 @@ public abstract class LoginViewPart extends JemViewPart implements ShellContaine
     @Override
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
-    	// adds teh view part to broker
+    	// adds the view part to broker
 		JemBroker.addViewPartID(getId());
     }
 	

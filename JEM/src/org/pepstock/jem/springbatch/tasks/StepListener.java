@@ -136,7 +136,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					
 					// PAY attention: after creating data paths container
 					// calls a getabsolutepath method to load all necessary classes in classloader.
-					// This is MANDATORY to avoid StackOverFlow in teh SecurityManager 
+					// This is MANDATORY to avoid StackOverFlow in the SecurityManager 
 					// during the CheckRead on files.
 					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
 					DataPathsContainer.getInstance().getAbsoluteDataPath(JobId.VALUE);

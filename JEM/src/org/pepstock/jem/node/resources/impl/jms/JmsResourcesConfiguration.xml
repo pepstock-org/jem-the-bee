@@ -4,12 +4,12 @@
 		
 			<text-field key="java.naming.provider.url" 
 						label="JMS Provider URL" 
-						description="The JMS provider URL in the form: <code>&lt;scheme&gt;://&lt;host&gt;:&lt;port&gt;</code>" 
+						description="The JMS provider URL in the form: scheme://host:port" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
 			
 			<text-field key="java.naming.factory.initial" 
 						label="JMS Initial Context Factory" 
-						description="The JMS Initial Context Factory to create the connection to use <code>JMS</code>" 
+						description="The JMS Initial Context Factory to create the connection to use JMS" 
 						mandatory="true" defaultValue="" regExValidator=".*" />
 
 			<text-field key="userid" 

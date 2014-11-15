@@ -41,7 +41,7 @@ public class TableContainer<T> extends ScrollPanel implements HasAbstractTable<T
 	private AbstractTable<T> underlyingTable = null;
 	
 	/**
-	 * Builds teh UI using the underlyingTable underlyingTable
+	 * Builds the UI using the underlyingTable underlyingTable
 	 * 
 	 * @param underlyingTable
 	 * @param fullheightTable <code>true</code> if you wont the underlyingTable has full height, false otherwise

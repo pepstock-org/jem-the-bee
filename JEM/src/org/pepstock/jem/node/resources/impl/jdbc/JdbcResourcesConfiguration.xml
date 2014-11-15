@@ -1,6 +1,6 @@
 <resource-template>
 	
-		<section name="MainSection">
+		<section name="Common Properties">
 		
 			<text-field key="driverClassName" 
 						label="JDBC Driver" 
@@ -32,6 +32,8 @@
   				description="If connections are readOnly by default"
   				mandatory="false" />
 		
+		</section>
+		<section name="Connection Properties" propertiesEditor="true">
 		</section>		
 		
 </resource-template>

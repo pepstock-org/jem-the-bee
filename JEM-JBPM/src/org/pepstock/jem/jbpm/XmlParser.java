@@ -244,7 +244,7 @@ public final class XmlParser {
         	String tagName = getElementName(node);
         	if (tagName != null){
         		Element element = (Element)node;
-        		// extracts teh TARGET REF data
+        		// extracts the TARGET REF data
         		if (TARGET_REF_ELEMENT.equalsIgnoreCase(tagName)){
         			result.setTargetRef(element.getTextContent());
         		}
@@ -278,7 +278,7 @@ public final class XmlParser {
 	 * @return tag name of node
 	 */
 	private static String getElementName(Node node){
-		// ONLY if is a element returns teh name
+		// ONLY if is a element returns the name
     	if (node.getNodeType() == Element.ELEMENT_NODE) {
         	Element el = (Element)node;
         	String tagName = null;

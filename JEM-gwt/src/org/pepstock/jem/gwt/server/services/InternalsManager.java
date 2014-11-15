@@ -65,7 +65,7 @@ public class InternalsManager extends DefaultService{
 		// if not, this method throws an exception
     	checkAuthorization(new StringPermission(Permissions.ADMINISTRATION_CLUSTER_GRS));
 		
-		// prepares teh executor.
+		// prepares the executor.
 		// if resourceKey is null, asks for all resources
 		DisplayRequestors executor = null;
 		if (resourceKey == null){

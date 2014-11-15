@@ -295,7 +295,7 @@ public class StepJPPF extends StepJava {
 		boolean found = false;
 		// scans data description
 		for (DataDescription ddescription : getDataDescriptions()){
-			// is the same datadescritpion
+			// is the same datadescription
 			if (ddescription.getName().equalsIgnoreCase(name)){
 				if (write){
 					// mustn't be in shr
@@ -352,7 +352,7 @@ public class StepJPPF extends StepJava {
 		TypedProperties propsFromDataDescritpion = JPPFUtil.loadTypedPropertiesFromDataDescription(ic);
 
 		// read what was inserted as attributes in the XMLelement
-		// gets the argument (data descritpion name)
+		// gets the argument (data description name)
 		String uuid = args[0];
 		Object ddin = (Object) ic.lookup(uuid);
 		InputStream configInputStream = (InputStream) ddin;

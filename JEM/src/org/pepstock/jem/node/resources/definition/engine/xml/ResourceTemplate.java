@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * This class represent a custom resource template 
+ * This class represent a resource template 
  * in the resource templates <code>xml</code> file. <br>
  * It contains the description of the resource.
 

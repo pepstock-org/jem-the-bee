@@ -139,7 +139,7 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 					return false;
 				}
 			} else {
-				// set Active status and store teh info about the node on Hazelcast map
+				// set Active status and store the info about the node on Hazelcast map
 				Main.getNode().setStatus(Status.ACTIVE);
 				// set to show message
 				showActiveMessage = true;
@@ -149,7 +149,7 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 			Main.getNode().getLock().unlock();
 		}
 
-		// get jobs which could be executed by this node, using teh SQL
+		// get jobs which could be executed by this node, using the SQL
 		// predicate prepared on constructor
 		IMap<String, Job> inputQueue = Main.getHazelcast().getMap(Queues.INPUT_QUEUE);
 
@@ -164,7 +164,7 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 
 				// set mustReturn because I'm not sure if some other node has
 				// already change the list of jobs
-				// set to true when it has teh job to execute
+				// set to true when it has the job to execute
 				boolean mustReturn = false;
 
 				// locks Input queue of hazelcast to avoid multiple access to

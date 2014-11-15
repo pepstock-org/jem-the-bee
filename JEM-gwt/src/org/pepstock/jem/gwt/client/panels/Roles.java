@@ -109,7 +109,7 @@ public class Roles extends BasePanel<Role> implements SearchListener, InspectLis
     @Override
     public void inspect(Role role) {
     	if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_UPDATE)) {
-    		// goes inspect in teh role
+    		// goes inspect in the role
     		RoleInspector inspector = new RoleInspector(role);
     		inspector.setTitle(role.getName());
     		inspector.center();

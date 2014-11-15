@@ -323,7 +323,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
         @Override
         public void execute() throws JemException {
 			try {
-				// loads teh output tree
+				// loads the output tree
 				JobOutputTreeContent currentData = Client.getInstance().getOutputTree(getJob(), getQueueName());
 				// gets inspector view part to open
 				InspectorViewPart inspector = (InspectorViewPart)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(InspectorViewPart.ID);

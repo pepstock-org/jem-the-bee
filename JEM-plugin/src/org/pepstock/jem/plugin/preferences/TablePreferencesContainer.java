@@ -350,7 +350,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		 */
         @Override
         public void widgetSelected(SelectionEvent evt) {
-			// gets the selected coordinate and checks is teh same of client
+			// gets the selected coordinate and checks is the same of client
 			// that means is in use
 			IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
 			Coordinate template = (Coordinate) selection.getFirstElement();
@@ -407,7 +407,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     			Notifier.showMessage(TablePreferencesContainer.this, "Unable to remove " + toBeRemoved.getName(), toBeRemoved.getName() + " is currently in use and then is not possible to remove. Please disconnect before removing", MessageLevel.ERROR);
     			return;
     		}
-    		// creates event to remove and refreshes teh table
+    		// creates event to remove and refreshes the table
     		Coordinate removed = cloneEnvironments.remove(toBeRemoved.getName());
     		events.put(removed.getName(), new UpdateEvent(removed, UpdateEvent.REMOVE));
     		tableViewer.refresh();

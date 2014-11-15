@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.node.resources.definition;
 
+import org.pepstock.jem.log.MessageException;
+import org.pepstock.jem.log.MessageInterface;
+
 /**
  * A <code>ResourceDefinitionException</code> is thrown to indicate a 
  * problem related to the Custom Resource Definition. <br>
@@ -24,36 +27,34 @@ package org.pepstock.jem.node.resources.definition;
  * @author Alessandro Zambrini
  * @version 1.0	
  */
-public class ResourceDefinitionException extends Exception {
+public class ResourceDefinitionException extends MessageException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
-	 * Constructor based on the description of the error related to the exception.
-	 * 
-	 * @param message the description of the error related to this exception.
+	 * Constructs the object using the message interface
+	 * @param messageInterface message to show
 	 */
-	public ResourceDefinitionException(String message){
-		super(message);
+	public ResourceDefinitionException(MessageInterface messageInterface) {
+		super(messageInterface);
 	}
-	
+
 	/**
-	 * Constructor based on another exception that is the cause of this exception.
-	 * 
-	 * @param exception the cause of this exception.
+	 * Constructs the object using the message interface and objects to fill message 
+	 * @param messageInterface message to show
+	 * @param objects data to fill message
 	 */
-	public ResourceDefinitionException(Exception exception){
-		super(exception);
+	public ResourceDefinitionException(MessageInterface messageInterface, Object... objects) {
+		super(messageInterface, objects);
 	}
-	
+
 	/**
-	 * Constructor based on the description of the error related and on another exception 
-	 * that is the cause of this exception.
-	 * 
-	 * @param message the description of the error related to this exception.
-	 * @param exception the cause of this exception.
+	 * Constructs the object using the message interface, objects to fill message and root cause  
+	 * @param messageInterface message to show
+	 * @param cause exception genrated to show
+	 * @param objects data to fill message
 	 */
-	public ResourceDefinitionException(String message, Exception exception){
-		super(message, exception);
+	public ResourceDefinitionException(MessageInterface messageInterface, Throwable cause, Object... objects) {
+		super(messageInterface, cause, objects);
 	}
 }

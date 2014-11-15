@@ -104,7 +104,7 @@ public final class ValueParser {
 						isText = false;
 						
 						String subValue = null;
-						// checks if teh content is inside of brackets
+						// checks if the content is inside of brackets
 						if (subToken.startsWith("(") && subToken.endsWith(")")){
 							// gets content inside brackets
 							subValue = StringUtils.removeEnd(StringUtils.removeStart(subToken, "("), ")");

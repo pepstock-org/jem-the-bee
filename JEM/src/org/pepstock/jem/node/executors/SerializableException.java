@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 import org.pepstock.jem.log.JemException;
 
 /**
- * Exception used to serialize the complete stack trace. Tjis is used for Executors because teh exceptions must be serializable
+ * Exception used to serialize the complete stack trace. Tjis is used for Executors because the exceptions must be serializable
  * in Executors otherwise Hazelcast exception occurs.
  *  
  * @author Andrea "Stock" Stocchero

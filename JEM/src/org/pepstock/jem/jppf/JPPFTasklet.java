@@ -189,7 +189,7 @@ public final class JPPFTasklet extends JemTasklet {
 		boolean found = false;
 		// scans data description
 		for (DataDescription ddescription : getDataDescriptionList()){
-			// is the same datadescritpion
+			// is the same datadescription
 			if (ddescription.getName().equalsIgnoreCase(name)){
 				if (write){
 					// mustn't be in shr

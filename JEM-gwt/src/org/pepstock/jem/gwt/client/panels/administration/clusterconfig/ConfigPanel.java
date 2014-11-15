@@ -268,7 +268,7 @@ public class ConfigPanel extends VerticalPanel implements ResizeCapable {
 		hazelcast.onResize(syntaxHighlighterWidth, syntaxHighlighterHeight);
 		rules.onResize(syntaxHighlighterWidth, syntaxHighlighterHeight);
 		
-		// if editor is showing, resize teh editors container
+		// if editor is showing, resize the editors container
 		if (editorContainer.isShowing()){
 			editorContainer.setPopupPosition(getAbsoluteLeft(), getAbsoluteTop());
 		}

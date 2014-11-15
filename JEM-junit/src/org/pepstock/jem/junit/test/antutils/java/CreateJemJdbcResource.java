@@ -19,6 +19,8 @@ package org.pepstock.jem.junit.test.antutils.java;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.InitialContext;
 
@@ -29,6 +31,7 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.XmlUtil;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.CharSet;
@@ -89,10 +92,14 @@ public class CreateJemJdbcResource {
 		resource.setProperty("driverClassName", jemEnvConf.getDatabase()
 				.getDriver());
 		resource.setProperty("url", jemEnvConf.getDatabase().getUrl());
-		resource.setProperty("userid", jemEnvConf.getDatabase().getUser());
+		resource.setProperty(CommonKeys.USERID, jemEnvConf.getDatabase().getUser());
 		resource.setProperty("password", jemEnvConf.getDatabase().getPassword());
 		resource.setProperty("defaultReadOnly", "true");
 		resource.setProperty("defaultAutoCommit", "true");
+		
+		Map<String, String> customProps= new HashMap<String, String>();
+		customProps.put("useCompression", "false");
+		
 		
 		InitialContext ic = ContextUtils.getContext();
 		// loads datapath container

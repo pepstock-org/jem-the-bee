@@ -15,6 +15,9 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 	private static final long serialVersionUID = -4440316497840447234L;
 
 	private String name = null;
+	
+	private boolean propertiesEditor = false;
+	
 	private LinkedList<AbstractFieldDescriptor> fields = new LinkedList<AbstractFieldDescriptor>();
 	
 	/**
@@ -45,6 +48,20 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the propertiesEditor
+	 */
+	public boolean isPropertiesEditor() {
+		return propertiesEditor;
+	}
+
+	/**
+	 * @param propertiesEditor the propertiesEditor to set
+	 */
+	public void setPropertiesEditor(boolean propertiesEditor) {
+		this.propertiesEditor = propertiesEditor;
 	}
 
 	/**

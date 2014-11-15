@@ -55,7 +55,7 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	/**
 	 * Prefix of environment variables set to pass the file information to exec
 	 * command.<br>
-	 * The env variables are built with this prefix and teh name of data
+	 * The env variables are built with this prefix and the name of data
 	 * description.<br>
 	 * Example:<br>
 	 * <code>datascription name="filein"</code> is exported in a environment
@@ -233,7 +233,7 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 
 			}
 
-			// calls super-method to execute teh command configured into JCL
+			// calls super-method to execute the command configured into JCL
 			batchSM.setInternalAction(false);
 			// executes the program defined in JCL
 			// setting the boolean to TRUE

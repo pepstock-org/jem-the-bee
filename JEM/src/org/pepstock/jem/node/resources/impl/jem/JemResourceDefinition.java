@@ -21,13 +21,18 @@ import javax.naming.Reference;
 import org.pepstock.jem.annotations.Mode;
 import org.pepstock.jem.annotations.ResourceMetaData;
 import org.pepstock.jem.annotations.ResourceTemplate;
+import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.XmlConfigurationResourceDefinition;
 
 /**
+ * Resource definition for a JEM resource.<br> 
+ * Sets metadata and xml template url to read in classpath
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-@ResourceMetaData(type = "jem", description = "JEM rest resource")
+@ResourceMetaData(type = "jem", description = "JEM rest resource allows you to access to JEM entities (jobs, nodes, statistics, global file systems")
 @ResourceTemplate(value="org/pepstock/jem/node/resources/impl/jem/JemResourcesConfiguration.xml",
 		mode = Mode.FROM_CLASSPATH)
 public class JemResourceDefinition extends XmlConfigurationResourceDefinition {
@@ -48,4 +53,12 @@ public class JemResourceDefinition extends XmlConfigurationResourceDefinition {
 		return new JemReference();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.resources.definition.ResourceDefinition#validateResource(org.pepstock.jem.node.resources.Resource)
+	 */
+	@Override
+	public void validateResource(Resource resource) throws ResourceDefinitionException {
+		validateResource(resource, JemResourceKeys.PROPERTIES_ALL, JemResourceKeys.PROPERTIES_ALL);
+	}
+	
 }

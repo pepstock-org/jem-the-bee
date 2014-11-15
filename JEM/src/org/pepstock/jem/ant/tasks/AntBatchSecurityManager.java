@@ -152,7 +152,7 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
-		// checks teh file access
+		// checks the file access
 		if (perm instanceof FilePermission){
 			if ("read".equalsIgnoreCase(perm.getActions())){
 				checkRead(perm.getName());

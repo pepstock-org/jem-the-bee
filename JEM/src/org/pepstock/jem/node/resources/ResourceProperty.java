@@ -19,6 +19,8 @@ package org.pepstock.jem.node.resources;
 import java.io.Serializable;
 
 /**
+ * Bean to map the property inside of resource.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -28,10 +30,10 @@ public class ResourceProperty implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 
+	 * Mask for not visible resource
 	 */
 	public static final String MASK_FOR_NO_VISIBLE_PROPERTY = "***";
-
+	
 	private String name = null;
 	
 	private String value = null;
@@ -125,7 +127,7 @@ public class ResourceProperty implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "Property [name=" + name + ", value=" + (isVisible() ? value : MASK_FOR_NO_VISIBLE_PROPERTY) + ", override=" + override + "]";
+		return "Property [name=" + name + ", value=" + (isVisible() ? value : "") + ", override=" + override + "]";
 	}
 
 }

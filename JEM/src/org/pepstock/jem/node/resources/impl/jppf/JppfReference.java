@@ -24,7 +24,7 @@ import org.jppf.utils.TypedProperties;
  * Sets constants for JNDI for JPPF typed properteis.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4	
+ * @version 2.2	
  *
  */
 public class JppfReference extends Reference {
@@ -32,17 +32,17 @@ public class JppfReference extends Reference {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Apache DBCP JNDI factory
+	 * JPPF custom factory
 	 */
 	public static final String FTP_FACTORY = JppfFactory.class.getName();
 	
 	/**
-	 * Is DataSource object created when requested
+	 * Type properties of JPPF 
 	 */
 	public static final String FTP_OBJECT = TypedProperties.class.getName();
 	
 	/**
-	 * Creates a JNDI reference for JDBC purposes
+	 * Creates a JNDI reference for JPPF purposes
 	 */
 	public JppfReference() {
 		super(FTP_OBJECT, FTP_FACTORY, null);

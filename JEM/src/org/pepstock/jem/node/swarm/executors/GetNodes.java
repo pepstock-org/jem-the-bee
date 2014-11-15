@@ -72,7 +72,7 @@ public class GetNodes extends AbstractGetNodes {
 		// only for 10 seconds otherwise
 		// throws an exception
 		Collection<NodeInfo> allNodes = getNodes(predicate);
-		// must scan teh result of all nodes
+		// must scan the result of all nodes
 		// becuse it has to serialize NodeInfoBean
 		if (allNodes != null) {
 			// gets the nodes info bean and returns them

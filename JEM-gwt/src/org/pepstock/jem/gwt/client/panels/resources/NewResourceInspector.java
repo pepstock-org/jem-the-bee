@@ -1,13 +1,8 @@
 package org.pepstock.jem.gwt.client.panels.resources;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import org.pepstock.jem.gwt.client.ResizeCapable;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
-import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.NewResourceHeader;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourcesPropertiesPanel;
@@ -16,106 +11,36 @@ import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * An inspector that let the user to define (and save) a brand-new {@link Resource}
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public final class NewResourceInspector extends AbstractResourceInspector {
+public final class NewResourceInspector extends AbstractResourceInspector implements ResizeCapable {
 
-	 // the "select" one, plus concrete ootb types
-//	private static int FIRST_CUSTOM_RESOURCE_INDEX = 7;
 	private static final int LIST_HEIGHT = 40;
-
-	private HorizontalPanel typePanel = new HorizontalPanel(); 
-	private ListBox typeCombo = new ListBox();
-	private Collection<String> customResourceNames = null;
 	
+	private HTML type = null; 
+	
+	private ResourceDescriptor descriptor = null;
+
 	/**
 	 * Builds a {@link NewResourceInspector}
+	 * @param descriptor resorce descriptor
 	 */
-	public NewResourceInspector() {
-		super(new Resource());
-		loadCustomResourceNames();
-	}
-	
-	private void buildTypeCombo() {
-		typePanel.setHeight(Sizes.toString(LIST_HEIGHT));
+	public NewResourceInspector(ResourceDescriptor descriptor) {
+		super(new Resource(descriptor.getType()));
+		this.descriptor = descriptor;
+		
+		type = new HTML("<span style='padding: 0px 0px 0px 6px;'>Resource type: <b><span style='font-size: 1.5em;'>"+descriptor.getType()+"</span><b></span>");
+		type.setHeight(Sizes.toString(LIST_HEIGHT));
 
-		// add ootb names
-		typeCombo.addStyleName(Styles.INSTANCE.common().bold());
-		typeCombo.addItem("Select a Resource Type");
-//		typeCombo.addItem(JDBC);
-//		typeCombo.addItem(FTP);
-//		typeCombo.addItem(JMS);
-//		typeCombo.addItem(HTTP);
-//		typeCombo.addItem(JPPF);
-//		typeCombo.addItem(JEM);
-
-		// add custom names, if any
-		if (customResourceNames != null) {
-			List<String >customResourceNameList = new ArrayList<String>(customResourceNames);
-			Collections.sort(customResourceNameList);
-			for (String type : customResourceNameList) {
-				typeCombo.addItem(type);
-			}
-		}
-
-		// add combo type to main panel
-		typePanel.add(typeCombo);
-		typePanel.setCellVerticalAlignment(typeCombo, HasVerticalAlignment.ALIGN_MIDDLE);
-		typePanel.setSpacing(Sizes.MAIN_TAB_PANEL_PADDING_TOP_LEFT_RIGHT);
-		mainContainer.add(typePanel);
-
-		// when i select a resource type, i need to know if it's an ootb resource or if i need to load a custom resource descriptor 
-		typeCombo.addChangeHandler(new TypeComboChangeHandler());
-	}
-
-	private class TypeComboChangeHandler implements ChangeHandler {
-		@Override
-		public void onChange(ChangeEvent event) {
-			int selectedIndex = typeCombo.getSelectedIndex();
-			if(selectedIndex > 0) {
-				// a resource name is selected
-				typeCombo.setEnabled(false);
-				String selectedResourceType = typeCombo.getItemText(selectedIndex); 
-				
-//				if (selectedIndex < FIRST_CUSTOM_RESOURCE_INDEX) {
-//					// a ootb resource is selected
-//					ResourcesPropertiesPanel ootbPanel = renderOOTBResourcePanel(selectedResourceType);
-//					showResourcePanel(ootbPanel);
-//				} else {
-					// a custom resource index is selected, i need to load appropriate descriptor and render panel
-					Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(selectedResourceType, new ServiceAsyncCallback<ResourceDescriptor>() {
-
-						@Override
-						public void onJemFailure(Throwable caught) {
-							new Toast(MessageLevel.ERROR, "Unable to load cutom resource definition: " + caught.getMessage(), "Custom Resource Definitions Error!").show();
-							// re-enable the selection combo
-							typeCombo.setEnabled(true);
-						}
-
-						@Override
-						public void onJemSuccess(ResourceDescriptor descriptor) {
-							ResourcesPropertiesPanel customPanel = renderCustomResourcePanel(descriptor);
-							showResourcePanel(customPanel);
-						}
-						
-						@Override
-	                    public void onJemExecuted() {
-							// do nothing
-	                    }
-					});
-//				}
-			}
-		}
+		mainContainer.add(type);
+		ResourcesPropertiesPanel customPanel = renderResourcePanel(this.descriptor);
+		showResourcePanel(customPanel);
 	}
 	
 	@Override
@@ -133,28 +58,6 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 		resourcePanelContainer.setSize(Sizes.toString(availableWidth), Sizes.toString(availableHeight));
 		// resize the panel itself
 		activePanel.onResize(availableWidth, availableHeight);
-	}
-
-	private final void loadCustomResourceNames() {
-		Services.RESOURCE_DEFINITIONS_MANAGER.getAllResourceNames(new ServiceAsyncCallback<Collection<String>>() {
-			@Override
-			public void onJemFailure(Throwable caught) {
-				new Toast(MessageLevel.ERROR, "Unable to load cutom resource definitions: " + caught.getMessage(), "Custom Resource Definitions Error!").show();
-				// always build the type combo, at least for ootb types only
-				onSuccess(null);
-			}
-
-			@Override
-			public void onJemSuccess(Collection<String> result) {
-				customResourceNames = result;
-				buildTypeCombo();
-			}
-			
-			@Override
-            public void onJemExecuted() {
-				// do nothing
-            }
-		});
 	}
 
 	@Override
@@ -189,4 +92,13 @@ public final class NewResourceInspector extends AbstractResourceInspector {
 	public FlexTable getHeader() {
 		return new NewResourceHeader(getResource(), this);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.client.ResizeCapable#onResize(int, int)
+	 */
+    @Override
+    public void onResize(int availableWidth, int availableHeight) {
+    	System.out.println("Eccome "+Sizes.toString(availableWidth)+", "+Sizes.toString(availableHeight));
+	    
+    }
 }

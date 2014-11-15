@@ -17,11 +17,12 @@
 package org.pepstock.jem.node.resources.impl.jdbc;
 
 import javax.naming.Reference;
+import javax.sql.DataSource;
 
 /**
  * Sets constants for JNDI for Datasource oject. It uses Apache DBCP classes.<br>
  * It uses <code>org.apache.commons.dbcp.BasicDataSourceFactory</code> to create a datasource
- * to use inside teh java programs.
+ * to use inside the java programs.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
@@ -34,12 +35,12 @@ public class JdbcReference extends Reference {
 	/**
 	 * Apache DBCP JNDI factory
 	 */
-	public static final String JNDI_FACTORY = "org.apache.commons.dbcp.BasicDataSourceFactory";
+	public static final String JNDI_FACTORY = JdbcFactory.class.getName();
 	
 	/**
 	 * Is DataSource object created when requested
 	 */
-	public static final String JNDI_OBJECT = "javax.sql.DataSource";
+	public static final String JNDI_OBJECT = DataSource.class.getName();
 	
 	/**
 	 * Creates a JNDI reference for JDBC purposes

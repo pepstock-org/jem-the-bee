@@ -16,6 +16,12 @@
 */
 package org.pepstock.jem.node.resources.impl.jdbc;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.pepstock.jem.node.resources.impl.CommonKeys;
+
 
 /**
  * Contains all information necessary to create a datasource job by JNDI.<br>
@@ -31,14 +37,42 @@ public final class JdbcResourceKeys {
 	public static final String DEFAULT_READONLY = "defaultReadOnly";
 	public static final String DEFAULT_TRANSACTION_ISOLATION = "defaultTransactionIsolation";
 	public static final String DRIVER_CLASS_NAME = "driverClassName";
-	public static final String URL = "url";
 
+	
+	static final String PROP_CONNECTIONPROPERTIES = "connectionProperties";
+	static final String PROP_USERNAME = "username";
 	
     static final String PROP_MAXACTIVE = "maxActive";
     static final String PROP_MAXIDLE = "maxIdle";
     static final String PROP_MINIDLE = "minIdle";
     static final String PROP_INITIALSIZE = "initialSize";
     
+	/**
+	 * List of mandatory properties
+	 */
+	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(
+			CommonKeys.URL,
+			CommonKeys.USERID,
+			CommonKeys.PASSWORD,
+			DRIVER_CLASS_NAME
+	));
+	
+	/**
+	 * List of all configuration properties.
+	 */
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(
+			CommonKeys.URL,
+			CommonKeys.USERID,
+			CommonKeys.PASSWORD,
+			DRIVER_CLASS_NAME, 
+			DEFAULT_AUTOCOMMIT,
+			DEFAULT_READONLY,
+			DEFAULT_TRANSACTION_ISOLATION,
+		    PROP_MAXACTIVE,
+		    PROP_MAXIDLE,
+		    PROP_MINIDLE,
+		    PROP_INITIALSIZE
+	));
 	/**
 	 * To avoid any instantiation
 	 */

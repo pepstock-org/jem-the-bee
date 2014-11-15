@@ -31,7 +31,7 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
- * Specific parser for <dataDescription> tag, to create data descritpions bean.
+ * Specific parser for <dataDescription> tag, to create data descriptions bean.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1

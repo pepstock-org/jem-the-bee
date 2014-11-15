@@ -44,7 +44,7 @@ public class FtpReference extends ResourceLoaderReference {
 	public static final String FTP_FACTORY = FtpFactory.class.getName();
 	
 	/**
-	 * Always returns a InoutStream
+	 * could return an InputStream or OutputStream. It sets only input
 	 */
 	public static final String FTP_OBJECT = InputStream.class.getName();
 	
@@ -64,7 +64,7 @@ public class FtpReference extends ResourceLoaderReference {
 		for (DataDescriptionImpl ddImpl : ddList) {
 			for (DataSetImpl ds: ddImpl.getDatasets()){
 				// if has resource linked
-				// checks if teh name is the same
+				// checks if the name is the same
 				if (ds.getType() == DataSetType.RESOURCE && ds.getDataSource().equalsIgnoreCase(sourceName)){
 					// sets file name (remote one)
 					res.setProperty(FtpResourceKeys.REMOTE_FILE, ds.getName());

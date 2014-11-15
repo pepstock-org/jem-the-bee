@@ -145,7 +145,7 @@ public abstract class AbstractTable<T> {
 		// save the filterableHeader flag
 		hasFilterableHeader = filterableHeaders;
 		
-		// sets keyboard disable so you couldn't select teh row without checking the box
+		// sets keyboard disable so you couldn't select the row without checking the box
 		// sets selection, pagesize and dimensions
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		

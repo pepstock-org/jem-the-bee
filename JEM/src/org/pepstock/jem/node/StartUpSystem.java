@@ -1400,7 +1400,7 @@ public class StartUpSystem {
 				variable = System.getenv().get(key);
 				// if not found it
 				if (variable == null) {
-					// writes log and throw an exception because teh variables
+					// writes log and throw an exception because the variables
 					// al mandatory
 					LogAppl.getInstance().emit(NodeMessage.JEMC058E, variables[i]);
 					throw new ConfigurationException(NodeMessage.JEMC058E.toMessage().getFormattedMessage(variables[i]));

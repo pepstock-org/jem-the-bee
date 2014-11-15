@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.node.resources.definition.engine;
 
+import org.pepstock.jem.log.MessageInterface;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 
 /**
@@ -31,31 +32,29 @@ public class ResourceTemplateException extends ResourceDefinitionException {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Constructor based on the description of the error related to the exception.
-	 * 
-	 * @param message the description of the error related to this exception.
+	 * Constructs the object using the message interface
+	 * @param messageInterface message to show
 	 */
-	public ResourceTemplateException(String message){
-		super(message);
+	public ResourceTemplateException(MessageInterface messageInterface) {
+		super(messageInterface);
 	}
-	
+
 	/**
-	 * Constructor based on another exception that is the cause of this exception.
-	 * 
-	 * @param exception the cause of this exception.
+	 * Constructs the object using the message interface and objects to fill message 
+	 * @param messageInterface message to show
+	 * @param objects data to fill message
 	 */
-	public ResourceTemplateException(Exception exception){
-		super(exception);
+	public ResourceTemplateException(MessageInterface messageInterface, Object... objects) {
+		super(messageInterface, objects);
 	}
-	
+
 	/**
-	 * Constructor based on the description of the error related and on another exception 
-	 * that is the cause of this exception.
-	 * 
-	 * @param message the description of the error related to this exception.
-	 * @param exception the cause of this exception.
+	 * Constructs the object using the message interface, objects to fill message and root cause  
+	 * @param messageInterface message to show
+	 * @param cause exception genrated to show
+	 * @param objects data to fill message
 	 */
-	public ResourceTemplateException(String message, Exception exception){
-		super(message, exception);
+	public ResourceTemplateException(MessageInterface messageInterface, Throwable cause, Object... objects) {
+		super(messageInterface, cause, objects);
 	}
 }

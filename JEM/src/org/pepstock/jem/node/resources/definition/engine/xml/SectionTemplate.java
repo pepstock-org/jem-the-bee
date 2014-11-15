@@ -48,11 +48,22 @@ public class SectionTemplate {
 	 * @see XStream
 	 */
 	public static final String FIELDS_FIELD = "fields";
+	
+	/**
+	 * Name of the fields field. 
+	 * @see XStream
+	 */
+	public static final String PROPERTIES_EDITOR_ATTRIBUTE = "propertiesEditor";
 
 	/**
 	 * The name of the section.
 	 */
 	private String name = null;
+
+	/**
+	 * If is for property editor
+	 */
+	private boolean propertiesEditor = false;
 
 	/**
 	 * The list of the fields of the section.
@@ -74,7 +85,21 @@ public class SectionTemplate {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * @return the propertiesEditor
+	 */
+	public boolean isPropertiesEditor() {
+		return propertiesEditor;
+	}
+
+	/**
+	 * @param propertiesEditor the propertiesEditor to set
+	 */
+	public void setPropertiesEditor(boolean propertiesEditor) {
+		this.propertiesEditor = propertiesEditor;
+	}
+
 	/**
 	 * Adds a field in the list of the fields.
 	 * @param field the field to be added.

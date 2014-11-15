@@ -47,7 +47,7 @@ public class Job implements Serializable, Comparable<Object> {
 	public static final int NONE = 0;
 
 	/**
-	 * Status of job when teh control of job execution is to job task process
+	 * Status of job when the control of job execution is to job task process
 	 */
 	public static final int RUNNING = 1;
 
@@ -342,7 +342,7 @@ public class Job implements Serializable, Comparable<Object> {
 	}
 
 	/**
-	 * Returns teh running status. Could be NONE, WIATING_FOR_RESOURCES or
+	 * Returns the running status. Could be NONE, WIATING_FOR_RESOURCES or
 	 * RUNNING
 	 * 
 	 * @param runningStatus the runningStatus to set

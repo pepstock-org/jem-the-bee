@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.view.client.SelectionModel;
 
 /**
- * Creates all columns to show into table, defening teh sorter too.
+ * Creates all columns to show into table, defening the sorter too.
  * 
  * @author Andrea "Stock" Stocchero
  *

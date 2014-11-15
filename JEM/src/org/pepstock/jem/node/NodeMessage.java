@@ -1617,7 +1617,19 @@ public enum NodeMessage implements MessageInterface {
 	 * "System.exit call is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a java class call a System.exit inside the job execution.<br> Please check java code.")
-	JEMC270E(270, "System.exit call is not allowed", MessageLevel.ERROR);
+	JEMC270E(270, "System.exit call is not allowed", MessageLevel.ERROR),
+	
+	/**
+	 * "Property \"{0}\" is unknown.", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when inside of a resource you used a property not known.<br> Please check definition.")
+	JEMC271E(271, "Property \"{0}\" is unknown.", MessageLevel.ERROR),
+	
+	/**
+	 * "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when teh value assignt to a property has got  awrong value.<br> Please check definition.")
+	JEMC272E(272, "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

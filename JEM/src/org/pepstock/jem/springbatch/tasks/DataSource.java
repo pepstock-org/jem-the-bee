@@ -28,10 +28,11 @@ import java.util.Map;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
-import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
+import org.pepstock.jem.node.resources.impl.jdbc.JdbcFactory;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -193,10 +194,15 @@ public class DataSource extends AbstractDataSource implements Serializable {
 				ref.add(new StringRefAddr(property.getName(), property.getValue()));
 			}
 			
+			// loads custom properties in a string format
+			if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+				ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
+			}
+			
 			// binds the object with format {type]/[name]
 			LogAppl.getInstance().emit(SpringBatchMessage.JEMS024I, res);
 			
-			BasicDataSourceFactory factory = new BasicDataSourceFactory();
+			JdbcFactory factory = new JdbcFactory();
 			javax.sql.DataSource ds = (javax.sql.DataSource)factory.getObjectInstance(ref, null, null, null);
 			return ds.getConnection();
 		} catch (RemoteException e) {

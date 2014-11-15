@@ -78,15 +78,14 @@
 		</listener-->
 	</listeners>
 
-	<!-- Uncomment and compile this to add custom resource support -->
-	<!--
 	<resource-definitions>
-		<resource-definition className="org.external.package.CustomResourceExampleClass">
-			<properties>
-				<property name="jem.xml.resource.template.file" value="path/to/customResourceFileConfiguration.xml" />
-			</properties>
-		</resource-definition>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.jdbc.JdbcResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.ftp.FtpResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.jem.JemResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.jms.JmsResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.jppf.JppfResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.http.HttpResourceDefinition"/>
 	</resource-definitions>
-	-->
+
 
 </configuration>

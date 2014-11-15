@@ -26,6 +26,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
+ * Converter for Xstream to read and write resource property xml 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -37,12 +39,6 @@ public class ResourcePropertyConverter implements Converter {
 	 */
 	public static final String HASH_FIELD = "hash";
 	
-	/**
-	 * 
-	 */
-	public ResourcePropertyConverter() {
-	}
-
 	/* (non-Javadoc)
 	 * @see com.thoughtworks.xstream.converters.ConverterMatcher#canConvert(java.lang.Class)
 	 */

@@ -76,7 +76,7 @@ public class ResourceDefinitionsManager extends DefaultService {
 		Collection<ResourceDescriptor> toReturn = new ArrayList<ResourceDescriptor>();
 		if (content != null) {
 			for (ResourceDefinition rd : content) {
-				toReturn.add(rd.getResourceDescriptor());
+				toReturn.add(rd.getDescriptor());
 			}
 		}
 		return toReturn;

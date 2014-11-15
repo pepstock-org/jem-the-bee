@@ -21,13 +21,18 @@ import javax.naming.Reference;
 import org.pepstock.jem.annotations.Mode;
 import org.pepstock.jem.annotations.ResourceMetaData;
 import org.pepstock.jem.annotations.ResourceTemplate;
+import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.XmlConfigurationResourceDefinition;
 
 /**
+ * Resource definition for a JMS resource.<br> 
+ * Sets metadata and xml template url to read in classpath
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-@ResourceMetaData(type = "jms", description = "JMS resource")
+@ResourceMetaData(type = "jms", description = "The Java Message Service API is a Java Message Oriented Middleware (MOM) API for sending messages between two or more clients. It is a messaging standard that allows application components to create, send, receive, and read messages. It allows the communication between different components of a distributed application to be loosely coupled, reliable, and asynchronous.")
 @ResourceTemplate(value="org/pepstock/jem/node/resources/impl/jms/JmsResourcesConfiguration.xml",
 		mode = Mode.FROM_CLASSPATH)
 public class JmsResourceDefinition extends XmlConfigurationResourceDefinition {
@@ -46,6 +51,14 @@ public class JmsResourceDefinition extends XmlConfigurationResourceDefinition {
 	@Override
 	public Reference getReference() {
 		return new JmsReference();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.resources.definition.ResourceDefinition#validateResource(org.pepstock.jem.node.resources.Resource)
+	 */
+	@Override
+	public void validateResource(Resource resource) throws ResourceDefinitionException {
+		validateResource(resource, JmsResourceKeys.PROPERTIES_MANDATORY, JmsResourceKeys.PROPERTIES_ALL);
 	}
 
 }

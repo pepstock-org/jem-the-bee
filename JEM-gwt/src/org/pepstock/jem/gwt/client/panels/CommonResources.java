@@ -109,7 +109,7 @@ public class CommonResources extends BasePanel<Resource> implements SearchListen
     @Override
     public void inspect(Resource resource) {
     	if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_UPDATE)) {
-    		// goes inspect in teh common resource
+    		// goes inspect in the common resource
     		AbstractResourceInspector inspector = new ExistingResourceInspector(resource);
     		inspector.setTitle(resource.getName());
     		inspector.center();

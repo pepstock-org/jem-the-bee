@@ -57,7 +57,7 @@ public class GetAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
 				writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
 				writeSynch.lock();
 				try {
-					// reads teh file and prepare the bean to return
+					// reads the file and prepare the bean to return
 					String content = FileUtils.readFileToString(loader.getScriptFile());
 					ConfigurationFile policy = new ConfigurationFile();
 					policy.setContent(content);

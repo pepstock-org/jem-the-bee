@@ -23,13 +23,17 @@ import org.pepstock.jem.annotations.ResourceMetaData;
 import org.pepstock.jem.annotations.ResourceTemplate;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.XmlConfigurationResourceDefinition;
 
 /**
+ * Resource definition for a JDBC resource.<br> 
+ * Sets metadata and xml template url to read in classpath
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-@ResourceMetaData(type = "jdbc", description = "JDBC resource")
+@ResourceMetaData(type = "jdbc", description = "Java database connectivity technology is an API for the Java programming language that defines how a client may access a database. It provides methods for querying and updating data in a database. JDBC is oriented towards relational databases.")
 @ResourceTemplate(value="org/pepstock/jem/node/resources/impl/jdbc/JdbcResourcesConfiguration.xml",
 		mode = Mode.FROM_CLASSPATH)
 public class JdbcResourceDefinition extends XmlConfigurationResourceDefinition {
@@ -63,13 +67,26 @@ public class JdbcResourceDefinition extends XmlConfigurationResourceDefinition {
 		resource.getProperties().put(JdbcResourceKeys.PROP_MINIDLE, createResourceProperty(JdbcResourceKeys.PROP_MINIDLE, "1"));
 	}
 	
+	/**
+	 * Creates a standard resource property, by key and value
+	 * @param key key of property
+	 * @param value value of property
+	 * @return resource property instance
+	 */
 	private ResourceProperty createResourceProperty(String key, String value){
 		ResourceProperty rp = new ResourceProperty();
 		rp.setName(key);
 		rp.setValue(value);
+		rp.setVisible(false);
 		return rp;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.resources.definition.ResourceDefinition#validateResource(org.pepstock.jem.node.resources.Resource)
+	 */
+	@Override
+	public void validateResource(Resource resource) throws ResourceDefinitionException {
+		validateResource(resource, JdbcResourceKeys.PROPERTIES_MANDATORY, JdbcResourceKeys.PROPERTIES_ALL);
+	}	
 
 }

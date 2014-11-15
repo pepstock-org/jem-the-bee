@@ -27,9 +27,7 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.RefAddr;
 import javax.naming.Reference;
-import javax.naming.spi.ObjectFactory;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -37,6 +35,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 import org.pepstock.jem.util.Parser;
@@ -49,7 +48,7 @@ import org.pepstock.jem.util.Parser;
  * @version 1.0
  * 
  */
-public class FtpFactory implements ObjectFactory {
+public class FtpFactory extends AbstractObjectFactory {
 	
 	private static final String FTP_PROTOCOL = "ftp";
 
@@ -61,20 +60,12 @@ public class FtpFactory implements ObjectFactory {
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context ctx, Hashtable<?, ?> env) throws JNDIException {
+		// checks arguments
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
-		Reference ref = (Reference) object;
-		Properties properties = new Properties();
-		for (int i = 0; i < FtpResourceKeys.PROPERTIES_ALL.size(); i++) {
-			String propertyName = FtpResourceKeys.PROPERTIES_ALL.get(i);
-			RefAddr ra = ref.get(propertyName);
-			if (ra != null) {
-				String propertyValue = ra.getContent().toString();
-				properties.setProperty(propertyName, propertyValue);
-			}
-		}
-		return createFtpClient(properties);
+		// creates and return a FTP client
+		return createFtpClient(loadProperties(object, FtpResourceKeys.PROPERTIES_ALL));
 	}
 
 	/**
@@ -82,21 +73,24 @@ public class FtpFactory implements ObjectFactory {
 	 * given properties.
 	 * 
 	 * @param properties the ftp client configuration properties
-	 * @return remote input steam
+	 * @return remote input/output steam
 	 * @throws JNDIException if an error occurs creating the ftp client
 	 */
 	public static Object createFtpClient(Properties properties) throws JNDIException {
-		String ftpUrlString = properties.getProperty(FtpResourceKeys.URL);
+		// URL is mandatory
+		String ftpUrlString = properties.getProperty(CommonKeys.URL);
 		if (ftpUrlString == null){
-			throw new JNDIException(NodeMessage.JEMC136E, FtpResourceKeys.URL);
+			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
 
+		// creates URL
 		URL ftpUrl;
 		try {
 			ftpUrl = new URL(ftpUrlString);
 		} catch (MalformedURLException e) {
 			throw new JNDIException(NodeMessage.JEMC233E, e);
 		}
+		// checks scheme
 		if (!ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) && !ftpUrl.getProtocol().equalsIgnoreCase(FTPS_PROTOCOL)){
 			throw new JNDIException(NodeMessage.JEMC137E, ftpUrl.getProtocol());
 		}
@@ -104,29 +98,38 @@ public class FtpFactory implements ObjectFactory {
 		int port = ftpUrl.getPort();
 		String server = ftpUrl.getHost();
 
+		// User id is mandatory
 		String username = properties.getProperty(CommonKeys.USERID);
 		if (username == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.USERID);
 		}
 
+		// password is mandatory
 		String password = properties.getProperty(CommonKeys.PASSWORD);
 		if (password == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.PASSWORD);
 		}
 
+		// remote file is mandatory
+		// it must be set by a data description
 		String remoteFile = properties.getProperty(FtpResourceKeys.REMOTE_FILE);
 		if (remoteFile == null){
 			throw new JNDIException(NodeMessage.JEMC136E, FtpResourceKeys.REMOTE_FILE);
 		}
-
+		// access mode is mandatory
+		// it must be set by a data description
 		String accessMode = properties.getProperty(FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_READ);
 		
+		// creates a FTPclient 
 		FTPClient ftp = ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) ? new FTPClient() : new FTPSClient();
 
+		// checks if binary
 		boolean binaryTransfer = Parser.parseBoolean(properties.getProperty(FtpResourceKeys.BINARY, "false"), false);
 		
+		// checks if must be restarted
 		long restartOffset = Parser.parseLong(properties.getProperty(FtpResourceKeys.RESTART_OFFSET, "-1"), -1);
 		
+		// buffersize
 		int bufferSize = Parser.parseInt(properties.getProperty(FtpResourceKeys.BUFFER_SIZE, "-1"), -1);
 
 		try {
@@ -146,11 +149,11 @@ public class FtpFactory implements ObjectFactory {
 				ftp.disconnect();
 				throw new JNDIException(NodeMessage.JEMC138E, reply);
 			}
-			
+			// login!!
 			if (!ftp.login(username, password)) {
 				ftp.logout();
 			}
-			
+			// set all ftp properties
 			if (binaryTransfer) {
 				ftp.setFileType(FTP.BINARY_FILE_TYPE);
 			}
@@ -163,6 +166,7 @@ public class FtpFactory implements ObjectFactory {
 				ftp.setBufferSize(bufferSize);
 			}
 			
+			// checks if is in input or output
 			if (accessMode.equalsIgnoreCase(FtpResourceKeys.ACTION_WRITE)){
 				OutputStream os = ftp.storeFileStream(remoteFile);
 				if (os == null){

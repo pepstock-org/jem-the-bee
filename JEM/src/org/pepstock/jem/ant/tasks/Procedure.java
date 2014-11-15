@@ -190,7 +190,7 @@ public class Procedure extends Task implements TaskContainer {
 
 				// chekcs if they have the same name
 				if (taskStep.getName().equalsIgnoreCase(nestedTaskStep.getName())) {
-					// scans data descritpion
+					// scans data description
 					for (DataDescription nestedTaskDD : nestedTaskStep.getDataDescriptions()) {
 						for (Iterator<DataDescription> iterTask = taskStep.getDataDescriptions().iterator(); iterTask.hasNext();) {
 							DataDescription dd = iterTask.next();

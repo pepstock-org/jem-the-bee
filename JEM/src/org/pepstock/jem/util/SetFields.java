@@ -29,7 +29,7 @@ import org.pepstock.jem.jppf.UniqueInitialContext;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
- * Utility to set method value using the annotations toassign data sources and data descritpion
+ * Utility to set method value using the annotations toassign data sources and data description
  * 
  * @see AssignDataDescription
  * @see AssignDataSource

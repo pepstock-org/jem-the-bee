@@ -22,7 +22,7 @@ import org.pepstock.jem.util.Parser;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * This class represent a generic custom resource field in the resource templates <code>xml</code> file. <br>
+ * This class represent a generic resource field in the resource templates <code>xml</code> file. <br>
  * It contains all of the properties common to all types of fields.
  * @see XStream
  *  

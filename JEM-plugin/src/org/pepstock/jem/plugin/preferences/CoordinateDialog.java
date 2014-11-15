@@ -275,7 +275,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
         try {
         	// creates a URI to see if is a URL
 	        uri = new URI(host.getText());
-	        // checks teh scheme
+	        // checks the scheme
 			if (uri.getScheme() == null) {
 				Notifier.showMessage(this, "Invalid URI", "Host property '"+host.getText()+"' is not a valid URI.", MessageLevel.ERROR);
 				return;

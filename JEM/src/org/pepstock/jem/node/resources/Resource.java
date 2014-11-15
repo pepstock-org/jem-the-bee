@@ -24,7 +24,7 @@ import org.pepstock.jem.node.UpdateableItem;
 
 /**
  * Is common resource that all jobs can use for own properties.
- * 
+ * Is a container of properties
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2	
@@ -37,6 +37,9 @@ public final class Resource extends UpdateableItem implements Serializable{
 	private String type = null;
 
 	private Map<String, ResourceProperty> properties = new HashMap<String, ResourceProperty>();
+	
+	
+	private Map<String, String> customProperties = new HashMap<String, String>();
 	
 	/**
 	 * Empty constructor
@@ -98,7 +101,39 @@ public final class Resource extends UpdateableItem implements Serializable{
 		}
 		prop.setValue(value);
 	}
+	
 
+	/**
+	 * @return the customProperties
+	 */
+	public Map<String, String> getCustomProperties() {
+		return customProperties;
+	}
+
+	/**
+	 * @param customProperties the customProperties to set
+	 */
+	public void setCustomProperties(Map<String, String> customProperties) {
+		this.customProperties = customProperties;
+	}
+
+	/**
+	 * Returns the custom properties in string format [key-value;]* 
+	 * @return the custom properties in string format [key-value;]*
+	 */
+	public String getCustomPropertiesString(){
+		String result = null;
+		for (String key : this.customProperties.keySet()){
+			String value = this.customProperties.get(key);
+			if (result == null){
+				result = key.concat("=").concat(value).concat(";");
+			} else {
+				result = result.concat(key).concat("=").concat(value).concat(";");
+			}
+		}
+		return result;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

@@ -155,7 +155,7 @@ public class ResourceLockerImpl extends DefaultRmiObject implements ResourceLock
 		RequestLock requestLock = Main.getNode().getRequests().get(jobId);
 		requestLock.unlock();
 		requestLock.getResources().clear();
-		// store node after to have to clear teh requests
+		// store node after to have to clear the requests
 		NodeInfoUtility.storeNodeInfo(Main.getNode(), true);
 	}
 

@@ -298,7 +298,7 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 	}
 	
 	/**
-	 * A bean which contains all information of command to perform teh right sort.
+	 * A bean which contains all information of command to perform the right sort.
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 1.0	

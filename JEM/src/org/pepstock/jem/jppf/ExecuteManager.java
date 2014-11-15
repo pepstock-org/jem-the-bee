@@ -156,7 +156,7 @@ public class ExecuteManager {
 				}
 			}
 			// if file is null
-			// data descritpion is not found
+			// data description is not found
 			if (file == null){
 				throw new JPPFMessageException(JPPFMessage.JEMJ019E, dataDescription);
 			}

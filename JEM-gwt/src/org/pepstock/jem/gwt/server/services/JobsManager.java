@@ -523,7 +523,7 @@ public class JobsManager extends DefaultService {
 					topic.publish(storedJob);
 				}
 			} finally {
-				// always unlocks teh key
+				// always unlocks the key
 				queue.unlock(job.getId());
 			}
 		}

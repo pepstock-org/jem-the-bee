@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.gwt.client.panels.administration.nodesconfig;
+package org.pepstock.jem.gwt.client.panels.common;
 
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.Styles;
@@ -35,10 +35,10 @@ public class ListHeader extends FlexTable  {
 	
 	
 	/**
-	 * @param label 
+	 * @param header 
 	 * 
 	 */
-	public ListHeader() {
+	public ListHeader(String header) {
 		setHeight(Sizes.toString(Sizes.NODE_LIST_HEADER_PX));
 		setWidth(Sizes.toString(Sizes.NODE_LIST_WIDTH));
 		
@@ -55,7 +55,7 @@ public class ListHeader extends FlexTable  {
 		cf.setWordWrap(0, 0, false);
 		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
 		cf.addStyleName(0, 0, Styles.INSTANCE.common().bold());
-		setHTML(0, 0, "Nodes list");
+		setHTML(0, 0, header);
 	}
 	
 }

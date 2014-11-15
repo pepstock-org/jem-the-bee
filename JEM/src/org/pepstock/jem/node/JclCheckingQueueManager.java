@@ -242,7 +242,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	}
 	
 	/**
-	 * Manages teh excetpion doing the same thing for all exceptions
+	 * Manages the excetpion doing the same thing for all exceptions
 	 * @param e Exception to manage
 	 * @param job job instance
 	 * @param jcl read JCL

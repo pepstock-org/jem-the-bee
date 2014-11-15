@@ -331,7 +331,7 @@ public class NodeInfo implements Serializable {
 	}
 
 	/**
-	 * Returns teh started time of node
+	 * Returns the started time of node
 	 * 
 	 * @return the startedTime
 	 */

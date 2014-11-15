@@ -113,7 +113,5 @@ public final class Actions extends VerticalPanel {
 	public void setInspector(AbstractResourceInspector inspector) {
 		this.inspector = inspector;
 	}
-
-	
 	
 }

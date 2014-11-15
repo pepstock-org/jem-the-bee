@@ -77,38 +77,13 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 	public void cancel() {
 		hide();
 	}
-
-//	/**
-//	 * Render the panel of a OOTB resource 
-//	 * @param ootbResourceType the type of the resource panels
-//	 * @return a {@link ResourcesPropertiesPanel}
-//	 */
-//	public ResourcesPropertiesPanel renderOOTBResourcePanel(String ootbResourceType) {
-//		ResourcesPropertiesPanel ootbPanel = null;
-//		if (ootbResourceType.equals(JDBC)) {
-//			ootbPanel = new JDBCAttributesPanel(resource);
-//		} else if (ootbResourceType.equals(FTP)) {
-//			ootbPanel = new FTPAttributesPanel(resource);
-//		} else if (ootbResourceType.equals(JMS)) {
-//			ootbPanel = new JMSAttributesPanel(resource);
-//		} else if (ootbResourceType.equals(HTTP)) {
-//			ootbPanel = new HTTPAttributesPanel(resource);
-//		} else if (ootbResourceType.equals(JPPF)) {
-//			ootbPanel = new JPPFAttributesPanel(resource);
-//		} else if (ootbResourceType.equals(JEM)) {
-//			ootbPanel = new JEMAttributesPanel(resource);
-//		} else {
-//			throw new IllegalArgumentException("I don't know the panel to render for resource type " + ootbResourceType);
-//		}
-//		return ootbPanel;
-//	}
 	
 	/**
-	 * Render the panel that fit a CUSTOM reosuce
+	 * Render the panel that fit a resource
 	 * @param resourceDescriptor the panel descriptor
 	 * @return a {@link ResourcesPropertiesPanel}
 	 */
-	public ResourcesPropertiesPanel renderCustomResourcePanel(ResourceDescriptor resourceDescriptor) {
+	public ResourcesPropertiesPanel renderResourcePanel(ResourceDescriptor resourceDescriptor) {
 		return WidgetFactory.INSTANCE.renderResource(resourceDescriptor, resource);
 	}
 

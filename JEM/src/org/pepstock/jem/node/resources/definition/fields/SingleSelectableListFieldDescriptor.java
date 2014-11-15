@@ -10,7 +10,7 @@ import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
  * This class represents a field with one selectable value from a set of many
  * @author Marco "Fuzzo" Cuccato
  */
-public class SingleSelectableListFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor {
+public class SingleSelectableListFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor, MultiValuesField {
 
 	private static final long serialVersionUID = 4234336709246533878L;
 

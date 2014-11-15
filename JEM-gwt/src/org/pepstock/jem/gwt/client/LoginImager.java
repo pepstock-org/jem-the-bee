@@ -93,7 +93,7 @@ public class LoginImager extends AbsolutePanel {
 			}
 		});
 
-		// adds images and set teh position of logo
+		// adds images and set the position of logo
 		ImageResource jem = Images.INSTANCE.logoForLogin();
 		add(new Image(jem));
 		add(logo);

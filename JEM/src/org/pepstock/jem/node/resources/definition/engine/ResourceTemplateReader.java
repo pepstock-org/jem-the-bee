@@ -16,14 +16,10 @@
  */
 package org.pepstock.jem.node.resources.definition.engine;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
@@ -46,52 +42,45 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * <code>ResourceTemplateReader</code> receives (in the constructor) the path of
- * the <code>xml</code> file that describes the custom resources template useful
- * to define new resource type User interface. <br>
- * It reads the file and builds a {@link ResourceTemplate} and saves it in the
- * field {@link #resourceTemplate} and a {@link ResourceDescriptor} and saves it
- * in the field {@link #resourceDescriptor}. <br>
+ * the <code>xml</code> file (from file system or classpath) or url that
+ * describes the resources template useful to define new resource type User
+ * interface. <br>
+ * It reads the file (from file system or classpath) or url and builds a
+ * {@link ResourceTemplate} and saves it in the field {@link #resourceTemplate}
+ * and a {@link ResourceDescriptor} and saves it in the field
+ * {@link #resourceDescriptor}. <br>
  * It may receive a {@link XmlConfigurationResourceDefinition} in which to save
  * the <code>ResourceDescriptor</code> every time it changes.
  * 
  * <code>XStream</code> library is used. <br>
  * <code>ResourceTemplateReader</code> uses also the
- * <code>org.apache.commons.io.monitor</code> library to check automatically if
- * the file is changed: in this case <code>ResourceTemplateReader</code> reloads
- * it and build a new {@link ResourceTemplate}. <br>
- * The interval between each check is {@link #CHECK_INTERVAL} milliseconds. <br>
- * It extends {@link FileAlterationListenerAdaptor} to listen the file changes.
  * 
  * @see XStream
- * @see FileAlterationObserver
- * @see FileAlterationListener
- * @see FileAlterationListenerAdaptor
  * 
  * @author Alessandro Zambrini
  */
 public class ResourceTemplateReader {
 
 	/**
-	 * This field contains the the resource template ({@link ResourceTemplate})
-	 * produced reading the template <code>xml</code> file that describes the
-	 * custom resources template User interface.
+	 * This field contains the resource template ({@link ResourceTemplate})
+	 * produced reading the template <code>xml</code> file (from file system or
+	 * classpath) or url that describes the resources template User interface.
 	 */
 	private ResourceTemplate resourceTemplate = null;
 
 	/**
 	 * This field contains the the resource descriptor (
 	 * {@link ResourceDescriptor}) produced reading the template
-	 * <code>xml</code> file that describes the custom resources template User
+	 * <code>xml</code> file that describes the resources template User
 	 * interface.
 	 */
 	private ResourceDescriptor resourceDescriptor = null;
 
 	/**
-	 * The <code>File</code> that maps the resource template <code>xml</code>
-	 * file that describes the custom resource template useful to define new
-	 * resource type User interface.
+	 * The <code>URL</code> that maps the resource template <code>xml</code>
+	 * file (from file system or classpath) or url that describes the resource template useful to define new resource
+	 * type User interface.
 	 * 
-	 * @see File
 	 */
 	private URL resourceTemplateURL;
 
@@ -109,18 +98,16 @@ public class ResourceTemplateReader {
 	private XmlConfigurationResourceDefinition xmlConfigurationResourceDefinition = null;
 
 	/**
-	 * Constructor. It receives the path of the <code>xml</code> file that
-	 * describes the custom resources template User interface and a
+	 * Constructor. It receives the path of the <code>xml</code> URL that
+	 * describes the resources template User interface and a
 	 * {@link XmlConfigurationResourceDefinition} in which to save the
 	 * <code>ResourceDescriptor</code> every time it changes.
 	 * 
-	 * @param resourceTemplateURL the resource template file path.
+	 * @param resourceTemplateURL the resource template url.
 	 * @param xmlConfigurationResourceDefinition the
 	 *            {@link XmlConfigurationResourceDefinition} in which to save
 	 *            the <code>ResourceDescriptor</code> every time it changes.
-	 * @throws ResourceTemplateException if the resource template file directory
-	 *             does not exist, or is not a directory, or is the File System
-	 *             root directory.
+	 * @throws ResourceTemplateException if any errors occurs 
 	 * @see XStream
 	 */
 	public ResourceTemplateReader(URL resourceTemplateURL, XmlConfigurationResourceDefinition xmlConfigurationResourceDefinition) throws ResourceTemplateException {
@@ -131,13 +118,11 @@ public class ResourceTemplateReader {
 	}
 
 	/**
-	 * Constructor. It receives the path of the <code>xml</code> file that
-	 * describes the custom resources template User interface.
+	 * Constructor. It receives the path of the <code>xml</code> url that
+	 * describes the resources template User interface.
 	 * 
-	 * @param resourceTemplateURL the resource template URL. changes.
-	 * @throws ResourceTemplateException if the resource template file directory
-	 *             does not exist, or is not a directory, or is the File System
-	 *             root directory.
+	 * @param resourceTemplateURL the resource template URL.
+	 * @throws ResourceTemplateException if any errors occurs
 	 * @see XStream
 	 */
 	public ResourceTemplateReader(URL resourceTemplateURL) throws ResourceTemplateException {
@@ -146,16 +131,16 @@ public class ResourceTemplateReader {
 
 	/**
 	 * This method returns the {@link #resourceTemplate} created reading the
-	 * resource template <code>xml</code> file. <br>
+	 * resource template <code>xml</code> url. <br>
 	 * If in the initialization phase occurred problems starting automatic
-	 * control, this method read the file, because it could be changed. <br>
+	 * control, this method read the url, because it could be changed. <br>
 	 * If the automatic control is started but always occurred problems reading
-	 * the file, return a {@link ResourceTemplateException} and the field
+	 * the url, return a {@link ResourceTemplateException} and the field
 	 * {@link #resourceTemplate} is <code>null</code>. If the automatic control
 	 * is started correctly, it returns field {@link #resourceTemplate} updated.
 	 * 
 	 * @return The resource template created reading the resource template
-	 *         <code>xml</code> file for User interface.
+	 *         <code>xml</code> url for User interface.
 	 * @see ResourceTemplate
 	 * 
 	 * @throws ResourceTemplateException throwed if a reading exception
@@ -164,16 +149,16 @@ public class ResourceTemplateReader {
 	private ResourceTemplate getResourceTemplate() throws ResourceTemplateException {
 		if (null == this.resourceTemplate) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateURL);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL));
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E, this.resourceTemplateURL);
 		}
 		return this.resourceTemplate;
 	}
 
 	/**
 	 * This method returns the {@link #resourceDescriptor} created reading the
-	 * resource template <code>xml</code> file. <br>
+	 * resource template <code>xml</code> url. <br>
 	 * If in the initialization phase occurred problems starting automatic
-	 * control, this method read the file, because it could be changed. <br>
+	 * control, this method read the url, because it could be changed. <br>
 	 * If the automatic control is started but always occurred problems reading
 	 * the file, return a {@link ResourceTemplateException} and the field
 	 * {@link #resourceDescriptor} is <code>null</code>. If the automatic
@@ -181,7 +166,7 @@ public class ResourceTemplateReader {
 	 * {@link #resourceDescriptor} updated.
 	 * 
 	 * @return The resource descriptor created reading the resource template
-	 *         <code>xml</code> file for User interface.
+	 *         <code>xml</code> url for User interface.
 	 * @see ResourceTemplate
 	 * @see ResourceDescriptor
 	 * 
@@ -191,31 +176,20 @@ public class ResourceTemplateReader {
 	public ResourceDescriptor getResourceDescriptor() throws ResourceTemplateException {
 		if (null == this.resourceDescriptor) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, this.resourceTemplateURL);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL));
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E, this.resourceTemplateURL);
 		}
 		return this.resourceDescriptor;
 	}
 
 	/**
 	 * This method initializes the <code>ResourceTemplateReader</code> <br>
-	 * It sets the alias, for the <code>xml</code> resource template file. <br>
+	 * It sets the alias, for the <code>xml</code> resource template url. <br>
 	 * It initializes the field <code>xstream</code> using {@link XStream}. <br>
-	 * Reads and loads the <code>xml</code> resource template file <br>
-	 * It initializes the components to check if someone modifies the resource
-	 * template <code>xml</code> file: <br>
-	 * <dd>- Initializes the field <code>resourceTemplateFileObserver</code>
-	 * with a new {@link FileAlterationObserver} using the directory in which is
-	 * placed the resource template file (the field
-	 * <code>resourceTemplateFile</code>). <dd>- Add
-	 * <code>this ResourceTemplateReader</code> as a
-	 * {@link FileAlterationListener} that listens the file changes. <dd>-
-	 * Creates a <code>FileAlterationMonitor</code> that checks the template
-	 * <code>xml</code> file changes every {@link #CHECK_INTERVAL} milliseconds.
-	 * If the automatic file modifications control doesn't start correctly, the
-	 * field <code>automaticControlStarted</code> is set to <code>false</code>.
-	 * @param type set the custom resource type
-	 * @param description set the custom resource description 
-	 * @throws ResourceTemplateException if any error occurs reading the resource template
+	 * Reads and loads the <code>xml</code> resource template url <br>
+	 * @param type set the resource type
+	 * @param description set the resource description
+	 * @throws ResourceTemplateException if any error occurs reading the
+	 *             resource template
 	 * 
 	 */
 	public void initialize(String type, String description) throws ResourceTemplateException {
@@ -223,7 +197,7 @@ public class ResourceTemplateReader {
 
 		aliasXml(xstream);
 		// loads resource template
-		try{
+		try {
 			readResourceTemplate(type, description);
 		} catch (ResourceTemplateException ex) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR003E, ex);
@@ -233,7 +207,7 @@ public class ResourceTemplateReader {
 
 	/**
 	 * Sets all the aliases in the {@link XStream} parameter. It is necessary
-	 * for correct mapping from the <code>xml</code> file to the created
+	 * for correct mapping from the <code>xml</code> url to the created
 	 * {@link ResourceTemplate} object.
 	 * 
 	 * @param xstream the <code>XStream</code> object in which to set aliases.
@@ -259,6 +233,7 @@ public class ResourceTemplateReader {
 		xstream.addImplicitCollection(ResourceTemplate.class, ResourceTemplate.SECTIONS_FIELD);
 
 		xstream.useAttributeFor(SectionTemplate.class, SectionTemplate.NAME_ATTRIBUTE);
+		xstream.useAttributeFor(SectionTemplate.class, SectionTemplate.PROPERTIES_EDITOR_ATTRIBUTE);
 		xstream.aliasField(TextFieldTemplate.MAPPED_XML_TAG, SectionTemplate.class, SectionTemplate.FIELDS_FIELD);
 		xstream.aliasField(SingleSelectableListFieldTemplate.MAPPED_XML_TAG, SectionTemplate.class, SectionTemplate.FIELDS_FIELD);
 		xstream.aliasField(MultiSelectableListFieldTemplate.MAPPED_XML_TAG, SectionTemplate.class, SectionTemplate.FIELDS_FIELD);
@@ -290,13 +265,11 @@ public class ResourceTemplateReader {
 	}
 
 	/**
-	 * Method that reads the resource template file, and creates a
+	 * Method that reads the resource template url, and creates a
 	 * <code>ResourceTemplate</code> end a <code>ResourceDescriptor</code>
 	 * object. It saves the <code>ResourceTemplate</code> in the field
 	 * {@link #resourceTemplate} and the <code>ResourceDescriptor</code> in the
-	 * field {@link #resourceDescriptor}. <br>
-	 * If it reads a resource already existing and the resource type has
-	 * changed, removes the old type resources.
+	 * field {@link #resourceDescriptor}.
 	 * 
 	 * @see ResourceTemplate
 	 * @see ResourceDescriptor
@@ -308,11 +281,13 @@ public class ResourceTemplateReader {
 		ResourceTemplate template = null;
 		InputStream is = null;
 		try {
+			// open URL
 			is = this.resourceTemplateURL.openStream();
+			// reads template
 			template = (ResourceTemplate) this.xstream.fromXML(is);
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR005E, ex, this.resourceTemplateURL);
-			throw new ResourceTemplateException(ResourceMessage.JEMR005E.toMessage().getFormattedMessage(this.resourceTemplateURL), ex);
+			throw new ResourceTemplateException(ResourceMessage.JEMR005E, ex, this.resourceTemplateURL);
 		} finally {
 			if (is != null) {
 				try {
@@ -323,18 +298,20 @@ public class ResourceTemplateReader {
 			}
 		}
 		// checks if type is null. Shouldn't be
-		if (type == null && template.getType() == null){
+		if (type == null && template.getType() == null) {
 			// throw an exception
-			throw new ResourceTemplateException(ResourceMessage.JEMR004E.toMessage().getFormattedMessage());
-		} else if (type != null){
-			template.setType(type);	
+			throw new ResourceTemplateException(ResourceMessage.JEMR004E);
+		} else if (type != null) {
+			// if here, means that the annotation has been set
+			// and this override the XML attribute
+			template.setType(type);
 		}
 		
 		// sets description
-		if (description != null){
+		if (description != null) {
 			template.setDescription(description);
 		}
-		
+
 		ResourceDescriptor newResourceDescriptor = ResourceTemplatesFactory.buildResourceDescriptor(template);
 		LogAppl.getInstance().emit(ResourceMessage.JEMR021I, newResourceDescriptor.getType(), this.resourceTemplateURL);
 		if (null != this.xmlConfigurationResourceDefinition) {

@@ -22,13 +22,13 @@ import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
-import javax.naming.spi.ObjectFactory;
 
 import org.jppf.utils.TypedProperties;
 import org.pepstock.jem.jppf.JPPFMessage;
 import org.pepstock.jem.jppf.JPPFMessageException;
 import org.pepstock.jem.jppf.JPPFUtil;
 import org.pepstock.jem.jppf.Keys;
+import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 
 /**
@@ -38,7 +38,7 @@ import org.pepstock.jem.node.tasks.jndi.JNDIException;
  * @version 1.4
  * 
  */
-public class JppfFactory implements ObjectFactory {
+public class JppfFactory extends AbstractObjectFactory {
 
 	
 	

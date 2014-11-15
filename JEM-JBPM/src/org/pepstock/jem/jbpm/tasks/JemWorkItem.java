@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * Is a standard interface that you should extend to use the JEM work item.<br>
- * The instance of this interface will be created by workitem and teh <code>execute</code> mthod will be performed.
+ * The instance of this interface will be created by workitem and the <code>execute</code> mthod will be performed.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2

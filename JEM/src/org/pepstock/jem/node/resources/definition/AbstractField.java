@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 /**
- * This class represent a generic custom resource field. 
+ * This class represent a generic resource field. 
  * @author Marco "Fuzzo" Cuccato
  */
 public abstract class AbstractField implements Serializable {

@@ -274,7 +274,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
     				for (String pattern : dsPattern.getPatterns()){
     					// creates patterns
     					Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
-    					// gets teh data path name
+    					// gets the data path name
     					// if is not defined, creates a warning
     					String name = dsPattern.getPathName();
     					if (name != null){
@@ -286,7 +286,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
     							mps.setCurrent(mp);
     							// checks if old is defined
     							if (dsPattern.getOldPathName() != null && dsPattern.getOldPathName().trim().length() > 0){
-    								// checks if exists teh old path
+    								// checks if exists the old path
     								Path old = getPath(dsPattern.getOldPathName());
     								mps.setOld(old);
     								if (old == null){

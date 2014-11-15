@@ -30,6 +30,7 @@ import javax.naming.StringRefAddr;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -37,7 +38,7 @@ import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 
 /**
- * Manages teh JNDI context for Chunks. Be aware that FTP resources (defined out-of-the-box) couldn't be used here.
+ * Manages the JNDI context for Chunks. Be aware that FTP resources (defined out-of-the-box) couldn't be used here.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
@@ -130,6 +131,11 @@ public final class ChunkDataSourcesManager {
 			// loads all properties into RefAddr
 			for (ResourceProperty property : properties.values()) {
 				ref.add(new StringRefAddr(property.getName(), property.getValue()));
+			}
+			
+			// loads custom properties in a string format
+			if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+				ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
 			}
 
 			// binds the object with format {type]/[name]

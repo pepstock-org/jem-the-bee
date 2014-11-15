@@ -89,7 +89,7 @@ public class GfsManager extends DefaultService {
 			for (Iterator<GfsFile> iter = result.iterator(); iter.hasNext();) {
 				GfsFile file = iter.next();
 				boolean match = match(file);
-				// renoves teh file because not authorized
+				// renoves the file because not authorized
 				if (!match) {
 					iter.remove();
 				}

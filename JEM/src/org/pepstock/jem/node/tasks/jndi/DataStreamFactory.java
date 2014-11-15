@@ -77,7 +77,7 @@ public class DataStreamFactory implements ObjectFactory {
 			if (object instanceof Reference) {
 				Reference reference = (Reference) object;
 
-				// get XML string representation of data descritpion impl,
+				// get XML string representation of data description impl,
 				// wrapped by a data stream
 				RefAddr datastreamsAddr = reference.get(StringRefAddrKeys.DATASTREAMS_KEY);
 

@@ -69,8 +69,8 @@ public class ResourceTemplatesFactory {
 	 */
 	public static Iterator<ResourceDescriptor> buildResourceDescriptors(ResourceTemplates resourceTemplates) throws ResourceTemplateException{
 		if (null == resourceTemplates) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "ResourceDescriptor Iterator", "ResourceTemplates" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "ResourceDescriptor Iterator", "ResourceTemplates" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "ResourceDescriptor Iterator", "ResourceTemplates");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "ResourceDescriptor Iterator", "ResourceTemplates");
 		}
 		List<ResourceDescriptor> resources = new ArrayList<ResourceDescriptor>();
 		Iterator<ResourceTemplate> templates = resourceTemplates.getContent().iterator();
@@ -89,15 +89,16 @@ public class ResourceTemplatesFactory {
 	 */
 	public static ResourceDescriptor buildResourceDescriptor(ResourceTemplate resourceTemplate) throws ResourceTemplateException{
 		if (null == resourceTemplate) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "ResourceDescriptor", "ResourceTemplate" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "ResourceDescriptor", "ResourceTemplate" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "ResourceDescriptor", "ResourceTemplate");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "ResourceDescriptor", "ResourceTemplate");
 		}
 		if (null == resourceTemplate.getType()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "ResourceDescriptor", "ResourceTemplate Type" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "ResourceDescriptor", "ResourceTemplate Type" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "ResourceDescriptor", "ResourceTemplate Type");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "ResourceDescriptor", "ResourceTemplate Type");
 		}
 		ResourceDescriptor resource = new ResourceDescriptor();
 		resource.setType(resourceTemplate.getType());
+		resource.setDescription(resourceTemplate.getDescription());
 		List<SectionTemplate> sectionTemplates = resourceTemplate.getContent();
 		for (int i = 0; i < sectionTemplates.size(); i++) {
 			SectionDescriptor section = buildSectionDescriptor(sectionTemplates.get(i));
@@ -114,21 +115,22 @@ public class ResourceTemplatesFactory {
 	 */
 	private static SectionDescriptor buildSectionDescriptor(SectionTemplate sectionTemplate) throws ResourceTemplateException{
 		if (null == sectionTemplate) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "SectionDescriptor", "SectionTemplate" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "SectionDescriptor", "SectionTemplate" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "SectionDescriptor", "SectionTemplate");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "SectionDescriptor", "SectionTemplate");
 		}
 		SectionDescriptor section = null;
 		if (null == sectionTemplate.getName()) {
 			section = new SectionDescriptor();
 		} else {
 			section = new SectionDescriptor(sectionTemplate.getName());
+			section.setPropertiesEditor(sectionTemplate.isPropertiesEditor());
 		}
 		List<AbstractFieldTemplate> abstractFieldTemplates = sectionTemplate.getContent();
 		if (null != abstractFieldTemplates) {
 			for (int i = 0; i < abstractFieldTemplates.size(); i++) {
 				if (abstractFieldTemplates.get(i) instanceof ListFieldTemplate && abstractFieldTemplates.size() > 1) {
 					LogAppl.getInstance().emit(ResourceMessage.JEMR022E);
-					throw new ResourceTemplateException(ResourceMessage.JEMR022E.toMessage().getMessage());
+					throw new ResourceTemplateException(ResourceMessage.JEMR022E);
 				}
 				AbstractFieldDescriptor field = buildFieldDescriptor(abstractFieldTemplates.get(i));
 				section.addFields(field);
@@ -145,8 +147,8 @@ public class ResourceTemplatesFactory {
 	 */
 	private static AbstractFieldDescriptor buildFieldDescriptor(AbstractFieldTemplate abstractFieldTemplate) throws ResourceTemplateException{
 		if (null == abstractFieldTemplate) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "FieldDescriptor", "FieldTemplate" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "FieldDescriptor", "FieldTemplate" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "FieldDescriptor", "FieldTemplate");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "FieldDescriptor", "FieldTemplate");
 		}
 		AbstractFieldDescriptor abstractFieldDescriptor = null;
 		if (abstractFieldTemplate instanceof PasswordFieldTemplate) {
@@ -163,7 +165,7 @@ public class ResourceTemplatesFactory {
 			abstractFieldDescriptor = buildCheckBoxesListFieldDescriptor((MultiSelectableListFieldTemplate) abstractFieldTemplate);
 		} else {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR008E, abstractFieldTemplate.getClass().getName());
-			throw new ResourceTemplateException(ResourceMessage.JEMR008E.toMessage().getFormattedMessage(abstractFieldTemplate.getClass().getName()));
+			throw new ResourceTemplateException(ResourceMessage.JEMR008E, abstractFieldTemplate.getClass().getName());
 		}
 		addCommonAttributes(abstractFieldTemplate, abstractFieldDescriptor);
 		return abstractFieldDescriptor;
@@ -196,12 +198,12 @@ public class ResourceTemplatesFactory {
 	 */
 	private static PasswordFieldDescriptor buildPasswordFieldDescriptor(PasswordFieldTemplate passwordFieldTemplate) throws ResourceTemplateException {
 		if (null == passwordFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "PasswordFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "PasswordFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "PasswordFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "PasswordFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == passwordFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "PasswordFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "PasswordFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "PasswordFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "PasswordFieldDescriptor", "FieldTemplate Label");
 		}
 		PasswordFieldDescriptor passwordField = new PasswordFieldDescriptor(passwordFieldTemplate.getKey(), passwordFieldTemplate.getLabel());
 		if (null != passwordFieldTemplate.getDescription()) {
@@ -219,12 +221,12 @@ public class ResourceTemplatesFactory {
 	 */
 	private static TextFieldDescriptor buildTextFieldDescriptor(TextFieldTemplate textFieldTemplate) throws ResourceTemplateException {
 		if (null == textFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "TextFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == textFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "TextFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Label");
 		}
 		TextFieldDescriptor textField = new TextFieldDescriptor(textFieldTemplate.getKey(), textFieldTemplate.getLabel());
 		if (null != textFieldTemplate.getDescription()) {
@@ -247,12 +249,12 @@ public class ResourceTemplatesFactory {
 	 */
 	private static CheckBoxFieldDescriptor buildCheckBoxFieldDescriptor(CheckBoxFieldTemplate checkBoxFieldTemplate) throws ResourceTemplateException {
 		if (null == checkBoxFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "CheckBoxFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "CheckBoxFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == checkBoxFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "CheckBoxFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "CheckBoxFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Label");
 		}
 		CheckBoxFieldDescriptor checkBoxField = new CheckBoxFieldDescriptor(checkBoxFieldTemplate.getKey(), checkBoxFieldTemplate.getLabel());
 		if (null != checkBoxFieldTemplate.getDescription()) {
@@ -275,16 +277,16 @@ public class ResourceTemplatesFactory {
 	 */
 	private static SingleSelectableListFieldDescriptor buildSingleSelectableListFieldDescriptor(SingleSelectableListFieldTemplate singleSelectableListFieldTemplate) throws ResourceTemplateException {
 		if (null == singleSelectableListFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "SingleSelectableListFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "SingleSelectableListFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "SingleSelectableListFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "SingleSelectableListFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == singleSelectableListFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "SingleSelectableListFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "SingleSelectableListFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "SingleSelectableListFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "SingleSelectableListFieldDescriptor", "FieldTemplate Label");
 		}
 		if (null == singleSelectableListFieldTemplate.getContent() || singleSelectableListFieldTemplate.getContent().isEmpty()) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR009E);
-			throw new ResourceTemplateException(ResourceMessage.JEMR009E.toMessage().getMessage());
+			throw new ResourceTemplateException(ResourceMessage.JEMR009E);
 		}
 		String defaultValue = singleSelectableListFieldTemplate.getDefaultValue();
 		List<ValueTemplate> valueTemplates = singleSelectableListFieldTemplate.getContent();
@@ -299,7 +301,7 @@ public class ResourceTemplatesFactory {
 		}
 		if (null != defaultValue && !foundDefaultValue) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR010E, defaultValue);
-			throw new ResourceTemplateException(ResourceMessage.JEMR010E.toMessage().getFormattedMessage(defaultValue));
+			throw new ResourceTemplateException(ResourceMessage.JEMR010E, defaultValue);
 		}
 		SingleSelectableListFieldDescriptor singleSelectableListField = new SingleSelectableListFieldDescriptor(singleSelectableListFieldTemplate.getKey(), singleSelectableListFieldTemplate.getLabel(), values);
 		if (null != defaultValue) {
@@ -322,16 +324,16 @@ public class ResourceTemplatesFactory {
 	 */
 	private static CheckBoxesListFieldDescriptor buildCheckBoxesListFieldDescriptor(MultiSelectableListFieldTemplate multiSelectableListFieldTemplate) throws ResourceTemplateException {
 		if (null == multiSelectableListFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "CheckBoxesListFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "CheckBoxesListFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "CheckBoxesListFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "CheckBoxesListFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == multiSelectableListFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "CheckBoxesListFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "CheckBoxesListFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "CheckBoxesListFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "CheckBoxesListFieldDescriptor", "FieldTemplate Label");
 		}
 		if (null == multiSelectableListFieldTemplate.getContent() || multiSelectableListFieldTemplate.getContent().isEmpty()) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR009E);
-			throw new ResourceTemplateException(ResourceMessage.JEMR009E.toMessage().getMessage());
+			throw new ResourceTemplateException(ResourceMessage.JEMR009E);
 		}
 		CheckBoxesListFieldDescriptor checkBoxesListFieldDescriptor = new CheckBoxesListFieldDescriptor(multiSelectableListFieldTemplate.getKey(), multiSelectableListFieldTemplate.getLabel());
 		List<ValueTemplate> valueTemplates = multiSelectableListFieldTemplate.getContent();
@@ -358,12 +360,12 @@ public class ResourceTemplatesFactory {
 	 */
 	private static TextListFieldDescriptor buildTextListFieldDescriptor(ListFieldTemplate listFieldTemplate) throws ResourceTemplateException {
 		if (null == listFieldTemplate.getKey()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "TextFieldDescriptor", "FieldTemplate Key" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Key" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Key");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Key");
 		}
 		if (null == listFieldTemplate.getLabel()) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, new Object[] { "TextFieldDescriptor", "FieldTemplate Label" });
-			throw new ResourceTemplateException(ResourceMessage.JEMR007E.toMessage().getFormattedMessage(new Object[] { "TextFieldDescriptor", "FieldTemplate Label" }));
+			LogAppl.getInstance().emit(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Label");
+			throw new ResourceTemplateException(ResourceMessage.JEMR007E, "TextFieldDescriptor", "FieldTemplate Label" );
 		}
 		TextListFieldDescriptor textListFieldDescriptor = new TextListFieldDescriptor(listFieldTemplate.getKey(), listFieldTemplate.getLabel(), null);
 		List<ValueTemplate> valueTemplates = listFieldTemplate.getContent();

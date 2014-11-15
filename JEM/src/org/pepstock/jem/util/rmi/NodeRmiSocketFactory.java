@@ -28,7 +28,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.UtilMessage;
 
 /**
- * Custom RMI socket factory to check if the job is aithorized to connected directly teh node by RMI protocol.
+ * Custom RMI socket factory to check if the job is aithorized to connected directly the node by RMI protocol.
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */

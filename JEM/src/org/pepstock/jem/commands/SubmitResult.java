@@ -37,7 +37,7 @@ public class SubmitResult {
 	}
 
 	/**
-	 * Constructs teh object using both return code and job id
+	 * Constructs the object using both return code and job id
 	 * @param rc the return code of the job
 	 * @param jobId
 	 */

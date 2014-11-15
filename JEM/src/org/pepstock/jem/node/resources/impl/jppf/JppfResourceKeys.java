@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * THis resource object represents a JPPF description to create a JPPF properties.
+ * This resource object represents a JPPF description to create a JPPF properties.
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -35,7 +35,7 @@ public final class JppfResourceKeys {
 	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(ADDRESSES));
 
 	/**
-	 * To avoid any instatiation
+	 * To avoid any instantiation
 	 */
 	private JppfResourceKeys() {
 	}

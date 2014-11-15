@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import com.google.gwt.user.client.ui.TabBar;
 
 /**
- * A custom Resource
+ * A Resource
  * @author Marco "Fuzzo" Cuccato
  *
  */

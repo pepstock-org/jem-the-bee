@@ -41,7 +41,7 @@ public final class Jcl extends AbstractJcl implements Serializable {
 	public static final String UNKNOWN = "UNKNOWN";
 	
 	/**
-	 * Describes teh language 
+	 * Describes the language 
 	 */
 	public static final String DEFAULT_MODE = "xml";
 
@@ -204,6 +204,10 @@ public final class Jcl extends AbstractJcl implements Serializable {
 		return contentToBeExecuted;
 	}
 	
+	/**
+	 * Creates a Unknown jcl, when JEM is not able to parse completely a JCL
+	 * @return a unknown JCL
+	 */
 	public static final Jcl createUnknownJcl(){
 		Jcl unknown = new Jcl();
 		unknown.setType(UNKNOWN);

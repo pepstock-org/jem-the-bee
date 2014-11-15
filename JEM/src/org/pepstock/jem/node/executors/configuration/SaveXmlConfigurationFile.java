@@ -76,7 +76,7 @@ public abstract class SaveXmlConfigurationFile extends DefaultExecutor<Configura
 			}
 			// writes file
 			FileUtils.writeStringToFile(file, configFile.getContent());
-			// recreates teh configuration file to get back 
+			// recreates the configuration file to get back 
 			file = new File(jemNodeConfigFile);
 			ConfigurationFile newConfigFile = new ConfigurationFile();
 			newConfigFile.setContent(configFile.getContent());

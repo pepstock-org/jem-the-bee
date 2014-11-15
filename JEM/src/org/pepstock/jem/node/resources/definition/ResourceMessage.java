@@ -45,25 +45,25 @@ public enum ResourceMessage implements MessageInterface{
 	/**
 	 * "Configuration resource template location \"{0}\" does not exist.", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs if the resource template location for the custom resource User interface (specified in the log) does not exist.<br>An exception is thrown.<br>Check the resource definition class.")
+	@Description(explanation = "It occurs if the resource template location for the resource User interface (specified in the log) does not exist.<br>An exception is thrown.<br>Check the resource definition class.")
 	JEMR002E(2, "Configuration resource template location \"{0}\" does not exist.", MessageLevel.ERROR),
 	
 	/**
 	 * "Error loading ResourceTemplate.", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs if there is a problem loading the resource template for the custom resources User interface.<br>No exception is thrown, but this error is logged.<br>Check if the resource template location and correct it. Automatically it will be reloaded, so no node restart is needed.")
+	@Description(explanation = "It occurs if there is a problem loading the resource template for the resources User interface.<br>No exception is thrown, but this error is logged.<br>Check if the resource template location and correct it. Automatically it will be reloaded, so no node restart is needed.")
 	JEMR003E(3, "Error loading ResourceTemplate.", MessageLevel.ERROR),
 
 	/**
 	 * "Type of resource is null", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs if teh type of resource is missing.<br>Please check your resource definition class, adding @ResourceMetaData annotation.")
+	@Description(explanation = "It occurs if the type of resource is missing.<br>Please check your resource definition class, adding @ResourceMetaData annotation.")
 	JEMR004E(4, "Type of resource is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Error reading resource template \"{0}\".", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs if there is a problem reading the resource template for the custom resources User interface.<br>An exception is thrown.<br>Check if the resource template is an XML well formed and correct it.")
+	@Description(explanation = "It occurs if there is a problem reading the resource template for the resources User interface.<br>An exception is thrown.<br>Check if the resource template is an XML well formed and correct it.")
 	JEMR005E(5, "Error reading resource template \"{0}\".", MessageLevel.ERROR),
 
 //	/**
@@ -98,32 +98,32 @@ public enum ResourceMessage implements MessageInterface{
 	JEMR010E(10, "In a SingleSelectableListFieldTemplate the default value \"{0}\" must be contained inside the list of values.", MessageLevel.ERROR),
 	
 	/**
-	 * "Configured custom resource definition \"{0}\" is not an instance of ResourceDefinition"
+	 * "Configured resource definition \"{0}\" is not an instance of ResourceDefinition"
 	 * , MessageLevel.ERROR
 	 */
 	@Description(explanation = "Display the class name which wasn't able to be loaded.<br> Check the class name and classpath of JEM node because is not a ResourceDefinition.")
-	JEMR011E(11, "Configured custom resource definition \"{0}\" is not an instance of ResourceDefinition", MessageLevel.ERROR),
+	JEMR011E(11, "Configured resource definition \"{0}\" is not an instance of ResourceDefinition", MessageLevel.ERROR),
 	
 	/**
-	 * "Impossible to add Configured custom resource definition: \"{0}\" is null."
+	 * "Impossible to add Configured resource definition: \"{0}\" is null."
 	 * , MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs adding a Configured custom resource definition because the value is null. <br>Check the JEM node configuration and the custom classes added.")
-	JEMR012E(12, "Impossible to add Configured custom resource definition: \"{0}\" is null.", MessageLevel.ERROR),
+	@Description(explanation = "It occurs adding a Configured resource definition because the value is null. <br>Check the JEM node configuration and the classes added.")
+	JEMR012E(12, "Impossible to add Configured resource definition: \"{0}\" is null.", MessageLevel.ERROR),
 	
 	/**
-	 * "Impossible to get Configured custom resource definition: \"{0}\" is null."
+	 * "Impossible to get Configured resource definition: \"{0}\" is null."
 	 * , MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs getting a Configured custom resource definition because the value is null.")
-	JEMR013E(13, "Impossible to get Configured custom resource definition: \"{0}\" is null.", MessageLevel.ERROR),
+	@Description(explanation = "It occurs getting a Configured resource definition because the value is null.")
+	JEMR013E(13, "Impossible to get Configured resource definition: \"{0}\" is null.", MessageLevel.ERROR),
 
 	/**
-	 * "Resource type \"{0}\" not found inside the Configured custom resource definitions."
+	 * "Resource type \"{0}\" not found inside the Configured resource definitions."
 	 * , MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs getting a Configured custom resource definition because the resource type is not configured.<br>Check the JEM node configuration and the custom classes added.")
-	JEMR014E(14, "Resource type \"{0}\" not found inside the Configured custom resource definitions.", MessageLevel.ERROR),
+	@Description(explanation = "It occurs getting a Configured resource definition because the resource type is not configured.<br>Check the JEM node configuration and the classes added.")
+	JEMR014E(14, "Resource type \"{0}\" not found inside the Configured resource definitions.", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to load class \"{0}\"", MessageLevel.ERROR
@@ -144,11 +144,11 @@ public enum ResourceMessage implements MessageInterface{
 	JEMR017E(17, "No resource template is configured for Resource\"{0}\". Add template in configuration.", MessageLevel.ERROR),
 	
 	/**
-	 * "Impossible to find Configured custom resource definition: \"{0}\" is null."
+	 * "Impossible to find Configured resource definition: \"{0}\" is null."
 	 * , MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs finding a Configured custom resource definition because the value is null.")
-	JEMR018E(18, "Impossible to find Configured custom resource definition: \"{0}\" is null.", MessageLevel.ERROR),
+	@Description(explanation = "It occurs finding a Configured resource definition because the value is null.")
+	JEMR018E(18, "Impossible to find Configured resource definition: \"{0}\" is null.", MessageLevel.ERROR),
 
 	/**
 	 * "Removed resource \"{0}\" of type \"{1}\": type no longer exists!"
@@ -161,7 +161,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * Loaded ResourceDescriptor from \"{0}\".", MessageLevel.INFO
 	 * , MessageLevel.INFO
 	 */
-	@Description(explanation = "It occurs when a custom resource template has been loaded.")
+	@Description(explanation = "It occurs when a resource template has been loaded.")
 	JEMR020I(20, "Loaded ResourceDescriptor from \"{0}\".", MessageLevel.INFO),
 	
 	/**
@@ -181,8 +181,8 @@ public enum ResourceMessage implements MessageInterface{
 	 * ""
 	 * , MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when you try to load more than one custom resource with the same type")
-	JEMR023E(23, "Found duplicate custom resource with type \"{0}\". Check the configuration.", MessageLevel.ERROR),
+	@Description(explanation = "It occurs when you try to load more than one resource with the same type")
+	JEMR023E(23, "Found duplicate resource with type \"{0}\". Check the configuration.", MessageLevel.ERROR),
 	
 	/**
 	 * "Changing a resource definition type from \"{0}\" to \"{1}\", it was not possible to clean the resources of the old type!"
@@ -202,7 +202,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Deleted all resources of type: \"{0}\"."
 	 * , MessageLevel.INFO
 	 */
-	@Description(explanation = "It occurs when a custom resource type is deleted: all corresponding resources must be removed.")
+	@Description(explanation = "It occurs when a resource type is deleted: all corresponding resources must be removed.")
 	JEMR026I(26, "Deleted all resources of type: \"{0}\".", MessageLevel.INFO),
 	
 	/**

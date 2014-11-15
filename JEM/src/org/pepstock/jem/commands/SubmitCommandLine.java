@@ -132,7 +132,7 @@ public abstract class SubmitCommandLine extends UserIDCommand {
 	}
 
 	/**
-	 * It's called before submitting job. Here it checks teh arguments passed by command line,
+	 * It's called before submitting job. Here it checks the arguments passed by command line,
 	 * saving the values
 	 * 
 	 * @throws SubmitException if any exception occurs

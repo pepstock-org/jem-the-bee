@@ -25,6 +25,7 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.CellTableStyle;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.gwt.client.panels.common.ListHeader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellList;
@@ -94,7 +95,7 @@ public class NodesList extends VerticalPanel implements ResizeCapable {
 	    scrollHolder.addStyleName(Styles.INSTANCE.administration().nodeList());
 	    scrollHolder.add(cellListScroller);
 
-	    add(new ListHeader());
+	    add(new ListHeader("Nodes List"));
 	    add(scrollHolder);
 	}
 

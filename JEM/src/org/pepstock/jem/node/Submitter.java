@@ -200,7 +200,7 @@ public class Submitter implements Runnable {
 	}
 
 	/**
-	 * Moves teh job instance from RUNNING queue to OUTPUT queue.<br>
+	 * Moves the job instance from RUNNING queue to OUTPUT queue.<br>
 	 * It notify the message for job end, using Hazelcast topic structure.
 	 * 
 	 * @see org.pepstock.jem.node.Queues#RUNNING_QUEUE

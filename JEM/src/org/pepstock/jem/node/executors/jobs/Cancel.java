@@ -97,6 +97,6 @@ public class Cancel extends DefaultExecutor<ExecutionResult>{
 	public void checkShutDown() throws ExecutorException{
 		// NOP
 		// this removes the checking if is shutting down
-		// because someone would cancel teh job to close the node
+		// because someone would cancel the job to close the node
 	}
 }

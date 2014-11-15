@@ -61,7 +61,7 @@ public class ExecutionEnvironment extends AbstractExecutionEnvironment implement
 	/**
 	 * Minimum amount of memory, equals to minimum one
 	 */
-	public static final int MINIMUM_MEMORY = Jcl.DEFAULT_MEMORY;
+	public static final int MINIMUM_MEMORY = 0;
 
 	private List<String> staticAffinities = new LinkedList<String>();
 	

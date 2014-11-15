@@ -130,7 +130,7 @@ public class RegistryContainer {
 			LogAppl.getInstance().emit(UtilMessage.JEMB006I, name);
 		}
 
-		// And then binds teh passed object by name
+		// And then binds the passed object by name
 		try {
 			registry.bind(name, obj);
 		} catch (AlreadyBoundException abe) {

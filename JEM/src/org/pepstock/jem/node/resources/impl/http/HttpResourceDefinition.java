@@ -21,13 +21,18 @@ import javax.naming.Reference;
 import org.pepstock.jem.annotations.Mode;
 import org.pepstock.jem.annotations.ResourceMetaData;
 import org.pepstock.jem.annotations.ResourceTemplate;
+import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.XmlConfigurationResourceDefinition;
 
 /**
+ * Resource definition for a HTTP resource.<br> 
+ * Sets metadata and xml template url to read in classpath
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-@ResourceMetaData(type = "http", description = "HTTP resource")
+@ResourceMetaData(type = "http", description = "The Hypertext Transfer Protocol (is an application protocol for distributed, collaborative, hypermedia information systems. Hypertext is structured text that uses logical links (hyperlinks) between nodes containing text. HTTP is the protocol to exchange or transfer hypertext.")
 @ResourceTemplate(value="org/pepstock/jem/node/resources/impl/http/HttpResourcesConfiguration.xml",
 		mode = Mode.FROM_CLASSPATH)
 public class HttpResourceDefinition extends XmlConfigurationResourceDefinition {
@@ -48,4 +53,11 @@ public class HttpResourceDefinition extends XmlConfigurationResourceDefinition {
 		return new HttpReference();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.resources.definition.ResourceDefinition#validateResource(org.pepstock.jem.node.resources.Resource)
+	 */
+	@Override
+	public void validateResource(Resource resource) throws ResourceDefinitionException {
+		validateResource(resource, HttpResourceKeys.PROPERTIES_MANDATORY, HttpResourceKeys.PROPERTIES_ALL);
+	}
 }

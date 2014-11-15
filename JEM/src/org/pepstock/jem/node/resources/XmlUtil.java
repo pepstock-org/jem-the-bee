@@ -53,6 +53,8 @@ public class XmlUtil {
 			xs.aliasAttribute(Resource.class, ConfigKeys.LAST_MODIFIED_FIELD, ConfigKeys.LAST_MODIFIED_ATTRIBUTE_ALIAS);
 			xs.addImplicitMap(Resource.class,  ConfigKeys.PROPERTIES_FIELD, ResourceProperty.class, ConfigKeys.NAME_FIELD);
 			xs.alias(ConfigKeys.PROPERTY_ATTRIBUTE_ALIAS, ResourceProperty.class);
+			
+			xs.registerLocalConverter(Resource.class, ConfigKeys.RESOURCE_CUSTOM_PROPERTIES_FIELD, new ResourceCustomPropertyConverter());
 			xs.registerConverter(new ResourcePropertyConverter());
 		}
 		return xs;

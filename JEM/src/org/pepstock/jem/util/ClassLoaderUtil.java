@@ -84,7 +84,7 @@ public final class ClassLoaderUtil {
 			// load by Class.forName of factory
 			result.setObject(Class.forName(pluginDef.getClassName()).newInstance());
 		} else {
-			// CLASSPATH has been set therefore it an try to load teh plugin by
+			// CLASSPATH has been set therefore it an try to load the plugin by
 			// a custom classloader
 			// collection of all file of classpath
 			Collection<File> files = new LinkedList<File>();
@@ -150,7 +150,7 @@ public final class ClassLoaderUtil {
 				});
 				// loads the plugin from classloader
 				Class<?> clazz = loader.loadClass(pluginDef.getClassName());
-				// sets teh object
+				// sets the object
 				result.setObject(clazz.newInstance());
 			} else {
 				throw new IOException(UtilMessage.JEMB009E.toMessage().getMessage());

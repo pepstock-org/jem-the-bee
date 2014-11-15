@@ -18,8 +18,8 @@ package org.pepstock.jem.gwt.client.panels.resources;
 
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.AnchorTextColumn;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.TextFilterableHeader;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
@@ -37,7 +37,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.view.client.SelectionModel;
 
 /**
- * Creates all columns to show into table, defening teh sorter too.
+ * Creates all columns to show into table, defening the sorter too.
  * 
  * @author Andrea "Stock" Stocchero
  *
@@ -151,12 +151,14 @@ public class ResourcesTable extends AbstractTable<Resource> {
 			int count = 0;
 			String value = null;
 			for (ResourceProperty property : resource.getProperties().values()){
-				if (count == 0){
-					value = property.getName() + " = " + (property.isVisible() ? property.getValue() : ResourceProperty.MASK_FOR_NO_VISIBLE_PROPERTY);
-				} else {
-					value = value +", " + property.getName() + " = " + (property.isVisible() ? property.getValue() : ResourceProperty.MASK_FOR_NO_VISIBLE_PROPERTY);	
+				if (property.isVisible()){
+					if (count == 0){
+						value = property.getName() + " = " + property.getValue();
+					} else {
+						value = value +", " + property.getName() + " = " + property.getValue();	
+					}
+					count++;
 				}
-				count++;
 			}
 			return value;
 		}

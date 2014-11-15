@@ -50,6 +50,7 @@ import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -285,6 +286,11 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
 					ref.add(new StringRefAddr(property.getName(), property.getValue()));
+				}
+				
+				// loads custom properties in a string format
+				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
 				}
 				
 				// binds the object with format [type]/[name]

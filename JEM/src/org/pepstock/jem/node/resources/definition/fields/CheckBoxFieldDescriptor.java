@@ -8,7 +8,7 @@ import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
  * This class represents a checkbox field
  * @author Marco "Fuzzo" Cuccato
  */
-public class CheckBoxFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor {
+public class CheckBoxFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor, BooleanValueField {
 
 	private static final long serialVersionUID = 0L;
 

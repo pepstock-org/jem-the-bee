@@ -6,7 +6,7 @@ import org.pepstock.jem.node.resources.definition.AbstractField;
 import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
 
 /**
- * This class represent a generic custom resource field. 
+ * This class represent a generic resource field. 
  * @author Marco "Fuzzo" Cuccato
  */
 public abstract class AbstractFieldDescriptor extends AbstractField implements Serializable, ResourcePartDescriptor {

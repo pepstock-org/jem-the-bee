@@ -58,7 +58,7 @@ public interface DataDescriptionItem {
 	
 	/**
 	 * 
-	 * @param resources sets teh resources for SB
+	 * @param resources sets the resources for SB
 	 */
 	void setResources(Resource[] resources);
 	

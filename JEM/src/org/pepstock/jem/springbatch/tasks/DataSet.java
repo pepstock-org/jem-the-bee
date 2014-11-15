@@ -84,7 +84,7 @@ public class DataSet extends AbstractResource implements Serializable{
 	}
 
 	/**
-	 * Sets teh name of dataset. Checks if is GDG computing the realtive offset
+	 * Sets the name of dataset. Checks if is GDG computing the realtive offset
 	 * 
 	 * @param name dataset name
 	 */

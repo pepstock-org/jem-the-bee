@@ -8,7 +8,7 @@ import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
  * This class represents a free-text field, with optional regular expression validator
  * @author Marco "Fuzzo" Cuccato
  */
-public class TextFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor {
+public class TextFieldDescriptor extends SingleValueFieldDescriptor implements Serializable, ResourcePartDescriptor, SingleValueField {
 
 	private static final long serialVersionUID = 8869915360528902211L;
 

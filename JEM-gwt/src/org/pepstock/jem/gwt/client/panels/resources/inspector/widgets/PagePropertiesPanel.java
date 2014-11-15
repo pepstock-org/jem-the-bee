@@ -36,10 +36,23 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	 * @param resourceType the resource type, needed for single-page custom resource
 	 */
 	public PagePropertiesPanel(Resource resource, SectionDescriptor descriptor, String resourceType) {
-		super(resource, descriptor, false);
+		this(resource, descriptor, resourceType, false);
+	}
+	
+	/**
+	 * Builds the panel
+	 * @param resource the underlying resource
+	 * @param descriptor the {@link ResourceDescriptor}
+	 * @param resourceType the resource type, needed for single-page custom resource
+	 * @param hasComplex if you need a complex panel
+	 */
+	public PagePropertiesPanel(Resource resource, SectionDescriptor descriptor, String resourceType, boolean hasComplex) {
+		super(resource, descriptor, hasComplex);
 		this.resourceType = resourceType;
-		getTable().setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-		getTable().setCellSpacing(5);
+		if (!hasComplex){
+			getTable().setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
+			getTable().setCellSpacing(5);
+		}
 	}
 
 	@Override

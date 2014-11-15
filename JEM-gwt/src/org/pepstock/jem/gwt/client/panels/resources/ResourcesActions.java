@@ -85,7 +85,8 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			selectionModel.clear();
 
 			// shows a popup to create new role
-			AbstractResourceInspector inspector = new NewResourceInspector();
+			//AbstractResourceInspector inspector = new NewResourceInspector();
+			ResourceTypeChooser inspector = new ResourceTypeChooser();
 			inspector.center();
 		}
 	}
@@ -164,7 +165,7 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			// shows a popup to create new role
 			AbstractResourceInspector inspector = new CloneResourceInspector(clone);
 			inspector.center();
-			// adds itself to listener to refresh the lsit of roles seeing teh new one if added
+			// adds itself to listener to refresh the lsit of roles seeing the new one if added
 			selectionModel.clear();
 		}
 	}

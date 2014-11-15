@@ -23,8 +23,8 @@ import java.util.List;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 
 /**
- * THis resource object represents a FTP description to crate a FTP connection to manage 
- * file remotely.
+ * This resource object represents a FTP description to crate a FTP connection to manage 
+ * file remotely. List of properties
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -33,7 +33,6 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 @SuppressWarnings("javadoc")
 public final class FtpResourceKeys {
 
-	public static final String URL = "url";
 	public static final String BINARY = "binary";
 	public static final String ACTION_MODE = "action";
 	public static final String ACTION_READ = "read";
@@ -43,7 +42,9 @@ public final class FtpResourceKeys {
 	public static final String RESTART_OFFSET = "restartOffset";
 	public static final String BUFFER_SIZE = "bufferSize";
 
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, URL, BINARY, REMOTE_FILE, ACTION_MODE, 
+	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL));
+	
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL, BINARY, REMOTE_FILE, ACTION_MODE, 
 			RESTART_OFFSET, BUFFER_SIZE));
 
 	/**
@@ -51,4 +52,5 @@ public final class FtpResourceKeys {
 	 */
 	private FtpResourceKeys() {
 	}
+	
 }
