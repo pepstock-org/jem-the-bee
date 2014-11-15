@@ -104,9 +104,9 @@ public class JBpmTask extends DefaultJobTask {
 		jCommand.setClassName(JBpmLauncher.class.getName());
 		
 		// gets from JCL the JBPM process ID 
-		String jobName = jcl.getProperties().get(JBpmKeys.JBPM_JOB_NAME).toString();
+		String jobName = (jcl.getProperties().containsKey(JBpmKeys.JBPM_JOB_NAME)) ? jcl.getProperties().get(JBpmKeys.JBPM_JOB_NAME).toString() : job.getName();
 		
 		// sets Process ID and JCL to execute
-		jCommand.setClassArguments((jobName == null) ? job.getName() : jobName, jclFile.getAbsolutePath());
+		jCommand.setClassArguments(jobName, jclFile.getAbsolutePath());
 	}
 }
