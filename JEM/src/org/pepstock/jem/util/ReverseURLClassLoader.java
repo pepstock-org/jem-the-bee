@@ -207,7 +207,8 @@ public class ReverseURLClassLoader extends URLClassLoader {
      * @return a stream to the required resource or <code>null</code> if
      *         the resource cannot be found in the given file.
      */
-    private InputStream getResourceStream(URL url, String resourceName) {
+    @SuppressWarnings("resource")
+	private InputStream getResourceStream(URL url, String resourceName) {
     	JarFile jFile = null;
 		try {
 			// gets the file from URL
