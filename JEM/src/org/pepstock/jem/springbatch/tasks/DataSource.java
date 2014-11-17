@@ -30,6 +30,7 @@ import javax.naming.StringRefAddr;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.resources.impl.jdbc.JdbcFactory;
@@ -170,13 +171,17 @@ public class DataSource extends AbstractDataSource implements Serializable {
 
 			// scans all properteis set by JCL
 			for (Property property : getProperties()){
-				// if a key is defined FINAL, throw an exception
-				for (ResourceProperty resProperty : props.values()){
-					if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
-						throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));
+				if (property.isCustom()){
+					res.getCustomProperties().put(property.getName(), property.getValue());
+				} else {
+					// if a key is defined FINAL, throw an exception
+					for (ResourceProperty resProperty : props.values()){
+						if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
+							throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));
+						}
 					}
+					ResourcePropertiesUtil.addProperty(res, property.getName(), property.getValue());
 				}
-				res.setProperty(property.getName(), property.getValue());
 			}
 			// creates a JNDI reference
 			Reference ref = null;

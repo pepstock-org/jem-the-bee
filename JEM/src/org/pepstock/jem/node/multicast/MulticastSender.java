@@ -89,6 +89,8 @@ public class MulticastSender {
 				InetAddress address = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
 				outBuf = response.getBytes(CharSet.DEFAULT);
 				DatagramPacket outPacket = new DatagramPacket(outBuf, outBuf.length, address, Main.getMulticastService().getConfig().getMulticastPort());
+				// FIXME
+				System.err.println(socket.getInetAddress()+" "+address+" "+socket.getInterface()+" "+response);
 				socket.send(outPacket);
 				socket.close();
 			} catch (IOException ioe) {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pepstock.jem.gwt.client.Sizes;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.definition.fields.SingleSelectableListFieldDescriptor;
 
@@ -99,7 +100,7 @@ public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectabl
 	@Override
 	public void saveProperty(String value) {
 		String key = getDescriptor().getKey();
-		getPanel().getResource().setProperty(key, value);
+		ResourcePropertiesUtil.addProperty(getPanel().getResource(), key, value, getDescriptor().isVisible(), getDescriptor().isOverride());
 		setCommonPropertyAttributes();
 	}
 

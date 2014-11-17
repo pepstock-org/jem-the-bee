@@ -33,6 +33,7 @@ import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
@@ -190,14 +191,19 @@ public abstract class JemTasklet implements Tasklet {
 
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
-					// if a key is defined FINAL, throw an exception
-					for (ResourceProperty resProperty : properties.values()){
-						if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
-							throw new SpringBatchException(SpringBatchMessage.JEMS018E, property.getName(), res);
+					if (property.isCustom()){
+						res.getCustomProperties().put(property.getName(), property.getValue());
+					} else {
+						// if a key is defined FINAL, throw an exception
+						for (ResourceProperty resProperty : properties.values()){
+							if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
+								throw new SpringBatchException(SpringBatchMessage.JEMS018E, property.getName(), res);
+							}
 						}
+						ResourcePropertiesUtil.addProperty(res, property.getName(), property.getValue());
 					}
-					res.setProperty(property.getName(), property.getValue());
 				}
+				
 				// creates a JNDI reference
 				Reference ref = null;
 				try {

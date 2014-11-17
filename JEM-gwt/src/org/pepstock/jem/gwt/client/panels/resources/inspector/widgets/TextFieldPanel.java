@@ -5,6 +5,7 @@ import java.util.Map;
 import org.pepstock.jem.gwt.client.commons.MandatoryTextBox;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.definition.fields.TextFieldDescriptor;
 
@@ -85,7 +86,7 @@ public final class TextFieldPanel extends AbstractFieldPanel<TextFieldDescriptor
 
 	@Override
 	public void saveProperty(String value) {
-		getPanel().getResource().setProperty(getDescriptor().getKey(), value);
+		ResourcePropertiesUtil.addProperty(getPanel().getResource(), getDescriptor().getKey(), value, getDescriptor().isVisible(), getDescriptor().isOverride());
 		setCommonPropertyAttributes();
 	}
 

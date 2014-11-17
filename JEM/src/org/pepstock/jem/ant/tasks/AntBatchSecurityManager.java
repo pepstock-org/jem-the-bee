@@ -54,7 +54,7 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
-	public AntBatchSecurityManager(Collection<Role> roles) {
+	AntBatchSecurityManager(Collection<Role> roles) {
 		super(roles);
 		loadPermissions(roles);
 	}
@@ -142,6 +142,7 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkPermission(Permission perm) {
+	
 		// this check is necessary to avoid that someone
 		// set jem properties, accessing outside of GFS
 		if (perm instanceof PropertyPermission && "write".equalsIgnoreCase(perm.getActions()) && perm.getName().startsWith("jem")){

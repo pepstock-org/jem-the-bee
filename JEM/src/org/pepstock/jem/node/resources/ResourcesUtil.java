@@ -26,6 +26,8 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.NodeMessageException;
 import org.pepstock.jem.node.security.Crypto;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+
 /**
  * Common resources utility for keys management, 
  * 
@@ -66,6 +68,7 @@ public class ResourcesUtil {
 	public void setKey(Key key) {
 		this.key = key;
 	}
+
 
 	/**
 	 * Encryts a secret 

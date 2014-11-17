@@ -54,7 +54,7 @@ public class JBpmBatchSecurityManager extends BatchSecurityManager {
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
-	public JBpmBatchSecurityManager(Collection<Role> roles) {
+	JBpmBatchSecurityManager(Collection<Role> roles) {
 		super(roles);
 		loadPermissions(roles);
 	}

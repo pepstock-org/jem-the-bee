@@ -161,6 +161,10 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			clonedProperties.putAll(resource.getProperties());
 			clone.setProperties(clonedProperties);
 			
+			Map<String, String> clonedCustomProperties = new HashMap<String, String>();
+			clonedCustomProperties.putAll(resource.getCustomProperties());
+			clone.setCustomProperties(clonedCustomProperties);
+			
 			selectionModel.clear();
 			// shows a popup to create new role
 			AbstractResourceInspector inspector = new CloneResourceInspector(clone);

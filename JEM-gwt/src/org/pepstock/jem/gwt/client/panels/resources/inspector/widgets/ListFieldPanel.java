@@ -8,6 +8,7 @@ import org.pepstock.jem.gwt.client.commons.CSVUtil;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.definition.fields.TextListFieldDescriptor;
 
@@ -118,7 +119,7 @@ public final class ListFieldPanel extends AbstractFieldPanel<TextListFieldDescri
 	public void saveProperty(String[] value) {
 		String key = getDescriptor().getKey();
 		String csv = CSVUtil.getCSVPhrase(value);
-		getPanel().getResource().setProperty(key, csv);
+		ResourcePropertiesUtil.addProperty(getPanel().getResource(), key, csv, getDescriptor().isVisible(), getDescriptor().isOverride());
 		setCommonPropertyAttributes();
 	}
 
