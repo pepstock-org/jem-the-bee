@@ -18,6 +18,7 @@ package org.pepstock.jem.springbatch.tasks;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -192,6 +193,9 @@ public abstract class JemTasklet implements Tasklet {
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
+						if (res.getCustomProperties() == null){
+							res.setCustomProperties(new HashMap<String, String>());
+						}
 						res.getCustomProperties().put(property.getName(), property.getValue());
 					} else {
 						// if a key is defined FINAL, throw an exception

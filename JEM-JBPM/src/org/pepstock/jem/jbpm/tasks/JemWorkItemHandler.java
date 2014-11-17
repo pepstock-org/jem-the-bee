@@ -261,6 +261,9 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
+						if (res.getCustomProperties() == null){
+							res.setCustomProperties(new HashMap<String, String>());
+						}
 						res.getCustomProperties().put(property.getName(), property.getText().toString());
 					} else {
 						// if a key is defined FINAL, throw an exception

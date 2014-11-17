@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -172,6 +173,9 @@ public class DataSource extends AbstractDataSource implements Serializable {
 			// scans all properteis set by JCL
 			for (Property property : getProperties()){
 				if (property.isCustom()){
+					if (res.getCustomProperties() == null){
+						res.setCustomProperties(new HashMap<String, String>());
+					}
 					res.getCustomProperties().put(property.getName(), property.getValue());
 				} else {
 					// if a key is defined FINAL, throw an exception
