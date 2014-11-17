@@ -176,7 +176,11 @@ public class DataSource extends AbstractDataSource implements Serializable {
 					if (res.getCustomProperties() == null){
 						res.setCustomProperties(new HashMap<String, String>());
 					}
-					res.getCustomProperties().put(property.getName(), property.getValue());
+					if (!res.getCustomProperties().containsKey(property.getName())){
+						res.getCustomProperties().put(property.getName(), property.getValue());
+					} else {
+						throw new SQLException(SpringBatchMessage.JEMS018E.toMessage().getFormattedMessage(property.getName(), res));	
+					}
 				} else {
 					// if a key is defined FINAL, throw an exception
 					for (ResourceProperty resProperty : props.values()){

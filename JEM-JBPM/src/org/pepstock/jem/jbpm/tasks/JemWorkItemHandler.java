@@ -264,7 +264,11 @@ public class JemWorkItemHandler implements WorkItemHandler {
 						if (res.getCustomProperties() == null){
 							res.setCustomProperties(new HashMap<String, String>());
 						}
-						res.getCustomProperties().put(property.getName(), property.getText().toString());
+						if (!res.getCustomProperties().containsKey(property.getName())){
+							res.getCustomProperties().put(property.getName(), property.getText().toString());
+						} else {
+							throw new MessageException(JBpmMessage.JEMM028E, property.getName(), res);
+						}
 					} else {
 						// if a key is defined FINAL, throw an exception
 						for (ResourceProperty resProperty : properties.values()){

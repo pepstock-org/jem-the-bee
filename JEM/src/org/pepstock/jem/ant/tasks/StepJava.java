@@ -301,7 +301,11 @@ public class StepJava extends Java  implements DataDescriptionStep {
 						if (res.getCustomProperties() == null){
 							res.setCustomProperties(new HashMap<String, String>());
 						}
-						res.getCustomProperties().put(property.getName(), property.getText().toString());
+						if (!res.getCustomProperties().containsKey(property.getName())){
+							res.getCustomProperties().put(property.getName(), property.getText().toString());
+						} else {
+							throw new BuildException(AntMessage.JEMA028E.toMessage().getFormattedMessage(property.getName(), res));
+						}
 					} else {
 						// if a key is defined FINAL, throw an exception
 						for (ResourceProperty resProperty : properties.values()){
