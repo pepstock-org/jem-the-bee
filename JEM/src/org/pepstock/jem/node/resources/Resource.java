@@ -87,22 +87,6 @@ public final class Resource extends UpdateableItem implements Serializable{
 		this.properties = properties;
 	}
 
-	
-	/**
-	 * @param name
-	 * @param value
-	 */
-	public void setProperty(String name, String value){
-		ResourceProperty prop = properties.get(name);
-		if (prop == null){
-			prop = new ResourceProperty();
-			prop.setName(name);
-			properties.put(prop.getName(), prop);
-		}
-		prop.setValue(value);
-	}
-	
-
 	/**
 	 * @return the customProperties
 	 */

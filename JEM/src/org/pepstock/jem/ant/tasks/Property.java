@@ -33,6 +33,8 @@ public class Property implements Serializable{
 
 	private String name = null;
 	
+	private boolean custom = false;
+	
 	private StringBuilder value = new StringBuilder();
 
 	/**
@@ -48,6 +50,20 @@ public class Property implements Serializable{
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the custom
+	 */
+	public boolean isCustom() {
+		return custom;
+	}
+
+	/**
+	 * @param custom the custom to set
+	 */
+	public void setCustom(boolean custom) {
+		this.custom = custom;
 	}
 
 
@@ -75,8 +91,7 @@ public class Property implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		return "Property [name=" + name + ", value=" + value + "]";
+		return "Property [name=" + name + ", custom=" + custom + "]";
 	}
-	
 	
 }

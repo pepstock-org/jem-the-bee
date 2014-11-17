@@ -34,18 +34,22 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 public final class FtpResourceKeys {
 
 	public static final String BINARY = "binary";
-	public static final String ACTION_MODE = "action";
-	public static final String ACTION_READ = "read";
-	public static final String ACTION_WRITE = "write";
-	public static final String REMOTE_FILE = "remoteFile";
 	
 	public static final String RESTART_OFFSET = "restartOffset";
 	public static final String BUFFER_SIZE = "bufferSize";
+	
+	static final String AS_INPUT_STREAM = "asInputStream";
+	static final String ACTION_MODE = "action";
+	static final String ACTION_READ = "read";
+	static final String ACTION_WRITE = "write";
+	static final String REMOTE_FILE = "remoteFile";
+
 
 	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL));
 	
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL, BINARY, REMOTE_FILE, ACTION_MODE, 
-			RESTART_OFFSET, BUFFER_SIZE));
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL, 
+			BINARY, RESTART_OFFSET, BUFFER_SIZE,
+			AS_INPUT_STREAM, ACTION_MODE, REMOTE_FILE));
 
 	/**
 	 * To avoid any instantiation

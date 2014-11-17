@@ -23,6 +23,7 @@
 			
 			<dataSource name="localhost" resource="FTPlocalhost">
 				<property name="binary">true</property>
+				<property name="stock" custom="true">stock</property>
 			</dataSource>
 			
 			<dataDescription name="OUTPUT" disposition="NEW">

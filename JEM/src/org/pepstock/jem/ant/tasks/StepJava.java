@@ -19,6 +19,7 @@ package org.pepstock.jem.ant.tasks;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
@@ -295,13 +297,20 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				Map<String, ResourceProperty> properties = res.getProperties();
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
-					// if a key is defined FINAL, throw an exception
-					for (ResourceProperty resProperty : properties.values()){
-						if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
-							throw new BuildException(AntMessage.JEMA028E.toMessage().getFormattedMessage(property.getName(), res));
+					if (property.isCustom()){
+						if (res.getCustomProperties() == null){
+							res.setCustomProperties(new HashMap<String, String>());
 						}
+						res.getCustomProperties().put(property.getName(), property.getText().toString());
+					} else {
+						// if a key is defined FINAL, throw an exception
+						for (ResourceProperty resProperty : properties.values()){
+							if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
+								throw new BuildException(AntMessage.JEMA028E.toMessage().getFormattedMessage(property.getName(), res));
+							}
+						}
+						ResourcePropertiesUtil.addProperty(res, property.getName(), property.getText().toString());
 					}
-					res.setProperty(property.getName(), property.getText().toString());
 				}
 
 				// creates a JNDI reference
@@ -378,12 +387,6 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// this is mandatory if wants to JNDI without any network
 			// connection, like RMI
 			super.setFork(false);
-			batchSM.setInternalAction(false);
-			// executes the java main class defined in JCL
-			// setting the boolean to TRUE
-			isExecutionStarted = true;
-			// tried to set fields where
-			// annotations are used
 			try {
 				Class<?> clazz = Class.forName(getClassname());
 				SetFields.applyByAnnotation(clazz);
@@ -392,6 +395,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			} catch (IllegalAccessException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			batchSM.setInternalAction(false);
+			// executes the java main class defined in JCL
+			// setting the boolean to TRUE
+			isExecutionStarted = true;
+			// tried to set fields where
+			// annotations are used
 			super.execute();
 		} catch (BuildException e1) {
 			returnCode = Result.ERROR;

@@ -33,7 +33,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
-import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
@@ -109,20 +108,27 @@ public class FtpFactory extends AbstractObjectFactory {
 		if (password == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.PASSWORD);
 		}
+		
+		// checks if as input stream or not
+		boolean asInputStream = Parser.parseBoolean(properties.getProperty(FtpResourceKeys.AS_INPUT_STREAM, "false"), false);
 
-		// remote file is mandatory
-		// it must be set by a data description
-		String remoteFile = properties.getProperty(FtpResourceKeys.REMOTE_FILE);
-		if (remoteFile == null){
-			throw new JNDIException(NodeMessage.JEMC136E, FtpResourceKeys.REMOTE_FILE);
+		String remoteFile = null;
+		String accessMode = null;
+		if (asInputStream){
+			// remote file is mandatory
+			// it must be set by a data description
+		    remoteFile = properties.getProperty(FtpResourceKeys.REMOTE_FILE);
+			if (remoteFile == null){
+				throw new JNDIException(NodeMessage.JEMC136E, FtpResourceKeys.REMOTE_FILE);
+			}
+			// access mode is mandatory
+			// it must be set by a data description
+			accessMode = properties.getProperty(FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_READ);
 		}
-		// access mode is mandatory
-		// it must be set by a data description
-		String accessMode = properties.getProperty(FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_READ);
 		
 		// creates a FTPclient 
 		FTPClient ftp = ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) ? new FTPClient() : new FTPSClient();
-
+		
 		// checks if binary
 		boolean binaryTransfer = Parser.parseBoolean(properties.getProperty(FtpResourceKeys.BINARY, "false"), false);
 		
@@ -166,6 +172,11 @@ public class FtpFactory extends AbstractObjectFactory {
 				ftp.setBufferSize(bufferSize);
 			}
 			
+			// if not a input stream, returns a FTP object
+			if (!asInputStream){
+				return new Ftp(ftp);
+			}
+			
 			// checks if is in input or output
 			if (accessMode.equalsIgnoreCase(FtpResourceKeys.ACTION_WRITE)){
 				OutputStream os = ftp.storeFileStream(remoteFile);
@@ -186,15 +197,6 @@ public class FtpFactory extends AbstractObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC234E, e);
 		} catch (IOException e) {
 			throw new JNDIException(NodeMessage.JEMC234E, e);
-		} finally {
-			if (ftp.isConnected()) {
-				try {
-					ftp.disconnect();
-				} catch (IOException e) {
-					// debug
-					LogAppl.getInstance().debug(e.getMessage(), e);
-				}
-			}
 		}
 	}
 }

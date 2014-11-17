@@ -26,6 +26,7 @@ import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 
 /**
  * Sets constants for JNDI for FTPClient oject. It uses Apache common net classes.<br>
@@ -60,23 +61,26 @@ public class FtpReference extends ResourceLoaderReference {
 	 */
 	@Override
 	public void loadResource(Resource res, List<DataDescriptionImpl> ddList, String sourceName) throws JemException {
+		boolean asInputStream = false;
 		// checks if I have a dataset linked to a datasource
 		for (DataDescriptionImpl ddImpl : ddList) {
 			for (DataSetImpl ds: ddImpl.getDatasets()){
 				// if has resource linked
 				// checks if the name is the same
 				if (ds.getType() == DataSetType.RESOURCE && ds.getDataSource().equalsIgnoreCase(sourceName)){
+					asInputStream = true;
 					// sets file name (remote one)
-					res.setProperty(FtpResourceKeys.REMOTE_FILE, ds.getName());
+					ResourcePropertiesUtil.addProperty(res, FtpResourceKeys.REMOTE_FILE,  ds.getName());
 					// sets if wants to have a OutputStream or InputStream using
 					// disposition of dataset
 					if (!ddImpl.getDisposition().equalsIgnoreCase(Disposition.SHR)){
-						res.setProperty(FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_WRITE);
+						ResourcePropertiesUtil.addProperty(res, FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_WRITE);
 					} else {
-						res.setProperty(FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_READ);
+						ResourcePropertiesUtil.addProperty(res, FtpResourceKeys.ACTION_MODE, FtpResourceKeys.ACTION_READ);
 					}
 				}
 			}
 		}
+		ResourcePropertiesUtil.addProperty(res, FtpResourceKeys.AS_INPUT_STREAM, Boolean.toString(asInputStream));
 	}
 }

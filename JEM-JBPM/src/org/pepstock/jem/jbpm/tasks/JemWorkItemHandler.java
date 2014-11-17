@@ -49,6 +49,7 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
@@ -259,13 +260,17 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				Map<String, ResourceProperty> properties = res.getProperties();
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
-					// if a key is defined FINAL, throw an exception
-					for (ResourceProperty resProperty : properties.values()){
-						if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
-							throw new MessageException(JBpmMessage.JEMM028E, property.getName(), res);
+					if (property.isCustom()){
+						res.getCustomProperties().put(property.getName(), property.getText().toString());
+					} else {
+						// if a key is defined FINAL, throw an exception
+						for (ResourceProperty resProperty : properties.values()){
+							if (resProperty.getName().equalsIgnoreCase(property.getName()) && !resProperty.isOverride()){
+								throw new MessageException(JBpmMessage.JEMM028E, property.getName(), res);
+							}
 						}
+						ResourcePropertiesUtil.addProperty(res, property.getName(), property.getText().toString());
 					}
-					res.setProperty(property.getName(), property.getText().toString());
 				}
 
 				// creates a JNDI reference

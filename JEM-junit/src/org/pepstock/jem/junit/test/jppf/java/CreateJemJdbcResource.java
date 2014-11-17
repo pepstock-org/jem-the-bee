@@ -28,7 +28,10 @@ import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.XmlUtil;
+import org.pepstock.jem.node.resources.impl.CommonKeys;
+import org.pepstock.jem.node.resources.impl.jdbc.JdbcResourceKeys;
 import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.CharSet;
@@ -86,13 +89,14 @@ public class CreateJemJdbcResource {
 		resource.setName("JUNIT_JPPF_JDBC_JEM");
 		resource.setUser("root");
 		resource.setLastModified(new Date());
-		resource.setProperty("driverClassName", jemEnvConf.getDatabase()
-				.getDriver());
-		resource.setProperty("url", jemEnvConf.getDatabase().getUrl());
-		resource.setProperty("userid", jemEnvConf.getDatabase().getUser());
-		resource.setProperty("password", jemEnvConf.getDatabase().getPassword());
-		resource.setProperty("defaultReadOnly", "true");
-		resource.setProperty("defaultAutoCommit", "true");
+		
+		ResourcePropertiesUtil.addProperty(resource, JdbcResourceKeys.DRIVER_CLASS_NAME, jemEnvConf.getDatabase().getDriver(), true, false);
+		ResourcePropertiesUtil.addProperty(resource, CommonKeys.URL, jemEnvConf.getDatabase().getUrl(), true, false);
+		ResourcePropertiesUtil.addProperty(resource, CommonKeys.USERID, jemEnvConf.getDatabase().getUser(), true, false);
+		ResourcePropertiesUtil.addProperty(resource, CommonKeys.PASSWORD, jemEnvConf.getDatabase().getPassword(), false, false);
+
+		ResourcePropertiesUtil.addProperty(resource, JdbcResourceKeys.DEFAULT_READONLY, "true", true, false);
+		ResourcePropertiesUtil.addProperty(resource, JdbcResourceKeys.DEFAULT_AUTOCOMMIT, "true", true, false);
 		
 		InitialContext ic = ContextUtils.getContext();
 		// loads datapath container

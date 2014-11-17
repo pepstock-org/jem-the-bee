@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.CSVUtil;
+import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.definition.fields.MultiSelectableListFieldDescriptor;
 
@@ -123,7 +124,7 @@ public final class CheckBoxesFieldPanel extends AbstractFieldPanel<MultiSelectab
 	@Override
 	public void saveProperty(String[] value) {
 		String key = getDescriptor().getKey();
-		getPanel().getResource().setProperty(key, CSVUtil.getCSVPhrase(value));
+		ResourcePropertiesUtil.addProperty(getPanel().getResource(), key, CSVUtil.getCSVPhrase(value), getDescriptor().isVisible(), getDescriptor().isOverride());
 		setCommonPropertyAttributes();
 	}
 
