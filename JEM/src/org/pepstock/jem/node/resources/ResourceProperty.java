@@ -38,7 +38,7 @@ public class ResourceProperty implements Serializable {
 	
 	private String value = null;
 	
-	private boolean override = true;
+	private boolean override = false;
 
 	private boolean visible = true;
 	

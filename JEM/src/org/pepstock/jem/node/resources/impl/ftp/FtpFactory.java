@@ -81,13 +81,14 @@ public class FtpFactory extends AbstractObjectFactory {
 		if (ftpUrlString == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
-
+		
 		// creates URL
 		URL ftpUrl;
 		try {
 			ftpUrl = new URL(ftpUrlString);
 		} catch (MalformedURLException e) {
-			throw new JNDIException(NodeMessage.JEMC233E, e);
+			e.printStackTrace();
+			throw new JNDIException(NodeMessage.JEMC233E, e, ftpUrlString);
 		}
 		// checks scheme
 		if (!ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) && !ftpUrl.getProtocol().equalsIgnoreCase(FTPS_PROTOCOL)){

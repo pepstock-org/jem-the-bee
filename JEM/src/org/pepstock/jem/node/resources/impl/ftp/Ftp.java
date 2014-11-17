@@ -32,7 +32,7 @@ import org.apache.commons.net.io.CopyStreamListener;
  * @version 2.2
  */
 @SuppressWarnings("javadoc")
-public class Ftp{
+public class Ftp {
 
 	private FTPClient client = null;
 

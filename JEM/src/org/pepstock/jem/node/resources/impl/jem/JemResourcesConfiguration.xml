@@ -5,17 +5,17 @@
 			<text-field key="url" 
 						label="URL" 
 						description="The JEM server URL (REST context) of the form scheme://host:port/[jemcontext]/[restcontext]" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 
 			<text-field key="userid" 
 						label="User ID" 
 						description="The JEM user on whose behalf the connection is being made" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 
 			<password-field key="password" 
 						label="Password" 
 						description="The user's password" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 		
 		</section>		
 		

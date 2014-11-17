@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="TEST_FTP_DIRECT" default="read" basedir=".">
+	<description>
+		REads directly by Ftp object 
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+
+	<!-- 
+	
+	-->
+	<target name="read">
+			<step-java classname="org.pepstock.jem.junit.test.ftp.java.UseFTP">
+				<arg value="-h" />
+				<classpath>
+					<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+					<!-- 
+						this will load all the libraries set by the application server JEM
+						and is needed in this case for access the datasource
+					-->
+					<pathelement path="${java.class.path}" />
+				</classpath>
+				<!-- FTP -->
+				<dataSource name="localhost" resource="JUNIT-FTP-RESOURCE"/>
+			</step-java>
+	</target>
+
+</project>

@@ -5,22 +5,22 @@
 			<text-field key="java.naming.provider.url" 
 						label="JMS Provider URL" 
 						description="The JMS provider URL in the form: scheme://host:port" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 			
 			<text-field key="java.naming.factory.initial" 
 						label="JMS Initial Context Factory" 
 						description="The JMS Initial Context Factory to create the connection to use JMS" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 
 			<text-field key="userid" 
 						label="User ID" 
 						description="The JMS security principal on whose behalf the connection is being made" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 
 			<password-field key="password" 
 						label="Password" 
 						description="The user's password" 
-						mandatory="true" defaultValue="" regExValidator=".*" />
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
 						
 	
 		</section>		

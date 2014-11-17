@@ -39,7 +39,7 @@ public class ResourcePropertiesUtil {
 	 * @param value value of proprrty
 	 */
 	public static final void addProperty(Resource resource, String name, String value){
-		addProperty(resource, name, value, true, true);
+		addProperty(resource, name, value, true, false);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class ResourcePropertiesUtil {
 	 * @param visible if the resource is visible or not
 	 */
 	public static final void addProperty(Resource resource, String name, String value, boolean visible){
-		addProperty(resource, name, value, visible, true);
+		addProperty(resource, name, value, visible, false);
 	}
 
 	/**
