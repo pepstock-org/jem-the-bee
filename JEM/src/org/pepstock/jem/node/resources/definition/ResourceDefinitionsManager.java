@@ -259,7 +259,7 @@ public class ResourceDefinitionsManager {
 				throw new ResourceTemplateException(ResourceMessage.JEMR001E);
 			}
 			if (Mode.FROM_CLASSPATH.equalsIgnoreCase(p.mode())){
-				resTemplate = this.getClass().getClassLoader().getResource(value);
+				resTemplate = object.getClass().getClassLoader().getResource(value);
 			} else if (Mode.FROM_FILESYSTEM.equalsIgnoreCase(p.mode())){
 				File file = new File(value);
 				if (!file.exists() || !file.isFile()){

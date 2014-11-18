@@ -38,6 +38,7 @@ import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.rmi.JobStartedObjects;
 import org.pepstock.jem.node.rmi.TasksDoor;
 import org.pepstock.jem.node.security.Role;
@@ -117,6 +118,15 @@ public class StepListener implements BuildListener {
 					// during the CheckRead on files.
 					DataPathsContainer.createInstance(objects.getStorageGroupsManager());
 					DataPathsContainer.getInstance().getAbsoluteDataPath(JobId.VALUE);
+					
+					// loads data paths as properties
+					int index = 0;
+					for (String dataName : DataPathsContainer.getInstance().getDataPathsNames()){
+						String path = DataPathsContainer.getInstance().getDataPaths().get(index); 
+						String property = ConfigKeys.JEM_DATA_PATH_NAME+"."+dataName;
+						System.setProperty(property, path);
+						index++;
+					}
 					
 					Collection<Role> myroles = objects.getRoles();
 					// check if is already instantiated. If yes, does nothing

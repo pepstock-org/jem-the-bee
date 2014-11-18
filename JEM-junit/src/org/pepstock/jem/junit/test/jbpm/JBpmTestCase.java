@@ -61,11 +61,6 @@ public class JBpmTestCase extends TestCase {
 	 */
 	public final String getJcl(String name) {
 		String ss = "jcls/" + name;
-		System.err.println(ss);
-		
-		System.err.println(this.getClass().getResource("jcls"));
-		
-		
 		return this.getClass().getResource("jcls/" + name).toString();
 	}
 }

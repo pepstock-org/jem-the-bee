@@ -17,7 +17,9 @@
 package org.pepstock.jem.ant.tasks;
 
 import java.io.IOException;
+import java.net.URL;
 import java.rmi.RemoteException;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,15 +31,18 @@ import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Java;
+import org.apache.tools.ant.types.Path;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
+import org.pepstock.jem.ant.tasks.utilities.JavaMainClassLauncher;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.resources.Resource;
@@ -391,9 +396,32 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// this is mandatory if wants to JNDI without any network
 			// connection, like RMI
 			super.setFork(false);
+			
+			// sets here the annotations
 			try {
-				Class<?> clazz = Class.forName(getClassname());
-				SetFields.applyByAnnotation(clazz);
+				// if has got a classpath, change the main class with a JEM one
+				if (super.getCommandLine().haveClasspath()){
+					Class<?> clazz = JavaMainClassLauncher.class;
+					// gets where the class is located
+					// becuase it must be added to classpath
+					CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+					if ( codeSource != null) {
+						// gets URL
+						URL url = codeSource.getLocation();
+						if (url != null){
+							// add at the ends of parameters the classname
+							super.createArg().setValue(getClassname());
+							// changes class name
+							super.setClassname(JavaMainClassLauncher.class.getName());
+							// adds URL to classpath
+							super.createClasspath().add(new Path(getProject(), FileUtils.toFile(url).getAbsolutePath()));
+						}
+					}
+				} else {
+					// if no classpath, can substitute here
+					Class<?> clazz = Class.forName(getClassname());
+					SetFields.applyByAnnotation(clazz);
+				}
 			} catch (ClassNotFoundException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			} catch (IllegalAccessException e) {

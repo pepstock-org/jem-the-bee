@@ -17,12 +17,12 @@
 package org.pepstock.jem.junit.test.ftp.java;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.registry.Registry;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.pepstock.jem.annotations.AssignDataSource;
-import org.pepstock.jem.node.resources.impl.ftp.Ftp;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
@@ -31,22 +31,37 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
  */
 public class UseFTP {
 	
-	@AssignDataSource("localhost")
-	private static Ftp INSTANCE = null;
+//	@AssignDataSource("localhost")
+//	private static Ftp INSTANCE = null;
 
 	/**
 	 * @param args
 	 * @throws IOException 
 	 * @throws NamingException 
+	 * @throws NotBoundException 
 	 */
-	public static void main(String[] args) throws IOException, NamingException {
-		InitialContext ic = ContextUtils.getContext();
-		Ftp ftp = (Ftp)ic.lookup("localhost");
-		ftp.retrieveFile("Action.java", System.out);
-		ftp.disconnect();
+	public static void main(String[] args) throws IOException, NamingException, NotBoundException {
+		if (args != null){
+			if (args.length > 0){
+				for (int i=0; i<args.length; i++){
+					System.err.println("ARG["+i+"]="+args[i]);
+				}
+			}
+		}
 		
-		INSTANCE.retrieveFile("Action.java", System.out);
-		INSTANCE.disconnect();
+//		InitialContext ic = ContextUtils.getContext();
+//		Ftp ftp = (Ftp)ic.lookup("localhost");
+//		ftp.retrieveFile("Action.java", System.out);
+//		ftp.disconnect();
+//		
+//		INSTANCE.retrieveFile("Action.java", System.out);
+//		INSTANCE.disconnect();
+		
+		InitialContext ic = ContextUtils.getContext();
+		Registry reg = (Registry)ic.lookup("localhost");
+		
+		System.err.println(reg.lookup("jem"));
+		
 	}
 
 }

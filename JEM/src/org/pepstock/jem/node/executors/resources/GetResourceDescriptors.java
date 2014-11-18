@@ -24,6 +24,7 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.node.resources.definition.ResourceDefinition;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 /**
  * Returns all resources definitions in JEM.
@@ -31,7 +32,7 @@ import org.pepstock.jem.node.resources.definition.ResourceDefinition;
  * @author Marco Cuccato
  * @version 1.4
  */
-public class GetResourceDefinitions extends DefaultExecutor<Collection<ResourceDefinition>> {
+public class GetResourceDescriptors extends DefaultExecutor<Collection<ResourceDescriptor>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,10 +42,10 @@ public class GetResourceDefinitions extends DefaultExecutor<Collection<ResourceD
 	 * @see org.pepstock.jem.node.executors.DefaultExecutor#execute()
 	 */
 	@Override
-	public Collection<ResourceDefinition> execute() throws ExecutorException {
-		List<ResourceDefinition> toReturn = new ArrayList<ResourceDefinition>(); 
+	public Collection<ResourceDescriptor> execute() throws ExecutorException {
+		List<ResourceDescriptor> toReturn = new ArrayList<ResourceDescriptor>(); 
 		for (ResourceDefinition rd : Main.RESOURCE_DEFINITION_MANAGER.getAllResourceDefinitions()) {
-			toReturn.add(rd);
+			toReturn.add(rd.getDescriptor());
 		}
 		return toReturn;
 	}

@@ -1228,7 +1228,7 @@ public enum NodeMessage implements MessageInterface {
 	 * ""Unable to get FTp stream for file \"{0}\" with reply code \"{1}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it's not able to have FTP stream. Please check if file exists.")
-	JEMC206E(206, "Unable to get FTp stream for file \"{0}\" with reply code \"{1}\"", MessageLevel.ERROR),
+	JEMC206E(206, "Unable to get FTP stream for file \"{0}\" with reply code \"{1}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to load licenses information", MessageLevel.ERROR
