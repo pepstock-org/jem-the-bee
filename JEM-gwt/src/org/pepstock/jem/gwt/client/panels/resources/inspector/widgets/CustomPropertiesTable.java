@@ -24,6 +24,7 @@ import org.pepstock.jem.node.resources.ResourceProperty;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -55,6 +56,7 @@ public class CustomPropertiesTable extends AbstractTable<ResourceProperty> {
 		key.setSortable(false);
 		key.setFieldUpdater(new KeyFieldUpdater());	
 		table.addColumn(key, "Key");
+		table.setColumnWidth(key, 50, Unit.PCT);
 		
 		/*-------------------------+
 		 | VALUE       |
@@ -69,6 +71,7 @@ public class CustomPropertiesTable extends AbstractTable<ResourceProperty> {
 		value.setSortable(false);
 		value.setFieldUpdater(new ValueFieldUpdater());	
 		table.addColumn(value, "Value");
+		table.setColumnWidth(value, 50, Unit.PCT);
 		return new CustomPropertiesComparator(1);
 
 	}

@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pepstock.jem.Result;
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.jbpm.JBpmKeys;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a JemWorkItem which is able to call the <code>public static void main</code> method.<br>

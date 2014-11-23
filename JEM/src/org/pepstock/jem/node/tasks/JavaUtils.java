@@ -18,9 +18,12 @@ package org.pepstock.jem.node.tasks;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.pepstock.jem.node.Main;
 
 /**
@@ -128,8 +131,14 @@ public class JavaUtils {
 		String pathSeparator = System.getProperty("path.separator");
 		String classPathProperty = System.getProperty("java.class.path");
 		String[] filesNames = classPathProperty.split(pathSeparator);
-		for (int i=0; i<filesNames.length; i++){
-			File file = new File(filesNames[i]);
+		
+		@SuppressWarnings("unchecked")
+		List<String> systemClassPath = new LinkedList<String>(Arrays.asList(filesNames)); 
+		systemClassPath.addAll(Main.RESOURCE_DEFINITION_MANAGER.getClassPath());
+		
+		boolean first= true;
+		for (String fileName : systemClassPath){
+			File file = new File(fileName);
 			
 			// here checks if the file is to add to classpath for new process or not
 			if (isToAdd(file, additionalFolders)){
@@ -144,8 +153,9 @@ public class JavaUtils {
 				}
 				// if parent == null means that no jar/zip and no folder
 				if ((parent != null) && (!StringUtils.contains(classPath, parent))){
-					if (i==0) {
+					if (first) {
 						classPath = parent;
+						first = false;
 					} else { 
 						classPath = classPath + pathSeparator + parent;
 					}

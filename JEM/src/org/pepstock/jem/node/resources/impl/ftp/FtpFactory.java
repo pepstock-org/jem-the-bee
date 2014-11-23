@@ -75,7 +75,7 @@ public class FtpFactory extends AbstractObjectFactory {
 	 * @return remote input/output steam
 	 * @throws JNDIException if an error occurs creating the ftp client
 	 */
-	public static Object createFtpClient(Properties properties) throws JNDIException {
+	private Object createFtpClient(Properties properties) throws JNDIException {
 		// URL is mandatory
 		String ftpUrlString = properties.getProperty(CommonKeys.URL);
 		if (ftpUrlString == null){

@@ -18,8 +18,8 @@ package org.pepstock.jem.jbpm.tasks.workitems;
 
 import java.util.Map;
 
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
-import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a wrapper to another JemWorkItem, preparing a new map to pass as argument

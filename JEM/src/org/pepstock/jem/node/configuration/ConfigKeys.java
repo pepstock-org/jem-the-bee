@@ -345,6 +345,16 @@ public final class ConfigKeys {
 	 * Alias used for resource
 	 */
 	public static final String RESOURCE_DEFINITION_ALIAS = "resource-definition";
+	
+	/**
+	 * Alias used for resource
+	 */
+	public static final String RESOURCES_DEFINITION_ALIAS = "resources-definition";
+	
+	/**
+	 * Alias used for resource
+	 */
+	public static final String RESOURCES_ELEMENT = "resources";
 
 	/**
 	 * Alias used for resources
@@ -435,6 +445,11 @@ public final class ConfigKeys {
 	 * java vendor
 	 */
 	public static final String JAVA_VENDOR = "java.vendor";
+
+	/**
+	 * java user name
+	 */
+	public static final String JAVA_USER_NAME = "user.name";
 
 	/**
 	 * To avoid any instantiation

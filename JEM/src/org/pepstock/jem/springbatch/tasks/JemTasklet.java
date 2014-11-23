@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -31,6 +30,7 @@ import javax.naming.StringRefAddr;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
@@ -40,11 +40,11 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.pepstock.jem.util.SetFields;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
@@ -73,7 +73,7 @@ public abstract class JemTasklet implements Tasklet {
 	private List<DataSource> dataSourceList = new ArrayList<DataSource>();
 	
 	private List<Lock> locks = new ArrayList<Lock>(); 
-
+	
 	/**
 	 * Empty constructor
 	 */
@@ -155,8 +155,6 @@ public abstract class JemTasklet implements Tasklet {
 		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
 		batchSM.setInternalAction(true);
 		
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.pepstock.jem.node.tasks.jndi.JemContextFactory");
-		
 		RepeatStatus status = null;
 
 		// extract stepContext because the step name is necessary
@@ -168,7 +166,7 @@ public abstract class JemTasklet implements Tasklet {
 		InitialContext ic = null;
 		
 		try {
-			ic = new InitialContext();
+			ic = ContextUtils.getContext();
 			// scans all datasource passed
 			for (DataSource source : dataSourceList){
 				// checks if datasource is well defined

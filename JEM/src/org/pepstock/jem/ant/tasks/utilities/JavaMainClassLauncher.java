@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
 
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a standard main class which calls another main class. This is used in ANT to use annotations on main class with classpath.

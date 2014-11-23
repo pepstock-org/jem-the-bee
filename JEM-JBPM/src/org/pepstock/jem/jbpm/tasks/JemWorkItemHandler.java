@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -55,6 +54,7 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
@@ -217,8 +217,6 @@ public class JemWorkItemHandler implements WorkItemHandler {
 
 		// object serializer and deserializer into XML
 		XStream xstream = new XStream();
-		
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.pepstock.jem.node.tasks.jndi.JemContextFactory");
 
 		List<DataDescriptionImpl> ddList = null;
 		InitialContext ic = null;
@@ -226,7 +224,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			// gets all data description requested by this task
 			ddList = ImplementationsContainer.getInstance().getDataDescriptionsByItem(task);
 			// new intial context for JNDI
-			ic = new InitialContext();
+			ic = ContextUtils.getContext();
 
 			// LOADS DataPaths Container
 			Reference referencePaths = new DataPathsReference();

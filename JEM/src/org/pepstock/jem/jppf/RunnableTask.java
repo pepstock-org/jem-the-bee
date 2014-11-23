@@ -31,13 +31,13 @@ import javax.naming.NamingException;
 import javax.naming.StringRefAddr;
 
 import org.jppf.server.protocol.JPPFTask;
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
-import org.pepstock.jem.util.SetFields;
 
 import com.thoughtworks.xstream.XStream;
 

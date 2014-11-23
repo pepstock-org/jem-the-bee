@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.ant.tasks;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -24,8 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -39,25 +40,29 @@ import org.apache.tools.ant.types.Path;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.ant.tasks.utilities.JavaMainClassLauncher;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 import org.pepstock.jem.util.Parser;
-import org.pepstock.jem.util.SetFields;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -249,6 +254,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception 
 		// before calling the main class
@@ -259,8 +265,6 @@ public class StepJava extends Java  implements DataDescriptionStep {
 
 		// object serializer and deserializer into XML
 		XStream xstream = new XStream();
-		
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.pepstock.jem.node.tasks.jndi.JemContextFactory");
 
 		List<DataDescriptionImpl> ddList = null;
 		InitialContext ic = null;
@@ -268,7 +272,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// gets all data description requested by this task
 			ddList = ImplementationsContainer.getInstance().getDataDescriptionsByItem(this);
 			// new intial context for JNDI
-			ic = new InitialContext();
+			ic = ContextUtils.getContext();
 
 			// LOADS DataPaths Container
 			Reference referencePaths = new DataPathsReference();
@@ -300,6 +304,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				
 				// all properties create all StringRefAddrs necessary  
 				Map<String, ResourceProperty> properties = res.getProperties();
+				
 				// scans all properteis set by JCL
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
@@ -343,11 +348,17 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				} 
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
-					ref.add(new StringRefAddr(property.getName(), property.getValue()));
+					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
 				}
 
 				// loads custom properties in a string format
 				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+					// loads all entries and substitute variables
+					for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
+						String value = replaceProperties(entry.getValue());
+						entry.setValue(value);
+					}
+					// adds to reference
 					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
 				}
 				
@@ -503,6 +514,37 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Replaces inside of property value system variables or properties loaded by ANT
+	 * @param value property value to change
+	 * @return value changed
+	 */
+	private String replaceProperties(String value){
+		String changed = null;
+		// if property starts with jem.data
+		// I need to ask to DataPaths Container in which data path I can put the file
+		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
+			// takes teh rest of file name
+			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
+			// checks all paths
+			try {
+				// gets datapaths
+				PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+				// is relative!
+				// creates a file with dataPath as parent, plus file name  
+				File file = new File(paths.getCurrent().getContent(), fileName);
+				// the absolute name of the file is property value
+				changed = file.getAbsolutePath();
+			} catch (InvalidDatasetNameException e) {
+				throw new BuildException(e);
+			}
+		} else {
+			// uses ANT utilities to changed all properties
+			changed = getProject().replaceProperties(value);
+		}
+		return changed;
 	}
 
 }

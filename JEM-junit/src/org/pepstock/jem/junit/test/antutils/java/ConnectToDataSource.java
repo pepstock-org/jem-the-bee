@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.pepstock.jem.annotations.AssignDataSource;
 import org.w3c.dom.Document;
 
 /**
@@ -41,6 +42,9 @@ import org.w3c.dom.Document;
 public class ConnectToDataSource {
 
 	static Logger log = Logger.getLogger(ConnectToDataSource.class.getName());
+	
+	@AssignDataSource("jem-db")
+	private static DataSource dataSource = null;
 
 	/**
 	 * 
@@ -62,7 +66,7 @@ public class ConnectToDataSource {
 
 		// get data source, note that jem-db is the name of the dataSource
 		// present in the JCL
-		DataSource dataSource = (DataSource) context.lookup("jem-db");
+//		DataSource dataSource = (DataSource) context.lookup("jem-db");
 		log.info("Connecting to database ...");
 		Connection conn = dataSource.getConnection();
 		log.info("Connected to database ...");

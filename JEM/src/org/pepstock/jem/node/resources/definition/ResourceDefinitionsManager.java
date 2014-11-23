@@ -24,6 +24,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -34,6 +36,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.CommonResourceDefinition;
+import org.pepstock.jem.node.configuration.CommonResourcesDefinition;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.engine.ResourceTemplateException;
 import org.pepstock.jem.util.ClassLoaderUtil;
@@ -55,6 +58,8 @@ public class ResourceDefinitionsManager {
 	 * The keys are there source types.
 	 */
 	private Map<String, ResourceDefinition> resourceDefinitions = null;
+	
+	private final List<String> classPath = new LinkedList<String>();
 
 	/**
 	 * Constructor that initializes the field {@link #resourceDefinitions}
@@ -62,6 +67,13 @@ public class ResourceDefinitionsManager {
 	 */
 	public ResourceDefinitionsManager() {
 		this.resourceDefinitions = new HashMap<String, ResourceDefinition>();
+	}
+
+	/**
+	 * @return the classPath
+	 */
+	public List<String> getClassPath() {
+		return classPath;
 	}
 
 	/**
@@ -176,10 +188,42 @@ public class ResourceDefinitionsManager {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR012E, "resource definition configuration");
 			throw new ResourceDefinitionException(ResourceMessage.JEMR012E, "resource definition configuration");
 		}
+		ObjectAndClassPathContainer oacp = null;
+		if (resourceDefinitionConfiguration instanceof CommonResourcesDefinition){
+			CommonResourcesDefinition multiDef = (CommonResourcesDefinition)resourceDefinitionConfiguration;
+			if (!multiDef.getResources().isEmpty()){
+				for (CommonResourceDefinition definition : multiDef.getResources()){
+					if (oacp != null){
+						loadSingleResourceDefinition(definition, props, oacp.getLoader());
+					} else {
+						definition.setClasspath(multiDef.getClasspath());	
+						oacp = loadSingleResourceDefinition(definition, props);
+					}
+				}
+			}
+		} else {
+			oacp = loadSingleResourceDefinition(resourceDefinitionConfiguration, props);
+		}
+		if (oacp != null){
+			if (oacp.getClassPath() != null && !oacp.getClassPath().isEmpty()){
+				for (String pathElement : oacp.getClassPath()){
+					if (!classPath.contains(pathElement)){
+						classPath.add(pathElement);
+					}
+				}
+			}
+		}
+	}
+	
+	private ObjectAndClassPathContainer loadSingleResourceDefinition(CommonResourceDefinition resourceDefinitionConfiguration, Properties props) throws ResourceDefinitionException{
+		return loadSingleResourceDefinition(resourceDefinitionConfiguration, props, null);
+	}
+	
+	private ObjectAndClassPathContainer loadSingleResourceDefinition(CommonResourceDefinition resourceDefinitionConfiguration, Properties props, ClassLoader loader) throws ResourceDefinitionException{
 		String className = resourceDefinitionConfiguration.getClassName();
 		try {
 			// load by Class.forName of ResourceDefinition
-			ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(resourceDefinitionConfiguration, props);
+			ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(resourceDefinitionConfiguration, props, loader);
 			Object object = oacp.getObject();
 			
 			// check if it's a CustomResourceDefinition. if not,
@@ -222,6 +266,7 @@ public class ResourceDefinitionsManager {
 				LogAppl.getInstance().emit(ResourceMessage.JEMR011E, className);
 				throw new ResourceDefinitionException(ResourceMessage.JEMR011E, className);
 			}
+			return oacp;
 		} catch (MalformedURLException e) {
 			LogAppl.getInstance().emit(ResourceMessage.JEMR015E, e, className);
 			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
@@ -239,6 +284,7 @@ public class ResourceDefinitionsManager {
 			throw new ResourceDefinitionException(ResourceMessage.JEMR015E, className);
 		}
 	}
+	
 	
 	/** 
 	 * Get the URL of resource template

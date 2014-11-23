@@ -69,7 +69,7 @@ public class JppfFactory extends AbstractObjectFactory {
 	 * @return typed properties for JPPF connection
 	 * @throws JNDIException if an error occurs 
 	 */
-	public static Object createTypeProperties(String addressParm) throws JNDIException {
+	private Object createTypeProperties(String addressParm) throws JNDIException {
 		TypedProperties props = new TypedProperties();
 		
 		/*----------------------+

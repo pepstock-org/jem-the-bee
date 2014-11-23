@@ -20,6 +20,7 @@ import org.hyperic.sigar.ProcCredName;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
  * This class contains the userid for all command which nedss userid.
@@ -84,7 +85,7 @@ public class UserIDCommand {
 			// ignore
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			// if exception, use the system property. Be carefully that is NOT secure
-			setUserID(System.getProperty("user.name"));
+			setUserID(System.getProperty(ConfigKeys.JAVA_USER_NAME));
 		}
 	}
 	

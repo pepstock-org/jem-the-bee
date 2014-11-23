@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -36,6 +35,7 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 
@@ -65,9 +65,8 @@ public final class ChunkDataSourcesManager {
 	 * @throws RemoteException if any excetpion occurs
 	 */
 	static InitialContext createJNDIContext(List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.pepstock.jem.node.tasks.jndi.JemContextFactory");
 		// new initial context for JNDI
-		InitialContext ic = new InitialContext();
+		InitialContext ic = ContextUtils.getContext();
 		// loads IC
 		loadJNDIContext(ic, dataSourceList);
 		return ic;

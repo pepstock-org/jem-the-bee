@@ -19,6 +19,7 @@ package org.pepstock.jem.util;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
  * This is the result when a plugin has been loaded, both using a custom class laode and using the standard one (in this case the classpath is empty). 
  * 
@@ -28,6 +29,8 @@ import java.util.List;
 public class ObjectAndClassPathContainer {
 	
 	private Object object = null;
+	
+	private ClassLoader loader = null;
 	
 	private List<String> classPath = new LinkedList<String>();
 
@@ -64,6 +67,20 @@ public class ObjectAndClassPathContainer {
 	 */
 	public void setClassPath(List<String> classPath) {
 		this.classPath = classPath;
+	}
+
+	/**
+	 * @return the loader
+	 */
+	public ClassLoader getLoader() {
+		return loader;
+	}
+
+	/**
+	 * @param loader the loader to set
+	 */
+	public void setLoader(ClassLoader loader) {
+		this.loader = loader;
 	}
 
 }

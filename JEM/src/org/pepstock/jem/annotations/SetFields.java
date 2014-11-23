@@ -14,17 +14,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.util;
+package org.pepstock.jem.annotations;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.pepstock.jem.annotations.AssignDataDescription;
-import org.pepstock.jem.annotations.AssignDataSource;
+import org.pepstock.jem.jppf.DataStreamNameClassPair;
 import org.pepstock.jem.jppf.UniqueInitialContext;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
@@ -100,6 +101,9 @@ public final class SetFields {
 				}
 				// gets annotation
 				AssignDataDescription annotation = (AssignDataDescription)field.getAnnotation(AssignDataDescription.class);
+				
+				checkIfIsRightObject(annotation.value(), true);
+
 				// sets field
 				setFieldByAnnotation(ic, object, annotation.value(), field);
 			} else if (field.isAnnotationPresent(AssignDataSource.class)){
@@ -110,6 +114,9 @@ public final class SetFields {
 				}
 				// gets annotation
 				AssignDataSource annotation = (AssignDataSource)field.getAnnotation(AssignDataSource.class);
+				
+				checkIfIsRightObject(annotation.value(), false);
+
 				// sets field
 				setFieldByAnnotation(ic, object, annotation.value(), field);
 			}
@@ -119,12 +126,33 @@ public final class SetFields {
 	private static void setFieldByAnnotation(InitialContext ic, Object object, String name, Field field) throws NamingException, IllegalAccessException{
 		// gets object via JNDI
 		Object objectJNDI = (Object) ic.lookup(name);
+		
 		// if is static or it's a java main class (object = null) sets statically
 		if (Modifier.isStatic(field.getModifiers()) || object == null){
 			FieldUtils.writeStaticField(field, objectJNDI, true);
 		} else {
 			// sets field
 			FieldUtils.writeField(field, object, objectJNDI, true);
+		}
+	}
+	
+	private static void checkIfIsRightObject(String name, boolean isDD) throws NamingException{
+		InitialContext ic = ContextUtils.getContext();
+		NamingEnumeration<NameClassPair> list = ic.list(name);
+		boolean isDataDescription = false;
+		while(list.hasMore()){
+			NameClassPair pair = list.next();
+			// checks if is datastream
+			// only datastreams are changed
+			if (pair instanceof DataStreamNameClassPair){
+				isDataDescription = true;
+			}
+		}
+		if (isDD && !isDataDescription){
+			throw new NamingException(name+" is not a data description");
+		}
+		if (!isDD && isDataDescription){
+			throw new NamingException(name+" is not a data source");
 		}
 	}
 

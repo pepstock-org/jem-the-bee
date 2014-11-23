@@ -53,10 +53,11 @@ import org.pepstock.jem.node.affinity.AffinityLoader;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.affinity.SystemInfo;
 import org.pepstock.jem.node.configuration.AffinityFactory;
+import org.pepstock.jem.node.configuration.CommonResourceDefinition;
+import org.pepstock.jem.node.configuration.CommonResourcesDefinition;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.configuration.ConfigurationException;
-import org.pepstock.jem.node.configuration.CommonResourceDefinition;
 import org.pepstock.jem.node.configuration.Database;
 import org.pepstock.jem.node.configuration.Factory;
 import org.pepstock.jem.node.configuration.Listener;
@@ -780,6 +781,7 @@ public class StartUpSystem {
 	 * @throws ConfigurationException if some error occurs.
 	 */
 	private static void loadResourceConfigurations() throws ConfigurationException {
+	
 		// load custom resource definitions, checking if they are configured. If
 		// not, they are
 		// optional, so go ahead
@@ -789,7 +791,7 @@ public class StartUpSystem {
 			// className. If
 			// not, exception occurs, otherwise it's loaded
 			for (CommonResourceDefinition resourceDefinition : resourceDefinitions) {
-				if (resourceDefinition.getClassName() != null) {
+				if (resourceDefinition.getClassName() != null || resourceDefinition instanceof CommonResourcesDefinition) {
 					try {
 						Main.RESOURCE_DEFINITION_MANAGER.loadResourceDefinition(resourceDefinition, PROPERTIES);
 					} catch (ResourceDefinitionException e) {
@@ -799,6 +801,8 @@ public class StartUpSystem {
 					LogAppl.getInstance().emit(NodeMessage.JEMC038W, ConfigKeys.RESOURCE_DEFINITION_ALIAS, resourceDefinition.toString());
 				}
 			}
+			
+			System.err.println(Main.RESOURCE_DEFINITION_MANAGER.getClassPath());
 		}
 	}
 

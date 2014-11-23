@@ -21,9 +21,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.pepstock.jem.Result;
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.util.SetFields;
 
 /**
  * Is a Jem WorkItem which wraps whatever class calling a specific method.<br>

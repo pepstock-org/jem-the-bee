@@ -74,6 +74,8 @@ public class DefaultJobTask extends JobTask {
 		String maxHeap = JavaUtils.getMaximumHeapSize();
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		
+		String user = job.isUserSurrogated() ? job.getJcl().getUser() : job.getUser();
+		
 		JavaCommand command = new JavaCommand();
 		command.setJavaOptions(initHeap, 
 						maxHeap,
@@ -86,7 +88,8 @@ public class DefaultJobTask extends JobTask {
 						getLibPath(),
 						"-D"+ConfigKeys.JEM_OUTPUT_PATH_NAME+"="+FilenameUtils.normalize(jclFile.getParentFile().getAbsolutePath(), true),
 						getSrcPath(),
-						getPersistencePath());
+						getPersistencePath(),
+						"-D"+ConfigKeys.JAVA_USER_NAME+"="+user);
 		
 		// loads properties set during submit
 		if (!job.getInputArguments().isEmpty()){

@@ -234,6 +234,10 @@ public class Configuration {
 		xstream.aliasAttribute(StatsManager.class, ConfigKeys.PATH_FIELD, ConfigKeys.PATH_ATTRIBUTE_ALIAS);
 		xstream.alias(ConfigKeys.RESOURCE_DEFINITION_ALIAS, CommonResourceDefinition.class);
 		xstream.aliasAttribute(CommonResourceDefinition.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
+		xstream.alias(ConfigKeys.RESOURCES_DEFINITION_ALIAS, CommonResourcesDefinition.class);
+		xstream.addImplicitCollection(CommonResourcesDefinition.class, ConfigKeys.RESOURCES_ELEMENT);
+		
+		
 		xstream.aliasField(ConfigKeys.RESOURCE_DEFINITIONS_ALIAS, Configuration.class, ConfigKeys.RESOURCE_DEFINITIONS_FIELD);
 		xstream.aliasField(ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS, Configuration.class, ConfigKeys.EXECUTION_ENVIRONMENT_FIELD);
 		xstream.aliasField(ConfigKeys.PARALLEL_JOBS_ALIAS, ExecutionEnvironment.class, ConfigKeys.PARALLEL_JOBS_FIELD);

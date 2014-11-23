@@ -24,11 +24,11 @@ import java.util.Map.Entry;
 
 import javax.naming.NamingException;
 
+import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
-import org.pepstock.jem.util.SetFields;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;

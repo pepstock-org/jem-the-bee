@@ -64,7 +64,7 @@ public class JemFactory  extends AbstractObjectFactory {
 	 * @return a RestClient instance to access to JEM
 	 * @throws JNDIException if an error occurs creating the rest client
 	 */
-	public static Object createRestClient(Properties properties) throws JNDIException {
+	private Object createRestClient(Properties properties) throws JNDIException {
 		String urlString = properties.getProperty(CommonKeys.URL);
 		if (urlString == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);

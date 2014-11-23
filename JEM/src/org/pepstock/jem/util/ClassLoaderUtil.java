@@ -74,13 +74,37 @@ public final class ClassLoaderUtil {
 	 * @throws IOException if any error occurs
 	 */
 	public static ObjectAndClassPathContainer loadAbstractPlugin(AbstractPluginDefinition pluginDef, Properties props) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
+		return loadAbstractPlugin(pluginDef, props, null);
+	}
+	
+	/**
+	 * Loads all classpath information from plugin configuration and creates a
+	 * custom classloader to load the plugin.
+	 * 
+	 * @param pluginDef plugin defintion
+	 * @param props list of properties to used to substitute if necessary
+	 * @param knownLoader ClassLoader already created previously
+	 * @return containers with object instantiated and class path based on URLs
+	 * @throws InstantiationException if any error occurs
+	 * @throws IllegalAccessException if any error occurs
+	 * @throws ClassNotFoundException if any error occurs
+	 * @throws IOException if any error occurs
+	 */
+	public static ObjectAndClassPathContainer loadAbstractPlugin(AbstractPluginDefinition pluginDef, Properties props, ClassLoader knownLoader) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		// creates the result to return
 		ObjectAndClassPathContainer result = new ObjectAndClassPathContainer();
 
-		// if plugin defintion doesn't have the classpath, that means that the
-		// plugin is already placed in JEM classpath
-		// therefore it's enough to call it
-		if (pluginDef.getClasspath() == null || pluginDef.getClasspath().isEmpty()) {
+		if (knownLoader != null) {
+			// there already a classloader
+			// loads the plugin from classloader
+			Class<?> clazz = knownLoader.loadClass(pluginDef.getClassName());
+			// sets the object
+			result.setObject(clazz.newInstance());
+			return result;
+		} else if (pluginDef.getClasspath() == null || pluginDef.getClasspath().isEmpty()) { 
+			// if plugin defintion doesn't have the classpath, that means that the
+			// plugin is already placed in JEM classpath
+			// therefore it's enough to call it
 			// load by Class.forName of factory
 			result.setObject(Class.forName(pluginDef.getClassName()).newInstance());
 		} else {
@@ -152,6 +176,7 @@ public final class ClassLoaderUtil {
 				Class<?> clazz = loader.loadClass(pluginDef.getClassName());
 				// sets the object
 				result.setObject(clazz.newInstance());
+				result.setLoader(loader);
 			} else {
 				throw new IOException(UtilMessage.JEMB009E.toMessage().getMessage());
 			}
