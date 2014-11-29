@@ -25,6 +25,20 @@
 	<classpathentry kind="lib" path="/JEM/lib/logging/commons-logging-1.1.3.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/jms/jms-1.1.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="jersey/asm-3.3.1.jar"/>
+	<classpathentry kind="lib" path="jersey/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="jersey/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="jersey/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="jersey/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="jersey/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="jersey/jaxb-core.jar"/>
+	<classpathentry kind="lib" path="jersey/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-apache-client4-1.18.1.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-bundle-1.18.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-core-1.18.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-json-1.18.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-server-1.18.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-servlet-1.18.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/JEM/lib/springbatch/spring-batch-core-2.2.6.RELEASE.jar"/>

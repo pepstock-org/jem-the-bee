@@ -16,11 +16,14 @@
  */
 package org.pepstock.jem.jbpm.tasks;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,6 +31,7 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.BuildException;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -46,18 +50,22 @@ import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
+import org.pepstock.jem.util.VariableSubstituter;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -90,7 +98,6 @@ public class JemWorkItemHandler implements WorkItemHandler {
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 		// Do nothing
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.kie.api.runtime.process.WorkItemHandler#executeWorkItem(org.kie.api.runtime.process.WorkItem, org.kie.api.runtime.process.WorkItemManager)
@@ -208,7 +215,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
      * @throws JemException if any error occurs
      */
     private int execute(Task task, JemWorkItem item, Map<String, Object> parms) throws JemException{
-		// this boolean is necessary to understand if I have an exception 
+    	// this boolean is necessary to understand if I have an exception 
 		// before calling the main class
 		boolean isExecutionStarted = false;
 		
@@ -220,6 +227,11 @@ public class JemWorkItemHandler implements WorkItemHandler {
 
 		List<DataDescriptionImpl> ddList = null;
 		InitialContext ic = null;
+		// creates properties using system and env variables for substitution
+		Properties props = new Properties();
+		props.putAll(System.getenv());
+		props.putAll(System.getProperties());
+		
 		try {
 			// gets all data description requested by this task
 			ddList = ImplementationsContainer.getInstance().getDataDescriptionsByItem(task);
@@ -295,12 +307,18 @@ public class JemWorkItemHandler implements WorkItemHandler {
 	
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
-					ref.add(new StringRefAddr(property.getName(), property.getValue()));
+					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue(), props)));
 				}
 				
 				// loads custom properties in a string format
 				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
-					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
+					// loads all entries and substitute variables
+					for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
+						String value = replaceProperties(entry.getValue(), props);
+						entry.setValue(value);
+					}
+					// adds to reference
+					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));		
 				}
 				
 				// binds the object with format [type]/[name]
@@ -403,7 +421,37 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				}
 			}
 		}
-
     }
+    
+	/**
+	 * Replaces inside of property value system variables or properties loaded by ANT
+	 * @param value property value to change
+	 * @return value changed
+	 */
+	private String replaceProperties(String value, Properties props){
+		String changed = null;
+		// if property starts with jem.data
+		// I need to ask to DataPaths Container in which data path I can put the file
+		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
+			// takes teh rest of file name
+			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
+			// checks all paths
+			try {
+				// gets datapaths
+				PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+				// is relative!
+				// creates a file with dataPath as parent, plus file name  
+				File file = new File(paths.getCurrent().getContent(), fileName);
+				// the absolute name of the file is property value
+				changed = file.getAbsolutePath();
+			} catch (InvalidDatasetNameException e) {
+				throw new BuildException(e);
+			}
+		} else {
+			// uses substituter utilities to changed all properties
+			changed = VariableSubstituter.substitute(value, props);
+		}
+		return changed;
+	}
 
 }

@@ -207,6 +207,14 @@ public class JemContext extends InitialContext implements Context {
 		unbind(new CompositeName(name));
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.naming.InitialContext#getEnvironment()
+	 */
+	@Override
+	public Hashtable<?, ?> getEnvironment() throws NamingException {
+		return env;
+	}
+
 	@Override
 	public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
 		List<NameClassPair> items = new ArrayList<NameClassPair>();

@@ -33,6 +33,7 @@ import org.pepstock.jem.util.UtilMessage;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 
@@ -75,6 +76,7 @@ public abstract class RestClient {
 	 */
 	ApacheHttpClient4 initialHttpClient() {
 	    ClientConfig config = new DefaultClientConfig();
+	    config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 	    
 	    ApacheHttpClient4 client = null;
 	    if (HttpResourceKeys.HTTPS_PROTOCOL.equalsIgnoreCase(baseURI.getScheme())){

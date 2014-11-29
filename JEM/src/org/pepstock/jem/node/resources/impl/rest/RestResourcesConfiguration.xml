@@ -1,0 +1,28 @@
+<resource-template>
+	
+		<section name="Common Properties">
+	
+			<text-field key="url" 
+						label="URL" 
+						description="The base url of the rest server" 
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
+						
+			<check-box-field key="basicAuthentication"
+  				label="HTTP basic authentication"
+  				description="If must be used a http basic authentication to the server"
+  				mandatory="false" override="false" />
+
+			<text-field key="userid" 
+						label="User ID" 
+						description="The user on whose behalf the connection is being made" 
+						mandatory="false" defaultValue="" override="false" regExValidator=".*" />
+
+			<password-field key="password" 
+						label="Password" 
+						description="The user's password" 
+						mandatory="false" defaultValue="" override="false" regExValidator=".*" />
+  				
+		</section>
+
+		
+</resource-template>

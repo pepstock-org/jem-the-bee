@@ -16,28 +16,37 @@
  */
 package org.pepstock.jem.springbatch.tasks;
 
+import java.io.File;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
+import org.springframework.core.env.Environment;
 
 /**
  * Manages the JNDI context for Chunks. Be aware that FTP resources (defined out-of-the-box) couldn't be used here.
@@ -64,11 +73,11 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	static InitialContext createJNDIContext(List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static InitialContext createJNDIContext(List<DataSource> dataSourceList, Environment env) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		// new initial context for JNDI
 		InitialContext ic = ContextUtils.getContext();
 		// loads IC
-		loadJNDIContext(ic, dataSourceList);
+		loadJNDIContext(ic, dataSourceList, env);
 		return ic;
 	}
 
@@ -82,7 +91,7 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList, Environment env) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager) System.getSecurityManager();
 		// scans all datasource passed
 		for (DataSource source : dataSourceList) {
@@ -129,7 +138,6 @@ public final class ChunkDataSourcesManager {
 			}
 			// creates a JNDI reference
 			Reference ref = null;
-
 			try {
 				ref = resourcer.lookupReference(JobId.VALUE, res.getType());
 				if (ref == null) {
@@ -142,11 +150,17 @@ public final class ChunkDataSourcesManager {
 
 			// loads all properties into RefAddr
 			for (ResourceProperty property : properties.values()) {
-				ref.add(new StringRefAddr(property.getName(), property.getValue()));
+				ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue(), env)));
 			}
 			
 			// loads custom properties in a string format
 			if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+				// loads all entries and substitute variables
+				for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
+					String value = replaceProperties(entry.getValue(), env);
+					entry.setValue(value);
+				}
+				// adds to reference
 				ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
 			}
 
@@ -155,6 +169,42 @@ public final class ChunkDataSourcesManager {
 			ic.rebind(source.getName(), ref);
 		}
 	}
+	
+	/**
+	 * Replaces inside of property value system variables or properties loaded by Spring
+	 * @param value property value to change
+	 * @return value changed
+	 */
+	private static String replaceProperties(String value, Environment env){
+		// if we don't have the env, return the string without any change
+		if (env == null){
+			return value;
+		}
+		String changed = null;
+		// if property starts with jem.data
+		// I need to ask to DataPaths Container in which data path I can put the file
+		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
+			// takes the rest of file name
+			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
+			// checks all paths
+			try {
+				// gets datapaths
+				PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+				// is relative!
+				// creates a file with dataPath as parent, plus file name  
+				File file = new File(paths.getCurrent().getContent(), fileName);
+				// the absolute name of the file is property value
+				changed = file.getAbsolutePath();
+			} catch (InvalidDatasetNameException e) {
+				throw new BuildException(e);
+			}
+		} else {
+			// uses SB utilities to changed all properties
+			changed = env.resolvePlaceholders(value);
+		}
+		return changed;
+	}
+
 
 	/**
 	 * Clears all JDNI defintions

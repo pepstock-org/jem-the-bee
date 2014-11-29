@@ -85,6 +85,21 @@
 		<resource-definition className="org.pepstock.jem.node.resources.impl.jms.JmsResourceDefinition"/>
 		<resource-definition className="org.pepstock.jem.node.resources.impl.jppf.JppfResourceDefinition"/>
 		<resource-definition className="org.pepstock.jem.node.resources.impl.http.HttpResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.rmi.RmiResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.jndi.JndiResourceDefinition"/>
+		<resource-definition className="org.pepstock.jem.node.resources.impl.rest.RestResourceDefinition"/>
+		<!-- sample of external -->
+		<!--resources-definition>
+			<resource-definition className="org.pepstock.jem.addons.resources.rmi.RmiResourceDefinition"/>
+			<resource-definition className="org.pepstock.jem.addons.resources.jndi.JndiResourceDefinition"/>
+			<resource-definition className="org.pepstock.jem.addons.resources.rest.RestResourceDefinition"/>
+			<classpath>
+				<pathElement>${jem.library}/jem-addons/jem-addons.jar</pathElement>
+			</classpath>
+		</resources-definition-->
+		<!--properties>
+			<property name="key" value="value" />
+		</properties-->		
 	</resource-definitions>
 
 

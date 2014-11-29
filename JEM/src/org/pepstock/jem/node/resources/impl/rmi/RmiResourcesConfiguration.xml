@@ -1,0 +1,22 @@
+<resource-template>
+	
+		<section name="MainSection">
+			
+			<text-field key="hostname" 
+						label="Registry Hostname" 
+						description="The RMI registry host name or ip address" 
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
+						
+			<text-field key="port" 
+						label="Registry Port" 
+						description="The TCP port where RMI registry is listening" 
+						mandatory="true" defaultValue="1099" override="false" regExValidator="[0-9]*" />						
+
+			<check-box-field key="ssl"
+  				label="SSL enable"
+  				description="If a connection must be implemented using SSL"
+  				mandatory="false" override="false" />
+		
+		</section>		
+		
+</resource-template>

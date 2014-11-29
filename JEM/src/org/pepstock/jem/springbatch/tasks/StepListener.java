@@ -43,7 +43,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 
 /**
  * Implements the interfaces of SpringBatch to listen all starts and ends both
@@ -54,19 +56,31 @@ import org.springframework.core.Ordered;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered {
+public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered, EnvironmentAware {
 
 	private TasksDoor door = null;
 	
 	private Locker locker = null;
 	
 	private boolean isFirst = true;
+	
+	private Environment env = null;
+
 
 	/**
 	 * Empty construct
 	 */
 	public StepListener() {
 	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
+	 */
+	@Override
+	public void setEnvironment(Environment env) {
+		this.env = env;
+	}
+
 
 	/**
 	 * Called by SpringBatch engine when the job is ended.<br>
@@ -274,7 +288,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				// then loads JNDI context
 				if (!item.getDataSources().isEmpty()){
 					try {
-						object.setContext(ChunkDataSourcesManager.createJNDIContext(item.getDataSources()));
+						object.setContext(ChunkDataSourcesManager.createJNDIContext(item.getDataSources(), env));
 					} catch (RemoteException e) {
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
 					} catch (UnknownHostException e) {

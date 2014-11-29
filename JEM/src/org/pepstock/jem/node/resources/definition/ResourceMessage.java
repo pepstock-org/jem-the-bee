@@ -209,7 +209,13 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Mode \"{0}\" is not valid. A classpath mode is used", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when a resource template is defined to be loaded from a wrong source. The valid sources are "+Mode.FROM_CLASSPATH+", "+Mode.FROM_FILESYSTEM+" and "+Mode.FROM_URL+".<br>Check the resource definition class.")
-	JEMR027W(27, "Mode \"{0}\" is not valid. A classpath mode is used", MessageLevel.WARNING);
+	JEMR027W(27, "Mode \"{0}\" is not valid. A classpath mode is used", MessageLevel.WARNING),
+	
+	/**
+	 * "Unable to get registry from {0}:{1}.", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs creating a RMI object accessing to the registry. Please check the inner exception.")
+	JEMR028E(28, "Unable to get registry from {0}:{1}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>ResourceMessage</code>. 

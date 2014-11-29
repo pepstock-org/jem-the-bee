@@ -72,6 +72,10 @@
 	     <param-name>com.sun.jersey.config.property.packages</param-name>
 	     <param-value>org.pepstock.jem.gwt.server.rest</param-value>
 	   </init-param>
+	   <init-param>
+		 <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+		 <param-value>true</param-value>
+	   </init-param>
 	   <load-on-startup>1</load-on-startup>
 	</servlet>
   	<servlet-mapping>
@@ -82,7 +86,8 @@
 		<servlet-name>RestService</servlet-name>
 		<url-pattern>/restAuth/*</url-pattern>
 	</servlet-mapping>	
-	
+
+ 	
 	<!-- **********************************************************
 	 | List of servlets, both GWT and JEM ones                    |
 	 ********************************************************** -->

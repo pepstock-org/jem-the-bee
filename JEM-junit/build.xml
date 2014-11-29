@@ -34,6 +34,9 @@
 				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
 					<include name="jms/lib/*.jar" />
 				</fileset>
+				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
+					<include name="jersey/*.jar" />
+				</fileset>
 				<fileset dir="${jem.workspace}/${jem.library.directory}">
 					<include name="lang/*.jar" />
 					<include name="commons-io/*.jar" />

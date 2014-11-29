@@ -1,0 +1,15 @@
+<resource-template>
+	
+		<section name="Factory">
+			
+			<text-field key="java.naming.factory.initial" 
+						label="Initial context factory" 
+						description="It is the service provider as the initial context." 
+						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
+		
+		</section>		
+	
+		<section name="Properties" propertiesEditor="true">
+		</section>		
+		
+</resource-template>

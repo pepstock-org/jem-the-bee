@@ -16,11 +16,13 @@
 */
 package org.pepstock.jem.springbatch.tasks;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,16 +30,21 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.ant.BuildException;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceLoaderReference;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
@@ -50,6 +57,8 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -66,13 +75,15 @@ import com.thoughtworks.xstream.XStream;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public abstract class JemTasklet implements Tasklet {
+public abstract class JemTasklet implements Tasklet, EnvironmentAware {
 
 	private List<DataDescription> dataDescriptionList = new ArrayList<DataDescription>();
 	
 	private List<DataSource> dataSourceList = new ArrayList<DataSource>();
 	
 	private List<Lock> locks = new ArrayList<Lock>(); 
+	
+	private Environment env = null;
 	
 	/**
 	 * Empty constructor
@@ -227,11 +238,17 @@ public abstract class JemTasklet implements Tasklet {
 				
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
-					ref.add(new StringRefAddr(property.getName(), property.getValue()));
+					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
 				}
 				
 				// loads custom properties in a string format
 				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+					// loads all entries and substitute variables
+					for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
+						String value = replaceProperties(entry.getValue());
+						entry.setValue(value);
+					}
+					// adds to reference
 					ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
 				}
 				
@@ -330,8 +347,51 @@ public abstract class JemTasklet implements Tasklet {
 		}
 		return status;
 	}
-	
 
+	/* (non-Javadoc)
+	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
+	 */
+	@Override
+	public void setEnvironment(Environment env) {
+		this.env = env;
+	}
+
+	/**
+	 * Replaces inside of property value system variables or properties loaded by Spring
+	 * @param value property value to change
+	 * @return value changed
+	 */
+	private String replaceProperties(String value){
+		// if we don't have the env, return the string without any change
+		if (env == null){
+			return value;
+		}
+		String changed = null;
+		// if property starts with jem.data
+		// I need to ask to DataPaths Container in which data path I can put the file
+		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
+			// takes teh rest of file name
+			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
+			// checks all paths
+			try {
+				// gets datapaths
+				PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+				// is relative!
+				// creates a file with dataPath as parent, plus file name  
+				File file = new File(paths.getCurrent().getContent(), fileName);
+				// the absolute name of the file is property value
+				changed = file.getAbsolutePath();
+			} catch (InvalidDatasetNameException e) {
+				throw new BuildException(e);
+			}
+		} else {
+			// uses SB utilities to changed all properties
+			changed = env.resolvePlaceholders(value);
+		}
+		return changed;
+	}
+
+	
 	/**
 	 * Is abstract method to implement with business logic, where it's possible
 	 * to access to resources by JNDI.

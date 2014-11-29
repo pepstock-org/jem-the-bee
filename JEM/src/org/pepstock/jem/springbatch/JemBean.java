@@ -58,7 +58,7 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	public JemBean() {
 		
 	}
-
+	
 	/**
 	 * Returns the class path necessary to Springbatch to execute job.
 	 * This is not the System class path.
@@ -142,6 +142,7 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		// creates Listener
 		StepListener listener = new StepListener();
+		listener.setEnvironment(context.getEnvironment());
 		// sets the springbatch listener
 		// both jobs and steps
 		@SuppressWarnings("rawtypes")

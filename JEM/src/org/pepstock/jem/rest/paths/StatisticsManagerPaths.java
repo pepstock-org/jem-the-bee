@@ -42,7 +42,7 @@ public final class StatisticsManagerPaths {
 	/**
 	 * Key to define the path to bind get result of display requestors (for GRS) method
 	 */
-	public static final String DISPLAY_REQUESTORS = CommonPaths.QUERYSTRING_SEPARATOR +  "gdisplayRequestor";
+	public static final String DISPLAY_REQUESTORS = CommonPaths.QUERYSTRING_SEPARATOR +  "displayRequestor";
 
 	/**
 	 * Key to define the path to bind get all redo statements method

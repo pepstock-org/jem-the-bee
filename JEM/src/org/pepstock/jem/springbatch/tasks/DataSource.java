@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.springbatch.tasks;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
@@ -25,21 +26,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.resources.impl.jdbc.JdbcFactory;
 import org.pepstock.jem.node.rmi.CommonResourcer;
+import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 
@@ -53,7 +63,7 @@ import org.springframework.jdbc.datasource.AbstractDataSource;
  * @version 1.0
  * 
  */
-public class DataSource extends AbstractDataSource implements Serializable {
+public class DataSource extends AbstractDataSource implements Serializable, EnvironmentAware {
 
 	private static final long serialVersionUID = 1L;
 
@@ -62,11 +72,23 @@ public class DataSource extends AbstractDataSource implements Serializable {
 	private String resource = null;
 	
 	private List<Property> properties = new ArrayList<Property>();
+	
+	private Environment env = null;
+	
 	/**
 	 * Empty constructor
 	 */
 	public DataSource() {
 	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
+	 */
+	@Override
+	public void setEnvironment(Environment env) {
+		this.env = env;
+	}
+
 
 	/**
 	 * Returns the name of datasource. This is mandatory value because is
@@ -204,12 +226,19 @@ public class DataSource extends AbstractDataSource implements Serializable {
 
 			// loads all properties into RefAddr
 			for (ResourceProperty property : props.values()){
-				ref.add(new StringRefAddr(property.getName(), property.getValue()));
+				ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
 			}
 			
 			// loads custom properties in a string format
 			if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
+				// loads all entries and substitute variables
+				for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
+					String value = replaceProperties(entry.getValue());
+					entry.setValue(value);
+				}
+				// adds to reference
 				ref.add(new StringRefAddr(CommonKeys.RESOURCE_CUSTOM_PROPERTIES, res.getCustomPropertiesString()));	
+
 			}
 			
 			// binds the object with format {type]/[name]
@@ -236,4 +265,39 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		return "[datasource=" + getName() + ", resource=" + getResource() + "]";
 	}
 	
+	/**
+	 * Replaces inside of property value system variables or properties loaded by Spring
+	 * @param value property value to change
+	 * @return value changed
+	 */
+	private String replaceProperties(String value){
+		// if we don't have the env, return the string without any change
+		if (env == null){
+			return value;
+		}
+		String changed = null;
+		// if property starts with jem.data
+		// I need to ask to DataPaths Container in which data path I can put the file
+		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
+			// takes teh rest of file name
+			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
+			// checks all paths
+			try {
+				// gets datapaths
+				PathsContainer paths = DataPathsContainer.getInstance().getPaths(fileName);
+				// is relative!
+				// creates a file with dataPath as parent, plus file name  
+				File file = new File(paths.getCurrent().getContent(), fileName);
+				// the absolute name of the file is property value
+				changed = file.getAbsolutePath();
+			} catch (InvalidDatasetNameException e) {
+				throw new BuildException(e);
+			}
+		} else {
+			// uses SB utilities to changed all properties
+			changed = env.resolvePlaceholders(value);
+		}
+		return changed;
+	}
+
 }

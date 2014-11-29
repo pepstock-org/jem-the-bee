@@ -27,7 +27,7 @@ public class LoginManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +   "loginManager";
+	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +   "auth";
 	
 	/**
 	 * Key to define the path to bind user management method

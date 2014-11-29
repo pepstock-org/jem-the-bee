@@ -26,8 +26,6 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.NodeMessageException;
 import org.pepstock.jem.node.security.Crypto;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-
 /**
  * Common resources utility for keys management, 
  * 
@@ -109,10 +107,7 @@ public class ResourcesUtil {
 	 * @param cryptedValue encrypted value
 	 * @param hash hash string to check if secret is correct
 	 * @return secret in clear
-	 * @throws Base64DecodingException 
-	 * @throws KeyException 
 	 * @throws NodeMessageException 
-	 * @throws Exception if error occurs
 	 */
 	public String decrypt(String cryptedValue, String hash) throws NodeMessageException {
 		try {
