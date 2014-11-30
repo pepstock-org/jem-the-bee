@@ -98,7 +98,6 @@ public final class NewResourceInspector extends AbstractResourceInspector implem
 	 */
     @Override
     public void onResize(int availableWidth, int availableHeight) {
-    	System.out.println("Eccome "+Sizes.toString(availableWidth)+", "+Sizes.toString(availableHeight));
-	    
+    	// do nothing
     }
 }

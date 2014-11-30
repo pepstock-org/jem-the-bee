@@ -86,10 +86,7 @@ public class WebMulticastListener implements Runnable {
 			InetAddress address = InetAddress.getByName(multicastGroup);
 			socket.joinGroup(address);
 			ready = true;
-			// FIXME
-			System.err.println(socket.getInetAddress()+" "+address+" "+socket.getInterface());
 
-			
 			// so we can shatted down
 			while (!Thread.currentThread().isInterrupted()) {
 				byte[] inBuf = new byte[20000];

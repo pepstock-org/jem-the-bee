@@ -498,21 +498,4 @@ public final class HttpUtil {
 		SSLContext sslContext = builder.build();
 		return new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 	}
-	
-	/**
-	 * tests all method
-	 * @param argv host of Jem
-	 * @throws SubmitException 
-	 */
-	public static void main(String[] argv) throws SubmitException{
-		if (argv != null && argv.length == 1){
-			String url = argv[0];
-			if (url != null){
-				System.out.println("GroupName: "+HttpUtil.getGroupName(url));
-				System.out.println("Members: "+HttpUtil.getMembers(url).length);
-			}
-			
-		}
-	}
-	
 }

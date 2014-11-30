@@ -801,8 +801,6 @@ public class StartUpSystem {
 					LogAppl.getInstance().emit(NodeMessage.JEMC038W, ConfigKeys.RESOURCE_DEFINITION_ALIAS, resourceDefinition.toString());
 				}
 			}
-			
-			System.err.println(Main.RESOURCE_DEFINITION_MANAGER.getClassPath());
 		}
 	}
 

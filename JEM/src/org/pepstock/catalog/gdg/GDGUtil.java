@@ -25,6 +25,7 @@ import java.text.ParseException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Contains some methods to access by root to generations of a GDG.
@@ -169,12 +170,11 @@ public class GDGUtil {
 				String key = GDGUtil.getGenerationIndex(root, 0);
 				// gets generation file name
 				String generation = GDGUtil.getGeneration(root, 0);
-				System.out.println(root.getFile().getParentFile().getAbsolutePath());
 				// creates the file instance using the directory of Root and
 				// generation as file name. Use printwriter so to be compliant with 
 				// hadoop file system that does not support touch command
 				File newFile = new File(root.getFile().getParentFile(), generation);
-				PrintWriter writer = new PrintWriter(newFile, "UTF-8");
+				PrintWriter writer = new PrintWriter(newFile, CharSet.DEFAULT_CHARSET_NAME);
 				writer.write("");
 				writer.close();
 				if (!newFile.exists()) {
