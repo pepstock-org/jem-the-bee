@@ -322,6 +322,9 @@ public class StepListener extends DefaultProcessEventListener{
     	// sets locking scope
     	setLockingScope(processEvent.getProcessInstance().getProcess().getMetaData());
     	
+    	// loads meta data for substitution of variables
+    	JobsProperties.getInstance().loadMetaData(processEvent.getProcessInstance().getProcess().getMetaData());
+    	
 		// sets locking scope
     	LogAppl.getInstance().emit(JBpmMessage.JEMM033I, lockingScope);
 		

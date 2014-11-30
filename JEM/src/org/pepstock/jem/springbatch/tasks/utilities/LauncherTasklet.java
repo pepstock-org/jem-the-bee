@@ -16,14 +16,17 @@
  */
 package org.pepstock.jem.springbatch.tasks.utilities;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.pepstock.jem.annotations.AssignChunkContext;
+import org.pepstock.jem.annotations.AssignStepContribution;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
@@ -45,7 +48,9 @@ public final class LauncherTasklet extends JemTasklet {
 	private String className = null;
 	
 	private Object object = null;
-
+	
+	private List<String> arguments = null;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,19 +86,15 @@ public final class LauncherTasklet extends JemTasklet {
 		// checks if has got a public static void main
 		if (hasMainMethod(clazz)) {
 			try {
-				Map<String, Object> jobParms = chunkContext.getStepContext().getJobParameters();
 				// init params accordingly
 				String[] params = null; 
-				// loads alljob parms
-				if (!jobParms.isEmpty()){
-					params = new String[jobParms.size()];
-					int index = 0;
-					for (Entry<String, Object> entry : jobParms.entrySet()){
-						params[index] = entry.getKey()+"="+entry.getValue().toString();
-					}
+				// loads params
+				if ((arguments != null) && (!arguments.isEmpty())){
+					params = arguments.toArray(new String[0]);
 				}
 				// replaces filed annotations
 				SetFields.applyByAnnotation(clazz);
+				applyByAnnotation(clazz, stepContribution, chunkContext);
 				// invokes main method
 				Method main = clazz.getMethod(MAIN_METHOD, String[].class);
 				main.invoke(null, (Object) params);
@@ -177,6 +178,21 @@ public final class LauncherTasklet extends JemTasklet {
 		this.object = object;
 	}
 
+
+	/**
+	 * @return the arguments
+	 */
+	public List<String> getArguments() {
+		return arguments;
+	}
+
+	/**
+	 * @param arguments the arguments to set
+	 */
+	public void setArguments(List<String> arguments) {
+		this.arguments = arguments;
+	}
+
 	/**
 	 * Is a static method which checks if the passed class has got a
 	 * <code>main</code> method.
@@ -193,5 +209,23 @@ public final class LauncherTasklet extends JemTasklet {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Assigns the value of step contribution and chunk context 
+	 * @param clazz class for reflection
+	 * @param stepContribution step contribution, passed by SpringBatch core
+	 * @param chunkContext chunk context, passed by SpringBatch core
+	 * @throws IllegalAccessException if any error occurs
+	 */
+	private void applyByAnnotation(Class<?> clazz, StepContribution stepContribution, ChunkContext chunkContext) throws IllegalAccessException {
+		// scans all declared fields
+		for (Field field : clazz.getDeclaredFields()){
+			// if has got data description annotation
+			if (field.isAnnotationPresent(AssignStepContribution.class) && Modifier.isStatic(field.getModifiers())){
+				FieldUtils.writeStaticField(field, stepContribution, true);
+			} else if (field.isAnnotationPresent(AssignChunkContext.class) && Modifier.isStatic(field.getModifiers())){
+				FieldUtils.writeStaticField(field, chunkContext, true);
+			}
+		}
+	}
 }

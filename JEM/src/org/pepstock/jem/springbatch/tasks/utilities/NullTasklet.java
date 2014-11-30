@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.springbatch.tasks.utilities;
 
+import org.pepstock.jem.annotations.AssignChunkContext;
+import org.pepstock.jem.annotations.AssignStepContribution;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -29,7 +31,14 @@ import org.springframework.batch.repeat.RepeatStatus;
  *
  */
 public class NullTasklet extends JemTasklet {
+	
+	// FIXME
+	@AssignStepContribution
+	private static StepContribution step = null;
 
+	@AssignChunkContext
+	private static ChunkContext chunk = null;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -42,6 +51,18 @@ public class NullTasklet extends JemTasklet {
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
 		return RepeatStatus.FINISHED;
+	}
+	
+	public static void main(String[] args){
+		if (args != null){
+			for (int i=0; i<args.length; i++){
+				System.err.println(i+". "+args[i]);
+			}
+		}
+		System.err.println(step);
+		System.err.println(chunk.getStepContext().getJobName());
+		
+		
 	}
 
 }

@@ -116,6 +116,8 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		if (className.contains(" ")){
 			throw new JemRuntimeException(JBpmMessage.JEMM056E.toMessage().getFormattedMessage(className));
 		}
+
+		JobsProperties.getInstance().loadParameters(workItem.getParameters());
 		
 		// checks if there a method to call
 		String methodName = null;
@@ -227,10 +229,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 
 		List<DataDescriptionImpl> ddList = null;
 		InitialContext ic = null;
-		// creates properties using system and env variables for substitution
-		Properties props = new Properties();
-		props.putAll(System.getenv());
-		props.putAll(System.getProperties());
+		
 		
 		try {
 			// gets all data description requested by this task
@@ -307,14 +306,14 @@ public class JemWorkItemHandler implements WorkItemHandler {
 	
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
-					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue(), props)));
+					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue(), JobsProperties.getInstance().getProperties())));
 				}
 				
 				// loads custom properties in a string format
 				if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
 					// loads all entries and substitute variables
 					for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
-						String value = replaceProperties(entry.getValue(), props);
+						String value = replaceProperties(entry.getValue(), JobsProperties.getInstance().getProperties());
 						entry.setValue(value);
 					}
 					// adds to reference
