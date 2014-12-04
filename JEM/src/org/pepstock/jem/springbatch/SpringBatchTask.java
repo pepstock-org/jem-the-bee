@@ -73,18 +73,18 @@ public class SpringBatchTask extends DefaultJobTask {
 		Job job = getJob();
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		currentClassPath = currentClassPath + File.pathSeparator + FilenameUtils.normalize(jclFile.getParentFile().getAbsolutePath(), true);
-		getEnv().put("CLASSPATH", currentClassPath);
+		getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 
 		// adds the custom classpath if not null/
 		Jcl jcl = job.getJcl();
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 		if (jcl.getClassPath() != null){
 			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 
 		JavaCommand jCommand = getCommand();

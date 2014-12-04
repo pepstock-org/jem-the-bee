@@ -44,7 +44,6 @@ import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
-import org.pepstock.jem.ant.tasks.utilities.JavaMainClassLauncher;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;

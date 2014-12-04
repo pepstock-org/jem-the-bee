@@ -46,7 +46,6 @@ import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.springbatch.SpringBatchException;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
-import org.springframework.core.env.Environment;
 
 /**
  * Manages the JNDI context for Chunks. Be aware that FTP resources (defined out-of-the-box) couldn't be used here.
@@ -73,11 +72,11 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	static InitialContext createJNDIContext(List<DataSource> dataSourceList, Environment env) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static InitialContext createJNDIContext(List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		// new initial context for JNDI
 		InitialContext ic = ContextUtils.getContext();
 		// loads IC
-		loadJNDIContext(ic, dataSourceList, env);
+		loadJNDIContext(ic, dataSourceList);
 		return ic;
 	}
 
@@ -91,7 +90,7 @@ public final class ChunkDataSourcesManager {
 	 * @throws UnknownHostException if any excetpion occurs
 	 * @throws RemoteException if any excetpion occurs
 	 */
-	static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList, Environment env) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
+	static void loadJNDIContext(InitialContext ic, List<DataSource> dataSourceList) throws SpringBatchException, NamingException, RemoteException, UnknownHostException {
 		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager) System.getSecurityManager();
 		// scans all datasource passed
 		for (DataSource source : dataSourceList) {
@@ -150,14 +149,14 @@ public final class ChunkDataSourcesManager {
 
 			// loads all properties into RefAddr
 			for (ResourceProperty property : properties.values()) {
-				ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue(), env)));
+				ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
 			}
 			
 			// loads custom properties in a string format
 			if (res.getCustomProperties() != null && !res.getCustomProperties().isEmpty()){
 				// loads all entries and substitute variables
 				for (Entry<String, String> entry : res.getCustomProperties().entrySet()){
-					String value = replaceProperties(entry.getValue(), env);
+					String value = replaceProperties(entry.getValue());
 					entry.setValue(value);
 				}
 				// adds to reference
@@ -175,11 +174,7 @@ public final class ChunkDataSourcesManager {
 	 * @param value property value to change
 	 * @return value changed
 	 */
-	private static String replaceProperties(String value, Environment env){
-		// if we don't have the env, return the string without any change
-		if (env == null){
-			return value;
-		}
+	private static String replaceProperties(String value){
 		String changed = null;
 		// if property starts with jem.data
 		// I need to ask to DataPaths Container in which data path I can put the file
@@ -200,7 +195,7 @@ public final class ChunkDataSourcesManager {
 			}
 		} else {
 			// uses SB utilities to changed all properties
-			changed = env.resolvePlaceholders(value);
+			changed = JobsProperties.getInstance().replacePlaceHolders(value);
 		}
 		return changed;
 	}

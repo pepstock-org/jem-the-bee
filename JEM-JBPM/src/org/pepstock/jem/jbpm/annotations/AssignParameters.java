@@ -14,27 +14,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.tasks.jndi;
+package org.pepstock.jem.jbpm.annotations;
 
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.spi.InitialContextFactory;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation used to set  the methoid to be executed from JemWorkItemHandler
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.2	
  *
  */
-public class JemContextFactory implements InitialContextFactory {
-
-	/* (non-Javadoc)
-	 * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
-	 */
-	@Override
-	public Context getInitialContext(Hashtable<?, ?> env) throws NamingException {
-		return new JemContext(env);
-	}
-
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AssignParameters {
+	
 }

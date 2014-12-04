@@ -48,6 +48,9 @@
 					<include name="jppf/*.jar" />
 					<include name="jms/*.jar" />
 				</fileset>
+				<fileset dir="${jem-jbpm.library.directory}">
+					<include name="*.jar" />
+				</fileset>
 			</classpath>
 		</javac>
 		<copy todir="${jem.workspace}/${jem-junit.classes.directory}">

@@ -84,5 +84,4 @@ public abstract class MapManager implements JemWorkItem {
 		}
 		return result;
 	}
-
 }

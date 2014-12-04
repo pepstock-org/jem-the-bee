@@ -32,6 +32,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.util.ReverseURLClassLoader;
 
 
 /**
@@ -70,7 +71,8 @@ public final class AbsoluteHashMap extends HashMap<String, Object> implements Ma
             // The root classloader is sun.misc.Launcher package. If we are not in a sun package,
             // we need to get hold of the instance of ourself from the class in the root classloader.
         	// checks is ANT classloader
-            if (myClassLoader.getClass().getName().startsWith("org.apache.tools.ant.loader.AntClassLoader")) {
+            if (myClassLoader.getClass().getName().startsWith("org.apache.tools.ant.loader.AntClassLoader") ||
+            		myClassLoader.getClass().getName().startsWith(ReverseURLClassLoader.class.getName())) {
                     try {
 						// So we find our parent classloader
 						ClassLoader parentClassLoader = myClassLoader.getParent();

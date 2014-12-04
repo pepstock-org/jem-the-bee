@@ -48,8 +48,6 @@ import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 
@@ -63,7 +61,7 @@ import org.springframework.jdbc.datasource.AbstractDataSource;
  * @version 1.0
  * 
  */
-public class DataSource extends AbstractDataSource implements Serializable, EnvironmentAware {
+public class DataSource extends AbstractDataSource implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -73,22 +71,11 @@ public class DataSource extends AbstractDataSource implements Serializable, Envi
 	
 	private List<Property> properties = new ArrayList<Property>();
 	
-	private Environment env = null;
-	
 	/**
 	 * Empty constructor
 	 */
 	public DataSource() {
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
-	 */
-	@Override
-	public void setEnvironment(Environment env) {
-		this.env = env;
-	}
-
 
 	/**
 	 * Returns the name of datasource. This is mandatory value because is
@@ -271,10 +258,6 @@ public class DataSource extends AbstractDataSource implements Serializable, Envi
 	 * @return value changed
 	 */
 	private String replaceProperties(String value){
-		// if we don't have the env, return the string without any change
-		if (env == null){
-			return value;
-		}
 		String changed = null;
 		// if property starts with jem.data
 		// I need to ask to DataPaths Container in which data path I can put the file
@@ -295,7 +278,7 @@ public class DataSource extends AbstractDataSource implements Serializable, Envi
 			}
 		} else {
 			// uses SB utilities to changed all properties
-			changed = env.resolvePlaceholders(value);
+			changed = JobsProperties.getInstance().replacePlaceHolders(value);
 		}
 		return changed;
 	}

@@ -64,5 +64,6 @@
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.portlet-3.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.servlet-3.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.struts-3.1.4.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JBPM"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

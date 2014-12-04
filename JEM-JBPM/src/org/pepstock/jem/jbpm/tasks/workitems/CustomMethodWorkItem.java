@@ -16,12 +16,16 @@
 */
 package org.pepstock.jem.jbpm.tasks.workitems;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.annotations.SetFields;
+import org.pepstock.jem.jbpm.annotations.AssignParameters;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 
@@ -65,7 +69,9 @@ public class CustomMethodWorkItem extends MapManager {
 	@Override
 	public int execute(Map<String, Object> parameters) throws Exception {
 		// sets Fields if they are using annotations
-		SetFields.applyByAnnotation(instance);	
+		SetFields.applyByAnnotation(instance);
+		applyByAnnotation(instance, parameters);
+		
 		Method method = null;
 		try {
 			// before try to get the method without parms
@@ -108,6 +114,26 @@ public class CustomMethodWorkItem extends MapManager {
 			method.invoke(instance, parms);
 			// returns always 0
 			return Result.SUCCESS;
+		}
+	}
+	
+	/**
+	 * Assigns the value of parameters 
+	 * @param object instance of object
+	 * @param parameters parameters to set
+	 * @throws IllegalAccessException if any error occurs
+	 */
+	private void applyByAnnotation(Object object, Map<String, Object> parameters) throws IllegalAccessException {
+		// scans all declared fields
+		for (Field field : object.getClass().getDeclaredFields()){
+			// if has got data description annotation
+			if (field.isAnnotationPresent(AssignParameters.class)){
+				if (Modifier.isStatic(field.getModifiers())){
+					FieldUtils.writeStaticField(field, parameters, true);	
+				} else {
+					FieldUtils.writeField(field, object, parameters, true);
+				}
+			}
 		}
 	}
 

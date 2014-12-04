@@ -48,11 +48,20 @@ import org.pepstock.jem.node.configuration.ClassPath;
  */
 public final class ClassLoaderUtil {
 
-	private static final String[] EXTENSIONS = new String[] { "jar" };
+	/**
+	 * Extensions files loaded for classpath
+	 */
+	public static final String[] EXTENSIONS = new String[] { "jar" };
 
-	private static final String ALL_FOLDER = "*";
+	/**
+	 * Loads all files of a folder, without any cascading
+	 */
+	public static final String ALL_FOLDER = "*";
 
-	private static final String ALL_FOLDER_IN_CASCADE = "**";
+	/**
+	 * Loads all files of a folder, with cascading on all subfolders
+	 */
+	public static final String ALL_FOLDER_IN_CASCADE = "**";
 
 	/**
 	 * Empty to avoid instantiation

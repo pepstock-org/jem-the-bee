@@ -20,6 +20,8 @@ import java.lang.management.ManagementFactory;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.naming.NamingException;
 
@@ -41,11 +43,11 @@ import org.pepstock.jem.util.rmi.RmiKeys;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
 
 /**
  * Implements the interfaces of SpringBatch to listen all starts and ends both
@@ -56,15 +58,13 @@ import org.springframework.core.env.Environment;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered, EnvironmentAware {
+public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered {
 
 	private TasksDoor door = null;
 	
 	private Locker locker = null;
 	
 	private boolean isFirst = true;
-	
-	private Environment env = null;
 
 
 	/**
@@ -72,15 +72,6 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	 */
 	public StepListener() {
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
-	 */
-	@Override
-	public void setEnvironment(Environment env) {
-		this.env = env;
-	}
-
 
 	/**
 	 * Called by SpringBatch engine when the job is ended.<br>
@@ -173,6 +164,13 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS027E);
 					}
 
+					// loads job parameters on job properties
+					JobParameters parms = jobExecution.getJobParameters();
+					Properties jobParmsProperties = new Properties();
+					for (Entry<String, JobParameter> entry : parms.getParameters().entrySet()){
+						jobParmsProperties.put(entry.getKey(), entry.getValue().getValue());
+					}
+					JobsProperties.getInstance().loadProperties(jobParmsProperties);
 				} else {
 					throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS026E, TasksDoor.NAME);
 				}
@@ -288,7 +286,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				// then loads JNDI context
 				if (!item.getDataSources().isEmpty()){
 					try {
-						object.setContext(ChunkDataSourcesManager.createJNDIContext(item.getDataSources(), env));
+						object.setContext(ChunkDataSourcesManager.createJNDIContext(item.getDataSources()));
 					} catch (RemoteException e) {
 						throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS048E, e, e.getMessage());
 					} catch (UnknownHostException e) {

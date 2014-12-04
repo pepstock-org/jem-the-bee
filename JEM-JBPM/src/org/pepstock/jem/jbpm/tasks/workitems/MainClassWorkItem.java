@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.jbpm.tasks.workitems;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;
@@ -23,9 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.jbpm.JBpmKeys;
+import org.pepstock.jem.jbpm.annotations.AssignParameters;
 import org.pepstock.jem.jbpm.tasks.JemWorkItem;
 import org.pepstock.jem.log.LogAppl;
 
@@ -57,10 +60,10 @@ public class MainClassWorkItem implements JemWorkItem {
 	@Override
 	public int execute(Map<String, Object> parameters) throws Exception {
 		SetFields.applyByAnnotation(clazz);
+		applyByAnnotation(clazz, parameters);
 
 		// sets Fields if they are using annotations
 		Method main = clazz.getMethod(MAIN_METHOD, String[].class);
-
 		// init params accordingly
 		String[] params = null; 
 		if (!parameters.isEmpty()){
@@ -100,5 +103,21 @@ public class MainClassWorkItem implements JemWorkItem {
         	LogAppl.getInstance().ignore(e.getMessage(), e);
         	return false;
         }
+	}
+	
+	/**
+	 * Assigns the value of parameters 
+	 * @param object instance of object
+	 * @param parameters parameters to set
+	 * @throws IllegalAccessException if any error occurs
+	 */
+	private void applyByAnnotation(Class<?> clazz, Map<String, Object> parameters) throws IllegalAccessException {
+		// scans all declared fields
+		for (Field field : clazz.getDeclaredFields()){
+			// if has got data description annotation
+			if (field.isAnnotationPresent(AssignParameters.class) && (Modifier.isStatic(field.getModifiers()))){
+				FieldUtils.writeStaticField(field, parameters, true);	
+			}
+		}
 	}
 }

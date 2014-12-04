@@ -45,7 +45,9 @@ import org.pepstock.jem.log.LogAppl;
 public class ReverseURLClassLoader extends URLClassLoader {
 	
 	private List<JarFile> bootstrap = new LinkedList<JarFile>();
-
+	
+	private boolean isParentDelegation = true;
+	
     /**
      * Constructor with all files (passed by URL) and classvloader parent. loads all bootstrap files
      * 
@@ -53,9 +55,21 @@ public class ReverseURLClassLoader extends URLClassLoader {
      * @param parent class loader parent
      */
     public ReverseURLClassLoader(URL[] urls, ClassLoader parent) {
+    	this(urls, parent, true);
+    }
+
+    /**
+     * Constructor with all files (passed by URL) and classvloader parent. loads all bootstrap files
+     * 
+     * @param urls list of files
+     * @param parent class loader parent
+     * @param isParentDelegation if it must search class to the parent or not
+     */
+    public ReverseURLClassLoader(URL[] urls, ClassLoader parent, boolean isParentDelegation) {
         super(urls, parent);
         // loads bootstrap files
         loadBootstrapFiles();
+        this.isParentDelegation = isParentDelegation;
     }
     
     
@@ -78,9 +92,13 @@ public class ReverseURLClassLoader extends URLClassLoader {
             try {
                 theClass = findClass(classname);
             } catch (ClassNotFoundException cnfe) {
-            	LogAppl.getInstance().ignore(cnfe.getMessage(), cnfe);
-            	// if not found again, goes to the parent classloader
-                theClass =  getParent().loadClass(classname);
+            	if (isParentDelegation){
+            		LogAppl.getInstance().ignore(cnfe.getMessage(), cnfe);
+            		// if not found again, goes to the parent classloader
+					theClass =  getParent().loadClass(classname);
+            	} else {
+            		throw cnfe;
+            	}
             }
         }
         // if it must resolve

@@ -51,7 +51,11 @@ public class DefaultJobTask extends JobTask {
 	// persistence folder, needed into security managaer
 	private String persistencePath = "-D"+ConfigKeys.JEM_PERSISTENCE_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_PERSISTENCE_PATH_NAME);
 
-
+	/**
+	 * Environment variable to st classpath for JAVA 
+	 */
+	public static final String CLASSPATH_ENVIRONMENT_VARIABLE = "CLASSPATH";
+	
 	/**
 	 * @param job
 	 * @param factory

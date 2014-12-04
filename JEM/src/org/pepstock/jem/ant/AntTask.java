@@ -68,7 +68,7 @@ public class AntTask extends DefaultJobTask {
 		// gets CLASSPATH, setting the name of folder in JEM lib to add
 		// to process to launch
 		String currentClassPath = JavaUtils.getClassPath(FOLDER);
-		getEnv().put("CLASSPATH", currentClassPath);
+		getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 	
 		// get job instance and get JCL file, necessary to pass to ANT Batch
 		Job job = getJob();
@@ -79,12 +79,12 @@ public class AntTask extends DefaultJobTask {
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 		
 		if (jcl.getClassPath() != null){
 			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 		// creates a Java command
 		JavaCommand jCommand = getCommand();

@@ -55,7 +55,7 @@ public class Factory {
 		// prejob without type
 		if (prejob.getJclType() == null){
 			jcl = Factory.scanAllJclFactories(prejob);
-		} if (!Main.FACTORIES_LIST.containsKey(prejob.getJclType().toLowerCase())) {
+		} else if (!Main.FACTORIES_LIST.containsKey(prejob.getJclType().toLowerCase())) {
 			// JCL type is normalized using lower case
 			throw new JclFactoryException(NodeMessage.JEMC143E.toMessage().getFormattedMessage(prejob.getJclType().toLowerCase()));
 		} else {

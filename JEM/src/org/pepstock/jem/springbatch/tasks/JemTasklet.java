@@ -57,8 +57,6 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -75,15 +73,13 @@ import com.thoughtworks.xstream.XStream;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public abstract class JemTasklet implements Tasklet, EnvironmentAware {
+public abstract class JemTasklet implements Tasklet{
 
 	private List<DataDescription> dataDescriptionList = new ArrayList<DataDescription>();
 	
 	private List<DataSource> dataSourceList = new ArrayList<DataSource>();
 	
 	private List<Lock> locks = new ArrayList<Lock>(); 
-	
-	private Environment env = null;
 	
 	/**
 	 * Empty constructor
@@ -348,24 +344,12 @@ public abstract class JemTasklet implements Tasklet, EnvironmentAware {
 		return status;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.context.EnvironmentAware#setEnvironment(org.springframework.core.env.Environment)
-	 */
-	@Override
-	public void setEnvironment(Environment env) {
-		this.env = env;
-	}
-
 	/**
 	 * Replaces inside of property value system variables or properties loaded by Spring
 	 * @param value property value to change
 	 * @return value changed
 	 */
 	private String replaceProperties(String value){
-		// if we don't have the env, return the string without any change
-		if (env == null){
-			return value;
-		}
 		String changed = null;
 		// if property starts with jem.data
 		// I need to ask to DataPaths Container in which data path I can put the file
@@ -386,7 +370,7 @@ public abstract class JemTasklet implements Tasklet, EnvironmentAware {
 			}
 		} else {
 			// uses SB utilities to changed all properties
-			changed = env.resolvePlaceholders(value);
+			changed = JobsProperties.getInstance().replacePlaceHolders(value);
 		}
 		return changed;
 	}

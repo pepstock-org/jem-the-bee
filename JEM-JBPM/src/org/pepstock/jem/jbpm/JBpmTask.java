@@ -76,7 +76,7 @@ public class JBpmTask extends DefaultJobTask {
 			throw new IOException("classPath is empty");
 		}
 		// sets classpath
-		getEnv().put("CLASSPATH", currentClassPath);
+		getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 	
 		// get job instance and get JCL file, necessary to pass to JBPM Batch
 		Job job = getJob();
@@ -87,12 +87,12 @@ public class JBpmTask extends DefaultJobTask {
 		
 		if (jcl.getPriorClassPath() != null){
 			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 		
 		if (jcl.getClassPath() != null){
 			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
-			getEnv().put("CLASSPATH", currentClassPath);
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
 		// creates a Java command
 		JavaCommand jCommand = getCommand();

@@ -20,10 +20,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import org.pepstock.jem.jbpm.annotations.AssignParameters;
 
 /**
  * This class is a spring batch tasklet thath will delete all the dataset create
@@ -33,6 +36,9 @@ import javax.sql.DataSource;
  * 
  */
 public class DataSourceConn {
+	
+	@AssignParameters
+	private static Map<String, Object> parameters = null;
 
 	/**
 	 * Empty constructor
@@ -41,7 +47,7 @@ public class DataSourceConn {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		
+		    System.err.println("parms: "+parameters);
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY,
 					"org.pepstock.jem.node.tasks.jndi.JemContextFactory");
@@ -52,7 +58,7 @@ public class DataSourceConn {
 			// get data source, note that jem-db is the name of the dataSource
 			// present in the JCL
 			DataSource dataSource = (DataSource) context.lookup("jem-db");
-			System.err.println("Connecting to database ...");
+			System.err.println("Connecting to database 2 ...");
 			Connection conn = dataSource.getConnection();
 			System.err.println("Connected to database ...");
 			Statement statement = conn.createStatement();

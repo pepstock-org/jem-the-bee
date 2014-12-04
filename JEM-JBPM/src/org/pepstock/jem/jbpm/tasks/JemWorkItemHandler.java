@@ -116,7 +116,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		if (className.contains(" ")){
 			throw new JemRuntimeException(JBpmMessage.JEMM056E.toMessage().getFormattedMessage(className));
 		}
-
+		// loads parameters as list of properties for substitutions
 		JobsProperties.getInstance().loadParameters(workItem.getParameters());
 		
 		// checks if there a method to call
