@@ -31,8 +31,6 @@ import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
-import com.hazelcast.config.Interfaces;
-
 /**
  * Is a thread responsible for listening to the multicast client request and
  * response with the list of nodes presents in the cluster so that the web
@@ -58,17 +56,13 @@ public class NodeMulticastListener implements Runnable {
 		try {
 			// Prepare to join multicast group
 			socket = new MulticastSocket(Main.getMulticastService().getConfig().getMulticastPort());
-			Interfaces interfaces = Main.getHazelcast().getConfig().getNetworkConfig().getInterfaces();
-			if (interfaces != null && interfaces.isEnabled()) {
-				try {
-					socket.setInterface(MulticastUtils.getInetAddress(interfaces.getInterfaces()));
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
-				}
-			}
+			socket.setNetworkInterface(Main.getNetworkInterface().getNetworkInterface());
+			
 			socket.setTimeToLive(Main.getMulticastService().getConfig().getMulticastTimeToLive());
-			InetAddress address = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
-			socket.joinGroup(address);
+			
+			InetAddress groupAddress = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
+			
+			socket.joinGroup(groupAddress);
 			isReady = true;
 			while (!Thread.currentThread().isInterrupted()) {
 				byte[] inBuf = new byte[512];
@@ -97,6 +91,7 @@ public class NodeMulticastListener implements Runnable {
 					LogAppl.getInstance().emit(NodeMessage.JEMC226W, inPacket.getAddress(), Main.getMulticastService().getConfig().getMulticastGroup(), Main.getMulticastService().getConfig().getMulticastPort(), inMsg);
 				}
 			}
+			socket.leaveGroup(groupAddress);
 			socket.close();
 		} catch (IOException ioe) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC224E, ioe);

@@ -104,6 +104,7 @@ import org.pepstock.jem.util.ObjectAndClassPathContainer;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
 import org.pepstock.jem.util.locks.ConcurrentLock;
+import org.pepstock.jem.util.net.InterfacesUtils;
 
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MulticastConfig;
@@ -163,6 +164,15 @@ public class StartUpSystem {
 		loadEnvConfiguration();
 		// initialize Hazelcast
 		startHazelcast();
+		
+		// gets the network interface to use
+		try {
+			Main.NETWORK_INTERFACE = InterfacesUtils.getInterface(Main.getHazelcast().getConfig());
+			LogAppl.getInstance().emit(NodeMessage.JEMC273I, Main.NETWORK_INTERFACE);
+		} catch (MessageException e) {
+			throw new ConfigurationException(e);
+		}
+		
 		// delete resources of not existing types
 		deleteNotExistingTypesResources();
 		LogAppl.getInstance().emit(NodeMessage.JEMC012I, ManagementFactory.getRuntimeMXBean().getName());

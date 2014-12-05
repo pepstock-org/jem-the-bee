@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pepstock.jem.node.multicast;
+package org.pepstock.jem.util.net;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -27,30 +27,85 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.Interfaces;
+
 /**
- * Is a class with common utilities for multicast service
+ * Is a class with common utilities for network interface utility
  * 
  * @author Simone "Busy" Businaro
  * 
  */
-public class MulticastUtils {
+public final class InterfacesUtils {
 
 	/**
 	 * To avoid any instantiation 
 	 */
-	private MulticastUtils() {
+	private InterfacesUtils() {
 
+	}
+	
+	/**
+	 * Returns local network interface touse for multicast and an other services, starting from Hazelcast
+	 * configuration where you can put all interfaces and if missing use the local host interface.
+	 * @param hazelcastConfig Hazelcast configuration
+	 * @return interface object
+	 * @throws MessageException if any error occurs
+	 */
+	public static Interface getInterface(Config hazelcastConfig) throws MessageException{
+		Interface networkInterface = new Interface();
+		Interfaces interfaces = null;
+		// if config is null, it doesn't use Hazelcast, only local host
+		if (hazelcastConfig != null){
+			interfaces = hazelcastConfig.getNetworkConfig().getInterfaces();	
+		}
+		Exception exception = null;
+		// checks if there is hazelcast configuration for Multicast
+		if (interfaces != null && interfaces.isEnabled()) {
+			try {
+				// uses the hazelcast config
+				loadInterfaceFromHazelcastConfiguration(networkInterface, interfaces.getInterfaces());
+				return networkInterface;
+			} catch (Exception e) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
+				exception = e;
+			}
+		} else {
+			// if there isn't any configuration for hazelcast
+			// scans network interfaces, taking the interface which matches with localhost address
+			try {
+				Enumeration<NetworkInterface> interfaces3 = NetworkInterface.getNetworkInterfaces();
+				while (interfaces3.hasMoreElements()) {
+					NetworkInterface ni = interfaces3.nextElement();
+					Enumeration<InetAddress> addresses = ni.getInetAddresses();
+					while (addresses.hasMoreElements()) {
+						InetAddress addr = addresses.nextElement();
+						String localhost = addr.getHostAddress();
+						// checks if is local host address
+						if (InetAddress.getLocalHost().getHostAddress().equals(localhost)){
+							networkInterface.setAddress(addr);
+							networkInterface.setNetworkInterface(ni);
+							return networkInterface;
+						}
+					}
+				}
+				exception = new MessageException(NodeMessage.JEMC250E);
+			} catch (Exception e) {
+				// debug
+				LogAppl.getInstance().debug(e.getMessage(), e);
+				exception = e;
+			}
+		}
+		throw new MessageException(NodeMessage.JEMC250E, exception);
 	}
 
 	/**
-	 * 
-	 * @param interfaces
-	 * @return the correct inetAddress of the node that matches the first
-	 *         interface present in the list of interfaces read in the hazelcast
-	 *         configuration
+	 * Loads interfaces defines on Hazelcast configuration file
+	 * @param networkInterface instance to load the network info
+	 * @param interfaces list of interfaces set in Hazelcast
 	 * @throws MessageException if any error occurs
 	 */
-	public static InetAddress getInetAddress(Collection<String> interfaces) throws MessageException {
+	private static void loadInterfaceFromHazelcastConfiguration(Interface networkInterface, Collection<String> interfaces) throws MessageException {
 		try {
 			for (String toMatch : interfaces) {
 				Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
@@ -59,7 +114,9 @@ public class MulticastUtils {
 					for (InetAddress inetAddress : Collections.list(inetAddresses)) {
 						if (doMatch(inetAddress, toMatch)) {
 							LogAppl.getInstance().emit(NodeMessage.JEMC248I, inetAddress);
-							return inetAddress;
+							networkInterface.setAddress(inetAddress);
+							networkInterface.setNetworkInterface(netint);
+							return;
 						}
 					}
 				}

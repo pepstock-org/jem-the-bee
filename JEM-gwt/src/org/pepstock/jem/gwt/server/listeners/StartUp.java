@@ -35,11 +35,16 @@ import org.pepstock.jem.gwt.server.configuration.ConfigurationException;
 import org.pepstock.jem.gwt.server.connector.ConnectorServiceFactory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.log.MessageRuntimeException;
+import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.util.net.InterfacesUtils;
 
 import com.hazelcast.config.FileSystemXmlConfig;
+import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.NetworkConfig;
 
 /**
  * Context listener which starts up JEM web application, initializing Log4j,
@@ -139,6 +144,20 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		// start connector service
 		try {
 			SharedObjects.getInstance().setHazelcastConfig(config);
+			try {
+				SharedObjects.getInstance().setNetworkInterface(InterfacesUtils.getInterface(config));
+				// Overrides the 
+				NetworkConfig network = config.getNetworkConfig();
+				Interfaces interfaces = network.getInterfaces();
+				// overrides network only if is not set
+				if (interfaces == null){
+					network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());
+				}
+				
+		        LogAppl.getInstance().emit(NodeMessage.JEMC273I, SharedObjects.getInstance().getNetworkInterface());
+	        } catch (MessageException e) {
+	        	throw new ConfigurationException(e);
+	        }
 			Service connectorService = ConnectorServiceFactory.getConnectorService();
 			SharedObjects.getInstance().setConnectorService(connectorService);
 			SharedObjects.getInstance().getConnectorService().start();

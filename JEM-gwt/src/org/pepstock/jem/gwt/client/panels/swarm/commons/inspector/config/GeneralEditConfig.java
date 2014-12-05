@@ -17,8 +17,8 @@
 package org.pepstock.jem.gwt.client.panels.swarm.commons.inspector.config;
 
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.MandatoryNumericalTextBox;
 import org.pepstock.jem.gwt.client.commons.MandatoryPasswordTextBox;
 import org.pepstock.jem.gwt.client.commons.MandatoryTextBox;
@@ -97,17 +97,13 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 		table.setWidget(0, 4, port);
 		table.setHTML(0, 5, "");
 		
-		table.setHTML(1, 3, "Network interface:");
-		table.setWidget(1, 4, netInterface);
-		table.setHTML(1, 5, "");
+		table.setHTML(1, 3, "User:");
+		table.setWidget(1, 4, user);
 		
-		table.setHTML(2, 3, "User:");
-		table.setWidget(2, 4, user);
+		table.setHTML(2, 3, "Last update:");
+		table.setWidget(2, 4, lastModified);
 		
-		table.setHTML(3, 3, "Last update:");
-		table.setWidget(3, 4, lastModified);
-		
-		table.setHTML(5, 0, "<font color=\"red\"><b>*</b></font> Mandatory.");
+		table.setHTML(4, 0, "<font color=\"red\"><b>*</b></font> Mandatory.");
 
 		FlexCellFormatter cf = table.getFlexCellFormatter();
 		cf.setWordWrap(0, 0, false);

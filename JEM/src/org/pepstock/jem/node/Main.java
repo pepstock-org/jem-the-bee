@@ -36,6 +36,7 @@ import org.pepstock.jem.node.resources.definition.ResourceDefinitionsManager;
 import org.pepstock.jem.node.swarm.Swarm;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
 import org.pepstock.jem.util.Parser;
+import org.pepstock.jem.util.net.Interface;
 import org.pepstock.jem.util.rmi.RegistryContainer;
 
 import com.hazelcast.config.FileSystemXmlConfig;
@@ -199,6 +200,8 @@ public class Main {
 	// all nodes of cluster must check and validate jcls and prejobs in
 	// JCL_CHECKING queue
 	static final JclCheckingQueueManager JCL_CHECKER = new JclCheckingQueueManager();
+	
+	static Interface NETWORK_INTERFACE = null; 
 
 	/**
 	 * Constructs JEM node, initializing all sub components
@@ -363,6 +366,13 @@ public class Main {
 	 */
 	public static HazelcastInstance getHazelcast() {
 		return HAZELCAST;
+	}
+
+	/**
+	 * @return the nETWORK_INTERFACE
+	 */
+	public static Interface getNetworkInterface() {
+		return NETWORK_INTERFACE;
 	}
 
 	/**

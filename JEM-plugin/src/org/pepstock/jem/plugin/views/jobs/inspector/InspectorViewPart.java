@@ -132,6 +132,9 @@ public class InspectorViewPart extends JemViewPart {
     	jobHeader.setJob(getJob());
     	dragListener.setJob(getJob());
     	dragListener.setQueueName(getQueueName());
+    	
+    	
+
     }
   
 	/* (non-Javadoc)
@@ -168,6 +171,7 @@ public class InspectorViewPart extends JemViewPart {
 		treeViewer.setInput(data);
 		// expands all to solve the pack view
 		treeViewer.setAutoExpandLevel(10);
+		treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0));
 		
 		// DND
 		dragListener.setTreeViewer(treeViewer);

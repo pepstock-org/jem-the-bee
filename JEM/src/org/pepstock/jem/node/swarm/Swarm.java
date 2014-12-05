@@ -250,9 +250,8 @@ public class Swarm {
 		network.setPort(activeConfiguration.getPort());
 		network.setPortAutoIncrement(true);
 
-		if (activeConfiguration.getNetworkInterface() != null) {
-			network.getInterfaces().setEnabled(true).addInterface(activeConfiguration.getNetworkInterface());
-		}
+		network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());
+		
 
 		// JOIN
 		Join join = network.getJoin();

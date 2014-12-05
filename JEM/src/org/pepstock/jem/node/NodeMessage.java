@@ -1628,8 +1628,14 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when teh value assignt to a property has got  awrong value.<br> Please check definition.")
-	JEMC272E(272, "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR);
+	@Description(explanation = "It occurs when the value assigns to a property has got  awrong value.<br> Please check definition.")
+	JEMC272E(272, "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR),
+	
+	/**
+	 * "Network interface {0} is used", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when Jem choose which network interface to use.")
+	JEMC273I(273, "Network interface {0} is used", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

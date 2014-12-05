@@ -22,6 +22,7 @@ import org.pepstock.jem.gwt.server.connector.ConnectorServiceFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.util.net.Interface;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
@@ -54,10 +55,13 @@ public class SharedObjects {
 
 	private String contextPath;
 	
+	private Interface networkInterface = null;
+	
 	/**
 	 * Empty constructor
 	 */
 	private SharedObjects() {
+
 	}
 
 	/**
@@ -94,6 +98,20 @@ public class SharedObjects {
 		return SharedObjects.getInstance().getHazelcastClient();
 	}
 	
+	/**
+	 * @return the networkInterface
+	 */
+	public Interface getNetworkInterface() {
+		return networkInterface;
+	}
+
+	/**
+	 * @param networkInterface the networkInterface to set
+	 */
+	public void setNetworkInterface(Interface networkInterface) {
+		this.networkInterface = networkInterface;
+	}
+
 	/**
 	 * @return the context path
 	 */
