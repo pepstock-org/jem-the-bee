@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
+import org.pepstock.jem.node.OutputSystem;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
@@ -163,7 +164,13 @@ public class SecurityUtils {
 			 * so the capabilities to write SYSOUT is guaranteed 
 			 */
 			if (FilenameUtils.getFullPathNoEndSeparator(fileName).equalsIgnoreCase(OUTPUT_PATH)){
-				return TO_BE_REJECTED;
+				String file = FilenameUtils.getName(fileName);
+				if (OutputSystem.JCL_FILE.equalsIgnoreCase(file) || 
+						OutputSystem.JOB_FILE.equalsIgnoreCase(file) ||
+						OutputSystem.JOBLOG_FILE.equalsIgnoreCase(file) ||
+						OutputSystem.MESSAGESLOG_FILE.equalsIgnoreCase(file)){
+					return TO_BE_REJECTED;
+				}
 			}
 			return TO_BE_IGNORED;
 		}

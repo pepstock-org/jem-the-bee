@@ -253,7 +253,6 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
-		
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception 
 		// before calling the main class
@@ -281,6 +280,8 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			referencePaths.add(new StringRefAddr(StringRefAddrKeys.DATAPATHS_KEY, xmlPaths));
 			// re-bind the object inside the JNDI context
 			ic.rebind(AntKeys.ANT_DATAPATHS_BIND_NAME, referencePaths);
+			
+			
 			
 			// scans all datasource passed
 			for (DataSource source : sources){
@@ -444,9 +445,9 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// tried to set fields where
 			// annotations are used
 			super.execute();
-		} catch (BuildException e1) {
+		} catch (BuildException e) {
 			returnCode = Result.ERROR;
-			throw e1;
+			throw e;
 		} catch (RemoteException e) {
 			returnCode = Result.ERROR;
 			throw new BuildException(e);
@@ -457,12 +458,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			returnCode = Result.ERROR;
 			throw new BuildException(e);
 		} finally {
+			batchSM.setInternalAction(true);
 			String rcObject = System.getProperty(RESULT_KEY);
 			if (rcObject != null){
 				returnCode = Parser.parseInt(rcObject, Result.SUCCESS);
 			}
 			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
-			batchSM.setInternalAction(true);
 			// checks datasets list
 			if (ddList != null && !ddList.isEmpty()) {
 				StringBuilder exceptions = new StringBuilder();
@@ -495,13 +496,15 @@ public class StepJava extends Java  implements DataDescriptionStep {
 					}
 				}
 				for (DataSource source : sources){
-					// unbinds all resources
-					try {
-						ic.unbind(source.getName());
-					} catch (NamingException e) {
-						// ignore
-						LogAppl.getInstance().ignore(e.getMessage(), e);
-						log(AntMessage.JEMA037E.toMessage().getFormattedMessage(e.getMessage()));
+					if (source.getName() != null){
+						// unbinds all resources
+						try {
+							ic.unbind(source.getName());
+						} catch (NamingException e) {
+							// ignore
+							LogAppl.getInstance().ignore(e.getMessage(), e);
+							log(AntMessage.JEMA037E.toMessage().getFormattedMessage(e.getMessage()));
+						}
 					}
 				}
 				// checks if has exception using the stringbuffer
@@ -511,6 +514,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 					log(StringUtils.center("ATTENTION", 40, "-"));
 					log(exceptions.toString());
 				}
+				batchSM.setInternalAction(false);
 			}
 		}
 	}

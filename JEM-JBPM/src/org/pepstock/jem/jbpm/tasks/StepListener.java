@@ -302,13 +302,16 @@ public class StepListener extends DefaultProcessEventListener{
 					} else {
 						throw new JemRuntimeException(JBpmMessage.JEMM039E.toMessage().getMessage());
 					}
-					
-					
 				} else {
 					throw new JemRuntimeException(JBpmMessage.JEMM038E.toMessage().getFormattedMessage(TasksDoor.NAME));
 				}
+				// sets the SM for internal actions
+				JBpmBatchSecurityManager batchSM = (JBpmBatchSecurityManager)System.getSecurityManager();
+				// sets internal action to true so it can perform same authorized action
+				batchSM.setInternalAction(true);
 				// creates the locker to lock resources
 				locker = new Locker();
+				batchSM.setInternalAction(false);
 			} catch (RemoteException e) {
 				throw new JemRuntimeException(JBpmMessage.JEMM040E.toMessage().getFormattedMessage(e.getMessage()), e);
 			} catch (UnknownHostException e) {

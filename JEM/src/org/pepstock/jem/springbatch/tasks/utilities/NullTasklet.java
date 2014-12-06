@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.springbatch.tasks.utilities;
 
-import org.pepstock.jem.annotations.AssignChunkContext;
-import org.pepstock.jem.annotations.AssignStepContribution;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -32,13 +30,6 @@ import org.springframework.batch.repeat.RepeatStatus;
  */
 public class NullTasklet extends JemTasklet {
 	
-	// FIXME
-	@AssignStepContribution
-	private static StepContribution step = null;
-
-	@AssignChunkContext
-	private static ChunkContext chunk = null;
-	
 	/**
 	 * Empty constructor
 	 */
@@ -52,30 +43,4 @@ public class NullTasklet extends JemTasklet {
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
 		return RepeatStatus.FINISHED;
 	}
-//	
-//	public static void main(String[] args) throws NamingException{
-//		new NullTasklet();
-//		
-//		if (args != null){
-//			for (int i=0; i<args.length; i++){
-//				System.err.println(i+". "+args[i]);
-//			}
-//		}
-//		System.err.println(step);
-//		if (chunk !=null){
-//			System.err.println(chunk.getStepContext().getJobName());
-//		}
-//		
-//		Hashtable<String, String> env = new Hashtable<String, String>();
-//		env.put(Context.INITIAL_CONTEXT_FACTORY,
-//				"org.pepstock.jem.node.tasks.jndi.JemContextFactory");
-//
-//		InitialContext context = new InitialContext(env);
-//		// configure log4j reading dataset set in JCL
-//		
-//		System.err.println(context.list("*"));
-//
-//		
-//	}
-
 }

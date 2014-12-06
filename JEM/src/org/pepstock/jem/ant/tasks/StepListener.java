@@ -135,13 +135,18 @@ public class StepListener implements BuildListener {
 					} else {
 						throw new BuildException(AntMessage.JEMA039E.toMessage().getMessage());
 					}
-					
-					
 				} else {
 					throw new BuildException(AntMessage.JEMA038E.toMessage().getFormattedMessage(TasksDoor.NAME));
 				}
+				// sets the SM for internal actions
+				AntBatchSecurityManager batchSM = (AntBatchSecurityManager)System.getSecurityManager();
+				// sets internal action to true so it can perform same authorized action
+				batchSM.setInternalAction(true);
 				// creates the locker to lock resources
 				locker = new Locker();
+				// sets internal action to false 
+				batchSM.setInternalAction(false);
+
 			} catch (AntException e) {
 				throw new BuildException(AntMessage.JEMA040E.toMessage().getFormattedMessage(e.getMessage()), e);
 			} catch (RemoteException e) {
@@ -161,14 +166,14 @@ public class StepListener implements BuildListener {
 	 */
 	@Override
 	public void buildFinished(BuildEvent event) {
-		// flush STD OUT and ERR
-		// probably is useless
-		System.out.flush();
-		System.err.flush();
 		// sets the SM for internal actions
 		AntBatchSecurityManager batchSM = (AntBatchSecurityManager)System.getSecurityManager();
 		// sets internal action to true so it can perform same authorized action
 		batchSM.setInternalAction(true);
+		// flush STD OUT and ERR
+		// probably is useless
+		System.out.flush();
+		System.err.flush();
 		try {
 			// calls node for job ened
 			door.setJobEnded(JobId.VALUE);

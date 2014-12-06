@@ -1635,7 +1635,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "Network interface {0} is used", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when Jem choose which network interface to use.")
-	JEMC273I(273, "Network interface {0} is used", MessageLevel.ERROR);
+	JEMC273I(273, "Network interface {0} is used", MessageLevel.ERROR),
+	
+	/**
+	 * "To change the security manager is not allowed!", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you try to set a new Security manager but it's not allowed.<br>Please change your code to be compliant with JEM security rules.")
+	JEMC274E(274, "To change the security manager is not allowed!", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

@@ -95,6 +95,10 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 		} catch (RemoteException e) {
 			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS042E, e);
 		}
+		// sets to internal action to true 
+		// to allow to Springbatch to call System.exit
+		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
+		batchSM.setInternalAction(true);
 	}
 
 	/**
@@ -218,7 +222,11 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 			}
 		}
 		
-		
+		// sets to internal action to true 
+		// to allow to Springbatch to call System.exit
+		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
+		batchSM.setInternalAction(true);
+
 		// creates object to send to JEM
 		Step step = new Step();
 		// sets step name and description (uses summary information)
@@ -240,6 +248,8 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 			door.setStepEnded(JobId.VALUE, step);
 		} catch (RemoteException e) {
 			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS042E, e);
+		} finally {
+			batchSM.setInternalAction(false);
 		}
 		
 		return eStatus;
@@ -300,6 +310,11 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 			}
 		}
 		
+		// sets to internal action to true 
+		// to allow to Springbatch to call System.exit
+		SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
+		batchSM.setInternalAction(true);
+		
 		// creates object to send to JEM
 		Step step = new Step();
 
@@ -312,6 +327,8 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 			door.setStepStarted(JobId.VALUE, step);
 		} catch (RemoteException e) {
 			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS042E, e);
+		} finally {
+			batchSM.setInternalAction(false);
 		}
 	}
 

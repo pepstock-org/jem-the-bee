@@ -272,6 +272,7 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 					log(exceptions.toString());
 				}
 			}
+			batchSM.setInternalAction(false);
 		}
 	}
 }

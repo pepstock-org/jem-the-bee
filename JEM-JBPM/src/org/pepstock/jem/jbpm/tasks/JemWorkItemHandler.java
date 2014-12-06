@@ -125,6 +125,9 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			methodName = StringUtils.substringAfter(className, METHOD_DELIMITER);
 			className = StringUtils.substringBefore(className, METHOD_DELIMITER);
 		}
+		// sets security manager internal action
+		JBpmBatchSecurityManager batchSM = (JBpmBatchSecurityManager)System.getSecurityManager();
+		batchSM.setInternalAction(true);
 		
 		// defines the wrapper
 		JemWorkItem wrapper = null;
@@ -147,6 +150,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 	        	}
 	        }
         } catch (ClassNotFoundException e) {
+        	batchSM.setInternalAction(false);
         	LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 			throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
         }
@@ -155,9 +159,11 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			try {
 				wrapper = new CustomMethodWorkItem(clazz, methodName);
 			} catch (InstantiationException e) {
+				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			} catch (IllegalAccessException e) {
+				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			}
@@ -172,16 +178,20 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				if (instance instanceof JemWorkItem) {
 					wrapper = new DelegatedWorkItem(instance);
 				} else {
+					batchSM.setInternalAction(false);
 					LogAppl.getInstance().emit(JBpmMessage.JEMM004E, className);
 					throw new JemRuntimeException(JBpmMessage.JEMM004E.toMessage().getFormattedMessage(className));
 				}
 			} catch (InstantiationException e) {
+				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			} catch (IllegalAccessException e) {
+				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			} catch (ClassNotFoundException e) {
+				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			}
@@ -190,6 +200,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		// gets the current task
 		Task currentTask = CompleteTasksList.getInstance().getTaskByWorkItemID(workItem.getId());
 		if (currentTask == null){
+			batchSM.setInternalAction(false);
 			throw new JemRuntimeException(JBpmMessage.JEMM002E.toMessage().getFormattedMessage(workItem.getId()));
 		}
 		// initialize the listener passing parameters
@@ -222,7 +233,6 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		boolean isExecutionStarted = false;
 		
 		JBpmBatchSecurityManager batchSM = (JBpmBatchSecurityManager)System.getSecurityManager();
-		batchSM.setInternalAction(true);
 
 		// object serializer and deserializer into XML
 		XStream xstream = new XStream();
@@ -402,7 +412,15 @@ public class JemWorkItemHandler implements WorkItemHandler {
 						LogAppl.getInstance().emit(JBpmMessage.JEMM037E, e.getMessage());
 					}
 				}
-				for (DataSource source : task.getDataSources()){
+				// checks if has exception using the stringbuffer
+				// used to collect exception string. 
+				// Stringbuffer is not empty, throws an exception
+				if (exceptions.length() > 0){
+					LogAppl.getInstance().emit(JBpmMessage.JEMM055E, exceptions.toString());
+				}
+			}
+			for (DataSource source : task.getDataSources()){
+				if (source.getName() != null){
 					// unbinds all resources
 					try {
 						ic.unbind(source.getName());
@@ -412,13 +430,8 @@ public class JemWorkItemHandler implements WorkItemHandler {
 						LogAppl.getInstance().emit(JBpmMessage.JEMM037E, e.getMessage());
 					}
 				}
-				// checks if has exception using the stringbuffer
-				// used to collect exception string. 
-				// Stringbuffer is not empty, throws an exception
-				if (exceptions.length() > 0){
-					LogAppl.getInstance().emit(JBpmMessage.JEMM055E, exceptions.toString());
-				}
 			}
+			batchSM.setInternalAction(false);
 		}
     }
     

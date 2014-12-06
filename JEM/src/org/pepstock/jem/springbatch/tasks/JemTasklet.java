@@ -276,12 +276,12 @@ public abstract class JemTasklet implements Tasklet{
 					ic.rebind(ddImpl.getName(), reference);
 				}
 			}
-			batchSM.setInternalAction(false);
 			// execute business logic
 			// executes the java class defined in JCL
 			// setting the boolean to TRUE
-			isExecutionStarted = true;
 			SetFields.applyByAnnotation(this);
+			isExecutionStarted = true;
+			batchSM.setInternalAction(false);
 			status = this.run(stepContribution, chunkContext);
 		} catch (NamingException e) {
 			isAbended = true;
@@ -324,8 +324,15 @@ public abstract class JemTasklet implements Tasklet{
 						LogAppl.getInstance().ignore(e.getMessage(), e);
 						LogAppl.getInstance().emit(SpringBatchMessage.JEMS047E, e.getMessage());
 					}
+					if (exceptions.length() > 0 && !isAbended){
+						LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, StringUtils.center("ATTENTION", 40, "-"));
+						LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, exceptions.toString());
+					}
+
 				}
-				for (DataSource source : dataSourceList){
+			}
+			for (DataSource source : dataSourceList){
+				if (source.getName() != null){
 					// unbinds all resources
 					try {
 						ic.unbind(source.getName());
@@ -335,11 +342,8 @@ public abstract class JemTasklet implements Tasklet{
 						LogAppl.getInstance().emit(SpringBatchMessage.JEMS047E, e.getMessage());
 					}
 				}
-				if (exceptions.length() > 0 && !isAbended){
-					LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, StringUtils.center("ATTENTION", 40, "-"));
-					LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, exceptions.toString());
-				}
 			}
+			batchSM.setInternalAction(false);
 		}
 		return status;
 	}

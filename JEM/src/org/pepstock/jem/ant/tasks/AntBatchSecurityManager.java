@@ -50,7 +50,7 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 	
 	private boolean isGrantor = false;
 	
-	private boolean internalAction = true;
+	private boolean internalAction = false;
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
@@ -142,7 +142,6 @@ public class AntBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkPermission(Permission perm) {
-	
 		// this check is necessary to avoid that someone
 		// set jem properties, accessing outside of GFS
 		if (perm instanceof PropertyPermission && "write".equalsIgnoreCase(perm.getActions()) && perm.getName().startsWith("jem")){

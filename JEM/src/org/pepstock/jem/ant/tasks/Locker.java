@@ -116,7 +116,6 @@ public class Locker {
 			// creates a data description impl from data description
 			// data description impl is necessary object to have locking
 			DataDescriptionImpl ddImpl = DataDescriptionManager.createDataDescriptionImpl(dd, item);
-
 			// loads the data description impl for locking, saving it into a
 			// container
 			// necessary to lock all in one shot

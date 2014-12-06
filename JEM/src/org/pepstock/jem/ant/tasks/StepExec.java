@@ -249,14 +249,15 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 			returnCode = Result.ERROR;
 			throw new BuildException(e);
 		} finally {
+			batchSM.setInternalAction(true);
+			
 			Object rcObject = PropertyHelper.getPropertyHelper(getProject()).getProperty(RESULT_KEY);
 			if (rcObject != null) {
 				returnCode = Parser.parseInt(rcObject.toString(), Result.SUCCESS);
 			}
 			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
 
-			// PropertyHelper.getPropertyHelper(
-			batchSM.setInternalAction(true);
+
 			// finally and always must release the locks previously asked
 			// checks datasets list
 			if (ddList != null && !ddList.isEmpty()) {
@@ -286,6 +287,7 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 					log(exceptions.toString());
 				}
 			}
+			batchSM.setInternalAction(false);
 		}
 	}
 
