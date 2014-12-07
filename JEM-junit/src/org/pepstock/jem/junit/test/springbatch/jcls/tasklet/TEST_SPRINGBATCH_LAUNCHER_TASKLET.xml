@@ -44,8 +44,19 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.RestTasklet" />
+	<beans:bean id="run" class="org.pepstock.jem.junit.test.springbatch.java.RestRunnable"/>
+
+	<beans:bean id="step1" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.RestRunnable" />
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="jem-db"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>
+	
+	<beans:bean id="step2" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="object" ref="run" />
 		<beans:property name="dataSourceList">
 				<beans:list>
 					<beans:ref local="jem-db"/>
@@ -65,8 +76,11 @@
 		null: does nothing
 	 -->
 	<job id="TEST_SPRINGBATCH_LAUNCHER_TASKLET">
-		<step id="nothing">
-			<tasklet ref="null" />
+		<step id="uno" next="due">
+			<tasklet ref="step1" />
+		</step>
+		<step id="due">
+			<tasklet ref="step2" />
 		</step>
 	</job>
 	

@@ -19,24 +19,20 @@ package org.pepstock.jem.junit.test.springbatch.java;
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class TrySecurityTasklet implements Tasklet {
+public class TrySecurityRunnable implements Runnable {
 
 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
 	@Override
-	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+	public void run() {
 
 		String what = null;
 		try {
@@ -52,7 +48,7 @@ public class TrySecurityTasklet implements Tasklet {
 	            System.err.println(FieldUtils.readField(f, sm, true));
             } catch (Exception e1) {
             	e1.printStackTrace();
-	            return RepeatStatus.FINISHED;
+            	return;
             }
         }
 		throw new SecurityException("Securitymanager is not secure: "+what);

@@ -49,11 +49,10 @@ import org.pepstock.jem.util.ReverseURLClassLoader;
 import org.pepstock.jem.util.UtilMessage;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
 /**
- * Is a JemTasklet which is able to execute java main class or a SpringBatch Tasklet, having classpath and arguments. 
+ * Is a JemTasklet which is able to execute java main class or a runnable, having classpath and arguments. 
  * Can accept a class name (to load) or an instance of another bean.
  * 
  * @author Andrea "Stock" Stocchero
@@ -150,43 +149,67 @@ public final class LauncherTasklet extends JemTasklet {
 			} catch (ClassNotFoundException e) {
 				throw new TaskletException(e);
 			}
-		} else if (classPath == null || classPath.isEmpty()){
-			// HERE is a TASKLET and NOT a MAIN program
+		} else {
+			// HERE is a RUNNABLE and NOT a MAIN program
 			// gets the instance
 			Object instance;
 			try {
 				// if none set the object, load new object
 				if (object == null){
-					instance = clazz.newInstance();
+					// if no classpath loads directly
+					if (classPath == null || classPath.isEmpty()){
+						instance = clazz.newInstance();
+					} else {
+						// loads a wrapper necessary to sets the annotations on the same classloader
+						// pay attention that is loaded from classlaode rof the runnable to be executed
+						Class<?> runLauncher = clazz.getClassLoader().loadClass(RunnableClassLauncher.class.getName());
+						instance = runLauncher.newInstance();
+						// gets instance ofrunnable to execute
+						Runnable run = (Runnable)clazz.newInstance();
+						// execute teh run method of runnable
+						Method method = runLauncher.getMethod("run", Runnable.class);
+						Object[] parms = new Object[]{run};
+						method.invoke(instance, parms);
+						return RepeatStatus.FINISHED;
+					}
 				} else {
 					// uses the reference
 					instance = object;
 				}
 				// applies all annotations
 				SetFields.applyByAnnotation(instance);
+
+				// check if it's a Tasklet and not JemTasklet. if not,
+				// exception occurs.
+				if (instance instanceof Runnable) {
+					try {
+						Runnable runnable = (Runnable) instance;
+						runnable.run();
+						return RepeatStatus.FINISHED;
+					} catch (Exception e) {
+						throw new TaskletException(e);
+					}
+				} else {
+					LogAppl.getInstance().emit(SpringBatchMessage.JEMS050E, className);
+					throw new TaskletException(SpringBatchMessage.JEMS050E.toMessage().getFormattedMessage(className));
+				}
 			} catch (InstantiationException e) {
 				throw new TaskletException(e);
 			} catch (IllegalAccessException e) {
 				throw new TaskletException(e);
 			} catch (NamingException e) {
 				throw new TaskletException(e);
+			} catch (ClassNotFoundException e) {
+				throw new TaskletException(e);
+			}  catch (SecurityException e) {
+				throw new TaskletException(e);
+			} catch (NoSuchMethodException e) {
+				throw new TaskletException(e);
+			} catch (IllegalArgumentException e) {
+				throw new TaskletException(e);
+			} catch (InvocationTargetException e) {
+				throw new TaskletException(e);
 			}
-			// check if it's a Tasklet and not JemTasklet. if not,
-			// exception occurs.
-			if ((instance instanceof Tasklet) && !(instance instanceof JemTasklet)) {
-				Tasklet customtasklet = (Tasklet) instance;
-				try {
-					return customtasklet.execute(stepContribution, chunkContext);
-				} catch (Exception e) {
-					throw new TaskletException(e);
-				}
-			} else {
-				LogAppl.getInstance().emit(SpringBatchMessage.JEMS050E, className);
-				throw new TaskletException(SpringBatchMessage.JEMS050E.toMessage().getFormattedMessage(className));
-			}
-		} else {
-			LogAppl.getInstance().emit(SpringBatchMessage.JEMS054E);
-			throw new TaskletException(SpringBatchMessage.JEMS054E.toMessage().getFormattedMessage());
 		}
 	}
 

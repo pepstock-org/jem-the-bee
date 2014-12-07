@@ -347,10 +347,10 @@ public enum SpringBatchMessage implements MessageInterface{
 	JEMS049E(49, "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR),
 	
 	/**
-	 * "Class \"{0}\" is not an instance of Tasklet", MessageLevel.ERROR
+	 * "Class \"{0}\" is not an instance of Runnable", MessageLevel.ERROR
 	 */
-	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>" + "Check the class name and classpath of job because is not a Tasklet.")
-	JEMS050E(50, "Class \"{0}\" is not an instance of Tasklet", MessageLevel.ERROR),
+	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>" + "Check the class name and classpath of job because is not a Runnable.")
+	JEMS050E(50, "Class \"{0}\" is not an instance of Runnable", MessageLevel.ERROR),
 	
 	/**
 	 * "Mandatory variable \"className\" is missing", MessageLevel.ERRO
@@ -368,14 +368,8 @@ public enum SpringBatchMessage implements MessageInterface{
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
-	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO);
 	
-	/**
-	 *  "Launch a tasklet by different classpath is not allowed", MessageLevel.ERROR
-	 */
-	@Description(explanation = "It occurs when you specified a classpath in LauncherTasklet to execute a Tasklet. This is not not allowed.<br>" + "Add the classpath to JEM bean instead of step.")
-	JEMS054E(54, "Launch a tasklet by different classpath is not allowed", MessageLevel.ERROR);
-
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 
 	 * @see Message

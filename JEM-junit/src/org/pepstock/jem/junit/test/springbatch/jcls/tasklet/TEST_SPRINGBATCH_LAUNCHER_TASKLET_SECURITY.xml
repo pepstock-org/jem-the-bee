@@ -45,7 +45,7 @@
 	 -->
 
 	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.TrySecurityTasklet" />
+		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.TrySecurityRunnable" />
 		<beans:property name="dataSourceList">
 				<beans:list>
 					<beans:ref local="jem-db"/>
