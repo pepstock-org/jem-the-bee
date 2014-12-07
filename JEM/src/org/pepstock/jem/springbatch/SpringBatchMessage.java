@@ -368,7 +368,13 @@ public enum SpringBatchMessage implements MessageInterface{
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
-	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO);
+	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	
+	/**
+	 *  "Launch a tasklet by different classpath is not allowed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you specified a classpath in LauncherTasklet to execute a Tasklet. This is not not allowed.<br>" + "Add the classpath to JEM bean instead of step.")
+	JEMS054E(54, "Launch a tasklet by different classpath is not allowed", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

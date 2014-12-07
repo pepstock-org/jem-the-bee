@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.springbatch;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  *
  */
-public class Tasklet extends TestCase {
+public class Tasklet extends SpringBatchTestCase {
 	
 	/**
 	 * Copy a dataset
@@ -36,14 +30,30 @@ public class Tasklet extends TestCase {
 	 * @throws Exception
 	 */
 	public void testDataSourceConnection() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance().submit(
-				getJcl("TEST_SPRINGBATCH_USE_DATASOURCE.xml"), "sb", true, false);
-		SubmitResult sr=future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_USE_DATASOURCE.xml"), 0);
 	}
 	
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/tasklet/"+name).toString();
+	/**
+	 * Test launcher with main class
+	 * @throws Exception
+	 */
+	public void testLauncherMain() throws Exception {
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_MAIN.xml"), 0);
 	}
-
+	
+	/**
+	 * Launcher with Tasklet
+	 * @throws Exception
+	 */
+	public void testLauncherTasklet() throws Exception {
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_TASKLET.xml"), 0);
+	}
+	
+	/**
+	 * Test security by launcher
+	 * @throws Exception
+	 */
+	public void testLauncherTaskletSecurity() throws Exception {
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_TASKLET_SECURITY.xml"), 0);
+	}
 }

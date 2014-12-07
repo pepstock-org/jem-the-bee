@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_STEPJAVA_USE_RESOURCES" default="jndi" basedir=".">
+	<description>
+		This is an example of how to make use of datasource in JEM.
+    </description>
+
+	<property name="jem.job.name" value="TEST_ANTUTILS_STEPJAVA_USE_RESOURCES" />
+	<property name="jem.job.lockingScope" value="task" />
+	<!-- 
+	<property name="jem.job.domain" value="domain"/>
+	<property name="jem.job.environment" value="environment"/>
+	<property name="jem.job.affinity" value="affinity"/>
+	-->
+
+	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+
+	<target name="jndi">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetJndi">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<!-- 
+					this will load all the libraries set by the application server JEM
+					and is needed in this case for access the datasource
+				-->
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<!-- DB datasource reference -->
+			<datasource name="JUNIT-JNDI-RESOURCE" resource="JUNIT-JNDI-RESOURCE"/>
+		</step-java>
+	</target>
+	
+	<target name="rmi" depends="jndi">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetRmi">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<!-- 
+					this will load all the libraries set by the application server JEM
+					and is needed in this case for access the datasource
+				-->
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<!-- DB datasource reference -->
+			<datasource name="JUNIT-RMI-RESOURCE" resource="JUNIT-RMI-RESOURCE"/>
+		</step-java>
+	</target>
+	
+	<target name="rest" depends="rmi">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetRest">
+			<arg value="-h" />
+			<classpath>
+				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<!-- 
+					this will load all the libraries set by the application server JEM
+					and is needed in this case for access the datasource
+				-->
+				<pathelement path="${java.class.path}" />
+			</classpath>
+			<!-- DB datasource reference -->
+			<datasource name="JUNIT-REST-RESOURCE" resource="JUNIT-REST-RESOURCE"/>
+		</step-java>
+	</target>
+</project>

@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.springbatch;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Clean extends TestCase{
+public class Clean extends SpringBatchTestCase{
 
 	/**
 	 * Clean dataset created by the last junit run
@@ -36,14 +30,6 @@ public class Clean extends TestCase{
 	 * @throws Exception
 	 */
 	public void testCleanDataset() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("tasklet/TEST_SPRINGBATCH_DELETE_DATA.xml"), "sb", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-		
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/" + name).toString();
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_DELETE_DATA.xml"), 0);
 	}
 }

@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  *
  */
-public class CopyDataSet extends TestCase {
+public class CopyDataSet extends AntTestCase {
 	
 	/**
 	 * Copy a dataset
@@ -36,14 +30,6 @@ public class CopyDataSet extends TestCase {
 	 * @throws Exception
 	 */
 	public void testCopy() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance().submit(
-				getJcl("TEST_ANTUTILS_COPY.xml"), "ant", true, false);
-		SubmitResult sr=future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("copy/TEST_ANTUTILS_COPY.xml"), 0);
 	}
-	
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/copy/"+name).toString();
-	}
-
 }

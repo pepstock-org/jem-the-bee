@@ -23,7 +23,7 @@
 
 	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
 	
-	<target name="set-resources" depends="set-ftp,set-jdbc,set-jms-http,set-jppf">
+	<target name="set-resources" depends="set-ftp,set-jdbc,set-jms-http,set-jppf,set-jndi,set-rmi,set-rest">
 	</target>
 	
 	<!-- set resource JDBC -->
@@ -137,6 +137,76 @@
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					SET SOURCE JPPF NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+	
+	<!-- set resource JNDI -->
+	<target name="set-jndi">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="JNDI" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					  <resource name="JUNIT-JNDI-RESOURCE" user="root" lastModified="2014-11-23 23:37:56.155 UTC" type="jndi">
+					    <property name="java.naming.factory.initial" visible="true" override="false">org.pepstock.jem.node.tasks.jndi.JemContextFactory</property>
+					    <customProperties>
+					      <property name="Prova">${jem.data}/gdg/test/log.txt</property>
+					    </customProperties>
+					  </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE JNDI NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+	
+	<!-- set resource RMI -->
+	<target name="set-rmi">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="RMI" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					  <resource name="JUNIT-RMI-RESOURCE" user="root" lastModified="2014-11-26 22:59:34.860 UTC" type="rmi">
+					    <property name="port" visible="true" override="false">5910</property>
+					    <property name="hostname" visible="true" override="false">127.0.0.1</property>
+					    <property name="ssl" visible="true" override="false">false</property>
+					    <customProperties/>
+					  </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE RMI NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+	
+	<!-- set resource JNDI -->
+	<target name="set-rest">
+		<resources license="Pepstock_JEM_AntUtil.license">
+			<dataDescription name="REST" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					  <resource name="JUNIT-REST-RESOURCE" user="root" lastModified="2014-11-26 23:12:46.190 UTC" type="rest">
+					    <property name="userid" visible="true" override="false">root</property>
+					    <property name="basicAuthentication" visible="true" override="false">true</property>
+					    <property name="password" visible="false" override="false">PWD</property>
+					    <property name="url" visible="true" override="false">https://localhost:8888/restAuth</property>
+					    <customProperties/>
+					  </resource>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE REST NOENCRYPTION;
 				</dataSet>
 			</dataDescription>
 		</resources>

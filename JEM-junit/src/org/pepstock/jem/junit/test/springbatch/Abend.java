@@ -16,19 +16,13 @@
  */
 package org.pepstock.jem.junit.test.springbatch;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Abend extends TestCase {
+public class Abend extends SpringBatchTestCase {
 
 	/**
 	 * Test the wait ant utility
@@ -36,14 +30,6 @@ public class Abend extends TestCase {
 	 * @throws Exception
 	 */
 	public void testAbend() throws Exception {
-			Future<SubmitResult> future = JemTestManager.getSharedInstance()
-					.submit(getJcl("TEST_SPRINGBATCH_ABEND.xml"), "sb", true,
-							false);
-			SubmitResult rs=future.get();
-			assertEquals(rs.getRc(), 1);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/abend/" + name).toString();
+		assertEquals(submit("abend/TEST_SPRINGBATCH_ABEND.xml"), 1);
 	}
 }

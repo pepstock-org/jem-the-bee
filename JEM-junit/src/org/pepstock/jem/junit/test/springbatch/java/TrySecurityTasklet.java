@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.junit.test.springbatch.java;
 
+import java.lang.reflect.Field;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -26,21 +29,32 @@ import org.springframework.batch.repeat.RepeatStatus;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class Null implements Tasklet {
+public class TrySecurityTasklet implements Tasklet {
 
-	/**
-	 * 
-	 */
-	public Null() {
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
-    @Override
-    public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
-    	System.err.println("DONE!");
-		return RepeatStatus.FINISHED;
-    }
+	@Override
+	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+
+		String what = null;
+		try {
+			what = "CHANGE SECURITY MANAGER!";
+			// gry to change security manager
+	        System.setSecurityManager(null);
+        } catch (Exception e) {
+        	e.printStackTrace();
+    		try {
+    			what = "CHANGE FIELD OF SECURITY MANAGER!";
+	            SecurityManager sm = System.getSecurityManager();
+	            Field f = sm.getClass().getField("isAdministrator");
+	            System.err.println(FieldUtils.readField(f, sm, true));
+            } catch (Exception e1) {
+            	e1.printStackTrace();
+	            return RepeatStatus.FINISHED;
+            }
+        }
+		throw new SecurityException("Securitymanager is not secure: "+what);
+	}
 }

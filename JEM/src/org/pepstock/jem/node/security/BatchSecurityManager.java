@@ -45,7 +45,7 @@ public abstract class BatchSecurityManager extends SecurityManager {
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
-	public BatchSecurityManager(Collection<Role> roles) {
+	protected BatchSecurityManager(Collection<Role> roles) {
 		super();
 		loadPermissions(roles);
 	}

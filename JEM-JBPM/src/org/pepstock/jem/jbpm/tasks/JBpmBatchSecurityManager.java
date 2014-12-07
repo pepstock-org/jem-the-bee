@@ -44,7 +44,7 @@ import org.pepstock.jem.util.rmi.RmiKeys;
  * @version 2.2
  * 
  */
-public class JBpmBatchSecurityManager extends BatchSecurityManager {
+class JBpmBatchSecurityManager extends BatchSecurityManager {
 	
 	private boolean isAdministrator = false;
 	

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/util 
+           http://www.springframework.org/schema/util/spring-util-3.1.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<beans:bean class="org.pepstock.jem.springbatch.tasks.PropertyPlaceholder">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_TASKLET" />
+		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar" />
+	</beans:bean>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.TrySecurityTasklet" />
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="jem-db"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>
+
+	<!-- DataSource Definition -->
+	<beans:bean id="jem-db" class="org.pepstock.jem.springbatch.tasks.DataSource">
+		<beans:property name="name" value="JUNIT-REST-RESOURCE" />
+		<beans:property name="resource" value="JUNIT-REST-RESOURCE" />
+	</beans:bean>
+
+
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="TEST_SPRINGBATCH_LAUNCHER_TASKLET">
+		<step id="nothing">
+			<tasklet ref="null" />
+		</step>
+	</job>
+	
+</beans:beans>

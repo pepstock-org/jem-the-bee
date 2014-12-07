@@ -16,19 +16,13 @@
  */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * 
  */
-public class NodeTask extends TestCase {
+public class NodeTask extends AntTestCase {
 
 	/**
 	 * Test the start and drain node command provide by the NodeTask
@@ -36,14 +30,6 @@ public class NodeTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testNodeCommand() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_NODE_COMMANDS.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/node/" + name).toString();
+		assertEquals(submit("node/TEST_ANTUTILS_NODE_COMMANDS.xml"), 0);
 	}
 }

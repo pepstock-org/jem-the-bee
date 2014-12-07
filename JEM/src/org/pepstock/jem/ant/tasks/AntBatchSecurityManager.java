@@ -44,7 +44,7 @@ import org.pepstock.jem.util.rmi.RmiKeys;
  * @version 1.0
  * 
  */
-public class AntBatchSecurityManager extends BatchSecurityManager {
+class AntBatchSecurityManager extends BatchSecurityManager {
 	
 	private boolean isAdministrator = false;
 	

@@ -53,6 +53,9 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
 /**
+ * Is a JemTasklet which is able to execute java main class or a SpringBatch Tasklet, having classpath and arguments. 
+ * Can accept a class name (to load) or an instance of another bean.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -89,10 +92,12 @@ public final class LauncherTasklet extends JemTasklet {
 		if (className != null) {
 			// uses the class name
 			try {
+				// if there isn't classpath, loads class for name
 				if (classPath == null || classPath.isEmpty()){
 					clazz = Class.forName(className);
 				} else {
-					clazz = loadMainClass(className);
+					// loads java class
+					clazz = loadCustomClass(className);
 				}
 			} catch (ClassNotFoundException e) {
 				LogAppl.getInstance().emit(SpringBatchMessage.JEMS052E, e, className);
@@ -102,7 +107,7 @@ public final class LauncherTasklet extends JemTasklet {
 				throw new TaskletException(SpringBatchMessage.JEMS052E.toMessage().getFormattedMessage(className), e);
 			}
 		} else {
-			// here uses the object class
+			// here uses the object class, link to a bean
 			clazz = object.getClass();
 		}
 
@@ -110,7 +115,7 @@ public final class LauncherTasklet extends JemTasklet {
 		if (hasMainMethod(clazz)) {
 			try {
 			
-				// sets annottions here ONLY if no classpath is set
+				// sets annotations here ONLY if no classpath is set
 				if (classPath == null || classPath.isEmpty()){
 					// replaces filed annotations
 					SetFields.applyByAnnotation(clazz);
@@ -145,7 +150,7 @@ public final class LauncherTasklet extends JemTasklet {
 			} catch (ClassNotFoundException e) {
 				throw new TaskletException(e);
 			}
-		} else {
+		} else if (classPath == null || classPath.isEmpty()){
 			// HERE is a TASKLET and NOT a MAIN program
 			// gets the instance
 			Object instance;
@@ -166,7 +171,7 @@ public final class LauncherTasklet extends JemTasklet {
 			} catch (NamingException e) {
 				throw new TaskletException(e);
 			}
-			// check if it's a JemWorkItem. if not,
+			// check if it's a Tasklet and not JemTasklet. if not,
 			// exception occurs.
 			if ((instance instanceof Tasklet) && !(instance instanceof JemTasklet)) {
 				Tasklet customtasklet = (Tasklet) instance;
@@ -179,6 +184,9 @@ public final class LauncherTasklet extends JemTasklet {
 				LogAppl.getInstance().emit(SpringBatchMessage.JEMS050E, className);
 				throw new TaskletException(SpringBatchMessage.JEMS050E.toMessage().getFormattedMessage(className));
 			}
+		} else {
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS054E);
+			throw new TaskletException(SpringBatchMessage.JEMS054E.toMessage().getFormattedMessage());
 		}
 	}
 
@@ -276,13 +284,13 @@ public final class LauncherTasklet extends JemTasklet {
 	}
 
 	/**
-	 * Loads main java class from className
+	 * Loads java class from className and for classpath
 	 * @param className classname to be loaded
 	 * @return class object loaded from classpath
 	 * @throws IOException if any error occurs
 	 * @throws ClassNotFoundException if any error occurs
 	 */
-	private Class<?> loadMainClass(String classNam) throws IOException, ClassNotFoundException{
+	private Class<?> loadCustomClass(String classNam) throws IOException, ClassNotFoundException{
 		// CLASSPATH has been set therefore it an try to load the plugin by
 		// a custom classloader
 		// collection of all file of classpath

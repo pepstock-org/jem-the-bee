@@ -16,51 +16,30 @@
 */
 package org.pepstock.jem.junit.test.jbpm;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.jbpm.JBpmFactory;
+import org.pepstock.jem.junit.test.JemTestCase;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class JBpmTestCase extends TestCase {
+public class JBpmTestCase extends JemTestCase {
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.junit.test.JemTestCase#getType()
 	 */
-	public JBpmTestCase() {
-	}
+    @Override
+    public String getType() {
+	    return JBpmFactory.JBPM_TYPE;
+    }
 
-	/**
-	 * @param name
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.junit.test.JemTestCase#getTestCaseClass()
 	 */
-	public JBpmTestCase(String name) {
-		super(name);
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws Exception
-	 */
-	public final int submit(String name) throws Exception{
-		Future<SubmitResult> future = JemTestManager.getSharedInstance().submit(getJcl(name), "jbpm", true,	false);
-		SubmitResult sr = future.get();
-		return sr.getRc();
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public final String getJcl(String name) {
-		String ss = "jcls/" + name;
-		return this.getClass().getResource("jcls/" + name).toString();
-	}
+    @Override
+    public Class<?> getTestCaseClass() {
+	    return JBpmTestCase.class;
+    }
+
+
 }

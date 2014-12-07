@@ -16,19 +16,13 @@
  */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class ScriptTask extends TestCase {
+public class ScriptTask extends AntTestCase {
 
 	/**
 	 * Test the script linux task
@@ -37,16 +31,8 @@ public class ScriptTask extends TestCase {
 	 */
 	public void testScriptLinux() throws Exception {
 		if (!System.getProperty("os.name").startsWith("Windows")) {
-			Future<SubmitResult> future = JemTestManager.getSharedInstance()
-					.submit(getJcl("TEST_ANTUTILS_SCRIPT_LINUX.xml"), "ant",
-							true, false);
-			SubmitResult sr = future.get();
-			assertEquals(sr.getRc(), 0);
-			future = JemTestManager.getSharedInstance().submit(
-					getJcl("TEST_ANTUTILS_SCRIPT_ADVANCED_LINUX.xml"), "ant", true,
-					false);
-			sr = future.get();
-			assertEquals(sr.getRc(), 0);
+			assertEquals(submit("script/TEST_ANTUTILS_SCRIPT_LINUX.xml"), 0);
+			assertEquals(submit("script/TEST_ANTUTILS_SCRIPT_ADVANCED_LINUX.xml"), 0);
 		}
 	}
 
@@ -57,15 +43,7 @@ public class ScriptTask extends TestCase {
 	 */
 	public void testScriptWindows() throws Exception {
 		if (System.getProperty("os.name").startsWith("Windows")) {
-			Future<SubmitResult> future = JemTestManager.getSharedInstance()
-					.submit(getJcl("TEST_ANTUTILS_SCRIPT_WINDOWS.xml"), "ant",
-							true, false);
-			SubmitResult sr = future.get();
-			assertEquals(sr.getRc(), 0);
+			assertEquals(submit("script/TEST_ANTUTILS_SCRIPT_WINDOWS.xml"), 0);
 		}
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/script/" + name).toString();
 	}
 }

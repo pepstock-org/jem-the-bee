@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Clean extends TestCase{
+public class Clean extends AntTestCase{
 
 	/**
 	 * Clean dataset created by the last junit run
@@ -36,11 +30,7 @@ public class Clean extends TestCase{
 	 * @throws Exception
 	 */
 	public void testCleanDataset() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("stepjava/TEST_ANTUTILS_STEPJAVA_DELETE_DATA.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_DELETE_DATA.xml"), 0);
 	}
 
 	/**
@@ -49,10 +39,7 @@ public class Clean extends TestCase{
 	 * @throws Exception
 	 */
 	public void testCleanRoles() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("role/TEST_ANTUTILS_REMOVE_ROLE.xml"), "ant", true,
-						false);
-		future.get();
+		assertEquals(submit("role/TEST_ANTUTILS_REMOVE_ROLE.xml"), 0);
 	}
 	
 	/**
@@ -61,11 +48,7 @@ public class Clean extends TestCase{
 	 * @throws Exception
 	 */
 	public void testCleanResources() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("resource/TEST_ANTUTILS_RESOURCES_REMOVE.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("resource/TEST_ANTUTILS_RESOURCES_REMOVE.xml"), 0);
 	}
 	
 	/**
@@ -74,14 +57,6 @@ public class Clean extends TestCase{
 	 * @throws Exception
 	 */
 	public void testCleanJobs() throws Exception {
-		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("archive/TEST_ANTUTILS_ARCHIVE.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-		
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/" + name).toString();
+		assertEquals(submit("archive/TEST_ANTUTILS_ARCHIVE.xml"), 0);
 	}
 }

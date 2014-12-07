@@ -13,26 +13,32 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.pepstock.jem.junit.test.antutils;
 
+import org.pepstock.jem.ant.AntFactory;
+import org.pepstock.jem.junit.test.JemTestCase;
 
 /**
- * 
- * @author Simone "Busy" Businaro
- * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
  */
-public class RolesTask extends AntTestCase {
+public class AntTestCase extends JemTestCase {
 
-	/**
-	 * Test the creation of a new role, the revokation of a permission from a
-	 * role and the removal of a role
-	 * 
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.junit.test.JemTestCase#getType()
 	 */
-	public void testRole() throws Exception {
-		assertEquals(submit("role/TEST_ANTUTILS_CREATE_ROLE.xml"), 0);
-		assertEquals(submit("role/TEST_ANTUTILS_REVOKE_PERMISSION.xml"), 0);
+	@Override
+	public String getType() {
+		return AntFactory.ANT_TYPE;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.junit.test.JemTestCase#getTestCaseClass()
+	 */
+	@Override
+	public Class<?> getTestCaseClass() {
+		return AntTestCase.class;
 	}
 
 }

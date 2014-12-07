@@ -16,19 +16,12 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
-
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Wait extends TestCase{
+public class Wait extends AntTestCase{
 
 	/**
 	 * Test the abend ant utility
@@ -36,14 +29,6 @@ public class Wait extends TestCase{
 	 * @throws Exception
 	 */
 	public void testWait() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_WAIT.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/wait/" + name).toString();
+		assertEquals(submit("wait/TEST_ANTUTILS_WAIT.xml"), 0);
 	}
 }

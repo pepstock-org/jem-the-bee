@@ -114,7 +114,7 @@ public final class SetFields {
 				}
 				// gets annotation
 				AssignDataSource annotation = (AssignDataSource)field.getAnnotation(AssignDataSource.class);
-				
+
 				checkIfIsRightObject(annotation.value(), false);
 
 				// sets field
@@ -126,7 +126,6 @@ public final class SetFields {
 	private static void setFieldByAnnotation(InitialContext ic, Object object, String name, Field field) throws NamingException, IllegalAccessException{
 		// gets object via JNDI
 		Object objectJNDI = (Object) ic.lookup(name);
-		
 		// if is static or it's a java main class (object = null) sets statically
 		if (Modifier.isStatic(field.getModifiers()) || object == null){
 			FieldUtils.writeStaticField(field, objectJNDI, true);

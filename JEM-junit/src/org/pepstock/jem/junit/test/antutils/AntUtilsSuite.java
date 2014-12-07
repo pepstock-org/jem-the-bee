@@ -28,8 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ Clean.class, StepJava.class, Wrapper.class, Procedure.class,
-		ScriptTask.class, SortTask.class, CommonResourcesTask.class,
+@SuiteClasses({ Clean.class, CommonResourcesTask.class, StepJava.class, Wrapper.class, Procedure.class,
+		ScriptTask.class, SortTask.class, 
 		RolesTask.class, CertificateTask.class, CopyDataSet.class,
 		GDGTask.class, NodeTask.class, Wait.class, Abend.class })
 public class AntUtilsSuite {

@@ -16,19 +16,13 @@
  */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * 
  */
-public class CommonResourcesTask extends TestCase {
+public class CommonResourcesTask extends AntTestCase {
 	/**
 	 * Test resources SET, GET, GETLIST and REMOVE commands. It does NOT test
 	 * the encryption functionality because the symmetric key will not be the
@@ -37,21 +31,7 @@ public class CommonResourcesTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testCommonResources() throws Exception {
-		// add resources
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_RESOURCES_SET.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-		// get resources
-		future = JemTestManager.getSharedInstance().submit(
-				getJcl("TEST_ANTUTILS_RESOURCES_GET.xml"), "ant", true, false);
-		sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("resource/TEST_ANTUTILS_RESOURCES_SET.xml"), 0);
+		assertEquals(submit("resource/TEST_ANTUTILS_RESOURCES_GET.xml"), 0);
 	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/resource/" + name).toString();
-	}
-
 }

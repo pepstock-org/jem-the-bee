@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Procedure extends TestCase{
+public class Procedure extends AntTestCase{
 
 	/**
 	 * Test the procedure ant utility
@@ -36,14 +30,6 @@ public class Procedure extends TestCase{
 	 * @throws Exception
 	 */
 	public void testProcedure() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_PROCEDURE.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/procedure/" + name).toString();
+		assertEquals(submit("procedure/TEST_ANTUTILS_PROCEDURE.xml"), 0);
 	}
 }

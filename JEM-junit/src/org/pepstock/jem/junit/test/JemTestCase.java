@@ -13,25 +13,50 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test.antutils;
+*/
+package org.pepstock.jem.junit.test;
 
+import java.util.concurrent.Future;
+
+import junit.framework.TestCase;
+
+import org.pepstock.jem.commands.SubmitResult;
+import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
- * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 2.2
  */
-public class CertificateTask extends AntTestCase {
+public abstract class JemTestCase extends TestCase {
 
 	/**
-	 * Submit JCL one for import a certificate to the JEM user keystore and
-	 * another one to remove it.
 	 * 
+	 */
+	public JemTestCase() {
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return
 	 * @throws Exception
 	 */
-	public void testCertificate() throws Exception {
-		assertEquals(submit("certificate/TEST_ANTUTILS_IMPORT_CERTIFICATE.xml"), 0);
-		assertEquals(submit("certificate/TEST_ANTUTILS_DELETE_ALIAS.xml"), 0);
+	public final int submit(String name) throws Exception{
+		Future<SubmitResult> future = JemTestManager.getSharedInstance().submit(getJcl(name), getType(), true,	false);
+		SubmitResult sr = future.get();
+		return sr.getRc();
 	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public final String getJcl(String name) {
+		return getTestCaseClass().getResource("jcls/" + name).toString();
+	}
+	
+	public abstract String getType();
+	
+	public abstract Class<?> getTestCaseClass();
 }

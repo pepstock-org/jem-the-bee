@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class StepJava extends TestCase{
+public class StepJava extends AntTestCase{
 
 	/**
 	 * Test the sort ant task
@@ -36,14 +30,15 @@ public class StepJava extends TestCase{
 	 * @throws Exception
 	 */
 	public void testDbConnection() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_STEPJAVA_USE_DATASOURCE.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_DATASOURCE.xml"), 0);
 	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/stepjava/" + name).toString();
+	
+	/**
+	 * Test the sort ant task
+	 * 
+	 * @throws Exception
+	 */
+	public void testOtherResources() throws Exception {
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_RESOURCES.xml"), 0);
 	}
 }

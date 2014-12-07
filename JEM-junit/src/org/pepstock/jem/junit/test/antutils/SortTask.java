@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class SortTask extends TestCase{
+public class SortTask extends AntTestCase{
 
 	/**
 	 * Test the sort ant task
@@ -36,14 +30,6 @@ public class SortTask extends TestCase{
 	 * @throws Exception
 	 */
 	public void testSort() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_SORT.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/sort/" + name).toString();
+		assertEquals(submit("sort/TEST_ANTUTILS_SORT.xml"), 0);
 	}
 }

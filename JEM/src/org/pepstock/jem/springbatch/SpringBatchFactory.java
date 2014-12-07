@@ -48,7 +48,10 @@ public class SpringBatchFactory extends AbstractFactory {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String SPRINGBATCH_TYPE = "sb";
+	/**
+	 * JCL type for Springbatch
+	 */
+	public static final String SPRINGBATCH_TYPE = "sb";
 	
 	private static final String SPRINGBATCH_TYPE_DESCRIPTION = "Spring Batch";
 	

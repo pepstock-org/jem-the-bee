@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 
 /**
- * BEan with the network interface and inet address local which are used by JEM to avoid
+ * Bean with the network interface and inet address local which are used by JEM to avoid
  * bugs on Multicast and other connection
  * 
  * @author Andrea "Stock" Stocchero

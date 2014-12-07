@@ -16,15 +16,17 @@
  */
 package org.pepstock.jem.junit.test.antutils.java;
 
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.naming.StringRefAddr;
+import java.io.IOException;
 
+import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.annotations.AssignDataSource;
-import org.pepstock.jem.jppf.DataStreamNameClassPair;
-import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
-import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
+import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
+
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * This class will show an example of how to use a JEM datasource
@@ -32,33 +34,30 @@ import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
  * @author Simone "busy" Businaro
  * 
  */
-public class GetJndi {
+public class GetRest {
 
+	@AssignDataSource("JUNIT-REST-RESOURCE")
+	private static RestClient rest = null;
 	
-	@AssignDataSource("JUNIT-JNDI-RESOURCE")
-	private static InitialContext context = null;
-
 	/**
 	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		
-		System.err.println("*** JNDI");
-		NamingEnumeration<NameClassPair> list = context.list("");
-		while(list.hasMore()){
-			NameClassPair pair = list.next();
-			// checks if is datastream
-			// only datastreams are changed
-			if (pair instanceof DataStreamNameClassPair){
-				DataStreamNameClassPair dsPair = (DataStreamNameClassPair) pair;
-				DataStreamReference prevReference = (DataStreamReference)dsPair.getObject();
-				// gets data description XML defintion
-				// adding it to a new reference, for remote access
-				StringRefAddr sra = (StringRefAddr) prevReference.get(StringRefAddrKeys.DATASTREAMS_KEY);
-				System.err.println(sra.getContent());
-			}
-		}
+		System.err.println();
+		System.err.println("*** REST XML");
+		get(rest, MediaType.APPLICATION_XML);
+		get(rest, MediaType.APPLICATION_JSON);
+		get(rest, MediaType.APPLICATION_XML);
+		get(rest, MediaType.APPLICATION_JSON);
+	}
+	
+	private static void get(RestClient rest, String media) throws IOException{
+		WebResource resource = rest.getBaseWebResource();
+		resource = resource.path(StatisticsManagerPaths.MAIN).path(StatisticsManagerPaths.ABOUT);
+		ClientResponse response = resource.accept(media).get(ClientResponse.class);
+		System.err.println(response.getStatus()+" "+response.getLength());
+		System.err.println(IOUtils.toString(response.getEntityInputStream()));
 	}
 }

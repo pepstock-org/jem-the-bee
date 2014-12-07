@@ -16,15 +16,9 @@
  */
 package org.pepstock.jem.junit.test.antutils.java;
 
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.naming.StringRefAddr;
+import java.rmi.registry.Registry;
 
 import org.pepstock.jem.annotations.AssignDataSource;
-import org.pepstock.jem.jppf.DataStreamNameClassPair;
-import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
-import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
 
 /**
  * This class will show an example of how to use a JEM datasource
@@ -32,33 +26,26 @@ import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
  * @author Simone "busy" Businaro
  * 
  */
-public class GetJndi {
+public class GetRmi {
 
+	@AssignDataSource("JUNIT-RMI-RESOURCE")
+	private static Registry registry = null;
 	
-	@AssignDataSource("JUNIT-JNDI-RESOURCE")
-	private static InitialContext context = null;
-
 	/**
 	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		
-		System.err.println("*** JNDI");
-		NamingEnumeration<NameClassPair> list = context.list("");
-		while(list.hasMore()){
-			NameClassPair pair = list.next();
-			// checks if is datastream
-			// only datastreams are changed
-			if (pair instanceof DataStreamNameClassPair){
-				DataStreamNameClassPair dsPair = (DataStreamNameClassPair) pair;
-				DataStreamReference prevReference = (DataStreamReference)dsPair.getObject();
-				// gets data description XML defintion
-				// adding it to a new reference, for remote access
-				StringRefAddr sra = (StringRefAddr) prevReference.get(StringRefAddrKeys.DATASTREAMS_KEY);
-				System.err.println(sra.getContent());
+		System.err.println();
+		System.err.println("*** RMI");
+		String[] li = registry.list();
+		if (li != null && li.length>0){
+			for (int i=0; i<li.length; i++){
+				System.err.println(li[i]);
 			}
+		} else {
+			System.err.println("No rmi objects");
 		}
 	}
 }

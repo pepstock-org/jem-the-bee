@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  *
  */
-public class GDGTask extends TestCase {
+public class GDGTask extends AntTestCase {
 
 	/**
 	 * Define a gdg
@@ -36,11 +30,7 @@ public class GDGTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGdgDefine() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_GDG_DEFINE.xml"), "ant",
-						true, false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("gdg/TEST_ANTUTILS_GDG_DEFINE.xml"), 0);
 	}
 
 	/**
@@ -49,11 +39,7 @@ public class GDGTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGdgDelete() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_GDG_DELETE.xml"), "ant",
-						true, false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("gdg/TEST_ANTUTILS_GDG_DELETE.xml"), 0);
 	}
 
 	/**
@@ -62,11 +48,7 @@ public class GDGTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGdgRebuild() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_GDG_REBUILD.xml"), "ant",
-						true, false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("gdg/TEST_ANTUTILS_GDG_REBUILD.xml"), 0);
 	}
 
 	/**
@@ -74,11 +56,7 @@ public class GDGTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGdgRename() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_GDG_RENAME.xml"), "ant",
-						true, false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("gdg/TEST_ANTUTILS_GDG_RENAME.xml"), 0);
 	}
 
 	/**
@@ -86,19 +64,6 @@ public class GDGTask extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGdgCopy() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_GDG_COPY.xml"), "ant",
-						true, false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/gdg/"+name).toString();
+		assertEquals(submit("gdg/TEST_ANTUTILS_GDG_COPY.xml"), 0);
 	}
 }

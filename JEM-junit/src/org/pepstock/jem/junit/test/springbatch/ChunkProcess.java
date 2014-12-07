@@ -16,19 +16,13 @@
 */
 package org.pepstock.jem.junit.test.springbatch;
 
-import java.util.concurrent.Future;
-
-import junit.framework.TestCase;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
 
 /**
  * 
  * @author Simone "Busy" Businaro
  *
  */
-public class ChunkProcess extends TestCase {
+public class ChunkProcess extends SpringBatchTestCase{
 	
 	/**
 	 * Copy a dataset
@@ -36,14 +30,7 @@ public class ChunkProcess extends TestCase {
 	 * @throws Exception
 	 */
 	public void testDataSourceConnection() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance().submit(
-				getJcl("TEST_SPRINGBATCH_SIMPLE_CHUNK_PROCESS.xml"), "sb", true, false);
-		SubmitResult sr=future.get();
-		assertEquals(sr.getRc(), 0);
-	}
-	
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/chunkprocess/"+name).toString();
+		assertEquals(submit("chunkprocess/TEST_SPRINGBATCH_SIMPLE_CHUNK_PROCESS.xml"), 0);
 	}
 
 }

@@ -172,7 +172,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 		} else {
 			try {
 				// load by Class.forName of workItem
-				Object instance = Class.forName(className).newInstance();
+				Object instance = clazz.newInstance();
 				// check if it's a JemWorkItem. if not,
 				// exception occurs. 
 				if (instance instanceof JemWorkItem) {
@@ -187,10 +187,6 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
 			} catch (IllegalAccessException e) {
-				batchSM.setInternalAction(false);
-				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
-				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);
-			} catch (ClassNotFoundException e) {
 				batchSM.setInternalAction(false);
 				LogAppl.getInstance().emit(JBpmMessage.JEMM006E, e, className);
 				throw new JemRuntimeException(JBpmMessage.JEMM006E.toMessage().getFormattedMessage(className), e);

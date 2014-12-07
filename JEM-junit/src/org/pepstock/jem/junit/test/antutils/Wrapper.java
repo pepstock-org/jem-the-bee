@@ -16,19 +16,12 @@
 */
 package org.pepstock.jem.junit.test.antutils;
 
-import java.util.concurrent.Future;
-
-import org.pepstock.jem.commands.SubmitResult;
-import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
-
 /**
  * 
  * @author Simone "Busy" Businaro
  * @version 1.4
  */
-public class Wrapper extends TestCase{
+public class Wrapper extends AntTestCase{
 
 	/**
 	 * Test the wrapper ant utility
@@ -36,14 +29,7 @@ public class Wrapper extends TestCase{
 	 * @throws Exception
 	 */
 	public void testWrapper() throws Exception {
-		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_ANTUTILS_WRAPPER.xml"), "ant", true,
-						false);
-		SubmitResult sr = future.get();
-		assertEquals(sr.getRc(), 0);
+		assertEquals(submit("wrapper/TEST_ANTUTILS_WRAPPER.xml"), 0);
 	}
 
-	private String getJcl(String name) {
-		return this.getClass().getResource("jcls/wrapper/" + name).toString();
-	}
 }
