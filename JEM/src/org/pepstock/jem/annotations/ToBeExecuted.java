@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.jbpm.annotations;
+package org.pepstock.jem.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

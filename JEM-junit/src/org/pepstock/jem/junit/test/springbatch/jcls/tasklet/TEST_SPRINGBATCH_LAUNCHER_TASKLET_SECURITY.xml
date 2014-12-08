@@ -35,7 +35,7 @@
 	 -->
 
 	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
-		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_TASKLET" />
+		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_TASKLET_SECURITY" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar" />
 	</beans:bean>
@@ -44,8 +44,10 @@
 		Tasklet Defintion
 	 -->
 
+	<beans:bean id="run" class="org.pepstock.jem.junit.test.springbatch.java.TrySecurityRunnable"/>
+
 	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.TrySecurityRunnable" />
+		<beans:property name="object" ref="run" />
 		<beans:property name="dataSourceList">
 				<beans:list>
 					<beans:ref local="jem-db"/>
@@ -64,8 +66,8 @@
 	<!-- 
 		null: does nothing
 	 -->
-	<job id="TEST_SPRINGBATCH_LAUNCHER_TASKLET">
-		<step id="nothing">
+	<job id="TEST_SPRINGBATCH_LAUNCHER_TASKLET_SECURITY">
+		<step id="security">
 			<tasklet ref="null" />
 		</step>
 	</job>

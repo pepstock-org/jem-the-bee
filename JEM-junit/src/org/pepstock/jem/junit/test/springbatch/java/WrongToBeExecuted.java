@@ -13,26 +13,22 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test;
+*/
+package org.pepstock.jem.junit.test.springbatch.java;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
-import org.pepstock.jem.junit.test.common.CommonSuite;
-import org.pepstock.jem.junit.test.jbpm.JBpmSuite;
-import org.pepstock.jem.junit.test.rest.RestSuite;
-import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
+import org.pepstock.jem.annotations.ToBeExecuted;
+
 
 /**
- * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 2.2
  */
-@RunWith(Suite.class)
-//@SuiteClasses({ JBpmSuite.class} , HttpSuite.class, FTPSuite.class , RestSuite.class)
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class, JBpmSuite.class, RestSuite.class})
-public class JemTestSuite {
+public class WrongToBeExecuted {
+
+
+	@ToBeExecuted
+	public void exec(String error){
+		System.err.println("If here, error!!!!");
+	}
 
 }

@@ -39,7 +39,7 @@ public class RestReference extends Reference {
 	/**
 	 * Is WebResource (JERSEY) object created when requested
 	 */
-	public static final String JNDI_OBJECT =RestClient.class.getName();
+	public static final String JNDI_OBJECT = RestClient.class.getName();
 	
 	/**
 	 * Creates a JNDI reference for REST purposes

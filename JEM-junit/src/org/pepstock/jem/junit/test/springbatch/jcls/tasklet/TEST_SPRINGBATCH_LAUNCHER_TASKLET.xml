@@ -37,17 +37,22 @@
 	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_TASKLET" />
 		<beans:property name="environment" value="TEST-Env" />
-		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar" />
+		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar;${JEM_HOME}/lib/db/*" />
 	</beans:bean>
 
 	<!-- 
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="run" class="org.pepstock.jem.junit.test.springbatch.java.RestRunnable"/>
+	<beans:bean id="run1" class="org.pepstock.jem.junit.test.springbatch.java.RestRunnable"/>
+	<beans:bean id="run2" class="org.pepstock.jem.junit.test.springbatch.java.RestRunnableAndContext"/>
+	<beans:bean id="run3" class="org.pepstock.jem.junit.test.springbatch.java.RestToBeExecuted"/>
+	<beans:bean id="run4" class="org.pepstock.jem.junit.test.springbatch.java.RestToBeExecutedAndContext"/>
+	<beans:bean id="run5" class="org.pepstock.jem.junit.test.springbatch.java.RestToBeExecutedAndContextAnnotated"/>
+
 
 	<beans:bean id="step1" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.RestRunnable" />
+		<beans:property name="object" ref="run1" />
 		<beans:property name="dataSourceList">
 				<beans:list>
 					<beans:ref local="jem-db"/>
@@ -56,13 +61,40 @@
 	</beans:bean>
 	
 	<beans:bean id="step2" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
-		<beans:property name="object" ref="run" />
+		<beans:property name="object" ref="run2" />
 		<beans:property name="dataSourceList">
 				<beans:list>
 					<beans:ref local="jem-db"/>
 				</beans:list>
 		</beans:property>		
 	</beans:bean>
+	
+	<beans:bean id="step3" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="object" ref="run3" />
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="jem-db"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>
+	
+	<beans:bean id="step4" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="object" ref="run4" />
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="jem-db"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>
+
+	<beans:bean id="step5" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="object" ref="run5" />
+		<beans:property name="dataSourceList">
+				<beans:list>
+					<beans:ref local="jem-db"/>
+				</beans:list>
+		</beans:property>		
+	</beans:bean>	
 
 	<!-- DataSource Definition -->
 	<beans:bean id="jem-db" class="org.pepstock.jem.springbatch.tasks.DataSource">
@@ -79,8 +111,17 @@
 		<step id="uno" next="due">
 			<tasklet ref="step1" />
 		</step>
-		<step id="due">
+		<step id="due" next="tre">
 			<tasklet ref="step2" />
+		</step>
+		<step id="tre" next="quattro">
+			<tasklet ref="step3" />
+		</step>
+		<step id="quattro" next="cinque">
+			<tasklet ref="step4" />
+		</step>
+		<step id="cinque">
+			<tasklet ref="step5" />
 		</step>
 	</job>
 	

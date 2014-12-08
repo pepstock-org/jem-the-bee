@@ -42,6 +42,14 @@ public class Tasklet extends SpringBatchTestCase {
 	}
 	
 	/**
+	 * Test launcher with main class
+	 * @throws Exception
+	 */
+	public void testLauncherMainAndContext() throws Exception {
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_MAIN_CONTEXT.xml"), 0);
+	}
+	
+	/**
 	 * Launcher with Tasklet
 	 * @throws Exception
 	 */
@@ -55,5 +63,13 @@ public class Tasklet extends SpringBatchTestCase {
 	 */
 	public void testLauncherTaskletSecurity() throws Exception {
 		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_TASKLET_SECURITY.xml"), 0);
+	}
+	
+	/**
+	 * Test security by launcher
+	 * @throws Exception
+	 */
+	public void testLauncherTaskletAbend() throws Exception {
+		assertEquals(submit("tasklet/TEST_SPRINGBATCH_LAUNCHER_TASKLET_ABEND.xml"), 1);
 	}
 }

@@ -347,10 +347,10 @@ public enum SpringBatchMessage implements MessageInterface{
 	JEMS049E(49, "Data description \"{0}\", disposition \"{1}\" dataset does not exist", MessageLevel.ERROR),
 	
 	/**
-	 * "Class \"{0}\" is not an instance of Runnable", MessageLevel.ERROR
+	 * "Class \"{0}\" is not an instance of Runnable or without ToBeExecuted annotation", MessageLevel.ERROR
 	 */
-	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>" + "Check the class name and classpath of job because is not a Runnable.")
-	JEMS050E(50, "Class \"{0}\" is not an instance of Runnable", MessageLevel.ERROR),
+	@Description(explanation = "Display the class name which wasn't able to be loaded.<br>" + "Check the class name and classpath of job because is not a Runnable or without ToBeExecuted annotation.")
+	JEMS050E(50, "Class \"{0}\" is not an instance of Runnable or without ToBeExecuted annotation", MessageLevel.ERROR),
 	
 	/**
 	 * "Mandatory variable \"className\" is missing", MessageLevel.ERRO
@@ -368,7 +368,14 @@ public enum SpringBatchMessage implements MessageInterface{
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
-	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO);
+	JEMS053I(53, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	
+	/**
+	 * "Class \"{0}\" does not have any public static void main method", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs whene the launcher can try to execute a java main class but the class does not have any main method.<br>" + "Check the class  and the signature of main method.")
+	JEMS054E(54, "Class \"{0}\" does not have any public static void main method", MessageLevel.ERROR);
+
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

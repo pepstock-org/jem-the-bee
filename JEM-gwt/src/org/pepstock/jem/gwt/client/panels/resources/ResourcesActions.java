@@ -85,7 +85,6 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			selectionModel.clear();
 
 			// shows a popup to create new role
-			//AbstractResourceInspector inspector = new NewResourceInspector();
 			ResourceTypeChooser inspector = new ResourceTypeChooser();
 			inspector.center();
 		}

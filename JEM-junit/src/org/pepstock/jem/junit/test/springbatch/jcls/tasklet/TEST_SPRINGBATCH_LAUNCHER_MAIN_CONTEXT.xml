@@ -35,8 +35,9 @@
 	 -->
 
 	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
-		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_MAIN" />
+		<beans:property name="jobName" value="TEST_SPRINGBATCH_LAUNCHER_MAIN_CONTEXT" />
 		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="classPath" value="${JEM_HOME}/lib/jem-junit.jar;${JEM_HOME}/lib/db/*" />
 	</beans:bean>
 
 	<!-- 
@@ -44,18 +45,11 @@
 	 -->
 
 	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.MainLauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.DataSourceConnMain" />
+		<beans:property name="className" value="org.pepstock.jem.junit.test.springbatch.java.DataSourceConnMainAndContext" />
 		<beans:property name="arguments">
 			<beans:list>
 			<beans:value>argument1</beans:value>
 			<beans:value>argument2</beans:value>
-			</beans:list>
-		</beans:property>
-		<beans:property name="classPath">
-			<beans:list>
-			   <beans:value>${JEM_HOME}/lib/jem-junit.jar</beans:value>
-			   <beans:value>${JEM_HOME}/lib/db/*</beans:value>
-			   <beans:value>${java.class.path}</beans:value>
 			</beans:list>
 		</beans:property>
 		<beans:property name="dataSourceList">
@@ -76,7 +70,7 @@
 	<!-- 
 		null: does nothing
 	 -->
-	<job id="TEST_SPRINGBATCH_LAUNCHER_MAIN">
+	<job id="TEST_SPRINGBATCH_LAUNCHER_MAIN_CONTEXT">
 		<step id="nothing">
 			<tasklet ref="null" />
 		</step>

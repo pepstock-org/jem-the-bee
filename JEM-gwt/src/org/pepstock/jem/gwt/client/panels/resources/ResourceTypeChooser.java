@@ -50,7 +50,7 @@ public class ResourceTypeChooser extends AbstractInspector implements InspectLis
 		Styles.INSTANCE.common().ensureInjected();
 	}
 	
-	private ChooserActions actionsPanel = new ChooserActions();;
+	private ChooserActions actionsPanel = new ChooserActions();
 	
 	protected VerticalPanel mainContainer = new VerticalPanel();	
 	protected SimplePanel resourcePanelContainer = new SimplePanel();

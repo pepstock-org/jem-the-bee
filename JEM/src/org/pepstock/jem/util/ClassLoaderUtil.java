@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -51,7 +54,7 @@ public final class ClassLoaderUtil {
 	/**
 	 * Extensions files loaded for classpath
 	 */
-	public static final String[] EXTENSIONS = new String[] { "jar" };
+	public static final List<String> EXTENSIONS = Collections.unmodifiableList(Arrays.asList("jar"));
 
 	/**
 	 * Loads all files of a folder, without any cascading
@@ -134,7 +137,7 @@ public final class ClassLoaderUtil {
 					boolean cascade = path.endsWith(ALL_FOLDER_IN_CASCADE);
 					// gets the parent and asks for all JAR files
 					File parent = file.getParentFile();
-					Collection<File> newFiles = FileUtils.listFiles(parent, EXTENSIONS, cascade);
+					Collection<File> newFiles = FileUtils.listFiles(parent, EXTENSIONS.toArray(new String[0]), cascade);
 					// loads to the collection
 					files.addAll(newFiles);
 					if (cascade) {
