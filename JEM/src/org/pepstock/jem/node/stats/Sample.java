@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Is a container bean with all system information of the JEM cluster
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -45,12 +47,14 @@ public class Sample implements Serializable {
 	private List<MemberSample> members = new ArrayList<MemberSample>();
 
 	/**
-	 * 
+	 * Empty constructor as bean
 	 */
 	public Sample() {
 	}
 
 	/**
+	 * Returns the key of sample
+	 * 
 	 * @return the key
 	 */
 	public String getKey() {
@@ -58,6 +62,8 @@ public class Sample implements Serializable {
 	}
 
 	/**
+	 * Sets the key of sample
+	 * 
 	 * @param key the key to set
 	 */
 	public void setKey(String key) {
@@ -65,13 +71,17 @@ public class Sample implements Serializable {
 	}
 
 	/**
-	 * @return the date
+	 * Returns the date when the sample has been taken
+	 * 
+	 * @return the date when the sample has been taken
 	 */
 	public String getDate() {
 		return date;
 	}
 
 	/**
+	 * Sets the date when the sample has been taken
+	 * 
 	 * @param date the date to set
 	 */
 	public void setDate(String date) {
@@ -79,6 +89,8 @@ public class Sample implements Serializable {
 	}
 
 	/**
+	 * Returns the environment of JEM node
+	 * 
 	 * @return the environment
 	 */
 	public String getEnvironment() {
@@ -86,6 +98,8 @@ public class Sample implements Serializable {
 	}
 
 	/**
+	 * Sets the environment of JEM node
+	 * 
 	 * @param environment the environment to set
 	 */
 	public void setEnvironment(String environment) {
@@ -93,6 +107,8 @@ public class Sample implements Serializable {
 	}
 
 	/**
+	 * Returns the time when the sample has been taken
+	 * 
 	 * @return the time
 	 */
 	public String getTime() {
@@ -100,6 +116,8 @@ public class Sample implements Serializable {
 	}
 
 	/**
+	 * Sets the time when the sample has been taken
+	 * 
 	 * @param time the time to set
 	 */
 	public void setTime(String time) {
@@ -107,14 +125,18 @@ public class Sample implements Serializable {
 	}
 
 	/**
-	 * @return the members
+	 * Returns all sample of all nodes of JEM cluster
+	 * 
+	 * @return the members samples
 	 */
 	public List<MemberSample> getMembers() {
 		return members;
 	}
 
 	/**
-	 * @param members the members to set
+	 * Sets all sample of all nodes of JEM cluster
+	 * 
+	 * @param members the members samples to set
 	 */
 	public void setMembers(List<MemberSample> members) {
 		this.members = members;

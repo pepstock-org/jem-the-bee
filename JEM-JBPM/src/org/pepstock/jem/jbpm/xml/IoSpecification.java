@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Is the collections of all inforation passsed in JBPM file related to IO specification of BPMN2 language.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -30,13 +32,6 @@ public class IoSpecification {
 	private final Map<String, DataInputAssociation> associations = new HashMap<String, DataInputAssociation>();
 	
 	private final List<DataInput> dataInputs= new ArrayList<DataInput>();
-
-	/**
-	 * 
-	 */
-	public IoSpecification() {
-		
-	}
 
 	/**
 	 * @return the dataInputs
@@ -59,5 +54,4 @@ public class IoSpecification {
     public String toString() {
 	    return "IoSpecification [associations=" + associations + ", dataInputs=" + dataInputs + "]";
     }
-	
 }

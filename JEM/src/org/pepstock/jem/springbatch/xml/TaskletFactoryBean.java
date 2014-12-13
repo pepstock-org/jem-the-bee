@@ -25,7 +25,8 @@ import org.pepstock.jem.springbatch.tasks.Lock;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- * Factory bean for complex XML element for tasklet <tasklet>.
+ * Factory bean for complex XML element for tasklet <tasklet>.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
@@ -137,5 +138,4 @@ public class TaskletFactoryBean implements FactoryBean<Object> {
 	public boolean isSingleton() {
 		return false;
 	}
-
 }

@@ -19,6 +19,8 @@ package org.pepstock.jem.node.stats;
 import java.io.Serializable;
 
 /**
+ * Is a bean with all information about statistics of operations on a map of Hazelcast
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -44,7 +46,7 @@ public class MapOperationsStats implements Serializable{
 	private long numberOfOtherOperations = Long.MIN_VALUE;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public MapOperationsStats() {
 	}
@@ -169,6 +171,4 @@ public class MapOperationsStats implements Serializable{
 		return "MapOperationsStats [numberOfPuts=" + numberOfPuts + ", numberOfGets=" + numberOfGets + ", totalPutLatency=" + totalPutLatency + ", totalGetLatency=" + totalGetLatency + ", totalRemoveLatency=" + totalRemoveLatency + ", numberOfRemoves="
 				+ numberOfRemoves + ", numberOfEvents=" + numberOfEvents + ", numberOfOtherOperations=" + numberOfOtherOperations + "]";
 	}
-
-
 }

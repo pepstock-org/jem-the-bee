@@ -19,6 +19,8 @@ package org.pepstock.jem.node.stats;
 import java.io.Serializable;
 
 /**
+ * Is a bean which contains the usage of a specific file system mounted on JEM.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
@@ -32,11 +34,13 @@ public class FileSystemUtilization implements Serializable {
 	private String path = null;
 
 	long free = Long.MIN_VALUE;
+	
 	long total = Long.MIN_VALUE;
+	
 	long used = Long.MIN_VALUE;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public FileSystemUtilization() {
 	}
@@ -68,8 +72,6 @@ public class FileSystemUtilization implements Serializable {
 	public void setPath(String path) {
 		this.path = path;
 	}
-
-
 
 	/**
 	 * @return the free

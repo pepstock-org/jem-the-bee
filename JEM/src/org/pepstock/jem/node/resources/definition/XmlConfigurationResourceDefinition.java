@@ -61,7 +61,7 @@ public abstract class XmlConfigurationResourceDefinition implements ResourceDefi
 	private ResourceDescriptor resourceDescriptor = null;
 
 	/**
-	 * Builds teh java script interpret
+	 * Builds the java script interpret
 	 */
 	public XmlConfigurationResourceDefinition() {
 

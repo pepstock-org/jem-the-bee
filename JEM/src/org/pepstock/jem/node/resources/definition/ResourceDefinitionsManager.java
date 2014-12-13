@@ -204,12 +204,11 @@ public class ResourceDefinitionsManager {
 		} else {
 			oacp = loadSingleResourceDefinition(resourceDefinitionConfiguration, props);
 		}
-		if (oacp != null){
-			if (oacp.getClassPath() != null && !oacp.getClassPath().isEmpty()){
-				for (String pathElement : oacp.getClassPath()){
-					if (!classPath.contains(pathElement)){
-						classPath.add(pathElement);
-					}
+		// adds classpath only if object is not null and has got some paths to add
+		if (oacp != null && oacp.getClassPath() != null && !oacp.getClassPath().isEmpty()){
+			for (String pathElement : oacp.getClassPath()){
+				if (!classPath.contains(pathElement)){
+					classPath.add(pathElement);
 				}
 			}
 		}

@@ -36,6 +36,13 @@ public class JavaMainClassLauncher {
 	private static final String MAIN_METHOD = "main";
 
 	/**
+	 * Empty constructor
+	 */
+	private JavaMainClassLauncher() {
+
+	}
+
+	/**
 	 * Is a standard main class which calls another main class. This is used in ANT to use annotations on main class with classpath.
 	 * The last argument is the main class to execute.
 	 * @param args arguments. The last one is the main class to be executes
@@ -76,7 +83,7 @@ public class JavaMainClassLauncher {
 			try {
 				main.invoke(null, (Object) argsToBePassed);
 			} catch (InvocationTargetException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} 
 		}
 	}

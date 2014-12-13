@@ -35,6 +35,15 @@ import org.pepstock.jem.node.tasks.jndi.AbsoluteHashMap;
 public class JavaMainClassLauncher {
 	
 	private static final String MAIN_METHOD = "main";
+	
+	
+
+	/**
+	 * Empty constructor to avoid any instantiation
+	 */
+	private JavaMainClassLauncher() {
+		// do nothing
+	}
 
 	/**
 	 * Is a standard main class which calls another main class. This is used in ANT to use annotations on main class with classpath.
@@ -83,19 +92,19 @@ public class JavaMainClassLauncher {
 
 				main.invoke(null, (Object) argsToBePassed);
 			} catch (InvocationTargetException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} catch (ClassNotFoundException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} catch (NamingException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} catch (IllegalAccessException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} catch (SecurityException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} catch (NoSuchMethodException e) {
-				throw new JemException(e.getCause().getMessage(), e.getCause());
+				throw new JemException(e.getCause().getMessage(), e);
 			} finally {
-				// set again teh original context classloader
+				// set again the original context classloader
 				Thread.currentThread().setContextClassLoader(savedContext);
 			}
 		}

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Bean with information about JEM version, build time and all licenses installed.
+ * This is used only from user interface or by REST call.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.3	
  *
@@ -36,7 +39,7 @@ public class About implements Serializable {
 	private List<NodeLicense> licenses = new ArrayList<NodeLicense>();
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public About() {
 	}
@@ -90,5 +93,4 @@ public class About implements Serializable {
 	public String toString() {
 		return "About [version=" + version + ", creationTime=" + creationTime + ", licenses=" + licenses + "]";
 	}
-	
 }

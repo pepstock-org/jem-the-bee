@@ -16,8 +16,8 @@ import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
 
 /**
- * This is the label provider for the tree of job insopector. Returns default
- * image for folder when we have a category, default image for file for ouput
+ * This is the label provider for the tree of job inspector. Returns default
+ * image for folder when we have a category, default image for file for output
  * file.
  * 
  * @author Andrea "Stock" Stocchero
@@ -32,17 +32,22 @@ public class InspectorLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element) {
+		// if element is a category
+		// return teh image of category
 		if (element instanceof Category) {
 			Category category = (Category) element;
 			if (category.getImage() != null) {
 				return category.getImage();
 			}
 		} else if (element instanceof ProducedOutput) {
+			// if is an output, returns
+			// the image for output folders 
 			ProducedOutput output = (ProducedOutput) element;
 			if (output.getImage() != null) {
 				return output.getImage();
 			}
 		}
+		// otherwise no image
 		return null;
 	}
 
@@ -53,10 +58,13 @@ public class InspectorLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
+		// if element is a category
+		// sets the name of category 
 		if (element instanceof Category) {
 			Category category = (Category) element;
 			return category.getName();
 		}
+		// or always the name of output
 		return ((ProducedOutput) element).getName();
 	}
 }

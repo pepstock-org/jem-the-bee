@@ -19,6 +19,9 @@ package org.pepstock.jem.node.stats;
 import java.io.Serializable;
 
 /**
+ * Is a asbtract bean with commons statistics information for all members of 
+ * JEM cluster
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
@@ -42,10 +45,9 @@ public abstract class AbstractMemberSample implements Serializable {
 	private long totalNumberOfJCLCheck = 0;
 	
 	private long totalNumberOfJOBSubmitted = 0;
-	
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public AbstractMemberSample() {
 	}

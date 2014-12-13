@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Is a bean with all statistics information collected inside a JEM node
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
@@ -46,8 +48,9 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	private Map<String, MapStats> mapsStats = new HashMap<String, MapStats>();
 
 	private Map<String, QueueStats> queuesStats = new HashMap<String, QueueStats>();
+	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public MemberSample() {
 	}
@@ -121,8 +124,6 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	public void setMemory(MemoryUtilization memory) {
 		this.memory = memory;
 	}
-
-	
 	
 	/**
 	 * @return the mapsStats
@@ -137,7 +138,6 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	public void setMapsStats(Map<String, MapStats> mapsStats) {
 		this.mapsStats = mapsStats;
 	}
-
 	
 	/**
 	 * @return the queuesStats
@@ -152,7 +152,6 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	public void setQueuesStats(Map<String, QueueStats> queuesStats) {
 		this.queuesStats = queuesStats;
 	}
-
 	
 	/**
 	 * @return the fileSystem
@@ -167,5 +166,4 @@ public class MemberSample extends AbstractMemberSample implements Serializable {
 	public void setFileSystems(List<FileSystemUtilization> fileSystems) {
 		this.fileSystems = fileSystems;
 	}
-
 }

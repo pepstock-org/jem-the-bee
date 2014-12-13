@@ -32,7 +32,6 @@ import org.pepstock.jem.util.TimeUtils;
 public class Wait implements JemWorkItem {
 	
 	private static final String SECONDS_PARM_KEY = "jem.workItem.wait.seconds";
-
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.jbpm.tasks.JemWorkItem#execute(java.util.Map)
@@ -49,12 +48,13 @@ public class Wait implements JemWorkItem {
 		Object lock = new Object();
 		synchronized (lock) {
 			if (seconds > 0){
+				// waits for some seconds
 				lock.wait(seconds * TimeUtils.SECOND);
 			} else{
+				// waits forever
 				lock.wait();
 			}
 		}
 		return 0;
 	}
-
 }

@@ -22,8 +22,10 @@ import java.util.Collection;
 import org.apache.shiro.authz.Permission;
 
 /**
+ * Is the bean which represents the user of JEM
+ * 
  * @author Andrea "Stock" Stocchero
- *
+ * @version 1.0
  */
 public class User implements Serializable{
 
@@ -42,7 +44,8 @@ public class User implements Serializable{
 	private Collection<Permission> permissions = null;
 
 	/**
-	 * @param id 
+	 * Constructor with user id of user
+	 * @param id user id
 	 * 
 	 */
 	public User(String id) {
@@ -76,7 +79,6 @@ public class User implements Serializable{
 	public void setOrgUnitId(String orgUnitId) {
 		this.orgUnitId = orgUnitId;
 	}
-
 	
 	/**
 	 * @return the name
@@ -141,5 +143,4 @@ public class User implements Serializable{
 	public String toString() {
 		return "User [id=" + id + "]";
 	}
-
 }

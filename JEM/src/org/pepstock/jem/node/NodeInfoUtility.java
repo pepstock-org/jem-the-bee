@@ -49,9 +49,10 @@ import com.hazelcast.core.Member;
 import com.hazelcast.query.SqlPredicate;
 
 /**
- * A set of methods to manage the shared map with all nodes of cluster
+ * A set of methods to manage the shared map with all nodes of cluster.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  * @see org.pepstock.jem.node.NodeInfo
  */
@@ -65,7 +66,6 @@ public class NodeInfoUtility {
 	 * Private constructor to avoid new instantiations
 	 */
 	private NodeInfoUtility() {
-		
 	}
 
 	/**
@@ -80,6 +80,7 @@ public class NodeInfoUtility {
      */
     public static final void loadNodeInfo(Member member, NodeInfo info) throws NodeException{
     	String jemVersion = getManifestAttribute(ConfigKeys.JEM_MANIFEST_VERSION);
+    	// sets the version
         if (jemVersion != null){
             info.setJemVersion(jemVersion);
         }
@@ -102,15 +103,18 @@ public class NodeInfoUtility {
         info.setExecutionEnvironment(Main.EXECUTION_ENVIRONMENT);
         // use JMX to extract current process id
         info.setProcessId(ManagementFactory.getRuntimeMXBean().getName());
-
+        
+        // extracts the name using the MXBean result
         String hostname = StringUtils.substringAfter(info.getProcessId(), "@");
         info.setHostname(hostname);
 
+        // extracts from operating ssytem MXbean all info about the ssytem
         OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
         info.getNodeInfoBean().setSystemArchitecture(bean.getArch());
         info.getNodeInfoBean().setAvailableProcessors(bean.getAvailableProcessors());
         info.getNodeInfoBean().setSystemName(bean.getName());
 
+        // uses SIGAR to get total memory and the user used by JEM to start
         try {
         	info.getNodeInfoBean().setTotalMemory(SIGAR.getMem().getTotal());
 			ProcCredName cred = SIGAR.getProcCredName(SIGAR.getPid());
@@ -118,6 +122,7 @@ public class NodeInfoUtility {
 		} catch (SigarException e) {
 			throw new NodeException(e.getMessage(), e);
 		}
+        // informs the node itself that it has been loaded
         info.loaded();
     }
     
@@ -158,37 +163,52 @@ public class NodeInfoUtility {
     }
 
     /**
+     * Stores the node on Hazelcast map for nodes.
+     * Before doing it, it checks if there is already the instance store on Hazelcast (maybe do to crashed)
+     * and removes it and loads the new one.
      * 
-     * @param address
-     * @param info
-     * @throws ConfigurationException
+     * @param info node information to store
+     * @throws ConfigurationException if any configuration error occurs
      * 
      */
     public static synchronized void checkAndStoreNodeInfo(NodeInfo info) throws ConfigurationException {
+    	// gets HC map
         IMap<String, NodeInfo> membersMap = Main.getHazelcast().getMap(Queues.NODES_MAP);
 
+        // builds the query to use to get nodes
         StringBuilder sb = new StringBuilder();
         sb.append("label = '").append(info.getLabel()).append("'");
 
+        // performs the query
         Collection<NodeInfo> nodeInfos = membersMap.values(new SqlPredicate(sb.toString()));
-
+        
         try {
+        	// locks map to avoid that other nodes change at the same time
             membersMap.lock(info.getKey());
+            // if the query gave a result
             if (!nodeInfos.isEmpty()) {
+            	// removes all nodes, result of the query
                 for (NodeInfo prevNodeInfo : nodeInfos) {
                     membersMap.remove(prevNodeInfo.getKey());
                 }
             }
+            // adds new node
             membersMap.put(info.getKey(), info);
 
+            // checks if the CHECKVERSION system property is present. Default false
             boolean checkVersion = Parser.parseBoolean(System.getProperty(ConfigKeys.JEM_CHECK_VERSION), false);
             // check if node release version inside the cluster are different
             Collection<NodeInfo> allNodes = membersMap.values();
+            // scans all node to check the version
             for (NodeInfo currNodeInfo : allNodes) {
+            	// if there is some mismatch on the version
                 if (!currNodeInfo.getJemVersion().equals(info.getJemVersion())) {
+                	// and it must check the version
                     if (checkVersion) {
+                    	// throws an exception
                         throw new ConfigurationException(NodeMessage.JEMC191E.toMessage().getFormattedMessage());
                     } else {
+                    	// otherwise put just a warning
                         LogAppl.getInstance().emit(NodeMessage.JEMC185W);
                         break;
                     }
@@ -199,55 +219,66 @@ public class NodeInfoUtility {
         } catch (Exception ex) {
             LogAppl.getInstance().emit(NodeMessage.JEMC174E, ex);
         } finally {
+        	// always unlock
             membersMap.unlock(info.getKey());
         }
     }
 
     /**
-     * 
-     * @param info
+     * Stores the nodes on Hazelcast map without forcing the persistence
+     * @param info node instance
      */
     public static void storeNodeInfo(NodeInfo info) {
         storeNodeInfo(info, false);
     }
 
     /**
+     * Stores the node on Hazelcast map, asking if the nodes must persist on database, by Mapstore
      * 
-     * @param info
-     * @param hasToStore
+     * @param info node instance
+     * @param hasToStore if <code>true</code>, the nodes must persist on database
      */
     public static synchronized void storeNodeInfo(NodeInfo info, boolean hasToStore) {
+    	// gets HC map
         IMap<String, NodeInfo> membersMap = Main.getHazelcast().getMap(Queues.NODES_MAP);
         try {
+        	// lock map
             membersMap.lock(info.getKey());
             if (!membersMap.containsKey(info.getKey())){
                 membersMap.put(info.getKey(), info);
             } else {
                 membersMap.replace(info.getKey(), info);
             }
+            // if it must be persit, persist!!!
             if (hasToStore) {
                 MANAGER.store(info.getKey(), info);
             }
         } catch (Exception ex) {
             LogAppl.getInstance().emit(NodeMessage.JEMC174E, ex);
         } finally {
+        	// always unlock
             membersMap.unlock(info.getKey());
         }
     }
 
     /**
-     * 
+     * checks all nodes on Hazelcast map and clean all old member not longer on the local map
      */
     public static synchronized void checkAndCleanMapStore() {
+    	// gets map
+        IMap<String, NodeInfo> nodesMap = Main.getHazelcast().getMap(Queues.NODES_MAP);
+
         try {
-            IMap<String, NodeInfo> nodesMap = Main.getHazelcast().getMap(Queues.NODES_MAP);
+        	// scans all nodes on databases
             for (String key : MANAGER.loadAllKeys()) {
                 try {
+                	// locks map and delete if not exist
                     nodesMap.lock(key);
                     if (!nodesMap.containsKey(key)) {
                         MANAGER.delete(key);
                     }
                 } finally {
+                	// always unlock
                     nodesMap.unlock(key);
                 }
             }
@@ -257,12 +288,14 @@ public class NodeInfoUtility {
     }
 
     /**
+     * gets the node reading the inforamtion from mapstore
      * 
-     * @param key
-     * @return NodeInfo
+     * @param key key of node
+     * @return NodeInfo node instance or null if is not on the database
      */
     public static NodeInfo getNodeInfoFromMapStore(String key) {
         try {
+        	// loads the node from database
             return MANAGER.load(key);
         } catch (Exception e) {
         	LogAppl.getInstance().debug(e.getMessage(), e);
@@ -271,11 +304,12 @@ public class NodeInfoUtility {
     }
 
     /**
-     * 
-     * @param key
+     * Removes a node information by key from mapstore
+     * @param key unique key of node insatnce
      */
     public static void removeNodeInfoFromMapStore(String key) {
         try {
+        	// removes from database
             MANAGER.delete(key);
         } catch (Exception e) {
         	LogAppl.getInstance().debug(e.getMessage(), e);
@@ -283,31 +317,36 @@ public class NodeInfoUtility {
     }
 
     /**
-     * 
+     * Returns all nodes by a lit of status 
      * @param statusList the list of the status used to filtered the NODES_MAP
      * @param notIn if set to true the filtering will be for status Not In the
      *            list of status passed as parameter
-     * @param includeSupernode if set to true also the supernode will be
-     *            considered
      * @return a List of NodeInfo present in the Queues.NODES_MAP (eventually an
      *         empty list) filtered by status present in the statusList passed
      *         as parameter. If the status List is null or empty return all the
      *         NodeInfo present in the map
      */
     public static List<NodeInfo> getNodesInfoByStatus(List<Status> statusList, boolean notIn) {
-
+    	// gets HC map
         IMap<String, NodeInfo> membersMap = Main.getHazelcast().getMap(Queues.NODES_MAP);
+        // gets all nodes from map
         List<NodeInfo> nodesInfo = new ArrayList<NodeInfo>(membersMap.values());
+        // if list of status is empty or null,
+        // returns all nodes
         if (statusList == null || statusList.isEmpty()) {
             return nodesInfo;
         }
+        // creats the list ot be returned
         List<NodeInfo> nodesInfoToReturn = new ArrayList<NodeInfo>();
+        // scans all nodes
         for (int j = 0; j < nodesInfo.size(); j++) {
             NodeInfo currNodeInfo;
             currNodeInfo = nodesInfo.get(j);
+            // checks if status matches 
             if (statusList.contains(currNodeInfo.getStatus()) && !notIn) {
                 nodesInfoToReturn.add(currNodeInfo);
             }
+            // checks if status matches 
             if (!statusList.contains(currNodeInfo.getStatus()) && notIn) {
                 nodesInfoToReturn.add(currNodeInfo);
             }
@@ -316,9 +355,10 @@ public class NodeInfoUtility {
     }
 
     /**
-     * Drains the node
+     * Drains the node itself
      */
     public static void drain() {
+    	// creates the distributed task to drain itself
         DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Drain(), Main.getHazelcast().getCluster().getLocalMember());
         ExecutorService executorService = Main.getHazelcast().getExecutorService();
         task.setExecutionCallback(new GenericCallBack());
@@ -326,9 +366,10 @@ public class NodeInfoUtility {
     }
 
     /**
-     * Drains the node
+     * Starts the node
      */
     public static void start() {
+    	// creates the distributed task to start itself
         DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Start(), Main.getHazelcast().getCluster().getLocalMember());
         ExecutorService executorService = Main.getHazelcast().getExecutorService();
         task.setExecutionCallback(new GenericCallBack());

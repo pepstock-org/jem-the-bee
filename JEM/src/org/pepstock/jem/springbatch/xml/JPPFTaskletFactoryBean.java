@@ -20,6 +20,9 @@ import org.pepstock.jem.jppf.JPPFBean;
 import org.pepstock.jem.jppf.JPPFTasklet;
 
 /**
+ * Factory bean for complex XML element for JPPF bean to confugure the JPPF connection<br>
+ * it uses the <jppfConfiguration> tag to add this bean by extended XML authoring of SpringBatch
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
@@ -54,5 +57,4 @@ public class JPPFTaskletFactoryBean extends TaskletFactoryBean {
 		}
 		return tasklet;
 	}
-
 }

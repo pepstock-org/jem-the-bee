@@ -23,7 +23,11 @@ import java.util.List;
 import org.pepstock.jem.node.UpdateableItem;
 
 /**
+ * Entity of JEM which represents the role from security perspective with all permissions
+ * and all related users
+ * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  *
  */
 public class Role extends UpdateableItem implements Serializable {
@@ -37,8 +41,11 @@ public class Role extends UpdateableItem implements Serializable {
 	private List<String> users = new ArrayList<String>();
 	
 	/**
-	 * @param name
-	 * @param removable 
+	 * Creates a role with is name and if removable.
+	 * The out-of-the-box roles are not removable. Only the custom ones.
+	 * 
+	 * @param name name of role
+	 * @param removable <code>true</code> if the role is custom one and then removable 
 	 */
 	public Role(String name, boolean removable) {
 		super.setName(name);
@@ -46,7 +53,8 @@ public class Role extends UpdateableItem implements Serializable {
 	}
 
 	/**
-	 * @param name 
+	 * Creates a "removable" role 
+	 * @param name name of role
 	 * 
 	 */
 	public Role(String name) {
@@ -54,10 +62,9 @@ public class Role extends UpdateableItem implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * Empty constructor, used only for serialization purposes
 	 */
 	public Role(){
-		
 	}
 
 	/**
@@ -109,5 +116,4 @@ public class Role extends UpdateableItem implements Serializable {
     public String toString() {
 	    return "Role [name=" + getName() + "]";
     }
-
 }

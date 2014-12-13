@@ -29,7 +29,8 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
- * Specific parser for <itemWriter> tag, to create item writer bean.
+ * Specific parser for <itemWriter> tag, to create item writer bean.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -39,7 +40,6 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 	static final String ITEM_WRITER_ELEMENT = "itemWriter";
 	
 	static final String DELEGATE_ATTRIBUTE = "delegate";
-	
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +56,7 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		// load delegate bean
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.genericBeanDefinition(element.getAttribute(DELEGATE_ATTRIBUTE));
 		factory.addPropertyValue(ItemWriterFactoryBean.DELEGATE, component.getBeanDefinition());
-
+	    // loads all children
 		loadChildren(element, factory, context);
 		return factory.getBeanDefinition();
 	}
@@ -73,13 +73,11 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		if (childDataDescriptions != null && !childDataDescriptions.isEmpty()) {
 			parseDataDescriptions(childDataDescriptions, factory, context);
 		}
-
 		// Reads all data source children and creates objects for next bindings
 		List<Element> childDataSources = DomUtils.getChildElementsByTagName(element, DataSourceDefinitionParser.DATA_SOURCE_ELEMENT);
 		if (childDataSources != null && !childDataSources.isEmpty()) {
 			parseDataSources(childDataSources, factory, context);
 		}
-		
 		// Reads all locks children and creates objects for next bindings
 		List<Element> childLocks = DomUtils.getChildElementsByTagName(element, LockDefinitionParser.LOCK_ELEMENT);
 		if (childLocks != null && !childLocks.isEmpty()) {
@@ -98,7 +96,6 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		return component.getBeanDefinition();
 	}
 
-
 	/**
 	 * Creates and loads data description child of item writer element
 	 * @param childElement XML element 
@@ -110,7 +107,6 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects
 		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
-
 		// creates data description parser 
 		DataDescriptionDefinitionParser parser = new DataDescriptionDefinitionParser();
 		for (Element element : childElements) {
@@ -129,7 +125,6 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects		
 		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
-		
 		// creates data source parser 
 		DataSourceDefinitionParser parser = new DataSourceDefinitionParser();
 		for (Element element : childElements) {
@@ -148,7 +143,6 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		// creates a list. Be carefully to use ManageList of Spring which auto wiring the objects		
 		@SuppressWarnings("rawtypes")
 		ManagedList children = new ManagedList(childElements.size());
-
 		// creates lock parser 
 		LockDefinitionParser parser = new LockDefinitionParser(true);
 		for (Element element : childElements) {
@@ -156,5 +150,4 @@ public class ItemWriterDefinitionParser extends AbstractBeanDefinitionParser {
 		}
 		factory.addPropertyValue(ItemWriterFactoryBean.LOCKS, children);
 	}
-
 }

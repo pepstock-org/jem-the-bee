@@ -17,6 +17,9 @@
 package org.pepstock.jem.jbpm.xml;
 
 /**
+ * Bean which contains allinformation defined in JBPM file to the data input association secition of a task, using
+ * BPMN2 language
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -27,13 +30,6 @@ public class DataInputAssociation {
 	private String assignmentFrom = null;
 	
 	private String assignmentTo = null;
-
-	/**
-	 * 
-	 */
-	public DataInputAssociation() {
-		
-	}
 
 	/**
 	 * @return the targetRef
@@ -78,13 +74,15 @@ public class DataInputAssociation {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Checks if the data input association is defined correctly,
+	 * having the right attributes assigned.
+	 * @return <code>true</code> if the data input association has got all necessary attributess
 	 */
 	public boolean isValid(){
 		if (targetRef == null || assignmentFrom == null || assignmentTo == null){
 			return false;
 		}
+		// target ref must be equals to the assignment
 		return targetRef.equalsIgnoreCase(assignmentTo);
 	}
 

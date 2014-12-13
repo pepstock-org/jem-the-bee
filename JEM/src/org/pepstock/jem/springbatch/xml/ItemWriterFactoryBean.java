@@ -26,7 +26,8 @@ import org.springframework.batch.item.file.ResourceAwareItemWriterItemStream;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- * Factory bean for complex XML element for item <itemWriter>.
+ * Factory bean for complex XML element for item <itemWriter>.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -166,5 +167,4 @@ public class ItemWriterFactoryBean implements FactoryBean<Object> {
 	public boolean isSingleton() {
 		return false;
 	}
-
 }

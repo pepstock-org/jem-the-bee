@@ -65,9 +65,11 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 	 */
 	@Override
 	public Collection<GfsFile> getResult(String parentPath, File parent) throws ExecutorException {
+		// checks if path is a folder
 		if (!parent.isDirectory()){
 			throw new ExecutorException(NodeMessage.JEMC187E, parent.toString());
 		}
+		// gets all files of a folder
 		return getFilesList(parentPath, parent);
 	}
 	
@@ -76,25 +78,33 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 	 */
 	@Override
 	public Collection<GfsFile> getResultForDataPath() throws ExecutorException {
-		// checks if a data type and rootpath request. If yes, having the storage groups manager
+		// checks if a data type and root path request. If yes, having the storage groups manager
 		// scans all defined data paths
 		// otherwise asks for the specific folder
 		if (ROOT_PATH.equalsIgnoreCase(getItem())){
+			// scans all paths defined 
 			Collection<GfsFile> list = new LinkedList<GfsFile>();
 			for (String path : Main.DATA_PATHS_MANAGER.getDataPaths()){
 				list.addAll(getFilesList(path, new File(path)));
 			}
 			return list;
 		} else {
+			// gets data path from path name
 			if (getPathName() != null){
 				String parentPath = Main.DATA_PATHS_MANAGER.getAbsoluteDataPathByName(getPathName());
 				File file = new File(parentPath, getItem());
+				// return list of files of folder
 				return this.getResult(parentPath, file);
 			} else {
+				// normalize the path
 				String item = FilenameUtils.normalize(getItem().endsWith(File.separator) ? getItem() : getItem() + File.separator, true);
 				try {
+					// gets data path 
 					PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(item);
 					String parentPath = paths.getCurrent().getContent();
+					// checks if file exist. If file belongs to old folder
+					// returns file from old path
+					// otherwise uses the normal path defined in the rules
 					File file = new File(parentPath, getItem());
 					if (!file.exists() && paths.getOld()!=null){
 						parentPath = paths.getOld().getContent();
@@ -104,6 +114,7 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 					if (!file.exists()){
 						throw new ExecutorException(NodeMessage.JEMC186E, getItem());
 					}
+					// returns list of files
 					return this.getResult(parentPath, file);
 				} catch (InvalidDatasetNameException e) {
 					throw new ExecutorException(e.getMessageInterface(), e, getItem());
@@ -113,10 +124,10 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 	}
 
 	/**
-	 * 
-	 * @param parentPath
-	 * @param parent
-	 * @return
+	 * Extracts all files from a folder
+	 * @param parentPath parentPath is path define as mount poit
+	 * @param parent parent requisted from user, to add to the mount point
+	 * @return lsit of files of folder
 	 */
 	private Collection<GfsFile> getFilesList(String parentPath, File parent){
 		// creates the collection of files and reads them
@@ -125,22 +136,22 @@ public class GetFilesList extends Get<Collection<GfsFile>> {
 		if (files != null && files.length > 0){
 			// scans all files and loads them into a collection, normalizing the names
 			for (int i=0; i<files.length; i++){
-				
+				// checks if is sub folder
 				boolean isDirectory = files[i].isDirectory();
 				String name = files[i].getName();
-				
+				// gets the long name of file
 				String longName = StringUtils.removeStart(FilenameUtils.normalize(files[i].getAbsolutePath(), true), 
 						FilenameUtils.normalize(parentPath, true)).substring(1);
-
+				// creates a bean with of file information
 				GfsFile file = new GfsFile();
 				file.setDirectory(isDirectory);
 				file.setName(name);
 				file.setLongName(longName);
 				file.setLength((isDirectory) ? -1 : files[i].length());
 				file.setLastModified(files[i].lastModified());
-				
+				// sets the data path name to be showed on user interface
 				file.setDataPathName(Main.DATA_PATHS_MANAGER.getAbsoluteDataPathName(files[i].getAbsolutePath()));
-
+				// adds to the collection to be returned
 				list.add(file);
 			}
 		}

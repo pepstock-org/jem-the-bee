@@ -28,13 +28,17 @@ import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
- * Specific parser for <jppf-configuration> tag, to create JPPFBean bean, with all properties to execute the JPPF task.
+ * Specific parser for <jppf-configuration> tag, to create JPPFBean bean, with all properties to execute the JPPF task.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
 public class JPPFBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 	
+	// these are all the elements and attributes
+	// which can be use to add the JEM configuration bean 
+	// in a Springbatch using the extension XML authoring
 	static final String CONFIGURATION_ELEMENT = "jppf-configuration";
 	
 	static final String RUNNABLE_ATTRIBUTE =  "runnable";
@@ -59,6 +63,7 @@ public class JPPFBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
 	@Override
 	protected void doParse(Element element, BeanDefinitionBuilder builder) {
 		// this will never be null since the schema explicitly requires that a value be supplied
+		// it calls the utility to set the property
 		Util.setProperty(element, builder, RUNNABLE_ATTRIBUTE);
 		Util.setProperty(element, builder, ADDRESS_ATTRIBUTE);
 		Util.setProperty(element, builder, PARALLELTASK_ATTRIBUTE, Integer.class);

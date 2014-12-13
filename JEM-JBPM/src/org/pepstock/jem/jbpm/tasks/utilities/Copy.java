@@ -31,7 +31,8 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
- * JEM work item that copies a file or list of files (data description named INPUT) on other one (data description named OUTPUT).
+ * JEM work item that copies a file or list of files 
+ * (data description named INPUT) on other one (data description named OUTPUT).
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -59,10 +60,9 @@ public class Copy implements JemWorkItem {
 		Object input = (Object) ic.lookup(INPUT_DATA_DESCRIPTION_NAME);
 		// gets outputstream
 		Object output = (Object) ic.lookup(OUTPUT_DATA_DESCRIPTION_NAME);
-
+		// defines the streams
 		InputStream istream = null;
 		OutputStream ostream = null;
-
 		// checks if object is a inputstream otherwise error
 		if (input instanceof InputStream){
 			istream = (InputStream) input;
@@ -76,14 +76,12 @@ public class Copy implements JemWorkItem {
 			IOUtils.closeQuietly(istream);
 			throw new MessageException(JBpmMessage.JEMM016E, OUTPUT_DATA_DESCRIPTION_NAME, output.getClass().getName());
 		}
-
 		// copy
 		int bytes = IOUtils.copy(istream, ostream);
 		IOUtils.closeQuietly(istream);
 		IOUtils.closeQuietly(ostream);
 		LogAppl.getInstance().emit(JBpmMessage.JEMM062I, bytes);
-
+		// returns OK!!!
 		return Result.SUCCESS;
 	}
-
 }

@@ -51,25 +51,27 @@ public final class JobHeader extends Composite implements EnvironmentEventListen
 	    setLayout(new GridLayout(5, false));
 	    setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true, false, 0, 0));
 
-	    // iconc
+	    // sets JOB icons
 	    icon = new Label(this, SWT.NONE);
 
-	    // label
+	    // set label with jobname
 		Label jobLabel = new Label(this, SWT.NONE);
+		// sets label of job name
 		jobLabel.setText("Job: ");
 		jobLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
 		jobName = new Label(this, SWT.NONE);
 		jobName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		jobName.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
-		
+		// changes font of label
 	    FontData fontData = jobName.getFont().getFontData()[0];
 	    Font font = new Font(Display.getCurrent(), new FontData(fontData.getName(), fontData.getHeight(), SWT.ITALIC | SWT.BOLD));
 		jobName.setFont(font);
 		
-		//Environment
+		// shows the environment where job is
 		Label envLabel = new Label(this, SWT.NONE);
 		envLabel.setText("Environment: ");
 		envLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
+		// sets all graphic attributes
 		environment = new Label(this, SWT.NONE);
 		environment.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		environment.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -77,8 +79,10 @@ public final class JobHeader extends Composite implements EnvironmentEventListen
 	    
 		// checks if is connected
 		if (Client.getInstance().isLogged()){
+			// connect to default environment
 			environmentConnected(null);
 		} else {
+			// or disconnect to default environment
 			environmentDisconnected(null);
 		}
     }
@@ -111,8 +115,11 @@ public final class JobHeader extends Composite implements EnvironmentEventListen
 	 */
     @Override
     public void environmentConnected(EnvironmentEvent event) {
+    	// changes icon
 		icon.setImage(Images.ONLINE_FAVICON);
+		// reset job name text
 		jobName.setText(NOT_AVAILABLE);
+		// sets environment
 		environment.setText(Client.getInstance().getCurrent().getName());
 		jobName.getParent().pack();
     }
@@ -122,8 +129,11 @@ public final class JobHeader extends Composite implements EnvironmentEventListen
 	 */
     @Override
     public void environmentDisconnected(EnvironmentEvent event) {
+    	// changes icon, offline
     	icon.setImage(Images.OFFLINE_FAVICON);
+    	// resets text
     	jobName.setText(NOT_AVAILABLE);
+    	// resets environment
 		environment.setText(NOT_AVAILABLE);
 		jobName.getParent().pack();
     }

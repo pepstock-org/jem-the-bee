@@ -51,6 +51,7 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 	private boolean isGrantor = false;
 	
 	private boolean internalAction = false;
+	
 	/**
 	 * @param roles the roles of the current user executing the jcl
 	 */
@@ -104,13 +105,16 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 	/**
 	 * Load all the user permissions from roles
 	 * 
-	 * @param roles
+	 * @param roles collection rols to load
 	 */
 	private void loadPermissions(Collection<Role> roles) {
+		// scan all roles
 		for (Role role : roles) {
+			// sets if is an administrator
 			if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)){
 				setAdministrator(true);
 			}
+			// sets if is an grantor
 			if (role.getName().equalsIgnoreCase(Roles.GRANTOR)){
 				setGrantor(true);
 			}
@@ -143,6 +147,7 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 	@Override
 	public void checkPermission(Permission perm) {
 		// checks if someone add a security manager
+		// if yes, exception
 		if (perm instanceof RuntimePermission && "setSecurityManager".equalsIgnoreCase(perm.getName())){
 			LogAppl.getInstance().emit(NodeMessage.JEMC274E);
 			throw new SecurityException(NodeMessage.JEMC274E.toMessage().getMessage());
@@ -155,6 +160,8 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 			throw new SecurityException(NodeMessage.JEMC127E.toMessage().getMessage());
 		}
 		// checks is administrator. if true return.
+		// checks if we are inside a code no custom but of JEM
+		// necessary to be executed (internalAction)
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
@@ -171,15 +178,21 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 			}
 		} else if (perm instanceof SocketPermission){
 			// checks the RMI access.
+			// accessing to RMI locally, you could creates some inconsistent situation
+			// for JEM and this is not secured
 			// checks to RMI is not allowed if you're not a admin
 			SocketPermission sperm = (SocketPermission)perm;
 			int port = Parser.parseInt(StringUtils.substringAfter(sperm.getName(), ":"), Integer.MAX_VALUE);
 			int portRmi = Parser.parseInt(System.getProperty(RmiKeys.JEM_RMI_PORT), Integer.MIN_VALUE);
+			// checks if it's going to RMI port
 			if (port == portRmi && !isInternalAction() && !isGrantor()){
 				String hostname = StringUtils.substringBefore(sperm.getName(), ":");
 				try {
 					String resolved = InetAddress.getByName(hostname).getHostAddress();
 					String localhost = InetAddress.getLocalHost().getHostAddress();
+					// if you're accessing to RMI port
+					// and locally, an exception will be launched
+					// if you don't have the INTERNAL services authorization.
 					if (resolved.equalsIgnoreCase(localhost) && !checkBatchPermission(Permissions.INTERNAL_SERVICES)){
 						LogAppl.getInstance().emit(NodeMessage.JEMC128E);
 						throw new SecurityException(NodeMessage.JEMC128E.toMessage().getMessage());
@@ -212,6 +225,8 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public final void checkRead(String file) {
+		// administrator of in Internal action
+		// can do everything
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
@@ -225,6 +240,8 @@ class JBpmBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkWrite(String file) {
+		// administrator of in Internal action
+		// can do everything		
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}

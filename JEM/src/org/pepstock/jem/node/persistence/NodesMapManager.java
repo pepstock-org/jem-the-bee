@@ -23,6 +23,7 @@ import org.pepstock.jem.node.Queues;
  * Persistent manager for NodeInfos map.<br>
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.1
  * 
  */
 public class NodesMapManager extends AbstractMapManager<NodeInfo>{
@@ -33,5 +34,4 @@ public class NodesMapManager extends AbstractMapManager<NodeInfo>{
 	public NodesMapManager() {
 		super(Queues.NODES_MAP, NodesDBManager.getInstance());
 	}
-
 }

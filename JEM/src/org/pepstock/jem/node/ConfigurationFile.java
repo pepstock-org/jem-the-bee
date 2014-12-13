@@ -19,6 +19,9 @@ package org.pepstock.jem.node;
 import java.io.Serializable;
 
 /**
+ * This is a bean containing the information about a configuration file of JEM.
+ * It's used to provide the configuration on the user interface.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
@@ -73,6 +76,4 @@ public class ConfigurationFile implements Serializable{
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
 	}
-
-	
 }

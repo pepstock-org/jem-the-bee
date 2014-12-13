@@ -26,13 +26,17 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Specific parser for <configuration> tag, to create JemBean bean, with all properties to execute the job.
+ * Specific parser for <configuration> tag, to create JemBean bean, with all properties to execute the job.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
 public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 	
+	// these are all the elements and attributes
+	// which can be use to add the JEM configuration bean 
+	// in a Springbatch using the extension XML authoring
 	static final String CONFIGURATION_ELEMENT = "configuration";
 	
 	static final String ENVIRONMENT_ATTRIBUTE =  "environment";
@@ -73,6 +77,7 @@ public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
 	@Override
 	protected void doParse(Element element, BeanDefinitionBuilder builder) {
 		// this will never be null since the schema explicitly requires that a value be supplied
+		// it calls the utility to set the property
 		Util.setProperty(element, builder, ENVIRONMENT_ATTRIBUTE);
 		Util.setProperty(element, builder, DOMAIN_ATTRIBUTE);
 		Util.setProperty(element, builder, JOBNAME_ATTRIBUTE);

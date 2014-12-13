@@ -29,6 +29,8 @@ import org.pepstock.jem.node.rmi.TasksDoorImpl;
 import org.pepstock.jem.util.rmi.RegistryContainer;
 
 /**
+ * Utility class to load RMI registry inside JEm with all JEM services.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
@@ -40,7 +42,6 @@ public class RmiStartUp {
 	 * to avoid any instantiation
 	 */
 	private RmiStartUp() {
-		
 	}
 	
 	/**
@@ -65,13 +66,11 @@ public class RmiStartUp {
 				// Try to load internal utilities. Due to they are not free
 				// and in another project, avoiding to create useless dependency they are
 				// loaded dynamically, by reflection
-				@SuppressWarnings("rawtypes")
-				Class internals = Class.forName(CLASS_FOR_EXTERNAL);
+				Class<?> internals = Class.forName(CLASS_FOR_EXTERNAL);
 				ExternalObject externalObject = (ExternalObject)internals.newInstance();
 				// create and load RMI object for internal utilities
 				RegistryContainer.getInstance().addRmiObject(externalObject.getName(), externalObject.getObject());
 				LogAppl.getInstance().emit(NodeMessage.JEMC195I, externalObject.getName());
-
 			} catch (ClassNotFoundException e) {
 				// ignore the stack trace
 				LogAppl.getInstance().ignore(e.getMessage(), e);

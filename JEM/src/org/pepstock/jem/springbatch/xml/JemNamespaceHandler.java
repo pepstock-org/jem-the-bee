@@ -19,7 +19,9 @@ package org.pepstock.jem.springbatch.xml;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * Registers all parser for different XML element and then beans.
+ * Registers all parser for different XML element and then beans.<br>
+ * This is the class which is defined in extended XML authoring of Springbatch
+ * to define all XML parser for the custom elements.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
@@ -31,6 +33,7 @@ public class JemNamespaceHandler extends NamespaceHandlerSupport {
 	 */
 	@Override
 	public void init() {
+		// register all parser for all main elements
 		registerBeanDefinitionParser(JemBeanDefinitionParser.CONFIGURATION_ELEMENT, new JemBeanDefinitionParser());
 		registerBeanDefinitionParser(LockDefinitionParser.LOCK_ELEMENT, new LockDefinitionParser());
 		registerBeanDefinitionParser(DataDescriptionDefinitionParser.DATA_DESCRIPTION_ELEMENT, new DataDescriptionDefinitionParser());
@@ -38,10 +41,7 @@ public class JemNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser(TaskletDefinitionParser.TASKLET_ELEMENT, new TaskletDefinitionParser());
 		registerBeanDefinitionParser(ItemReaderDefinitionParser.ITEM_READER_ELEMENT, new ItemReaderDefinitionParser());
 		registerBeanDefinitionParser(ItemWriterDefinitionParser.ITEM_WRITER_ELEMENT, new ItemWriterDefinitionParser());
-
-		
 		registerBeanDefinitionParser(JPPFBeanDefinitionParser.CONFIGURATION_ELEMENT, new JPPFBeanDefinitionParser());
 		registerBeanDefinitionParser(JPPFTaskletDefinitionParser.JPPF_TASKLET_ELEMENT, new JPPFTaskletDefinitionParser());
 	}
-
 }

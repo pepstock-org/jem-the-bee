@@ -16,8 +16,11 @@
 */
 package org.pepstock.jem.node.stats;
 
-
 /**
+ * Is a bean with a subset of all information usually extract inside the JEM node
+ * on maps of Hazelcast.
+ * This bean is used to show information in the user interface
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -39,7 +42,7 @@ public class LightMapStats extends MapOperationsStats{
 	private long hits = 0;
 	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public LightMapStats() {
 	}
@@ -100,8 +103,6 @@ public class LightMapStats extends MapOperationsStats{
 		this.lockedEntryCount = lockedEntryCount;
 	}
 
-
-
 	/**
 	 * @return the lockWaitCount
 	 */
@@ -129,5 +130,4 @@ public class LightMapStats extends MapOperationsStats{
 	public void setHits(long hits) {
 		this.hits = hits;
 	}
-
 }

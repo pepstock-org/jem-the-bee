@@ -26,7 +26,8 @@ import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- * Factory bean for complex XML element for item reader <itemReader>.
+ * Factory bean for complex XML element for item reader <itemReader>.<br>
+ * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
@@ -50,7 +51,6 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	private List<Lock> locks = null;
 	
 	private ResourceAwareItemReaderItemStream<?> delegate = null;
-	
 
 	/**
 	 * @return the itemReader
@@ -65,7 +65,6 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	public void setItemReader(DataDescriptionItemReader<?> itemReader) {
 		this.itemReader = itemReader;
 	}
-	
 	
 	/**
 	 * @return the delegate
@@ -122,13 +121,10 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	public void setLocks(List<Lock> locks) {
 		this.locks = locks;
 	}
-
-	
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
-	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Object getObject() throws Exception {
@@ -171,5 +167,4 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	public boolean isSingleton() {
 		return false;
 	}
-
 }

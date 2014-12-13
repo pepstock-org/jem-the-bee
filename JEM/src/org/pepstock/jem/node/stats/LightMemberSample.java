@@ -29,6 +29,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.pepstock.jem.rest.maps.StatsMapAdapter;
 
 /**
+ * Is a bean with a subset of all information usually extract inside the JEM node.
+ * This bean is used to show information in the user interface
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
@@ -65,8 +68,9 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
 	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> internalMapsStats = new HashMap<String, LightMapStats>();
+	
 	/**
-	 * 
+	 * Empty construcotor
 	 */
 	public LightMemberSample() {
 	}
@@ -78,7 +82,6 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 		return key;
 	}
 
-
 	/**
 	 * @param key the key to set
 	 */
@@ -86,14 +89,12 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 		this.key = key;
 	}
 
-
 	/**
 	 * @return the time
 	 */
 	public String getTime() {
 		return time;
 	}
-
 
 	/**
 	 * @param time the time to set
@@ -108,73 +109,83 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	public double getCpuPercent() {
 		return cpuPercent;
 	}
+	
 	/**
 	 * @param cpuPercent the cpuPercent to set
 	 */
 	public void setCpuPercent(double cpuPercent) {
 		this.cpuPercent = cpuPercent;
 	}
+	
 	/**
 	 * @return the memoryAvailable
 	 */
 	public long getMemoryAvailable() {
 		return memoryAvailable;
 	}
+	
 	/**
 	 * @param memoryAvailable the memoryAvailable to set
 	 */
 	public void setMemoryAvailable(long memoryAvailable) {
 		this.memoryAvailable = memoryAvailable;
 	}
+	
 	/**
 	 * @return the memoryFree
 	 */
 	public long getMemoryFree() {
 		return memoryFree;
 	}
+	
 	/**
 	 * @param memoryFree the memoryFree to set
 	 */
 	public void setMemoryFree(long memoryFree) {
 		this.memoryFree = memoryFree;
 	}
+	
 	/**
 	 * @return the processCpuPercent
 	 */
 	public double getProcessCpuPercent() {
 		return processCpuPercent;
 	}
+	
 	/**
 	 * @param processCpuPercent the processCpuPercent to set
 	 */
 	public void setProcessCpuPercent(double processCpuPercent) {
 		this.processCpuPercent = processCpuPercent;
 	}
+	
 	/**
 	 * @return the processTotalCpuPercent
 	 */
 	public long getProcessTotalCpu() {
 		return processTotalCpu;
 	}
+	
 	/**
 	 * @param processTotalCpuPercent the processTotalCpuPercent to set
 	 */
 	public void setProcessTotalCpu(long processTotalCpuPercent) {
 		this.processTotalCpu = processTotalCpuPercent;
 	}
+	
 	/**
 	 * @return the processMemoryUsed
 	 */
 	public long getProcessMemoryUsed() {
 		return processMemoryUsed;
 	}
+	
 	/**
 	 * @param processMemoryUsed the processMemoryUsed to set
 	 */
 	public void setProcessMemoryUsed(long processMemoryUsed) {
 		this.processMemoryUsed = processMemoryUsed;
 	}
-	
 	
 	/**
 	 * @return the processMemoryFree
@@ -210,6 +221,7 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	public Map<String, LightMapStats> getMapsStats() {
 		return mapsStats;
 	}
+	
 	/**
 	 * @param mapsStats the mapsStats to set
 	 */

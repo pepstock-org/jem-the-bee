@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Is a bean with a subset of all information usually extract inside the JEM cluster.
+ * This bean is used to show information in the user interface
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -43,7 +46,7 @@ public class LightSample implements Serializable {
 	private List<LightMemberSample> members = new ArrayList<LightMemberSample>();
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public LightSample() {
 	}
@@ -111,7 +114,4 @@ public class LightSample implements Serializable {
 	public String toString() {
 		return "LightSample [key=" + key + ", time=" + time + ", date=" + date + ", members=" + members + "]";
 	}
-
-
-
 }

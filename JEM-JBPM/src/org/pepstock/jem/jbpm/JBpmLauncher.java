@@ -125,14 +125,18 @@ public class JBpmLauncher {
 				// check if are tasks are still pending
 				// if yes, there has been an errors
 				if (!listener.getNodeEvents().isEmpty()){
+					// sets Excpetion text
+					String exception = null;
 					// scans all pending tasks and call end of them method
 					for (ProcessNodeEvent event : listener.getNodeEvents().values()){
+						exception = JBpmMessage.JEMM048E.toMessage().getFormattedMessage(event.getNodeInstance().getNodeName());
 						listener.beforeNodeLeft(event, Result.ERROR, JBpmMessage.JEMM048E.toMessage().getFormattedMessage(event.getNodeInstance().getNodeName()));	
 					}
 					// calls the end of job method
 					listener.afterProcessCompletedFinally(listener.getProcessEvent());
 					// exits with error
-					System.exit(1);
+					// throwing an exception
+					throw new JemRuntimeException(exception);
 				}
 			} catch( WorkflowRuntimeException wfre ) {
 				// if we are here, means that a RUNTIME exception has been thrown by a work item
@@ -155,7 +159,7 @@ public class JBpmLauncher {
 				// calls the end of job method
 				listener.afterProcessCompletedFinally(listener.getProcessEvent());
 				// exits with error
-				System.exit(1);
+				throw new JemRuntimeException(msg);
 			} finally {
 				// cleans up of JBPM environment 
 				environment.getKieBase().removeProcess(processID);

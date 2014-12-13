@@ -28,7 +28,14 @@ import org.apache.shiro.util.CollectionUtils;
 import org.pepstock.jem.node.NodeMessage;
 
 /**
+ * This is an specific implementation of SHIRO permission to use regular expression
+ * instead of normal string, to check the access to any resource of JEM.<br>
+ * This is very helpful for some specific permission, like files or resources ones, where the grantor of JEM
+ * can set the permission using paths of resources or files names.
+ * 
+ * @see java.util.regex.Pattern
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class RegExpPermission implements Permission, Serializable {
@@ -46,21 +53,26 @@ public class RegExpPermission implements Permission, Serializable {
 	private boolean caseSensitive = DEFAULT_CASE_SENSITIVE;
 
 	/**
-	 * Empty constructor
+	 * Empty constructor, used to be serialized
+	 * to the user interface
 	 */
 	public RegExpPermission() {
 	}
 
 	/**
-	 * @param permissionPattern
+	 * Creates a permission with a regular expression, case sensitive
+	 * @param permissionPattern regular expression string
 	 */
 	public RegExpPermission(String permissionPattern) {
 		this(permissionPattern, DEFAULT_CASE_SENSITIVE);
 	}
 
 	/**
-	 * @param permissionPattern 
-	 * @param caseSensitive
+	 * Creates a permission with a regular expression and sets if the matching must be
+	 * done using case sensitive or not.
+	 * 
+	 * @param permissionPattern regular expression string
+	 * @param caseSensitive if <code>true</code> uses a case sensitive match
 	 */
 	public RegExpPermission(String permissionPattern, boolean caseSensitive) {
 		this.permissionPattern = permissionPattern;
@@ -96,44 +108,63 @@ public class RegExpPermission implements Permission, Serializable {
 		this.caseSensitive = caseSensitive;
 	}
 
+	/**
+	 * Parses permission string, creating the right patterns  
+	 */
 	private void load() {
-
+		// if string permission if not valid, throw an exception
 		if (permissionPattern == null || permissionPattern.trim().length() == 0) {
 			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getMessage());
 		}
 
+		// removes blanks
 		permissionPattern = permissionPattern.trim();
-
-		List<String> currParts = CollectionUtils.asList(permissionPattern.split(PART_DIVIDER_TOKEN));
 		
+		// parses main parts
+		// splits permission string using the part divider
+		List<String> currParts = CollectionUtils.asList(permissionPattern.split(PART_DIVIDER_TOKEN));
 		this.parts = new ArrayList<Set<Pattern>>();
+		
+		// scans all parts
 		for (String part : currParts) {
+			// loads sub parts of permission
 			Set<String> subparts = CollectionUtils.asSet(part.split(SUBPART_DIVIDER_TOKEN));
 			if (subparts.isEmpty()) {
 				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getMessage());
 			}
 			Set<Pattern> patternSubparts = new LinkedHashSet<Pattern>(subparts.size());
+			// scans all subparts
 			for (String subpart: subparts){
+				// creates patterns
 				Pattern pattern;
 				if (caseSensitive){
 					pattern = Pattern.compile(subpart.trim());
 				} else { 
 					pattern = Pattern.compile(subpart.trim(), Pattern.CASE_INSENSITIVE);
 				}
+				// adds patterns
 				patternSubparts.add(pattern);
 			}
 			this.parts.add(patternSubparts);
 		}
-
+		// if not parts, the permission string syntax is wrong
 		if (this.parts.isEmpty()) {
 			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getMessage());
 		}
 	}
 	
+	/**
+	 * Returns the list of patterns
+	 * @return the list of patterns
+	 */
 	private List<Set<Pattern>> getParts() {
 		return this.parts;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.apache.shiro.authz.Permission#implies(org.apache.shiro.authz.Permission)
+	 */
+	@Override
 	public boolean implies(Permission p) {
 		// By default only supports comparisons with StringPermissions
 		StringPermission stringPermission;
@@ -142,8 +173,7 @@ public class RegExpPermission implements Permission, Serializable {
 		} else {
 			return false;
 		}
-		
-		
+		// gets permission parts from string permission
 		List<Set<String>> otherParts = stringPermission.getParts();
 
 		int i = 0;
@@ -151,24 +181,31 @@ public class RegExpPermission implements Permission, Serializable {
 			// If this permission has less parts than the other permission,
 			// everything after the number of parts contained
 			// in this permission is automatically implied, so return true
-			
 			if (getParts().size() - 1 < i) {
+				// always matches
 				return true;
 			} else {
+				// scans all patterns 
 				Set<Pattern> part = getParts().get(i);
 				boolean or = part.size() > 1;
 				for (String stringPart : otherPart){
+					// checks if the patterns matches with the part of string permission
 					boolean matches = false;
 					for (Pattern pattern : part){
+						// matches
 						boolean match = pattern.matcher(stringPart).matches();
+						// if more that pattern
 						if (!or){
+							// if not match return false
 							if (!match){
 								return false;
-							}
+							}	
 						} else {
+							// works in OR, adding all matches
 							matches = matches || match;
 						}
 					}
+					// if doesn't match, FALSE
 					if (or && !matches){
 						return false;
 					}
@@ -176,7 +213,15 @@ public class RegExpPermission implements Permission, Serializable {
 				i++;
 			}
 		}
+		// if here, means all checks are OK 
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "RegExpPermission [permissionPattern=" + permissionPattern + "]";
+	}
 }

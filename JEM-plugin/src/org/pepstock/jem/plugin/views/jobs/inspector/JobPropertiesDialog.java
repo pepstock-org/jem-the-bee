@@ -34,6 +34,7 @@ import org.pepstock.jem.util.DateFormatter;
  */
 public class JobPropertiesDialog extends Dialog {
 	
+	// fixed dimension of dialog
 	private static final int DEFAULT_WIDTH = 600;
 	
 	private static final int DEFAULT_HEIGHT = 464;
@@ -66,6 +67,7 @@ public class JobPropertiesDialog extends Dialog {
 		// main composite
 		Composite main = new Composite(parent, SWT.LEFT);
 		GridLayout mainLayout = new GridLayout(1, false);
+		// sets fixed size
 		mainLayout.marginTop = 0;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginLeft = DEFAULT_MARGIN_HORIZONTAL;
@@ -74,40 +76,42 @@ public class JobPropertiesDialog extends Dialog {
 		mainLayout.marginHeight = 0;
 		main.setLayout(mainLayout);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		// sets fixed size
 		data.widthHint = DEFAULT_WIDTH;
 		data.heightHint = DEFAULT_HEIGHT;
 		main.setLayoutData(data);
 		
-		// header
+		// set header
 		new JobPropertiesHeader(main, job);
 	
-		// tabbed panel
+		// 2 tabbed panel: 1 for job information
+		// 1 for JCL ones
 		TabFolder folder = new TabFolder(main, SWT.NONE);
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
+		// tab for JOB
 		TabItem jobTab = new TabItem(folder, SWT.NONE);
 		jobTab.setText("Job information");
-		
+		// tab for JCL
 		TabItem jclTab = new TabItem(folder, SWT.NONE);
 		jclTab.setText("Jcl information");
 
+		// Creates composite to display job info
 		Composite jobComposite = new Composite(folder, SWT.NONE);
 		Composite jclComposite = new Composite(folder, SWT.NONE);
-
 		GridLayout compLayout = new GridLayout(2, false);
-
+		// job with FILL both, horizontally and vertically
 		jobComposite.setLayout(compLayout);
 		jobComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		// jcl with FILL both, horizontally and vertically
 		jclComposite.setLayout(compLayout);
 		jclComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		// creates tab
 		createJobTab(jobComposite);
 		createJclTab(jclComposite);
-
+		// adds composite to TAB panel
 		jobTab.setControl(jobComposite);
 		jclTab.setControl(jclComposite);
-
 		return main;
 	}
     
@@ -129,12 +133,17 @@ public class JobPropertiesDialog extends Dialog {
      * @return text field instance
      */
     private Text createText(Composite parent, String labelText, String value){
+    	// creates label
 		Label label = new Label(parent, SWT.NONE);
+		// set label text
 		label.setText(labelText);
+		// uses a text box to show value
 		Text text = new Text(parent, SWT.BORDER);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// but not editable
 		text.setEditable(false);
 		if (value != null){
+			// sets value only is not null
 			text.setText(value);
 		}
 		return text;
@@ -145,6 +154,7 @@ public class JobPropertiesDialog extends Dialog {
      * @param composite parent composite
      */
 	private void createJobTab(Composite composite) {
+		// creates all labels and textboxes
 		createText(composite, "Name:", job.getName());
 		createText(composite, "ID:", job.getId());
 		createText(composite, "User:", (job.isUserSurrogated()) ? job.getJcl().getUser() : job.getUser());
@@ -154,34 +164,43 @@ public class JobPropertiesDialog extends Dialog {
 				job.getStartedTime() != null ? DateFormatter.getDate(job.getStartedTime(), TimeDisplayUtils.TIMESTAMP_FORMAT) : "");
 		createText(composite, "Ended:",
 				job.getEndedTime() != null ? DateFormatter.getDate(job.getEndedTime(), TimeDisplayUtils.TIMESTAMP_FORMAT) : "");
-		
+		// sets current steps, checking if there is a valid value
 		Text currentStep = createText(composite, "Current Step:");
 		if ((job.getCurrentStep() == null) || (job.getEndedTime() != null)){
 	    	currentStep.setText("");
 	    } else {
 	    	currentStep.setText(job.getCurrentStep().getName());
 	    }
-
+		// shows the result of job if ended
 		Text result= createText(composite, "Result:");
+		// if result is null means the job is not ended
 		if (job.getResult() == null){
 			result.setText("");
 		} else {
-			// shows obly if result not null
+			// shows only if result not null
+			// before the return code
 			result.setText(String.valueOf(job.getResult().getReturnCode()));
 			Label label = new Label(composite, SWT.NONE);
+			// and then the exception...
 			label.setText("Exception:");
+			//... using a text area
 			Text exception = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 			exception.setLayoutData(new GridData(GridData.FILL_BOTH));
 			exception.setEditable(false);
+			// it shows ONLY the first line
+			// of exception stack trace
     		String fullMessage = job.getResult().getExceptionMessage();
     		if (fullMessage != null){
+    			// checks if there is line terminator
     			int indexFirstRow = fullMessage.indexOf('\n');
     			String message = null;
+    			// gets the first line
     			if (indexFirstRow == -1){
     				message = fullMessage;
     			} else {
     				message = fullMessage.substring(0, indexFirstRow);	
     			}
+    			// sets the first line
     			exception.setText(message);
     		}
 		}
@@ -192,18 +211,19 @@ public class JobPropertiesDialog extends Dialog {
      * @param composite parent composite
 	 */
 	private void createJclTab(Composite composite) {
+		// creates all text for JCL attributes
 		createText(composite, "Environment:", job.getJcl().getEnvironment());
 		createText(composite, "Domain:", job.getJcl().getDomain());
 		createText(composite, "Affinities:", job.getJcl().getAffinity());
 		createText(composite, "Memory:", String.valueOf(job.getJcl().getMemory()));
 		createText(composite, "Priority:", String.valueOf(job.getJcl().getPriority()));
-
+		// uses a check box for hold
 		Label holdLabel = new Label(composite, SWT.NONE);
 		holdLabel.setText("Hold");
 		Button hold = new Button(composite, SWT.CHECK);
 		hold.setSelection(job.getJcl().isHold());
 		hold.setEnabled(false);
-
+		// sets node
 		createText(composite, "Node:", job.getMemberLabel());
 	}
 }

@@ -358,7 +358,7 @@ public abstract class JemTasklet implements Tasklet{
 		// if property starts with jem.data
 		// I need to ask to DataPaths Container in which data path I can put the file
 		if (value.startsWith("${"+ConfigKeys.JEM_DATA_PATH_NAME+"}")){
-			// takes teh rest of file name
+			// takes the rest of file name
 			String fileName = StringUtils.substringAfter(value, "${"+ConfigKeys.JEM_DATA_PATH_NAME+"}");
 			// checks all paths
 			try {

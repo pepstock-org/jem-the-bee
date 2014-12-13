@@ -29,9 +29,18 @@ import org.pepstock.jem.node.NodeMessage;
 
 /**
  * Extension of wildcard permission of SHIRO, necessary to implement the regexpression premission.
+ * The permission must be composed of 3 parts or less (never more than 3):<br>
+ * <br>
+ * <code>[part1]:[part2]:[part3]</code>
+ * <br>
+ * Every part can have subparts:<br>
+ * <br>
+ * <code>[subpart1,subpart2]:[subpart3,subpart4]:[subpart5,subpart6]</code>
+ * <br>
  * 
  * @see org.apache.shiro.authz.permission.WildcardPermission
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class StringPermission extends WildcardPermission implements Permission, Serializable {
@@ -46,7 +55,6 @@ public class StringPermission extends WildcardPermission implements Permission, 
 	 * Empty construct
 	 */
 	public StringPermission() {
-		super();
 	}
 
 	/**
@@ -77,24 +85,30 @@ public class StringPermission extends WildcardPermission implements Permission, 
 	 * Parses permission string, using ":" as separator of parts and "," for subparts  
 	 */
 	private void load() {
+		// if string permission if not valid, throw an exception
 		if (permission == null || permission.trim().length() == 0) {
 			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getMessage());			
 		}
 
+		// removes blanks
 		permission = permission.trim();
-
-		// parses main parts
 		List<String> localParts = new LinkedList<String>();
+		// parses main parts
+		// splits permission string using the part divider
 		String[] permissionParts = permission.split(RegExpPermission.PART_DIVIDER_TOKEN);
 
+		// if there is only one permission (only a token) adds the token
 		if (permissionParts.length == 1){
 			localParts.add(permissionParts[0]);	
 		} else if (permissionParts.length == 2){
+			// if there are 2 tokens, adds the 2 tokens
 			localParts.add(permissionParts[0]);
 			localParts.add(permissionParts[1]);
 		} else {
+			// if more than 2, adds the first 2 token
 			localParts.add(permissionParts[0]);
 			localParts.add(permissionParts[1]);
+			// joins all the rest in a unique part
 			StringBuilder lastPart = new StringBuilder();
 			for (int i=2; i<permissionParts.length; i++){
 				lastPart.append(permissionParts[i]);
@@ -105,13 +119,15 @@ public class StringPermission extends WildcardPermission implements Permission, 
 		this.parts = new ArrayList<Set<String>>();
 		// parses all subparts
 		for (String part : localParts) {
+			// splits all parts in subpart using the divider
 			Set<String> subparts = CollectionUtils.asSet(part.split(RegExpPermission.SUBPART_DIVIDER_TOKEN));
 			if (subparts.isEmpty()) {
 				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getMessage());
 			}
+			// adds subpart
 			this.parts.add(subparts);
 		}
-
+		// if not parts, the permission string syntax is wrong
 		if (this.parts.isEmpty()) {
 			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getMessage());
 		}
@@ -122,6 +138,7 @@ public class StringPermission extends WildcardPermission implements Permission, 
 	 */
 	@Override
 	public boolean equals(Object o) {
+		// if String permission to compare, uses this method recursively passing the string permission parts  
         if (o instanceof StringPermission) {
             StringPermission sp = (StringPermission) o;
             return parts.equals(sp.getParts());
@@ -144,11 +161,11 @@ public class StringPermission extends WildcardPermission implements Permission, 
 		return this.parts;
 	}
 
-	/**
-	 * @return the permission string
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-        return getPermission();
-    }
+		return getPermission();
+	}
 }

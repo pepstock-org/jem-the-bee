@@ -19,9 +19,10 @@ package org.pepstock.jem.node.security;
 import java.io.Serializable;
 
 /**
- * Abstract entity object used for user and ou entities.
+ * Abstract entity object used for user and organizational unit entities.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  *
  */
 public abstract class Subject implements Serializable, Comparable<Object> {
@@ -29,13 +30,13 @@ public abstract class Subject implements Serializable, Comparable<Object> {
 	private static final long serialVersionUID = 1L;
 
 	private String id = null;
+	
 	private String name = null;
 
 	/**
 	 * Empty constructor
 	 */
 	public Subject() {
-
 	}
 
 	/**
@@ -74,7 +75,6 @@ public abstract class Subject implements Serializable, Comparable<Object> {
 		return "[id:" + id + ", name:" + name + "]";
 	}
 
-
 	/**
 	 * Checks if the IDs are equals
 	 */
@@ -89,24 +89,31 @@ public abstract class Subject implements Serializable, Comparable<Object> {
 		}
 		return obj.toString().equalsIgnoreCase(toString());
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
+		// uses the id has hashcode
 		if (id != null){
 			return id.hashCode(); 
 		} else { 
 			return super.hashCode();
 		}
 	}
-	/**
-	 * Compare method to sort by ID eventually
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Object obj) {
-		if (obj instanceof Subject) {
-			Subject subject = (Subject) obj;
+	public int compareTo(Object o) {
+		// to sort, uses the user id by default
+		if (o instanceof Subject) {
+			Subject subject = (Subject) o;
 			return getId().compareTo(subject.getId());
 		} else {
+			// otherwise always less than 0
 			return -1;
 		}
 	}

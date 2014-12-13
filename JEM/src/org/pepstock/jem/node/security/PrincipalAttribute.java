@@ -19,7 +19,11 @@ package org.pepstock.jem.node.security;
 import java.io.Serializable;
 
 /**
+ * Bean, entry of collections with all attributes of a user. Usually read from LDAP instance.
+ * 
+ * @see User
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  *
  */
 public class PrincipalAttribute implements Serializable{
@@ -31,7 +35,7 @@ public class PrincipalAttribute implements Serializable{
 	private Object value = null;
 	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public PrincipalAttribute() {
 	}
@@ -71,6 +75,4 @@ public class PrincipalAttribute implements Serializable{
 	public String toString() {
 		return "PrincipalAttribute [name=" + name + ", value=" + value + "]";
 	}
-
-
 }

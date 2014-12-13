@@ -19,6 +19,8 @@ package org.pepstock.jem.node.stats;
 import java.io.Serializable;
 
 /**
+ * Is a bean all information about usage statistics of a queue of Hazelcast
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
@@ -36,7 +38,7 @@ public class QueueOperationsStats implements Serializable {
 	private long numberOfRejectedOffers = Long.MIN_VALUE;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public QueueOperationsStats() {
 	}
@@ -104,6 +106,5 @@ public class QueueOperationsStats implements Serializable {
 	public String toString() {
 		return "QueueOperationsStats [numberOfOffers=" + numberOfOffers + ", numberOfPolls=" + numberOfPolls + ", numberOfEmptyPolls=" + numberOfEmptyPolls + ", numberOfRejectedOffers=" + numberOfRejectedOffers + "]";
 	}
-
 
 }

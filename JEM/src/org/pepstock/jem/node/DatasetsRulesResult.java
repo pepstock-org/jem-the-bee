@@ -24,7 +24,8 @@ import java.util.regex.Pattern;
 import org.pepstock.jem.node.sgm.PathsContainer;
 
 /**
- * Contains the list of warnings and rules, result of loading of datapaths and datasets rules.
+ * Contains the list of warnings and rules, 
+ * result of loading of datapaths and datasets rules.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
@@ -70,5 +71,4 @@ public class DatasetsRulesResult implements Serializable {
 	public void setRules(Map<Pattern, PathsContainer> rules) {
 		this.rules = rules;
 	}
-
 }

@@ -72,13 +72,18 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 * @see org.pepstock.jem.node.Queues#JCL_CHECKING_QUEUE
 	 */
 	public void run() {
-
+		// gets HC queue
 		IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
 			// reads from queue (waiting if necessary) and checks.. forever
+			// if shutdown is not in progress
 			while (!Main.IS_SHUTTING_DOWN.get()) {
+				// checks if the node is really working and not in access MAINT
 				if (Main.getNode().isOperational() && !Main.IS_ACCESS_MAINT.get()) {
-
+					
+					// creates a transaction to rollback if there is any exception
+					// done because it removes from queue and adds the job on input map
+					// and an exception must rollback everything, re-putting the job in queue for check
 					Transaction tran = Main.getHazelcast().getTransaction();
 					tran.begin();
 					PreJob prejob = null;
@@ -103,6 +108,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 						Thread.sleep(2 * TimeUtils.SECOND);
 					}
 				} else {
+					// sleeps 15 second before checks if there is a new job on queue
 					Thread.sleep(15 * TimeUtils.SECOND);
 				}
 			}
@@ -110,6 +116,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			LogAppl.getInstance().emit(NodeMessage.JEMC068W, StringUtils.substringAfterLast(JclCheckingQueueManager.class.getName(), "."));
 		}
 		LogAppl.getInstance().emit(NodeMessage.JEMC069I, StringUtils.substringAfterLast(JclCheckingQueueManager.class.getName(), "."));
+		// if here, the node is down
 		isDown = true;
 	}
 
@@ -120,6 +127,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 * @param prejob prejob instance, previously loaded into jcl checking queue
 	 */
 	public void checkAndLoadJcl(PreJob prejob) {
+		// increments the number of JCL checked
 		Main.NUMBER_OF_JCL_CHECK.incrementAndGet();
 
 		// extract JOB from prejob
@@ -136,13 +144,17 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			RolesQueuePredicate predicate = new RolesQueuePredicate();
 			predicate.setUser(user);
 
+			// gets HC map for roles
 			IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
+			// locks in HC to have a consistent status on roles
 			Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
 			List<Role> myroles = null;
 			boolean isLock = false;
 			try {
+				// locks the map, if not EXCEPTION!!
 				isLock = lock.tryLock(10, TimeUnit.SECONDS);
 				if (isLock) {
+					// reads the roles of the job user
 					myroles = new ArrayList<Role>(roles.values(predicate));
 				} else {
 					throw new NodeMessageException(NodeMessage.JEMC119E, Queues.ROLES_MAP);
@@ -150,6 +162,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			} catch (Exception e) {
 				throw new NodeMessageException(NodeMessage.JEMC119E, e, Queues.ROLES_MAP);
 			} finally {
+				// always unlock 
 				if (isLock){
 					lock.unlock();
 				}
@@ -157,48 +170,61 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			// checks job submit permission
 			StringPermission jobSubmitPermission = new StringPermission(Permissions.JOBS_SUBMIT);
 			boolean allowedJobSubmit = false;
+			// scans all roles of the job user
 			for (Role role : myroles) {
+				// administrators can always submit
 				if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)) {
 					allowedJobSubmit = true;
 				} else {
+					// scans the permissions of role
 					for (String permission : role.getPermissions()) {
 						StringPermission perm = new StringPermission(permission);
+						// if not yet allowed, implies the permission
 						if (!allowedJobSubmit){
 							allowedJobSubmit = perm.implies(new StringPermission(Permissions.JOBS_SUBMIT));
 						}
 					}
 				}
+				// if allowed exit without continuing scanning all roles
 				if (allowedJobSubmit){
 					break;
 				}
 			}
+			// if not authorized, EXCEPTION
 			if (!allowedJobSubmit){
 				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), jobSubmitPermission);
 			}
 
-			// checks if job hs different users between job and jcl.
+			// checks if job has different users between job and jcl.
 			// checks if user is authorized to do it
 			if (job.isUserSurrogated()) {
+				// checks if the user is surrogated. Permission SURROGATE:pattern of user
 				StringPermission surrogatePermission = new StringPermission(Permissions.SURROGATE + Permissions.PERMISSION_SEPARATOR + job.getJcl().getUser());
-
+				
 				boolean allowed = false;
 				for (Role role : myroles) {
+					// administrators can be surrogated
 					if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)) {
 						allowed = true;
 					} else {
+						// scans all permissions
 						for (String permission : role.getPermissions()) {
+							// if has got permission for all surrogates, is allowed
 							if (permission.equalsIgnoreCase(Permissions.SURROGATE_ALL)) {
 								allowed = true;
 							} else if (permission.startsWith(Permissions.SURROGATE) && !allowed) {
+								// uses the regex permission to check if has got the permission
 								Permission perm = new RegExpPermission(permission);
 								allowed = perm.implies(surrogatePermission);
 							}
 						}
 					}
+					// if allowed exit without continuing scanning all roles
 					if (allowed){
 						break;
 					}
 				}
+				// if not authorized, EXCEPTION
 				if (!allowed){
 					throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), surrogatePermission);
 				}
@@ -214,11 +240,15 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			} catch (Exception ex){
 				LogAppl.getInstance().emit(NodeMessage.JEMC170E, ex, job.getName());		
 			} finally {
+				// always unlock
 				inputQueue.unlock(job.getId());
 			}
 			
 		} catch (JclFactoryException e) {
+			// if there a factory exception
+			// means that is not able to parse completely the JCL
 			Jcl jcl = e.getJcl();
+			// if there is a JCL, set UNKNOW JCL TYPE
 			if (jcl != null){
 				if (jcl.getType() == null){
 					jcl.setType(Jcl.UNKNOWN);
@@ -230,19 +260,24 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				jcl.setContent(prejob.getJclContent());
 				jcl.setType(prejob.getJclType());
 			}
+			// go to exception method
 			performException(e, job, jcl);
 		} catch (NodeMessageException e) {
+			// go to exception method
 			performException(e, job, job.getJcl());			
 		} catch (Exception e) {
+			// creates an UNKNOW JCL 
+			// because here is not able to create any JCL
 			Jcl jcl = Jcl.createUnknownJcl();
 			jcl.setContent(prejob.getJclContent());
 			jcl.setType(prejob.getJclType());
+			// go to exception method
 			performException(e, job, jcl);
 		}
 	}
 	
 	/**
-	 * Manages the excetpion doing the same thing for all exceptions
+	 * Manages the exception doing the same thing for all exceptions
 	 * @param e Exception to manage
 	 * @param job job instance
 	 * @param jcl read JCL
@@ -272,6 +307,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				job.setName(Jcl.UNKNOWN);
 			}
 		}
+		// sets JCL
 		job.setJcl(jcl);
 		
 		// writes output for error
@@ -286,8 +322,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		
 		// move job to OUTPUT queue
 		IMap<String, Job> outputQueue = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
-
 		try{
+			// put job on OUTPUT map
 			outputQueue.lock(job.getId());
 			outputQueue.put(job.getId(), job);
 		} catch (Exception ex){
@@ -312,9 +348,13 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 */
 	@Override
 	public void shutdown() throws NodeException, NodeMessageException {
+		// if the thread is alive
 		if (isAlive()){
+			// if JCL queue manager is not down
 			while (!isDown){
 				try {
+					// continues checking every second
+					// before leaving this method
 					Thread.sleep(1 * TimeUtils.SECOND);
 				} catch (InterruptedException e) {
 					throw new NodeException(e.getMessage(), e);
