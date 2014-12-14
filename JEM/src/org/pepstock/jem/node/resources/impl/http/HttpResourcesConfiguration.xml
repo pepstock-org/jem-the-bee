@@ -9,7 +9,7 @@
 			
 			<text-field key="requestPort" 
 						label="Request Port" 
-						description="The optional Port of the Request URL" 
+						description="The Port of the Request URL" 
 						mandatory="true" defaultValue="" regExValidator="[0-9]*" />
 
 			<single-selectable-list-field key="protocolType" 

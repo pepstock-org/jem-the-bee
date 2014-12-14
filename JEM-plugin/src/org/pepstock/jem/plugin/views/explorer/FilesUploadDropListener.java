@@ -59,6 +59,8 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 		if (listFiles != null && listFiles.length > 0){
 			Collection<String> files = Collections.unmodifiableCollection(Arrays.asList(listFiles));
 			// all files to copy
+			// creates the file upload job
+			// with all info to do it
 			FileUploadJob job = new FileUploadJob();
 			job.setSearcherText(searcher.getText());
 			job.setSearcher(searcher);
@@ -66,7 +68,6 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 			job.setFileNames(files);
 			job.setUser(true);
 			job.schedule();
-
 		}
 		return false;
 	}
@@ -82,6 +83,7 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 			// checks here the type of file-system to scan
 			switch (type) {
 				case GfsFileType.DATA:
+					// is not possible to load data on GFS DATA
 					return false;
 				case GfsFileType.LIBRARY:
 					return Client.getInstance().isAuthorized(Permissions.GFS, Permissions.GFS_LIBRARY);
@@ -95,6 +97,7 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 					return false;
 			}
 		}
+		// otherwise always FALSE!!
 		return false;
 	}
 

@@ -58,6 +58,7 @@ import org.pepstock.jem.plugin.views.jobs.Refresher;
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public class ExplorerTableContainer implements ShellContainer, Refresher{
@@ -80,6 +81,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	
 	private int type = -1;
 	
+	// list all all columns (name and dimension) of the table
 	private final Collection<JemTableColumn> columns = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name", 50),
 			new JemTableColumn("Size (bytes)", 15),
@@ -108,14 +110,14 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		compositeTb.setLayout(layout);
 		viewer = new TableViewer(compositeTb, style | SWT.BORDER | SWT.FULL_SELECTION);
 		
-		// adds drop listener
+		// adds drop listener of DND
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transferTypes = new Transfer[] { FileTransfer.getInstance() };
 		viewer.addDragSupport(operations, transferTypes, dragListener);
 		dragListener.setTableViewer(viewer);
 		dragListener.setType(type);
 		
-		// adds drop listener
+		// adds drop listener of DND
 		 viewer.addDropSupport(operations, transferTypes, new FilesUploadDropListener(viewer, searcher, type));
 
 
@@ -127,6 +129,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		Label numberLabel = new Label(compositeTot, SWT.NONE);
 		numberLabel.setText("&Total Files: ");
 		numberLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
+		// label which shows the amount of displayed files
 		number = new Label(compositeTot, SWT.NONE);
 		number.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		number.setText(String.valueOf(0));
@@ -134,7 +137,9 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), viewer.getClass().getName());
 	}
+	
 	/**
+	 * returns the name of GFS type
 	 * @return the name
 	 */
 	public String getName() {
@@ -142,6 +147,8 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	}
 	
 	/**
+	 * Returns the GFS type
+	 * @see GfsFileType
 	 * @return the type
 	 */
 	public int getType() {
@@ -192,7 +199,9 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 			data.clear();
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
+					// reset the table data
 					getViewer().setInput(data);
+					// and sets the file number
 					number.setText(String.valueOf(data.size()));
 				}
 			});
@@ -203,14 +212,17 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	 * Creates and fill table viewer
 	 */
 	public void createViewer() {
+		// creates the content provider
 		viewer.setContentProvider(new JemContentProvider<GfsFile>());
+		// and the sorter
 		viewer.setSorter(new ExplorerColumnSorter());
-		//
+		// creates all columns
 		createColumns();
-		
+		// sets teh label provider
 		viewer.setLabelProvider(new GfsLabelProvider());
+		// sets the data
 		viewer.setInput(data);
-		
+		// changes the table 
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -238,8 +250,6 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		});
 	}
 	
-	
-	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.views.jobs.Refresher#getComposite()
 	 */
@@ -252,6 +262,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
      * Method to refresh table with result
      */
     public void refresh(){
+    	// class refresh passing the text of searcher
     	refresh(searcher.getText());
     }
     
@@ -263,10 +274,8 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
     	refresh(filter, null);
     }
     
-    
-    
     /**
-     * Method to refrseh table with result, using filter and data path name
+     * Method to refresh table with result, using filter and data path name
 	 * @param filter the folder path to search in JEM.
 	 * @param pathName data path name
      */
@@ -279,20 +288,24 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	 * Creates all columns of explorer table
 	 */
 	private void createColumns() {
+		// needs to set the column sorter listener
 		int count=0;
+		// scans all columns
 		for (JemTableColumn column : getColumns()) {
 			TableViewerColumn tableViewerColumn = new TableViewerColumn(getViewer(), SWT.NONE);
 			TableColumn tblColumn = tableViewerColumn.getColumn();
 			//Specify width using weights
+			// setting the minimum width
 			layout.setColumnData(tblColumn, new ColumnWeightData(column.getWeight(), ColumnWeightData.MINIMUM_WIDTH, true));
 			tblColumn.setText(column.getName());
+			// adds sorter using the COUNT
 			tblColumn.addSelectionListener(new JemColumnSortListener(count, viewer));
 			count++;
 		}
 	}
-
 	
 	/**
+	 * Extends the file loading, dedicated for all actions to GFS
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 1.4
@@ -300,39 +313,50 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	private class GFSLoading extends FileLoading{
 
 		/**
-		 * @param shellContainer
-		 * @param type
-		 * @param file
+		 * Creates the loading file using the shell container, type of GFS to use
+		 * and file 
+		 * @see GfsFileType
+		 * @param shellContainer ALWAYS the explorer container
+		 * @param type type of GFS file system
+		 * @param file file to download
 		 */
         public GFSLoading(ShellContainer shellContainer, int type, GfsFile file) {
 	        super(shellContainer.getShell(), type, file);
         }
-
-		@Override
-		public void execute() throws JemException {
+        
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.plugin.util.Loading#execute()
+		 */
+        @Override
+        protected void execute() throws JemException {
 			try {
 				String content = null;
+				// if source of data, you can download
 				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE){
 					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
 				} else { 
+					// otherwise you can't download
 					return;
 				}
 				// activate the editor
+				// going in editor with the content of the file
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
 			} catch (PartInitException e) {
+				// if any errors from editing 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to open the editor!", 
 						"Error occurred during opening of editor: "+e.getMessage(), MessageLevel.ERROR);
 			} catch (JemException e) {
+				// if any errors to download the file
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to get "+getFile().getName()+"!", 
 						"Error occurred during retrieving the file  '"+getFile().getName()+"': "+e.getMessage(), MessageLevel.ERROR);
 			}
 		}
-	
 	}
 	
 	/**
+	 * File loading used when you search the content of a path
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 1.4
@@ -348,13 +372,19 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	        super(filter, pathName);
         }
 
-		@Override
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.plugin.util.Loading#execute()
+		 */
+        @Override
 		public void execute() throws JemException {
 			try {
 				String filter = null;
+				// the text on searcher is empty, uses a root path
 				if (getFilter().trim().length() == 0){
 					filter = GetFilesList.ROOT_PATH;
 				} else {
+					// the text on searcher is star, uses a root path otherwise
+					// the content of teh text box
 					filter = "*".equalsIgnoreCase(getFilter()) ? GetFilesList.ROOT_PATH : getFilter();
 				}
 				// gets  data
@@ -367,6 +397,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 							// sets amount
 							number.setText(String.valueOf(data.size()));
 						} else {
+							// resets the amount of files
 							number.setText(String.valueOf(0));
 						}
 						// sets complete folder name to text
@@ -374,12 +405,16 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 					}
 				});
 			} catch (JemException e) {
+				// if any errors from REST APi
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to load data", e.getMessage(), MessageLevel.ERROR);
 			}
 		}
-
-		@Override
+        
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.plugin.util.Loading#getDisplay()
+		 */
+        @Override
         public Display getDisplay() {
             return getShell().getDisplay();
         }

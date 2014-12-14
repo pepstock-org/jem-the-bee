@@ -13,7 +13,7 @@ package org.pepstock.jem.plugin.preferences;
 import java.io.Serializable;
 
 /**
- * Entity with all information to connet to JEM environment by REST.
+ * Entity with all information to connect to JEM environment by REST.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -119,7 +119,9 @@ public final class Coordinate implements Serializable{
 	 * @return a clone of object
 	 */
 	public Coordinate getClone(){
+		// creates a new coordinate
 		Coordinate coordinate = new Coordinate();
+		// sets all attributes to new coordinate
 		coordinate.setHost(host);
 		coordinate.setName(name);
 		coordinate.setUserId(userId);

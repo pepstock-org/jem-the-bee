@@ -18,6 +18,8 @@ package org.pepstock.jem.gwt.client.panels.resources.inspector;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.pepstock.jem.gwt.client.ResizeCapable;
@@ -158,6 +160,12 @@ public class ResourceDescriptorsList extends VerticalPanel implements ResizeCapa
 	 */
 	public void setRowData(Collection<ResourceDescriptor> descriptors){
 		this.descriptors = new ArrayList<ResourceDescriptor>(descriptors);
+		Collections.sort(this.descriptors, new Comparator<ResourceDescriptor>() {
+			@Override
+            public int compare(ResourceDescriptor o1, ResourceDescriptor o2) {
+	            return o1.getType().compareToIgnoreCase(o2.getType());
+            }
+		});
 
 	    // Set the total row count. This isn't strictly necessary, but it affects
 	    // paging calculations, so its good habit to keep the row count up to date.

@@ -51,6 +51,7 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 
 /**
  * Container of table preferences, which contains all JEM environments coordinates.
+ * This is called by Preferences in the Eclipse Menu.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -72,7 +73,8 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 	private Map<String,Coordinate> cloneEnvironments = null;
 
 	/**
-	 * Empty constructor
+	 * Constructs the table with all coordinates saved as preferences.
+	 * Sets the preferences store.
 	 */
 	public TablePreferencesContainer() {
 		super();
@@ -96,11 +98,14 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		// loads preferences only if not loaded
 		if (PreferencesManager.ENVIRONMENTS.isEmpty()){
 			try {
+				// loads all preferences
 				PreferencesManager.load();
 			} catch (StorageException e) {
+				// if any errors related to Eclipse way to manage preferences
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(this, "Loading preferences error!", "Error while loading preferences, your preferences may not be loaded: " + e.getMessage(), MessageLevel.ERROR);
 			} catch (Exception e) {
+				// if any other errors, mainly de-serialization from XML 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(this, "Loading preferences error!", "Error while loading preferences, your preferences may not be loaded: " + e.getMessage(), MessageLevel.ERROR);
 			}
@@ -112,16 +117,16 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 	 */
     @Override
     protected Control createContents(Composite parent) {
-    	// clones enviroments
+    	// clones environments
     	// necessary to be able to cancel wrong updates 
 		cloneEnvironments = new ConcurrentHashMap<String,Coordinate>(PreferencesManager.ENVIRONMENTS);
 		
-		// container
+		// Main container
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout(2, false));
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		// list of envs label
+		// list of environments label
 		Label listLabel = new Label(composite, SWT.NONE);
 		listLabel.setText("List of JEM environments:");
 		new Label(composite, SWT.NONE);
@@ -133,9 +138,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		table.setLinesVisible(true);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		/**
-		 * Load columns
-		 */
+		// loads all columns
 		int count=0;
 		for (JemTableColumn column : tablePreferences.getColumns()) {
 			TableColumn tbColumn = new TableColumn(table, SWT.LEFT);
@@ -149,7 +152,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		tableViewer.setContentProvider(new JemContentProvider<Coordinate>());
 		tableViewer.setSorter(tablePreferences.getColumnSorter());
 		tableViewer.setLabelProvider(tablePreferences.getLabelProvider());		
-		
+		// loads values
 		tableViewer.setInput(cloneEnvironments.values());
 
 		// Initializes Buttons
@@ -159,24 +162,27 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		gd.widthHint = 80;
 		buttons.setLayoutData(gd);
 
-		// ADD
+		// ADD button
 		Button add = new Button(buttons, SWT.PUSH);
 		add.setText("Add");
 		add.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// adds selection to ADD action
 		add.addSelectionListener(new Add());
 
-		// EDIT
+		// EDIT button
 		edit = new Button(buttons, SWT.PUSH);
 		edit.setText("Edit");
 		edit.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		edit.setEnabled(false);
+		// adds selection to EDIT action
 		edit.addSelectionListener(new Edit());
 
-		// REMOVE
+		// REMOVE button
 		remove = new Button(buttons, SWT.PUSH);
 		remove.setText("Remove");
 		remove.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		remove.setEnabled(false);
+		// adds selection to REMOVE action
 		remove.addSelectionListener(new Remove());
 
 		// adds selection listener
@@ -190,11 +196,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 			}
 		});
 
-		// ERROR MESSAGE
+		// ERROR MESSAGE panel
 		message = new Label(composite, SWT.NONE);
 		message.setForeground(getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		// empty area
 		new Label(composite, SWT.NONE);
-		
 		return composite;
 	}
 
@@ -213,13 +219,16 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 			for (UpdateEvent event : events.values()){
 				for (PreferencesEnvironmentEventListener listener : PreferencesManager.getEnvlisteners()) {
 					switch(event.getType()){
-					case UpdateEvent.ADD: 
+					case UpdateEvent.ADD:
+						// fires the ADD new environment
 						listener.environmentAdded(new EnvironmentEvent(this, event.getCoordinate()));
 						break;
 					case UpdateEvent.REMOVE: 
+						// fires the REMOVE new environment
 						listener.environmentRemoved(new EnvironmentEvent(this, event.getCoordinate()));
 						break;
 					case UpdateEvent.UPDATE: 
+						// fires the UPDATE new environment
 						listener.environmentUpdated(new EnvironmentEvent(this, event.getCoordinate()));
 						break;
 					default:
@@ -232,9 +241,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 			// clears events
 			events.clear();
 		} catch (StorageException e) {
+			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
+			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
 		}
@@ -247,15 +258,18 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     @Override
     public boolean performCancel() {
     	// clears everything
+    	// both events and clone environment 
 		events.clear();
 		cloneEnvironments.clear();
 		try {
 			// reload preferences
 			PreferencesManager.load();
 		} catch (StorageException e) {
+			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
+			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
 		}
@@ -264,28 +278,42 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 
     /**
      * Checks if updated coordinate (ADD or EDIT) has default set. If yes, checks if 
-     * all other defined coordinates there is any coordiante with default if yes,
+     * all other defined coordinates there is any coordinate with default if yes,
      * it must create a new event with the update of default environment (disables it)
      * and put in the list
      * @param updatedCoordinate coordinate to check if has default
      */
     private void checkDefault(Coordinate updatedCoordinate) {
+    	// if default has been checked
     	if (updatedCoordinate.isDefault()){
+    		// scans all coordinates to check if another one was the default
     		for (Coordinate coordinate : cloneEnvironments.values()){
+    			// checks only if coordinate has different name
+    			// and was teh default
     			if (!updatedCoordinate.getName().equalsIgnoreCase(coordinate.getName()) && coordinate.isDefault()){
+    				// changes the default
     				coordinate.setDefault(false);
+    				// creates an update event
     				UpdateEvent event = null;
+    				// if coordinate is already in events to change
     				if (events.containsKey(coordinate.getName())){
+    					// gets the existing event
     					UpdateEvent savedEvent = events.get(coordinate.getName());
+    					// if saved event was in ADD, leaves ADD
+    					// otherwise ALWAYS update
     					if (savedEvent.getType() == UpdateEvent.ADD){
     						event =  new UpdateEvent(coordinate, UpdateEvent.ADD);
     					} else {
     						event =  new UpdateEvent(coordinate, UpdateEvent.UPDATE);
     					}
     				} else {
+    					// if not present
+    					// creates a new event
     					event =  new UpdateEvent(coordinate, UpdateEvent.UPDATE);
     				}
+    				// puts new ccordinate on the clone environment
     				cloneEnvironments.put(coordinate.getName(), coordinate);
+    				// fires event
     				events.put(coordinate.getName(), event);
     			}
     		}
@@ -293,6 +321,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     }
     
     /**
+     * Adds a new coordinates, showing the dialog to create a new coordinate
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
@@ -339,7 +368,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     }
     
     /**
-     * 
+     * Edit an existing coordinate, opening a coordinate dialog
      * @author Andrea "Stock" Stocchero
      * @version 2.0
      */
@@ -389,7 +418,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     }
     
     /**
-     * 
+     * Removes a coordinate from the list of saved coordinates
      * @author Andrea "Stock" Stocchero
      * @version 2.0
      */
@@ -415,6 +444,8 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     }
     
     /**
+     * Is the listener on the table, because some logics are a little complex.
+     * It enables and disables buttons when an item of the table has been selected.
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
@@ -432,6 +463,9 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 				// if in use set message and disable buttons
 				IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
 				Coordinate toBeRemoved = (Coordinate) selection.getFirstElement();
+				// if logged and the selected coordinate is used
+				// it disables edit and remove
+				// you must disconnect before to change it
 				if (Client.getInstance().isLogged() && toBeRemoved.getName().equalsIgnoreCase(Client.getInstance().getCurrent().getName())) {
 					edit.setEnabled(false);
 					remove.setEnabled(false);
@@ -439,7 +473,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 					message.pack(true);
 					return;
 				}
-				// enables buttoms
+				// enables buttons
 				edit.setEnabled(true);
 				remove.setEnabled(true);
 				message.setText("");

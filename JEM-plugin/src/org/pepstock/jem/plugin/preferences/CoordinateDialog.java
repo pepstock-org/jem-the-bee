@@ -41,18 +41,21 @@ import org.pepstock.jem.plugin.util.ShellContainer;
  */
 public class CoordinateDialog extends Dialog implements ShellContainer {
 	
+	// sets margin and width fixed for this dialog
 	private static final int DEFAULT_WIDTH = 375;
 	
 	private static final int DEFAULT_MARGIN_VERTICAL = 15; 
 	
 	private static final int DEFAULT_MARGIN_HORIZONTAL = 10;
 
+	// all widgets used to create the dialog
 	private Text name;
 	private Text host;
 	private Text userid;
 	private Text password;
 	private Text restContext;
 	private Button def;
+	// coordinate used in edit or new
 	private Coordinate coordinate;
 	private Map<String, Coordinate> map;
 
@@ -75,6 +78,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		super(parentShell);
 		// uses the same styles of parent, adding resize
 		setShellStyle(getShellStyle() | SWT.RESIZE);
+		// saves coordinate and environment with all coordinates
 		this.coordinate = coordinate;
 		this.map = map;
 	}
@@ -101,6 +105,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
+		// after creates buttons, will update the buttons
 		updateButtonStatus();
 	}
     
@@ -115,6 +120,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		// internal composite
 		Composite main = new Composite(parent, SWT.LEFT);
 		GridLayout mainLayout = new GridLayout(1, false);
+		// sets fixed margins
 		mainLayout.marginTop = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginLeft = DEFAULT_MARGIN_HORIZONTAL;
@@ -123,6 +129,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		mainLayout.marginHeight = 0;
 		main.setLayout(mainLayout);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		// sets fixed width
 		data.minimumWidth = DEFAULT_WIDTH;
 		main.setLayoutData(data);
 
@@ -133,11 +140,12 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		// composites with all labels and text fields
 		Composite composite = new Composite(main, SWT.LEFT);
 		GridLayout compLayout = new GridLayout(2, false);
+		// sets fixed margin
 		compLayout.verticalSpacing = DEFAULT_MARGIN_HORIZONTAL;
 		composite.setLayout(compLayout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		// host
+		// host part
 		Label hostLabel = new Label(composite, SWT.NONE);
 		hostLabel.setText("*Host:");
 		host = new Text(composite, SWT.BORDER);
@@ -172,7 +180,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 			}
 		});
 		
-		// NAME of JEM enviroment
+		// NAME of JEM environment
 		Label nameLabel = new Label(composite, SWT.NONE);
 		nameLabel.setText("Name:");
 		name = new Text(composite, SWT.BORDER);
@@ -183,7 +191,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 			name.setEnabled(false);
 		}
 
-		// userid
+		// Userid
 		Label useridLabel = new Label(composite, SWT.NONE);
 		useridLabel.setText("UserId:");
 		userid = new Text(composite, SWT.BORDER);
@@ -193,7 +201,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 			userid.setText(coordinate.getUserId());
 		}
 		// adds listener to update password
-		// text field because yu can inserted a password
+		// text field because you can't insert a password
 		// without a user
 		userid.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -207,7 +215,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 			}
 		});
 
-		// password
+		// Password
 		Label pwdLabel = new Label(composite, SWT.NONE);
 		pwdLabel.setText("Password:");
 		password = new Text(composite, SWT.BORDER | SWT.PASSWORD);
@@ -238,8 +246,8 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		// fields mandatory label
 		Label mandatorylabel = new Label(composite, SWT.NONE);
 		mandatorylabel.setText("* mandatory fields");
+		// empty
 		new Label(composite, SWT.NONE);
-
 		return main;
 	}
 
@@ -248,6 +256,8 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
      * @return <code>true</code> if there is already a coordinate set with default
      */
 	private boolean hasDefault() {
+		// scans coordinates to check 
+		// if there is a coordinate checked as default
 		for (Coordinate coordinate : map.values()) {
 			if (coordinate.isDefault()){
 				return false;
@@ -260,6 +270,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 	 * Sets OK button enabled if host and rest context are set 
 	 */
 	private void updateButtonStatus() {
+		// enable the OK button only if host and rest context are not empty
 		boolean enabled = (host.getText().length() > 0) && (restContext.getText().length() > 0);
 		getButton(IDialogConstants.OK_ID).setEnabled(enabled);
 	}
@@ -281,6 +292,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 				return;
 			}
         } catch (URISyntaxException e) {
+        	// if URL of host is wrong
         	LogAppl.getInstance().ignore(e.getMessage(), e);
         	Notifier.showMessage(this, "Invalid URI", "Host property '"+host.getText()+"' is not a valid URI :"+ e.getMessage(), MessageLevel.ERROR);
         }
@@ -331,13 +343,14 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		if (isAdding()) {
 			coordinate = new Coordinate();
 		}
+		// sets all attributes of coordinate
 		coordinate.setName(envName);
 		coordinate.setHost(host.getText());
 		coordinate.setUserId(userid.getText());
 		coordinate.setPassword(password.getText());
 		coordinate.setRestContext(restContext.getText());
 		coordinate.setDefault(def.getSelection());
+		// press the super OK!!!
 		super.okPressed();
 	}
-
 }

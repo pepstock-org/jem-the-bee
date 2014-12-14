@@ -24,7 +24,7 @@ import org.pepstock.jem.plugin.event.PreferencesEnvironmentEventListener;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Preferences Manager which loads and stores preferences
+ * Preferences Manager which loads and stores preferences.
  *  
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -55,26 +55,32 @@ public class PreferencesManager {
 	 * @throws StorageException if any Eclipse error occurs
 	 */
 	public static void load() throws StorageException{
+		// clears all environments
 		ENVIRONMENTS.clear();
+		// check if preferences have got the key used to store coordinates
 		if(PREFERENCES.nodeExists(PREFERENCES_NODES_ENVIRONMENTS)){
+			// gets preferences
 			ISecurePreferences envs = PREFERENCES.node(PREFERENCES_NODES_ENVIRONMENTS);
 			String[] keys = envs.keys();
+			// scans all keys
 			for (int i = 0; i < keys.length; i++) {
-				String xml;
 				try{
-					xml = envs.get(keys[i],"n/a");
+					// gets xml by key
+					String xml = envs.get(keys[i], "n/a");
+					// de-serializes from XML
 					Coordinate cc = (Coordinate)STREAM.fromXML(xml);
+					// adds on the enviroments with coordinate name as key
 					ENVIRONMENTS.put(cc.getName(),cc);
 				} catch(StorageException e){
 					LogAppl.getInstance().ignore(e.getMessage(), e);
+					// preferences must be encrypted by password
 					if (e.getErrorCode() == StorageException.NO_PASSWORD){
 						return;
 					}
 					throw e;
 				} catch(Exception e){
 					LogAppl.getInstance().ignore(e.getMessage(), e);
-					// nop
-					// messa inc ase che venga cambiato il modello delle coordinate
+					// XML parser error. Ignore
 				}
 			}
 		}
@@ -85,8 +91,11 @@ public class PreferencesManager {
 	 * @throws StorageException if any Eclipse error occurs
 	 */
 	public static void store() throws StorageException{
+		// gets the secure preferences
+		// and clears, removing all coordinates
 		ISecurePreferences envs = PREFERENCES.node(PREFERENCES_NODES_ENVIRONMENTS);
 		envs.clear();
+		// loads all coordinates as XML 
 		for(Coordinate coordinate : ENVIRONMENTS.values()){
 			String xml = STREAM.toXML(coordinate);
 			envs.put(coordinate.getName(), xml, true);
@@ -116,5 +125,4 @@ public class PreferencesManager {
 	public static void removeEnvironmentEventListener(PreferencesEnvironmentEventListener listener){
 		ENVIRONMENT_LISTENERS.remove(listener);
 	}
-
 }

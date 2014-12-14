@@ -46,8 +46,11 @@ public class Searcher extends Composite{
 	 */
     public Searcher(Refresher refresher) {
     	super(refresher.getComposite(), SWT.NONE);
+    	// sets layout
     	setLayout(new GridLayout(3, false));
   	
+    	// uses this griddata to fill 
+    	// horizontally
 		GridData data =  new GridData();
 		data.horizontalAlignment = SWT.FILL;
 		data.grabExcessHorizontalSpace = true;
@@ -68,19 +71,22 @@ public class Searcher extends Composite{
 		// adds listener to catch the return
 		searchText.addTraverseListener(new TraverseListener() {
 			@Override
-			public void keyTraversed(TraverseEvent arg0) {
-				if (arg0.detail == SWT.TRAVERSE_RETURN){
+			public void keyTraversed(TraverseEvent event) {
+				if (event.detail == SWT.TRAVERSE_RETURN){
+					// if return has been pressed
 					Searcher.this.refresher.refresh(searchText.getText());
 				}
 			}
 		});
 		
 		// adds button
+		// setting the icon on search
 		reload.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_REDO));
 		reload.setText("Search");
 		reload.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// performs search
 				Searcher.this.refresher.refresh(searchText.getText());
 				super.widgetSelected(e);
 			}
@@ -89,14 +95,14 @@ public class Searcher extends Composite{
 	
 	/**
 	 * Sets text to text field. in this case is complete path of file 
-	 * @param text
+	 * @param text text of search text box
 	 */
 	public void setText(String text){
 		searchText.setText(text);
 	}
 	
 	/**
-	 * returns the value of searcher text field
+	 * Returns the value of searcher text field
 	 * @return  the value of searcher text field
 	 */
 	public String getText(){
@@ -107,6 +113,7 @@ public class Searcher extends Composite{
 	 * Re-search using the text 
 	 */
 	public void refresh(){
+		// uses the refresh, notifying all listeners, by a selection event
 		reload.notifyListeners(SWT.Selection, new Event());
 	}
 

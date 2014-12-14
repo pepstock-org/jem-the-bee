@@ -50,7 +50,8 @@ public class FileUploadJob extends Job {
 	private int type = -1;
 	
 	/**
-	 * @param name
+	 * Constructs the object, setting to the Job of Eclipse
+	 * the name showes during the copy
 	 */
 	public FileUploadJob() {
 		super("Copying files...");
@@ -117,15 +118,22 @@ public class FileUploadJob extends Job {
 	 */
     @Override
 	protected IStatus run(IProgressMonitor monitor) {
+    	// executes the jobs
+    	// counter for progress bar
 		int totUnits = 0;
+		// scans all files to calculate
+		// all units
 		for (String fullFile : getFileNames()){
 			File fileToGetLenght = new File(fullFile);
 			if (!fileToGetLenght.isDirectory()){
 				totUnits += fileToGetLenght.length();
 			}
 		}
+		// begin task
 		monitor.beginTask("Copying files ...", totUnits); 
 		
+		// creates a upload listener and 
+		// it has been set to RESTapi
 		FileUploadListener listener = new FileUploadListener(monitor);
 		Client.getInstance().addUploadListener(listener);
 		
@@ -133,23 +141,35 @@ public class FileUploadJob extends Job {
 		try {
 			// scans all files
 			for (String fullFile : getFileNames()){
+				// gets new file
 				file = new File(fullFile);
-	
-				if (file.exists() && ! file.isDirectory()){
+				// copies only if exists and not a folder
+				if (file.exists() && !file.isDirectory()){
+					// showes the file that is copying
 					monitor.subTask("Copying " + file.getName());
 					String gfsPath = getSearcherText();
+					// creates the path to used on the JEM
+					// to load files
 					String path = null;
 					if (gfsPath.trim().length() == 0){
+						// if nothing is the text box to search
 						path = "";
 					} else {
+						// if star, add nothing or teh path inserted plus file separator
 						path = "*".equalsIgnoreCase(gfsPath) ? "" : gfsPath+File.separator;
 					}
+					// creates the entity which contains
+					// all info to upload the file
 					UploadedGfsFile fileToupload = new UploadedGfsFile();
+					// file
 					fileToupload.setUploadedFile(file);
+					// type, which GFS file system
 					fileToupload.setType(getType());
+					// path where to store the file
 					fileToupload.setGfsPath(path);
-
+					// UPLOAD by REST!!!
 					int status = Client.getInstance().upload(fileToupload);
+					// if Return Code HTTP not equals 200, excpetion
 					if (status != 200){
 						throw new JemException("Status code incorrect: "+status);
 					}
@@ -158,9 +178,14 @@ public class FileUploadJob extends Job {
 			return Status.OK_STATUS;
 		} catch (JemException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
+			// shows the error with
+			// file and exception
 			showError(file, e);
 			return Status.CANCEL_STATUS;
 		} finally {
+			// finally it removes the listener
+			// close monitor
+			// refreshes the table of searcher
 			Client.getInstance().removeUploadListener(listener);
 			refreshSearcher();
 			monitor.done(); 
@@ -171,6 +196,7 @@ public class FileUploadJob extends Job {
 	 * Refresh of files list
 	 */
 	private final void refreshSearcher(){
+		// refreshes the table of GFS
 	    Display.getDefault().asyncExec(new Runnable() {
 	        public void run() {
 	          searcher.refresh();
@@ -180,8 +206,8 @@ public class FileUploadJob extends Job {
 	
 	/**
 	 * Shows a message box with the exception
-	 * @param file
-	 * @param e
+	 * @param file file which creates the exception
+	 * @param e exception occurred durng the upload of the file to JEM
 	 */
 	private final void showError(final File file, final Exception e){
 	    Display.getDefault().asyncExec(new Runnable() {
@@ -193,6 +219,8 @@ public class FileUploadJob extends Job {
 	}
 
 	/**
+	 * REST upload listener, called by REST API when every chunk has been
+	 * uploaded to JEM
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.1
@@ -202,7 +230,9 @@ public class FileUploadJob extends Job {
 		private IProgressMonitor monitor = null;
 
 		/**
-		 * @param monitor
+		 * Creates the listener, saving the monitor.
+		 * Monitor needs to show the progress bar
+		 * @param monitor needs to show the progress bar
 		 */
         private FileUploadListener(IProgressMonitor monitor) {
 	        super();
@@ -214,11 +244,11 @@ public class FileUploadJob extends Job {
 		 */
         @Override
         public void setUnitsDone(int units) {
+        	// changes teh progress bar if units more than 0
+        	// untis are passed by REST API
         	if (units >= 0){
         		monitor.worked(units);
         	}
         }
-		
 	}
-	
 }
