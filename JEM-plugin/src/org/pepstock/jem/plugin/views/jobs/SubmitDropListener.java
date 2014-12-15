@@ -82,31 +82,42 @@ public class SubmitDropListener extends ViewerDropAdapter implements ShellContai
     }
 
     /**
+     * Submit a list of files using a loading progress bar
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
      */
     private static class SubmitFilesList extends SubmitFilesListLoading{
+    	
 		/**
-		 * @param shell
-		 * @param fileNames
+		 * Shell of graphic container and list of files to submit are necessary
+		 * to create the object
+		 * @param shell Shell of graphic container
+		 * @param fileNames list of files to submit
 		 */
         public SubmitFilesList(Shell shell, Collection<String> fileNames) {
 	        super(shell, fileNames);
         }
 
-		@Override
-		public void execute() throws JemException {
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.plugin.util.Loading#execute()
+		 */
+        @Override
+        protected void execute() throws JemException {
 			// scans all files
 			for (String file : getFileNames()){
 				File jcl = new File(file);
+				// if file exist 
 				if (jcl.exists()){
 					try {
+						// then it submits the file
                         String jobid = Client.getInstance().submit(jcl);
+                        // show message that it can submit the file
 	                    Notifier.showMessage(super.getShell(), "Job submitted", "'"+jcl.getName()+"' has been submitted and this is job id : "+jobid, 
 	                    		   MessageLevel.INFO);
 
                     } catch (JemException e) {
+                    	// error for any REST API calls will fail
                     	LogAppl.getInstance().ignore(e.getMessage(), e);
                        Notifier.showMessage(super.getShell(), "Unable to submit job", "Unable to submit '"+jcl.getName()+"' due to following exception: "+e.getMessage(), 
                     		   MessageLevel.ERROR);
@@ -115,6 +126,4 @@ public class SubmitDropListener extends ViewerDropAdapter implements ShellContai
 			}
 		}
     }
-    
-    
 }

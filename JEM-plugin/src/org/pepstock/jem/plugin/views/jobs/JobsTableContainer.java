@@ -56,6 +56,7 @@ import org.pepstock.jem.rest.entities.Jobs;
  * Table container of jobs of JEM. It contains a table for each type of jobs queue of JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public abstract class JobsTableContainer implements ShellContainer, Refresher {
@@ -154,12 +155,15 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 * @param enabled if <code>true</code>, enables the components, otherwise disabled them.
 	 */
 	public void setEnabled(boolean enabled){
+		// sets components enabled or not 
 		searcher.setEnabled(enabled);
 		viewer.getTable().setEnabled(enabled);
 		if (!enabled){
 			data.clear();
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
+					// reset the enabled attribute of the viewer
+					// and label with amount of jobs
 					getViewer().setInput(data);
 					number.setText(String.valueOf(data.size()));
 				}
@@ -200,8 +204,6 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 */
 	public abstract JobColumnSorter getColumnSorter();
 	
-	
-	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.views.jobs.Refresher#getComposite()
 	 */
@@ -224,14 +226,16 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 * Creates and fill table viewer
 	 */
 	public void createViewer() {
+		// sets the content and sort provider
 		viewer.setContentProvider(new JemContentProvider<Job>());
 		viewer.setSorter(getColumnSorter());
-		//
+		// create columns
 		createColumns();
-		
+		// sets labels provider
 		viewer.setLabelProvider(getLabelProvider());
+		// loads data
 		viewer.setInput(data);
-		
+		// creates teh table to show jobs
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -243,7 +247,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 				// gets job selected
 				Job job = (Job)((IStructuredSelection) selection).getFirstElement();
 				if (job!=null){
-					// loads output tree to inspec
+					// loads output tree to inspect
 					TreeListLoading loading = new TreeList(getShell(), job);
 					loading.run();
 				}
@@ -255,6 +259,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 * Creates all columns of job table
 	 */
 	private void createColumns() {
+		// counter used for sorting
 		int count=0;
 		for (JemTableColumn column : getColumns()) {
 			TableViewerColumn tableViewerColumn = new TableViewerColumn(getViewer(), SWT.NONE);
@@ -268,34 +273,43 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	}
 	
 	/**
+	 * Loading components, showed when the search starts
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
 	private class JobSearch extends JobSearchLoading{
+		
 		/**
-		 * @param shell
-		 * @param filter
+		 * Shell container necessary to show the progress bar and search filter
+		 * @param shell Shell container necessary to show the progress
+		 * @param filter search filter
 		 */
         public JobSearch(Shell shell, String filter) {
 	        super(shell, filter);
         }
-
-		@Override
-		public void execute() throws JemException {
+        
+		/* (non-Javadoc)
+		 * @see org.pepstock.jem.plugin.util.Loading#execute()
+		 */
+        @Override
+        protected void execute() throws JemException {
 			Jobs jobs = null;
 			try {
-				// loads data
+				// loads data, requsting to the server by REST
 				jobs = loadData(getFilter());
+				// if data is not provided, creates a empty collections
 				data = (jobs != null && jobs.getJobs() != null) ? jobs.getJobs() : new ArrayList<Job>();
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						// sets data to table
 						getViewer().setInput(data);
+						// and the amount fo jobs
 						number.setText(String.valueOf(data.size()));
 					}
 				});
 			} catch (JemException e) {
+				// if any error occurs on REST calls
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(JobsTableContainer.this, "Unable to load data", e.getMessage(), MessageLevel.ERROR);
 			}
@@ -303,6 +317,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	}
 	
 	/**
+	 * Loading component called when you go inspecting a job
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
@@ -310,8 +325,10 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	private class TreeList extends TreeListLoading{
 		
 		/**
-		 * @param shell
-		 * @param job
+		 * Shell of graphic container and the job instance to show
+		 * 
+		 * @param shell Shell of graphic container
+		 * @param job the job instance to show
 		 */
         public TreeList(Shell shell, Job job) {
 	        super(shell, job);
@@ -321,7 +338,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 		 * @see org.pepstock.jem.plugin.util.Loading#execute()
 		 */
         @Override
-        public void execute() throws JemException {
+        protected void execute() throws JemException {
 			try {
 				// loads the output tree
 				JobOutputTreeContent currentData = Client.getInstance().getOutputTree(getJob(), getQueueName());
@@ -333,11 +350,13 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 				inspector.setQueueName(getQueueName());
 				inspector.setFocus();
 			} catch (JemException e) {
+				// if any error occurs on REST calls
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to load job "+getJob().getName()+" !", 
 						"Unable to load the job '"+getJob().getName()+"' information. Please have a look to following exception message: "+e.getMessage(), 
 						MessageLevel.ERROR);
 			} catch (PartInitException e) {
+				// if any error occurs on teh editor of Eclipse
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to load job "+getJob().getName()+" !", 
 						"Unable to load the job '"+getJob().getName()+"' information. Please have a look to following exception message: "+e.getMessage(), 

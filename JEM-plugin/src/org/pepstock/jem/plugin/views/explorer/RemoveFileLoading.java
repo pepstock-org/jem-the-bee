@@ -53,7 +53,9 @@ public class RemoveFileLoading  extends Loading {
 	 */
     @Override
     public Display getDisplay() {
-		Control ctrl = container.getViewer().getControl();
+		// gets the display
+    	Control ctrl = container.getViewer().getControl();
+    	// if not control of is disposed, do nothing
 		if (ctrl == null || ctrl.isDisposed()) {
 			return null;
 		}
@@ -67,17 +69,19 @@ public class RemoveFileLoading  extends Loading {
     public void execute() throws JemException {
     	// removes the file by REST
 		try {
+			// REST call to remove the file 
 			Client.getInstance().delete(container.getType(), file.getLongName(), file.getDataPathName());
 		} catch (JemException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(getDisplay().getActiveShell(), "Unable to delete " + file.getName(), e.getMessage(), MessageLevel.ERROR);
 		}
-
-		// refreshes the list of GFS files
+		// gets the control to start
+		// the synchronized execution 
 		Control ctrl = container.getViewer().getControl();
 		if (ctrl == null || ctrl.isDisposed()) {
 			return;
 		}
+		// refreshes the search result post file removing
 		ctrl.getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {

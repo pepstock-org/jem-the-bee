@@ -28,15 +28,17 @@ import org.pepstock.jem.rest.entities.Jobs;
  * Table container of jobs in RUNNING queue of JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public class RunningTable extends JobsTableContainer {
 	
 	/**
-	 * Readable name of queue
+	 * Readable name of HC queue
 	 */
 	public static final String NAME = "Running";
 	
+	// list of columns of the table to be showed
 	private static final Collection<JemTableColumn> COLUMNS = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name"),
 			new JemTableColumn("Type"),
@@ -50,6 +52,7 @@ public class RunningTable extends JobsTableContainer {
 
 	}));
 	
+	// labels and sorter providers
 	private static final RunningLabelProvider LABEL_PROVIDER = new RunningLabelProvider();
 	private static final RunningColumnSorter COLUMN_SORTER = new RunningColumnSorter();
 	
@@ -100,5 +103,4 @@ public class RunningTable extends JobsTableContainer {
     public JobColumnSorter getColumnSorter() {
 	    return COLUMN_SORTER;
     }
-
 }

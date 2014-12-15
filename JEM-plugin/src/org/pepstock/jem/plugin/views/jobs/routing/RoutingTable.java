@@ -28,6 +28,7 @@ import org.pepstock.jem.rest.entities.Jobs;
  * Table container of jobs in ROUTING queue of JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public class RoutingTable extends JobsTableContainer {
@@ -37,6 +38,7 @@ public class RoutingTable extends JobsTableContainer {
 	 */
 	public static final String NAME = "Routing";
 	
+	// list of columns of the table to be showed
 	private static final Collection<JemTableColumn> COLUMNS = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name"),
 			new JemTableColumn("Type"),
@@ -50,8 +52,8 @@ public class RoutingTable extends JobsTableContainer {
 			new JemTableColumn("Hold")
 	}));
 	
+	// labels and sorter providers
 	private static final RoutingLabelProvider LABEL_PROVIDER = new RoutingLabelProvider();
-	
 	private static final RoutingColumnSorter COLUMN_SORTER = new RoutingColumnSorter();
 
 	/**
@@ -101,6 +103,4 @@ public class RoutingTable extends JobsTableContainer {
     public Jobs loadData(String filter) throws JemException {
     	return Client.getInstance().refreshRouting(filter);
     }
-    
-    
 }

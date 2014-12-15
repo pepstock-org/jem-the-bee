@@ -28,6 +28,7 @@ import org.pepstock.jem.rest.entities.Jobs;
  * Table container of jobs in OUTPUT queue of JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public class OutputTable extends JobsTableContainer {
@@ -37,6 +38,7 @@ public class OutputTable extends JobsTableContainer {
 	 */
 	public static final String NAME = "Output";
 	
+	// list of columns of the table to be showed
 	private static final Collection<JemTableColumn> COLUMNS = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name"),
 			new JemTableColumn("Type"),
@@ -52,6 +54,7 @@ public class OutputTable extends JobsTableContainer {
 
 	}));
 
+	// labels and sorter providers
 	private static final OutputLabelProvider LABEL_PROVIDER = new OutputLabelProvider();
 	private static final OutputColumnSorter COLUMN_SORTER = new OutputColumnSorter();
 

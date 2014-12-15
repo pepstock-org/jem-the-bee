@@ -28,6 +28,7 @@ import org.pepstock.jem.rest.entities.Jobs;
  * Table container of jobs in INPUT queue of JEM.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public class InputTable extends JobsTableContainer {
@@ -37,6 +38,7 @@ public class InputTable extends JobsTableContainer {
 	 */
 	public static final String NAME = "Input";
 	
+	// list of columns of the table to be showed
 	private static final Collection<JemTableColumn> COLUMNS = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
 			new JemTableColumn("Name"),
 			new JemTableColumn("Type"),
@@ -50,6 +52,7 @@ public class InputTable extends JobsTableContainer {
 			new JemTableColumn("Hold")
 	}));
 
+	// labels and sorter providers
 	private static final InputLabelProvider LABEL_PROVIDER = new InputLabelProvider();
 	private static final InputColumnSorter COLUMN_SORTER = new InputColumnSorter();
 
@@ -101,6 +104,4 @@ public class InputTable extends JobsTableContainer {
     public Jobs loadData(String filter) throws JemException {
     	return Client.getInstance().refreshInput(filter);
     }
-    
-    
 }

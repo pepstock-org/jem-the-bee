@@ -63,23 +63,29 @@ public class SubmitAction implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
 		Coordinate choosen = null;
+		// if not logged
 		if (!Client.getInstance().isLogged()) {
+			// scans all coordinates to get the default one to use it
 			for (Coordinate coordinate : PreferencesManager.ENVIRONMENTS.values()) {
 				if (coordinate.isDefault()) {
 					choosen = coordinate;
 				}
 			}
+			// if there isn't any default
+			// ERROR!!!!
 			if (choosen == null) {
 				Notifier.showMessage(shell, "Unable to login to JEM!", "You're not connected to JEM and there is not any JEM definition by default", MessageLevel.ERROR);
 				return;
 			}
 		} else {
+			// gets the coordinate from the current connection
 			choosen = Client.getInstance().getCurrent();
 		}
-	
+		// extracts the file to submit
 		IStructuredSelection sSelection = (IStructuredSelection) part.getSite().getSelectionProvider().getSelection();
 		IResource resource = (IResource) sSelection.getFirstElement();
 		File jcl = resource.getLocation().toFile();
+		// runs loading 
 		LoginAndSubmitLoading loading = new LoginAndSubmit(shell, choosen, jcl);
 		loading.run();
 	}
@@ -97,15 +103,18 @@ public class SubmitAction implements IObjectActionDelegate {
 	}
 
 	/**
+	 * Loading widget to display the loginn and Submit of job
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 2.0
 	 */
 	private class LoginAndSubmit extends LoginAndSubmitLoading {
+		
 		/**
-		 * @param shell
-		 * @param coordinate
-		 * @param file
+		 * Creates a loading using a shell, coordinate and teh file to submit
+		 * @param shell is the target part where the action has been called
+		 * @param coordinate current coordinate 
+		 * @param file the file to submit
 		 */
 		public LoginAndSubmit(Shell shell, Coordinate coordinate, File file) {
 			super(shell, coordinate, file);
@@ -117,10 +126,12 @@ public class SubmitAction implements IObjectActionDelegate {
         @Override
         public void execute() throws JemException {
 			try {
+				// if client not logged
 				if (!Client.getInstance().isLogged()) {
 					Coordinate choosed = getCoordinate();
-					// checks if coordiante has got password. If not, asks for
+					// checks if coordinate has got password. If not, asks for
 					if ((choosed.getPassword() == null) || (choosed.getPassword().length() == 0)) {
+						// asks for LOGIN
 						LoginDialog dialog = new LoginDialog(shell, getCoordinate());
 						if (dialog.open() == Dialog.OK) {
 							choosed = dialog.getCoordinate();
@@ -132,14 +143,14 @@ public class SubmitAction implements IObjectActionDelegate {
 					// login
 					Client.getInstance().login(choosed);
 				}
-				// submit
+				// submit the job
 				String id = Client.getInstance().submit(getFile());
 				Notifier.showMessage(shell, "Job submitted!", "Job submitted with id: " + id, MessageLevel.INFO);
 			} catch (JemException e) {
+				// if any error occurs during the submit by REST
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(shell, "Unable to login to " + getCoordinate().getName() + "!", "Error occurred during login to '" + getCoordinate().getName() + "': " + e.getMessage(), MessageLevel.ERROR);
 			}
 		}
-
 	}
 }
