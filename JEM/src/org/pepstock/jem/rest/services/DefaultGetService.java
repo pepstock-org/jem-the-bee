@@ -19,6 +19,7 @@ package org.pepstock.jem.rest.services;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBElement;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.entities.ReturnedObject;
 
@@ -53,7 +54,7 @@ class DefaultGetService<T extends ReturnedObject, S> extends AbstractRestService
 	 * @see org.pepstock.jem.rest.services.AbstractRestService#run(com.sun.jersey.api.client.GenericType, java.lang.Object)
 	 */
 	@Override
-	public JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws Exception {
+	public JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws JemException {
 		WebResource resource = getClient().getBaseWebResource();
 		return resource.path(getService()).path(getSubService()).accept(MediaType.APPLICATION_XML).get(type);
 	}

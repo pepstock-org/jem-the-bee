@@ -18,6 +18,7 @@ package org.pepstock.jem.springbatch.xml;
 
 import java.util.List;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.springbatch.items.DataDescriptionItemWriter;
 import org.pepstock.jem.springbatch.tasks.DataDescription;
 import org.pepstock.jem.springbatch.tasks.DataSource;
@@ -134,7 +135,7 @@ public class ItemWriterFactoryBean implements FactoryBean<Object> {
 	    	itemWriter.setDataDescription(dataDescriptions.get(0));
 	    } else {
 	    	// only 1 data description is allowed
-	    	throw new Exception("Invalid data description definition: elements "+((this.dataDescriptions == null) ? "0" : this.dataDescriptions.size()));
+	    	throw new JemException("Invalid data description definition: elements "+((this.dataDescriptions == null) ? "0" : this.dataDescriptions.size()));
 	    }
 	    // checks if there is a delegate (must be present see XML schema)
 	    if (this.delegate != null){

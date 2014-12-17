@@ -25,8 +25,11 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.pepstock.jem.log.LogAppl;
 
 /**
+ * Is managing the database pool of connection to persist jobs and other entities (placed on Hazelcast maps or queue)
+ * on database.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class DBPoolManager {
@@ -62,15 +65,12 @@ public class DBPoolManager {
 		return POOL_MANAGER;
 	}
 	
-	
 	/**
 	 * @return the driver
 	 */
 	public String getDriver() {
 		return driver;
 	}
-
-
 
 	/**
 	 * @param driver the driver to set
@@ -79,16 +79,12 @@ public class DBPoolManager {
 		this.driver = driver;
 	}
 
-
-
 	/**
 	 * @return the url
 	 */
 	public String getUrl() {
 		return url;
 	}
-
-
 
 	/**
 	 * @param url the url to set
@@ -97,16 +93,12 @@ public class DBPoolManager {
 		this.url = url;
 	}
 
-
-
 	/**
 	 * @return the userid
 	 */
 	public String getUser() {
 		return user;
 	}
-
-
 
 	/**
 	 * @param userid the userid to set
@@ -115,8 +107,6 @@ public class DBPoolManager {
 		this.user = userid;
 	}
 
-
-
 	/**
 	 * @return the password
 	 */
@@ -124,16 +114,12 @@ public class DBPoolManager {
 		return password;
 	}
 
-
-
 	/**
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	
 	
 	/**
 	 * @return the properties
@@ -164,17 +150,23 @@ public class DBPoolManager {
 	}
 
 	/**
-	 * 
-	 * @throws SQLException
+	 * Initializes the database pool 
+	 *  
+	 * @throws SQLException if any errors occurs
 	 */
 	public void init() throws SQLException {
 		if (pool == null){
+			// creates the database pool
 			pool = new BasicDataSource();
+			// sets all information to setup
+			// the JDBC connection
 			pool.setDriverClassName(driver);
 			pool.setUrl(url);
 			pool.setUsername(user);
 			pool.setPassword(password);
 
+			// if the connection properties have been configured
+			// all properties are passed to database pool
 			if (properties != null && !properties.isEmpty()){
 				for (Object key : properties.keySet()){
 					String value = properties.getProperty(key.toString());
@@ -184,16 +176,16 @@ public class DBPoolManager {
 			// Due to Issue #262 set AutoCommit to FALSE
 			// Remember to commit all SQL statements
 			pool.setDefaultAutoCommit(false);
+			// sets the pool
 			pool.setInitialSize(5);
 			pool.setMaxActive(10);
 			pool.setMaxIdle(5);
-
+			// if configured, uses the keep alive query 
 			if (keepAliveConnectionSQL != null){
 				pool.setValidationQuery(keepAliveConnectionSQL);
 			}
 		}
 	}
-
 
 	/**
 	 * Creates objects by DDL statement. At the moment only tables
@@ -212,6 +204,7 @@ public class DBPoolManager {
 			stmt.executeUpdate(create);
 			connection.commit();
 		} finally {
+			// closes always the statement
 			try {
 				if (stmt != null){
 					stmt.close();
@@ -219,6 +212,8 @@ public class DBPoolManager {
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes always the connection
+			// putting again on pool
 			if (connection != null){
 				connection.close();
 			}

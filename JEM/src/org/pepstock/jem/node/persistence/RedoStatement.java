@@ -22,15 +22,15 @@ import org.pepstock.jem.Job;
 
 
 /**
+ * Entity of JEM which conatins all information about statement to be committed on database.<br>
+ * This object is created when the persistent engine is not able to save information on database.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
  */
 public class RedoStatement implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -53,12 +53,6 @@ public class RedoStatement implements Serializable {
 	
 	private Job job = null;
 	
-	/**
-	 * 
-	 */
-	public RedoStatement() {
-	}
-
 	/**
 	 * @return the id
 	 */
@@ -101,8 +95,6 @@ public class RedoStatement implements Serializable {
 		this.action = action;
 	}
 
-
-
 	/**
 	 * @return the jobId
 	 */
@@ -138,6 +130,4 @@ public class RedoStatement implements Serializable {
 	public String toString() {
 		return "RedoStatement [queueName=" + queueName + ", action=" + action + ", id=" + id + ", job=" + job + "]";
 	}
-
-	
 }

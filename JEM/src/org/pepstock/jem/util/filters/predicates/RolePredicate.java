@@ -32,14 +32,17 @@ import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
+ * This predicate is used to filter the roles to extract distributing all searches on all nodes of JEM.
+ * <br> 
  * The {@link Predicate} of a {@link Role}
+ * 
  * @author Marco "Cuc" Cuccato
  * @version 1.0	
  *
  */
 public class RolePredicate extends JemFilterPredicate<Role> implements Serializable {
 
-	private static final long serialVersionUID = -1410063063130458355L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Empty contructor
@@ -48,19 +51,28 @@ public class RolePredicate extends JemFilterPredicate<Role> implements Serializa
 	}
 	
 	/**
+	 * Constructs the object saving the filter to use to extract the roles
+	 * from Hazelcast map
+	 *  
 	 * @see JemFilterPredicate
-	 * @param filter 
+	 * @param filter String filter 
 	 */
 	public RolePredicate(Filter filter) {
 		super(filter);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.predicates.JemFilterPredicate#apply(com.hazelcast.core.MapEntry)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean apply(MapEntry entry) {
+		// casts the object to a Role 
 		Role role = (Role)entry.getValue();
 		boolean includeThis = true;
+		// gets all token of filter
 		FilterToken[] tokens = getFilter().toTokenArray();
+		// scans all tokens
 		for (int i=0; i<tokens.length && includeThis; i++) {
 			FilterToken token = tokens[i];
 			String tokenName = token.getName();

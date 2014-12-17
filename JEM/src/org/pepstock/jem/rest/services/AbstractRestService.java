@@ -114,7 +114,7 @@ abstract class AbstractRestService<T extends ReturnedObject, S> {
 	 * @param type returned generic type
 	 * @param parameter parms for REST call
 	 * @return Returned object
-	 * @throws Exception if any exception occurs
+	 * @throws JemException if any exception occurs
 	 */
-	public abstract JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws Exception;
+	public abstract JAXBElement<T> run(GenericType<JAXBElement<T>> type, S parameter) throws JemException;
 }

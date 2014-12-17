@@ -47,17 +47,15 @@ public abstract class AbstractDBManager<K, T>{
 	private SQLContainer sqlContainer = null;
 
 	/**
-	 * Calls super class to create the connection
-	 * 
-	 * @throws Exception occurs if an error
+	 * Standard constructor which creates a Xstream instance
 	 */
 	AbstractDBManager() {
 		this(new XStream());
 	}
 
 	/**
-	 * 
-	 * @param xs
+	 * Creates the object using the XStream instance 
+	 * @param xs XStream instance
 	 */
 	AbstractDBManager(XStream xs) {
 		xStream = xs;
@@ -93,19 +91,24 @@ public abstract class AbstractDBManager<K, T>{
 	 */
 	public void delete(String delete, K key) throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		PreparedStatement updateStmt = null;
 		try {
 			updateStmt = connection.prepareStatement(delete);
 			// set resource name in prepared statement
+			// checks if is a string or long (long used only for queue of HC)
 			if (key instanceof String){
 				updateStmt.setString(1, (String)key);
 			} else {
 				updateStmt.setLong(1, (Long)key);
 			}
+			// executes the statement
 			updateStmt.executeUpdate();
+			// commit
 			connection.commit();
 		} finally{
+			// closes statement
 			try {
 				if (updateStmt != null){
 					updateStmt.close();
@@ -113,6 +116,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -120,9 +124,11 @@ public abstract class AbstractDBManager<K, T>{
 	}
 
 	/**
-	 * @param insert
-	 * @param item
-	 * @throws SQLException
+	 * Inserts a new item in the database using the SQL statement passed as argument
+	 * 
+	 * @param insert SQL statement to be executed
+	 * @param item item to be serialize on the database
+	 * @throws SQLException if any error occurs
 	 */
 	public void insert(String insert, T item) throws SQLException {
 		insert(insert, null, item);
@@ -131,23 +137,25 @@ public abstract class AbstractDBManager<K, T>{
 	/**
 	 * Inserts a item in table, serializing resource in XML
 	 * 
-	 * @param insert SQL statement
-	 * @param key 
+	 * @param insert SQL statement to be executed
+	 * @param key key to be used to add item or null
 	 * @param item instance to add
 	 * @throws SQLException if occurs
 	 */
 	public void insert(String insert, K key, T item) throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		PreparedStatement updateStmt = null;
 		try {
 			// serialize the resource in XML, use a reader because necessary in
 			// clob
 			StringReader reader = new StringReader(xStream.toXML(item));
-			
 			updateStmt = connection.prepareStatement(insert);
 			// set resource name to key
+			// gets the key if null 
 			K myKey = (key == null) ? getKey(item) : key;
+			// checks if is a string or long (long used only for queue of HC)
 			if (myKey instanceof String){
 				updateStmt.setString(1, (String)myKey);
 			} else {
@@ -155,9 +163,12 @@ public abstract class AbstractDBManager<K, T>{
 			}
 			// set XML to clob
 			updateStmt.setCharacterStream(2, reader);
+			// executes SQL
 			updateStmt.executeUpdate();
+			// commit
 			connection.commit();
 		} finally{
+			// closes statement
 			try {
 				if (updateStmt != null){
 					updateStmt.close();
@@ -165,6 +176,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -187,13 +199,14 @@ public abstract class AbstractDBManager<K, T>{
 	 * XML
 	 * 
 	 * @param update SQL statement
-	 * @param key 
+	 * @param key key to be used to update item or null
 	 * @param item resource instance to serialize
 	 * @throws SQLException if occurs
 	 */
 	public void update(String update, K key, T item) throws SQLException {
 		int updatedRows = 0;
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		PreparedStatement updateStmt = null;
 		try {
@@ -204,23 +217,26 @@ public abstract class AbstractDBManager<K, T>{
 			// set XML to clob
 			updateStmt.setCharacterStream(1, reader);
 			// set resource name to key
+			// gets the key if null 
 			K myKey = (key == null) ? getKey(item) : key;
-			
+			// checks if is a string or long (long used only for queue of HC)
 			if (myKey instanceof String){
 				updateStmt.setString(2, (String)myKey);
 			} else {
 				updateStmt.setLong(2, (Long)myKey);
 			}
-
+			// updates 
 			updateStmt.executeUpdate();
+			// gets updates rows
 			updatedRows = updateStmt.getUpdateCount();
-
+			// commit
 			connection.commit();
-
+			// if rows updated are 0, EXCEPTION!!
 			if (updatedRows <= 0){
 				throw new SQLException("Not update! Not found "+key);
 			}
 		} finally{
+			// closes statement
 			try {
 				if (updateStmt != null){
 					updateStmt.close();
@@ -228,6 +244,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -245,10 +262,13 @@ public abstract class AbstractDBManager<K, T>{
 	@SuppressWarnings("unchecked")
 	public Set<K> getAllKeys(String query) throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
+			// creates statement and
+			// executes it
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(query);
 
@@ -257,10 +277,11 @@ public abstract class AbstractDBManager<K, T>{
 			while (rs.next()) {
 				Object o = rs.getObject(1);
 				allIds.add((K) o);
-				// loads all keys inset
+				// loads all keys in a set
 			}
 			return allIds;
 		} finally{
+			// closes statement and result set
 			try {
 				if (stmt != null){
 					stmt.close();
@@ -271,6 +292,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -287,10 +309,13 @@ public abstract class AbstractDBManager<K, T>{
 	@SuppressWarnings("unchecked")
 	public Map<K, T> getAllItems(String query) throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
+			// creates statement and
+			// executes it
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(query);
 
@@ -308,9 +333,9 @@ public abstract class AbstractDBManager<K, T>{
 					allItems.put(getKey(item), item);
 				}
 			}
-	
 			return allItems;
 		} finally{
+			// closes statement and result set
 			try {
 				if (stmt != null){
 					stmt.close();
@@ -321,6 +346,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -338,17 +364,21 @@ public abstract class AbstractDBManager<K, T>{
 	@SuppressWarnings("unchecked")
 	public T getItem(String query, K key) throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
+			// creates statement
 			stmt = connection.prepareStatement(query);
 			// sets resource names where condition
+			// checks if is a string or long (long used only for queue of HC)
 			if (key instanceof String){
 				stmt.setString(1, (String)key);
 			} else {
 				stmt.setLong(1, (Long)key);
 			}
+			// executes query
 			rs = stmt.executeQuery();
 			T item = null;
 
@@ -362,6 +392,7 @@ public abstract class AbstractDBManager<K, T>{
 			}
 			return item;
 		} finally{
+			// closes statement and result set
 			try {
 				if (stmt != null){
 					stmt.close();
@@ -372,6 +403,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
@@ -379,20 +411,28 @@ public abstract class AbstractDBManager<K, T>{
 	}
 
 	/**
-	 * @return the size of resources in byte present in the COMMON RESOURCES MAP
+	 * Returns the size of Hazelcast map to check if any out of memory could risk
+	 *  
+	 * @return the size of resources in byte present in the map
 	 * @throws SQLException if an sql exception occurs
 	 */
 	public long getSize() throws SQLException {
 		// open connection
+		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
+			// creates statement and
+			// executes it
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(sqlContainer.getCheckQueueSizeStatement());
 			rs.next();
+			// returns the the first value of result sets
+			// always the sum of byte of items
 			return rs.getLong(1);
 		} finally{
+			// closes statement and result set
 			try {
 				if (stmt != null){
 					stmt.close();
@@ -403,6 +443,7 @@ public abstract class AbstractDBManager<K, T>{
 			} catch (SQLException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}
+			// closes connection
 			if (connection != null){
 				connection.close();
 			}
