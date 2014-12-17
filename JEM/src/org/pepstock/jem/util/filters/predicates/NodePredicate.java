@@ -31,6 +31,8 @@ import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
+ * This predicate is used to filter the nodes to extract distributing all searches on all nodes of JEM.
+ * <br>
  * The {@link Predicate} of a {@link NodeInfoBean}
  * @author Marco "Cuc" Cuccato
  * @version 1.0	
@@ -47,42 +49,63 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 	}
 	
 	/**
+	 * Constructs the object saving the filter to use to extract the nodes
+	 * from Hazelcast map
 	 * @see JemFilterPredicate
-	 * @param filter 
+	 * @param filter string filter
 	 */
 	public NodePredicate(Filter filter) {
 		super(filter);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.predicates.JemFilterPredicate#apply(com.hazelcast.core.MapEntry)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean apply(MapEntry entry) {
+		// casts the object to a NodeInfo
 		NodeInfoBean node = ((NodeInfo)entry.getValue()).getNodeInfoBean();
 		boolean includeThis = true;
+		// gets all tokens of filter
 		FilterToken[] tokens = getFilter().toTokenArray();
+		// scans all tokens
 		for (int i=0; i<tokens.length && includeThis; i++) {
 			FilterToken token = tokens[i];
+			// gets name and value
+			// remember that filters are built:
+			// -[name] [value]
 			String tokenName = token.getName();
 			String tokenValue = token.getValue();
+			// gets the filter field for nodes by name
 			NodeFilterFields field = NodeFilterFields.getByName(tokenName);
+			// if field is not present,
+			// used NAME as default
 			if (field == null) {
 				field = NodeFilterFields.NAME;
 			}
-			
+			// based on name of field, it will check
+			// different attributes 
+			// all matches are in AND
 			switch (field) {
 			case NAME:
-				includeThis &= checkName(tokenValue, node);
+				// checks name of NODE
+				includeThis &= checkName(tokenValue, node.getLabel());
 				break;
 			case HOSTNAME:
+				// checks hostname or ip of NODE
 				includeThis &= StringUtils.containsIgnoreCase(node.getHostname(), tokenValue);
 				break;
 			case DOMAIN:
+				// checks domain of NODE
 				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDomain(), tokenValue);
 				break;
 			case STATIC_AFFINITIES:
+				// checks static affinities of NODE
 				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getStaticAffinities().toString(), tokenValue);
 				break;
 			case DYNAMIC_AFFINITIES:
+				// checks dinamic affinities of NODE
 				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDynamicAffinities().toString(), tokenValue);
 				break;
 			case STATUS:
@@ -90,12 +113,15 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 				includeThis &= StringUtils.containsIgnoreCase(node.getStatus(), tokenValue);
 				break;
 			case OS:
+				// checks operating system of NODE
 				includeThis &= StringUtils.containsIgnoreCase(node.getSystemName(), tokenValue);
 				break;
 			case MEMORY:
+				// checks memory of NODE
 				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getMemory()), tokenValue);
 				break;
 			case PARALLEL_JOBS:
+				// checks parallel jobs of NODE
 				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getParallelJobs()), tokenValue);
 				break;
 			case CURRENT_JOB:
@@ -107,29 +133,10 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getEnvironment(), tokenValue);
 				break;
 			default:
+				// otherwise it uses a wrong filter name
 				throw new JemRuntimeException("Unrecognized Node filter field: " + field);
 			}
 		}
 		return includeThis;
 	}
-	
-	/**
-	 * Checks the filter name
-	 * @param tokenValue filter passed
-	 * @param job job instance
-	 * @return true if matches
-	 */
-	private boolean checkName(String tokenValue, NodeInfoBean node){
-		// is able to manage for label the * wildcard
-		if ("*".equalsIgnoreCase(tokenValue)) {
-			return true;
-		} else {
-			String newTokenValue = tokenValue;
-			if (tokenValue.endsWith("*")){
-				newTokenValue = StringUtils.substringBeforeLast(tokenValue, "*");
-			}
-			return StringUtils.containsIgnoreCase(node.getLabel(), newTokenValue);
-		}		
-	}
-
 }

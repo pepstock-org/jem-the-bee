@@ -17,13 +17,10 @@
 package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.JemRuntimeException;
-import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.Role;
-import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.RoleFilterFields;
@@ -70,23 +67,34 @@ public class RolePredicate extends JemFilterPredicate<Role> implements Serializa
 		// casts the object to a Role 
 		Role role = (Role)entry.getValue();
 		boolean includeThis = true;
-		// gets all token of filter
+		// gets all tokens of filter
 		FilterToken[] tokens = getFilter().toTokenArray();
 		// scans all tokens
 		for (int i=0; i<tokens.length && includeThis; i++) {
 			FilterToken token = tokens[i];
+			// gets name and value
+			// remember that filters are built:
+			// -[name] [value]
 			String tokenName = token.getName();
 			String tokenValue = token.getValue();
+			// gets the filter field for roles by name
 			RoleFilterFields field = RoleFilterFields.getByName(tokenName);
+			// if field is not present,
+			// used NAME as default
 			if (field == null) {
 				field = RoleFilterFields.NAME;
 			}
 			
+			// based on name of field, it will check
+			// different attributes 
+			// all matches are in AND
 			switch (field) {
 			case NAME:
-				includeThis &= checkName(tokenValue, role);
+				// checks name of ROLE
+				includeThis &= checkName(tokenValue, role.getName());
 				break;
 			case REMOVABLE:
+				// checks removable attribute of ROLE
 				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(role.isRemovable()), tokenValue);
 				break;
 			case PERMISSIONS:
@@ -98,55 +106,18 @@ public class RolePredicate extends JemFilterPredicate<Role> implements Serializa
 				includeThis &= StringUtils.containsIgnoreCase(role.getUsers().toString(), tokenValue);
 				break;
 			case MODIFIED:
+				// checks modified time of ROLE
 				includeThis &= checkTime(tokenValue, role.getLastModified());
 				break;
 			case MODIFIED_BY:
+				// checks who changed the role
 				includeThis &= StringUtils.containsIgnoreCase(role.getUser(), tokenValue);
 				break;
 			default:
+				// otherwise it uses a wrong filter name
 				throw new JemRuntimeException("Unrecognized Role filter field: " + field);
 			}
 		}
 		return includeThis;
-	}
-	
-	/**
-	 * Checks the filter name
-	 * @param tokenValue filter passed
-	 * @param job job instance
-	 * @return true if matches
-	 */
-	private boolean checkName(String tokenValue, Role role){
-		// is able to manage for label the * wildcard
-		if ("*".equalsIgnoreCase(tokenValue)) {
-			return true;
-		} else {
-			String newTokenValue = tokenValue;
-			if (tokenValue.endsWith("*")){
-				newTokenValue = StringUtils.substringBeforeLast(tokenValue, "*");
-			}
-			return StringUtils.containsIgnoreCase(role.getName(), newTokenValue);
-		}		
-	}
-	
-	/**
-	 * Checks date of role update
-	 * @param time date of role
-	 * @param tokenValue filter to check
-	 * @return true if matches
-	 */
-	private boolean checkTime(String tokenValue, Date time){
-		long now = System.currentTimeMillis();
-		try {
-			// parse the date value based on pattern
-			long inputTime = TimeUtils.parseDuration(tokenValue);
-			long jobTime = now-time.getTime();
-			return jobTime <= inputTime;
-		} catch (Exception e) {
-			// ignore
-			LogAppl.getInstance().ignore(e.getMessage(), e);
-			// cannot parse the date, exclude this entry by default!
-			return false;
-		}		
 	}
 }

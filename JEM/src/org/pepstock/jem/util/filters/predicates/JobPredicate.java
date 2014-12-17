@@ -19,14 +19,12 @@ package org.pepstock.jem.util.filters.predicates;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JemFilterFields;
@@ -36,6 +34,8 @@ import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
+ * This predicate is used to filter the nodes to extract distributing all searches on all nodes of JEM.
+ * <br>
  * The {@link Predicate} of a {@link Job}
  * @author Marco "Cuc" Cuccato
  * @version 1.0	
@@ -52,13 +52,18 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 	}
 	
 	/**
+	 * Constructs the object saving the filter to use to extract the jobs
+	 * from Hazelcast map
 	 * @see JemFilterPredicate
-	 * @param filter 
+	 * @param filter string filter
 	 */
 	public JobPredicate(Filter filter) {
 		super(filter);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.predicates.JemFilterPredicate#apply(com.hazelcast.core.MapEntry)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean apply(MapEntry entry) {
@@ -72,70 +77,92 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 		FilterToken[] tokens = getFilter().toTokenArray();
 		// exit if tokens already processed OR if i can immediate exclude this
 		for (int i=0; i<tokens.length && includeThis; i++) {
-			
 			FilterToken token = tokens[i];
+			// gets name and value
+			// remember that filters are built:
+			// -[name] [value]
 			String tokenName = token.getName();
 			String tokenValue = token.getValue();
-			
+			// gets the filter field for jobs by name
 			JobFilterFields field = JobFilterFields.getByName(tokenName);
+			// if field is not present,
+			// used NAME as default
 			if (field == null) {
 				// this is the default field for Job
 				field = JobFilterFields.NAME;
 			}
-			
-			// logic
+			// based on name of field, it will check
+			// different attributes 
+			// all matches are in AND
 			switch (field) {
 			case NAME:
+				// checks name of JOB
 				includeThis &= checkName(tokenValue, job);
 				break;
 			case TYPE:
+				// checks type of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getType(), tokenValue);
 				break;
 			case USER:
+				// checks user (the surrogated as weel) of JOB
 				includeThis &= job.isUserSurrogated() ? StringUtils.containsIgnoreCase(job.getJcl().getUser(), tokenValue) : StringUtils.containsIgnoreCase(job.getUser(), tokenValue);
 				break;
 			case ENVIRONMENT:
+				// checks environment of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getEnvironment(), tokenValue);
 				break;
 			case DOMAIN:
+				// checks domain of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getDomain(), tokenValue);
 				break;
 			case AFFINITY:
+				// checks affinity of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getAffinity(), tokenValue);
 				break;
 			case SUBMITTED_TIME:
+				// checks the submitted time of JOB
 				includeThis &= checkTime(tokenValue, job.getSubmittedTime());
 				break;
 			case PRIORITY:
+				// checks the priority of JOB
 				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getPriority()), tokenValue);
 				break;
 			case MEMORY:
+				// checks the memory requested of JOB
 				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getMemory()), tokenValue);
 				break;
 			case STEP:
+				// checks the current step of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getCurrentStep().getName(), tokenValue);
 				break;
 			case RUNNING_TIME:
+				// checks the running time of JOB
 				includeThis &= checkTime(tokenValue, job.getStartedTime());
 				break;
 			case MEMBER:
+				// checks the JEM node where the job is executing
 				includeThis &= StringUtils.containsIgnoreCase(job.getMemberLabel(), tokenValue);
 				break;
 			case ENDED_TIME:
+				// checks the ended time of JOB
 				includeThis &= checkTime(tokenValue, job.getEndedTime());
 				break;
 			case RETURN_CODE:
+				// checks the return code of JOB
 				includeThis &= checkReturnCode(tokenValue, job);
 				break;
 			case ID:
+				// checks the ID of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getId(), tokenValue);
 				break;
 			case ROUTED:
+				// checks JOB is routed
 				boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
 				boolean isRouted = job.getRoutingInfo().getRoutedTime() != null; 
 				includeThis &= wantRouted == isRouted;
 				break;
 			default:
+				// otherwise it uses a wrong filter name
 				throw new JemRuntimeException("Unrecognized Job filter field: " + field);
 			}
 		}
@@ -150,45 +177,33 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 	 */
 	private boolean checkName(String tokenValue, Job job){
 		// is able to manage for job name the * wildcard
+		// matches ALWAYS if has got the star only
 		if ("*".equalsIgnoreCase(tokenValue)) {
 			return true;
 		} else {
+			// checks if ends with wildcard
 			if (tokenValue.endsWith("*")){
+				// if yes, remove the stars
 				String newTokenValue = StringUtils.substringBeforeLast(tokenValue, "*");
+				// and compares if the value is in the job name
 				return StringUtils.containsIgnoreCase(job.getName(), newTokenValue);
 			} else {
 				// testif a job id has been inserted
 				MessageFormat jobIdFormat = new MessageFormat(Factory.JOBID_FORMAT);
 				// checks if is by job id
 				try {
+					// try to parse the job id
 					jobIdFormat.parse(tokenValue);
+					// checks if the ID is the same
 					return StringUtils.containsIgnoreCase(job.getId(), tokenValue);
 				} catch (ParseException e) {
+					// ignore
 					LogAppl.getInstance().ignore(e.getMessage(), e);
+					// if here means that is not a JOB ID
+					// then it uses the job name
 					return StringUtils.containsIgnoreCase(job.getName(), tokenValue);
 				}
 			}
-		}		
-	}
-	
-	/**
-	 * Checks date of job
-	 * @param time date of job
-	 * @param tokenValue filter to check
-	 * @return true if matches
-	 */
-	private boolean checkTime(String tokenValue, Date time){
-		long now = System.currentTimeMillis();
-		try {
-			// parse the date value based on pattern
-			long inputTime = TimeUtils.parseDuration(tokenValue);
-			long jobTime = now-time.getTime();
-			return jobTime <= inputTime;
-		} catch (Exception e) {
-			// ignore
-			LogAppl.getInstance().ignore(e.getMessage(), e);
-			// cannot parse the date, exclude this entry by default!
-			return false;
 		}		
 	}
 	
@@ -200,11 +215,14 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 	 */
 	private boolean checkReturnCode(String tokenValue, Job job){
 		try {
+			// parses the integer passed by filter value
 			int inputReturnCode = Integer.parseInt(tokenValue);
+			// compares job return code with filter value
 			return job.getResult().getReturnCode() == inputReturnCode;
 		} catch (Exception e) {
 			// ignore
 			LogAppl.getInstance().ignore(e.getMessage(), e);
+			// always false
 			return false;
 		}
 	}

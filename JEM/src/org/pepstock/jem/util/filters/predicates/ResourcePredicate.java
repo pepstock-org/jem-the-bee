@@ -17,14 +17,11 @@
 package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.JemRuntimeException;
-import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
-import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.ResourceFilterFields;
@@ -33,6 +30,8 @@ import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
+ * This predicate is used to filter the resources to extract distributing all searches on all nodes of JEM.
+ * <br>
  * The {@link Predicate} of a {@link Resource}
  * @author Marco "Cuc" Cuccato
  * @version 1.0	
@@ -43,75 +42,77 @@ public class ResourcePredicate extends JemFilterPredicate<Resource> implements S
 	private static final long serialVersionUID = 8087227037699399624L;
 
 	/**
-	 * Empty contructor
+	 * Empty constructor
 	 */
 	public ResourcePredicate() {
 	}
 	
 	/**
+	 * Constructs the object saving the filter to use to extract the resources
+	 * from Hazelcast map
 	 * @see JemFilterPredicate
-	 * @param filter 
+	 * @param filter String filter
 	 */
 	public ResourcePredicate(Filter filter) {
 		super(filter);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.predicates.JemFilterPredicate#apply(com.hazelcast.core.MapEntry)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean apply(MapEntry entry) {
+		// casts the object to a Resource 
 		Resource resource = (Resource)entry.getValue();
 		boolean includeThis = true;
+		// gets all tokens of filter
 		FilterToken[] tokens = getFilter().toTokenArray();
-
+		// scans all tokens
 		for (int i=0; i<tokens.length && includeThis; i++) {
 			FilterToken token = tokens[i];
+			// gets name and value
+			// remember that filters are built:
+			// -[name] [value]
 			String tokenName = token.getName();
 			String tokenValue = token.getValue();
+			// gets the filter field for resources by name
 			ResourceFilterFields field = ResourceFilterFields.getByName(tokenName);
+			// if field is not present,
+			// used NAME as default
 			if (field == null) {
 				field = ResourceFilterFields.NAME;
-			}
-			
+			}		
+			// based on name of field, it will check
+			// different attributes 
+			// all matches are in AND
 			switch (field) {
 			case NAME:
-				includeThis &= checkName(tokenValue, resource);
+				// checks name of RESOURCE
+				includeThis &= checkName(tokenValue, resource.getName());
 				break;
 			case TYPE:
+				// checks type of RESOURCE
 				includeThis &= StringUtils.containsIgnoreCase(resource.getType(), tokenValue);
 				break;
 			case PROPERTIES:
+				// checks properties of RESOURCE
 				includeThis &= checkProperties(tokenValue, resource);
 				break;
 			case MODIFIED:
+				// checks modified time of ROLE
 				includeThis &= checkTime(tokenValue, resource.getLastModified());
 				break;
 			case MODIFIED_BY:
+				// checks who changed the resource
 				includeThis &= StringUtils.containsIgnoreCase(resource.getUser(), tokenValue);
 				break;
 			default:
+				// otherwise it uses a wrong filter name
 				throw new JemRuntimeException("Unrecognized Resource filter field: " + field);
 			}
 		}
 		return includeThis;
-	}
-
-	/**
-	 * Checks name of resource
-	 * @param tokenValue filter of resource
-	 * @param resource resource instance
-	 * @return true if matches
-	 */
-	private boolean checkName(String tokenValue, Resource resource){
-		// is able to manage for label the * wildcard
-		if ("*".equalsIgnoreCase(tokenValue)) {
-			return true;
-		} else {
-			String newTokenValue = tokenValue;
-			if (tokenValue.endsWith("*")){
-				newTokenValue = StringUtils.substringBeforeLast(tokenValue, "*");
-			}
-			return StringUtils.containsIgnoreCase(resource.getName(), newTokenValue);
-		}
 	}
 	
 	/**
@@ -123,35 +124,23 @@ public class ResourcePredicate extends JemFilterPredicate<Resource> implements S
 	private boolean checkProperties(String tokenValue, Resource resource){
 		int count = 0;
 		String value = null;
+		// scans all resource properties
+		// to create a string to check if contains a string
 		for (ResourceProperty property : resource.getProperties().values()){
+			// if is starting point
+			// doesn't add any previous value
 			if (count == 0){
+				// it builds the string without property NOT visible
 				value = property.getName() + " = " + (property.isVisible() ? property.getValue() : ResourceProperty.MASK_FOR_NO_VISIBLE_PROPERTY);
 			} else {
+				// it builds the string without property NOT visible adding previous value
 				value = value +", " + property.getName() + " = " + (property.isVisible() ? property.getValue() : ResourceProperty.MASK_FOR_NO_VISIBLE_PROPERTY);	
 			}
+			// increments count
 			count++;
 		}
+		// here checks if the filter value is in the string built
+		// with resource properties
 		return StringUtils.containsIgnoreCase(value, tokenValue);
-	}
-	
-	/**
-	 * Checks date of resource update
-	 * @param time date of resource update 
-	 * @param tokenValue filter to check
-	 * @return true if matches
-	 */
-	private boolean checkTime(String tokenValue, Date time){
-		long now = System.currentTimeMillis();
-		try {
-			// parse the date value based on pattern
-			long inputTime = TimeUtils.parseDuration(tokenValue);
-			long resourceTime = now-time.getTime();
-			return resourceTime <= inputTime;
-		} catch (Exception e) {
-			// ignore
-			LogAppl.getInstance().ignore(e.getMessage(), e);
-			// cannot parse the date, exclude this entry by default!
-			return false;
-		}		
 	}
 }
