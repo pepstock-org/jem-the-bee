@@ -36,10 +36,11 @@ import com.thoughtworks.xstream.XStream;
  * 
  */
 public class DataPathsFactory implements ObjectFactory {
+	
 	private XStream xstream = new XStream();
 
 	/**
-	 * Searches inside the reference the data paths conatiner object,
+	 * Searches inside the reference the data paths container object,
 	 * serialized in XML format.<br>
 	 * 
 	 * @param object - The possibly null object containing location or reference

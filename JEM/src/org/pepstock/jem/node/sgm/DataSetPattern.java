@@ -24,27 +24,35 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
+ * Bean used to configure the rule how to assign to a file the right mount point specified on jem-node xml configuration.
+ * <br>
+ * This bean is used by XStream to serialize and deserialize the rules.
+ * The xml root element is called <code>rule</code>.
+ * 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
 @XStreamAlias("rule")
 public class DataSetPattern {
 
+	// specified the current path name to use for this rule
 	@XStreamAsAttribute
 	private String pathName = null;
 
+	// specified the old path name to use for this rule,
+	// when the file is in READ
 	@XStreamAsAttribute
 	private String oldPathName = null;
-
 	
+	// implicit collection, named by element as described below.
 	@XStreamImplicit(itemFieldName="dataSetPattern")
 	private List<String> patterns = new LinkedList<String>();
 	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public DataSetPattern() {
-		
 	}
 
 	/**
@@ -54,16 +62,12 @@ public class DataSetPattern {
 		return pathName;
 	}
 
-
-
 	/**
 	 * @param pathName the pathName to set
 	 */
 	public void setPathName(String pathName) {
 		this.pathName = pathName;
 	}
-
-
 
 	/**
 	 * @return the oldPathNames
@@ -72,16 +76,12 @@ public class DataSetPattern {
 		return oldPathName;
 	}
 
-
-
 	/**
 	 * @param oldPathName the oldPathNames to set
 	 */
 	public void setOldPathName(String oldPathName) {
 		this.oldPathName = oldPathName;
 	}
-
-
 
 	/**
 	 * @return the patterns
@@ -96,6 +96,4 @@ public class DataSetPattern {
 	public void setPatterns(List<String> patterns) {
 		this.patterns = patterns;
 	}
-
-	
 }

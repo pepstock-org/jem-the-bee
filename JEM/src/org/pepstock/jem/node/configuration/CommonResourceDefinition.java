@@ -22,6 +22,7 @@ import java.io.Serializable;
  * Represents a custom resource definition of JEM, during configuration stage.
  * 
  * @author Alessandro Zambrini
+ * @version 1.3
  * 
  */
 public class CommonResourceDefinition extends AbstractPluginDefinition implements Serializable{
@@ -35,5 +36,4 @@ public class CommonResourceDefinition extends AbstractPluginDefinition implement
 	public String toString() {
 		return "CustomResourceDefinition [getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
 	}
-
 }

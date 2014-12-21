@@ -19,9 +19,12 @@ package org.pepstock.jem.node.tasks.jndi;
 import javax.naming.Reference;
 
 /**
- * Sets constants for JNDI. Both class name and factory name.
+ * Sets constants for JNDI. Both class name and factory name.<br>
+ * This reference is used to create an object (inputStream or 
+ * outputStream, depending on data description SHR).
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class DataStreamReference extends Reference {

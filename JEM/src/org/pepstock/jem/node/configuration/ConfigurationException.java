@@ -19,7 +19,11 @@ package org.pepstock.jem.node.configuration;
 import org.pepstock.jem.log.JemException;
 
 /**
+ * Exception generated when there is any kind of errors at JEM startup related to 
+ * the configuration of JEM itself.
+ * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class ConfigurationException extends JemException {
@@ -57,5 +61,4 @@ public class ConfigurationException extends JemException {
 	public ConfigurationException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

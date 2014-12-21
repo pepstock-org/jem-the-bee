@@ -17,6 +17,11 @@
 package org.pepstock.jem.node.configuration;
 
 /**
+ * Bean used in XML configuration file to activate the statistics manager of JEM.
+ * <br>
+ * To configure it, we could pass a path (of data path) where all nodes of JEM store
+ * the statistics files, for further computation for batches.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -25,9 +30,8 @@ public class StatsManager {
 	
 	private String path = null;
 
-
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public StatsManager() {
 	}
@@ -53,5 +57,4 @@ public class StatsManager {
 	public String toString() {
 		return "StatisticsManager [path=" + path + "]";
 	}
-
 }

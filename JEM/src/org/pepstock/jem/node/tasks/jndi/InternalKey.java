@@ -19,6 +19,9 @@ package org.pepstock.jem.node.tasks.jndi;
 import java.io.Serializable;
 
 /**
+ * Protected bean which contains a key used inside of absolute map to avoid that
+ * anyone can access to the data. This key is used to call the singleton by java proxy. 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
@@ -29,7 +32,7 @@ class InternalKey implements Serializable {
 	private String value = null;
 
 	/**
-	 * 
+	 * Empty constructor, visible only for package
 	 */
 	InternalKey() {
 	}
@@ -47,7 +50,4 @@ class InternalKey implements Serializable {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-	
-	
 }

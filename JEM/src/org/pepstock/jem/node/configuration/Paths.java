@@ -23,6 +23,7 @@ import org.pepstock.jem.node.sgm.DataPaths;
  * Contains only strings used during the startup phase to start JEM node.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.0
  * 
  */
 public class Paths {

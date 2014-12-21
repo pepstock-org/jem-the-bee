@@ -21,6 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Bean which contains all paths defined in jem node xml configuration file.
+ * 
+ * {@link Path}
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -31,10 +34,9 @@ public class DataPaths implements Serializable{
 	private List<Path> paths = new LinkedList<Path>();
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public DataPaths() {
-
 	}
 
 	/**
@@ -50,7 +52,4 @@ public class DataPaths implements Serializable{
 	public void setPaths(List<Path> paths) {
 		this.paths = paths;
 	}
-
-	
-
 }

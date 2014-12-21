@@ -29,6 +29,7 @@ import com.thoughtworks.xstream.XStream;
  * JEM node.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class Configuration {

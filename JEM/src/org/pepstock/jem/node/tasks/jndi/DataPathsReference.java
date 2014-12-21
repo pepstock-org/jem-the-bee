@@ -20,9 +20,11 @@ import javax.naming.Reference;
 
 /**
  * Sets constants for JNDI. Both class name and factory name.
+ * <br>
+ * It returns always a DataPathContainer.
  * 
  * @author Andrea "Stock" Stocchero
- * 
+ * @version 2.1
  */
 public class DataPathsReference extends Reference {
 

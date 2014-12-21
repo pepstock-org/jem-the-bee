@@ -23,6 +23,13 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
+ * Bean used inside the XML configuration to defined a custom classpath.
+ * <br>
+ * This bean should contains all links to JARS or paths where the java classes must be reachable.
+ * <br>
+ * The XML root element is named <code>pathElement</code> and the content of this element is used
+ * as link to the classes.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -32,6 +39,7 @@ public class ClassPath implements Serializable {
 	
     private static final long serialVersionUID = 1L;
 	
+    // used by converter to read from the element instead of an attribute
 	private String content = null;
 	
 	/**
@@ -70,5 +78,4 @@ public class ClassPath implements Serializable {
 	public String toString() {
 		return "PathElement [content=" + content + "]";
 	}
-
 }

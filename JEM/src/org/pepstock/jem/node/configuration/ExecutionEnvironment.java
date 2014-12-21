@@ -25,6 +25,7 @@ import org.pepstock.jem.Jcl;
  * Contains the environment, domain and affinity information for the node.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class ExecutionEnvironment extends AbstractExecutionEnvironment implements Serializable {

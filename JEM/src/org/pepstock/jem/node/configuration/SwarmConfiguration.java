@@ -23,32 +23,35 @@ import java.util.List;
 import org.pepstock.jem.node.UpdateableItem;
 
 /**
+ * Bean which contains all configuration of SWARM.
+ * <br>
+ * This bean is stored in a Hazelcast map with a constant key {@link SwarmConfiguration#DEFAULT_NAME}.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
- *
  */
 public class SwarmConfiguration extends UpdateableItem implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * 
+	 * Property value of default Hazelcast password, used for SWARM
 	 */
 	public static final String DEFAULT_PASSWORD = "jem_password";
 
 	/**
-	 * 
+	 * Property key used to store the object on Hazelcast map and on database
 	 */
 	public static final String DEFAULT_NAME = "ROUTING_CONFIGURATION";
-	/**
-	 * 
-	 */
 
+	/**
+	 * Property value of default Hazelcast group name, used for SWARM
+	 */
 	public static final String DEFAULT_GROUP_NAME = "SwarmGroup";
-	/**
-	 * 
-	 */
 
+	/**
+	 * Property value of default Hazelcast multicast port, used for SWARM
+	 */
 	public static final int DEFAULT_GROUP_PORT = 6510;
 	
 	private boolean enabled = false;
@@ -62,8 +65,9 @@ public class SwarmConfiguration extends UpdateableItem implements Serializable {
 	private String networkInterface = null;
 	
 	private List<String> networks = new ArrayList<String>();
+	
 	/**
-	 * 
+	 * Empty constructor, which sets ALWAYS the name of the key of HC map
 	 */
 	public SwarmConfiguration() {
 		super.setName(DEFAULT_NAME);
@@ -161,6 +165,4 @@ public class SwarmConfiguration extends UpdateableItem implements Serializable {
 		return "SwarmConfiguration [name=" + getName() + ", enabled=" + enabled + ", groupName=" + groupName + ", groupPassword=" + groupPassword + ", port=" + port + ", networkInterface=" + networkInterface + ", user=" + getUser() + ", lastModified="
 				+ getLastModified() + ", networks=" + networks + "]";
 	}
-
-	
 }

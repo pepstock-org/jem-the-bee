@@ -22,6 +22,7 @@ import java.io.Serializable;
  * Represents factory of JEM, for job task creation, during configuration stage.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class Factory extends AbstractPluginDefinition implements Serializable{
@@ -35,5 +36,4 @@ public class Factory extends AbstractPluginDefinition implements Serializable{
 	public String toString() {
 		return "Factory [getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
 	}
-	
 }

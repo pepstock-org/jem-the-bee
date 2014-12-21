@@ -20,6 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Containers of all dataset patterns, defined from configuration
+ * and to use to put the file on the right file system.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -28,10 +31,9 @@ public class DataSetRules {
 	private List<DataSetPattern> patterns = new LinkedList<DataSetPattern>();
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public DataSetRules() {
-
 	}
 
 	/**
@@ -47,8 +49,4 @@ public class DataSetRules {
 	public void setPatterns(List<DataSetPattern> patterns) {
 		this.patterns = patterns;
 	}
-
-	
-	
-
 }

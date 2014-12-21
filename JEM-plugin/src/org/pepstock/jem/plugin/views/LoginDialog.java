@@ -27,13 +27,15 @@ import org.pepstock.jem.plugin.util.Images;
 import org.pepstock.jem.plugin.util.ShellContainer;
 
 /**
- * The dialog to insert userid and password, to connect to JEM when the coordinate doesn't have any password
+ * The dialog to insert userid and password, to connect to JEM 
+ * when the coordinate doesn't have any password
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
 public class LoginDialog extends Dialog implements ShellContainer {
 	
+	// sets size of default
 	private static final int DEFAULT_WIDTH = 375;
 	
 	private static final int DEFAULT_MARGIN_VERTICAL = 15; 
@@ -70,10 +72,9 @@ public class LoginDialog extends Dialog implements ShellContainer {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
+		// updates the buttons
 		updateButtonStatus();
 	}
-    
-    
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
@@ -82,10 +83,11 @@ public class LoginDialog extends Dialog implements ShellContainer {
     protected Control createDialogArea(Composite parent) {
     	// sets title
 		getShell().setText("Login to "+coordinate.getName());
-
 		// main composite
 		Composite main = new Composite(parent, SWT.LEFT);
+		// creates a grid layout
 		GridLayout mainLayout = new GridLayout(2, false);
+		// sets default margin
 		mainLayout.marginTop = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginLeft = DEFAULT_MARGIN_HORIZONTAL;
@@ -95,6 +97,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		mainLayout.verticalSpacing = DEFAULT_MARGIN_HORIZONTAL;
 		main.setLayout(mainLayout);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		// sets minimum size of dialog
 		data.minimumWidth = DEFAULT_WIDTH;
 		main.setLayoutData(data);
 
@@ -110,7 +113,13 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		useridLabel.setText("UserId:");
 		userid = new Text(main, SWT.BORDER);
 		userid.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// loads the userid of current JEM connection or
+		// the default one
 		userid.setText(coordinate.getUserId());
+		// adds a modify listener
+		// if user id length > 0
+		// then password field will be enable
+		// otherwise reset also the password field
 		userid.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
@@ -128,14 +137,16 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		pwdLabel.setText("Password:");
 		password = new Text(main, SWT.BORDER | SWT.PASSWORD);
 		password.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// loads the password of current JEM connection or
+		// the default one		
 		password.setText(coordinate.getPassword());
+		// every password updates will change the button status
 		password.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}
 		});
 		password.setFocus();
-		
 		return main;
 	}
 
@@ -143,6 +154,8 @@ public class LoginDialog extends Dialog implements ShellContainer {
      * Updates buttons, enabling and disabling them.
      */
 	private void updateButtonStatus() {
+		// enables the OK button ONLY if userid 
+		// and password are not empty
 		boolean enabled =(userid.getText().length() > 0) && (password.getText().length() > 0);
 		getButton(IDialogConstants.OK_ID).setEnabled(enabled);
 	}
@@ -155,7 +168,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
     	// saves userid and password in clone of coordinate
 		coordinate.setUserId(userid.getText());
 		coordinate.setPassword(password.getText());
+		// presses ok
 		super.okPressed();
 	}
-
 }

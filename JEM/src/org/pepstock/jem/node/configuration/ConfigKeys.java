@@ -21,6 +21,7 @@ package org.pepstock.jem.node.configuration;
  * environment variables
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public final class ConfigKeys {

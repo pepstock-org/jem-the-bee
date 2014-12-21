@@ -22,6 +22,7 @@ import java.io.Serializable;
  * Represents listener of JEM, for job life-cycle, during configuration stage.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public class Listener extends AbstractPluginDefinition implements Serializable{
@@ -35,5 +36,4 @@ public class Listener extends AbstractPluginDefinition implements Serializable{
 	public String toString() {
 		return "Listener [getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
 	}
-	
 }

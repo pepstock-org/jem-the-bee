@@ -19,26 +19,19 @@ package org.pepstock.jem.node.sgm;
 import java.io.Serializable;
 
 /**
+ * Container which has got the current path , where stores new file, and old one, where the files are maintaining,
+ * avoiding therefore to move all files from old to new path.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
 public class PathsContainer implements Serializable{
 	
-	/**
-	 * 
-	 */
     private static final long serialVersionUID = 1L;
 
 	private Path current = null;
 	
 	private Path old = null;
-
-	/**
-	 * 
-	 */
-    public PathsContainer() {
-
-    }
 
 	/**
 	 * @return the current
@@ -75,5 +68,4 @@ public class PathsContainer implements Serializable{
 	public String toString() {
 		return "PathsContainer [current=" + current + ", old=" + old + "]";
 	}
-
 }

@@ -30,6 +30,7 @@ import org.pepstock.jem.node.NodeMessage;
  * @version 1.0
  */
 class DelegateInvocationHandler implements InvocationHandler {
+	
 	private final Object delegate;
 
 	/**
@@ -46,7 +47,10 @@ class DelegateInvocationHandler implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws JNDIException {
 		try {
+			// gets the delegated method using the info of the method 
+			// passed by arguments of handler
 			Method delegateMethod = delegate.getClass().getMethod(method.getName(), method.getParameterTypes());
+			// invokes the method and return the value
 			return delegateMethod.invoke(delegate, args);
 		} catch (SecurityException e) {
 			throw new JNDIException(NodeMessage.JEMC237E, e);
@@ -60,5 +64,4 @@ class DelegateInvocationHandler implements InvocationHandler {
 			 throw new JNDIException(NodeMessage.JEMC237E, e);
 		}
 	}
-
 }

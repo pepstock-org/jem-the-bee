@@ -24,28 +24,32 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
+ * Bean used by XStream to store the configuration about the paths to use in JEM.
+ * <br>
+ * It uses a Stream converter, because it uses <code>name</code> as attribute to assign to the path.
+ * and the content of the element as path value.<br>
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
 @XStreamAlias("path")
 @XStreamConverter(value=ToAttributedValueConverter.class, strings={"content"})
 public class Path implements Serializable {
-	
-	/**
-	 * 
-	 */
+
     private static final long serialVersionUID = 1L;
 
+    // uses name as attribute on element
     @XStreamAsAttribute
 	private String name = null;
 	
+    // content is not used as attribute
+    // but read as content of element
 	private String content = null;
 	
 	/**
 	 * Empty constructor
 	 */
 	public Path() {
-		
 	}
 
 	/**
@@ -61,8 +65,6 @@ public class Path implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
 
 	/**
 	 * @return the content
@@ -85,5 +87,4 @@ public class Path implements Serializable {
 	public String toString() {
 		return "Path [name=" + name + ", content=" + content + "]";
 	}
-
 }

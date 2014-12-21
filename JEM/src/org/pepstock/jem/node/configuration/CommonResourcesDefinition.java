@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Bean used on XML configuration which is the container of all the resource definitions.
+ * 
+ * @see CommonResourceDefinition
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -42,6 +45,4 @@ public class CommonResourcesDefinition extends CommonResourceDefinition {
 	public void setResources(List<CommonResourceDefinition> resources) {
 		this.resources = resources;
 	}
-
-
 }

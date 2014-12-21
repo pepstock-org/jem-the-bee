@@ -43,7 +43,8 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.util.ShellLoading;
 
 /**
- * The header of view part with environment connection information and with combo to choose JEM environment to connect and disconnect.
+ * The header of view part with environment connection information and 
+ * with combo to choose JEM environment to connect and disconnect.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -67,22 +68,26 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 
 	/**
 	 * Creates the object with parent composite
-	 * @param parent
+	 * @param parent container of this component
 	 */
     public EnvironmentHeader(Composite parent) {
 	    super(parent, SWT.NONE);
+	    // sets layout and data
 	    setLayout(new GridLayout(2, false));
 	    setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 0, 0));
 
+	    // creates a container with 5 columns
 	    Composite left = new Composite(this, SWT.NONE);
 	    left.setLayout(new GridLayout(5, false));
 	    left.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true, false, 0, 0));
 
 	    // adds ICON
+	    // at column 1
 	    icon = new Label(left, SWT.NONE);
 	    icon.setImage(Images.OFFLINE_FAVICON);
 	    
-	 // adds USER
+	    // adds USER
+	    // at column 2 and 3
 		Label uidLabel = new Label(left, SWT.NONE);
 		uidLabel.setText("User: ");
 		uidLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -90,12 +95,13 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		userId.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		userId.setText(NOT_AVAILABLE);
 		userId.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
-		
+		// changes the font of the label
 	    FontData fontData = userId.getFont().getFontData()[0];
 	    Font font = new Font(Display.getCurrent(), new FontData(fontData.getName(), fontData.getHeight(), SWT.ITALIC | SWT.BOLD));
 		userId.setFont(font);
 		
 		// adds GROUP
+		// at column 4 and 5
 		Label gidLabel = new Label(left, SWT.NONE);
 		gidLabel.setText("Group: ");
 		gidLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -106,16 +112,19 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		groupId.setFont(font);
 	    
 		// RIGHT component
+		// with 3 columns
 	    Composite right = new Composite(this, SWT.NONE);
 	    right.setLayout(new GridLayout(3, false));
 	    right.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, true, false, 0, 0));
 	    
 	    // ADDS label for combo
+	    // column 1 and 2
+	    // with the combobox with all known JEM environment
 		Label numberLabel = new Label(right, SWT.NONE);
 		numberLabel.setText("JEM environment: ");
 		numberLabel.getShell().setBackgroundMode(SWT.INHERIT_DEFAULT);
     	
-		//loads combo ith all coordinates
+		//loads combo with all JEM coordinates
 		envs = new Combo(right, SWT.READ_ONLY);
 		// ALWAYS the item at 0 is BLANK, used when if logged off
 		envs.add(UNCONNECTED);
@@ -127,13 +136,17 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		envs.addSelectionListener(new EnvironmentSelect());
 		
 		// adds LOGOFF link
+		// at column 3
 		logoff = new Link(right, SWT.NONE);
+		// is a HTMLlike,
+		// it appears as a HTML anchor link
 		logoff.setText("<a>Logoff</a>");
 		logoff.setEnabled(false);
 		logoff.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				// calls the logout action
 				Loading loading = new Logout(getShell());
 				loading.run();
 			}
@@ -143,10 +156,8 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 				// nop
 			}
 		});
-		
 		// adds itself has event listener
 		PreferencesManager.addEnvironmentEventListener(this);
-		
 		// checks if logged, at startup of components
 		if (Client.getInstance().isLogged()){
 			loggedOn(Client.getInstance().getCurrent());
@@ -178,6 +189,9 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		// selects the right item in combo
     	String[] items = envs.getItems();
     	for (int i=0; i<items.length; i++){
+    		// if item is equals with
+    		// the coordinate name. then sets the
+    		// environment
     		if (coordinate.getName().equalsIgnoreCase(items[i])){
     			envs.select(i);
     			return;
@@ -207,6 +221,7 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 	 */
     @Override
     public void environmentConnected(EnvironmentEvent event) {
+    	// logs on with the new coordinate
     	loggedOn(event.getCoordinate());
     }
 
@@ -216,9 +231,9 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 	 */
     @Override
     public void environmentDisconnected(EnvironmentEvent event) {
+    	// logs off from the current environment
     	loggedOff();
     }
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.event.PreferencesEnvironmentEventListener#environmentAdded(org.pepstock.jem.plugin.event.EnvironmentEvent)
@@ -226,10 +241,11 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
     @Override
     public void environmentAdded(EnvironmentEvent event) {
     	Coordinate coordinate = event.getCoordinate();
+    	// adds to the env the name and coordinate of new 
+    	// coordinate, inserted by the user
     	envs.add(coordinate.getName());
     	envs.setData(coordinate.getName(), coordinate);
     }
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.event.PreferencesEnvironmentEventListener#environmentRemoved(org.pepstock.jem.plugin.event.EnvironmentEvent)
@@ -237,9 +253,10 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
     @Override
     public void environmentRemoved(EnvironmentEvent event) {
     	Coordinate coordinate = event.getCoordinate();
+    	// removes from the env by the name of coordinate, 
+    	// deleted by the user
     	envs.remove(coordinate.getName());
     }
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.event.PreferencesEnvironmentEventListener#environmentUpdated(org.pepstock.jem.plugin.event.EnvironmentEvent)
@@ -247,18 +264,24 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
     @Override
     public void environmentUpdated(EnvironmentEvent event) {
     	Coordinate coordinate = event.getCoordinate();
+    	// updates the environment by the name of changed environment
     	envs.setData(coordinate.getName(), coordinate);
     }
     
     /**
+     * Action to log in to JEM, using the coordinate passed at constructor.
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
      */
     private class Login extends LoginLoading {
+    	
 		/**
-		 * @param shell
-		 * @param coordinate
+		 * Creates the object using the shell container and the coordinate 
+		 * of JEM to log in
+		 *  
+		 * @param shell container of loading
+		 * @param coordinate coordinate of JEM to log in
 		 */
         public Login(Shell shell, Coordinate coordinate) {
 	        super(shell, coordinate);
@@ -270,9 +293,10 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
         @Override
         public void execute() throws JemException {
 			try {
-				// login
+				// performs the login by REST
 				Client.getInstance().login(getCoordinate());
 			} catch (JemException e) {
+				// if any error occurs
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to login to "+getCoordinate().getName()+"!", 
 						"Error occurred during login to '"+getCoordinate().getName()+"': "+e.getMessage(), MessageLevel.ERROR);
@@ -282,13 +306,18 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
     }
     
     /**
+     * Action to log out from JEM, using the current coordinate used
+     * for previous login.
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
      */
     private class Logout extends ShellLoading{
+    	
 		/**
-		 * @param shell
+		 * Creates the action using the container shell, where the logout is called from.
+		 * 
+		 * @param shell container where the shell is called from
 		 */
         public Logout(Shell shell) {
 	        super(shell);
@@ -300,18 +329,24 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
         @Override
         public void execute() throws JemException {
 			try {
+				// disables the environment handler, during the logoff
+				// to avoid any action
 				EnvironmentHeader.this.setEnabled(false);
+				// logoff from JEM by REST
 				Client.getInstance().logout();
 			} catch (JemException e) {
+				// if any error occurs during the logoff
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to logoff!", e.getMessage(), MessageLevel.WARNING);
 			} finally {
+				// sets enable again the environment header
 				EnvironmentHeader.this.setEnabled(true);
 			}
 		}
     }
     
     /**
+     * Listener of environment when this is selected from combo box of header
      * 
      * @author Andrea "Stock" Stocchero
      * @version 2.0
@@ -323,6 +358,7 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		 */
         @Override
         public void widgetSelected(SelectionEvent event) {
+        	// checks if the event went from combo box
 			if (event.getSource() instanceof Combo){
 				Combo combo = (Combo)event.getSource();
 				// gets the selected coordinate
@@ -331,25 +367,29 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 					// copies the coordinate because one of them could be changed
 					Coordinate choosed = (Coordinate)combo.getData(item);
 					Coordinate coordinate = choosed;
-					
 					// if coordinate doesn't have any password, 
 					// asks for user and password
 					if ((choosed.getPassword() == null) || (choosed.getPassword().length() == 0)){
+						// login dialog if no password
 						LoginDialog dialog = new LoginDialog(getShell(), choosed);
+						// if user pressed OK
 						if (dialog.open() == Dialog.OK) {
 							coordinate = dialog.getCoordinate();
 						} else {
-							// if cancel, logoff!
+							// if user pressed CANCEL
+							// then logoff from JEM!
 							loggedOff();
 							return;
 						}
 					}
 
-					// disable the composite
+					// disable the composite to avoid
+					// any action during the login
 					EnvironmentHeader.this.setEnabled(false);
 					// login!
 					LoginLoading loading = new Login(EnvironmentHeader.this.getShell(), coordinate);
 					loading.run();
+					// enable again the enviroment
 					EnvironmentHeader.this.setEnabled(true);
 				}
 			}
@@ -362,6 +402,5 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
         public void widgetDefaultSelected(SelectionEvent event) {
 			// nop
 		}
-
     }
 }

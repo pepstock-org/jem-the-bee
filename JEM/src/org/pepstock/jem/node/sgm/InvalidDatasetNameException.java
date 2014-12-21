@@ -20,6 +20,9 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
 
 /**
+ * Exception generated when the data set name, put in the JCL, doesn't match with 
+ * any defined rule, on which file system to store the file 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -28,11 +31,13 @@ public class InvalidDatasetNameException extends MessageException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param messageInterface
-	 * @param objects
+	 * Creates the exception using only the variables to put on message
+	 * becuase the message is always the same.
+	 * 
+	 * @see NodeMessage#JEMC251E
+	 * @param objects variable to use inside the message
 	 */
 	public InvalidDatasetNameException(Object... objects) {
 		super(NodeMessage.JEMC251E, objects);
 	}
-
 }

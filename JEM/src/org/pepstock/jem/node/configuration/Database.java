@@ -19,6 +19,9 @@ package org.pepstock.jem.node.configuration;
 import java.util.Properties;
 
 /**
+ * Bean used into configuration file to define the necessary information
+ * to use a database to persist all objects stored inside of Hazelcast.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -36,10 +39,9 @@ public class Database {
 	private Properties properties = null;
 	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public Database() {
-		
 	}
 
 	/**
@@ -49,14 +51,12 @@ public class Database {
 		return url;
 	}
 
-
 	/**
 	 * @param url the url to set
 	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
 
 	/**
 	 * @return the driver
@@ -65,14 +65,12 @@ public class Database {
 		return driver;
 	}
 
-
 	/**
 	 * @param driver the driver to set
 	 */
 	public void setDriver(String driver) {
 		this.driver = driver;
 	}
-
 
 	/**
 	 * @return the user
@@ -81,14 +79,12 @@ public class Database {
 		return user;
 	}
 
-
 	/**
 	 * @param user the user to set
 	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
-
 
 	/**
 	 * @return the password
@@ -97,14 +93,12 @@ public class Database {
 		return password;
 	}
 
-
 	/**
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	/**
 	 * @return the properties
@@ -113,14 +107,12 @@ public class Database {
 		return properties;
 	}
 
-
 	/**
 	 * @param properties the properties to set
 	 */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -129,6 +121,4 @@ public class Database {
 	public String toString() {
 		return "Database [url=" + url + ", driver=" + driver + ", user=" + user + ", password=" + password + "]";
 	}
-
-	
 }

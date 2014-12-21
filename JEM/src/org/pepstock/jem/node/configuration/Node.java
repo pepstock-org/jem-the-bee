@@ -33,5 +33,4 @@ public class Node extends Factory {
 	 */
 	public Node() {
 	}
-
 }

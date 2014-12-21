@@ -34,7 +34,6 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.util.ReverseURLClassLoader;
 
-
 /**
  * With this HashMap you can share the data of map across hierarchy of Classloaders.
  *  
@@ -42,15 +41,12 @@ import org.pepstock.jem.util.ReverseURLClassLoader;
  * @version 1.0	
  *
  */
-
 public final class AbsoluteHashMap extends HashMap<String, Object> implements Map<String, Object>{
 
 	private static final long serialVersionUID = 1L;
-	/**
-     *  Common instance shared across a proxy
-     */
+
+	//  Common instance shared across a proxy
     private static Map<String, Object> instance = null;
-    
     
     /**
      * Empty and private constructor
@@ -110,7 +106,6 @@ public final class AbsoluteHashMap extends HashMap<String, Object> implements Ma
                 instance = new AbsoluteHashMap();
             }
         }
-
         return instance;
     }
     
