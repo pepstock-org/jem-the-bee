@@ -31,8 +31,10 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
+ * Singleton which loads all steps, both tasklet and chunks, defined in JCL.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 1.4
  * 
  */
 public class DefinitionsLoader {
@@ -68,7 +70,7 @@ public class DefinitionsLoader {
 	private String lockingScope = SpringBatchKeys.JOB_SCOPE;
 	
 	/**
-	 * To avoid any instatiation
+	 * To avoid any instantiation
 	 */
 	private DefinitionsLoader() {
 		
@@ -99,14 +101,14 @@ public class DefinitionsLoader {
 	}
 
 	/**
-	 * @return true if locking scpe is set to JOB
+	 * @return true if locking scope is set to JOB
 	 */
 	public boolean isJobLockingScope() {
 		return lockingScope.equalsIgnoreCase(SpringBatchKeys.JOB_SCOPE);
 	}
 
 	/**
-	 * @return true if locking scpe is set to STEP
+	 * @return true if locking scope is set to STEP
 	 */
 	public boolean isStepLockingScope() {
 		return lockingScope.equalsIgnoreCase(SpringBatchKeys.STEP_SCOPE);
@@ -144,7 +146,7 @@ public class DefinitionsLoader {
 				// with all datadescriptions
 				if (object instanceof JemTasklet) {
 					JemTasklet tasklet = (JemTasklet) object;
-					// creates a defitinion
+					// creates a definition
 					Definition tasn = new Definition();
 					tasn.setStepName(step);
 					tasn.setObject(tasklet);

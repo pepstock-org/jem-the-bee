@@ -56,14 +56,14 @@ public class GetCertificates extends DefaultExecutor<Collection<CertificateEntry
 	@Override
 	public Collection<CertificateEntry> execute() throws ExecutorException {
 		try {
-			// creates reuslt list
+			// creates result list
 			List<CertificateEntry> result = new ArrayList<CertificateEntry>();
-			// gets all piblished certificates 
+			// gets all published certificates 
 			List<CertificateEntry> list = CertificatesUtil.getCertificates();
 			// scans to filter
 			for (CertificateEntry entry : list) {
 				// scans only certificate with an issuer
-				// filter by alias (then userid)
+				// filter by alias (then user id)
 				if (entry.getIssuer() != null && ("".equals(filter) || StringUtils.containsIgnoreCase(entry.getAlias(), filter))) {
 					result.add(entry);
 				}
@@ -75,5 +75,4 @@ public class GetCertificates extends DefaultExecutor<Collection<CertificateEntry
 			throw new ExecutorException(NodeMessage.JEMC239E, e);
 		}
 	}
-
 }

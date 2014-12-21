@@ -58,7 +58,7 @@ import org.springframework.jdbc.datasource.AbstractDataSource;
  * <code>&lt;dataSource name="jndiname" database="logicalDBname" /&gt;<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 1.3
  * 
  */
 public class DataSource extends AbstractDataSource implements Serializable {

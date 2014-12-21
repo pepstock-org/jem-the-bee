@@ -19,39 +19,39 @@ package org.pepstock.jem.util.filters.fields;
 /**
  * Interface that collect all supported filter fields
  * @author Marco "Cuc" Cuccato
- * @version 1.0	
+ * @version 1.4	
  *
  * @param <T> the type of object which fields are related to
  */
 public interface JemFilterFields<T> {
 
 	/**
-	 * 
+	 * Default date time pattern
 	 */
 	String DATETIME_PATTERN_DEFAULT = "yyyyMMddHHmmss";
 	
 	/**
-	 * 
+	 * Default time pattern
 	 */
 	String DATETIME_PATTERN_DDHHMM = "ddHHmm";
 	
 	/**
-	 * 
+	 * Description on duration pattern
 	 */
 	String DURATION_PATTERN_DESCRIPTION = "ex.: 2d or 3h or 15m";
 	
 	/**
-	 * 
+	 * Description when the filter is yes or no
 	 */
 	String YES_NO_PATTERN_DESCRIPTION = "yes | no";
 	
 	/**
-	 * 
+	 * Yes constant
 	 */
 	String YES = "yes";
 	
 	/**
-	 * 
+	 * No constant
 	 */
 	String NO = "no";
 	
@@ -69,5 +69,4 @@ public interface JemFilterFields<T> {
 	 * @return the pattern
 	 */
 	String getPattern();
-	
 }

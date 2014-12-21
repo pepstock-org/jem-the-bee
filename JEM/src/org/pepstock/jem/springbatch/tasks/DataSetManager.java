@@ -40,6 +40,7 @@ import org.pepstock.jem.util.CharSet;
  * Creates all data set implementation called by DataDescriptionManager.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.3
  * 
  */
 public class DataSetManager {

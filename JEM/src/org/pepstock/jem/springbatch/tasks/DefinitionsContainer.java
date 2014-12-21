@@ -20,8 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Singleton which isloaded with all beans and chunks defined inside of Spring Batch.
+ * <br>
+ * This singleton is necessary when you should manager different lock scope of job. 
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 1.4
  *
  */
 public class DefinitionsContainer {
@@ -34,13 +38,14 @@ public class DefinitionsContainer {
 	 * Singleton, emtpy constructor
 	 */
 	private DefinitionsContainer() {
-		
 	}
 	
 	/**
 	 * @return singleton instance
 	 */
 	public static synchronized DefinitionsContainer getInstance(){
+		// if null, is the first call
+		// then instantiate it
 		if  (INSTANCE == null){
 			INSTANCE = new DefinitionsContainer();
 		}
@@ -60,5 +65,4 @@ public class DefinitionsContainer {
 	void setObjects(List<Definition> objects) {
 		this.objects = objects;
 	}
-
 }

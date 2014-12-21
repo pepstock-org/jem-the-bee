@@ -33,13 +33,14 @@ import com.hazelcast.query.Predicate;
  * This predicate is used to filter the resources to extract distributing all searches on all nodes of JEM.
  * <br>
  * The {@link Predicate} of a {@link Resource}
+ * 
  * @author Marco "Cuc" Cuccato
  * @version 1.0	
  *
  */
 public class ResourcePredicate extends JemFilterPredicate<Resource> implements Serializable {
 
-	private static final long serialVersionUID = 8087227037699399624L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Empty constructor

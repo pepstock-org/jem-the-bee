@@ -64,5 +64,4 @@ public class Lock implements Serializable {
 	public String toString() {
 		return "Lock [name=" + name + "]";
 	}
-
 }

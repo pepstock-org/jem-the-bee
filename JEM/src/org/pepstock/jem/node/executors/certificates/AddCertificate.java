@@ -39,14 +39,13 @@ public class AddCertificate extends DefaultExecutor<Boolean> {
 	private String userid = null;
 	
 	private BytesArray certificate = null;
-	
 
 	/**
-	 * Constructs using certificate (in byte format) and userid (is consider the alias in keystore)
+	 * Constructs using certificate (in byte format) and 
+	 * user id (is consider the alias in keystore)
 	 * 
 	 * @param userid user id  
 	 * @param certificate certificate in byte format 
-	 * 
 	 */
 	public AddCertificate(BytesArray certificate, String userid) {
 		this.userid = userid;
@@ -59,7 +58,9 @@ public class AddCertificate extends DefaultExecutor<Boolean> {
 	@Override
 	public Boolean execute() throws ExecutorException {
 		try {
+			// adds certificate, relating to user id
 			CertificatesUtil.addCertificate(certificate.toByteArray(), userid);
+			// returns always TRUE
 			return Boolean.TRUE;
 		} catch (CertificateException e) {
 			throw new ExecutorException(NodeMessage.JEMC239E, e);

@@ -71,6 +71,7 @@ import com.thoughtworks.xstream.XStream;
  * 
  * @see org.springframework.batch.core.step.tasklet.Tasklet
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public abstract class JemTasklet implements Tasklet{

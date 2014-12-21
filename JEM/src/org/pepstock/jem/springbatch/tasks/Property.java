@@ -17,11 +17,12 @@
 package org.pepstock.jem.springbatch.tasks;
 
 import java.io.Serializable;
-
-
 /**
+ * Bean used in SPRING to sets property of Data source bean.
+ * 
+ * @see DataSource
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 1.4
  *
  */
 public class Property implements Serializable {
@@ -35,11 +36,10 @@ public class Property implements Serializable {
 	private boolean custom = false;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public Property() {
 	}
-
 	
 	/**
 	 * @return the name
@@ -47,7 +47,6 @@ public class Property implements Serializable {
 	public String getName() {
 		return name;
 	}
-
 
 	/**
 	 * @param name the name to set
@@ -62,7 +61,6 @@ public class Property implements Serializable {
 	public String getValue() {
 		return value;
 	}
-
 
 	/**
 	 * @param value the value to set
@@ -85,7 +83,6 @@ public class Property implements Serializable {
 		this.custom = custom;
 	}
 
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -93,5 +90,4 @@ public class Property implements Serializable {
 	public String toString() {
 		return "Property [name=" + name + ", value=" + value + ", custom=" + custom + "]";
 	}
-	
 }

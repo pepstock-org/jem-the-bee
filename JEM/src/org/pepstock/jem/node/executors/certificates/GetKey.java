@@ -27,6 +27,7 @@ import org.pepstock.jem.node.resources.ResourcesUtil;
  * Returns the key used internally to decrypt and encrypt resource properties.<br>
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public class GetKey extends DefaultExecutor<Key> {
@@ -36,12 +37,14 @@ public class GetKey extends DefaultExecutor<Key> {
 	/**
 	 * Reads the cluster KEY 
 	 * 
-	 * @return key
+	 * @return key generated key
 	 * @throws if I/O error occurs 
 	 */
 	@Override
 	public Key execute() throws ExecutorException {
+		// gets the key of cluster
 		Key key = ResourcesUtil.getInstance().getKey();
+		// if null, exception
 		if (key == null){
 			throw new ExecutorException(NodeMessage.JEMC116E);
 		}

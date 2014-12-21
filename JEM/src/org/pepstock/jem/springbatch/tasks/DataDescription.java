@@ -25,6 +25,7 @@ import org.pepstock.catalog.AbstractDataDescription;
  * 
  * @see DataSet
  * @author Andrea "Stock" Stocchero
+ * @version 1.3
  * 
  */
 public class DataDescription extends AbstractDataDescription<DataSet> {

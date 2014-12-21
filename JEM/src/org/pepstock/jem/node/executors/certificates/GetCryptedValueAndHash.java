@@ -28,6 +28,7 @@ import org.pepstock.jem.node.resources.ResourcesUtil;
  * Returns object with crypted secret and hash to check.<br>
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public class GetCryptedValueAndHash extends DefaultExecutor<CryptedValueAndHash> {
@@ -53,6 +54,7 @@ public class GetCryptedValueAndHash extends DefaultExecutor<CryptedValueAndHash>
 	@Override
 	public CryptedValueAndHash execute() throws ExecutorException {
 		try {
+			// encrypts the secret
 			return ResourcesUtil.getInstance().encrypt(secret);
 		} catch (KeyException e) {
 			throw new ExecutorException(NodeMessage.JEMC240E, e);

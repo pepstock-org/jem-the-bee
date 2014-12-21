@@ -33,6 +33,8 @@ import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
 
 /**
+ * Utility to lock and unlock resources declared on Spring Batch JCL.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *

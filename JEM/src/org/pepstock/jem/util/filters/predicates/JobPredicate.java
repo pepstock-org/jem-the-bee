@@ -38,7 +38,7 @@ import com.hazelcast.query.Predicate;
  * <br>
  * The {@link Predicate} of a {@link Job}
  * @author Marco "Cuc" Cuccato
- * @version 1.0	
+ * @version 1.4
  *
  */
 public class JobPredicate extends JemFilterPredicate<Job> implements Serializable {

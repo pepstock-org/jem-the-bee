@@ -25,7 +25,7 @@ import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.node.security.keystore.CertificatesUtil;
 
 /**
- * Removes an existing certificate, related to a userid, from keystore
+ * Removes an existing certificate, related to a user id, from keystore
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -37,8 +37,8 @@ public class RemoveCertificate extends DefaultExecutor<Boolean> {
 	private String userid = null;
 
 	/**
-	 * Constructs object with userid.
-	 * @param userid uder id to use to remove certificate 
+	 * Constructs object with user id.
+	 * @param userid user id to use to remove certificate 
 	 */
 	public RemoveCertificate(String userid) {
 		this.userid = userid;
@@ -50,13 +50,14 @@ public class RemoveCertificate extends DefaultExecutor<Boolean> {
 	@Override
 	public Boolean execute() throws ExecutorException {
 		try {
+			// removes certificates by user id
 			CertificatesUtil.removeCertificate(userid);
 		} catch (CertificateException e) {
 			throw new ExecutorException(NodeMessage.JEMC239E, e);
 		} catch (KeyStoreException e) {
 			throw new ExecutorException(NodeMessage.JEMC239E, e);
 		}
+		// returns always true
 		return Boolean.TRUE;
 	}
-
 }

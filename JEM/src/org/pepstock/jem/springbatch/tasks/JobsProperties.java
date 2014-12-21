@@ -58,6 +58,10 @@ public final class JobsProperties {
 		return properties;
 	}
 
+	/**
+	 * Loads additional properties
+	 * @param props properties to add
+	 */
 	void loadProperties(Properties props){
 		if (props != null){
 			properties.putAll(props);

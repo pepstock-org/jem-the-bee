@@ -24,10 +24,13 @@ import java.util.Map;
 
 import org.pepstock.catalog.DataDescriptionImpl;
 
-
 /**
+ * Is singleton object. Only one instance of this container must instantiated.<br>
+ * Contains all data description defined with the goal to implement the dataset
+ * referback feature.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 1.4
  *
  */
 public class ImplementationsContainer {
@@ -54,6 +57,8 @@ public class ImplementationsContainer {
 	 * @return singleton instance
 	 */
 	public static synchronized ImplementationsContainer getInstance(){
+		// if first time,
+		// creates a new instance
 		if  (INSTANCE == null){
 			INSTANCE = new ImplementationsContainer();
 		}
@@ -101,7 +106,6 @@ public class ImplementationsContainer {
 			if (key.startsWith(keyPattern)) {
 				result.add(mapDataDescription.get(key));
 			}
-
 		}
 		return result;
 	}

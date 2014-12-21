@@ -51,11 +51,15 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	private boolean isGrantor = false;
 	
 	private boolean internalAction = false;
+	
 	/**
+	 * Protected constructor which uses the list of roles of the 
+	 * job user.
 	 * @param roles the roles of the current user executing the jcl
 	 */
 	SpringBatchSecurityManager(Collection<Role> roles) {
 		super(roles);
+		// loads permissions from roles
 		loadPermissions(roles);
 	}
 
@@ -104,14 +108,19 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	/**
 	 * Load all the user permissions from roles
 	 * 
-	 * @param roles
+	 * @param roles list of roles of job user
 	 */
 	private void loadPermissions(Collection<Role> roles) {
+		// scans all roles
 		for (Role role : roles) {
+			// checks if is administrator
 			if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)){
+				// if yes, sets administrator to true
 				setAdministrator(true);
 			}
+			// checks if is grantor
 			if (role.getName().equalsIgnoreCase(Roles.GRANTOR)){
+				// if yes, sets grantor to true
 				setGrantor(true);
 			}
 		}
@@ -129,6 +138,9 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public final boolean checkBatchPermission(String permission) {
+		// if is administrator or 
+		// is executing code of JEM and not the custom one,
+		// it can do everything
 		if (isAdministrator() || isInternalAction()){
 			return true;
 		}
@@ -158,6 +170,8 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 			return;
 		}
 		// checks the file access
+		// calling the right method, in according
+		// witht the action of permission
 		if (perm instanceof FilePermission){
 			if ("read".equalsIgnoreCase(perm.getActions())){
 				checkRead(perm.getName());
@@ -174,23 +188,30 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 			SocketPermission sperm = (SocketPermission)perm;
 			int port = Parser.parseInt(StringUtils.substringAfter(sperm.getName(), ":"), Integer.MAX_VALUE);
 			int portRmi = Parser.parseInt(System.getProperty(RmiKeys.JEM_RMI_PORT), Integer.MIN_VALUE);
+			// if is going to RMI port and
+			// is not executing JEM code and is not grantor
 			if (port == portRmi && !isInternalAction() && !isGrantor()){
+				// extracts host name
 				String hostname = StringUtils.substringBefore(sperm.getName(), ":");
 				try {
+					// gets hostname and localhost 
 					String resolved = InetAddress.getByName(hostname).getHostAddress();
 					String localhost = InetAddress.getLocalHost().getHostAddress();
+					// if they are equals and the user
+					// desn't have the internal service permission
+					// EXCEPTION!!
 					if (resolved.equalsIgnoreCase(localhost) && !checkBatchPermission(Permissions.INTERNAL_SERVICES)){
 						LogAppl.getInstance().emit(NodeMessage.JEMC128E);
 						throw new SecurityException(NodeMessage.JEMC128E.toMessage().getMessage());
 					}
 				} catch (UnknownHostException e) {
+					// if there is an error on resolving the hostname
 					LogAppl.getInstance().emit(NodeMessage.JEMC128E);
 					throw new SecurityException(NodeMessage.JEMC128E.toMessage().getMessage(), e);
 				}
 			}
 		}
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -199,6 +220,8 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkExit(int status) {
+		// Is not possible to call System.exit
+		// ONLY if is internal action
 		if (!isInternalAction()){
 			throw new SecurityException(NodeMessage.JEMC270E.toMessage().getFormattedMessage());
 		}
@@ -211,6 +234,7 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public final void checkRead(String file) {
+		// is admin or internal action, can read everything
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
@@ -224,10 +248,10 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkWrite(String file) {
+		// is admin or internal action, can write everything
 		if (isAdministrator() || isInternalAction()){
 			return;
 		}
 		super.checkWrite(file);
 	}
-
 }

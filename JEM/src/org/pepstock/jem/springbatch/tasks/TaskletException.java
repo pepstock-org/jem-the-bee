@@ -20,6 +20,7 @@ import org.pepstock.jem.log.JemException;
 
 /**
  * Generic exception which can be thrown by a Spring batch tasklet 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -58,5 +59,4 @@ public class TaskletException extends JemException {
 	public TaskletException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

@@ -19,12 +19,12 @@ package org.pepstock.jem.util.filters.fields;
 import org.pepstock.jem.Job;
 
 /**
- * Collect all {@link Job} filterable fields
+ * Collect all {@link Job} filterable fields.
+ * <br>
+ * 
  * @author Marco "Cuc" Cuccato
- * @version 1.0	
- *
+ * @version 1.4	
  */
-
 @SuppressWarnings("javadoc")
 public enum JobFilterFields implements JemFilterFields<Job> {
 	
@@ -48,43 +48,67 @@ public enum JobFilterFields implements JemFilterFields<Job> {
 	public static final JobFilterFields[] DEFAULTS = new JobFilterFields[] {NAME};
 	
 	private String name = null;
+	
 	private String pattern = null;
 	
+	/**
+	 * Constructor which use the name of the field of job 
+	 * @param name name of the field of job
+	 */
 	private JobFilterFields(String name) {
 		this(name, null);
 	}
 	
+	/**
+	 * Constructor which use the name of the field of job and 
+	 * the pattern
+	 * @param name name of the field of job
+	 * @param pattern pattern of filter field
+	 */
 	private JobFilterFields(String name, String pattern) {
 		this.name = name;
 		this.pattern = pattern;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.fields.JemFilterFields#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.fields.JemFilterFields#hasPattern()
+	 */
 	@Override
 	public boolean hasPattern() {
 		return pattern != null;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.filters.fields.JemFilterFields#getPattern()
+	 */
 	@Override
 	public String getPattern() {
 		return pattern;
 	}
 	
 	/**
+	 * Utility method to get a filter fields by field name
+	 * 
 	 * @param name the name of the {@link JobFilterFields}
 	 * @return the {@link JobFilterFields} associated with provided name
 	 */
 	public static JobFilterFields getByName(String name) {
+		// scans all values
 		for (JobFilterFields jff : values()) {
-			if (jff.getName().equals(name)) {
+			// checks ignoring case if the name of filed is the same
+			// with the parameter
+			if (jff.getName().equalsIgnoreCase(name)) {
 				return jff;
 			}
 		}
 		return null;
 	}
-	
 }

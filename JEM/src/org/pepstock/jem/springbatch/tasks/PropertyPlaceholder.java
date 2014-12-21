@@ -31,7 +31,6 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  */
 public class PropertyPlaceholder extends PropertyPlaceholderConfigurer {
 
-
 	/* (non-Javadoc)
 	 * @see org.springframework.core.io.support.PropertiesLoaderSupport#loadProperties(java.util.Properties)
 	 */

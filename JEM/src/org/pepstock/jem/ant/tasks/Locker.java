@@ -34,7 +34,7 @@ import org.pepstock.jem.node.tasks.InitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 
 /**
- * Utility to lock and unlock resources decalred on ANT JCL.
+ * Utility to lock and unlock resources declared on ANT JCL.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	

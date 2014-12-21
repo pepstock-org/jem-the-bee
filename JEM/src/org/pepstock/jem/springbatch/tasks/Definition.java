@@ -20,10 +20,13 @@ import javax.naming.InitialContext;
 
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
 
-
 /**
+ * Entity of JEM which contains all information about steps defined in Spring Batch.
+ * <br>
+ * It saves the bean, step name and JNDI context.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 1.4	
  *
  */
 public class Definition {
@@ -35,7 +38,7 @@ public class Definition {
 	private InitialContext context = null;
 	
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public Definition() {
 	}
@@ -47,14 +50,12 @@ public class Definition {
 		return object;
 	}
 
-
 	/**
 	 * @param object the object to set
 	 */
 	public void setObject(Object object) {
 		this.object = object;
 	}
-
 
 	/**
 	 * @return the stepName
@@ -97,5 +98,4 @@ public class Definition {
 	public boolean isChunkItem(){
 		return object instanceof DataDescriptionItem;
 	}
-
 }

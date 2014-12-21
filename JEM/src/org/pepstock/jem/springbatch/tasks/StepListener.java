@@ -56,6 +56,7 @@ import org.springframework.core.Ordered;
  * starting and steps ending.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.0
  * 
  */
 public final class StepListener implements StepExecutionListener, JobExecutionListener, Ordered {
@@ -65,7 +66,6 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	private Locker locker = null;
 	
 	private boolean isFirst = true;
-
 
 	/**
 	 * Empty construct

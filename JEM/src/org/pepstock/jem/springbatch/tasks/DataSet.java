@@ -38,6 +38,7 @@ import org.springframework.core.io.Resource;
  * 
  * @see org.springframework.core.io.AbstractResource
  * @author Andrea "Stock" Stocchero
+ * @version 1.3
  * 
  */
 public class DataSet extends AbstractResource implements Serializable{
