@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Is a bean with all statistics information collected inside a JEM node
+ * Is a bean with all statistics information collected inside a JEM node.
+ * <br>
+ * This sample is calculated every minute and collects information about cpu, memory,
+ * workloads, Hazelcast information.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0

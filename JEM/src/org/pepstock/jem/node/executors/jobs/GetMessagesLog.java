@@ -65,8 +65,10 @@ public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
 		OutputFileContent output = new OutputFileContent();
 		// if is a routed job
 		if (job.getRoutingInfo().getId() != null) {
+			// if routed it can't get the log
 			LogAppl.getInstance().emit(NodeMessage.JEMC197I, job, job.getJcl().getEnvironment());
-			 String content=NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
+			// returns the message of error as content
+			 String content = NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
 			 output.setContent(content);
 		} else {
 			try {
@@ -77,12 +79,16 @@ public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
 				if (!jclFile.exists()){
 					throw new ExecutorException(NodeMessage.JEMC242E, jclFile);
 				}
-
+				
+				// checks if message log exists
 				File file = new File(jclFile.getParentFile(), OutputSystem.MESSAGESLOG_FILE);
 				if (!file.exists()){
 					throw new ExecutorException(NodeMessage.JEMC242E, file);
 				}
 
+				// loads content file into a buffer
+				// must be check the file size... if too big could create problems
+				// checks if file is over the maximum nuber of bytes
 				if (file.length() > MAX_NUMBER_OF_BYTE_READABLE){
 					output.setContent("Output log file too large. Current file size is "+file.length()+" bytes but maximum is "+MAX_NUMBER_OF_BYTE_READABLE+" bytes");
 				} else {
@@ -90,9 +96,6 @@ public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
 					output.setContent(FileUtils.readFileToString(file));
 				}			
 				return output;
-
-				// loads content file into a buffer
-				// must be check the file size... if too big could create problems
 			} catch (IOException e) {
 				throw new ExecutorException(NodeMessage.JEMC242E, e, OutputSystem.MESSAGESLOG_FILE);
 			}

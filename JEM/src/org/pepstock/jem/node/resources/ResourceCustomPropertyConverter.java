@@ -29,8 +29,14 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
- * Converter for Xstream to read and write resource property xml 
- * 
+ * Converter for Xstream to read and write XML custom resource property.
+ * <br>
+ * It is used to read and write properties as following:<br>
+ * <br>
+ * <pre>
+ * &lt;property name="name"&gt;value&lt;/property&gt; 
+ * </pre> 
+ *  
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -56,10 +62,12 @@ public class ResourceCustomPropertyConverter implements Converter {
 	@Override
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext marsh) {
 	     @SuppressWarnings("unchecked")
+	     // writes a map as properties
 		Map<String, String> map = (Map<String, String>)value;
 	     for (Entry<String, String> entry : map.entrySet()){
 		     writer.startNode(ConfigKeys.PROPERTY_ATTRIBUTE_ALIAS);
 	         writer.addAttribute(ConfigKeys.NAME_FIELD, entry.getKey());
+	         // writes the element content as property value
 	         writer.setValue(entry.getValue());
 	         writer.endNode();
 	     }
@@ -72,10 +80,15 @@ public class ResourceCustomPropertyConverter implements Converter {
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext unmarsh) {
 		Map<String, String> map = new HashMap<String, String>();
 		while(reader.hasMoreChildren()){
+			// scans all nodes
 			reader.moveDown();
+			// reads the attribute
 			String name = reader.getAttribute(ConfigKeys.NAME_FIELD);
+			// and reads the element content
 			String value = reader.getValue();
+			// puts on the map
 			map.put(name, value);
+			// return up
 			reader.moveUp();
 		}
         return map;

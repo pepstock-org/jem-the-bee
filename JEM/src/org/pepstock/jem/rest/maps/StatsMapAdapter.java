@@ -30,7 +30,9 @@ import com.thoughtworks.xstream.XStream;
 /**
  * Adapter for a Map object. Map object is not supported by REST for this reason an adapter is needed
  * 
+ * @see LightMapStats
  * @author Marco "Fuzzo" Cuccato
+ * @version 1.4
  *
  */
 public final class StatsMapAdapter extends XmlAdapter<MapType, Map<String, LightMapStats>> {
@@ -44,11 +46,16 @@ public final class StatsMapAdapter extends XmlAdapter<MapType, Map<String, Light
 	public MapType marshal(Map<String, LightMapStats> pref) throws JemException {
 		// to serialize, uses XStream
 		MapType myMapType = new MapType();
+		// scans all stats entries
 		for (Entry<String, LightMapStats> entry : pref.entrySet()) {
 			MapEntryType myMapEntryType = new MapEntryType();
+			// uses stats sample key as maptype key
 			myMapEntryType.key = entry.getKey();
+			// serializes the light maps stats into XML
 			String value = stream.toXML(entry.getValue());
+			// sets value
 			myMapEntryType.value = value;
+			// adds to map type
 			myMapType.getEntry().add(myMapEntryType);
 		}
 		return myMapType;
@@ -61,11 +68,13 @@ public final class StatsMapAdapter extends XmlAdapter<MapType, Map<String, Light
 	public Map<String, LightMapStats> unmarshal(MapType type) throws JemException {
 		// to deserialize, uses XStream
 		Map<String, LightMapStats> hashMap = new HashMap<String, LightMapStats>();
+		// scan all maptype entries
 		for (MapEntryType myEntryType : type.getEntry()) {
+			// deserializes the light map stats from XML
 			LightMapStats up = (LightMapStats)stream.fromXML(myEntryType.value);
+			// adds to a map
 			hashMap.put(myEntryType.key, up);
 		}
 		return hashMap;
 	}
-
 }

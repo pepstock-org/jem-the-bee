@@ -19,7 +19,9 @@ package org.pepstock.jem.node.stats;
 import java.io.Serializable;
 
 /**
- * Is a bean with all information about statistics on a map of Hazelcast
+ * Is a bean with all information about statistics on a map of Hazelcast.
+ * <br>
+ * It contains all information about Hazelcast structures, from node perspective.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	

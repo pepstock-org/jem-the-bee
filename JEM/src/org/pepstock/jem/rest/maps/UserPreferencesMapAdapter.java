@@ -28,9 +28,11 @@ import org.pepstock.jem.node.security.UserPreference;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Adapter for a Map object. Map object is not supported by REST for this reason an adapter is needed
+ * Adapter for a Map object. Map object is not supported by REST for this reason an adapter is needed.
  * 
+ * @see UserPreference
  * @author Marco "Fuzzo" Cuccato
+ * @version 1.4
  *
  */
 public final class UserPreferencesMapAdapter extends XmlAdapter<MapType, Map<String, UserPreference>> {
@@ -44,11 +46,17 @@ public final class UserPreferencesMapAdapter extends XmlAdapter<MapType, Map<Str
 	public MapType marshal(Map<String, UserPreference> pref) throws JemException {
 		// to serialize, uses XStream
 		MapType myMapType = new MapType();
+		// scans all user preferences 
 		for (Entry<String, UserPreference> entry : pref.entrySet()) {
 			MapEntryType myMapEntryType = new MapEntryType();
+			// uses the key of user preferences as key of the map
 			myMapEntryType.key = entry.getKey();
+			// serializes the object UserPreference
+			// in XML format
 			String value = stream.toXML(entry.getValue());
+			// sets maptype
 			myMapEntryType.value = value;
+			// adds maptype to map
 			myMapType.getEntry().add(myMapEntryType);
 		}
 		return myMapType;
@@ -61,11 +69,13 @@ public final class UserPreferencesMapAdapter extends XmlAdapter<MapType, Map<Str
 	public Map<String, UserPreference> unmarshal(MapType type) throws JemException {
 		// to deserialize, uses XStream
 		Map<String, UserPreference> hashMap = new HashMap<String, UserPreference>();
+		// scan all maptype entries
 		for (MapEntryType myEntryType : type.getEntry()) {
+			// deserializes from XML to the object
 			UserPreference up = (UserPreference)stream.fromXML(myEntryType.value);
+			// adds to the map
 			hashMap.put(myEntryType.key, up);
 		}
 		return hashMap;
 	}
-
 }

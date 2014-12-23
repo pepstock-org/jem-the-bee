@@ -23,7 +23,9 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
- * This class contains the userid for all command which nedss userid.
+ * This class contains the userid for all command which needs userid.
+ * <br>
+ * It uses SIGAR becuase JAVA system property can be override maliciously.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
@@ -31,6 +33,7 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
  */
 public class UserIDCommand {
 	
+	// uses SUGAR to get the real userid
 	private static final Sigar SIGAR = new Sigar();
 	
 	private String userID = null;
@@ -58,7 +61,6 @@ public class UserIDCommand {
 		this.userID = userID;
 	}
 	
-	
 	/**
 	 * @return the groupID
 	 */
@@ -78,8 +80,13 @@ public class UserIDCommand {
 	 */
 	private void loadUserID(){
 		try {
+			// uses SIGAR to load user id
+			// because the system property of JAVA
+			// can be override maliciously 
 			ProcCredName cred = SIGAR.getProcCredName(SIGAR.getPid());
+			// gets user
 			setUserID(cred.getUser());
+			// gets group
 			setGroupID(cred.getGroup());
 		} catch (SigarException e) {
 			// ignore
@@ -88,7 +95,4 @@ public class UserIDCommand {
 			setUserID(System.getProperty(ConfigKeys.JAVA_USER_NAME));
 		}
 	}
-	
-	
-
 }

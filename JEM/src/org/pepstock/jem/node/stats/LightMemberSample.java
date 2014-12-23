@@ -30,7 +30,11 @@ import org.pepstock.jem.rest.maps.StatsMapAdapter;
 
 /**
  * Is a bean with a subset of all information usually extract inside the JEM node.
- * This bean is used to show information in the user interface
+ * <br>
+ * This bean is used to show information in the user interface.
+ * <br>
+ * It contains all annotation necessary from REST perspective to serialize
+ * the object.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
@@ -70,7 +74,7 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 	private Map<String, LightMapStats> internalMapsStats = new HashMap<String, LightMapStats>();
 	
 	/**
-	 * Empty construcotor
+	 * Empty constructor
 	 */
 	public LightMemberSample() {
 	}

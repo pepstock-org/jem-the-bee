@@ -28,6 +28,9 @@ import org.pepstock.jem.node.NodeMessage;
 
 /**
  * Abstract representation of platform.
+ * <br>
+ * It uses to have common methods and logic cross platform. Every specific
+ * logic related to the OS must be implemented extending this class.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.3	
@@ -43,9 +46,12 @@ public abstract class AbstractPlatform implements Platform {
 	 */
 	public List<Long> getProcessesChain(long pid){
 		Sigar sigar = new Sigar();
+		// creates a list to have all process
+		// chain starting from the parent process ID
 		List<Long> processes= new ArrayList<Long>();
 		processes.add(pid);
 		try {
+			// gets all process ids of the machine
 			long[] allProcessesId = sigar.getProcList();
 			 loadChildProcessId(pid, allProcessesId, processes, sigar);
 		} catch (SigarException e) {
@@ -60,12 +66,18 @@ public abstract class AbstractPlatform implements Platform {
 	 * @param allProcessesId array with all Process ID
 	 */
 	private void loadChildProcessId(long parentId, long[] allProcessesId, List<Long> processes, Sigar sigar){
+		// scans all processes id
 		for (long processId : allProcessesId){
 			ProcState state;
 			try {
+				// gets procstate to check if the process id
+				// passed as argument of method is a parent 
 				state = sigar.getProcState(processId);
+				// checks if parent
 				if (state.getPpid() == parentId){
+					// adds to the list
 					processes.add(processId);
+					// and recursively checks if parent
 					loadChildProcessId(processId, allProcessesId, processes, sigar);
 				}
 			} catch (SigarException e) {
@@ -87,8 +99,12 @@ public abstract class AbstractPlatform implements Platform {
 		Process p = null;
 		try {
 			// sets the this job task has been canceled
+			// asks to abstract method to have the KILL command
+			// because it depends on OS
 			p = Runtime.getRuntime().exec(getKillCommand(pid, user, force, sudo));
+			// waits the cancel command is executed
 			int rc = p.waitFor();
+			// if ends correctly, job cancelled
 			if (rc != 0) {
 				isCancelled = false;
 			}
@@ -102,6 +118,8 @@ public abstract class AbstractPlatform implements Platform {
 			isCancelled = false;
 			LogAppl.getInstance().emit(NodeMessage.JEMC017E, e);
 		} finally {
+			// anyway it always destroy the process
+			// created to kill the job
 			if (p != null){
 				p.destroy();
 			}

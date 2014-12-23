@@ -26,7 +26,13 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
- * Converter for Xstream to read and write resource property xml 
+ * Converter for Xstream to read and write XML resource property.
+ * <br>
+ * It is used to read and write properties as following:<br>
+ * <br>
+ * <pre>
+ * &lt;property name="name" visible="true" override="true"&gt;value&lt;/property&gt; 
+ * </pre> 
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
@@ -52,13 +58,17 @@ public class ResourcePropertyConverter implements Converter {
 	 */
 	@Override
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext marsh) {
+		// casts resource property
 	     ResourceProperty p = (ResourceProperty)value;
+	     // writes attributes
          writer.addAttribute(ConfigKeys.NAME_FIELD, p.getName());
          writer.addAttribute(AbstractFieldTemplate.VISIBLE_ATTRIBUTE, String.valueOf(p.isVisible()));
          writer.addAttribute(AbstractFieldTemplate.OVERRIDE_ATTRIBUTE, String.valueOf(p.isOverride()));
+         // only if it has got hash it writes hash
          if (p.getHash() != null) {
         	 writer.addAttribute(HASH_FIELD, p.getHash());
          }
+         // sets value of property as content of element
          writer.setValue(p.getValue());
 	}
 
@@ -67,12 +77,16 @@ public class ResourcePropertyConverter implements Converter {
 	 */
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext unmarsh) {
+		// reads all attributes
 		String name = reader.getAttribute(ConfigKeys.NAME_FIELD);
 		String visible = reader.getAttribute(AbstractFieldTemplate.VISIBLE_ATTRIBUTE);
 		String override = reader.getAttribute(AbstractFieldTemplate.OVERRIDE_ATTRIBUTE);
 		String hash = reader.getAttribute(HASH_FIELD);
+		// reads value as content of element
 		String value = reader.getValue();
+		// creates resource property
 		ResourceProperty property = new ResourceProperty();
+		// setting all attributes
 		property.setName(name);
 		property.setOverride(Boolean.valueOf(override));
 		property.setVisible(Boolean.valueOf(visible));

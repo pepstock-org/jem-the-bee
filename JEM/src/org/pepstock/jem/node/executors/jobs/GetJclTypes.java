@@ -43,10 +43,14 @@ public class GetJclTypes extends DefaultExecutor<Map<String, String>>{
 	 */
 	@Override
 	public Map<String, String> execute() throws ExecutorException {
+		// creates a maps with:
+		// key=JCL type
+		// value=JCL type description
 		Map<String, String> map = new HashMap<String, String>();
 		for (Entry<String, JemFactory> factory : Main.FACTORIES_LIST.entrySet()){
 			map.put(factory.getKey(), factory.getValue().getTypeDescription());
 		}
+		// returns map
 		return map;
 	}
 	

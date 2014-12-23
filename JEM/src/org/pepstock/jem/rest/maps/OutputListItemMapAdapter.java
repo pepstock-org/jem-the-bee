@@ -31,7 +31,9 @@ import com.thoughtworks.xstream.XStream;
 /**
  * Adapter for a Map object. Map object is not supported by REST for this reason an adapter is needed
  * 
+ * @see OutputListItem
  * @author Marco "Fuzzo" Cuccato
+ * @version 1.4
  *
  */
 public final class OutputListItemMapAdapter extends XmlAdapter<MapType, Map<String, List<OutputListItem>>> {
@@ -45,10 +47,14 @@ public final class OutputListItemMapAdapter extends XmlAdapter<MapType, Map<Stri
 	public MapType marshal(Map<String, List<OutputListItem>> arg0) throws JemException {
 		// to serialize, uses XStream
 		MapType myMapType = new MapType();
+		// scans all output list items entries
 		for (Entry<String, List<OutputListItem>> entry : arg0.entrySet()) {
 			MapEntryType myMapEntryType = new MapEntryType();
+			// uses the key of output list item
 			myMapEntryType.key = entry.getKey();
+			// serializes the list item into XML
 			String value = stream.toXML(entry.getValue());
+			// sets value
 			myMapEntryType.value = value;
 			myMapType.getEntry().add(myMapEntryType);
 		}
@@ -63,11 +69,13 @@ public final class OutputListItemMapAdapter extends XmlAdapter<MapType, Map<Stri
 	public Map<String, List<OutputListItem>> unmarshal(MapType arg0) throws JemException {
 		// to deserialize, uses XStream
 		Map<String, List<OutputListItem>> hashMap = new LinkedHashMap<String, List<OutputListItem>>();
+		// scans all maptype entries
 		for (MapEntryType myEntryType : arg0.getEntry()) {
+			// deserializes teh lsit of outputlist item from XML
 			List<OutputListItem> list = (List<OutputListItem>)stream.fromXML(myEntryType.value);
+			// adds to a map
 			hashMap.put(myEntryType.key, list);
 		}
 		return hashMap;
 	}
-
 }

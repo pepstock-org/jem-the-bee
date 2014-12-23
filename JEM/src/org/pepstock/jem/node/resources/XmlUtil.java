@@ -22,12 +22,15 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * XML utility to have a XStream object already configured for common resources.
+ * <br>
+ * With XStream, we can serialize and deserialize the resources correctly
+ * with a common configuration.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4	
  *
  */
-public class XmlUtil {
+public final class XmlUtil {
 	
 	private static XStream xs = null;
 	
@@ -35,29 +38,34 @@ public class XmlUtil {
 	 * To avoid any instantiation
 	 */
 	private XmlUtil() {
-		
 	}
 
 	/**
 	 * @return xstream to serialize and deserialize resources
 	 */
 	public static synchronized XStream getXStream(){
+		// checks if XStream is instantiated
 		if (xs == null){
+			// if not, creates a new instance
 			xs = new XStream();
+			// creates alias for resources
 			xs.alias(ConfigKeys.RESOURCES_ALIAS, Resources.class);
 			xs.addImplicitCollection(Resources.class, ConfigKeys.RESOURCES_ALIAS);
+			// creates alias for resource
 			xs.alias(ConfigKeys.RESOURCE_ALIAS, Resource.class);
+			// defines all attributes of resource
 			xs.aliasAttribute(Resource.class, ConfigKeys.NAME_FIELD, ConfigKeys.NAME_ATTRIBUTE_ALIAS);
 			xs.aliasAttribute(Resource.class, ConfigKeys.TYPE_FIELD, ConfigKeys.TYPE_ATTRIBUTE_ALIAS);
 			xs.aliasAttribute(Resource.class, ConfigKeys.USER_FIELD, ConfigKeys.USER_ATTRIBUTE_ALIAS);
 			xs.aliasAttribute(Resource.class, ConfigKeys.LAST_MODIFIED_FIELD, ConfigKeys.LAST_MODIFIED_ATTRIBUTE_ALIAS);
+			// applies the implicit collections of properties of a resource
 			xs.addImplicitMap(Resource.class,  ConfigKeys.PROPERTIES_FIELD, ResourceProperty.class, ConfigKeys.NAME_FIELD);
-			xs.alias(ConfigKeys.PROPERTY_ATTRIBUTE_ALIAS, ResourceProperty.class);
-			
+			xs.alias(ConfigKeys.PROPERTY_ATTRIBUTE_ALIAS, ResourceProperty.class);	
+			// adds generic custom properties
+			// using a converter so the collection can use <property name="">value</property>
 			xs.registerLocalConverter(Resource.class, ConfigKeys.RESOURCE_CUSTOM_PROPERTIES_FIELD, new ResourceCustomPropertyConverter());
 			xs.registerConverter(new ResourcePropertyConverter());
 		}
 		return xs;
 	}
-	
 }

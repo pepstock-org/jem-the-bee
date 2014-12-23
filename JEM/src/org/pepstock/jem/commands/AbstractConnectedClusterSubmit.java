@@ -52,9 +52,11 @@ import com.hazelcast.core.MessageListener;
 
 /**
  * Extends the command line engine to submit job connecting directly to cluster (usually by Hazelcast protocol).
+ * <br>
  * It contains the necessary parameters for that, as JEM PASSWORD, PRIVATE KEY and PRIVATE KEY PASSWORD, and PRINTOUTPUT. 
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine implements MessageListener<Job> {
@@ -69,6 +71,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	private HazelcastInstance client = null;
 	
+	// uses a count down latch to wait end of job
 	private final CountDownLatch lock = new CountDownLatch(1);
 
 	/**
@@ -79,6 +82,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	public AbstractConnectedClusterSubmit(String commandName) {
 		super(commandName);
 		Map<String, SubmitArgument> arguments = getArguments();
+		// loads all mandatory parameters
 		arguments.put(SubmitParameters.PASSWORD.getName(), SubmitParameters.createArgument(SubmitParameters.PASSWORD));
 		arguments.put(SubmitParameters.PRINT_OUTPUT.getName(), SubmitParameters.createArgument(SubmitParameters.PRINT_OUTPUT));
 		arguments.put(SubmitParameters.PRIVATE_KEY.getName(), SubmitParameters.createArgument(SubmitParameters.PRIVATE_KEY));
@@ -143,7 +147,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	/**
 	 * Is called from Hazelcast engine when a job is put in OUTPUT queue, so is
-	 * ended. Checks if same job that has sumbitted. If yes, notifies the thread
+	 * ended. Checks if same job that has submitted. If yes, notifies the thread
 	 * to end
 	 * 
 	 * @param endedJob job ended
@@ -221,18 +225,19 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			}
 		}
 
+		// creates a pre job using the JCL
 		PreJob preJob;
 		try {
 			preJob = Factory.createPreJob(urlJcl);
 		} catch (InstantiationException e) {
 			throw new SubmitException(SubmitMessage.JEMW007E, e, getJcl());
 		}
+		// sets JCL type
 		preJob.setJclType(getType());
 
-		// creates a job asking to Hazelcast for a new long value
-		// Pads the value with "0"
+		// creates a job
 		Job job = new Job();
-		// sets user
+		// sets user and group
 		job.setUser(getUserID());
 		job.setOrgUnit(getGroupID());
 		
@@ -240,10 +245,11 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		if (jobName != null){
 			job.setName(jobName);
 		}
-	
+		
+		// creates a job ID asking to Hazelcast for a new long value
 		IdGenerator generator = client.getIdGenerator(Queues.JOB_ID_GENERATOR);
 		long id = generator.newId();
-
+		// Pads the value with "0"
 		String jobId = Factory.createJobId(job, id);
 		job.setId(jobId);
 		// loads all line arguments (the -D properties).
@@ -255,6 +261,10 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		// loads prejob with job
 		preJob.setJob(job);
 		
+		// sets the job
+		// to wait the end and
+		// using the topic listener to check
+		// if job id is the same
 		super.setJob(job);
 
 		// gets topic object and adds itself as listener
@@ -291,15 +301,20 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	@Override
 	public void beforeJobSubmit() throws SubmitException {
+		// calls teh super to load the common arguments
 		super.beforeJobSubmit();
 		Map<String, SubmitArgument> arguments = getArguments();
+		// here sets all custom arguments
 		if (arguments.containsKey(SubmitParameters.PASSWORD.getName())){
 			SubmitArgument sa = arguments.get(SubmitParameters.PASSWORD.getName());
 			setPassword(sa.getValue());
 		}
+		// if password is null
+		// it asks the password by STD input
 		if (getPassword() == null){
 			CmdConsole console = new CmdConsole();
 			try {
+				// sets JEM as prompt
 				setPassword(console.readPassword("JEM"));
 			} catch (IOException e) {
 				throw new SubmitException(SubmitMessage.JEMW008E, e);
@@ -314,7 +329,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		} else {
 			setWait(true);
 		}
-		
+		// checks is printout has been set, otherwise the default is false
 		if (arguments.containsKey(SubmitParameters.PRINT_OUTPUT.getName())){
 			SubmitArgument sakey = arguments.get(SubmitParameters.PRINT_OUTPUT.getName());
 			setPrintOutput(Parser.parseBoolean(sakey.getValue(), false));	
@@ -327,12 +342,14 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			LogAppl.getInstance().emit(NodeMessage.JEMC198W, SubmitParameters.WAIT.getName(), SubmitParameters.PRINT_OUTPUT.getName());
 		}
 		
-		// Privates
+		// Privates key to connect
+		// Hazelcast cluster, leveraging on Socket interceptor
 		if (arguments.containsKey(SubmitParameters.PRIVATE_KEY.getName())){
 			SubmitArgument sakey= arguments.get(SubmitParameters.PRIVATE_KEY.getName());
 			setPrivateKey(sakey.getValue());
 		}
-		
+		// Privates key password to connect
+		// Hazelcast cluster, leveraging on Socket interceptor
 		if (arguments.containsKey(SubmitParameters.PRIVATE_KEY_PWD.getName())){
 			SubmitArgument sakey= arguments.get(SubmitParameters.PRIVATE_KEY_PWD.getName());
 			setPrivateKeyPassword(sakey.getValue());
@@ -345,9 +362,10 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	@Override
 	public int afterJobSubmit() throws SubmitException {
 		int rc = 0;
+		// gets the result only if is in wait
 		if (isWait()){
 			try {
-				// waits for ending ot job execution
+				// waits for ending of job execution
 				lock.await();
 				Job job = getJob();
 				// checks if job is not null
@@ -365,9 +383,12 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 					if (res != null) {
 						rc = job.getResult().getReturnCode();
 					} else {
+						// if result is null
+						// exit in error
 						rc = 1;
 					}
 				} else {
+					// if job is null, exit in error
 					rc = 1;
 				}
 				// printOutput
@@ -390,18 +411,22 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	/**
 	 * Calls a executor on JEM cluster, by Hazelcast, to getjob output.
-	 * @throws Exception
+	 * @throws Exception if any errors occurs getting the output
 	 */
 	private void printOutput() throws SubmitException {
+		// gets HC environment
 		Cluster cluster = client.getCluster();
 		Set<Member> set = cluster.getMembers();
 		Member member = set.iterator().next();
+		// calls a distributed task to get standard output and error
 		DistributedTask<OutputFileContent> task = new DistributedTask<OutputFileContent>(new GetMessagesLog(getJob()), member);
 		ExecutorService executorService = client.getExecutorService();
 		executorService.execute(task);
 		OutputFileContent content;
 		try {
+			// gets content
 			content = task.get();
+			// prints the content
 			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content.getContent());
 		} catch (InterruptedException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());

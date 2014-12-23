@@ -23,6 +23,7 @@ import org.pepstock.jem.node.NodeMessageException;
 /**
  * Singleton class to set the current platform where JEM node is running
  * 
+ * @see AbstractPlatform
  * @author Andrea "Stock" Stocchero
  * @version 1.3	
  *
@@ -37,15 +38,17 @@ public class CurrentPlatform {
 	 * @throws NodeMessageException if OS is not supported, an exception occurs
 	 */
 	private CurrentPlatform() throws NodeMessageException {
+		// if UNIX, uses the unix platform
 		if (SystemUtils.IS_OS_UNIX){
 			INSTANCE = new UnixPlatform();
 		} else if (SystemUtils.IS_OS_WINDOWS){
+			// otherwise WINDOWS
 			INSTANCE = new WindowsPlatform();
 		} else {
+			// if here OS is not supported
 			throw new NodeMessageException(NodeMessage.JEMC245E, SystemUtils.OS_NAME);
 		}
 	}
-
 	
 	/**
 	 * Singleton method to get the current platform

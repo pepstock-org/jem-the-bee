@@ -35,7 +35,8 @@ import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Extends the command line engine to submit job remotely (usually by HTTP).
- * It contains the necessary parameters for that, as USER, PASSWORD and URL to connect it.  
+ * <br>
+ * It contains the necessary parameters for that, as USER, PASSWORD and URL to connect it.
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
@@ -125,6 +126,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 	@Override
 	public void beforeJobSubmit() throws SubmitException{
 		super.beforeJobSubmit();
+		// gets arguments
 		Map<String, SubmitArgument> arguments = getArguments();
 		SubmitArgument saHost = arguments.get(SubmitParameters.HOST.getName());
 		setHost(saHost.getValue());
@@ -132,6 +134,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 		// for remote submit, it overrides the default for WAIT! it uses FALSE
 		// instead of TRUE
 		if (arguments.containsKey(SubmitParameters.WAIT.getName())){
+			// gets wait argument
 			SubmitArgument sakey = arguments.get(SubmitParameters.WAIT.getName());
 			setWait(Parser.parseBoolean(sakey.getValue(), false));	
 		} else {
@@ -150,6 +153,8 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 			SubmitArgument sa = arguments.get(SubmitParameters.PASSWORD.getName());
 			setPassword(sa.getValue());
 		}
+		// checks if there is the password
+		// if not, asks passwrod from STD input
 		if (getPassword() == null){
 			CmdConsole console = new CmdConsole();
 			try {
