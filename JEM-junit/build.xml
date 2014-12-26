@@ -24,6 +24,7 @@
 				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
 				<pathelement path="${jem.workspace}/JEM-gwt/classes"/>
 				<pathelement path="${jem.workspace}/${jem-junit.classes.directory}" />
+				<pathelement path="${jem-jbpm.classes.directory}"/>
 				
 				<fileset dir="${jem.workspace}/${jem-junit.project.directory}/jppf/driver/lib">
 					<include name="**/*.jar" />
