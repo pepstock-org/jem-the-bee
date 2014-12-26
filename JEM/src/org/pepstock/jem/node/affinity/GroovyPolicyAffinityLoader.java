@@ -60,22 +60,27 @@ public class GroovyPolicyAffinityLoader extends PolicyAffinityLoader {
 	@Override
 	public Result runScript(File script, SystemInfo info) throws IOException {
 		Result result = new Result();
+		// sets the info of environment
 		result.setMemory(Main.EXECUTION_ENVIRONMENT.getMemory());
 		result.setParallelJobs(Main.EXECUTION_ENVIRONMENT.getParallelJobs());
 
 		// call groovy expressions from Java code
 		Binding binding = new Binding();
-
+		// adds all instances as groovy constants and variable
 		binding.setVariable(RESULT_VARIABLE, result);
 		binding.setVariable(SYSINFO_VARIABLE, info);
 		binding.setVariable(DOMAIN_VARIABLE, Main.EXECUTION_ENVIRONMENT.getDomain());
 		binding.setVariable(ENVIRONMENT_VARIABLE, Main.EXECUTION_ENVIRONMENT.getEnvironment());
 		GroovyShell shell = new GroovyShell(getClass().getClassLoader(), binding);
 
-		// syncronized the access to file
+		// synchronizes the access to file
 		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+		// in this way, the execution of affinity script
+		// can run synchronized inside of JEM environment
+		// even because the script can be modify by user interface
 		writeSynch.lock();
 		try {
+			// run the SCRIPT!!
 			shell.run(script, new String[]{});
 			return result;
 		} finally {
@@ -97,13 +102,16 @@ public class GroovyPolicyAffinityLoader extends PolicyAffinityLoader {
 	 */
 	@Override
 	public Result testScript(String script, SystemInfo info) throws IOException {
+		// this method is called by the user interface
+		// to test if the script works correctly after
+		// an update
 		File tmp = File.createTempFile("jem", "."+TYPE);
 		FileUtils.writeStringToFile(tmp, script);
+		// gets result for user interface
 		Result result = runScript(tmp, info);
 		if (!tmp.delete()){
 			LogAppl.getInstance().debug("Unable to delete temporary file "+tmp+" for "+GroovyPolicyAffinityLoader.class);
 		}
 		return result;
 	}
-
 }

@@ -20,7 +20,10 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ISemaphore;
 
 /**
+ * Abstract class which implements the read/write lock on distributed environment, using Hazelcast.
+ * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public abstract class ConcurrentLock {
@@ -39,14 +42,14 @@ public abstract class ConcurrentLock {
 	
 	private String queueName = null;
 	
-	
 	private ISemaphore noWaiting = null;
+	
 	private ISemaphore noAccessing = null;
 	
 	/**
-	 * 
-	 * @param instance
-	 * @param queueName
+	 * Creates an instance using Hazelcast instance and queue name 
+	 * @param instance Hazelcast instance
+	 * @param queueName queue name to be locked
 	 */
 	public ConcurrentLock(HazelcastInstance instance, String queueName){
 		this.instance = instance;
@@ -55,16 +58,12 @@ public abstract class ConcurrentLock {
 		noAccessing = instance.getSemaphore(NO_ACCESSING_PREFIX+"."+queueName);
 	}
 	
-	
-	
 	/**
 	 * @return the instance
 	 */
 	public HazelcastInstance getInstance() {
 		return instance;
 	}
-
-
 
 	/**
 	 * @return the queueName
@@ -73,16 +72,12 @@ public abstract class ConcurrentLock {
 		return queueName;
 	}
 
-
-
 	/**
 	 * @return the noWaiting
 	 */
 	public ISemaphore getNoWaiting() {
 		return noWaiting;
 	}
-
-
 
 	/**
 	 * @return the noAccessing
@@ -92,14 +87,14 @@ public abstract class ConcurrentLock {
 	}
 
 	/**
-	 * 
-	 * @throws LockException
+	 * Abstract method which must implement the right logic to acquire a lock
+	 * @throws LockException if any errors occurs
 	 */
 	public abstract void acquire() throws LockException;
 	
 	/**
-	 * 
-	 * @throws LockException
+	 * Abstract method which must implement the right logic to release a lock
+	 * @throws LockException if any errors occurs
 	 */
 	public abstract void release() throws LockException;
 }

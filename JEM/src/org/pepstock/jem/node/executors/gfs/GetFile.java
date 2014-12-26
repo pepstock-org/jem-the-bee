@@ -28,7 +28,7 @@ import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 
 /**
- * The executor returns the list of files and/or directories in a specific folder.
+ * The executor returns a file from a specific folder, defined in GFS of JEM.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.2	
@@ -56,9 +56,13 @@ public class GetFile extends Get<String> {
 	 */
 	@Override
 	public String getResult(String parentPath, File file) throws ExecutorException {
+		// it must be a file!!! 
+		// Otherwise EXCEPTION
 		if (!file.isFile()){
 			throw new ExecutorException(NodeMessage.JEMC188E, file);
 		}
+		// reads all file in a string
+		// and return it
 		try {
 			return FileUtils.readFileToString(file);
 		} catch (IOException e) {
@@ -71,25 +75,40 @@ public class GetFile extends Get<String> {
 	 */
 	@Override
 	public String getResultForDataPath() throws ExecutorException {
+		// if here, it's reading a file from data path.
+		// if path name is not null
 		if (getPathName() != null){
+			// calculated the right parent path using data paths manager
 			String parentPath = Main.DATA_PATHS_MANAGER.getAbsoluteDataPathByName(getPathName());
+			// creates a file with parent path and item
 			File file = new File(parentPath, getItem());
+			// calls getresult to return the file content
 			return this.getResult(parentPath, file);
 		} else {
+			// if here, the path name is undefined
 			try {
+				// gets paths container with the name of the file
 				PathsContainer paths = Main.DATA_PATHS_MANAGER.getPaths(getItem());
+				// gets the current value
 				String parentPath = paths.getCurrent().getContent();
+				// creates the file
 				File file = new File(parentPath, getItem());
+				// if the file not exists,
+				// try to read the file on the OLD data path definition
+				// if the old data path is defined
 				if (!file.exists() && paths.getOld()!=null){
 					parentPath = paths.getOld().getContent();
 				}
+				// recreates the file
 				file = new File(parentPath, getItem());
 				// checks if folder exists and must be a folder (not a file)
 				if (!file.exists()){
 					throw new ExecutorException(NodeMessage.JEMC186E, getItem());
 				}
+				// calls getresult to return the file content
 				return this.getResult(parentPath, file);
 			} catch (InvalidDatasetNameException e) {
+				// file name doesn't match with data path rules
 				throw new ExecutorException(e.getMessageInterface(), e, getItem());
 			}
 		}

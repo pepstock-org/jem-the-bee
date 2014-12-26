@@ -31,6 +31,8 @@ import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
  * The executor upload a chunk of a file.
+ * <br>
+ * It writes the chunk contained inside of GFS file, passed as argument to the executor
  * 
  * @author Simone "Busy" Businaro
  * @version 1.2
@@ -45,7 +47,7 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 	/**
 	 * Write this chunk to the GFS
 	 * 
-	 * @param chunk
+	 * @param chunk chunk file to write on GFS
 	 */
 	public WriteChunk(UploadedGfsChunkFile chunk) {
 		this.chunk = chunk;
@@ -70,21 +72,26 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 		// checks here the type of file-system to scan
 		switch (chunk.getType()) {
 			case GfsFileType.LIBRARY:
+				// gets system property as parent
 				parentPath = System.getProperty(ConfigKeys.JEM_LIBRARY_PATH_NAME);
 				break;
 			case GfsFileType.SOURCE:
+				// gets system property as parent
 				parentPath = System.getProperty(ConfigKeys.JEM_SOURCE_PATH_NAME);
 				break;
 			case GfsFileType.CLASS:
+				// gets system property as parent
 				parentPath = System.getProperty(ConfigKeys.JEM_CLASSPATH_PATH_NAME);
 				break;
 			case GfsFileType.BINARY:
+				// gets system property as parent
 				parentPath = System.getProperty(ConfigKeys.JEM_BINARY_PATH_NAME);
 				break;
 			default:
+				// if here, the GFS type is wrong or not acceptable (like data path)
 				throw new ExecutorException(NodeMessage.JEMC264E);
 		}
-		// the temporary file
+		// a temporary file with parent path and chunk code
 		file = new File(parentPath, chunk.getFilePath() + "." + chunk.getFileCode());
 		try {
 			// test the parent folder exists
@@ -106,14 +113,17 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 				if (!file.renameTo(finalFile)){
 					throw new ExecutorException(NodeMessage.JEMC267E, file.getAbsolutePath(), finalFile.getAbsolutePath());
 				}
+				// updates also the last modified attribute
 				if (!finalFile.setLastModified(chunk.getLastUpdate())){
+					// if it can't, no prob. just a debug
 					LogAppl.getInstance().debug("Unable to set last modified date! Ignored!");
 				}
 				return true;
 			}
-			// write to the temporary file
+			// write to the temporary file in APPEND mode
 			FileOutputStream output = new FileOutputStream(file.getAbsolutePath(), true);
 			try {
+				// write the buffer of chunkf
 				output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
 			} finally {
 				output.close();
@@ -125,6 +135,7 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 			} catch (IOException e1) {
 				LogAppl.getInstance().ignore(e1.getMessage(), e1);
 			}
+			// throw the exception
 			throw new ExecutorException(NodeMessage.JEMC265E, e, file.getAbsolutePath(), e.getMessage());
 		}
 		return true;

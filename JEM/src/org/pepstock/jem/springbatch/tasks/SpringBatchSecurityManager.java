@@ -171,7 +171,7 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 		}
 		// checks the file access
 		// calling the right method, in according
-		// witht the action of permission
+		// with the action of permission
 		if (perm instanceof FilePermission){
 			if ("read".equalsIgnoreCase(perm.getActions())){
 				checkRead(perm.getName());

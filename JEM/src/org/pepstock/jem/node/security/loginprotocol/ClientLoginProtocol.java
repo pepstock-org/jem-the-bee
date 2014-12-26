@@ -198,7 +198,7 @@ public class ClientLoginProtocol {
 					// get the password sent by server encrypt it and encode it in
 					// Base64. the server will than verify the password after
 					// decryption
-					String cryptPassword = Base64.encodeBase64String(Crypto.crypt(jemResponce.getOperation().getResult().getBytes(CharSet.DEFAULT), this.cryptographicKey));
+					String cryptPassword = Base64.encodeBase64String(Crypto.encrypt(jemResponce.getOperation().getResult().getBytes(CharSet.DEFAULT), this.cryptographicKey));
 					jemRequest.setPassword(cryptPassword);
 					RequestOperation op = new RequestOperation();
 					op.setName(Operation.LOGIN.toString());

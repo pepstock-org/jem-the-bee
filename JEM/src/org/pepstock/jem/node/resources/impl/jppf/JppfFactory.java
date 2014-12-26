@@ -32,33 +32,36 @@ import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 
 /**
- * JNDI factory to create typedProperties to lod on JPPFConfiguration
+ * JNDI factory to create typedProperties to load on JPPFConfiguration
  *  
  * @author Andrea "Stock" Stocchero
  * @version 1.4
  * 
  */
 public class JppfFactory extends AbstractObjectFactory {
-
-	
 	
 	/* (non-Javadoc)
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context nameCtx, Hashtable<?, ?> environment) throws JNDIException {
+		// checks if object is null
+		// or is not a reference
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
 
 		String addresses = null;
 		Reference ref = (Reference) object;
+		// gets from reference the list
+		// of hosts where JPPF should run
 		RefAddr ra = ref.get(JppfResourceKeys.ADDRESSES);
 		if (ra != null) {
 			addresses = ra.getContent().toString().trim();
 		} else {
 			throw new JNDIException(JPPFMessage.JEMJ009E, JppfResourceKeys.ADDRESSES);
 		}
+		// loads properties
 		return createTypeProperties(addresses);
 	}
 
@@ -75,10 +78,12 @@ public class JppfFactory extends AbstractObjectFactory {
 		/*----------------------+
 		 | Load JPPF properties | 
 		 +----------------------*/
+		// discovery always set to false
 		props.setProperty(Keys.JEM_JPPF_DISCOVERY_ENABLED, Boolean.FALSE.toString());
 		
 		if (addressParm != null){
 			try {
+				// loads by JPPF the properties 
 				JPPFUtil.loadTypedProperties(props, addressParm);
 			} catch (JPPFMessageException e) {
 				throw new JNDIException(JPPFMessage.JEMJ008E, e, addressParm);

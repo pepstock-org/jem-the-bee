@@ -22,43 +22,36 @@ import org.pepstock.jem.node.NodeMessageException;
 import com.thoughtworks.xstream.XStream;
 
 /**
+ * Request from Hazelcast client to connect to JEM group.
  * 
  * @author Simone "Busy" Businaro
+ * @version 1.4
  * 
  */
-public class ClientRequest implements MulticastMessage {
-
-	private String group;
-
-	/**
-	 * @return the group
-	 */
-	public String getGroup() {
-		return group;
-	}
+public class ClientRequest extends GroupMulticastMessage {
+	
+	private static final String CLIENT_REQUEST_ELEMENT = "clientRequest";
 
 	/**
-	 * @param group the group to set
-	 */
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
-	/**
+	 * De-serializes the string message in a client request
 	 * 
 	 * @param xmlRequestMessage the xml multicast message
 	 * @return the NodeMulticastResponce unmarshall from the xml representation
 	 * @throws NodeMessageException if any exception occurs during the unmarshall process
 	 */
 	public static ClientRequest unmarshall(String xmlRequestMessage) throws NodeMessageException {
+		// uses XStream
 		XStream xStream = new XStream();
-		xStream.alias("clientRequest", ClientRequest.class);
+		// sets request alias
+		xStream.alias(CLIENT_REQUEST_ELEMENT, ClientRequest.class);
 		Object multicastMessage;
 		try {
+			// reads from string the object
 			multicastMessage = xStream.fromXML(xmlRequestMessage);
 		} catch (Exception e) {
 			throw new NodeMessageException(NodeMessage.JEMC109W, e, xmlRequestMessage);
 		}
+		// if the object is not a client request, EXCEPTION
 		if (!(multicastMessage instanceof ClientRequest)) {
 			throw new NodeMessageException(NodeMessage.JEMC109W, xmlRequestMessage);
 		}
@@ -66,14 +59,14 @@ public class ClientRequest implements MulticastMessage {
 	}
 
 	/**
-	 * 
-	 * @param message
+	 * Serializes the object in a xml string format.
+	 * @param instance Client request instance to serialize
 	 * @return the xml marshall from the ClientMulticastRequest
 	 */
-	public static String marshall(ClientRequest message) {
+	public static String marshall(ClientRequest instance) {
+		// uses XStream
 		XStream xStream = new XStream();
-		xStream.alias("clientRequest", ClientRequest.class);
-		return xStream.toXML(message);
+		xStream.alias(CLIENT_REQUEST_ELEMENT, ClientRequest.class);
+		return xStream.toXML(instance);
 	}
-
 }

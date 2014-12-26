@@ -8,6 +8,7 @@ import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
 /**
  * This class represent a generic resource field. 
  * @author Marco "Fuzzo" Cuccato
+ * @version 1.3
  */
 public abstract class AbstractFieldDescriptor extends AbstractField implements Serializable, ResourcePartDescriptor {
 
@@ -53,10 +54,12 @@ public abstract class AbstractFieldDescriptor extends AbstractField implements S
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.resources.definition.AbstractField#toString()
+	 */
 	@Override
 	public String toString() {
 		return "AbstractFieldDescriptor [toString()=" + super.toString() + ", override=" + override + ", visible=" + visible + "]";
 	}
-
 }

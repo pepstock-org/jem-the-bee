@@ -30,23 +30,38 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
  * @version 2.2
  * 
  */
-@SuppressWarnings("javadoc")
 public final class FtpResourceKeys {
 
+	/**
+	 * Property key used to set binary transfer
+	 */
 	public static final String BINARY = "binary";
-	
+
+	/**
+	 * Property key used to set the restart of FTP from
+	 * a specific offset
+	 */
 	public static final String RESTART_OFFSET = "restartOffset";
+	
+	/**
+	 * Property key used to set buffer size to use for file transfer
+	 */
 	public static final String BUFFER_SIZE = "bufferSize";
 	
+	/**
+	 * Property not visible to use when FTP data source is related to a 
+	 * data description
+	 */
 	static final String AS_INPUT_STREAM = "asInputStream";
 	static final String ACTION_MODE = "action";
 	static final String ACTION_READ = "read";
 	static final String ACTION_WRITE = "write";
 	static final String REMOTE_FILE = "remoteFile";
 
-
+	@SuppressWarnings("javadoc")
 	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL));
 	
+	@SuppressWarnings("javadoc")
 	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(CommonKeys.USERID, CommonKeys.PASSWORD, CommonKeys.URL, 
 			BINARY, RESTART_OFFSET, BUFFER_SIZE,
 			AS_INPUT_STREAM, ACTION_MODE, REMOTE_FILE));
@@ -56,5 +71,4 @@ public final class FtpResourceKeys {
 	 */
 	private FtpResourceKeys() {
 	}
-	
 }

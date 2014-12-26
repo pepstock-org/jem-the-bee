@@ -6,13 +6,17 @@ import java.util.LinkedList;
 import org.pepstock.jem.node.resources.definition.fields.AbstractFieldDescriptor;
 
 /**
- * A fields container
+ * A section is a container, from UI perspective, of all necessary forms to define a resource.
+ * <br>
+ * Graphically, it will be a tab panel inside a tabs container.
+ * 
  * @author Marco "Fuzzo" Cuccato
+ * @version 2.0
  *
  */
 public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 
-	private static final long serialVersionUID = -4440316497840447234L;
+	private static final long serialVersionUID = 1L;
 
 	private String name = null;
 	
@@ -73,17 +77,20 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 
 	/**
 	 * Add the fields to this Section
-	 * @param fields
+	 * @param fields additional fields to add to section
 	 */
 	public void addFields(AbstractFieldDescriptor... fields) {
+		// scans fields and add to section
 		for (AbstractFieldDescriptor arf : fields) {
 			this.fields.addLast(arf);
 		}
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "SectionDescriptor [name=" + name + ", fields=" + fields + "]";
+		return "SectionDescriptor [name=" + name + ", propertiesEditor=" + propertiesEditor + ", fields=" + fields + "]";
 	}
-
 }

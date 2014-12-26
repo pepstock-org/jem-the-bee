@@ -53,7 +53,6 @@ public class Upload extends Task {
 	 * Empty constructor
 	 */
 	public Upload() {
-		
 	}
 	
 	/**
@@ -111,37 +110,44 @@ public class Upload extends Task {
 	 */
 	@Override
 	public void execute() throws BuildException {
-		// check parameters
+		// check if URL is set
+		// if not EXCEPTION
 		if (url == null){
 			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("url"));
 		}
-		
+		// check if USERID is set
+		// if not EXCEPTION
 		if (userid == null){
 			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("userid"));
 		}
-		
+		// check if PASSWORD is set
+		// if not EXCEPTION
 		if (password == null){
 			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("password"));
 		}
 		// creates REST client
 		RestClient client = RestClientFactory.getClient(getUrl(), false);
+		// gets login manager
 		LoginManager loginManager = new LoginManager(client);
 		// login and upload files
 		try {
 			login(loginManager);
-
+			// creates GFS manager
 	        GfsManager gfsManager = new GfsManager(client);
+	        // scans all destination
 	        for(Destination dd : destinations ) {
+	        	// passes the GFS manager to destination
 	        	dd.setGfsManager(gfsManager);
+	        	// executes destination task
 	        	dd.execute();
 	        }
-			
 		} catch (JemException e) {
 			throw new BuildException(e);
 		} finally {
 			// checks if to do logoff or not
 			if (user != null){
 				try {
+					// logoff from JEM
 					loginManager.logoff();
 				} catch (JemException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
@@ -156,15 +162,15 @@ public class Upload extends Task {
 	 * @throws JemException if any exception occurs
 	 */
 	private void login(LoginManager loginManager) throws JemException{
+		// gets user from login manager
 		user = loginManager.getUser();
 		if (user == null) {
-			// create object account with uid and pwd
+			// create object account with userid and password
 			Account account = new Account();
 			account.setUserId(userid);
 			account.setPassword(password);
-			// perfrom login and save logged user
+			// performs login and save logged user
 			user = loginManager.login(account);
 		}
-		
 	}
 }

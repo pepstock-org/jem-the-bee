@@ -6,6 +6,8 @@ import java.io.Serializable;
 /**
  * Enumeration to be used as Message/Toast severity level
  * @author Marco "Fuzzo" Cuccato
+ * @version 1.2
+ * 
  */
 public enum MessageLevel implements Serializable {
 
@@ -24,6 +26,10 @@ public enum MessageLevel implements Serializable {
 	
 	private int intLevel = -1;
 	
+	/**
+	 * Constructs the message level, using the level as argument
+	 * @param intLevel level of message
+	 */
 	private MessageLevel(int intLevel) {
 		this.intLevel = intLevel;
 	}
@@ -36,7 +42,8 @@ public enum MessageLevel implements Serializable {
 	}
 	
 	/**
-	 * @param intLevel
+	 * Returns teh message level object from the level, integer format
+	 * @param intLevel level of message
 	 * @return the MessageLevel starting from int level value. Returns INFO by default.
 	 */
 	public static MessageLevel fromIntLevel(int intLevel) {
@@ -53,6 +60,5 @@ public enum MessageLevel implements Serializable {
 				break;
 		}
 		return parsed;
-	}
-	
+	}	
 }

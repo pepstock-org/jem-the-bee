@@ -50,6 +50,8 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.util.CharSet;
 
 /**
+ * Common utility to work with keys for security.
+ * 
  * @author Simone "Busy" Businaro
  * @version 1.0
  * 
@@ -66,33 +68,41 @@ public class Crypto {
 	}
 
 	/**
+	 * Loads a private key from a file, using password and file passed ar argument
 	 * 
 	 * @param pemKeyFile is the pem file of the RSA private key of the user.
 	 * @param password the password of the private key if the private key is
 	 *            protected by a password, null otherwise
 	 * @return the private Key read from pem file
-	 * @throws SecurityException if any Exception occurs while extracting private key
+	 * @throws KeyException if any Exception occurs while extracting private key
 	 * @throws MessageException if any Exception occurs while extracting private key
-	 * @throws KeyException 
 	 */
 	public static Key loadPrivateKeyFromFile(File pemKeyFile, String password) throws MessageException, KeyException {
 		try {
+			// checks if the provider is loaded.
+			// if not, it adds BouncyCastle as provider
 			if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
 				Security.addProvider(new BouncyCastleProvider());
 			}
-			// private key file in PEM format
+			// private key file in PEM format, from file
 			PEMParser pemParser = new PEMParser(new InputStreamReader(new FileInputStream(pemKeyFile), CharSet.DEFAULT));
+			// reads the object and close the parser and input stream
 			Object object = pemParser.readObject();
 			pemParser.close();
+			// creates a key converter by BouncyCastle
 			JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME);
+			// gets key pair instance
 			KeyPair kp;
+			// if is a PEM
 			if (object instanceof PEMEncryptedKeyPair) {
 				if(password==null){
 					throw new MessageException(NodeMessage.JEMC205E);
 				}
+				// uses the PEM decryptor using password
 				PEMDecryptorProvider decProv = new JcePEMDecryptorProviderBuilder().build(password.toCharArray());
 				kp = converter.getKeyPair(((PEMEncryptedKeyPair) object).decryptKeyPair(decProv));
 			} else {
+				// if here, the key it's protected by password
 				LogAppl.getInstance().emit(NodeMessage.JEMC199W);
 				kp = converter.getKeyPair((PEMKeyPair) object);
 			}
@@ -107,16 +117,19 @@ public class Crypto {
 	}
 
 	/**
-	 * 
+	 * Encrypt a text using a key
 	 * @param text to encrypt in byte
 	 * @param key to use to encrypt text
 	 * @return the encrypted text as an array of byte
 	 * @throws KeyException if any error occurs during the process
 	 */
-	public static byte[] crypt(byte[] text, Key key) throws KeyException{
+	public static byte[] encrypt(byte[] text, Key key) throws KeyException{
 		try {
+			// using security package
 			Cipher cipher = Cipher.getInstance(key.getAlgorithm());
+			// init the cipher
 			cipher.init(Cipher.ENCRYPT_MODE, key);
+			// encrypt the text 
 			byte[] plaintext = text;
 			return cipher.doFinal(plaintext);
 		} catch (InvalidKeyException e) {
@@ -133,16 +146,19 @@ public class Crypto {
 	}
 
 	/**
-	 * 
-	 * @param encryptText the text to endecrypt in byte
+	 * Decrypt an encrypted text using a key
+	 * @param encryptText the text to decrypt in byte
 	 * @param key used to decrypt text
 	 * @return the decrypted text as an array of byte
 	 * @throws KeyException if any error occurs during the process
 	 */
 	public static byte[] decrypt(byte[] encryptText, Key key) throws KeyException {
 		try {
+			// using security package
 			Cipher cipher = Cipher.getInstance(key.getAlgorithm());
+			// init the cipher
 			cipher.init(Cipher.DECRYPT_MODE, key);
+			// encrypt the text 
 			return cipher.doFinal(encryptText);
 		} catch (InvalidKeyException e) {
 			throw new KeyException(e.getMessage(), e);
@@ -158,9 +174,9 @@ public class Crypto {
 	}
 
 	/**
-	 * 
+	 * Generate a simmetric key, with 168 bit 
 	 * @return a secret TripleDES encryption/decryption key with 168 bit
-	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchAlgorithmException if any error occurs
 	 */
 	public static SecretKey generateSymmetricKey() throws NoSuchAlgorithmException {
 		// Get a key generator for Triple DES (a.k.a DESede)
@@ -170,5 +186,4 @@ public class Crypto {
 		// Use it to generate a key
 		return keygen.generateKey();
 	}
-
 }

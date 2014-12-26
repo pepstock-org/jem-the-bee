@@ -45,9 +45,12 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- *  REST service to manage GFS.
+ * REST service to manage GFS.
+ * <br>
+ * It can manages all teh actions of global file system, by REST.
  * 
- * @author Enrico Frigo
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
  * 
  */
 public class GfsManager extends AbstractRestManager {
@@ -70,6 +73,7 @@ public class GfsManager extends AbstractRestManager {
 	 * @param listener upload listeners
 	 */
 	public void addUploadListener(UploadListener listener){
+		// adds listener if not already added
 		if (!listeners.contains(listener)){
 			listeners.add(listener);
 		}
@@ -81,11 +85,11 @@ public class GfsManager extends AbstractRestManager {
 	 * @param listener upload listeners
 	 */
 	public void removeUploadListener(UploadListener listener){
+		// removes listener if exists in the list
 		if (listeners.contains(listener)){
 			listeners.remove(listener);
 		}
 	}
-
 
 	/**
 	 * Returns a content file of a specific type
@@ -95,18 +99,25 @@ public class GfsManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public String getFile(GfsRequest request) throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 		GenericType<JAXBElement<GfsOutputContent>> generic = new GenericType<JAXBElement<GfsOutputContent>>() {
 		};
 		try {
+			// creates the complete path of REST service, setting also the output format (XML)
 			JAXBElement<GfsOutputContent> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.OUTPUT_FILE_CONTENT_PATH).accept(MediaType.APPLICATION_XML).post(generic, request);
+			// gets the returned object
 			GfsOutputContent object = jaxbContact.getValue();
+	    	// checks if has got any exception
+	    	// Exception must be saved as attribute of returned object
 			if (object.hasException()) {
 				throw new JemException(object.getExceptionMessage());
 			}
 			return object.getContent();
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
+			// checks http status 
 			if (e.getResponse().getStatus() != 204) {
 				throw new JemException(e.getMessage(), e);
 			}
@@ -122,18 +133,25 @@ public class GfsManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public GfsFileList getFilesList(GfsRequest request) throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 		GenericType<JAXBElement<GfsFileList>> generic = new GenericType<JAXBElement<GfsFileList>>() {
 		};
 		try {
+			// creates the complete path of REST service, setting also the output format (XML)
 			JAXBElement<GfsFileList> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_LIST).accept(MediaType.APPLICATION_XML).post(generic, request);
+			// gets the returned object
 			GfsFileList object = jaxbContact.getValue();
+	    	// checks if has got any exception
+	    	// Exception must be saved as attribute of returned object
 			if (object.hasException()) {
 				throw new JemException(object.getExceptionMessage());
 			}
 			return object;
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
+			// checks http status 
 			if (e.getResponse().getStatus() != 204) {
 				throw new JemException(e.getMessage(), e);
 			}
@@ -148,56 +166,87 @@ public class GfsManager extends AbstractRestManager {
 	 * @throws JemException
 	 */
 	public int upload(UploadedGfsFile file) throws JemException {
+		// gets the web resource
+		// adding paths for upload
 		WebResource resource = getClient().getBaseWebResource().path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_UPLOAD);
 		ClientResponse response = null;
 		FileInputStream fis = null;
 		try {
+			// file input stream to read 
 			fis = new FileInputStream(file.getUploadedFile());
+			// creates a chunk in bytes
 			byte[] chunk = new byte[UploadedGfsChunkFile.MAX_CHUNK_SIZE];
+			// creates a random code, to identify the chunk
 			Random random = new Random();
 			int randomNumber = random.nextInt(Integer.MAX_VALUE);
 			// read and write file in chunks
 			int readNum = 0;
+			// reads the file with the buffer 
+			// the last send will be done out of this FOR
 			for (; (readNum = fis.read(chunk)) != -1;) {
+				// creates a chunk object to serialize and send by REST
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
+				// sets the data
 				chunkFile.setChunk(chunk);
+				// sets unique code
 				chunkFile.setFileCode(randomNumber);
-				// relative path must be used// when you want to upload the file
-				// maintaing a relative path of source file
+				// relative path must be used
+				// when you want to upload the file
+				// maintaining a relative path of source file
 				if (file.getRelativePath() != null){
 					chunkFile.setFilePath(file.getGfsPath()+file.getRelativePath());
 				} else {
 					chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 				}
+				// sets transfer is not the LAST
 				chunkFile.setTransferComplete(false);
+				// number of bytes
 				chunkFile.setNumByteToWrite(readNum);
+				// where to put the file (GFS type)
 				chunkFile.setType(file.getType());
+				// sets the update time 
 				chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
 				
+				// creates and performs post HTTP
 				response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
+				// checks if everything went OK!
 				if (response.getStatus() != HttpStatus.SC_OK) {
 					throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 				}
+				// close the response and activate the listeners
 				response.close();
 				fireUploadListeners(readNum);
 			}
 			// the last chunk was read
 			UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
+			// adds the last chunk
 			chunkFile.setChunk(chunk);
+			// sets random unique code
 			chunkFile.setFileCode(randomNumber);
+			// relative path must be used
+			// when you want to upload the file
+			// maintaining a relative path of source file
 			if (file.getRelativePath() != null){
 				chunkFile.setFilePath(file.getGfsPath()+file.getRelativePath());
 			} else {
 				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			}
+			// is the LAST call
 			chunkFile.setTransferComplete(true);
+			// where to put the file (GFS type)
 			chunkFile.setType(file.getType());
+			// sets the update time
 			chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
-			response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);		
+			
+			// creates and performs post HTTP
+			response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);	
+			// checks if everything went OK!
 			if (response.getStatus() != HttpStatus.SC_OK) {
 				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 			}
+			// activate the listeners
 			fireUploadListeners(readNum);
+			// doesn't close here the response. see finally
 			return response.getStatus();
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
@@ -209,6 +258,8 @@ public class GfsManager extends AbstractRestManager {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new JemException(e.getMessage(), e);
 		} finally {
+			// if file inut stream
+			// is open, it closes
 			if (fis != null){
 				try {
 	                fis.close();
@@ -224,10 +275,14 @@ public class GfsManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * notifies upload listener
+	 * Notifies upload listener
 	 * @param units number of byte uploaded
 	 */
 	private void fireUploadListeners(int units){
+		// if not empty, 
+		// scans all listeners calling
+		// the method passing the amount of bytes
+		// transferred to JEM
 		if (!listeners.isEmpty()){
 			for (UploadListener listener : listeners){
 				listener.setUnitsDone(units);
@@ -242,17 +297,24 @@ public class GfsManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public void delete(GfsRequest request) throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
 		};
 		try {
+			// creates the complete path of REST service, setting also the output format (XML)
 			JAXBElement<ReturnedObject> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_DELETE).accept(MediaType.APPLICATION_XML).post(generic, request);
+			// gets the returned object
 			ReturnedObject object = jaxbContact.getValue();
+	    	// checks if has got any exception
+	    	// Exception must be saved as attribute of returned object
 			if (object.hasException()) {
 				throw new JemException(object.getExceptionMessage());
 			}
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
+			// checks http status 
 			if (e.getResponse().getStatus() != 204) {
 				throw new JemException(e.getMessage(), e);
 			}
@@ -276,6 +338,5 @@ public class GfsManager extends AbstractRestManager {
 		public GfsPostService(String subService) {
 			super(GfsManager.this.getClient(), GfsManagerPaths.MAIN, subService);
 		}
-
 	}
 }

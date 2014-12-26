@@ -35,7 +35,7 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * REST service to manage user authentication and get and set of user preferences
+ * REST service to manage user authentication and get and set of user preferences.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -58,18 +58,26 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public LoggedUser getUser() throws JemException{
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 	    GenericType<JAXBElement<LoggedUserContent>> generic = new GenericType<JAXBElement<LoggedUserContent>>() {
 	    };
 	    try {
+	    	// creates the complete path of REST service, setting also the output format (XML)
 	    	JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.GET_USER).accept(MediaType.APPLICATION_XML).get(generic);
+	    	// gets the returned object
 	    	LoggedUserContent object = jaxbContact.getValue();
+	    	// checks if has got any exception
+	    	// Exception must be saved as attribute of returned object
 			if (object.hasException()){
 				throw new JemException(object.getExceptionMessage());
 			}
+			// returns the logged user
 			return object.getLoggedUser();
 	    } catch (UniformInterfaceException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
+	    	// checks http status 
 	    	if (e.getResponse().getStatus() != 204){
 	    		throw new JemException(e.getMessage(), e);
 	    	}
@@ -85,11 +93,17 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public LoggedUser login(Account account) throws JemException{
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 		GenericType<JAXBElement<LoggedUserContent>> generic = new GenericType<JAXBElement<LoggedUserContent>>() {
 		};
+		// creates the complete path of REST service, setting also the output format (XML)
 		JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGIN).accept(MediaType.APPLICATION_XML).put(generic, account);
-    	LoggedUserContent object = jaxbContact.getValue();
+		// gets the returned object
+		LoggedUserContent object = jaxbContact.getValue();
+    	// checks if has got any exception
+    	// Exception must be saved as attribute of returned object		
 		if (object.hasException()){
 			throw new JemException(object.getExceptionMessage());
 		}
@@ -102,7 +116,9 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public void logoff() throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the complete path of REST service, setting also the output format (XML)
 		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF).accept(MediaType.APPLICATION_XML).delete();
 	}
 	
@@ -113,7 +129,9 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public void logoff(UserPreferencesContent userPreferences) throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the complete path of REST service, setting also the output format (XML)
 		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES).accept(MediaType.APPLICATION_XML).delete(userPreferences);
 	}
 	
@@ -124,14 +142,19 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws JemException if any exception occurs
 	 */
 	public void storePreferences(UserPreferencesContent userPreferences) throws JemException {
+		// gets the web resource
 		WebResource resource = getClient().getBaseWebResource();
+		// creates the returned object
 		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
 		};
+		// creates the complete path of REST service, setting also the output format (XML)
 		JAXBElement<ReturnedObject> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.SAVE_PREFERENCES).accept(MediaType.APPLICATION_XML).post(generic, userPreferences);
-    	ReturnedObject object = jaxbContact.getValue();
+		// gets the returned object
+		ReturnedObject object = jaxbContact.getValue();
+    	// checks if has got any exception
+    	// Exception must be saved as attribute of returned object		
 		if (object.hasException()){
 			throw new JemException(object.getExceptionMessage());
 		}
-	}
-	
+	}	
 }

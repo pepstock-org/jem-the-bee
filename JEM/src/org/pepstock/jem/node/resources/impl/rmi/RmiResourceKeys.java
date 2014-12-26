@@ -21,20 +21,30 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Contains all information necessary to create a REST client for JEM by JNDI.<br>
+ * Contains all information necessary to create a RMI client for JEM by JNDI.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-@SuppressWarnings("javadoc")
 public class RmiResourceKeys {
 	
+	/**
+	 * RMI registry host name
+	 */
 	public static final String HOSTNAME = "hostname";
+	/**
+	 * RMI registry port
+	 */
 	public static final String PORT = "port";
+	/**
+	 * Ih teh connection must be SSL or not
+	 */
 	public static final String SSL = "ssl";
 	
+	@SuppressWarnings("javadoc")
 	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(HOSTNAME, PORT, SSL));
 	
+	@SuppressWarnings("javadoc")
 	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(HOSTNAME, PORT));
 
 	/**

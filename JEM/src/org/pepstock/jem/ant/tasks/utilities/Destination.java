@@ -51,7 +51,6 @@ public class Destination extends Task {
 	 * Empty constructor
 	 */
 	public Destination() {
-		
 	}
 
 	/**
@@ -101,43 +100,58 @@ public class Destination extends Task {
 	 */
 	@Override
 	public void execute() throws BuildException {
-		// checks parmaters
+		// check if GFS type is set
+		// if not EXCEPTION
 		if (type == null){
 			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("type"));
 		}
-		
+		// check if destination path is set
+		// if not EXCEPTION
 		if (path == null){
 			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("path"));
 		}
 		
+		// check if GFS manager has been passed by Upload task
+		// if not EXCEPTION
 		if (gfsManager == null){
 			throw new BuildException(AntMessage.JEMA064E.toMessage().getFormattedMessage());
 		}
 		
 		// gets GFS type
 		int gfsType = GfsFileType.getType(type);
+		// shows the message
 		log(AntMessage.JEMA067I.toMessage().getFormattedMessage(GfsFileType.getName(gfsType)));
 		
+		// counters
 		int count = 0;
 		int error = 0;
-		// scan filesets
+		// scan file sets
         for(FileSet fs : filesets ) {
+        	// uses ANT features to get the directory
+        	// scanner, necessary to use FILESET
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+            // gets files
             String[] includedFiles = ds.getIncludedFiles();
-            
+            // shows message
             log(AntMessage.JEMA068I.toMessage().getFormattedMessage(fs.getDir(), includedFiles.length));
             // scans all files matched
             for(int i=0; i<includedFiles.length; i++) {
             	log(AntMessage.JEMA069I.toMessage().getFormattedMessage(includedFiles[i]));
-          	
+            	
+            	// creates a file from string
             	File file = new File(fs.getDir(), includedFiles[i]);
+            	// only if exists it will be uploaded
             	if (file.exists()){
+            		// creates a uploaded file
                 	UploadedGfsFile uploadFile = new UploadedGfsFile();
+                	// sets all attributes to
+                	// upload the files
                 	uploadFile.setType(gfsType);
                 	uploadFile.setUploadedFile(file);
                 	uploadFile.setGfsPath(path);
                 	uploadFile.setRelativePath(includedFiles[i]);
                 	try {
+                		// uploads files
     					gfsManager.upload(uploadFile);
     					count++;
     				} catch (JemException e) {
@@ -154,5 +168,4 @@ public class Destination extends Task {
         	log(AntMessage.JEMA066W.toMessage().getFormattedMessage(error));
         }
     }
-
 }
