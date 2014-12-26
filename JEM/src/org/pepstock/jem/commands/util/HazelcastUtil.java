@@ -67,19 +67,31 @@ public class HazelcastUtil {
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
-				try {
-					SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-					clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-				} catch (KeyException e) {
-					throw new SubmitException(SubmitMessage.JEMW005E, e);
-				} catch (MessageException e) {
-					throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
-				}
+				setSocketInterceptor(clientConfig, privateKeyPathFile, privateKeyPassword, userId);
 			}
 			// creates a new Client instance of Hazelcast
 			return HazelcastClient.newHazelcastClient(clientConfig);
 		} catch (UnknownHostException e) {
 			throw new SubmitException(SubmitMessage.JEMW005E, e);
+		}
+	}
+	
+	/**
+	 * Activate the socket interceptor for the client
+	 * @param clientConfig Hazelcast client config
+	 * @param privateKeyPathFile private key path file
+	 * @param privateKeyPassword private key password
+	 * @param userId user identification
+	 * @throws SubmitException if any errors occurs
+	 */
+	private static void setSocketInterceptor(ClientConfig clientConfig, String privateKeyPathFile, String privateKeyPassword, String userId) throws SubmitException{
+		try {
+			SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
+			clientConfig.setSocketInterceptor(myClientSocketInterceptor);
+		} catch (KeyException e) {
+			throw new SubmitException(SubmitMessage.JEMW005E, e);
+		} catch (MessageException e) {
+			throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
 		}
 	}
 

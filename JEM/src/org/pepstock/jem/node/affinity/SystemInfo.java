@@ -140,24 +140,7 @@ public final class SystemInfo {
 		if (network == null) {
 			network = new Properties();
 			try {
-				List<InetAddress> list = new ArrayList<InetAddress>();
-				try {
-					// scans all network interfaces
-					Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-					while (interfaces.hasMoreElements()) {
-						NetworkInterface ni = interfaces.nextElement();
-						// scans all ip addresses
-						Enumeration<InetAddress> addresses = ni.getInetAddresses();
-						while (addresses.hasMoreElements()) {
-							// adds Ip address to the collection
-							InetAddress addr = addresses.nextElement();
-							list.add(addr);
-						}
-					}
-				} catch (Exception e) {
-					// debug
-					LogAppl.getInstance().debug(e.getMessage(), e);
-				}
+				List<InetAddress> list = loadInetAddress();
 				// gets hostname from management
 				String hostname = StringUtils.substringAfter(ManagementFactory.getRuntimeMXBean().getName(), "@");
 				// adds all ip addresses, formatting them
@@ -187,20 +170,13 @@ public final class SystemInfo {
 			for (int i = 0; i < pids.length; i++) {
 				long pid = pids[i];
 				// gets info about processes
-				List<String> info;
-				try {
-					info = Ps.getInfo(SIGAR, pid);
-				} catch (SigarException e) {
-					// debug
-					LogAppl.getInstance().debug(e.getMessage(), e);
-					// process may have gone away
-					continue; 
+				List<String> info = getProcessInfo(pid);
+				if (!info.isEmpty()){
+					// parses the process info 
+					// adding them to the collection
+					processes.add(Ps.join(info));
 				}
-				// parses the process info 
-				// addong them to the collection
-				processes.add(Ps.join(info));
 			}
-
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
@@ -225,5 +201,50 @@ public final class SystemInfo {
 			sb.append(ip);
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the list of inet addresses scanning the network interfaces of machine
+	 * @return the list of inet addresses scanning the network interfaces of machine
+	 */
+	private List<InetAddress> loadInetAddress(){
+		List<InetAddress> list = new ArrayList<InetAddress>();
+		try {
+			// scans all network interfaces
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface ni = interfaces.nextElement();
+				// scans all ip addresses
+				Enumeration<InetAddress> addresses = ni.getInetAddresses();
+				while (addresses.hasMoreElements()) {
+					// adds Ip address to the collection
+					InetAddress addr = addresses.nextElement();
+					list.add(addr);
+				}
+			}
+		} catch (Exception e) {
+			// debug
+			LogAppl.getInstance().debug(e.getMessage(), e);
+		}
+		return list;
+	}
+	
+	/**
+	 * Returns a list of information about the process ID 
+	 * @param pid process ID of the process to gather info
+	 * @return a list of information about the process
+	 */
+	private List<String> getProcessInfo(long pid){
+		List<String> info = null;
+		try {
+			// gets information
+			info = Ps.getInfo(SIGAR, pid);
+		} catch (SigarException e) {
+			// debug
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			// process may have gone away
+			return new ArrayList<String>();
+		}
+		return info;
 	}
 }

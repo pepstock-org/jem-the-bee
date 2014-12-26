@@ -50,7 +50,6 @@ import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
-
 /**
  * Represents a logical name of a database, addressable by name both a java code
  * (JNDI).<br>
@@ -157,7 +156,11 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		return getConnectionImpl();
 	}
 	
-	
+	/**
+	 * Implements teh connection to database, using the JNDI reference
+	 * @return a SQL connection
+	 * @throws SQLException if any error occurs
+	 */
 	private Connection getConnectionImpl() throws SQLException{
 		try {
 			SpringBatchSecurityManager batchSM = (SpringBatchSecurityManager)System.getSecurityManager();
@@ -201,16 +204,7 @@ public class DataSource extends AbstractDataSource implements Serializable {
 				}
 			}
 			// creates a JNDI reference
-			Reference ref = null;
-			try {
-				ref = resourcer.lookupReference(JobId.VALUE, res.getType());
-				if (ref == null){
-					throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
-				}
-			} catch (Exception e) {
-				throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
-			} 
-
+			Reference ref = getReference(resourcer, res);
 			// loads all properties into RefAddr
 			for (ResourceProperty property : props.values()){
 				ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
@@ -241,6 +235,27 @@ public class DataSource extends AbstractDataSource implements Serializable {
 		} catch (Exception e) {
 			throw new SQLException(e.getMessage(), e);
 		}
+	}
+	
+	/** 
+	 * Creates a JNDI reference to use to get DataSource object.
+	 * @param resourcer RMI utility to check info from JEM node by RMI
+	 * @param res JEM resource which represents the database
+	 * @return JNDI reference
+	 * @throws SQLException if any error occurs
+	 */
+	private Reference getReference(CommonResourcer resourcer, Resource res) throws SQLException{
+		// creates a JNDI reference
+		Reference ref = null;
+		try {
+			ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+			if (ref == null){
+				throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+			}
+		} catch (Exception e) {
+			throw new SQLException(SpringBatchMessage.JEMS019E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
+		} 
+		return ref;
 	}
 	/**
 	 * Returns the string representation of data description.

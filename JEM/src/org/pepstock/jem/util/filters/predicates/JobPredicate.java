@@ -155,8 +155,8 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 				// checks the ID of JOB
 				includeThis &= StringUtils.containsIgnoreCase(job.getId(), tokenValue);
 				break;
-			case ROUTED:
 				// checks JOB is routed
+			case ROUTED:
 				boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
 				boolean isRouted = job.getRoutingInfo().getRoutedTime() != null; 
 				includeThis &= wantRouted == isRouted;

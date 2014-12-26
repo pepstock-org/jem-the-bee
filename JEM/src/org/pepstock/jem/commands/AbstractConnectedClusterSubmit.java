@@ -393,16 +393,16 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 				}
 				// printOutput
 				if (job != null && isPrintOutput()) {
-					try {
-						printOutput();
-					} catch (Exception e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC017E, e);
-						rc = 1;
-					}
+					printOutput();
 				}
 			} catch (InterruptedException e1) {
 				// sets return code to error
 				LogAppl.getInstance().emit(NodeMessage.JEMC017E, e1);
+				rc = 1;
+			} catch (SubmitException e) {
+				// sets return code to error
+				LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
+				
 				rc = 1;
 			}
 		}

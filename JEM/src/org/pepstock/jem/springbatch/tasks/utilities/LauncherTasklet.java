@@ -72,12 +72,7 @@ public final class LauncherTasklet extends JemTasklet {
 			// check if it's a Tasklet and not JemTasklet. if not,
 			// exception occurs.
 			if (object instanceof Runnable) {
-				try {
-					Runnable runnable = (Runnable) object;
-					runnable.run();
-				} catch (Exception e) {
-					throw new TaskletException(e);
-				}
+				run((Runnable) object);
 			} else {
 				// scans the method to see if there is any method to be executed
 				Method method = null;
@@ -133,6 +128,19 @@ public final class LauncherTasklet extends JemTasklet {
 	 */
 	public void setObject(Object object) {
 		this.object = object;
+	}
+	
+	/**
+	 * Runs the object instance
+	 * @param runnable object runnable instance of jcl, to be execute
+	 * @throws TaskletException if any error occurs during the runnable execution
+	 */
+	private void run(Runnable runnable) throws TaskletException{
+		try {
+			runnable.run();
+		} catch (Exception e) {
+			throw new TaskletException(e);
+		}
 	}
 	
 	/**

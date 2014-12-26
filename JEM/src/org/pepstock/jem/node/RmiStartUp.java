@@ -62,29 +62,38 @@ public class RmiStartUp {
 			RegistryContainer.getInstance().addRmiObject(CommonResourcer.NAME, new CommonResourcerImpl());
 			LogAppl.getInstance().emit(NodeMessage.JEMC015I, CommonResourcer.NAME);
 
-			try {
-				// Try to load internal utilities. Due to they are not free
-				// and in another project, avoiding to create useless dependency they are
-				// loaded dynamically, by reflection
-				Class<?> internals = Class.forName(CLASS_FOR_EXTERNAL);
-				ExternalObject externalObject = (ExternalObject)internals.newInstance();
-				// create and load RMI object for internal utilities
-				RegistryContainer.getInstance().addRmiObject(externalObject.getName(), externalObject.getObject());
-				LogAppl.getInstance().emit(NodeMessage.JEMC195I, externalObject.getName());
-			} catch (ClassNotFoundException e) {
-				// ignore the stack trace
-				LogAppl.getInstance().ignore(e.getMessage(), e);
-				LogAppl.getInstance().emit(NodeMessage.JEMC196W, CLASS_FOR_EXTERNAL);
-			} catch (InstantiationException e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-			} catch (IllegalAccessException e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-			} catch (RemoteException e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-			} 
+			// loads external objects
+			loadExternalObjects();
+
 		} catch (RemoteException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC016E, e, TasksDoor.NAME);
 			throw e;
 		}
+	}
+	
+	/**
+	 * Loads external RMI object
+	 */
+	private static void loadExternalObjects(){
+		try {
+			// Try to load internal utilities. Due to they are not free
+			// and in another project, avoiding to create useless dependency they are
+			// loaded dynamically, by reflection
+			Class<?> internals = Class.forName(CLASS_FOR_EXTERNAL);
+			ExternalObject externalObject = (ExternalObject)internals.newInstance();
+			// create and load RMI object for internal utilities
+			RegistryContainer.getInstance().addRmiObject(externalObject.getName(), externalObject.getObject());
+			LogAppl.getInstance().emit(NodeMessage.JEMC195I, externalObject.getName());
+		} catch (ClassNotFoundException e) {
+			// ignore the stack trace
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			LogAppl.getInstance().emit(NodeMessage.JEMC196W, CLASS_FOR_EXTERNAL);
+		} catch (InstantiationException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
+		} catch (IllegalAccessException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
+		} catch (RemoteException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
+		} 	
 	}
 }

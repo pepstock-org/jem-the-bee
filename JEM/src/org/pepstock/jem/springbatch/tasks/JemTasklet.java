@@ -219,20 +219,8 @@ public abstract class JemTasklet implements Tasklet{
 				}
 				
 				// creates a JNDI reference
-				Reference ref = null;
-				try {
-					ref = resourcer.lookupReference(JobId.VALUE, res.getType());
-					if (ref == null){
-						throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
-					}
-					if (ref instanceof ResourceLoaderReference){
-						ResourceLoaderReference loader = (ResourceLoaderReference) ref;
-						loader.loadResource(res, dataDescriptionImplList, source.getName());
-					}
-				} catch (Exception e) {
-					throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
-				}
-				
+				Reference ref = getReference(resourcer, res, source, dataDescriptionImplList);
+			
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
 					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
@@ -380,6 +368,35 @@ public abstract class JemTasklet implements Tasklet{
 		return changed;
 	}
 
+	/**
+	 * Creates a JNDI reference looking up via RMI to JEM node, using the data source specified on JCL and resource.
+	 * <br>
+	 * List of data description are necessary for the resources which could be used as streams on datasets.
+	 * 
+	 * @param resourcer singleton to get CommonResource object by RMI
+	 * @param res resource of JEM
+	 * @param source data source defined in the JCL
+	 * @param dataDescriptionImplList list of data description defined on the step
+	 * @return JNDI reference
+	 * @throws SpringBatchException if any error occurs
+	 */
+	private Reference getReference(CommonResourcer resourcer, Resource res, DataSource source, List<DataDescriptionImpl> dataDescriptionImplList) throws SpringBatchException{
+		// creates a JNDI reference
+		Reference ref = null;
+		try {
+			ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+			if (ref == null){
+				throw new SpringBatchException(SpringBatchMessage.JEMS019E, res.getName(), res.getType());
+			}
+			if (ref instanceof ResourceLoaderReference){
+				ResourceLoaderReference loader = (ResourceLoaderReference) ref;
+				loader.loadResource(res, dataDescriptionImplList, source.getName());
+			}
+		} catch (Exception e) {
+			throw new SpringBatchException(SpringBatchMessage.JEMS019E, e, res.getName(), res.getType());
+		}
+		return ref;
+	}
 	
 	/**
 	 * Is abstract method to implement with business logic, where it's possible

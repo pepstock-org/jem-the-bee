@@ -242,31 +242,27 @@ public class Filter implements Serializable {
 	 * @throws ParseException when the filter string is unparsable
 	 */
 	public static Filter parse(String searchString) throws ParseException {
-		try {
-			// checks if search string is null
-			if (searchString == null || searchString.trim().isEmpty()) {
-				throw new ParseException("Unparsable null/empty searchString");
-			}
-			// creates a filter
-			Filter toReturn = new Filter();
-			// splits the search string
-			String[] tokens = searchString.trim().split(SPACE);
-			// scans all tokens
-			for (String tokenString : tokens) {
-				try {
-					// creates a filter token, with internal parser
-					// of filter token class
-					FilterToken token = FilterToken.parse(tokenString);
-					// adds token
-					toReturn.add(token);
-				} catch (ParseException tpe) {
-					// NOPE
-				}
-			}
-			return toReturn;
-		} catch (Exception e) {
-			throw new ParseException("Unparsable searchString '" + searchString + "'; cause: " + e.getMessage(), e);
+		// checks if search string is null
+		if (searchString == null || searchString.trim().isEmpty()) {
+			throw new ParseException("Unparsable null/empty searchString");
 		}
+		// creates a filter
+		Filter toReturn = new Filter();
+		// splits the search string
+		String[] tokens = searchString.trim().split(SPACE);
+		// scans all tokens
+		for (String tokenString : tokens) {
+			try {
+				// creates a filter token, with internal parser
+				// of filter token class
+				FilterToken token = FilterToken.parse(tokenString);
+				// adds token
+				toReturn.add(token);
+			} catch (ParseException tpe) {
+				// NOPE
+			}
+		}
+		return toReturn;
 	}
 	
 	/**

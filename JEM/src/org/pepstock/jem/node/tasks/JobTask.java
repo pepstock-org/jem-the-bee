@@ -190,37 +190,14 @@ public abstract class JobTask extends CommandLineTask {
 			// node
 			getEnv().put("CLASSPATH", JavaUtils.getClassPath());
 		}
-		//
-		// creates Hazelcast predicate to extract all roles and permissions
-		// assigned to user
-		RolesQueuePredicate predicate = new RolesQueuePredicate();
-		predicate.setUser(user);
 
-		List<Role> myroles = null;
+		// sets the roles of the user
 		try {
-			// gets map and performs predicate!
-			IMap<String, Role> rolesMap = Main.getHazelcast().getMap(Queues.ROLES_MAP);
-			Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
-			boolean isLock = false;
-			try {
-				isLock = lock.tryLock(10, TimeUnit.SECONDS);
-				if (isLock) {
-					myroles = new ArrayList<Role>(rolesMap.values(predicate));
-				} else {
-					throw new NodeMessageException(NodeMessage.JEMC119E, Queues.ROLES_MAP);
-				}
-			} catch (Exception e) {
-				throw new NodeMessageException(NodeMessage.JEMC119E, e, Queues.ROLES_MAP);
-			} finally {
-				if (isLock){
-					lock.unlock();
-				}
-			}
+			setRoles(loadRoles(user));
 		} catch (NodeMessageException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC103E, user, e);
 			throw e;
 		}
-		setRoles(myroles);
 
 		// launch process and sets return code on return object
 		try {
@@ -232,6 +209,40 @@ public abstract class JobTask extends CommandLineTask {
 		} catch (Exception e) {
 			throw new JemException(e.getMessage(), e);
 		}
+	}
+	
+	/**
+	 * Loads all roles defined for a specific user.
+	 * @param user user to extract its roles
+	 * @return a list of roles assigned to the user
+	 * @throws NodeMessageException if any error occurs retrievin gthe roles
+	 */
+	private List<Role> loadRoles(User user) throws NodeMessageException{
+		// creates Hazelcast predicate to extract all roles and permissions
+		// assigned to user
+		RolesQueuePredicate predicate = new RolesQueuePredicate();
+		predicate.setUser(user);
+
+		List<Role> myroles = null;
+		// gets map and performs predicate!
+		IMap<String, Role> rolesMap = Main.getHazelcast().getMap(Queues.ROLES_MAP);
+		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
+		boolean isLock = false;
+		try {
+			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock) {
+				myroles = new ArrayList<Role>(rolesMap.values(predicate));
+			} else {
+				throw new NodeMessageException(NodeMessage.JEMC119E, Queues.ROLES_MAP);
+			}
+		} catch (Exception e) {
+			throw new NodeMessageException(NodeMessage.JEMC119E, e, Queues.ROLES_MAP);
+		} finally {
+			if (isLock){
+				lock.unlock();
+			}
+		}
+		return myroles;
 	}
 
 	/**
