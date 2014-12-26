@@ -31,6 +31,10 @@ import org.springframework.batch.repeat.RepeatStatus;
 
 /**
  * Spring batch utility which copy a file into another one.
+ * <br>
+ * It uses the INPUT data description as file source and 
+ * the OUTPUT data description as file target.
+ *   
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -41,9 +45,11 @@ public class CopyTasklet extends JemTasklet {
 	
 	private static final String OUTPUT_DATA_DESCRIPTION_NAME = "OUTPUT";
 
+	// uses the datadescriptor INPUT
 	@AssignDataDescription(INPUT_DATA_DESCRIPTION_NAME)
 	private InputStream istream = null;
-	
+
+	// uses the datadescriptor OUTPU
 	@AssignDataDescription(OUTPUT_DATA_DESCRIPTION_NAME)
 	private OutputStream ostream = null;
 	
@@ -59,9 +65,14 @@ public class CopyTasklet extends JemTasklet {
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
 		try {
+			// copies from input to output
+			// and gets the amount of copied bytes 
 			int bytes = IOUtils.copy(istream, ostream);
+			// closes quietly input 
+			// and ouptut
 			IOUtils.closeQuietly(istream);
 			IOUtils.closeQuietly(ostream);
+			// display the amount of bytes copied
 			System.err.println(SpringBatchMessage.JEMS053I.toMessage().getFormattedMessage(bytes));
 		} catch (IOException e) {
 			throw new TaskletException(e.getMessage(), e);

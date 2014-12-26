@@ -44,6 +44,8 @@ public class JppfResourceDefinition extends XmlConfigurationResourceDefinition {
 
 	private static final long serialVersionUID = 1L;
 	
+	// pattern use to check if the hosts are correctly defined: 
+	// format = host:port
 	private static final Pattern PATTERN = Pattern.compile("^\\s*(.*?):(\\d+)\\s*$");
 	
 	/**
@@ -65,13 +67,14 @@ public class JppfResourceDefinition extends XmlConfigurationResourceDefinition {
 	 */
 	@Override
 	public void validateResource(Resource resource) throws ResourceDefinitionException {
+		// validates the properties
 		validateResource(resource, JppfResourceKeys.PROPERTIES_ALL, JppfResourceKeys.PROPERTIES_ALL);
 		
-		// if here, everything is ok
+		// if here, everything is ofk
 		// but we need to test the format of ADDRESSES. MUST be host:port,host:port,host:port
 		String value = resource.getProperties().get(JppfResourceKeys.ADDRESSES).getValue();
 		String[] hosts = StringUtils.split(value, ",");
-		
+		// scans all hosts checking if they are correct
 		for (String host : hosts){
 			Matcher m = PATTERN.matcher(host);
 			if (!m.matches()) {

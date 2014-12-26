@@ -67,29 +67,26 @@ public abstract class Subject implements Serializable, Comparable<Object> {
 		this.name = name;
 	}
 
-	/**
-	 * String representation of object
-	 */
-	@Override
-	public String toString() {
-		return "[id:" + id + ", name:" + name + "]";
-	}
-
-	/**
-	 * Checks if the IDs are equals
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		// if the obj passed as argument if null
+		// return false
 		if (obj == null){
 			return false;
 		}
+		// checks if is a subject
 		if (obj instanceof Subject) {
 			Subject subject = (Subject) obj;
+			// if subject, checks the ID
 			return getId().equalsIgnoreCase(subject.getId());
 		}
+		// otherwise compare the string of tostring method
 		return obj.toString().equalsIgnoreCase(toString());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -116,5 +113,13 @@ public abstract class Subject implements Serializable, Comparable<Object> {
 			// otherwise always less than 0
 			return -1;
 		}
+	}
+
+	/**
+	 * String representation of object
+	 */
+	@Override
+	public String toString() {
+		return "[id:" + id + ", name:" + name + "]";
 	}
 }

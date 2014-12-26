@@ -58,5 +58,4 @@ public class JemException extends Exception implements Serializable {
 	public JemException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

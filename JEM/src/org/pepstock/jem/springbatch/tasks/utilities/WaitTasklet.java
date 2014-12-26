@@ -46,11 +46,15 @@ public class WaitTasklet extends JemTasklet {
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chuckContext) throws TaskletException {
 		try {
+			// creates an object to synchronized
 			Object lock = new Object();
 			synchronized (lock) {
+				// if there is the number of seconds
+				// wiats for those seconds
 				if (seconds > 0){
 					lock.wait(seconds * TimeUtils.SECOND);
 				} else{
+					// otherwise waits forever
 					lock.wait();
 				}
 			}
@@ -73,5 +77,4 @@ public class WaitTasklet extends JemTasklet {
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
 	}
-
 }

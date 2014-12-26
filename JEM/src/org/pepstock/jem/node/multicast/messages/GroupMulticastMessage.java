@@ -14,49 +14,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.util.locks;
-
-import org.pepstock.jem.log.JemException;
+package org.pepstock.jem.node.multicast.messages;
 
 /**
- * Exception generates during the READ and WRITE locks on Hazelcast Semaphore
+ * Abstract class which contains common attributes of request and response multicast inside JEM.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 2.1
+ * @version 2.2
  */
-public class LockException extends JemException {
-
-	private static final long serialVersionUID = 1L;
+public abstract class GroupMulticastMessage implements MulticastMessage {
+	
+	private String group;
 
 	/**
 	 * Empty constructor
 	 */
-	public LockException() {
+	public GroupMulticastMessage() {
 	}
 
 	/**
-	 * Constructor with error message
-	 * @param message error message
+	 * @return the group
 	 */
-	public LockException(String message) {
-		super(message);
+	public String getGroup() {
+		return group;
 	}
 
 	/**
-	 * Constructor with root cause exception
-	 * @param cause root cause exception
+	 * @param group the group to set
 	 */
-	public LockException(Throwable cause) {
-		super(cause);
-	}
-
-	/**
-	 * Constructor with error message and root cause exception
-	 * 
-	 * @param message error message
-	 * @param cause root cause exception
-	 */
-	public LockException(String message, Throwable cause) {
-		super(message, cause);
+	public void setGroup(String group) {
+		this.group = group;
 	}
 }

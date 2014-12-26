@@ -29,11 +29,14 @@ import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 public class BashScriptTask extends ShellScriptTask {
 	
 	private static final String SHELL = "bash";
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.ant.tasks.utilities.ShellScriptTask#execute()
+	 */
 	@Override
-    public void execute() throws BuildException {
+	public void execute() throws BuildException {
+		// sets BASH shell
     	setShell(SHELL);
        	super.execute();
-    }
-	
+    }	
 }

@@ -23,6 +23,11 @@ import org.pepstock.jem.node.DataPathsManager;
 import org.pepstock.jem.node.security.Role;
 
 /**
+ * This object has been passes to JOB before starting. It usually is called by step listener 
+ * during the job started which asks this object to have the list of roles of job user
+ * *to use inside the security manager) and data paths manager to address the files 
+ * to the correct path.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -35,7 +40,7 @@ public class JobStartedObjects implements Serializable{
 	private DataPathsManager storageGroupsManager = null;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public JobStartedObjects() {
 	}
@@ -67,5 +72,4 @@ public class JobStartedObjects implements Serializable{
 	public void setStorageGroupsManager(DataPathsManager storageGroupsManager) {
 		this.storageGroupsManager = storageGroupsManager;
 	}
-	
 }

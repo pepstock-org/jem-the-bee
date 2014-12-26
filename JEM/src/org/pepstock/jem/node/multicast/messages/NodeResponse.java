@@ -25,18 +25,22 @@ import org.pepstock.jem.node.NodeMessageException;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Is the POJO rapresentation of the multicast message sent by the node
- * coordinator to the web client. It contains the list of members in the form
- * IpAddress:port
+ * Is the POJO representation of the multicast message sent by the node
+ * coordinator to the web client. 
+ * <br>
+ * It contains the list of members in the form <code>IpAddress:port</code> 
  * 
  * @author Simone "Busy" Businaro
+ * @version 2.0
  * 
  */
-public class NodeResponse implements MulticastMessage {
+public class NodeResponse extends GroupMulticastMessage {
+	
+	private static final String NODE_RESPONSE_ELEMENT = "nodeResponse";
 
+	private static final String NODE_ELEMENT = "node";
+	
 	private List<String> nodesMembers;
-
-	private String group;
 	
 	/**
 	 * @return the nodesMembers
@@ -53,35 +57,38 @@ public class NodeResponse implements MulticastMessage {
 	}
 
 	/**
-	 * 
-	 * @param member a string rapresentation in the form IpAddress:port
+	 * @param member a string representation in the form IpAddress:port
 	 */
 	public void addMember(String member) {
+		// if collection is null
+		// creates the collection.
 		if (nodesMembers == null) {
 			nodesMembers = new ArrayList<String>();
-			nodesMembers.add(member);
-		} else {
-			nodesMembers.add(member);
 		}
+		nodesMembers.add(member);
 	}
 
 	/**
+	 * De-serialize a string message in a java object.
 	 * 
 	 * @param xmlMulticastMessage the xml multicast message
 	 * @return the JemLoginRequest unmarshall from the xml representation
-	 * @throws NodeMessageException 
-	 * @throws Exception if any exception occurs during the unmarshall process
+	 * @throws NodeMessageException if any exception occurs during the unmarshall process
 	 */
 	public static NodeResponse unmarshall(String xmlMulticastMessage) throws NodeMessageException {
+		// uses XStream
 		XStream xStream = new XStream();
-		xStream.alias("nodeResponse", NodeResponse.class);
-		xStream.alias("node", String.class);
+		// sets nodeResponse and node as alias
+		xStream.alias(NODE_RESPONSE_ELEMENT, NodeResponse.class);
+		xStream.alias(NODE_ELEMENT, String.class);
 		Object multicastMessage;
 		try {
+			// deserializes from XML
 			multicastMessage = xStream.fromXML(xmlMulticastMessage);
 		} catch (Exception e) {
 			throw new NodeMessageException(NodeMessage.JEMC109W, e, xmlMulticastMessage);
 		}
+		// if the object is not a NodeResponse, EXCEPTION 
 		if (!(multicastMessage instanceof NodeResponse)) {
 			throw new NodeMessageException(NodeMessage.JEMC109W, xmlMulticastMessage);
 		}
@@ -89,29 +96,14 @@ public class NodeResponse implements MulticastMessage {
 	}
 
 	/**
-	 * 
-	 * @param message
+	 * Serializes the object in XML
+	 * @param instance node response instance to serialize
 	 * @return the xml marshall from the NodeMulticastMessage
 	 */
-	public static String marshall(NodeResponse message) {
+	public static String marshall(NodeResponse instance) {
 		XStream xStream = new XStream();
-		xStream.alias("nodeResponse", NodeResponse.class);
-		xStream.alias("node", String.class);
-		return xStream.toXML(message);
+		xStream.alias(NODE_RESPONSE_ELEMENT, NodeResponse.class);
+		xStream.alias(NODE_ELEMENT, String.class);
+		return xStream.toXML(instance);
 	}
-
-	/**
-	 * @return the hazelcast group
-	 */
-	public String getGroup() {
-		return group;
-	}
-
-	/**
-	 * @param group the hazelcst group to set
-	 */
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
 }

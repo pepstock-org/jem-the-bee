@@ -26,7 +26,7 @@ import java.io.Serializable;
  */
 public class FilterToken implements Serializable {
 
-	private static final long serialVersionUID = -2475107758060833621L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Separator between name and value
@@ -43,15 +43,21 @@ public class FilterToken implements Serializable {
 	}
 	
 	/**
-	 * Builds a valorized {@link FilterToken}
+	 * Builds a not null {@link FilterToken}
 	 * @param filterName name part of token
 	 * @param filterValue value part of token
 	 */
 	public FilterToken(String filterName, String filterValue) {
+		// if filter name is not null
 		if (filterName != null) {
+			// normalize removing blanks and lowering case
 			this.name = filterName.trim().toLowerCase();
+		} 
+		// if value not null
+		if (filterValue != null){
+			// assigns the value without blanks
+			this.value = filterValue.trim();
 		}
-		this.value = filterValue.trim();
 	}
 
 	/**
@@ -63,7 +69,7 @@ public class FilterToken implements Serializable {
 
 	/**
 	 * Set the token name 
-	 * @param name
+	 * @param name name of the filter
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -85,7 +91,7 @@ public class FilterToken implements Serializable {
 
 	/**
 	 * Set the token value
-	 * @param value
+	 * @param value value of the filter
 	 */
 	public void setValue(String value) {
 		this.value = value;
@@ -126,44 +132,55 @@ public class FilterToken implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
+		// calculate a own hashcode 
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		// if argument == to this
 		if (this == obj){
 			return true;
 		}
+		// if argument is null FALSE
 		if (obj == null){
 			return false;
 		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		FilterToken other = (FilterToken) obj;
-		if (name == null) {
-			if (other.name != null){
+		// if argument is instance of filtertoken
+		if (obj instanceof FilterToken){
+			FilterToken other = (FilterToken) obj;
+			// compares name
+			if (name == null) {
+				// if both null, equals
+				if (other.name != null){
+					return false;
+				}
+			} else if (!name.equals(other.name)){
+				// if the names are different
 				return false;
 			}
-		} else if (!name.equals(other.name)){
-			return false;
-		}
-		if (value == null) {
-			if (other.value != null) {
+			// compares values
+			if (value == null) {
+				// if are both null ok
+				if (other.value != null) {
+					return false;
+				}
+			} else if (!value.equals(other.value)) {
+				// if the values are different
 				return false;
 			}
-		} else if (!value.equals(other.value)) {
-			return false;
+			// if here, they are equals
+			return true;
 		}
-		return true;
+		// if here, the argument is not a filtertoken
+		return false;
 	}
 
 	/**
@@ -174,10 +191,13 @@ public class FilterToken implements Serializable {
 	 */
 	public static FilterToken parse(String tokenString) throws ParseException {
 		try {
+			// checks if empty string
 			if (tokenString == null || tokenString.trim().isEmpty()) {
 				throw new ParseException("Unparsable null/empty tokenString");
 			}
+			// splits the token 
 			String[] nameValue = tokenString.split(FILTER_TOKEN_SEPARATOR);
+			// in case of number of tokens
 			switch (nameValue.length) {
 			case 2:
 				return new FilterToken(nameValue[0], nameValue[1]);

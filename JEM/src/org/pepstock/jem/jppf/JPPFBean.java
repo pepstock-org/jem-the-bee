@@ -16,9 +16,10 @@
  */
 package org.pepstock.jem.jppf;
 
-
 /**
- * Container of quick JPPF configuration
+ * Container of quick JPPF configuration.
+ * <br>
+ * Used in SpringBatch to configure JPPF.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.4
@@ -160,7 +161,5 @@ public final class JPPFBean {
 	public String toString() {
 		return "JPPFBean [runnable=" + runnable + ", address=" + address + ", parallelTaskNumber=" + parallelTaskNumber + ", datasource=" + datasource + ", delimiter=" + delimiter + ", delimiterString=" + delimiterString + ", chunkableDataDescription="
 				+ chunkableDataDescription + ", mergedDataDescription=" + mergedDataDescription + "]";
-	}
-
-	
+	}	
 }

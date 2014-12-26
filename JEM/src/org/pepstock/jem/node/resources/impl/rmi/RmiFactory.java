@@ -34,8 +34,11 @@ import org.pepstock.jem.node.tasks.jndi.JNDIException;
 import org.pepstock.jem.util.Parser;
 
 /**
- * JNDI factory to create object for JAVA batches. It returns a Rmi registry.
+ * JNDI factory to create object for JAVA batches
+ * <br>
+ * It returns a RMI registry.
  * 
+ * @see Registry
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  * 
@@ -47,10 +50,12 @@ public class RmiFactory  extends AbstractObjectFactory {
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context ctx, Hashtable<?, ?> env) throws JNDIException {
-
+		// checks if object is null
+		// or is not a reference
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
+		// creates RMI registry
 		return createRmiClient(loadProperties(object, RmiResourceKeys.PROPERTIES_ALL));
 	}
 
@@ -63,28 +68,31 @@ public class RmiFactory  extends AbstractObjectFactory {
 	 * @throws JNDIException if an error occurs creating the rmi client
 	 */
 	public Object createRmiClient(Properties properties) throws JNDIException {
+		// host name is mandatory
 		String hostname = properties.getProperty(RmiResourceKeys.HOSTNAME);
+		// if null, EXCEPTION!
 		if (hostname == null){
 			throw new JNDIException(NodeMessage.JEMC136E, RmiResourceKeys.HOSTNAME);
 		}
-
+		// gets registry port. if null, uses the default, 1099
 		int port = Parser.parseInt(properties.getProperty(RmiResourceKeys.PORT, "1099"), 1099);
-
+		// gets if SSL connection is required. Default is false
 		boolean ssl = Parser.parseBoolean(properties.getProperty(RmiResourceKeys.SSL, "false"), false);
-		
 		
 		Registry registry;
         try {
 	        registry = null;
+	        // if SSl, uses
+	        // a socket factory SSL
 	        if (ssl){
 	        	registry = LocateRegistry.getRegistry(hostname, port, new SslRMIClientSocketFactory());
 	        } else {
+	        	// otherwise a normal registry
 	        	registry = LocateRegistry.getRegistry(hostname, port);
 	        }
         } catch (RemoteException e) {
 	        throw new JNDIException(ResourceMessage.JEMR028E, e, hostname, port);
         }
-
 		return registry;
 	}
 }

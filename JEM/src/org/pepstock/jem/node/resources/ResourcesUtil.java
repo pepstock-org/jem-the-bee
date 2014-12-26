@@ -78,7 +78,7 @@ public class ResourcesUtil {
 	 */
 	public CryptedValueAndHash encrypt(String value) throws KeyException {
 		byte[] whatBytes = CodecSupport.toBytes(value);
-		byte[] cryptBytes = Crypto.crypt(whatBytes, key);
+		byte[] cryptBytes = Crypto.encrypt(whatBytes, key);
 		
 		CryptedValueAndHash result = new CryptedValueAndHash();
 		result.setCryptedValue(Base64.encodeBase64String(cryptBytes));

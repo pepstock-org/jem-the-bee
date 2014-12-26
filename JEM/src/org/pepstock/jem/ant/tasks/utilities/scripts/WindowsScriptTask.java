@@ -28,22 +28,29 @@ import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
  */
 public class WindowsScriptTask extends ShellScriptTask {
 	
+	// shell command
 	private static final String SHELL = "cmd.exe";
 	
 	private static final String ARG_0 = "/c";
 
 	private static final String ARG_1 = "call";
 	
+	// creates a file with this extension
 	private static final String SUFFIX = ".bat";
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.ant.tasks.utilities.ShellScriptTask#execute()
+	 */
 	@Override
-    public void execute() throws BuildException {
+	public void execute() throws BuildException {
 		// sets shell and suffix of file name
     	setShell(SHELL);
     	setSuffix(SUFFIX);
-    	// adds arguments
+    	// adds arguments for
+    	// CMD windows shell
     	super.createArg().setValue(ARG_0);
     	super.createArg().setValue(ARG_1);
+    	// executes the script
        	super.execute();
     }
     
@@ -53,10 +60,11 @@ public class WindowsScriptTask extends ShellScriptTask {
      * @param antTask shell script ant task to set
      */
     public static final void setWindowsStepExec(ShellScriptTask antTask){
+    	// override the shell and suffix 
     	antTask.setShell(SHELL);
     	antTask.setSuffix(SUFFIX);
+    	// sets arguments
     	antTask.createArg().setValue(ARG_0);
     	antTask.createArg().setValue(ARG_1);
     }
-	
 }

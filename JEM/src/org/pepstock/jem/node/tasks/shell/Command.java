@@ -113,7 +113,7 @@ public class Command {
 		if (name == null){
 			throw new JemRuntimeException("Name is null");
 		}
-		LinkedList<String> commandList = new LinkedList<String>();
+		List<String> commandList = new LinkedList<String>();
 		commandList.add(name);
 		if (parameters != null){
 			commandList.add(parameters);

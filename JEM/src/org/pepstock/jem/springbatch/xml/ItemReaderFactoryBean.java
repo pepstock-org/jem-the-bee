@@ -16,40 +16,21 @@
 */
 package org.pepstock.jem.springbatch.xml;
 
-import java.util.List;
-
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.springbatch.items.DataDescriptionItemReader;
-import org.pepstock.jem.springbatch.tasks.DataDescription;
-import org.pepstock.jem.springbatch.tasks.DataSource;
-import org.pepstock.jem.springbatch.tasks.Lock;
 import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
-import org.springframework.beans.factory.FactoryBean;
 
 /**
- * Factory bean for complex XML element for item reader <itemReader>.<br>
+ * Factory bean for complex XML element for item reader <itemReader>.
+ * <br>
  * It uses the extensions XML authoring of SprigBatch.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-public class ItemReaderFactoryBean implements FactoryBean<Object> {
-	
-	static final String DELEGATE = "delegate";
-	
-	static final String DATA_DESCRIPTIONS = "dataDescriptions";
-	
-	static final String DATA_SOURCES = "dataSources";
-	
-	static final String LOCKS = "locks";
-	
+public class ItemReaderFactoryBean extends ItemFactoryBean {
+
 	private DataDescriptionItemReader<?> itemReader = null;
-	
-	private List<DataDescription> dataDescriptions = null;
-	
-	private List<DataSource> dataSources = null;
-	
-	private List<Lock> locks = null;
 	
 	private ResourceAwareItemReaderItemStream<?> delegate = null;
 
@@ -80,48 +61,6 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	public void setDelegate(ResourceAwareItemReaderItemStream<?> delegate) {
 		this.delegate = delegate;
 	}
-
-	/**
-	 * @return the dataDescriptions
-	 */
-	public List<DataDescription> getDataDescriptions() {
-		return dataDescriptions;
-	}
-
-	/**
-	 * @param dataDescriptions the dataDescriptions to set
-	 */
-	public void setDataDescriptions(List<DataDescription> dataDescriptions) {
-		this.dataDescriptions = dataDescriptions;
-	}
-
-	/**
-	 * @return the dataSources
-	 */
-	public List<DataSource> getDataSources() {
-		return dataSources;
-	}
-
-	/**
-	 * @param dataSources the dataSources to set
-	 */
-	public void setDataSources(List<DataSource> dataSources) {
-		this.dataSources = dataSources;
-	}
-
-	/**
-	 * @return the locks
-	 */
-	public List<Lock> getLocks() {
-		return locks;
-	}
-
-	/**
-	 * @param locks the locks to set
-	 */
-	public void setLocks(List<Lock> locks) {
-		this.locks = locks;
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
@@ -130,11 +69,11 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	@Override
 	public Object getObject() throws Exception {
 		// checks if datadescriptions are set
-	    if (this.dataDescriptions != null && this.dataDescriptions.size()==1) {
-	    	itemReader.setDataDescription(dataDescriptions.get(0));
+	    if (getDataDescriptions() != null && getDataDescriptions().size()==1) {
+	    	itemReader.setDataDescription(getDataDescriptions().get(0));
 	    } else {
 	    	// only 1 data description is allowed
-	    	throw new JemException("Invalid data description definition: elements "+((this.dataDescriptions == null) ? "0" : this.dataDescriptions.size()));
+	    	throw new JemException("Invalid data description definition: elements "+((getDataDescriptions() == null) ? "0" : getDataDescriptions().size()));
 	    }
 	    // checks if there is a delegate (must be present see XML schema)
 	    if (this.delegate != null){
@@ -142,12 +81,12 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	    }
 	    
 		// checks if datasources are set
-	    if (this.dataSources != null && !this.dataSources.isEmpty()) {
-	    	itemReader.setDataSources(dataSources);
+	    if (getDataSources() != null && !getDataSources().isEmpty()) {
+	    	itemReader.setDataSources(getDataSources());
 	    }
 		// checks if locks are set
-		if (this.locks != null && !this.locks.isEmpty()) {
-	    	itemReader.setLocks(locks);
+		if (getLocks() != null && !getLocks().isEmpty()) {
+	    	itemReader.setLocks(getLocks());
 	    }
 		return itemReader;
 	}
@@ -159,13 +98,5 @@ public class ItemReaderFactoryBean implements FactoryBean<Object> {
 	@Override
 	public Class<DataDescriptionItemReader> getObjectType() {
 		return DataDescriptionItemReader.class;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.FactoryBean#isSingleton()
-	 */
-	@Override
-	public boolean isSingleton() {
-		return false;
 	}
 }

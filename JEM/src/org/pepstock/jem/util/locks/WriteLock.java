@@ -20,23 +20,31 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.InstanceDestroyedException;
 
 /**
+ * Implements a distributed write lock, leveraging on Hazelcast features
+ * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public class WriteLock extends ConcurrentLock{
 	
 	/**
-	 * 
-	 * @param instance
-	 * @param queueName
+	 * Creates a distributed write lock
+	 * @param instance Hazelcast instance
+	 * @param queueName map or queuename to be locked 
 	 */
 	public WriteLock(HazelcastInstance instance, String queueName) {
 		super(instance, queueName);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.locks.ConcurrentLock#acquire()
+	 */
 	@Override
 	public void acquire() throws LockException {
 		try {
+			// trying acquire the lock on semaphore
+			// for no waiting
 			getNoWaiting().acquire();
 		} catch (InstanceDestroyedException e) {
 			throw new LockException(e);
@@ -44,18 +52,25 @@ public class WriteLock extends ConcurrentLock{
 			throw new LockException(e);
 		}
 		try {
+			// trying acquire the lock on semaphore
+			// for no accessing
 			getNoAccessing().acquire();
 		} catch (InstanceDestroyedException e) {
 			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		} finally {
+			// always release the nowaiting
 			getNoWaiting().release();
 		}
 	} 
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.util.locks.ConcurrentLock#release()
+	 */
 	@Override
 	public void release() throws LockException {
+		// release teh no accessing
 		getNoAccessing().release();
 	}
 }

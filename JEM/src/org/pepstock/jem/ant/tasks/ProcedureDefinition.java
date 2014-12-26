@@ -26,6 +26,8 @@ import org.pepstock.jem.ant.AntMessage;
  * The procedure definition task generates a new definition
  * based on a current definition with some attributes or
  * elements preset.
+ * @author Andrea "Stock" Stocchero
+ * @version 1.3
  */
 public class ProcedureDefinition extends PreSetDef{
 	
@@ -71,16 +73,19 @@ public class ProcedureDefinition extends PreSetDef{
      */
 	@Override
     public void addTask(Task nestedTask) {
+		// if nested task already defined, error
+		// for multi tasks use SEQUENCE ANT task
         if (this.nestedTask != null) {
             throw new BuildException(AntMessage.JEMA025E.toMessage().getFormattedMessage());
         }
+        // if task is not an UnknowElment, exception!
         if (!(nestedTask instanceof UnknownElement)) {
             throw new BuildException(AntMessage.JEMA026E.toMessage().getFormattedMessage(nestedTask.getClass().getName()));
         }
+        // adds to parent
         this.nestedTask = (UnknownElement) nestedTask;
         super.addTask(getNestedTask());
     }
-
 
     /**
 	 * @return the nestedTask
@@ -88,5 +93,4 @@ public class ProcedureDefinition extends PreSetDef{
 	public UnknownElement getNestedTask() {
 		return nestedTask;
 	}
-
 }

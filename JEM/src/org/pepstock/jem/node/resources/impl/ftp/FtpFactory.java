@@ -40,8 +40,12 @@ import org.pepstock.jem.node.tasks.jndi.JNDIException;
 import org.pepstock.jem.util.Parser;
 
 /**
- * JNDI factory to create object for JAVA batches. It returns a FTPInputstream (if a file in SHR is requested) or
- * FTPOuptutstream.
+ * JNDI factory to create object for JAVA batches.
+ * <br>
+ * It returns a FTPInputstream (if a file in SHR is requested) or
+ * FTPOuptutstreamif the data source is related to a data description.
+ * <br>
+ * It returns a FTP object (wrapper of FTPclient) when is not related to a data description 
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
@@ -59,7 +63,7 @@ public class FtpFactory extends AbstractObjectFactory {
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context ctx, Hashtable<?, ?> env) throws JNDIException {
-		// checks arguments
+		// checks arguments. if null or not a reference return null
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
@@ -82,19 +86,21 @@ public class FtpFactory extends AbstractObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
 		
-		// creates URL
+		// creates URL objects
+		// from URL string
 		URL ftpUrl;
 		try {
 			ftpUrl = new URL(ftpUrlString);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
 			throw new JNDIException(NodeMessage.JEMC233E, e, ftpUrlString);
 		}
 		// checks scheme
+		// if SSL, activates a FTPS
 		if (!ftpUrl.getProtocol().equalsIgnoreCase(FTP_PROTOCOL) && !ftpUrl.getProtocol().equalsIgnoreCase(FTPS_PROTOCOL)){
 			throw new JNDIException(NodeMessage.JEMC137E, ftpUrl.getProtocol());
 		}
 
+		// gets port the host (from URL)
 		int port = ftpUrl.getPort();
 		String server = ftpUrl.getHost();
 
@@ -136,11 +142,13 @@ public class FtpFactory extends AbstractObjectFactory {
 		// checks if must be restarted
 		long restartOffset = Parser.parseLong(properties.getProperty(FtpResourceKeys.RESTART_OFFSET, "-1"), -1);
 		
-		// buffersize
+		// checks and sets buffer size
 		int bufferSize = Parser.parseInt(properties.getProperty(FtpResourceKeys.BUFFER_SIZE, "-1"), -1);
 
 		try {
+			// reply code instance
 			int reply;
+			// connect to server
 			if (port > 0) {
 				ftp.connect(server, port);
 			} else {
@@ -151,7 +159,7 @@ public class FtpFactory extends AbstractObjectFactory {
 			// verify
 			// success.
 			reply = ftp.getReplyCode();
-
+			// if not connected for error, EXCEPTION
 			if (!FTPReply.isPositiveCompletion(reply)) {
 				ftp.disconnect();
 				throw new JNDIException(NodeMessage.JEMC138E, reply);
@@ -165,33 +173,42 @@ public class FtpFactory extends AbstractObjectFactory {
 				ftp.setFileType(FTP.BINARY_FILE_TYPE);
 			}
 			
+			// sets restart offset if has been set
 			if (restartOffset >= 0){
 				ftp.setRestartOffset(restartOffset);
 			}
 			
+			// sets buffer size
 			if (bufferSize >= 0){
 				ftp.setBufferSize(bufferSize);
 			}
 			
-			// if not a input stream, returns a FTP object
+			// if is not related to a data descritpion,
+			// returns a FTP object
 			if (!asInputStream){
 				return new Ftp(ftp);
 			}
 			
-			// checks if is in input or output
+			// checks if is in WRITE mode
 			if (accessMode.equalsIgnoreCase(FtpResourceKeys.ACTION_WRITE)){
+				// gets outputstream
+				// using the file name passed by data descritpion
 				OutputStream os = ftp.storeFileStream(remoteFile);
 				if (os == null){
 					reply = ftp.getReplyCode();
 					throw new JNDIException(NodeMessage.JEMC206E, remoteFile, reply);
 				}
+				// returns outputstream
 				return new FtpOutputStream(os, ftp);
 			} else {
+				// gest inputstream
+				// using the file name passed by data descritpion
 				InputStream is = ftp.retrieveFileStream(remoteFile);
 				if (is == null){
 					reply = ftp.getReplyCode();
 					throw new JNDIException(NodeMessage.JEMC206E, remoteFile, reply);
 				}
+				// returns inputstream 
 				return new FtpInputStream(is, ftp);
 			}
 		} catch (SocketException e) {

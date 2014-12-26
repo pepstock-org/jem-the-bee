@@ -54,6 +54,8 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
 	
 	private static final String JS_DOMAIN_VARIABLE = "DOMAIN";
 	
+	private static final String JS_STD_OUTPUT_VARIABLE = "OUT";
+	
 	private static final String JS_ENVIRONMENT_VARIABLE = "ENVIRONMENT";
 
 	/* (non-Javadoc)
@@ -61,7 +63,7 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
 	 */
 	@Override
 	public Result runScript(File script, SystemInfo info) throws IOException {
-		// syncronized the access to file
+		// synchronized the access to file
 		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
 		writeSynch.lock();
 		try {
@@ -104,7 +106,6 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
 		result.setMemory(Main.EXECUTION_ENVIRONMENT.getMemory());
 		result.setParallelJobs(Main.EXECUTION_ENVIRONMENT.getParallelJobs());
 		Context jsContext = Context.enter();
-
 		try {
 			//inits JS context
             ScriptableObject scope = jsContext.initStandardObjects();
@@ -112,21 +113,25 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
             // Collect the arguments into a single string.
             String s = "";
 
-            // Set up "SYSINFO" in the global scope to contain Sysinfo java object
+            // Set up new SCOPE for JS
             jsContext.newObject(scope);
-            scope.defineProperty(JS_SYSINFO_VARIABLE, info, ScriptableObject.READONLY);
+			
+            // defines the RESULT on JavaScript
+            Object wrappedOut = Context.javaToJS(System.out, scope);
+            Object wrapperResult = Context.javaToJS(result, scope);
+            Object wrapperInfo = Context.javaToJS(info, scope);
+            ScriptableObject.putProperty(scope, JS_STD_OUTPUT_VARIABLE, wrappedOut);
+            scope.defineProperty(JS_SYSINFO_VARIABLE, wrapperInfo, ScriptableObject.READONLY);
             scope.defineProperty(JS_DOMAIN_VARIABLE, Main.EXECUTION_ENVIRONMENT.getDomain(), ScriptableObject.READONLY);
             scope.defineProperty(JS_ENVIRONMENT_VARIABLE, Main.EXECUTION_ENVIRONMENT.getEnvironment(), ScriptableObject.READONLY);
-            scope.defineProperty(JS_RESULT_VARIABLE, result, ScriptableObject.PERMANENT);
+            scope.defineProperty(JS_RESULT_VARIABLE, wrapperResult, ScriptableObject.PERMANENT);
             
             // Now evaluate the string we've collected. We'll ignore the result.
             jsContext.evaluateReader(scope, reader, s, 1, null);
-            
         } finally {
         	// cleanup of JS context
             Context.exit();
         }
 		return result;
 	}
-
 }

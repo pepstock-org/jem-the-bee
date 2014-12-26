@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -410,7 +411,7 @@ public class OutputSystem {
 		
 		private static final long MB = 1024;
 		
-		private LinkedList<Space> list = new LinkedList<OutputSystem.Space>();
+		private List<Space> list = new LinkedList<OutputSystem.Space>();
 
 		/* (non-Javadoc)
 		 * @see java.util.TimerTask#run()
@@ -430,9 +431,9 @@ public class OutputSystem {
 					space.setSpace(freeSpace);
 					space.setTime(System.currentTimeMillis() / 1000);
 					
-					list.addLast(space);
+					((LinkedList<Space>)list).addLast(space);
 					if (list.size() >  SAMPLES_COUNT){
-						list.removeFirst();
+						((LinkedList<Space>)list).removeFirst();
 					}
 					
 					if (isUnderThreshold()){
@@ -458,7 +459,7 @@ public class OutputSystem {
 
 			// if we have only 1 sample, checks directly the value
 	        if (list.size() == 1){
-	        	Space space = list.getFirst();
+	        	Space space = ((LinkedList<Space>)list).getFirst();
 	        	return space.getSpace() < (MB * 100);
 	        }
 	        
@@ -482,7 +483,7 @@ public class OutputSystem {
 	        double q = betaHat[0];
 	        
 	        // using the linear regression, try to estimate the space in 10 minutes
-	        Space last = list.getLast();
+	        Space last = ((LinkedList<Space>)list).getLast();
 	        double x = last.getTime() + (10 * MINUTE);
 	        
 	        double y = (m * x) + q;

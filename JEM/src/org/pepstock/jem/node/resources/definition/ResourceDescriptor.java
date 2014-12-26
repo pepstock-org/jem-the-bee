@@ -6,13 +6,15 @@ import java.util.LinkedList;
 import com.google.gwt.user.client.ui.TabBar;
 
 /**
- * A Resource
+ * This descriptor is the root element to define a XML resource template.
+ * 
  * @author Marco "Fuzzo" Cuccato
+ * @version 2.0
  *
  */
 public class ResourceDescriptor implements Serializable, ResourcePartDescriptor {
 
-	private static final long serialVersionUID = -6651706310600815923L;
+	private static final long serialVersionUID = 1L;
 
 	private String type = null;
 	
@@ -79,9 +81,11 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 		return sections.size() > 1;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "ResourceDescriptor [type=" + type + ", sections=" + sections + "]";
+		return "ResourceDescriptor [type=" + type + ", description=" + description + ", sections=" + sections + "]";
 	}
-	
 }

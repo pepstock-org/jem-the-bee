@@ -20,27 +20,39 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
 /**
+ * Error listener activated when the XML check has been enabled for
+ * ANT build files.
+ * <br>
+ * It always throw the received exception.
+ * 
  * @author Luca Cappello
  * @version 1.0	
  *
  */
 public class TransformerErrorListener implements ErrorListener {
 
+	/* (non-Javadoc)
+	 * @see javax.xml.transform.ErrorListener#error(javax.xml.transform.TransformerException)
+	 */
 	@Override
-	public void error(TransformerException exception)
-			throws TransformerException {
+	public void error(TransformerException exception) throws TransformerException {
 		throw exception;
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.xml.transform.ErrorListener#fatalError(javax.xml.transform.TransformerException)
+	 */
 	@Override
-	public void fatalError(TransformerException exception)
-			throws TransformerException {
+	public void fatalError(TransformerException exception) throws TransformerException {
 		throw exception;
+		
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.xml.transform.ErrorListener#warning(javax.xml.transform.TransformerException)
+	 */
 	@Override
-	public void warning(TransformerException exception)
-			throws TransformerException {
+	public void warning(TransformerException exception) throws TransformerException {
 		throw exception;
 	}
 }

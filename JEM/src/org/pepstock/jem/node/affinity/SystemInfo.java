@@ -34,11 +34,11 @@ import org.pepstock.jem.node.system.Ps;
 
 /**
  * This object is used to collect all system information to use to decide the right affinities for node.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
  */
-
 public final class SystemInfo {
 	private static final Sigar SIGAR = new Sigar();
 
@@ -75,21 +75,26 @@ public final class SystemInfo {
 	 * @return a properties object.
 	 */
 	public Properties getRuntimeProperties() {
+		// if the instance is null,
+		// creates a new instance
+		// otherwise it returns the previous instance
 		if (runtime == null) {
 			runtime = new Properties();
 			String s = null;
 			try {
+				// gets the amount of processor
 				s = String.valueOf(Runtime.getRuntime().availableProcessors());
 				runtime.setProperty("availableProcessors", s);
 
 				Mem memory = SIGAR.getMem();
-
+				// gets the amount of free memory
+				// using SIGAR
 				s = String.valueOf(memory.getFree());
 				runtime.setProperty("freeMemory", s);
-
+				// gets the amount of total memory
+				// using SIGAR
 				s = String.valueOf(memory.getTotal());
 				runtime.setProperty("totalMemory", s);
-
 			} catch (Exception e) {
 				// debug
 				LogAppl.getInstance().debug(e.getMessage(), e);
@@ -104,8 +109,12 @@ public final class SystemInfo {
 	 * @return a properties object with all environment variables.
 	 */
 	public Properties getEnvironment() {
+		// if the instance is null,
+		// creates a new instance
+		// otherwise it returns the previous instance
 		if (environment == null) {
 			environment = new Properties();
+			// loads all environment variables
 			Map<String, String> props = System.getenv();
 			for (Map.Entry<String, String> entry : props.entrySet()) {
 				environment.setProperty(entry.getKey(), entry.getValue());
@@ -125,16 +134,22 @@ public final class SystemInfo {
 	 * @return a mapping of environment variables to their value.
 	 */
 	public Properties getNetworkProperties() {
+		// if the instance is null,
+		// creates a new instance
+		// otherwise it returns the previous instance		
 		if (network == null) {
 			network = new Properties();
 			try {
 				List<InetAddress> list = new ArrayList<InetAddress>();
 				try {
+					// scans all network interfaces
 					Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 					while (interfaces.hasMoreElements()) {
 						NetworkInterface ni = interfaces.nextElement();
+						// scans all ip addresses
 						Enumeration<InetAddress> addresses = ni.getInetAddresses();
 						while (addresses.hasMoreElements()) {
+							// adds Ip address to the collection
 							InetAddress addr = addresses.nextElement();
 							list.add(addr);
 						}
@@ -143,7 +158,9 @@ public final class SystemInfo {
 					// debug
 					LogAppl.getInstance().debug(e.getMessage(), e);
 				}
+				// gets hostname from management
 				String hostname = StringUtils.substringAfter(ManagementFactory.getRuntimeMXBean().getName(), "@");
+				// adds all ip addresses, formatting them
 				network.setProperty("ipaddresses", formatAddresses(list));
 				network.setProperty("hostnames", hostname);
 			} catch (Exception e) {
@@ -162,13 +179,14 @@ public final class SystemInfo {
 	 *  
 	 * @return list of running processes
 	 */
-	public static List<String> getRunningProcesses(){
+	public List<String> getRunningProcesses(){
 		List<String> processes = new ArrayList<String>();
 		try {
+			// gets the list of all processes ID 
 			long[] pids = SIGAR.getProcList();
 			for (int i = 0; i < pids.length; i++) {
 				long pid = pids[i];
-
+				// gets info about processes
 				List<String> info;
 				try {
 					info = Ps.getInfo(SIGAR, pid);
@@ -178,6 +196,8 @@ public final class SystemInfo {
 					// process may have gone away
 					continue; 
 				}
+				// parses the process info 
+				// addong them to the collection
 				processes.add(Ps.join(info));
 			}
 
@@ -188,13 +208,15 @@ public final class SystemInfo {
 		return processes;
 	}
 	/**
-	 * Formats a list of InetAddress.
+	 * Formats a list of InetAddress, comma separated
 	 * 
 	 * @param addresses a List of <code>InetAddress</code> instances.
 	 * @return a string containing a comma-separated list of ipaddresses
 	 */
-	private static String formatAddresses(final List<? extends InetAddress> addresses) {
+	private String formatAddresses(final List<? extends InetAddress> addresses) {
 		StringBuilder sb = new StringBuilder();
+		// builds a string
+		// with all ip address, comma separated
 		for (InetAddress addr : addresses) {
 			String ip = addr.getHostAddress();
 			if (sb.length() > 0){
