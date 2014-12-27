@@ -510,7 +510,7 @@ public class HttpFactory  extends AbstractObjectFactory {
 			try {
 				httpClient.close();
 			} catch (IOException ex) {
-				throw new JNDIException(NodeMessage.JEMC157E, ex, ex.getMessage());
+				LogAppl.getInstance().emit(NodeMessage.JEMC157E, ex, ex.getMessage());
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Marco "Cuc" Cuccato
+    Copyright (C) 2012-2014   Marco "Fuzzo" Cuccato
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -30,7 +30,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 /**
- * @author Marco "Cuc" Cuccato
+ * @author Marco "Fuzzo" Cuccato
  *
  */
 public abstract class AbstractJobsActions extends AbstractActionsButtonPanel<Job>  {

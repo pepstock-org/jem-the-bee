@@ -60,15 +60,21 @@ public class Top implements Callable<String>, Serializable {
 			// about system
 			sb.append(Uptime.getInfo(sigar));
 			sb.append('\n');
+			// gets processes states
 			sb.append(toString(sigar.getProcStat()));
 			sb.append('\n');
+			// cpu percentage
 			sb.append(sigar.getCpuPerc());
 			sb.append('\n');
+			// memory
 			sb.append(sigar.getMem());
 			sb.append('\n');
+			// swap memory
 			sb.append(sigar.getSwap());
 			sb.append('\n');
 			sb.append('\n');
+			// gets all processes
+			// here prints the headers
 			for (int i = 0; i < HEADER.length; i++) {
 				sb.append(HEADER[i]).append(' ');
 			}
@@ -92,7 +98,7 @@ public class Top implements Callable<String>, Serializable {
 				sb.append(Ps.join(info));
 				sb.append('\n');
 			}
-			// if first excution, removes all
+			// if first execution, removes all
 			// and wait for interval
 			if (k == 0) {
 				sb.delete(0, sb.length());

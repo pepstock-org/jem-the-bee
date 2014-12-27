@@ -266,17 +266,7 @@ public class StartUpSystem {
 				Main.setHazelcast(Hazelcast.newHazelcastInstance(config));
 
 				// creates a key anyway, even if couldn't be necessary, to avoid
-				// synch
-				// in Hazelcast
-
-				Key key;
-				try {
-					key = KeysUtil.getSymmetricKey();
-				} catch (Exception e) {
-					throw new ConfigurationException(e);
-				}
-
-				ResourcesUtil.getInstance().setKey(key);
+				loadKey();
 
 			} catch (Exception e) {
 				throw new ConfigurationException(e);
@@ -362,6 +352,24 @@ public class StartUpSystem {
 		} finally {
 			lock.unlock();
 		}
+	}
+	
+	/**
+	 * Loads the unique simmetric key of JEM cluster
+	 * @throws ConfigurationException if any error occurs creating or getting the key
+	 */
+	private static void loadKey() throws ConfigurationException{
+		// creates a key anyway, even if couldn't be necessary, to avoid
+		// synch
+		// in Hazelcast
+		Key key;
+		try {
+			key = KeysUtil.getSymmetricKey();
+		} catch (Exception e) {
+			throw new ConfigurationException(e);
+		}
+		// saves teh key
+		ResourcesUtil.getInstance().setKey(key);
 	}
 
 	/**
@@ -902,64 +910,85 @@ public class StartUpSystem {
 
 			NodesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForNodesMap());
 
-			Connection conn = DBPoolManager.getInstance().getConnection();
-			try {
-				DatabaseMetaData md = conn.getMetaData();
-				checkAndCreateTable(md, InputDBManager.getInstance());
-				checkAndCreateTable(md, RunningDBManager.getInstance());
-				checkAndCreateTable(md, OutputDBManager.getInstance());
-				checkAndCreateTable(md, RoutingDBManager.getInstance());
-
-				checkAndCreateTable(md, PreJobDBManager.getInstance());
-
-				checkAndCreateTable(md, NodesDBManager.getInstance());
-
-				checkAndCreateTable(md, RolesDBManager.getInstance());
-
-				checkAndCreateTable(md, CommonResourcesDBManager.getInstance());
-
-				checkAndCreateTable(md, RoutingConfigDBManager.getInstance());
-
-				checkAndCreateTable(md, UserPreferencesDBManager.getInstance());
-
-			} catch (SQLException e1) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC167E, e1);
-				throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
-			} finally {
-				if (conn != null) {
-					conn.close();
-				}
-			}
+			// creates all necessary tables
+			createTables();
 
 		} catch (SQLException e) {
 			throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(JobDBManager.class.getName()), e);
 		}
+	}
+	
+	/**
+	 * Creates all tbales necessary to persist Hazelcast maps.
+	 * @throws SQLException if any SQL error occurs
+	 * @throws ConfigurationException if any error occurs during the table creation
+	 */
+	private static void createTables() throws SQLException, ConfigurationException{
+		// gets teh DB connection from pool
+		Connection conn = DBPoolManager.getInstance().getConnection();
+		try {
+			// gets metadata
+			DatabaseMetaData md = conn.getMetaData();
+			// checks input
+			checkAndCreateTable(md, InputDBManager.getInstance());
+			// checks running
+			checkAndCreateTable(md, RunningDBManager.getInstance());
+			// checks output
+			checkAndCreateTable(md, OutputDBManager.getInstance());
+			// checks routing
+			checkAndCreateTable(md, RoutingDBManager.getInstance());
+			// checks JCL checking table
+			checkAndCreateTable(md, PreJobDBManager.getInstance());
+			// checks nodes
+			checkAndCreateTable(md, NodesDBManager.getInstance());
+			// checks roles
+			checkAndCreateTable(md, RolesDBManager.getInstance());
+			// checks resources
+			checkAndCreateTable(md, CommonResourcesDBManager.getInstance());
+			// checks routing and swarm configuration
+			checkAndCreateTable(md, RoutingConfigDBManager.getInstance());
+			// checks user preferences
+			checkAndCreateTable(md, UserPreferencesDBManager.getInstance());
 
+		} catch (SQLException e1) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e1);
+			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
+		} finally {
+			// if connection not null
+			// it closes putting again on pool
+			if (conn != null) {
+				conn.close();
+			}
+		}
 	}
 
 	/**
-	 * 
-	 * @param md
-	 * @param dbmanager
-	 * @param tableName
-	 * @param createStmt
-	 * @throws SQLException
+	 * Checks if the necessary tables exists on database. If not, it creates them.
+	 * @param md metadata of the database
+	 * @param manager teh DB manager which contains the SQL container and all SQL statements and the table name
+	 * @throws SQLException if any error occurs cheching the existence of tables
 	 */
 	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?, ?> manager) throws SQLException {
 		ResultSet rs = null;
 		try {
+			// gets SQL container
 			SQLContainer container = manager.getSqlContainer();
+			// gets a result set which searches for teh table anme
 			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE" });
+			// if result set is empty, it creates the table
 			if (!rs.next()) {
 				// creates table and return a empty set because if empty of
 				// course
 				DBPoolManager.getInstance().create(container.getCreateTableStatement());
 			}
 		} finally {
+			// if result set is not null
+			// it closes the result set
 			if (rs != null) {
 				try {
 					rs.close();
 				} catch (Exception e) {
+					// ignoring any exception
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}

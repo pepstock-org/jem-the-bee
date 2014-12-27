@@ -328,24 +328,8 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				}
 
 				// creates a JNDI reference
-				Reference ref = null;
-				try {
-					// gets JNDI reference
-					ref = resourcer.lookupReference(JobId.VALUE, res.getType());
-					// if null, exception
-					if (ref == null){
-						throw new BuildException(AntMessage.JEMA030E.toMessage().getFormattedMessage(res.getName(), res.getType()));
-					}
-					// if reference needs data set descriptions, because is possible to use it
-					// as data source on data description
-					// calls load method
-					if (ref instanceof ResourceLoaderReference){
-						ResourceLoaderReference loader = (ResourceLoaderReference) ref;
-						loader.loadResource(res, ddList, source.getName());
-					}
-				} catch (Exception e) {
-					throw new BuildException(AntMessage.JEMA030E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
-				} 
+				Reference ref = getReference(resourcer, res, source, ddList);
+
 				// loads all properties into RefAddr
 				for (ResourceProperty property : properties.values()){
 					ref.add(new StringRefAddr(property.getName(), replaceProperties(property.getValue())));
@@ -408,36 +392,9 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			// connection, like RMI
 			super.setFork(false);
 			
-			// sets here the annotations
-			try {
-				// if has got a classpath, change the main class with a JEM one
-				if (super.getCommandLine().haveClasspath()){
-					Class<?> clazz = JavaMainClassLauncher.class;
-					// gets where the class is located
-					// becuase it must be added to classpath
-					CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
-					if ( codeSource != null) {
-						// gets URL
-						URL url = codeSource.getLocation();
-						if (url != null){
-							// add at the ends of parameters the classname
-							super.createArg().setValue(getClassname());
-							// changes class name
-							super.setClassname(JavaMainClassLauncher.class.getName());
-							// adds URL to classpath
-							super.createClasspath().add(new Path(getProject(), FileUtils.toFile(url).getAbsolutePath()));
-						}
-					}
-				} else {
-					// if no classpath, can substitute here
-					Class<?> clazz = Class.forName(getClassname());
-					SetFields.applyByAnnotation(clazz);
-				}
-			} catch (ClassNotFoundException e) {
-				LogAppl.getInstance().ignore(e.getMessage(), e);
-			} catch (IllegalAccessException e) {
-				LogAppl.getInstance().ignore(e.getMessage(), e);
-			}
+			// changes the main class to apply the annotations of JEM
+			setCustomMainClass();
+			
 			batchSM.setInternalAction(false);
 			// executes the java main class defined in JCL
 			// setting the boolean to TRUE
@@ -516,6 +473,79 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				}
 				batchSM.setInternalAction(false);
 			}
+		}
+	}
+	
+	/**
+	 * Creates a JNDI reference looking up via RMI to JEM node, using the data source specified on JCL and resource.
+	 * <br>
+	 * List of data description are necessary for the resources which could be used as streams on datasets.
+	 * 
+	 * @param resourcer singleton to get CommonResource object by RMI
+	 * @param res resource of JEM
+	 * @param source data source defined in the JCL
+	 * @param dataDescriptionImplList list of data description defined on the step
+	 * @return JNDI reference
+	 */
+	private Reference getReference(CommonResourcer resourcer, Resource res, DataSource source, List<DataDescriptionImpl> ddList) {
+		// creates a JNDI reference
+		Reference ref = null;
+		try {
+			// gets JNDI reference
+			ref = resourcer.lookupReference(JobId.VALUE, res.getType());
+			// if null, exception
+			if (ref == null){
+				throw new BuildException(AntMessage.JEMA030E.toMessage().getFormattedMessage(res.getName(), res.getType()));
+			}
+			// if reference needs data set descriptions, because is possible to use it
+			// as data source on data description
+			// calls load method
+			if (ref instanceof ResourceLoaderReference){
+				ResourceLoaderReference loader = (ResourceLoaderReference) ref;
+				loader.loadResource(res, ddList, source.getName());
+			}
+		} catch (Exception e) {
+			throw new BuildException(AntMessage.JEMA030E.toMessage().getFormattedMessage(res.getName(), res.getType()), e);
+		} 
+		return ref;
+	}
+	
+	/**
+	 * Change the main class of the stepjava becuase this is necessary if it wants to apply
+	 * teh JEm annotation to the main java class developed with business logic.
+	 * 
+	 * @throws NamingException if is not ableto get the right info from JNDI
+	 */
+	private void setCustomMainClass() throws NamingException{
+		// sets here the annotations
+		try {
+			// if has got a classpath, change the main class with a JEM one
+			if (super.getCommandLine().haveClasspath()){
+				Class<?> clazz = JavaMainClassLauncher.class;
+				// gets where the class is located
+				// becuase it must be added to classpath
+				CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+				if ( codeSource != null) {
+					// gets URL
+					URL url = codeSource.getLocation();
+					if (url != null){
+						// add at the ends of parameters the classname
+						super.createArg().setValue(getClassname());
+						// changes class name
+						super.setClassname(JavaMainClassLauncher.class.getName());
+						// adds URL to classpath
+						super.createClasspath().add(new Path(getProject(), FileUtils.toFile(url).getAbsolutePath()));
+					}
+				}
+			} else {
+				// if no classpath, can substitute here
+				Class<?> clazz = Class.forName(getClassname());
+				SetFields.applyByAnnotation(clazz);
+			}
+		} catch (ClassNotFoundException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 		}
 	}
 	

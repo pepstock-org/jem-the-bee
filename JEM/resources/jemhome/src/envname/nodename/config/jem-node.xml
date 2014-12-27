@@ -5,11 +5,17 @@
 		<domain>#[jem.domain]</domain>
 		<affinity>#[jem.affinity]</affinity>
 		<affinityFactory
+			className="org.pepstock.jem.node.affinity.GroovyPolicyAffinityLoader">
+			<properties>
+				<property name="jem.affinity.loader.policy" value="#[jem.persistence]/#[jem.environment.name]/policy/policy.groovy" />
+			</properties>
+		</affinityFactory>
+		<!-- affinityFactory
 			className="org.pepstock.jem.node.affinity.JSPolicyAffinityLoader">
 			<properties>
 				<property name="jem.affinity.loader.policy" value="#[jem.persistence]/#[jem.environment.name]/policy/policy.js" />
 			</properties>
-		</affinityFactory>
+		</affinityFactory -->
 		<!--  to configure maximum number of jobs execution. Default 1 -->
 		<!-- parallel-jobs>1</parallel-jobs-->
 		<!--  to configure maximum amount of memory (in MB) to execute a process. Default 128 -->

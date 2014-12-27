@@ -34,7 +34,9 @@ import com.hazelcast.core.IdGenerator;
 
 /**
  * Is the Callable responsible to deliver the job to route to the right
- * environment. Once reached the right environment from the job create the
+ * environment. 
+ * <br>
+ * Once reached the right environment from the job create the
  * relative prejob and submit it in the CHECKING QUEUE
  * 
  * @author Simone "Busy" Businaro
@@ -53,7 +55,7 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 	private String routingEnvironment = null;
 
 	/**
-	 * 
+	 * Constructs the executor, called by another environment
 	 * @param job the routing job
 	 * @param routingEnvironment the routing environment
 	 */
@@ -70,7 +72,9 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 	 */
 	@Override
 	public Boolean call() throws SwarmException {
+		// gets the JEM hazelcast instance
 		HazelcastInstance hazelcastInstance = Main.getHazelcast();
+		// checks if is valid and running
 		if (hazelcastInstance == null || !hazelcastInstance.getLifecycleService().isRunning()){
 			throw new SwarmException(SwarmNodeMessage.JEMO008E, job);
 		}
@@ -79,21 +83,28 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 		job.getRoutingInfo().setRoutedTime(new Date());
 		job.getRoutingInfo().setSubmittedTime(job.getSubmittedTime());
 		job.getRoutingInfo().setEnvironment(routingEnvironment);
+		
+		// creates a prejob to be submitted in the current environment
 		PreJob preJob = new PreJob();
 		preJob.setJclContent(job.getJcl().getContent());
 		preJob.setJclType(job.getJcl().getType());
+		// gets unique ID
 		IdGenerator generator = Main.getHazelcast().getIdGenerator(Queues.JOB_ID_GENERATOR);
 		long id = generator.newId();
+		// creates job id
 		String jobId = Factory.createJobId(job, id);
+		// sets job id
 		job.setId(jobId);
+		// sets job
 		preJob.setJob(job);
+		// gets JCL queue
 		IQueue<PreJob> jclCheckingQueue = hazelcastInstance.getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
+			// put job on jcl queue
 			jclCheckingQueue.put(preJob);
 		} catch (InterruptedException e) {
 			throw new SwarmException(SwarmNodeMessage.JEMO015E, e);
 		}
 		return true;
 	}
-
 }

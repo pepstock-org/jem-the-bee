@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 
-
 /**
  * Contains all information necessary to create a datasource job by JNDI.<br>
  * 
@@ -30,22 +29,43 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
  * @version 2.2
  * @see org.apache.commons.dbcp.BasicDataSourceFactory
  */
-@SuppressWarnings("javadoc")
 public final class JdbcResourceKeys {
 	
+	/**
+	 * Property name for auto commit
+	 */
 	public static final String DEFAULT_AUTOCOMMIT = "defaultAutoCommit";
+	/**
+	 * Property name for read only
+	 */
 	public static final String DEFAULT_READONLY = "defaultReadOnly";
+	/**
+	 * Property name for transaction isolation
+	 */
 	public static final String DEFAULT_TRANSACTION_ISOLATION = "defaultTransactionIsolation";
+	/**
+	 * Property name for driver class name
+	 */
 	public static final String DRIVER_CLASS_NAME = "driverClassName";
 
-	
+	// connection protperties key
 	static final String PROP_CONNECTIONPROPERTIES = "connectionProperties";
+	// Apache uses"username", JEM uses "userid"
+	// this label is used to change on JNDI factory the value
 	static final String PROP_USERNAME = "username";
 	
+	// database pool properties
+	// internal use only
     static final String PROP_MAXACTIVE = "maxActive";
     static final String PROP_MAXIDLE = "maxIdle";
     static final String PROP_MINIDLE = "minIdle";
     static final String PROP_INITIALSIZE = "initialSize";
+    
+	/**
+	 * To avoid any instantiation
+	 */
+	private JdbcResourceKeys() {
+	}
     
 	/**
 	 * List of mandatory properties
@@ -73,9 +93,4 @@ public final class JdbcResourceKeys {
 		    PROP_MINIDLE,
 		    PROP_INITIALSIZE
 	));
-	/**
-	 * To avoid any instantiation
-	 */
-	private JdbcResourceKeys() {
-	}
 }

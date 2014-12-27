@@ -23,6 +23,10 @@ import org.pepstock.jem.commands.SubmitParameters;
 import org.quartz.Job;
 
 /**
+ * It's the base JOB with JCL information to submit on JEM.
+ * <br>
+ * It creates the arguments for the submit class
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -35,13 +39,11 @@ public abstract class JclJob implements Job {
 	private String password = null;
 
 	private boolean wait = true;
-
 	
 	/**
 	 * Empty constructor
 	 */
 	public JclJob() {
-		
 	}
 
 	/**
@@ -106,23 +108,30 @@ public abstract class JclJob implements Job {
 	 */
 	public List<String> createArgs() {
 		List<String> list = new ArrayList<String>();
+		// adds the JCL url argument
+		// to the submit class
 		if (jclUrl != null) {
 			list.add("-" + SubmitParameters.JCL.getName());
 			list.add(jclUrl);
 		}
+		// adds the JCL type argument
+		// to the submit class
 		if (jclType != null) {
 			list.add("-" + SubmitParameters.TYPE.getName());
 			list.add(jclType);
 		}
+		// adds the JEM cluster password argument
+		// to the submit class
 		if (password != null) {
 			list.add("-" + SubmitParameters.PASSWORD.getName());
 			list.add(password);
 		}
+		// adds the WAIT argument
+		// to the submit class
 		if (!wait) {
 			list.add("-" + SubmitParameters.WAIT.getName());
 			list.add(Boolean.FALSE.toString());
 		}
 		return list;
 	}
-
 }

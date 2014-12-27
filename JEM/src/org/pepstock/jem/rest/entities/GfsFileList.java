@@ -28,6 +28,7 @@ import org.pepstock.jem.gfs.GfsFile;
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Enrico Frigo
+ * @version 2.2
  *
  */
 @XmlRootElement

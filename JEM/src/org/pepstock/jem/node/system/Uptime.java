@@ -24,6 +24,10 @@ import org.hyperic.sigar.SigarProxy;
 
 /**
  * Display how long the system has been running and the current load averages.
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 1.3
+ * 
  */
 public class Uptime {
 
@@ -31,7 +35,6 @@ public class Uptime {
 	 * To avoid any instantiation
 	 */
 	private Uptime() {
-
 	}
 
 	/**
@@ -42,6 +45,7 @@ public class Uptime {
 	 * @throws SigarException if any errors occurs
 	 */
 	public static String getInfo(SigarProxy sigar) throws SigarException {
+		// gets uptime and formats it
 		double uptime = sigar.getUptime().getUptime();
 		return "  " + getCurrentTime() + "  up " + formatUptime(uptime);
 	}
@@ -54,19 +58,20 @@ public class Uptime {
 	 */
 	private static String formatUptime(double uptime) {
 		String retval = "";
-
+		// gets days
 		int days = (int) uptime / (60 * 60 * 24);
 		int minutes, hours;
-
+		// if has got days, puts the labels
 		if (days != 0) {
 			retval += days + " " + ((days > 1) ? "days" : "day") + ", ";
 		}
-
+		// caulates minutes, hours and so on.
 		minutes = (int) uptime / 60;
 		hours = minutes / 60;
 		hours %= 24;
 		minutes %= 60;
 
+		// creates the labels
 		if (hours != 0) {
 			retval += hours + ":" + minutes;
 		} else {
@@ -79,7 +84,7 @@ public class Uptime {
 	/**
 	 * Gets current time in TOP format representation
 	 * 
-	 * @return current tiem in string representation
+	 * @return current time in string representation
 	 */
 	private static String getCurrentTime() {
 		return new SimpleDateFormat("h:mm a").format(new Date());

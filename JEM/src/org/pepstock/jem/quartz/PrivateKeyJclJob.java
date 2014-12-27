@@ -20,8 +20,10 @@ import java.util.List;
 
 import org.pepstock.jem.commands.SubmitParameters;
 
-
 /**
+ * Is a JCL job which contains all information about the private key to use
+ * to connect JEM cluster.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -72,15 +74,20 @@ public abstract class PrivateKeyJclJob extends JclJob {
 	@Override
 	public List<String> createArgs() {
 		List<String> list = super.createArgs();
+		// if private key is not null
+		// it creates the argument for Submit
+		// with Private KEY
 		if (privateKeyFile != null) {
 			list.add("-" + SubmitParameters.PRIVATE_KEY.getName());
 			list.add(privateKeyFile);
 		}
+		// if private key passowrd is not null
+		// it creates the argument for Submit
+		// with Private KEY pwd
 		if (privateKeyPwd != null) {
 			list.add("-" + SubmitParameters.PRIVATE_KEY_PWD.getName());
 			list.add(privateKeyPwd);
 		}
 		return list;
 	}
-
 }

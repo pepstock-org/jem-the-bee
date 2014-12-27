@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Represents JCL, submitted by REST
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

@@ -34,6 +34,7 @@ import org.pepstock.jem.rest.maps.UserPreferencesMapAdapter;
  * to use inside the application. This object is created server side.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 // uses Accessory Type to avoid to have REST error serializing upser preferences

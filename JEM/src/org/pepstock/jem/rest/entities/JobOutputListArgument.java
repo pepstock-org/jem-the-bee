@@ -28,6 +28,7 @@ import org.pepstock.jem.OutputListItem;
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

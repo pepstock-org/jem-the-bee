@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Andrea "Stock" Stocchero
- * @author Marco "Cuc" Cuccato
+ * @author Marco "Fuzzo" Cuccato
  *
  */
 public class OverviewPanel extends AdminPanel implements ResizeCapable {

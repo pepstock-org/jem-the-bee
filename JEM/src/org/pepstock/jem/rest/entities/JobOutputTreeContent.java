@@ -36,6 +36,7 @@ import org.pepstock.jem.rest.maps.OutputListItemMapAdapter;
  * Represents folder content of JOB and JCL content.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD) 

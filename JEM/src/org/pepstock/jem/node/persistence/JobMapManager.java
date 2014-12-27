@@ -214,58 +214,88 @@ public class JobMapManager implements MapStore<String, Job> {
 			// if you don't want the exception
 			// means it has been called by recovery manager
 			if (!exception){
-				// locks the node
-				Lock l = Main.getNode().getLock();
-				try {
-					l.lock();
-					// if not operational
-					if (!Main.getNode().isOperational()){
-						// tries to apply the redo statements however
-						RecoveryManager.getInstance().applyRedoStatements();
-						// if here, it was able to delete jobs
-						Main.getNode().setOperational(true);
-						NodeInfoUtility.storeNodeInfo(Main.getNode());
-						NodeInfoUtility.start();
-						LogAppl.getInstance().emit(NodeMessage.JEMC172I);
-					}
-				} catch (Exception e) {
-					// here I've got the exception
-					LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
-				} finally {
-					// always unlock
-					l.unlock();
-				}
+				// checks and resets of attributes of node
+				checkNodeStatus();
 			}
 		} catch (SQLException e) {
 			// if exception, it throws the exception
 			if (exception) {
 				throw new MapStoreException(NodeMessage.JEMC043E, e);
 			} else {
-				// locks node
-				Lock l = Main.getNode().getLock();
-				try {
-					l.lock();
-					// gives the delete statement to redo manager
-					// to save internally
-					redoManager.delete(jobid);
-					if (Main.getNode().isOperational()){
-						// if operation, changes the status of the node
-						// putting the node in drain
-						// because the database is not reachable
-						LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
-						Main.getNode().setOperational(false);
-						NodeInfoUtility.storeNodeInfo(Main.getNode());
-						NodeInfoUtility.drain();
-						LogAppl.getInstance().emit(NodeMessage.JEMC173E);						
-					}
-				} finally {
-					// always unlock
-					l.unlock();
-				}
+				// recovers the delete statement moving on redo ones 
+				recoverDeleteStatement(jobid, e);
 			}
 		}
 	}
 
+	/**
+	 * Changes the attributes of node when SQL statement
+	 * ended correctly.
+	 * <br>
+	 * For this reason, it checks here 
+	 * if the node was not operational because now it works.
+	 * <br>
+	 * And then applies all redo statements and changes the node
+	 * status.
+	 */
+	private void checkNodeStatus(){
+		// locks the node
+		Lock l = Main.getNode().getLock();
+		try {
+			l.lock();
+			// if not operational
+			if (!Main.getNode().isOperational()){
+				// tries to apply the redo statements however
+				RecoveryManager.getInstance().applyRedoStatements();
+				// if here, it was able to delete jobs
+				Main.getNode().setOperational(true);
+				NodeInfoUtility.storeNodeInfo(Main.getNode());
+				NodeInfoUtility.start();
+				LogAppl.getInstance().emit(NodeMessage.JEMC172I);
+			}
+		} catch (Exception e) {
+			// here I've got the exception
+			LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
+		} finally {
+			// always unlock
+			l.unlock();
+		}
+	}
+	
+	/**
+	 * It recovers the delete statement saving the statement on the REDO ones.
+	 * Also checks the status of the node because if it's up and running, this is
+	 * wrong because it wasn't able to access to database.
+	 * <br>
+	 * For this reason, changes the status of the node.
+	 * 
+	 * @param jobid job id to delete
+	 * @param e exception occurred
+	 */
+	private void recoverDeleteStatement(String jobid, Exception e){
+		// locks node
+		Lock l = Main.getNode().getLock();
+		try {
+			l.lock();
+			// gives the delete statement to redo manager
+			// to save internally
+			redoManager.delete(jobid);
+			if (Main.getNode().isOperational()){
+				// if operation, changes the status of the node
+				// putting the node in drain
+				// because the database is not reachable
+				LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
+				Main.getNode().setOperational(false);
+				NodeInfoUtility.storeNodeInfo(Main.getNode());
+				NodeInfoUtility.drain();
+				LogAppl.getInstance().emit(NodeMessage.JEMC173E);						
+			}
+		} finally {
+			// always unlock
+			l.unlock();
+		}
+	}
+	
 	/**
 	 * Stores the job by jobs ID. Accepts also if an exception must be thrown or not.
 	 * This is done because the same method is called both from normal persistence and
@@ -281,87 +311,81 @@ public class JobMapManager implements MapStore<String, Job> {
 			// if you don't want the exception
 			// means it has been called by recovery manager
 			if (!exception){
-				// locks the node
-				Lock l = Main.getNode().getLock();
-				try {
-					l.lock();
-					// if not operational
-					if (!Main.getNode().isOperational()){
-						// tries to apply the redo statements however
-						RecoveryManager.getInstance().applyRedoStatements();
-						// if here, it was able to store jobs
-						Main.getNode().setOperational(true);
-						NodeInfoUtility.storeNodeInfo(Main.getNode());
-						NodeInfoUtility.start();
-						LogAppl.getInstance().emit(NodeMessage.JEMC172I);
-					}
-				} catch (Exception e) {
-					// here I've got the exception
-					LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
-				} finally {
-					// always unlock
-					l.unlock();
-				}
+				// checks and resets of attributes of node
+				checkNodeStatus();
 			}
 		} catch (SQLException e1) {
 			// ignore
 			LogAppl.getInstance().ignore(e1.getMessage(), e1);
 			// I have an exception (it happens if the key already exists, so
 			// update anyway
-			try {
-				// updates the job in table
-				dbManager.update(sqlContainer.getUpdateStatement(), job);
-				// if exception, it throws the exception
-				if (!exception){
-					// locks the node
-					Lock l = Main.getNode().getLock();
-					try {
-						l.lock();
-						if (!Main.getNode().isOperational()){
-							// tries to apply the redo statements however
-							RecoveryManager.getInstance().applyRedoStatements();
-							// if here, it was able to store jobs
-							Main.getNode().setOperational(true);
-							NodeInfoUtility.storeNodeInfo(Main.getNode());
-							NodeInfoUtility.start();
-							LogAppl.getInstance().emit(NodeMessage.JEMC172I);
-						}
-					} catch (Exception e2) {
-						// here I've got the exception
-						LogAppl.getInstance().emit(NodeMessage.JEMC043E, e2);
-					} finally {
-						// always unlock
-						l.unlock();
-					}
-				}
-			} catch (SQLException e3) {
-				// if exception, it throws the exception
-				if (exception) {
-					throw new MapStoreException(NodeMessage.JEMC043E, e3);
-				} else {
-					// gets node lock
-					Lock l = Main.getNode().getLock();
-					try {
-						l.lock();
-						// gives the store statement to redo manager
-						// to save internally
-						redoManager.store(job);
-						if (Main.getNode().isOperational()){
-							// if operation, changes the status of the node
-							// putting the node in drain
-							// because the database is not reachable
-							LogAppl.getInstance().emit(NodeMessage.JEMC043E, e3);
-							Main.getNode().setOperational(false);
-							NodeInfoUtility.storeNodeInfo(Main.getNode());
-							NodeInfoUtility.drain();
-							LogAppl.getInstance().emit(NodeMessage.JEMC173E);	
-						}
-					} finally {
-						// always unlock
-						l.unlock();
-					}
-				}
+			tryToUpdate(job, exception);
+		}
+	}
+	
+	/**
+	 * This method is called when an INSERT statement went wrong (because the key is already on database).
+	 * <br>
+	 * Here it tries to update the job object. If it doesn't work, it will recover the statement
+	 * moving it on the REDO ones.
+	 * 
+	 * @param job job instance to be updated
+	 * @param exception if the exception must be thrown or not.
+	 */
+	private void tryToUpdate(Job job,  boolean exception){
+		// I have an exception (it happens if the key already exists, so
+		// update anyway
+		try {
+			// updates the job in table
+			dbManager.update(sqlContainer.getUpdateStatement(), job);
+			// if exception, it throws the exception
+			if (!exception){
+				// checks and resets of attributes of node
+				checkNodeStatus();
+			}
+		} catch (SQLException e3) {
+			// if exception, it throws the exception
+			if (exception) {
+				throw new MapStoreException(NodeMessage.JEMC043E, e3);
+			} else {
+				// recovers the store statement moving on redo ones
+				recoverStoreStatement(job, e3);
 			}
 		}
 	}
+	/**
+	 * It recovers the store statement saving the statement on the REDO ones.
+	 * Also checks the status of the node because if it's up and running, this is
+	 * wrong because it wasn't able to access to database.
+	 * <br>
+	 * For this reason, changes the status of the node.
+	 * 
+	 * @param job job instance to store
+	 * @param e exception occurred
+	 */
+	private void recoverStoreStatement(Job job, Exception e){
+		// gets node lock
+		Lock l = Main.getNode().getLock();
+		try {
+			l.lock();
+			// gives the store statement to redo manager
+			// to save internally
+			redoManager.store(job);
+			if (Main.getNode().isOperational()){
+				// if operation, changes the status of the node
+				// putting the node in drain
+				// because the database is not reachable
+				LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
+				Main.getNode().setOperational(false);
+				NodeInfoUtility.storeNodeInfo(Main.getNode());
+				NodeInfoUtility.drain();
+				LogAppl.getInstance().emit(NodeMessage.JEMC173E);	
+			}
+		} finally {
+			// always unlock
+			l.unlock();
+		}		
+	}
+	
+	
 }

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
@@ -91,7 +92,7 @@ public class SaveDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 				try {
 					write.release();
 				} catch (Exception e) {
-					throw new ExecutorException(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+					LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
 				}
 			}
 		}

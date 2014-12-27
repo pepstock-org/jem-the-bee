@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Uses the annotation XmlRootElement to be serialized. 
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

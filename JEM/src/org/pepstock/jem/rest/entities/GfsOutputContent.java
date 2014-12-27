@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Represents output log content.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  * 
  */
 @XmlRootElement

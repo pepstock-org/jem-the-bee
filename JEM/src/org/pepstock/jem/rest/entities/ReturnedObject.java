@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * In the exception filed there is root cexception.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

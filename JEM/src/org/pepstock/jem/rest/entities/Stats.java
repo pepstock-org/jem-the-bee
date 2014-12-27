@@ -27,10 +27,14 @@ import org.pepstock.jem.node.persistence.RedoStatement;
 import org.pepstock.jem.node.stats.LightSample;
 
 /**
- * POJO container of samples list.<br>
+ * POJO container of samples list.
+ * <br>
+ * It contains also list of redo statements, if there are, and "about" information on JEM.
+ * <br>
  * Uses the annotation XmlRootElement to be serialized.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

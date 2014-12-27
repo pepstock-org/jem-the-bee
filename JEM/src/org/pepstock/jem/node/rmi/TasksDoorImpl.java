@@ -106,7 +106,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 			try {
 				read.release();
 			} catch (Exception e) {
-				throw new RemoteException(NodeMessage.JEMC261E.toMessage().getFormattedMessage(Queues.DATASETS_RULES_LOCK), e);
+				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
 			}
 		}
 	}

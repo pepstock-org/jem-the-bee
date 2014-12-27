@@ -27,6 +27,7 @@ import org.pepstock.jem.OutputFileContent;
  * Represents file content wrapper, necessary for rest calls.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement

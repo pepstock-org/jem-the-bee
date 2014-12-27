@@ -86,13 +86,9 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 					// and an exception must rollback everything, re-putting the job in queue for check
 					Transaction tran = Main.getHazelcast().getTransaction();
 					tran.begin();
-					PreJob prejob = null;
-					try {
-						// poll on queue
-						prejob = jclCheckingQueue.poll(10L, TimeUnit.SECONDS);
-					} catch (InterruptedException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC163E);
-					}
+					// gets the job
+					PreJob prejob = poll(jclCheckingQueue);
+
 					// checks because when the system is shutting
 					// down, hazecast gets a null object
 					if (prejob != null) {
@@ -119,6 +115,24 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// if here, the node is down
 		isDown = true;
 	}
+	
+	/**
+	 * Polls on Hazelcast queue to get a job. It waits for 10 seconds and if there isn't any
+	 * job, it leaves.
+	 * @param jclCheckingQueue queue used to move the pre jobs before moving on all other maps.
+	 * @return pre job instance
+	 */
+	private PreJob poll(IQueue<PreJob> jclCheckingQueue){
+		PreJob prejob = null;
+		try {
+			// poll on queue for 10
+			// seconds and then leaves
+			prejob = jclCheckingQueue.poll(10L, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC163E);
+		}
+		return prejob;
+	}
 
 	/**
 	 * Checks and load job from jcl checking queue to input queue.
@@ -141,32 +155,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			user.setOrgUnitId(job.getOrgUnit());
 			// creates Hazelcast predicate to extract all roles and permissions
 			// assigned to user
-			RolesQueuePredicate predicate = new RolesQueuePredicate();
-			predicate.setUser(user);
-
-			// gets HC map for roles
-			IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
-			// locks in HC to have a consistent status on roles
-			Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
-			List<Role> myroles = null;
-			boolean isLock = false;
-			try {
-				// locks the map, if not EXCEPTION!!
-				isLock = lock.tryLock(10, TimeUnit.SECONDS);
-				if (isLock) {
-					// reads the roles of the job user
-					myroles = new ArrayList<Role>(roles.values(predicate));
-				} else {
-					throw new NodeMessageException(NodeMessage.JEMC119E, Queues.ROLES_MAP);
-				}
-			} catch (Exception e) {
-				throw new NodeMessageException(NodeMessage.JEMC119E, e, Queues.ROLES_MAP);
-			} finally {
-				// always unlock 
-				if (isLock){
-					lock.unlock();
-				}
-			}
+			List<Role> myroles = loadRoles(user);
 			// checks job submit permission
 			StringPermission jobSubmitPermission = new StringPermission(Permissions.JOBS_SUBMIT);
 			boolean allowedJobSubmit = false;
@@ -229,20 +218,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 					throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), surrogatePermission);
 				}
 			}
-
 			// move job to INPUT queue
-			IMap<String, Job> inputQueue = Main.getHazelcast().getMap(Queues.INPUT_QUEUE);
-			try {
-				inputQueue.lock(job.getId());
-				inputQueue.put(job.getId(), job);
-				// fires event that the job is in queue
-				Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addJobLifecycleEvent(new JobLifecycleEvent(Queues.INPUT_QUEUE, job));
-			} catch (Exception ex){
-				LogAppl.getInstance().emit(NodeMessage.JEMC170E, ex, job.getName());		
-			} finally {
-				// always unlock
-				inputQueue.unlock(job.getId());
-			}
+			moveToInputQueue(job);
 			
 		} catch (JclFactoryException e) {
 			// if there a factory exception
@@ -273,6 +250,63 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			jcl.setType(prejob.getJclType());
 			// go to exception method
 			performException(e, job, jcl);
+		}
+	}
+	
+	/**
+	 * Loads all roles assigned to the user of job
+	 * @param user user of job 
+	 * @return list of roles of user
+	 * @throws NodeMessageException is any error occurs during getting the roles
+	 */
+	private List<Role> loadRoles(User user) throws NodeMessageException{
+		// creates Hazelcast predicate to extract all roles and permissions
+		// assigned to user
+		RolesQueuePredicate predicate = new RolesQueuePredicate();
+		predicate.setUser(user);
+
+		// gets HC map for roles
+		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
+		// locks in HC to have a consistent status on roles
+		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
+		List<Role> myroles = null;
+		boolean isLock = false;
+		try {
+			// locks the map, if not EXCEPTION!!
+			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock) {
+				// reads the roles of the job user
+				myroles = new ArrayList<Role>(roles.values(predicate));
+			} else {
+				throw new NodeMessageException(NodeMessage.JEMC119E, Queues.ROLES_MAP);
+			}
+		} catch (Exception e) {
+			throw new NodeMessageException(NodeMessage.JEMC119E, e, Queues.ROLES_MAP);
+		} finally {
+			// always unlock 
+			if (isLock){
+				lock.unlock();
+			}
+		}
+		return myroles;
+	}
+	
+	/**
+	 * Moves the job into input queue
+	 */
+	private void moveToInputQueue(Job job){
+		// move job to INPUT queue
+		IMap<String, Job> inputQueue = Main.getHazelcast().getMap(Queues.INPUT_QUEUE);
+		try {
+			inputQueue.lock(job.getId());
+			inputQueue.put(job.getId(), job);
+			// fires event that the job is in queue
+			Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addJobLifecycleEvent(new JobLifecycleEvent(Queues.INPUT_QUEUE, job));
+		} catch (Exception ex){
+			LogAppl.getInstance().emit(NodeMessage.JEMC170E, ex, job.getName());		
+		} finally {
+			// always unlock
+			inputQueue.unlock(job.getId());
 		}
 	}
 	

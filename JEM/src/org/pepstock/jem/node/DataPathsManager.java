@@ -157,37 +157,11 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 		try {
 			read.acquire();
 			if (this.datasetRulesFile == null){
-				FileAlterationObserver observer = new FileAlterationObserver(fileDatasetRules.getParent());
-				FileAlterationMonitor monitor = new FileAlterationMonitor(POLLING_INTERVAL);
-				observer.addListener(this);
-				monitor.addObserver(observer);
-				try {
-					monitor.start();
-				} catch (Exception e) {
-					// debug
-					LogAppl.getInstance().debug(e.getMessage(), e);
-				}
+				activateFileMonitor(fileDatasetRules);
 				this.datasetRulesFile = fileDatasetRules;
 			}
 			
-			DataSetRules dsr;
-			try {
-				InputStreamReader fis = new InputStreamReader(new FileInputStream(datasetRulesFile), CharSet.DEFAULT);
-				// parses from XML
-				dsr = loadXMLDataSetRules(fis);
-				// load using object 
-				DatasetsRulesResult rules = loadRules(dsr, true);
-				// if rules are empty, no rules and then exception
-				if (rules.getRules().isEmpty()){
-					throw new MessageException(NodeMessage.JEMC254E);
-				} else {
-					// sets new rules only if the parsing is correct
-					datasetsRules.clear();
-					datasetsRules.putAll(rules.getRules());
-				}
-			} catch (Exception e) {
-				throw new MessageException(NodeMessage.JEMC257E, e, datasetRulesFile.getAbsolutePath());
-			}
+			loadAndParseDataSetsRules();
 			LogAppl.getInstance().emit(NodeMessage.JEMC252I, datasetsRules.size());
 		} catch (LockException e) {
 			throw new MessageException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
@@ -195,10 +169,36 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 			try {
 				read.release();
 			} catch (Exception e) {
-				throw new MessageException(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
 			}
 		}
     }
+	
+	/**
+	 * Loads and parses the data sets rules from the file input stream of data set rules file. 
+	 * @throws MessageException if eany error occurs
+	 */
+	private void loadAndParseDataSetsRules() throws MessageException{
+		DataSetRules dsr;
+		try {
+			InputStreamReader fis = new InputStreamReader(new FileInputStream(datasetRulesFile), CharSet.DEFAULT);
+			// parses from XML
+			dsr = loadXMLDataSetRules(fis);
+			// load using object 
+			DatasetsRulesResult rules = loadRules(dsr, true);
+			// if rules are empty, no rules and then exception
+			if (rules.getRules().isEmpty()){
+				throw new MessageException(NodeMessage.JEMC254E);
+			} else {
+				// sets new rules only if the parsing is correct
+				datasetsRules.clear();
+				datasetsRules.putAll(rules.getRules());
+			}
+		} catch (Exception e) {
+			throw new MessageException(NodeMessage.JEMC257E, e, datasetRulesFile.getAbsolutePath());
+		}
+	}
+	
     /**
      * Lodas rules from XML file
      * @param fileDatasetRules file with rules
@@ -442,6 +442,24 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
     		groups.add(names ? mp.getName() : FilenameUtils.normalize(mp.getContent(), true));
     	}
     	return groups;	
+    }
+    
+    /**
+     * Activates the file monitoring on directory of data path rules
+     * @param fileDatasetRules file with data path rules
+     */
+    private void activateFileMonitor(File fileDatasetRules){
+		FileAlterationObserver observer = new FileAlterationObserver(fileDatasetRules.getParent());
+		FileAlterationMonitor monitor = new FileAlterationMonitor(POLLING_INTERVAL);
+		observer.addListener(this);
+		monitor.addObserver(observer);
+		try {
+			monitor.start();
+		} catch (Exception e) {
+			// debug
+			LogAppl.getInstance().debug(e.getMessage(), e);
+		}
+    	
     }
     
 	// Is triggered when a file is deleted from the monitored folder

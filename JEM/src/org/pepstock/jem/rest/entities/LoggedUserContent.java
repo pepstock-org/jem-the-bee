@@ -26,6 +26,7 @@ import org.pepstock.jem.node.security.LoggedUser;
  * Represents a wrapper to LoggedUser, necessary for REST
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.2
  *
  */
 @XmlRootElement
