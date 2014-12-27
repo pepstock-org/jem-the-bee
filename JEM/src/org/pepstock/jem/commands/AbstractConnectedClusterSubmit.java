@@ -401,8 +401,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 				rc = 1;
 			} catch (SubmitException e) {
 				// sets return code to error
-				LogAppl.getInstance().emit(e.getMessageInterface(), e.getObjects());
-				
+				LogAppl.getInstance().emit(e.getMessageInterface(), e, e.getObjects());
 				rc = 1;
 			}
 		}
