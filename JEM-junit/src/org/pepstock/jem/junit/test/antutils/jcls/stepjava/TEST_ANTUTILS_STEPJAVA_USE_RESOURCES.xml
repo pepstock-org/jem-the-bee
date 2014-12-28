@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="TEST_ANTUTILS_STEPJAVA_USE_RESOURCES" default="jndi" basedir=".">
+<project name="TEST_ANTUTILS_STEPJAVA_USE_RESOURCES" default="rest" basedir=".">
 	<description>
 		This is an example of how to make use of datasource in JEM.
     </description>
@@ -18,7 +18,6 @@
 
 	<target name="jndi">
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetJndi">
-			<arg value="-h" />
 			<classpath>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 				<!-- 
@@ -34,7 +33,6 @@
 	
 	<target name="rmi" depends="jndi">
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetRmi">
-			<arg value="-h" />
 			<classpath>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 				<!-- 
@@ -50,7 +48,6 @@
 	
 	<target name="rest" depends="rmi">
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetRest">
-			<arg value="-h" />
 			<classpath>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 				<!-- 

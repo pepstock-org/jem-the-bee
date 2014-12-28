@@ -37,12 +37,17 @@ public class RmiResourceKeys {
 	 */
 	public static final String PORT = "port";
 	/**
-	 * Ih the connection must be SSL or not
+	 * If the connection must be SSL or not
 	 */
 	public static final String SSL = "ssl";
 	
+	/**
+	 * If the registry can be use to bind, unbind and rebind objects
+	 */
+	public static final String READONLY = "readOnly";
+	
 	@SuppressWarnings("javadoc")
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(HOSTNAME, PORT, SSL));
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(HOSTNAME, PORT, SSL, READONLY));
 	
 	@SuppressWarnings("javadoc")
 	public static final List<String> PROPERTIES_MANDATORY = Collections.unmodifiableList(Arrays.asList(HOSTNAME, PORT));

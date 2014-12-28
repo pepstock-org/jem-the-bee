@@ -150,6 +150,7 @@
 					<![CDATA[
 					  <resource name="JUNIT-JNDI-RESOURCE" user="root" lastModified="2014-11-23 23:37:56.155 UTC" type="jndi">
 					    <property name="java.naming.factory.initial" visible="true" override="false">org.pepstock.jem.node.tasks.jndi.JemContextFactory</property>
+					    <property name="readOnly" visible="true" override="false">true</property>
 					    <customProperties>
 					      <property name="Prova">${jem.data}/gdg/test/log.txt</property>
 					    </customProperties>
@@ -175,6 +176,7 @@
 					    <property name="port" visible="true" override="false">5910</property>
 					    <property name="hostname" visible="true" override="false">127.0.0.1</property>
 					    <property name="ssl" visible="true" override="false">false</property>
+					    <property name="readOnly" visible="true" override="false">true</property>
 					    <customProperties/>
 					  </resource>
 					]]>

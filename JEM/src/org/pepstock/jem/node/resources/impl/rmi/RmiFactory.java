@@ -78,6 +78,9 @@ public class RmiFactory  extends AbstractObjectFactory {
 		int port = Parser.parseInt(properties.getProperty(RmiResourceKeys.PORT, "1099"), 1099);
 		// gets if SSL connection is required. Default is false
 		boolean ssl = Parser.parseBoolean(properties.getProperty(RmiResourceKeys.SSL, "false"), false);
+
+		// gets if is read only registry. Default is false
+		boolean readOnly = Parser.parseBoolean(properties.getProperty(RmiResourceKeys.READONLY, "false"), false);
 		
 		Registry registry;
         try {
@@ -93,6 +96,6 @@ public class RmiFactory  extends AbstractObjectFactory {
         } catch (RemoteException e) {
 	        throw new JNDIException(ResourceMessage.JEMR028E, e, hostname, port);
         }
-		return registry;
+		return new RegistryWrapper(registry, readOnly);
 	}
 }

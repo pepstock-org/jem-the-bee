@@ -47,5 +47,9 @@ public class GetRmi {
 		} else {
 			System.err.println("No rmi objects");
 		}
+		
+		if (args != null && args.length > 0){
+			registry.unbind("test");
+		}
 	}
 }

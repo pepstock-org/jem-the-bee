@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.node.resources.impl.jndi;
 
-import javax.naming.InitialContext;
 import javax.naming.Reference;
 
 /**
@@ -40,7 +39,7 @@ public class JndiReference extends Reference {
 	/**
 	 * Is DataSource object created when requested
 	 */
-	public static final String JNDI_OBJECT = InitialContext.class.getName();
+	public static final String JNDI_OBJECT = ContextWrapper.class.getName();
 	
 	/**
 	 * Creates a JNDI reference for JDBC purposes

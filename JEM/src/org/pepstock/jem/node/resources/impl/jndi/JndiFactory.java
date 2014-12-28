@@ -28,6 +28,7 @@ import javax.naming.Reference;
 
 import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
+import org.pepstock.jem.util.Parser;
 
 /**
  * Custom JNDI Factory, uses the connection properties to create a InitialContext.
@@ -47,12 +48,19 @@ public class JndiFactory extends AbstractObjectFactory {
 		// creates the environment for JNDI object
 		Hashtable<String, String> newEnv = new Hashtable<String, String>();
 		
+		boolean readOnly = false;
 		// loads all properties defined for this resource
 		Properties props = loadProperties(object, JndiResourceKeys.PROPERTIES_ALL);
 		for (Entry<Object, Object> entry : props.entrySet()){
-			newEnv.put(entry.getKey().toString(), entry.getValue().toString());
+			// Doesn't add the readOnly property to the environment
+			// but sets readonly
+			if (entry.getKey().toString().equalsIgnoreCase(JndiResourceKeys.READONLY)){
+				// gets if is read only registry. Default is false
+				readOnly = Parser.parseBoolean(props.getProperty(JndiResourceKeys.READONLY, "false"), false);
+			} else {
+				newEnv.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 		}
-		
 		// get the resource custom properties
 		RefAddr ra = ref.get(CommonKeys.RESOURCE_CUSTOM_PROPERTIES);
 		if (ra != null) {
@@ -68,6 +76,6 @@ public class JndiFactory extends AbstractObjectFactory {
 			}
 		}
 		// return initial context
-		return new InitialContext(newEnv);
+		return new ContextWrapper(new InitialContext(newEnv), readOnly);
 	}
 }

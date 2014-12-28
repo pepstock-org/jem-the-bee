@@ -6,6 +6,11 @@
 						label="Initial context factory" 
 						description="It is the service provider as the initial context." 
 						mandatory="true" defaultValue="" override="false" regExValidator=".*" />
+			
+			<check-box-field key="readOnly"
+  				label="Read Only"
+  				description="If read only, the user can't bind, unbind or rebind any object"
+  				mandatory="false" override="false" />			
 		
 		</section>		
 	

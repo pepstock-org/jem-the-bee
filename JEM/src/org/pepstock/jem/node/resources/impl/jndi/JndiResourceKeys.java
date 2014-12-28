@@ -33,7 +33,12 @@ public class JndiResourceKeys {
 	
 	public static final String INITIAL_CONTEXT_FACTORY = Context.INITIAL_CONTEXT_FACTORY;
 	
-	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(INITIAL_CONTEXT_FACTORY));
+	/**
+	 * If the initial context can be use to bind, unbind and rebind objects
+	 */
+	public static final String READONLY = "readOnly";
+	
+	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(INITIAL_CONTEXT_FACTORY, READONLY));
 
 	/**
 	 * To avoid any instantiation

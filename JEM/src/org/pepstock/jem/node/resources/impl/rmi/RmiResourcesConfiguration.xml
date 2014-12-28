@@ -16,6 +16,11 @@
   				label="SSL enable"
   				description="If a connection must be implemented using SSL"
   				mandatory="false" override="false" />
+  				
+			<check-box-field key="readOnly"
+  				label="Read Only"
+  				description="If read only, the user can't bind, unbind or rebind any object"
+  				mandatory="false" override="false" />  				
 		
 		</section>		
 		

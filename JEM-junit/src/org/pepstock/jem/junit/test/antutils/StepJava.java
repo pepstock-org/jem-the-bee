@@ -41,4 +41,22 @@ public class StepJava extends AntTestCase{
 	public void testOtherResources() throws Exception {
 		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_RESOURCES.xml"), 0);
 	}
+	
+	/**
+	 * Test the sort ant task
+	 * 
+	 * @throws Exception
+	 */
+	public void testJNDIWithAbend() throws Exception {
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_JNDI_ABEND.xml"), 1);
+	}
+	
+	/**
+	 * Test the sort ant task
+	 * 
+	 * @throws Exception
+	 */
+	public void testRMIWithAbend() throws Exception {
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_RMI_ABEND.xml"), 1);
+	}
 }

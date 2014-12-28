@@ -60,5 +60,9 @@ public class GetJndi {
 				System.err.println(sra.getContent());
 			}
 		}
+		System.err.println(context.getEnvironment());
+		if (args != null && args.length > 0){
+			context.unbind("test");
+		}
 	}
 }

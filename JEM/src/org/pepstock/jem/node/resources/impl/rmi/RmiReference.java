@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.node.resources.impl.rmi;
 
-import java.rmi.registry.Registry;
-
 import javax.naming.Reference;
 
 /**
@@ -39,7 +37,7 @@ public class RmiReference extends Reference {
 	/**
 	 * REST client
 	 */
-	public static final String RMI_OBJECT = Registry.class.getName();
+	public static final String RMI_OBJECT = RegistryWrapper.class.getName();
 	
 	/**
 	 * Creates a JNDI reference for JEM purposes
