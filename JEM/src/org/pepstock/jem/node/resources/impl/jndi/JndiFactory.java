@@ -30,7 +30,7 @@ import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
 
 /**
- * Custom JNDI Factory, uses the connection properties to create a InitialContext 
+ * Custom JNDI Factory, uses the connection properties to create a InitialContext.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -44,6 +44,7 @@ public class JndiFactory extends AbstractObjectFactory {
 	public Object getObjectInstance(Object object, Name name, Context ctx, @SuppressWarnings("rawtypes") Hashtable env) throws Exception {
 		// reads the reference
 		Reference ref = (Reference) object;
+		// creates the environment for JNDI object
 		Hashtable<String, String> newEnv = new Hashtable<String, String>();
 		
 		// loads all properties defined for this resource
@@ -57,9 +58,12 @@ public class JndiFactory extends AbstractObjectFactory {
 		if (ra != null) {
 			// loads environments
 			String propertyValue = ra.getContent().toString();
+			// parses the custom properties
+			// format: key=value;
 			String[] keys = propertyValue.split(";");
 			for (int i=0; i<keys.length; i++){
 				String[] values = keys[i].split("=");
+				// loads the new environment
 				newEnv.put(values[0], values[1]);
 			}
 		}

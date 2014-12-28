@@ -47,7 +47,7 @@ import com.sun.jersey.api.client.WebResource;
 /**
  * REST service to manage GFS.
  * <br>
- * It can manages all teh actions of global file system, by REST.
+ * It can manages all the actions of global file system, by REST.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2

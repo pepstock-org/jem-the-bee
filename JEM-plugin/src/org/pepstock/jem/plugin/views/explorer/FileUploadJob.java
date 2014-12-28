@@ -155,7 +155,7 @@ public class FileUploadJob extends Job {
 						// if nothing is the text box to search
 						path = "";
 					} else {
-						// if star, add nothing or teh path inserted plus file separator
+						// if star, add nothing or the path inserted plus file separator
 						path = "*".equalsIgnoreCase(gfsPath) ? "" : gfsPath+File.separator;
 					}
 					// creates the entity which contains
@@ -244,7 +244,7 @@ public class FileUploadJob extends Job {
 		 */
         @Override
         public void setUnitsDone(int units) {
-        	// changes teh progress bar if units more than 0
+        	// changes the progress bar if units more than 0
         	// untis are passed by REST API
         	if (units >= 0){
         		monitor.worked(units);

@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2014   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -41,7 +41,13 @@ import com.hazelcast.config.SocketInterceptorConfig;
 import com.hazelcast.nio.MemberSocketInterceptor;
 
 /**
- * @author Simone Businaro
+ * Implements the socket interceptor at MEMBER level of Hazelcast.
+ * <br>
+ * When configured, is able to prevent malicious access to the JEM and then to Hazelcast cluster.
+ * <br>
+ * Only with the KEY, is possible the nodes can communicate
+ * 
+ * @author Simone "Busy" Businaro
  * @version 1.0
  * 
  */
@@ -57,6 +63,7 @@ public class NodeInterceptor implements MemberSocketInterceptor {
 	 */
 	@Override
 	public void init(SocketInterceptorConfig config) {
+		// gets the key of socket interceptor
 		keystoresInfo = Factory.createKeyStoresInfo(config.getProperties());
 	}
 
@@ -84,15 +91,21 @@ public class NodeInterceptor implements MemberSocketInterceptor {
 			// instantiate the jemProtocol that give the right request (Base64
 			// encoded) from the given response
 			Key symmetricKey = KeysUtil.getSymmetricKey(keystoresInfo.getClusterKeystoreInfo());
+			// creates the client login protocol
 			ClientLoginProtocol jemClientProtocol = new ClientLoginProtocol(symmetricKey);
+			// creates a request
 			String request = jemClientProtocol.getRequestFromResponse(null, address, LoginRequest.JEM_NODE_USER);
 			LogAppl.getInstance().emit(NodeMessage.JEMC203I, new String(Base64.decode(request), CharSet.DEFAULT));
+			// send the response
 			out.println(request);
 			out.flush();
 			String inputResponse;
 			String outputRequest;
 			while ((inputResponse = in.readLine()) != null) {
+				// if here
+				// received a message
 				outputRequest = jemClientProtocol.getRequestFromResponse(inputResponse, address, LoginRequest.JEM_NODE_USER);
+				// checks 
 				LogAppl.getInstance().emit(NodeMessage.JEMC203I, new String(Base64.decode(inputResponse), CharSet.DEFAULT));
 				if (outputRequest != null){
 					LogAppl.getInstance().emit(NodeMessage.JEMC203I, new String(Base64.decode(outputRequest), CharSet.DEFAULT));

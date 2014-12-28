@@ -44,8 +44,7 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
-	 * @param nodesFilter
+	 * Empty constructor
 	 */
 	public AbstractGetNodes() {
 	}
@@ -57,7 +56,7 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 	 * @throws SwarmException if any exception occurs
 	 */
 	public final Collection<NodeInfo> getNodes(Predicates.AbstractPredicate predicate) throws SwarmException{
-
+		// gets map of nodes
 		IMap<String, NodeInfo> nodes = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
 		// locks all map to have a consistent collection
 		// only for 10 seconds otherwise
@@ -66,12 +65,15 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 		Lock lock = Main.SWARM.getHazelcastInstance().getLock(SwarmQueues.NODES_MAP_LOCK);
 		boolean isLock = false;
 		try {
+			// trying lock
 			isLock = lock.tryLock(10, TimeUnit.SECONDS);
 			if (isLock) {
+				// gets all swarm nodes
 				allNodes = nodes.values(predicate);
 			} else {
 				throw new SwarmException(NodeMessage.JEMC119E, SwarmQueues.NODES_MAP);
 			}
+			// returns all nodes
 			return allNodes;
 		} catch (Exception e) {
 			throw new SwarmException(NodeMessage.JEMC119E, e, SwarmQueues.NODES_MAP);
@@ -82,5 +84,4 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 			}
 		}
 	}
-
 }

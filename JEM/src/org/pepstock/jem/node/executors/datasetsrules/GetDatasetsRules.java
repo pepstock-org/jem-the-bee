@@ -52,12 +52,16 @@ public class GetDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 			ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
 			try {
 				read.acquire();
-				// reads the file and prepare the bean to return
+				// reads the file
 				String content = FileUtils.readFileToString(Main.DATA_PATHS_MANAGER.getDatasetRulesFile());
+				// creates the bean to return
 				ConfigurationFile policy = new ConfigurationFile();
+				// sets content and type (always XML)
 				policy.setContent(content);
 				policy.setType("xml");
+				// sets last modified time
 				policy.setLastModified(Main.DATA_PATHS_MANAGER.getDatasetRulesFile().lastModified());
+				// returns the policy
 				return policy;
 			} catch (IOException e) {
 				throw new ExecutorException(NodeMessage.JEMC238E, e, Main.DATA_PATHS_MANAGER.getDatasetRulesFile().toString());
@@ -72,6 +76,8 @@ public class GetDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 				}
 			}
 		}
+		// returns null if dataset rules doesn't exist
+		// it mustn't be here
 		return null;
 	}
 }

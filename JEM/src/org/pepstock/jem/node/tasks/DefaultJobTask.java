@@ -28,16 +28,22 @@ import org.pepstock.jem.node.tasks.shell.JavaCommand;
 import org.pepstock.jem.util.rmi.RmiKeys;
 
 /**
+ * This is default JOB task, which all customization should extend.
+ * <br>
+ * Is able to manage the JAVA commandline to create to execute a JAVA process.
+ * <br>
+ * It cares also of a java system properties with all JEM information.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
  */
 public class DefaultJobTask extends JobTask {
+
 	private static final long serialVersionUID = 1L;
 
 	// jem home, necessary for security
 	private String home = "-D"+ConfigKeys.JEM_HOME+"="+System.getProperty(ConfigKeys.JEM_HOME);
-
 	// rmi port for job in execution
 	private String rmiPort = "-D"+RmiKeys.JEM_RMI_PORT+"="+Main.getNode().getRmiPort();
 	// binary path folder, eventually needed to the jcl
@@ -52,19 +58,17 @@ public class DefaultJobTask extends JobTask {
 	private String persistencePath = "-D"+ConfigKeys.JEM_PERSISTENCE_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_PERSISTENCE_PATH_NAME);
 
 	/**
-	 * Environment variable to st classpath for JAVA 
+	 * Environment variable to set classpath for JAVA 
 	 */
 	public static final String CLASSPATH_ENVIRONMENT_VARIABLE = "CLASSPATH";
 	
 	/**
-	 * @param job
-	 * @param factory
+	 * Default constructor which calls the parent
+	 * @param job job to be executed
+	 * @param factory JEM factory which has created the job
 	 */
 	public DefaultJobTask(Job job, JemFactory factory) {
 		super(job, factory);
-		
-		
-
 	}
 
 	/* (non-Javadoc)
@@ -72,15 +76,20 @@ public class DefaultJobTask extends JobTask {
 	 */
 	@Override
 	public void configure() throws IOException {
+		// gets joib
 		Job job = getJob();
-		
+		// gets initial and max heap size
 		String initHeap = JavaUtils.getInitialHeapSize();
 		String maxHeap = JavaUtils.getMaximumHeapSize();
+		// gets JCL file
 		File jclFile = Main.getOutputSystem().getJclFile(job);
-		
+		// gest the use of job
 		String user = job.isUserSurrogated() ? job.getJcl().getUser() : job.getUser();
-		
+		//creates the JAVA command to execute
 		JavaCommand command = new JavaCommand();
+		// sets all java option
+		// heap sizes
+		// system properties
 		command.setJavaOptions(initHeap, 
 						maxHeap,
 						getHome(),
@@ -95,14 +104,18 @@ public class DefaultJobTask extends JobTask {
 						getPersistencePath(),
 						"-D"+ConfigKeys.JAVA_USER_NAME+"="+user);
 		
-		// loads properties set during submit
+		// loads system properties that has been set
+		// during the submit of job
 		if (!job.getInputArguments().isEmpty()){
+			// only the system properties 
+			// which start with "jem.custom." can be passed
 			for (String prop : job.getInputArguments()){
 				if (prop.startsWith("-Djem.custom.")){
 					command.setJavaOptions(prop);
 				}
 			}
 		}
+		// sets command to be executed
 		setCommand(command);
 	}
 
@@ -124,6 +137,7 @@ public class DefaultJobTask extends JobTask {
 	 * @return the binPath
 	 */
 	public String getDataPath() {
+		// checks if the data path must be passed
 		return System.getProperties().containsKey(ConfigKeys.JEM_DATA_PATH_NAME) ? 
 				"-D"+ConfigKeys.JEM_DATA_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_DATA_PATH_NAME) : 
 					"";

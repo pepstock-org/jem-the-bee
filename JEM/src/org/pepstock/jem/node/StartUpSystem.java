@@ -368,7 +368,7 @@ public class StartUpSystem {
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}
-		// saves teh key
+		// saves the key
 		ResourcesUtil.getInstance().setKey(key);
 	}
 
@@ -924,7 +924,7 @@ public class StartUpSystem {
 	 * @throws ConfigurationException if any error occurs during the table creation
 	 */
 	private static void createTables() throws SQLException, ConfigurationException{
-		// gets teh DB connection from pool
+		// gets the DB connection from pool
 		Connection conn = DBPoolManager.getInstance().getConnection();
 		try {
 			// gets metadata
@@ -965,7 +965,7 @@ public class StartUpSystem {
 	/**
 	 * Checks if the necessary tables exists on database. If not, it creates them.
 	 * @param md metadata of the database
-	 * @param manager teh DB manager which contains the SQL container and all SQL statements and the table name
+	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
 	 * @throws SQLException if any error occurs cheching the existence of tables
 	 */
 	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?, ?> manager) throws SQLException {
@@ -973,7 +973,7 @@ public class StartUpSystem {
 		try {
 			// gets SQL container
 			SQLContainer container = manager.getSqlContainer();
-			// gets a result set which searches for teh table anme
+			// gets a result set which searches for the table anme
 			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE" });
 			// if result set is empty, it creates the table
 			if (!rs.next()) {

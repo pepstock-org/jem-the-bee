@@ -28,7 +28,8 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.UtilMessage;
 
 /**
- * Custom RMI socket factory to check if the job is aithorized to connected directly the node by RMI protocol.
+ * Custom RMI socket factory to check if the job is authorized to connected directly the node by RMI protocol.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
@@ -39,6 +40,7 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 	 */
 	@Override
 	public Socket createSocket(String host, int port) throws IOException {
+		// creates a normal socket 
 		return new Socket(host, port);
 	}
 
@@ -47,16 +49,28 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 	 */
 	@Override
 	public ServerSocket createServerSocket(int port) throws IOException {
+		// creates a server socket
 		return new ServerSocket(port){
+			/**
+			 * Overrides the accept method to check who is
+			 * trying to connect to RMI server 
+			 */
 			@Override
 			public Socket accept() throws IOException{
+				// call super accept
 				Socket socket = super.accept();
+				// gets the host address
 				String resolved = socket.getInetAddress().getHostAddress();
+				// checks if is coming from local host
+				// if not, EXCEPTION, closing the socket!!
+				// ACCEPTS ONLY connection from jobs and then from localhost
 				if (!isLocalHostAddress(resolved)){
+					// shutdown the socket
 					socket.shutdownInput();
 					socket.shutdownOutput();
 					LogAppl.getInstance().emit(UtilMessage.JEMB007E, resolved);
 				}
+				// returns the socket
 				return socket;
 			}
 		};
@@ -69,12 +83,17 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 	 */
 	private boolean isLocalHostAddress(String resolved){
 		try {
+			// scans all network interfaces
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface ni = interfaces.nextElement();
+				// gets all ip addresses defined for NIC
 				Enumeration<InetAddress> addresses = ni.getInetAddresses();
+				// scans all ip addresses
 				while (addresses.hasMoreElements()) {
 					InetAddress addr = addresses.nextElement();
+					// checks the localhost matches with the socket
+					// created after the accept
 					String localhost = addr.getHostAddress();
 					if (resolved.equalsIgnoreCase(localhost)){
 						return true;

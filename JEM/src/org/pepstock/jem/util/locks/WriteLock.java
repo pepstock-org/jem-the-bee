@@ -70,7 +70,7 @@ public class WriteLock extends ConcurrentLock{
 	 */
 	@Override
 	public void release() throws LockException {
-		// release teh no accessing
+		// release the no accessing
 		getNoAccessing().release();
 	}
 }

@@ -359,7 +359,7 @@ public class ResourceTemplatesFactory {
 		if (null != singleSelectableListFieldTemplate.getDescription()) {
 			singleSelectableListField.setDescription(singleSelectableListFieldTemplate.getDescription());
 		}
-		// sets if teh object must be represented by a radio button or not
+		// sets if the object must be represented by a radio button or not
 		if (singleSelectableListFieldTemplate.isRenderAsRadio()) {
 			singleSelectableListField.setRenderAsRadio(singleSelectableListFieldTemplate.isRenderAsRadio());
 		}

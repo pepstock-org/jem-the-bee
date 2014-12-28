@@ -21,7 +21,13 @@ import org.pepstock.jem.log.LogAppl;
 import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
 /**
- *
+ * Is the custom wrapper at the launcher of SpringBatch.
+ * <br>
+ * It wraps the <code>CommandLineJobRunner</code> of SpringBacth, because it must
+ * initialize the LOG4J.
+ * 
+ *  @author Andrea "Stock" Stocchero
+ *  @version 1.3
  */
 public class SpringBatchLauncher {
 
@@ -29,22 +35,24 @@ public class SpringBatchLauncher {
 	 * To avoid any instantiation
 	 */
 	private SpringBatchLauncher() {
-		
+
 	}
 
 	/**
-	 * </p>
-	 * @param args 
-	 * @throws JemException 
-	 * @throws Exception 
+	 * Main method, called by JEM when a SpringBatch job must be executed.
+	 * 
+	 * @see org.springframework.batch.core.launch.support.CommandLineJobRunner
+	 * @param args arguments of <code>CommandLineJobRunner</code>
+	 * @throws JemException if any exception occurs
 	 */
 	public static void main(String[] args) throws JemException  {
+		// creates log instance
 		LogAppl.getInstance();
 		try {
+			// launches SPRING BATCH
 			CommandLineJobRunner.main(args);
 		} catch (Exception e) {
 			throw new JemException(e);
 		}
 	}
-
 }

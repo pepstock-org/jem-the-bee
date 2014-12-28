@@ -27,9 +27,12 @@ import com.thoughtworks.xstream.XStream;
  * Thread is benen interruped s it will exit
  * 
  * @author Simone "Busy" Businaro
+ * @version 1.4
  * 
  */
 public class ShutDown implements MulticastMessage {
+	
+	private static final String SHUTDOWN_ELEMENT = "shutDownMessage";
 
 	private boolean shutDown=true;
 
@@ -48,14 +51,14 @@ public class ShutDown implements MulticastMessage {
 	}
 
 	/**
-	 * 
-	 * @param xmlMessage
+	 * De-serialize from a xml string to create a Shutdown object.
+	 * @param xmlMessage xml string to read to have a shutdown object
 	 * @return the NodeMulticastResponce unmarshall from the xml representation
 	 * @throws NodeMessageException if any exception occurs during the unmarshall process
 	 */
 	public static ShutDown unmarshall(String xmlMessage) throws NodeMessageException {
 		XStream xStream = new XStream();
-		xStream.alias("shutDownMessage", ShutDown.class);
+		xStream.alias(SHUTDOWN_ELEMENT, ShutDown.class);
 		Object multicastMessage;
 		try {
 			multicastMessage = xStream.fromXML(xmlMessage);
@@ -69,14 +72,14 @@ public class ShutDown implements MulticastMessage {
 	}
 
 	/**
-	 * 
-	 * @param message
+	 * Serializes a shutdown object to XML string
+	 * @param instance shutdown object instance to serialize
 	 * @return the xml marshall from the ShutDown
 	 */
-	public static String marshall(ShutDown message) {
+	public static String marshall(ShutDown instance) {
 		XStream xStream = new XStream();
-		xStream.alias("shutDownMessage", ShutDown.class);
-		return xStream.toXML(message);
+		xStream.alias(SHUTDOWN_ELEMENT, ShutDown.class);
+		return xStream.toXML(instance);
 	}
 
 }

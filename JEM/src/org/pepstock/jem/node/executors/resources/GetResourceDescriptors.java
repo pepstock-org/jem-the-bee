@@ -27,9 +27,9 @@ import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 /**
- * Returns all resources definitions in JEM.
+ * Returns all resources descriptors, defined in JEM.
  * 
- * @author Marco Cuccato
+ * @author Andrea "Stock" Stocchero
  * @version 1.4
  */
 public class GetResourceDescriptors extends DefaultExecutor<Collection<ResourceDescriptor>> {
@@ -43,11 +43,13 @@ public class GetResourceDescriptors extends DefaultExecutor<Collection<ResourceD
 	 */
 	@Override
 	public Collection<ResourceDescriptor> execute() throws ExecutorException {
-		List<ResourceDescriptor> toReturn = new ArrayList<ResourceDescriptor>(); 
+		// creates the list to be returned
+		List<ResourceDescriptor> toReturn = new ArrayList<ResourceDescriptor>();
+		// scans all resources defintions
 		for (ResourceDefinition rd : Main.RESOURCE_DEFINITION_MANAGER.getAllResourceDefinitions()) {
+			// adds resources descriptors
 			toReturn.add(rd.getDescriptor());
 		}
 		return toReturn;
 	}
-
 }

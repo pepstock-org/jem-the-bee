@@ -58,7 +58,7 @@ public enum MessageLevel implements Serializable {
 	}
 	
 	/**
-	 * Returns teh message level object from the level, integer format
+	 * Returns the message level object from the level, integer format
 	 * @param intLevel level of message
 	 * @return the MessageLevel starting from int level value. Returns INFO by default.
 	 */

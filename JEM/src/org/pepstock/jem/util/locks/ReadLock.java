@@ -108,7 +108,7 @@ public class ReadLock extends ConcurrentLock{
 		try {
 			// locks the map
 			readers.lock(MAP_KEY);
-			// gets teh value
+			// gets the value
 			prev = readers.get(MAP_KEY);
 			// decrements the number of readers
 			nReaders = Long.valueOf(prev.longValue() - 1);

@@ -33,7 +33,7 @@ import org.pepstock.jem.rest.SingleRestClient;
 import org.pepstock.jem.util.Parser;
 
 /**
- * Custom JBDC Factory, which extends APACHE DB pool, to set the connection properties 
+ * Custom JBDC Factory, which extends APACHE DB pool, to set the connection properties.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -45,9 +45,11 @@ public class RestFactory extends AbstractObjectFactory {
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context ctx, @SuppressWarnings("rawtypes") Hashtable env) throws Exception {
+		// checks if the object is null or not a reference
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
+		// creates the rest client
 		return createRestClient(loadProperties(object, RestResourceKeys.PROPERTIES_ALL));
 	}
 	
@@ -60,34 +62,35 @@ public class RestFactory extends AbstractObjectFactory {
 	 * @throws JNDIException if an error occurs creating the rmi client
 	 */
 	public Object createRestClient(Properties properties) throws JNDIException {
+		// get URL
+		// is mandatory
 		String baseUri = properties.getProperty(CommonKeys.URL);
 		if (baseUri == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
-		
+		// checks if a HTTP Basci authentication is required
 		boolean basicAuth = Parser.parseBoolean(properties.getProperty(RestResourceKeys.HTTP_BASIC_AUTHENTICATION, "false"), false);
 		
 		RestClient client = null;
-		
+		// if basci authentication is required
 		if (basicAuth){
 			// User id is mandatory
 			String username = properties.getProperty(CommonKeys.USERID);
 			if (username == null){
 				throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.USERID);
 			}
-
 			// password is mandatory
 			String password = properties.getProperty(CommonKeys.PASSWORD);
 			if (password == null){
 				throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.PASSWORD);
 			}
-
+			// creates a REST client with special configuration
+			// for HTTP basic authentication
 			client = new HTTPBaseAuthRestClient(baseUri, username, password);
 		} else {
+			// otherwise a single REST client
 			client = new SingleRestClient(baseUri);
 		}
-		
 		return client;
 	}
-
 }

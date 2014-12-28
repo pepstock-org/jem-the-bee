@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2014   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -20,6 +20,8 @@ package org.pepstock.jem.node.security.keystore;
 import java.io.File;
 
 /**
+ * Bean with all information about the KEY store to use inside the JEM.
+ * 
  * @author Simone "Busy" Businaro
  * @version 1.0	
  *
@@ -48,12 +50,15 @@ public class KeyStoreInfo {
 	private String type = null;
 
 	/**
+	 * Creates the object using the type of key store 
 	 * @param type type of this keystore
 	 */
 	public KeyStoreInfo(String type) {
+		// if type is null, EXCEPTION
 		if (type == null){
 			throw new IllegalArgumentException("Type is null");
 		}
+		// if is not a right value, EXCEPTION
 		if (!type.equalsIgnoreCase(JCEKS_KEYSTORE_TYPE) && !type.equalsIgnoreCase(JKS_KEYSTORE_TYPE)){
 			throw new IllegalArgumentException("Type '"+type+"'is invalid");
 		}
@@ -73,8 +78,6 @@ public class KeyStoreInfo {
 	public void setType(String type) {
 		this.type = type;
 	}
-
-
 
 	/**
 	 * @return the file
@@ -153,6 +156,4 @@ public class KeyStoreInfo {
 	public String toString() {
 		return "KeyStoreInfo [file=" + file + ", backupFile=" + backupFile + ", type=" + type + "]";
 	}
-	
-	
 }

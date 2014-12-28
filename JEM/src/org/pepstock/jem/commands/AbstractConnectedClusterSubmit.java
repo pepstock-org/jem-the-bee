@@ -301,7 +301,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	@Override
 	public void beforeJobSubmit() throws SubmitException {
-		// calls teh super to load the common arguments
+		// calls the super to load the common arguments
 		super.beforeJobSubmit();
 		Map<String, SubmitArgument> arguments = getArguments();
 		// here sets all custom arguments

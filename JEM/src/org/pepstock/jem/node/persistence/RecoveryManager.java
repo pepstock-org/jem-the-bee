@@ -53,7 +53,7 @@ public class RecoveryManager {
 	 * if the database is up & running
 	 */
 	private RecoveryManager() {
-		// gets teh name of the class as name of the timer
+		// gets the name of the class as name of the timer
 		String className = FilenameUtils.getExtension(this.getClass().getName());
 		// schedules the time
 		Timer timer = new Timer(className, false);
@@ -91,7 +91,7 @@ public class RecoveryManager {
 				// reads all redo statements
 				List<RedoStatement> values = new ArrayList<RedoStatement>(redoMap.values());
 				// sorts by ID
-				// in this ways it can apply all redo statements on teh right order
+				// in this ways it can apply all redo statements on the right order
 				// how they have been created
 				Collections.sort(values, new Comparator<RedoStatement>() {
 					@Override

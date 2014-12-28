@@ -111,7 +111,7 @@ public class SubmitAction implements IObjectActionDelegate {
 	private class LoginAndSubmit extends LoginAndSubmitLoading {
 		
 		/**
-		 * Creates a loading using a shell, coordinate and teh file to submit
+		 * Creates a loading using a shell, coordinate and the file to submit
 		 * @param shell is the target part where the action has been called
 		 * @param coordinate current coordinate 
 		 * @param file the file to submit

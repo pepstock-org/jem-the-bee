@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.node.events;
 
 import java.util.EventListener;
@@ -25,11 +25,12 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
 
 /**
- * Contains all listener of job lifecycle.<br>
+ * Contains all listener of job lifecycle. <br>
  * It fires event when a job changes its status, in asynch way.
  * 
  * @see JobLifecycleListener
  * @author Andrea "Stock" Stocchero
+ * @version 1.3
  * 
  */
 public class JobLifecycleListenersSystem extends ListenersSystem {
@@ -69,9 +70,10 @@ public class JobLifecycleListenersSystem extends ListenersSystem {
 	}
 
 	/**
-	 * This class reads from queue all events to notify all listeners.<br>
+	 * This class reads from queue all events to notify all listeners.
 	 * 
 	 * @author Andrea "Stock" Stocchero
+	 * @version 1.3
 	 * 
 	 */
 	class Notifier extends Thread {
@@ -80,14 +82,19 @@ public class JobLifecycleListenersSystem extends ListenersSystem {
 		 * Reads from queue new events and calls all fire methods.
 		 */
 		public void run() {
-			while (true){
+			while (true) {
 				try {
+					// gets event from queue
 					JobLifecycleEvent event = queue.take();
+					// checks which map has created the event
 					if (event.getStatus().equalsIgnoreCase(Queues.INPUT_QUEUE)) {
+						// fires the right method
 						fireQueued(event.getJob());
 					} else if (event.getStatus().equalsIgnoreCase(Queues.RUNNING_QUEUE)) {
+						// fires the right method
 						fireRunning(event.getJob());
 					} else if (event.getStatus().equalsIgnoreCase(Queues.OUTPUT_QUEUE)) {
+						// fires the right method
 						fireEnded(event.getJob());
 					}
 				} catch (Exception e) {
@@ -102,6 +109,8 @@ public class JobLifecycleListenersSystem extends ListenersSystem {
 		 * @param job job instance in input queue
 		 */
 		public void fireQueued(Job job) {
+			// scans all listeners and
+			// fires the event
 			EventListener[] listener = getAllListeners(JobLifecycleListener.class);
 			for (int i = 0; i < listener.length; i++) {
 				((JobLifecycleListener) listener[i]).queued(job);
@@ -114,6 +123,8 @@ public class JobLifecycleListenersSystem extends ListenersSystem {
 		 * @param job job instance
 		 */
 		public void fireRunning(Job job) {
+			// scans all listeners and
+			// fires the event
 			EventListener[] listener = getAllListeners(JobLifecycleListener.class);
 			for (int i = 0; i < listener.length; i++) {
 				((JobLifecycleListener) listener[i]).running(job);
@@ -126,11 +137,12 @@ public class JobLifecycleListenersSystem extends ListenersSystem {
 		 * @param job job instance
 		 */
 		public void fireEnded(Job job) {
+			// scans all listeners and
+			// fires the event
 			EventListener[] listener = getAllListeners(JobLifecycleListener.class);
 			for (int i = 0; i < listener.length; i++) {
 				((JobLifecycleListener) listener[i]).ended(job);
 			}
 		}
-
 	}
 }

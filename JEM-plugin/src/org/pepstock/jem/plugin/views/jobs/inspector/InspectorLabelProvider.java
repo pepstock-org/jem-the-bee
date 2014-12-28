@@ -33,7 +33,7 @@ public class InspectorLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		// if element is a category
-		// return teh image of category
+		// return the image of category
 		if (element instanceof Category) {
 			Category category = (Category) element;
 			if (category.getImage() != null) {

@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2014   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,6 +19,7 @@ package org.pepstock.jem.util.net;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -34,6 +35,7 @@ import com.hazelcast.config.Interfaces;
  * Is a class with common utilities for network interface utility
  * 
  * @author Simone "Busy" Businaro
+ * @version 2.1
  * 
  */
 public final class InterfacesUtils {
@@ -59,7 +61,6 @@ public final class InterfacesUtils {
 		if (hazelcastConfig != null){
 			interfaces = hazelcastConfig.getNetworkConfig().getInterfaces();	
 		}
-		Exception exception = null;
 		// checks if there is hazelcast configuration for Multicast
 		if (interfaces != null && interfaces.isEnabled()) {
 			try {
@@ -68,35 +69,43 @@ public final class InterfacesUtils {
 				return networkInterface;
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC249W, e);
-				exception = e;
+				throw new MessageException(NodeMessage.JEMC249W, e);
 			}
 		} else {
 			// if there isn't any configuration for hazelcast
 			// scans network interfaces, taking the interface which matches with localhost address
 			try {
+				// scans all NICs
 				Enumeration<NetworkInterface> interfaces3 = NetworkInterface.getNetworkInterfaces();
 				while (interfaces3.hasMoreElements()) {
 					NetworkInterface ni = interfaces3.nextElement();
+					// gets all ip addresses
 					Enumeration<InetAddress> addresses = ni.getInetAddresses();
+					// scans the ip addresses
 					while (addresses.hasMoreElements()) {
 						InetAddress addr = addresses.nextElement();
+						// gets local host
 						String localhost = addr.getHostAddress();
 						// checks if is local host address
 						if (InetAddress.getLocalHost().getHostAddress().equals(localhost)){
+							// if yes, sets the address and NIC to use 
 							networkInterface.setAddress(addr);
 							networkInterface.setNetworkInterface(ni);
 							return networkInterface;
 						}
 					}
 				}
-				exception = new MessageException(NodeMessage.JEMC250E);
-			} catch (Exception e) {
+				throw new MessageException(NodeMessage.JEMC250E);
+			} catch (SocketException e) {
 				// debug
 				LogAppl.getInstance().debug(e.getMessage(), e);
-				exception = e;
+				throw new MessageException(NodeMessage.JEMC250E, e);
+			} catch (UnknownHostException e) {
+				// debug
+				LogAppl.getInstance().debug(e.getMessage(), e);
+				throw new MessageException(NodeMessage.JEMC250E, e);
 			}
 		}
-		throw new MessageException(NodeMessage.JEMC250E, exception);
 	}
 
 	/**
@@ -107,13 +116,18 @@ public final class InterfacesUtils {
 	 */
 	private static void loadInterfaceFromHazelcastConfiguration(Interface networkInterface, Collection<String> interfaces) throws MessageException {
 		try {
+			// scans all interfaces of hazelcast
 			for (String toMatch : interfaces) {
 				Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+				// scans all NICs
 				for (NetworkInterface netint : Collections.list(nets)) {
 					Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+					// scans all addresses
 					for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+						// checks if matches with the HC ones
 						if (doMatch(inetAddress, toMatch)) {
 							LogAppl.getInstance().emit(NodeMessage.JEMC248I, inetAddress);
+							// sets the address and NIC
 							networkInterface.setAddress(inetAddress);
 							networkInterface.setNetworkInterface(netint);
 							return;
@@ -128,34 +142,54 @@ public final class InterfacesUtils {
 	}
 
 	/**
+	 * Checks a string macthes with a IP address.
+	 * <br>
+	 * String is the NIC interface defined inside of Hazecast configuration.
+	 * <br>
+	 * INetaddress is one of addresses of the machine.
 	 * 
-	 * @param inetAddress
+	 * @param inetAddress ont of addresses of the machine
 	 * @param toMatch can be either an IP, an IP with wild card "*" on the last
 	 *            octet or an IP with a range on last octet (e.g. 196.168.35.10-100)
 	 * @return true if the toMatch string matches the hostAddress from the
 	 *         InetAddress
 	 */
 	private static boolean doMatch(InetAddress inetAddress, String toMatchParam) {
+		// gets host ip address
 		String hostAddres = inetAddress.getHostAddress();
+		// if HC string contains "-", 
+		// means contains more than 1 ip address (at last OCTECT)
 		if (toMatchParam.contains("-")) {
 			// if is ipv6 address do not consider
 			if (hostAddres.contains(":")) {
 				return false;
 			}
+			// splits the ip HC string address 
 			String[] octects = toMatchParam.split("\\.");
+			// splits the local IP address
 			String[] octectsIA = hostAddres.split("\\.");
+			// composes again strings which represent
+			// the two ip addresses
 			String first3 = octects[0] + "." + octects[1] + "." + octects[2];
 			String firstIA = octectsIA[0] + "." + octectsIA[1] + "." + octectsIA[2];
+			// compares the ip addresses
 			if (!first3.equals(firstIA)) {
 				return false;
 			}
+			// gets last octect
 			String lastOctect = octects[3];
+			// gets the range of IP address
 			String[] ranges = lastOctect.split("-");
+			// min and max of ip address
 			int min = Integer.parseInt(ranges[0]);
 			int max = Integer.parseInt(ranges[1]);
+			// parses the last octect as integer
 			int inetAddressLastOctect = Integer.parseInt(octectsIA[3]);
+			// checks if the last octect is inside
+			// of the range of HC config
 			return inetAddressLastOctect >= min && inetAddressLastOctect <= max;
 		} else {
+			// checks the 2 ip addresses by regex
 			String toMatch = toMatchParam.replace(".", "\\.").replace("*", "\\w*");
 			return hostAddres.matches(toMatch);
 		}

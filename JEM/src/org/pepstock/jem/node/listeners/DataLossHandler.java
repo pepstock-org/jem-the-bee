@@ -31,8 +31,12 @@ import com.hazelcast.core.MapStore;
 
 /**
  * Has the goal to load all keys from database into Hazelcast maps in case of
- * data loss. It waits for 2 seconds for ending of migration of Hazelcast to
- * reload missing objects. Only missing object are loaded because is enough a
+ * data loss.
+ * <br>
+ * It waits for 2 seconds for ending of migration of Hazelcast to
+ * reload missing objects.
+ * <br>
+ * Only missing object are loaded because is enough a
  * <code>containsKey</code> method on map to load form database if missing.
  * 
  * @author Andrea "Stock" Stocchero
@@ -109,23 +113,37 @@ public class DataLossHandler implements Runnable {
 	 */
 	private void load() {
 		LogAppl.getInstance().emit(NodeMessage.JEMC219I);
+		// gets current time
 		long start = System.currentTimeMillis();
+		// gets from all HC config 
 		for (Entry<String, MapConfig> configs : Main.getHazelcast().getConfig().getMapConfigs().entrySet()) {
+			// the key is the name of map
 			String key = configs.getKey();
+			// ONLY the JCL checking is not able to reload
+			// all other maps can be reloaded
 			if (!key.equalsIgnoreCase(Queues.JCL_CHECKING_MAP)) {
+				// gets mapstore config
 				MapStoreConfig mStoreConfig = configs.getValue().getMapStoreConfig();
-
+				// checks if mapstore is enabled
 				if (mStoreConfig != null && mStoreConfig.isEnabled()) {
 					try {
+						// loads the mapp store defined for the map
 						@SuppressWarnings({ "unchecked" })
 						MapStore<String, Object> clazz = (MapStore<String, Object>) Class.forName(mStoreConfig.getClassName()).newInstance();
+						// gets all keys
 						Set<String> keys = clazz.loadAllKeys();
 						LogAppl.getInstance().emit(NodeMessage.JEMC220I, key);
+						// the best way to reload the data, is the "containsKey" the object
+						// from the map by key. If is not in memory, HC reloads from
+						// mapstore and then from database
 						for (String storeKey : keys) {
 							try {
+								// lock
 								Main.getHazelcast().getMap(key).lock(storeKey);
+								// check if in map (if not in memory, HC askes to map store to load from DB)
 								Main.getHazelcast().getMap(key).containsKey(storeKey);
 							} finally {
+								// always unlock
 								Main.getHazelcast().getMap(key).unlock(storeKey);
 							}
 						}
@@ -144,7 +162,7 @@ public class DataLossHandler implements Runnable {
 			}
 		}
 		long end = System.currentTimeMillis() - start;
+		// shows the elapsed time
 		LogAppl.getInstance().emit(NodeMessage.JEMC221I, end);
 	}
-
 }

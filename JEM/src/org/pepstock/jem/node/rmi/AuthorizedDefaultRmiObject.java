@@ -53,7 +53,7 @@ public class AuthorizedDefaultRmiObject extends DefaultRmiObject {
 	 * @param jobId job ID which is in execution
 	 * @param permissionToCheck permission string to be checkd
 	 * @throws RemoteException if any errors occurs
-	 * mainly if the user is not authorized to call teh method
+	 * mainly if the user is not authorized to call the method
 	 */
 	public void checkAuthorization(String jobId, String permissionToCheck) throws RemoteException{
 		// gets taks by jobid
@@ -69,7 +69,7 @@ public class AuthorizedDefaultRmiObject extends DefaultRmiObject {
 			}
 			// creates a permission by string
 			StringPermission permissionToHave = new StringPermission(permissionToCheck);
-			// scans all teh permission to check if the user is authorized
+			// scans all the permission to check if the user is authorized
 			for (String permission : role.getPermissions()) {
 				org.apache.shiro.authz.Permission perm = new StringPermission(permission);
 				// if authorized, return correctly

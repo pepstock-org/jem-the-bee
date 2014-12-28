@@ -512,7 +512,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	
 	/**
 	 * Change the main class of the stepjava becuase this is necessary if it wants to apply
-	 * teh JEm annotation to the main java class developed with business logic.
+	 * the JEm annotation to the main java class developed with business logic.
 	 * 
 	 * @throws NamingException if is not ableto get the right info from JNDI
 	 */

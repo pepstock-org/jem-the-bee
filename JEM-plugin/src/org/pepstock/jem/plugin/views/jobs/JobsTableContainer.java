@@ -235,7 +235,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 		viewer.setLabelProvider(getLabelProvider());
 		// loads data
 		viewer.setInput(data);
-		// creates teh table to show jobs
+		// creates the table to show jobs
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -356,7 +356,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 						"Unable to load the job '"+getJob().getName()+"' information. Please have a look to following exception message: "+e.getMessage(), 
 						MessageLevel.ERROR);
 			} catch (PartInitException e) {
-				// if any error occurs on teh editor of Eclipse
+				// if any error occurs on the editor of Eclipse
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to load job "+getJob().getName()+" !", 
 						"Unable to load the job '"+getJob().getName()+"' information. Please have a look to following exception message: "+e.getMessage(), 

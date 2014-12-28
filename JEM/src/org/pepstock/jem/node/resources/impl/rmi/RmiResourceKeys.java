@@ -37,7 +37,7 @@ public class RmiResourceKeys {
 	 */
 	public static final String PORT = "port";
 	/**
-	 * Ih teh connection must be SSL or not
+	 * Ih the connection must be SSL or not
 	 */
 	public static final String SSL = "ssl";
 	

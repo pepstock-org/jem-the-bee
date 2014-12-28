@@ -71,7 +71,7 @@ public final class OutputListItemMapAdapter extends XmlAdapter<MapType, Map<Stri
 		Map<String, List<OutputListItem>> hashMap = new LinkedHashMap<String, List<OutputListItem>>();
 		// scans all maptype entries
 		for (MapEntryType myEntryType : arg0.getEntry()) {
-			// deserializes teh lsit of outputlist item from XML
+			// deserializes the lsit of outputlist item from XML
 			List<OutputListItem> list = (List<OutputListItem>)stream.fromXML(myEntryType.value);
 			// adds to a map
 			hashMap.put(myEntryType.key, list);

@@ -218,7 +218,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		viewer.setSorter(new ExplorerColumnSorter());
 		// creates all columns
 		createColumns();
-		// sets teh label provider
+		// sets the label provider
 		viewer.setLabelProvider(new GfsLabelProvider());
 		// sets the data
 		viewer.setInput(data);
@@ -384,7 +384,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 					filter = GetFilesList.ROOT_PATH;
 				} else {
 					// the text on searcher is star, uses a root path otherwise
-					// the content of teh text box
+					// the content of the text box
 					filter = "*".equalsIgnoreCase(getFilter()) ? GetFilesList.ROOT_PATH : getFilter();
 				}
 				// gets  data

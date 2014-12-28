@@ -19,6 +19,9 @@ package org.pepstock.jem.gfs;
 import java.io.Serializable;
 
 /**
+ * Is a bean which contain the information of a file
+ * on global file system. 
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0	
  *
@@ -40,7 +43,7 @@ public class GfsFile implements Serializable{
 	private long lastModified = 0;
 
 	/**
-	 * 
+	 * Empty constructor
 	 */
 	public GfsFile() {
 	}
@@ -86,7 +89,6 @@ public class GfsFile implements Serializable{
 	public void setDirectory(boolean isDirectory) {
 		this.isDirectory = isDirectory;
 	}
-	
 	
 	/**
 	 * @return the length
@@ -136,7 +138,5 @@ public class GfsFile implements Serializable{
 	@Override
 	public String toString() {
 		return "GfsFile [name=" + name + ", longName=" + longName + ", isDirectory=" + isDirectory + "]";
-	}
-
-	
+	}	
 }

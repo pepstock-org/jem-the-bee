@@ -61,7 +61,7 @@ public class JobMapManager implements MapStore<String, Job> {
 		this.queueName = queueName;
 		this.redoManager = new RedoManager(queueName);
 		this.dbManager = dbManager;
-		// extracts teh SQL container
+		// extracts the SQL container
 		// with all SQL to use
 		sqlContainer = dbManager.getSqlContainer();
 	}

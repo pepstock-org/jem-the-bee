@@ -38,10 +38,13 @@ import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 
 /**
- * Abstract Client to access to JEM by REST protocol. Uses Apache to avoid to close the HTTP configuration, mandatory
+ * Abstract Client to access to JEM by REST protocol.
+ * <br>
+ * Uses Apache to avoid to close the HTTP configuration, mandatory
  * to maintain the security management in web app.
  *  
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  *
  */
 public abstract class RestClient {
@@ -75,13 +78,18 @@ public abstract class RestClient {
 	 * @return Apache HTTP client instance
 	 */
 	ApacheHttpClient4 initialHttpClient() {
+		// creates the default config
 	    ClientConfig config = new DefaultClientConfig();
+	    // adds JSON feature
 	    config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-	    
+	    // creates a HTTP client for apache
 	    ApacheHttpClient4 client = null;
+	    // if HTTPS
 	    if (HttpResourceKeys.HTTPS_PROTOCOL.equalsIgnoreCase(baseURI.getScheme())){
 	    	try {
+	    		// creates a HTTPCLient, using SSL
 	    		HttpClient hc = HttpUtil.createHttpClient(baseURI);
+	    		// creates a REST HTTP client, SSL
 	    		client = new ApacheHttpClient4(new ApacheHttpClient4Handler(hc, null, false), config);
 	    	} catch (KeyManagementException e) {
 	    		LogAppl.getInstance().emit(UtilMessage.JEMB008E, e);
@@ -93,6 +101,7 @@ public abstract class RestClient {
 	    		LogAppl.getInstance().emit(UtilMessage.JEMB008E, e);
 	    	}
 	    } else {
+	    	// creates a client NO SSL
 	    	client = ApacheHttpClient4.create(config);
 	    }
 	    // to add log, use addFilter method with LoggingFilter to std output

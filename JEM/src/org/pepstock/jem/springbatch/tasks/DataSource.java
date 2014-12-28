@@ -157,7 +157,7 @@ public class DataSource extends AbstractDataSource implements Serializable {
 	}
 	
 	/**
-	 * Implements teh connection to database, using the JNDI reference
+	 * Implements the connection to database, using the JNDI reference
 	 * @return a SQL connection
 	 * @throws SQLException if any error occurs
 	 */

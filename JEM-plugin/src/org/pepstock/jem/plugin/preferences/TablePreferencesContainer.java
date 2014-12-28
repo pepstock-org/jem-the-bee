@@ -289,7 +289,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
     		// scans all coordinates to check if another one was the default
     		for (Coordinate coordinate : cloneEnvironments.values()){
     			// checks only if coordinate has different name
-    			// and was teh default
+    			// and was the default
     			if (!updatedCoordinate.getName().equalsIgnoreCase(coordinate.getName()) && coordinate.isDefault()){
     				// changes the default
     				coordinate.setDefault(false);

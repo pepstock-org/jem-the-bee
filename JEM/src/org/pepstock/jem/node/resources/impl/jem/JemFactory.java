@@ -37,7 +37,9 @@ import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.services.LoginManager;
 
 /**
- * JNDI factory to create object for JAVA batches. It returns a RestClient.
+ * JNDI factory to create object for JAVA batches.
+ * <br>
+ * It returns a RestClient.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -50,9 +52,11 @@ public class JemFactory  extends AbstractObjectFactory {
 	 */
 	@Override
 	public Object getObjectInstance(Object object, Name name, Context ctx, Hashtable<?, ?> env) throws JNDIException {
+		// checks if the instacen is null or not a reference
 		if ((object == null) || !(object instanceof Reference)) {
 			return null;
 		}
+		// creates a jem rest client
 		return createRestClient(loadProperties(object, JemResourceKeys.PROPERTIES_ALL));
 	}
 
@@ -65,16 +69,20 @@ public class JemFactory  extends AbstractObjectFactory {
 	 * @throws JNDIException if an error occurs creating the rest client
 	 */
 	private Object createRestClient(Properties properties) throws JNDIException {
+		// gets URL
+		// is mandatory
 		String urlString = properties.getProperty(CommonKeys.URL);
 		if (urlString == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.URL);
 		}
-
+		// gets USER ID
+		// is mandatory
 		String username = properties.getProperty(CommonKeys.USERID);
 		if (username == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.USERID);
 		}
-
+		// gets PASSWORD
+		// is mandatory
 		String password = properties.getProperty(CommonKeys.PASSWORD);
 		if (password == null){
 			throw new JNDIException(NodeMessage.JEMC136E, CommonKeys.PASSWORD);
@@ -83,11 +91,15 @@ public class JemFactory  extends AbstractObjectFactory {
 		// sets JAXB version 2, otherwise can't find the class
 		System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, "com.sun.xml.bind.v2.ContextFactory");
 		
+		// creates a rest client, extend ResourceClient
 		DelegateRestClient client = new DelegateRestClient(urlString);
+		// creates a login manager
 		LoginManager manager = new LoginManager(client);
 		client.setManager(manager);
 		try {
+			// checks if is logged
 			LoggedUser user = manager.getUser();
+			// if not
 			if (user == null) {
 				// creates a Account object
 				Account account = new Account();
@@ -96,10 +108,10 @@ public class JemFactory  extends AbstractObjectFactory {
 				// log in
 				manager.login(account);
 			}
-
 		} catch (JemException e) {
 			throw new JNDIException(NodeMessage.JEMC269E, e);
 		} 
+		// returns the client
 		return client;
 	}
 	
@@ -120,7 +132,6 @@ public class JemFactory  extends AbstractObjectFactory {
 			super(uriString);
 		}
 
-
 		/**
 		 * @return the manager
 		 */
@@ -140,8 +151,10 @@ public class JemFactory  extends AbstractObjectFactory {
 		 */
 		@Override
 		public void close() throws IOException {
+			// if manager not null
 			if (manager != null){
 				try {
+					// performs logoff
 					manager.logoff();
 				} catch (JemException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
