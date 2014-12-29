@@ -177,4 +177,70 @@
 		</xsd:complexType>
 	</xsd:element>
 	
+	<xsd:element name="main-launcher">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="arguments" />
+						<xsd:element ref="classPath" />
+						<xsd:element ref="dataDescription" />
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+					<xsd:attribute name="className" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="arguments">
+		<xsd:complexType>
+			<xsd:sequence>
+        		<xsd:element minOccurs="1" maxOccurs="unbounded" ref="argument"/>
+      		</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="argument">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="classPath">
+		<xsd:complexType>
+			<xsd:sequence>
+        		<xsd:element minOccurs="1" maxOccurs="unbounded" ref="pathElement"/>
+      		</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="pathElement">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="launcher">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element ref="dataDescription" />
+						<xsd:element ref="dataSource" />
+						<xsd:element ref="lock" />
+					</xsd:choice>
+					<xsd:attribute name="object" type="xsd:string" use="required" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
 </xsd:schema>

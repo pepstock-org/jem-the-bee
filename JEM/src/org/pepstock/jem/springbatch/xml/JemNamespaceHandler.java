@@ -43,5 +43,7 @@ public class JemNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser(ItemWriterDefinitionParser.ITEM_WRITER_ELEMENT, new ItemWriterDefinitionParser());
 		registerBeanDefinitionParser(JPPFBeanDefinitionParser.CONFIGURATION_ELEMENT, new JPPFBeanDefinitionParser());
 		registerBeanDefinitionParser(JPPFTaskletDefinitionParser.JPPF_TASKLET_ELEMENT, new JPPFTaskletDefinitionParser());
+		registerBeanDefinitionParser(MainLauncherTaskletDefinitionParser.MAIN_LAUNCHER_TASKLET_ELEMENT, new MainLauncherTaskletDefinitionParser());
+		registerBeanDefinitionParser(LauncherTaskletDefinitionParser.LAUNCHER_TASKLET_ELEMENT, new LauncherTaskletDefinitionParser());
 	}
 }

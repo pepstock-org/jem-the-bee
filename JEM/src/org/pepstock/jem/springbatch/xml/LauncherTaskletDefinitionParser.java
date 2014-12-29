@@ -16,61 +16,50 @@
 */
 package org.pepstock.jem.springbatch.xml;
 
-import org.pepstock.jem.jppf.JPPFTasklet;
+import org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
- *  Specific parser for <jppf-tasklet> tag, to create tasklet bean.
+ * Specific parser for <launcher> tag, to create tasklet bean.
  *  
  * @author Andrea "Stock" Stocchero
- * @version 2.1
+ * @version 2.2
  */
-public class JPPFTaskletDefinitionParser extends TaskletDefinitionParser {
+public class LauncherTaskletDefinitionParser extends TaskletDefinitionParser {
 	
-	static final String JPPF_TASKLET_ELEMENT = "jppf-tasklet";
-
+	static final String LAUNCHER_TASKLET_ELEMENT = "launcher";
+	
+	static final String OBJECT_ATTRIBUTE = "object";
+	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.springbatch.xml.TaskletDefinitionParser#parseInternal(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
 	 */
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext context) {
-		// creates a factory which containes all root and children objects
-		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JPPFTaskletFactoryBean.class);
-		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet());
-
-		Element config = DomUtils.getChildElementByTagName(element, JPPFBeanDefinitionParser.CONFIGURATION_ELEMENT);
-		if (config != null){
-			parseJPPFConfiguration(config, factory, context);
-		}
+		// creates a factory which contains all root and children objects
+		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(LauncherTaskletFactoryBean.class);
+		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet(element));
+		// loads all data description, locks, data source
 		loadChildren(element, factory, context);
 		return factory.getBeanDefinition();
 	}
 	
 	/**
-	 * Creates a tasklet object using the class of bean
+	 * Creates a launcher tasklet object using the class of bean
+	 * and reading the object reference to be executed
 	 * 
 	 * @param element XML element to parse
 	 * @return tasklet object using the class of bean
 	 */
-	private BeanDefinition parseTasklet() {
-		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(JPPFTasklet.class);
+	private BeanDefinition parseTasklet(Element element) {
+		// gets main launcher tasklet
+		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(LauncherTasklet.class);
+		// reads the mandatory attribute if object reference
+		component.addPropertyReference(OBJECT_ATTRIBUTE, element.getAttribute(OBJECT_ATTRIBUTE));
 		return component.getBeanDefinition();
-	}
-	
-	/**
-	 * Creates and loads all jppf configuration children of tasklet element
-	 * @param childElements all XML elements 
-	 * @param factory parent bean builder to load
-	 * @param context parser context
-	 */
-	private void parseJPPFConfiguration(Element element, BeanDefinitionBuilder factory, ParserContext context) {
-		// creates configuration parser
-		JPPFBeanDefinitionParser parser = new JPPFBeanDefinitionParser();
-		factory.addPropertyValue(JPPFTaskletFactoryBean.JPPF_CONFIGURATION, parser.parse(element, context));
 	}
 }

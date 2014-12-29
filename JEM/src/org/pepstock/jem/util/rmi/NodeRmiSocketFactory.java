@@ -50,30 +50,7 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 	@Override
 	public ServerSocket createServerSocket(int port) throws IOException {
 		// creates a server socket
-		return new ServerSocket(port){
-			/**
-			 * Overrides the accept method to check who is
-			 * trying to connect to RMI server 
-			 */
-			@Override
-			public Socket accept() throws IOException{
-				// call super accept
-				Socket socket = super.accept();
-				// gets the host address
-				String resolved = socket.getInetAddress().getHostAddress();
-				// checks if is coming from local host
-				// if not, EXCEPTION, closing the socket!!
-				// ACCEPTS ONLY connection from jobs and then from localhost
-				if (!isLocalHostAddress(resolved)){
-					// shutdown the socket
-					socket.shutdownInput();
-					socket.shutdownOutput();
-					LogAppl.getInstance().emit(UtilMessage.JEMB007E, resolved);
-				}
-				// returns the socket
-				return socket;
-			}
-		};
+		return new MyRmiServerSocket(port);
 	}
 	
 	/**
@@ -105,5 +82,47 @@ public class NodeRmiSocketFactory extends RMISocketFactory {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 		}
 		return false;
+	}
+	
+	/**
+	 * Custom server socket to check who is
+     * trying to connect to RMI server.
+	 * @author Andrea "Stock" Stocchero
+	 * @version 2.2
+	 */
+	private class MyRmiServerSocket extends ServerSocket{
+
+		/**
+		 * Constructs a custom Server socket for RMI listener
+		 * @param port port to be in listening
+		 * @throws IOException if any error occurs
+		 */
+		public MyRmiServerSocket(int port) throws IOException {
+			super(port);
+		}
+
+		/* (non-Javadoc)
+		 * @see java.net.ServerSocket#accept()
+		 */
+		@Override
+		public Socket accept() throws IOException {
+			// Overrides the accept method to check who is
+			// trying to connect to RMI server 
+			// call super accept
+			Socket socket = super.accept();
+			// gets the host address
+			String resolved = socket.getInetAddress().getHostAddress();
+			// checks if is coming from local host
+			// if not, EXCEPTION, closing the socket!!
+			// ACCEPTS ONLY connection from jobs and then from localhost
+			if (!isLocalHostAddress(resolved)){
+				// shutdown the socket
+				socket.shutdownInput();
+				socket.shutdownOutput();
+				LogAppl.getInstance().emit(UtilMessage.JEMB007E, resolved);
+			}
+			// returns the socket
+			return socket;
+		}
 	}
 }

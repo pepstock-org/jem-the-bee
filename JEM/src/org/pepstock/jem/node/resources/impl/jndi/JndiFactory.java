@@ -67,7 +67,7 @@ public class JndiFactory extends AbstractObjectFactory {
 			// loads environments
 			String propertyValue = ra.getContent().toString();
 			// parses the custom properties
-			// format: key=value;
+			// format: key equals value semi-colon
 			String[] keys = propertyValue.split(";");
 			for (int i=0; i<keys.length; i++){
 				String[] values = keys[i].split("=");
