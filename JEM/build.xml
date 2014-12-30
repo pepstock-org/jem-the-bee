@@ -14,6 +14,7 @@
 		<copy todir="${jem.workspace}/${jem.classes.directory}">
 			<fileset dir="${jem.workspace}/${jem.source.directory}">
 				<include name="**/*.xml" />
+				<include name="**/*.properties" />
 			</fileset>
 		</copy>
 	</target>

@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2014   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,10 +17,12 @@
 
 package org.pepstock.jem.node.security.keystore;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.security.KeyException;
@@ -76,10 +78,14 @@ public class KeyStoreUtil {
 	 */
 	static KeyStore getKeystore(KeyStoreInfo keystoreInfo) throws KeyStoreException {
 		KeyStore keystore = KeyStore.getInstance(keystoreInfo.getType());
-		FileInputStream fis = null;
+		InputStream is = null;
 		try {
-			fis = new FileInputStream(keystoreInfo.getFile());
-			keystore.load(fis, keystoreInfo.getPassword().toCharArray());
+			if (keystoreInfo.getBytes() != null){
+				is = new ByteArrayInputStream(keystoreInfo.getBytes().toByteArray());
+			} else {
+				is = new FileInputStream(keystoreInfo.getFile());
+			}
+			keystore.load(is, keystoreInfo.getPassword().toCharArray());
 		} catch (FileNotFoundException e) {
 			throw new KeyStoreException(e.getMessage(), e);
 		} catch (NoSuchAlgorithmException e) {
@@ -89,9 +95,9 @@ public class KeyStoreUtil {
 		} catch (IOException e) {
 			throw new KeyStoreException(e.getMessage(), e);
 		} finally {
-			if (fis != null){
+			if (is != null){
 				try {
-					fis.close();
+					is.close();
 				} catch (Exception e) {
 					// ignore
 					LogAppl.getInstance().ignore(e.getMessage(), e);					

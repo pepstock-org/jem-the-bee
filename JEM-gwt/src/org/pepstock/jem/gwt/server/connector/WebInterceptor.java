@@ -18,8 +18,10 @@
 package org.pepstock.jem.gwt.server.connector;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -28,6 +30,7 @@ import java.security.Key;
 import java.security.KeyException;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.codec.Base64;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
@@ -49,20 +52,19 @@ import com.hazelcast.nio.SocketInterceptor;
  */
 public class WebInterceptor implements SocketInterceptor {
 
-
 	private KeyStoreInfo clusterKeystoreInfo;
+	
+	private String keyStorePath = null;
 
 	/**
 	 * Build the web connector to JEM
 	 * @param configProperties
+	 * @throws IOException 
 	 */
-	public WebInterceptor(Properties configProperties) {
-		String keystorePath=configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
-		File clusterKeystoreFile = new File(SharedObjects.getInstance().getContextPath()+"/"+keystorePath);
-		// if the keystore is not in the war than try to solve as absolute path
-		if(!clusterKeystoreFile.exists()){
-			clusterKeystoreFile=new File(keystorePath);
-		}
+	public WebInterceptor(Properties configProperties) throws IOException {
+		keyStorePath = configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
+		File clusterKeystoreFile = new File(keyStorePath);
+
 		String keystorePasswd = configProperties.getProperty(Factory.JEM_KEYSTORE_PWD_PROP);
 		String keyPasswd = configProperties.getProperty(Factory.JEM_CRYPT_KEY_PWD_PROP);
 		String keyAlias = configProperties.getProperty(Factory.JEM_CRYPT_KEY_ALIAS_PROP);
@@ -72,6 +74,8 @@ public class WebInterceptor implements SocketInterceptor {
 		clusterKeystoreInfo.setPassword(keystorePasswd);
 		clusterKeystoreInfo.setSymmetricKeyAlias(keyAlias);
 		clusterKeystoreInfo.setSymmetricKeyPwd(keyPasswd);
+		
+		readKeyStore();
 	}
 
 	/*
@@ -97,6 +101,8 @@ public class WebInterceptor implements SocketInterceptor {
 			address = ip + ":" + port;
 			// instantiate the jemProtocol that give the right request (Base64
 			// encoded) from the given response
+			readKeyStore();
+			
 			Key symmetricKey = KeysUtil.getSymmetricKey(clusterKeystoreInfo);
 			ClientLoginProtocol jemClientProtocol = new ClientLoginProtocol(symmetricKey);
 			String request = jemClientProtocol.getRequestFromResponse(null, address, LoginRequest.JEM_WEB_USER);
@@ -125,5 +131,15 @@ public class WebInterceptor implements SocketInterceptor {
 			throw new IOException(e.getMessage(), e);
 		}
 	}
-
+	
+	/**
+	 * Reads the content of key store in a bytes array
+	 * @throws IOException if any IO exception occurs during the reading of key store
+	 */
+	private void readKeyStore() throws IOException{
+		InputStream is= SharedObjects.getInstance().getContext().getResourceAsStream(keyStorePath);
+		ByteArrayOutputStream baos= new ByteArrayOutputStream();
+		IOUtils.copy(is, baos);
+		clusterKeystoreInfo.setBytes(baos);
+	}
 }

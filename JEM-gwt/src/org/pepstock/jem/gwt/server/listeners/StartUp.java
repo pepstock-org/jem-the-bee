@@ -16,10 +16,10 @@
  */
 package org.pepstock.jem.gwt.server.listeners;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.pepstock.jem.Service;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
@@ -40,9 +41,10 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.net.InterfacesUtils;
 
-import com.hazelcast.config.FileSystemXmlConfig;
+import com.hazelcast.config.InMemoryXmlConfig;
 import com.hazelcast.config.Interfaces;
 import com.hazelcast.config.NetworkConfig;
 
@@ -57,6 +59,8 @@ import com.hazelcast.config.NetworkConfig;
  * 
  */
 public class StartUp extends EnvironmentLoaderListener implements ServletContextListener {
+	
+	private static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
 
 	/**
 	 * Constraucts initializing log4j and shared objects
@@ -101,20 +105,18 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		super.contextInitialized(event);
 		// gets servlet context
 		ServletContext context = event.getServletContext();
-		// gets servlet real path
-		String contextPath = context.getRealPath(".");
-		contextPath = contextPath.substring(0, contextPath.length());
-		SharedObjects.getInstance().setContextPath(contextPath);
+		// gets servlet context and saves it
+		SharedObjects.getInstance().setContext(context);
 		// reads Hazecast init parameter
 		String hazelcastFile = context.getInitParameter(ConfigKeys.HAZELCAST_CONFIG);
 		// set the check version flag retreive by web.xml
 		Boolean checkVersion = Boolean.valueOf(context.getInitParameter(ConfigKeys.JEM_CHECK_VERSION));
 		SharedObjects.getInstance().setCheckVersion(checkVersion);
-		setJemVersion(contextPath);
+		setJemVersion(context);
 		if (hazelcastFile != null) {
 			try {
 				// starts hazelcast
-				startHazelcastClient(contextPath, hazelcastFile);
+				startHazelcastClient(context, hazelcastFile);
 			} catch (ConfigurationException e) {
 				throw new JemRuntimeException(e);
 			}
@@ -131,14 +133,18 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 	 * @throws ConfigurationException
 	 *             if a config error occurs
 	 */
-	private void startHazelcastClient(String contextPath, String hazelcastFile) throws ConfigurationException {
+	private void startHazelcastClient(ServletContext context, String hazelcastFile) throws ConfigurationException {
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG006I);
-		String filename = contextPath + hazelcastFile;
+		//String filename = contextPath + hazelcastFile;
+		InputStream input = context.getResourceAsStream(hazelcastFile);
+		StringWriter sw = new StringWriter();
 		// loads configuration file from XML file
-		FileSystemXmlConfig config;
+		InMemoryXmlConfig config;
 		try {
-			config = new FileSystemXmlConfig(filename);
-		} catch (FileNotFoundException e) {
+			IOUtils.copy(input, sw, CharSet.DEFAULT);
+			//config = new FileSystemXmlConfig(filename);
+			config = new InMemoryXmlConfig(sw.toString());
+		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}
 		// start connector service
@@ -171,13 +177,14 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 	 * 
 	 * @param contextPath
 	 */
-	private void setJemVersion(String contextPath) {
+	private void setJemVersion(ServletContext context) {
 		// reads manifest file for searching version of JEM
-		File file = null;
-		FileInputStream fis = null;
+		InputStream fis = null;
 		try {
-			file = new File(contextPath + "/META-INF/MANIFEST.MF");
-			fis = new FileInputStream(file);
+			fis = context.getResourceAsStream(MANIFEST_FILE);
+			if (fis == null){
+				throw new FileNotFoundException(MANIFEST_FILE);
+			}
 			Manifest manifest = new Manifest(fis);
 			// gets JEM vrsion
 			Attributes at = manifest.getAttributes(ConfigKeys.JEM_MANIFEST_SECTION);

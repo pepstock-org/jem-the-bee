@@ -38,7 +38,11 @@ public class LoginResponse {
 	 * Exception message of the response
 	 */
 	public static final String EXCEPTION_MESSAGE = "bad request";
+	
+	private static final String RESPONSE_ELEMENT = "response";
 
+	private static final String OPERATION_ELEMENT = "operation";
+	
 	private String address;
 
 	private String subjectId;
@@ -125,8 +129,8 @@ public class LoginResponse {
 	 */
 	public static LoginResponse unmarshall(String xmlResponse) throws LoginProtocolException {
 		XStream xStream = new XStream(new DomDriver());
-		xStream.alias("response", LoginResponse.class);
-		xStream.alias("operation", ResponseOperation.class);
+		xStream.alias(RESPONSE_ELEMENT, LoginResponse.class);
+		xStream.alias(OPERATION_ELEMENT, ResponseOperation.class);
 		Object jemResponce = xStream.fromXML(xmlResponse);
 		if (!(jemResponce instanceof LoginResponse)) {
 			throw new LoginProtocolException(NodeMessage.JEMC109W, xmlResponse);
@@ -141,9 +145,8 @@ public class LoginResponse {
 	 */
 	public static String marshall(LoginResponse response) {
 		XStream xStream = new XStream();
-		xStream.alias("response", LoginResponse.class);
-		xStream.alias("operation", ResponseOperation.class);
+		xStream.alias(RESPONSE_ELEMENT, LoginResponse.class);
+		xStream.alias(OPERATION_ELEMENT, ResponseOperation.class);
 		return xStream.toXML(response);
 	}
-
 }

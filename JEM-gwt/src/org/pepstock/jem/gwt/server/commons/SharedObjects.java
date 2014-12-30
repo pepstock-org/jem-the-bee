@@ -16,6 +16,8 @@
  */
 package org.pepstock.jem.gwt.server.commons;
 
+import javax.servlet.ServletContext;
+
 import org.pepstock.jem.Service;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.connector.ConnectorServiceFactory;
@@ -53,7 +55,7 @@ public class SharedObjects {
 
 	private String jemVersion = NodeInfo.UNKNOWN_VERSION;
 
-	private String contextPath;
+	private ServletContext context;
 	
 	private Interface networkInterface = null;
 	
@@ -113,18 +115,17 @@ public class SharedObjects {
 	}
 
 	/**
-	 * @return the context path
+	 * @return the context
 	 */
-	public String getContextPath() {
-		return contextPath;
+	public ServletContext getContext() {
+		return context;
 	}
 
 	/**
-	 * 
-	 * @param contextPath to set
+	 * @param context the context to set
 	 */
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
+	public void setContext(ServletContext context) {
+		this.context = context;
 	}
 
 	/**

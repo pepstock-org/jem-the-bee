@@ -24,13 +24,13 @@
 			<class-name>org.pepstock.jem.node.security.socketinterceptor.NodeInterceptor</class-name>
 			<properties>
 				<!-- is the path of the keystore that contains the symmetric key used to crypt the login process -->
-			    <property name="jem.keystore.path">./WEB-INF/config/TEST-Env.keystore</property>
+			    <property name="jem.keystore.path">/WEB-INF/config/jem_keystore_TEST-Env.keystore</property>
 			    <!-- is password of the kesystore -->
-				<property name="jem.keystore.pwd">jem_password</property>
+				<property name="jem.keystore.pwd">jemk5pwd3</property>
 				<!-- is the alias of the symmetric key inside keystore -->
 				<property name="jem.crypt.key.alias">TEST-Env</property>
 				<!-- is the password to access symmetric key inside keystore -->
-				<property name="jem.crypt.key.pwd">jem_password</property>
+				<property name="jem.crypt.key.pwd">jemK3yP@d</property>
 			</properties>
 		</socket-interceptor>
 	</network>

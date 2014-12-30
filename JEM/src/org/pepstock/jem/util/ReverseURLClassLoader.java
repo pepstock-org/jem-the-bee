@@ -15,6 +15,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.pepstock.jem.util;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
 /**
@@ -91,13 +94,13 @@ public class ReverseURLClassLoader extends URLClassLoader {
         	// if not in bootstrap, searches in the list of URL passed 
             try {
                 theClass = findClass(classname);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException e) {
             	if (isParentDelegation){
-            		LogAppl.getInstance().ignore(cnfe.getMessage(), cnfe);
+            		LogAppl.getInstance().ignore(e.getMessage(), e);
             		// if not found again, goes to the parent classloader
 					theClass =  getParent().loadClass(classname);
             	} else {
-            		throw cnfe;
+            		throw e;
             	}
             }
         }
@@ -105,7 +108,6 @@ public class ReverseURLClassLoader extends URLClassLoader {
         if (resolve) {
             resolveClass(theClass);
         }
-
         return theClass;
     }
     
@@ -248,8 +250,27 @@ public class ReverseURLClassLoader extends URLClassLoader {
 				if (entry != null) {
 					// FINDBUGS: it's correct do not close the jar file
 					// otherwise the stream will be closed
-					return jFile.getInputStream(entry);
+					InputStream resourceIS = jFile.getInputStream(entry);
+		            // reads input stream in byte array
+		            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		            try {
+		            	// copies to bytes array
+						IOUtils.copy(resourceIS, baos);
+						// closes jar input stream
+						IOUtils.closeQuietly(resourceIS);
+						IOUtils.closeQuietly(baos);
+						// creates an input stream of bytes
+						return new ByteArrayInputStream(baos.toByteArray());
+					} catch (IOException e) {
+						// ignore
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					} finally {
+						// close always the jar file
+						jFile.close();
+					}
 				}
+				// close always the jar file
+				jFile.close();
 			}
 		} catch (Exception e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);

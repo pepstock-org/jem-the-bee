@@ -17,6 +17,7 @@
 
 package org.pepstock.jem.node.security.keystore;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 /**
@@ -48,6 +49,8 @@ public class KeyStoreInfo {
 	private String symmetricKeyPwd;
 	
 	private String type = null;
+	
+	private ByteArrayOutputStream bytes = null;
 
 	/**
 	 * Creates the object using the type of key store 
@@ -147,6 +150,20 @@ public class KeyStoreInfo {
 	 */
 	public void setSymmetricKeyPwd(String symmetricKeyPwd) {
 		this.symmetricKeyPwd = symmetricKeyPwd;
+	}
+
+	/**
+	 * @return the bytes
+	 */
+	public ByteArrayOutputStream getBytes() {
+		return bytes;
+	}
+
+	/**
+	 * @param bytes the bytes to set
+	 */
+	public void setBytes(ByteArrayOutputStream bytes) {
+		this.bytes = bytes;
 	}
 
 	/* (non-Javadoc)
