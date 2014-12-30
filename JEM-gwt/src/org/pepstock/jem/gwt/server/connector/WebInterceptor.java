@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.codec.Base64;
+import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
@@ -51,10 +52,14 @@ import com.hazelcast.nio.SocketInterceptor;
  * 
  */
 public class WebInterceptor implements SocketInterceptor {
+	
+	private static final String KEYSTORE_FILE_KEY = "jem.keystore.file";
 
 	private KeyStoreInfo clusterKeystoreInfo;
 	
-	private String keyStorePath = null;
+	private String keyStoreFileName = null;
+	
+	private boolean readKeyStore = false;
 
 	/**
 	 * Build the web connector to JEM
@@ -62,9 +67,32 @@ public class WebInterceptor implements SocketInterceptor {
 	 * @throws IOException 
 	 */
 	public WebInterceptor(Properties configProperties) throws IOException {
-		keyStorePath = configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
-		File clusterKeystoreFile = new File(keyStorePath);
-
+		File clusterKeystoreFile = null;
+		// before reading the hazelcast path for keystore file
+		// checks on System properties
+		keyStoreFileName = System.getProperty(KEYSTORE_FILE_KEY);
+		// if doesn't exist
+		// reads HC config
+		if (keyStoreFileName == null){
+			keyStoreFileName = configProperties.getProperty(Factory.JEM_KEYSTORE_PATH_PROP);
+			clusterKeystoreFile = new File(keyStoreFileName);
+			// if the file is not absolute
+			// uses the ServletContext reading the resource as stream
+			// setting true 
+			readKeyStore = !clusterKeystoreFile.isAbsolute();
+			
+			if (clusterKeystoreFile.isAbsolute()){
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG069E, clusterKeystoreFile.getAbsolutePath());
+			} else {
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG070E, keyStoreFileName);
+			}
+		} else {
+			// it creates always a file (only if not null)
+			// readKeyStore must be left to false
+			// as the default
+			clusterKeystoreFile = new File(keyStoreFileName);
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG068E, clusterKeystoreFile.getAbsolutePath(), KEYSTORE_FILE_KEY);
+		}
 		String keystorePasswd = configProperties.getProperty(Factory.JEM_KEYSTORE_PWD_PROP);
 		String keyPasswd = configProperties.getProperty(Factory.JEM_CRYPT_KEY_PWD_PROP);
 		String keyAlias = configProperties.getProperty(Factory.JEM_CRYPT_KEY_ALIAS_PROP);
@@ -75,7 +103,11 @@ public class WebInterceptor implements SocketInterceptor {
 		clusterKeystoreInfo.setSymmetricKeyAlias(keyAlias);
 		clusterKeystoreInfo.setSymmetricKeyPwd(keyPasswd);
 		
-		readKeyStore();
+		// if it must read the keystore 
+		// form servlet context
+		if (readKeyStore){
+			readKeyStore();
+		}
 	}
 
 	/*
@@ -99,10 +131,13 @@ public class WebInterceptor implements SocketInterceptor {
 			// is the port seen from the server
 			int port = connectedSocket.getLocalPort();
 			address = ip + ":" + port;
+			// if it must read the keystore 
+			// form servlet context
+			if (readKeyStore){
+				readKeyStore();
+			}
 			// instantiate the jemProtocol that give the right request (Base64
 			// encoded) from the given response
-			readKeyStore();
-			
 			Key symmetricKey = KeysUtil.getSymmetricKey(clusterKeystoreInfo);
 			ClientLoginProtocol jemClientProtocol = new ClientLoginProtocol(symmetricKey);
 			String request = jemClientProtocol.getRequestFromResponse(null, address, LoginRequest.JEM_WEB_USER);
@@ -137,7 +172,7 @@ public class WebInterceptor implements SocketInterceptor {
 	 * @throws IOException if any IO exception occurs during the reading of key store
 	 */
 	private void readKeyStore() throws IOException{
-		InputStream is= SharedObjects.getInstance().getContext().getResourceAsStream(keyStorePath);
+		InputStream is= SharedObjects.getInstance().getContext().getResourceAsStream(keyStoreFileName);
 		ByteArrayOutputStream baos= new ByteArrayOutputStream();
 		IOUtils.copy(is, baos);
 		clusterKeystoreInfo.setBytes(baos);

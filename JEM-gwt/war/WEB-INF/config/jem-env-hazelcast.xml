@@ -23,7 +23,8 @@
 		<socket-interceptor enabled="false">
 			<class-name>org.pepstock.jem.node.security.socketinterceptor.NodeInterceptor</class-name>
 			<properties>
-				<!-- is the path of the keystore that contains the symmetric key used to crypt the login process -->
+				<!-- is the path of the keystore that contains the symmetric key used to crypt the login process 
+				You can use also and absolute path if the keystore is utside of webapp -->
 			    <property name="jem.keystore.path">/WEB-INF/config/jem_keystore_TEST-Env.keystore</property>
 			    <!-- is password of the kesystore -->
 				<property name="jem.keystore.pwd">jemk5pwd3</property>

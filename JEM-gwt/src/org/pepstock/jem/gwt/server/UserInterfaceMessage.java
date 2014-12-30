@@ -419,11 +419,28 @@ public enum UserInterfaceMessage implements MessageInterface {
 	JEMG066I(66, "The sleeping thread {0} was unexpectedly interrupted", MessageLevel.INFO),
 	
 	/**
-	 * "Unable to call executor. Cause: {0}.", MessageLevel.ERROR);
+	 * "Unable to call executor. Cause: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the web application is not able to call an executor.<br> Please have a look to generated exception.")
-	JEMG067E(67, "Unable to call executor. Cause: {0}.", MessageLevel.ERROR);
+	JEMG067E(67, "Unable to call executor. Cause: {0}.", MessageLevel.ERROR),
+	
+	/**
+	 * "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file path is read by system property.")
+	JEMG068E(68, "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.INFO),
 
+	/**
+	 * "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file absolute path is read by Hazelcast configuration file.")
+	JEMG069E(69, "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.INFO),
+	
+	/**
+	 * "Keystore file \"{0}\" has been read from Halzelcast config, realtive path, using web context", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file relative path is read by Hazelcast configuration file and uses the ServletContext to read the file.")
+	JEMG070E(70, "Keystore file \"{0}\" has been read from Halzelcast config, relative path", MessageLevel.INFO);
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 
 	 * @see Message
