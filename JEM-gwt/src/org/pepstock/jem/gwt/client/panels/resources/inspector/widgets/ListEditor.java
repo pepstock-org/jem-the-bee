@@ -30,7 +30,6 @@ import org.pepstock.jem.gwt.client.panels.components.RemovePanel;
 import org.pepstock.jem.gwt.client.panels.roles.inspector.commons.InputPanel;
 import org.pepstock.jem.log.MessageLevel;
 
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -64,7 +63,7 @@ public class ListEditor extends HorizontalPanel implements InspectListener<Strin
 	private Label label = new Label();
 	
 	private ScrollPanel scrollPanel = new ScrollPanel();
-	private CellList<String> cellList = new CellList<String>(new TextCell(), (Resources) GWT.create(CellTableStyle.class));
+	private CellList<String> cellList = new CellList<String>(new ListEditorCell(), (Resources) GWT.create(CellTableStyle.class));
 	private RemovePanel removePanel = new RemovePanel();
 	private final SingleSelectionModel<String> selectionModel = new SingleSelectionModel<String>();
 
