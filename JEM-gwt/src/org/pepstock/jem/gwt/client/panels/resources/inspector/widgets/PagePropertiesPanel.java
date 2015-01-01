@@ -49,7 +49,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	 * Builds the panel
 	 * @param resource the underlying resource
 	 * @param descriptor the {@link ResourceDescriptor}
-	 * @param resourceType the resource type, needed for single-page custom resource
+	 * @param resourceType the resource type, needed for single-page resource
 	 */
 	public PagePropertiesPanel(Resource resource, SectionDescriptor descriptor, String resourceType) {
 		this(resource, descriptor, resourceType, false);
@@ -59,7 +59,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	 * Builds the panel
 	 * @param resource the underlying resource
 	 * @param descriptor the {@link ResourceDescriptor}
-	 * @param resourceType the resource type, needed for single-page custom resource
+	 * @param resourceType the resource type, needed for single-page resource
 	 * @param hasComplex if you need a complex panel
 	 */
 	public PagePropertiesPanel(Resource resource, SectionDescriptor descriptor, String resourceType, boolean hasComplex) {

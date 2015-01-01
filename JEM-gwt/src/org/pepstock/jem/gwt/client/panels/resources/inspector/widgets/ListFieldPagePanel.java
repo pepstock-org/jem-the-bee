@@ -43,7 +43,7 @@ public class ListFieldPagePanel extends PagePropertiesPanel {
 	 * Builds the panel
 	 * @param resource the underlying resource
 	 * @param descriptor the {@link ResourceDescriptor}
-	 * @param resourceType the resource type, needed for single-page custom resource
+	 * @param resourceType the resource type, needed for single-page resource
 	 */
 	public ListFieldPagePanel(Resource resource, SectionDescriptor descriptor, String resourceType) {
 		super(resource, descriptor, resourceType);

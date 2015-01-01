@@ -1632,16 +1632,69 @@ public enum NodeMessage implements MessageInterface {
 	JEMC272E(272, "Property \"{0}\" contains a wrong value.", MessageLevel.ERROR),
 	
 	/**
-	 * "Network interface {0} is used", MessageLevel.ERROR
+	 * "Network interface {0} is used", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when Jem choose which network interface to use.")
-	JEMC273I(273, "Network interface {0} is used", MessageLevel.ERROR),
+	JEMC273I(273, "Network interface {0} is used", MessageLevel.INFO),
 	
 	/**
 	 * "To change the security manager is not allowed!", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to set a new Security manager but it's not allowed.<br>Please change your code to be compliant with JEM security rules.")
-	JEMC274E(274, "To change the security manager is not allowed!", MessageLevel.ERROR);
+	JEMC274E(274, "To change the security manager is not allowed!", MessageLevel.ERROR),
+	
+	/**
+	 * "Job migration of map \"{0}\" is started", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the migration of jobs starts. Shows which map is affected.")
+	JEMC275I(275, "Job migration of map \"{0}\" is started", MessageLevel.INFO),
+	
+	/**
+	 * "Job \"{0}\" has been migrated", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when a job has been migrated. Shows the job id.")
+	JEMC276I(276, "Job \"{0}\" has been migrated", MessageLevel.INFO),
+	
+	/**
+	 * "Job \"{0}\" hasn't been migrated due to an exception: {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when a job has been migrated. Shows the job id.")
+	JEMC277E(277, "Job \"{0}\" hasn't been migrated due to an exception: {1}", MessageLevel.ERROR),
+	
+	/**
+	 * "Job migration of map \"{0}\" is started", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the migration of jobs ends. Shows which map was affected.")
+	JEMC278I(278, "Job migration of map \"{0}\" is ended", MessageLevel.INFO),
+	
+	/**
+	 * "Resource migration is started", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the migration of resource starts.")
+	JEMC279I(279, "Resource migration is started", MessageLevel.INFO),
+	
+	/**
+	 * "Resource \"{0}\" has been migrated", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when a resource has been migrated.")
+	JEMC280I(280, "Resource \"{0}\" has been migrated", MessageLevel.INFO),
+	
+	/**
+	 * "Resource \"{0}\" hasn't been migrated due to an exception: {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when a resouce has been migrated. Shows the resource name.")
+	JEMC281E(281, "Resource \"{0}\" hasn't been migrated due to an exception: {1}", MessageLevel.ERROR),
+	
+	/**
+	 * "Resource migration is ended", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the migration of jobs ends. Shows which map was affected.")
+	JEMC282I(282, "Resource migration is ended", MessageLevel.INFO),
+	/**
+	 * "XML: {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the migration ends with exception and shows the XML.")
+	JEMC283I(283, "XML: {0}", MessageLevel.INFO);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

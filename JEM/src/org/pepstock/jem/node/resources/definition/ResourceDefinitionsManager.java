@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2014   Alessandro Zambrini
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -49,6 +49,7 @@ import com.hazelcast.core.IMap;
  * Contains all resource definitions for resources configuration.<br>
  * 
  * @author Alessandro Zambrini
+ * @version 1.4
  * 
  */
 public class ResourceDefinitionsManager {
@@ -400,63 +401,9 @@ public class ResourceDefinitionsManager {
 	}
 
 	/**
-	 * This method clean all common resources removing all resources whose type
-	 * ({@link Resource#getType()}) is not configured or is not one of the
-	 * predefined resources.
-	 * 
-	 * @throws ResourceDefinitionException if some error occurs.
-	 * 
-	 * @see #isValidResourceType(String)
-	 * @see Resource
-	 */
-	public void deleteNotExistingTypesResources() throws ResourceDefinitionException {
-		IMap<String, Resource> resourceMap = Main.getHazelcast().getMap(Queues.COMMON_RESOURCES_MAP);
-		for (Resource resource : resourceMap.values()) {
-			if (!isValidResourceType(resource.getType())) {
-				String name = resource.getName();
-				try {
-					// locks the key
-					resourceMap.lock(name);
-					// remove the resource from map
-					resource = resourceMap.remove(name);
-					LogAppl.getInstance().emit(ResourceMessage.JEMR019W, name, resource.getType());
-				} finally {
-					// unlocks always the key
-					resourceMap.unlock(name);
-				}
-			}
-		}
-	}
-
-	/**
-	 * It checks if the resource type is configured, or is one of the the
-	 * predefined resources: <li>{@link FtpResource} <li>{@link HttpResource}
-	 * <li>{@link JdbcResource} <li>{@link JmsResource} <li>{@link JppfResource}
-	 * 
-	 * @param resourceType the resource type to be checked.
-	 * @return <code>true</code> if the resource type is configured, or is one
-	 *         of the the predefined resources, <code>false</code> otherwise.
-	 * @throws ResourceDefinitionException if some error occurs.
-	 */
-	private boolean isValidResourceType(String resourceType) throws ResourceDefinitionException {
-		return Main.RESOURCE_DEFINITION_MANAGER.hasResourceDefinition(resourceType);
-	}
-
-	/**
 	 * @return all resource names
 	 */
 	public Collection<String> getAllResourceNames() {
 		return new ArrayList<String>(resourceDefinitions.keySet());
 	}
-
-	/**
-	 * Returns the {@link ResourceDescriptor} identified by it's type
-	 * 
-	 * @param resourceType the type of the {@link ResourceDescriptor} you want
-	 * @return a {@link ResourceDescriptor}
-	 */
-	public ResourceDescriptor getResourceDescriptorOf(String resourceType) {
-		return resourceDefinitions.get(resourceType).getDescriptor();
-	}
-
 }

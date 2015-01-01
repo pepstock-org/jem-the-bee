@@ -253,21 +253,7 @@ public class ReverseURLClassLoader extends URLClassLoader {
 					InputStream resourceIS = jFile.getInputStream(entry);
 		            // reads input stream in byte array
 		            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		            try {
-		            	// copies to bytes array
-						IOUtils.copy(resourceIS, baos);
-						// closes jar input stream
-						IOUtils.closeQuietly(resourceIS);
-						IOUtils.closeQuietly(baos);
-						// creates an input stream of bytes
-						return new ByteArrayInputStream(baos.toByteArray());
-					} catch (IOException e) {
-						// ignore
-						LogAppl.getInstance().ignore(e.getMessage(), e);
-					} finally {
-						// close always the jar file
-						jFile.close();
-					}
+		            return copy(jFile, resourceIS, baos);
 				}
 				// close always the jar file
 				jFile.close();
@@ -277,6 +263,36 @@ public class ReverseURLClassLoader extends URLClassLoader {
 		}
 		return null;    	
     }
+	
+	/**
+	 * Copies the resource input stream in a byte array. In this way I can close the input stream of the resource.
+	 * @param jFile jar file to be closed after copying
+	 * @param resourceIS input stream of the resource inside the jar
+	 * @param baos byte output stream used to copy the bytes of the resource
+	 * @return returns a byte array with the resource
+	 */
+	private ByteArrayInputStream copy(JarFile jFile, InputStream resourceIS, ByteArrayOutputStream baos){
+        try {
+        	// copies to bytes array
+			IOUtils.copy(resourceIS, baos);
+			// closes jar input stream
+			IOUtils.closeQuietly(resourceIS);
+			IOUtils.closeQuietly(baos);
+			// creates an input stream of bytes
+			return new ByteArrayInputStream(baos.toByteArray());
+		} catch (IOException e) {
+			// ignore
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+		} finally {
+			// close always the jar file
+			try {
+				jFile.close();
+			} catch (IOException e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+			}
+		}
+        return null;
+	}
 
 	/**
 	 * Checks if the class name passed is in the boot strap classpath (like java.* or javax.*) 

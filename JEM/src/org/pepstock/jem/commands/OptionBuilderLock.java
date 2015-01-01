@@ -19,12 +19,13 @@ package org.pepstock.jem.commands;
 /**
  *  This class is used to synchronized the access to OptionBuilder
  *  inside the commands. This is needed because OptionBuilder is not
- *  thread safe
+ *  thread safe.
+ *  
  * @author Simone "Busy" Businaro
  * @version 1.0
  * 
  */
-public class OptionBuilderLock {
+public final class OptionBuilderLock {
 
 	private static final Object LOCK = new Object();
 	

@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * Main panel of custom properties of a resource.
+ * Main panel of properties of a resource.
  * 
  * @author Andrea "Stock" Stocchero
  *
@@ -135,7 +135,7 @@ public class CustomPropertiesEditor extends PagePropertiesPanel implements Updat
     }	
     
     /**
-     * Loads custom properties in the table
+     * Loads properties in the table
      */
     private void loadCustomProperties(){
     	// maximum number 50

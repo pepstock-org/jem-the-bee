@@ -172,9 +172,6 @@ public class StartUpSystem {
 		} catch (MessageException e) {
 			throw new ConfigurationException(e);
 		}
-		
-		// delete resources of not existing types
-		deleteNotExistingTypesResources();
 		LogAppl.getInstance().emit(NodeMessage.JEMC012I, ManagementFactory.getRuntimeMXBean().getName());
 		// recovery data loss handler
 		PartitionService partitionService = Main.getHazelcast().getPartitionService();
@@ -819,24 +816,6 @@ public class StartUpSystem {
 					LogAppl.getInstance().emit(NodeMessage.JEMC038W, ConfigKeys.RESOURCE_DEFINITION_ALIAS, resourceDefinition.toString());
 				}
 			}
-		}
-	}
-
-	/**
-	 * This method clean all common resources removing all resources whose type
-	 * ({@link Resource#getType()}) is not configured or is not one of the
-	 * predefined resources.
-	 * 
-	 * @throws ConfigurationException if some error occurs.
-	 * 
-	 * @see #isValidResourceType(String)
-	 * @see Resource
-	 */
-	private static void deleteNotExistingTypesResources() throws ConfigurationException {
-		try {
-			Main.RESOURCE_DEFINITION_MANAGER.deleteNotExistingTypesResources();
-		} catch (ResourceDefinitionException e) {
-			throw new ConfigurationException(e);
 		}
 	}
 

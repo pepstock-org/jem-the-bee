@@ -16,9 +16,12 @@
  */
 package org.pepstock.jem.node.executors.resources;
 
+import org.apache.shiro.subject.ExecutionException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.resources.definition.ResourceDefinition;
+import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 /**
@@ -48,7 +51,14 @@ public class GetResourceDescriptor extends DefaultExecutor<ResourceDescriptor> {
 	 */
 	@Override
 	public ResourceDescriptor execute() throws ExecutorException {
-		return Main.RESOURCE_DEFINITION_MANAGER.getResourceDescriptorOf(resourceType);
+		try {
+			// gets the resource definition
+			ResourceDefinition definition = Main.RESOURCE_DEFINITION_MANAGER.getResourceDefinition(resourceType);
+			// returns it
+			return definition.getDescriptor();
+		} catch (ResourceDefinitionException e) {
+			// if here, the reource type doesn't exist
+			throw new ExecutionException(e);
+		} 
 	}
-
 }

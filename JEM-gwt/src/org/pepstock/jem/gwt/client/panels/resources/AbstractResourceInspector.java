@@ -92,7 +92,7 @@ public abstract class AbstractResourceInspector extends AbstractInspector {
 	 * @return <code>true</code> if all mandatory attributes have a value set
 	 */
 	protected boolean checkMandatoryAttributes() {
-		// send this call to current selected ResourcesPropertiesPanel, regardless if it's a ootb or a custom one 
+		// send this call to current selected ResourcesPropertiesPanel, regardless if it's a resource 
 		ResourcesPropertiesPanel selectedPanel = (ResourcesPropertiesPanel) resourcePanelContainer.getWidget();
 		boolean allMandatoryAttributesAreFilled = false;
 		if (selectedPanel != null) {

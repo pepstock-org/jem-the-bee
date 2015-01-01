@@ -71,8 +71,8 @@ public class ResourceTypeChooser extends AbstractInspector implements InspectLis
 	}
 	
 	private final void buildExistingPanel() {
-		// obtain the ootb specific panel, if the resource is a custom type, it will be null 
-		// it's a custom resource, need to load the descriptor and render the corrisponding panel
+		// obtain the ootb specific panel, if the resource is a type, it will be null 
+		// it's a resource, need to load the descriptor and render the corrisponding panel
 		Services.RESOURCE_DEFINITIONS_MANAGER.getAllResourceDescriptors(new ServiceAsyncCallback<Collection<ResourceDescriptor>>() {
 			@Override
 			public void onJemFailure(Throwable caught) {

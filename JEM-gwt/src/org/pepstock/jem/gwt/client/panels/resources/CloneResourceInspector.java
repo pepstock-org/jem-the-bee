@@ -22,6 +22,7 @@ import org.pepstock.jem.gwt.client.panels.resources.inspector.NewResourceHeader;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -35,9 +36,10 @@ public class CloneResourceInspector extends ExistingResourceInspector {
 	/**
 	 * Builds a {@link CloneResourceInspector}
 	 * @param resource the cloned resource
+	 * @param descriptor Resource descriptor
 	 */
-	public CloneResourceInspector(Resource resource) {
-		super(resource);
+	public CloneResourceInspector(Resource resource, ResourceDescriptor descriptor) {
+		super(resource, descriptor);
 		// clean resource name to let user choose a new one
 		getResource().setName(null);
 	}

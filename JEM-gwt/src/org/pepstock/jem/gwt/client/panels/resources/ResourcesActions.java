@@ -34,6 +34,7 @@ import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.security.Permissions;
 
 import com.google.gwt.core.client.Scheduler;
@@ -153,7 +154,7 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			
 			// clone the resource
 			Resource resource = selectionModel.getSelectedSet().iterator().next();
-			Resource clone = new Resource();
+			final Resource clone = new Resource();
 			clone.setType(resource.getType());
 			// create a deep copy of resource properties
 			Map<String, ResourceProperty> clonedProperties = new HashMap<String, ResourceProperty>();
@@ -161,17 +162,42 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			clone.setProperties(clonedProperties);
 			
 			Map<String, String> clonedCustomProperties = new HashMap<String, String>();
-			clonedCustomProperties.putAll(resource.getCustomProperties());
+			if (resource.getCustomProperties() != null){
+				clonedCustomProperties.putAll(resource.getCustomProperties());
+			}
 			clone.setCustomProperties(clonedCustomProperties);
 			
 			selectionModel.clear();
-			// shows a popup to create new role
-			AbstractResourceInspector inspector = new CloneResourceInspector(clone);
-			inspector.center();
-			// adds itself to listener to refresh the lsit of roles seeing the new one if added
-			selectionModel.clear();
+    		// obtain the ootb specific panel, if the resource is a type, it will be null 
+    		// it's a resource, need to load the descriptor and render the corrisponding panel
+    		Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(resource.getType(), new ServiceAsyncCallback<ResourceDescriptor>() {
+    			@Override
+    			public void onJemFailure(Throwable caught) {
+    				new Toast(MessageLevel.ERROR, "Unable to load resource definition ("+clone.getType()+"): " + caught.getMessage(), "Resource Definitions Error!").show();
+    			}
+
+    			@Override
+    			public void onJemSuccess(ResourceDescriptor descriptor) {
+    				openInspector(clone, descriptor);
+    				// adds itself to listener to refresh the lsit of roles seeing the new one if added
+    				selectionModel.clear();
+    			}
+
+    			@Override
+    			public void onJemExecuted() {
+    				// do nothing
+    			}
+    		});
+
 		}
 	}
+	
+    private void openInspector(Resource resource, ResourceDescriptor descriptor){
+		// goes inspect in the common resource
+		// shows a popup to clone resource
+		AbstractResourceInspector inspector = new CloneResourceInspector(resource, descriptor);
+		inspector.center();
+    }
 
 	/**
 	 * @param resources collection of resources to remove

@@ -22,7 +22,7 @@ import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
 
 /**
- * Base abstract class for custom resource property panel. Has support for {@link ResourceDescriptor}.
+ * Base abstract class for resource property panel. Has support for {@link ResourceDescriptor}.
  * <code>D</code> is the type of configuration descriptor
  * @author Marco "Fuzzo" Cuccato
  * @param <D> 

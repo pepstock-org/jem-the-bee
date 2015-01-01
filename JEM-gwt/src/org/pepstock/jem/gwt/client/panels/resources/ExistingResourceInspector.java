@@ -35,36 +35,28 @@ import com.google.gwt.user.client.ui.FlexTable;
  */
 public class ExistingResourceInspector extends AbstractResourceInspector {
 
+//	/**
+//	 * Builds a {@link ExistingResourceInspector}
+//	 * @param resource the underlying {@link Resource}
+//	 */
+//	public ExistingResourceInspector(Resource resource) {
+//		this(resource, null);
+//	}
+//	
 	/**
 	 * Builds a {@link ExistingResourceInspector}
 	 * @param resource the underlying {@link Resource}
+	 * @param descriptor Resource descriptor
 	 */
-	public ExistingResourceInspector(Resource resource) {
+	public ExistingResourceInspector(Resource resource, ResourceDescriptor descriptor) {
 		super(resource);
-		buildExistingPanel();
+		createResourcePanel(descriptor);	
 	}
-
-	private final void buildExistingPanel() {
-		// obtain the ootb specific panel, if the resource is a custom type, it will be null 
-		// it's a custom resource, need to load the descriptor and render the corrisponding panel
-		Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(getResource().getType(), new ServiceAsyncCallback<ResourceDescriptor>() {
-			@Override
-			public void onJemFailure(Throwable caught) {
-				new Toast(MessageLevel.ERROR, "Unable to load cutom resource definition: " + caught.getMessage(), "Custom Resource Definitions Error!").show();
-			}
-
-			@Override
-			public void onJemSuccess(ResourceDescriptor descriptor) {
-				ResourcesPropertiesPanel resourcePanel = renderResourcePanel(descriptor); 
-				resourcePanel.loadProperties();
-				showResourcePanel(resourcePanel);
-			}
-
-			@Override
-			public void onJemExecuted() {
-				// do nothing
-			}
-		});
+	
+	private void createResourcePanel(ResourceDescriptor descriptor){
+		ResourcesPropertiesPanel resourcePanel = renderResourcePanel(descriptor); 
+		resourcePanel.loadProperties();
+		showResourcePanel(resourcePanel);
 	}
 
 	public final void showResourcePanel(ResourcesPropertiesPanel activePanel) {

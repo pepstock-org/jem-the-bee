@@ -35,6 +35,7 @@ import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.security.Permissions;
 
 import com.google.gwt.core.client.Scheduler;
@@ -107,22 +108,43 @@ public class CommonResources extends BasePanel<Resource> implements SearchListen
 	 * @see org.pepstock.jem.gwt.client.commons.RoleInspectListener#inspect(org.pepstock.jem.gwt.client.security.Role)
 	 */
     @Override
-    public void inspect(Resource resource) {
+    public void inspect(final Resource resource) {
     	if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_UPDATE)) {
-    		// goes inspect in the common resource
-    		AbstractResourceInspector inspector = new ExistingResourceInspector(resource);
-    		inspector.setTitle(resource.getName());
-    		inspector.center();
-
-    		// adds itself listener for closing and refreshing the data
-    		inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
+    		// obtain the ootb specific panel, if the resource is a type, it will be null 
+    		// it's a resource, need to load the descriptor and render the corrisponding panel
+    		Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(resource.getType(), new ServiceAsyncCallback<ResourceDescriptor>() {
+    			@Override
+    			public void onJemFailure(Throwable caught) {
+    				new Toast(MessageLevel.ERROR, "Unable to load resource definition ("+resource.getType()+"): " + caught.getMessage(), "Resource Definitions Error!").show();
+    			}
 
     			@Override
-    			public void onClose(CloseEvent<PopupPanel> event) {
-    				getCommandPanel().getSearcher().refresh();
+    			public void onJemSuccess(ResourceDescriptor descriptor) {
+    				openInspector(resource, descriptor);
+    			}
+
+    			@Override
+    			public void onJemExecuted() {
+    				// do nothing
     			}
     		});
     	}
+    }
+    
+    private void openInspector(Resource resource, ResourceDescriptor descriptor){
+		// goes inspect in the common resource
+		AbstractResourceInspector inspector = new ExistingResourceInspector(resource, descriptor);
+		inspector.setTitle(resource.getName());
+		inspector.center();
+
+		// adds itself listener for closing and refreshing the data
+		inspector.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+			@Override
+			public void onClose(CloseEvent<PopupPanel> event) {
+				getCommandPanel().getSearcher().refresh();
+			}
+		});
     }
 
 }

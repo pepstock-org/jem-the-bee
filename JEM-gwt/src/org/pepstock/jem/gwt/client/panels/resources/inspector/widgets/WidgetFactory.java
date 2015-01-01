@@ -35,7 +35,7 @@ import org.pepstock.jem.node.resources.definition.fields.TextFieldDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.TextListFieldDescriptor;
 
 /**
- * This factory builds UI widgets in order to render a custom {@link Resource}, described by a {@link ResourceDescriptor}
+ * This factory builds UI widgets in order to render a {@link Resource}, described by a {@link ResourceDescriptor}
  * @author Marco "Fuzzo" Cuccato
  *
  */
