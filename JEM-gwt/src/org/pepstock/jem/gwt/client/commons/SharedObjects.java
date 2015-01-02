@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2015   Andrea "Stock" Stocchero
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +32,7 @@ public class SharedObjects {
 	/**
 	 * License and copyright text 
 	 */
-	public static final String LICENSE = "JEM, the BEE - &copy; 2012-2014 pepstock.org";
+	public static final String LICENSE = "JEM, the BEE - &copy; 2012-2015 pepstock.org";
 	
 	/**
 	 * Difference time calculated between client and server

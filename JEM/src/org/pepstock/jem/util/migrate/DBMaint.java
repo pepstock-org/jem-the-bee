@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2015   Andrea "Stock" Stocchero
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -58,6 +58,12 @@ import org.pepstock.jem.util.CharSet;
 public class DBMaint {
 	
 	private static final String CONFIGURATION = "configuration";
+
+	/**
+	 * To avoind any instantiation
+	 */
+	private DBMaint() {
+	}
 
 	/**
 	 * Main program which accept an argument with the file where JEM-ENV configuration

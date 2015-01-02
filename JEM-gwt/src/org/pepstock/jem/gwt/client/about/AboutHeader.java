@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2014   Marco Cuccato
+    Copyright (C) 2012-2015   Marco Cuccato
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -35,7 +35,7 @@ public class AboutHeader extends Header {
 	 * @param parent popup panel which contains the header
 	 */
 	public AboutHeader(PopupPanel parent) {
-		super(Images.INSTANCE.logoSmall(), "JEM, the BEE - &copy; 2012-2014 pepstock.org", parent);
+		super(Images.INSTANCE.logoSmall(), "JEM, the BEE - &copy; 2012-2015 pepstock.org", parent);
 	}
 	
 }
