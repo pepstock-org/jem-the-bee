@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2015   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2015   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -21,10 +21,10 @@ import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
- * 
- * @author Simone "busy" Businaro
- * 
  * Is the executor responsible to get the number of clients currently connected to the cluster.
+ * 
+ * @author Simone "Busy" Businaro
+ * @version 2.0
  *
  */
 public class Count extends DefaultExecutor<Integer>{
@@ -32,7 +32,7 @@ public class Count extends DefaultExecutor<Integer>{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * Returns the amount of connected clients on Hazelcast cluster
 	 *
 	 * @return the number of clients connected to the cluster
 	 * @throws ExecutorException occurs if errors

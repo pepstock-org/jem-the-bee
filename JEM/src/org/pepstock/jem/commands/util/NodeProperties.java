@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2015   Simone Businaro
+    Copyright (C) 2012-2015   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -28,7 +28,7 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
  * This class contains and get accessed to the properties needed to create a new
  * nodo or a new environmet. The propertie name are the constant of the class.
  * 
- * @author Simone Businaro
+ * @author Simone "Busy" Businaro
  * @version 1.0
  * 
  */

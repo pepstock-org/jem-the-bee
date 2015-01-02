@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Enrico - initial API and implementation
+ *     Enrico Frigo - initial API and implementation
  ******************************************************************************/
 package org.pepstock.jem.plugin;
 
@@ -23,6 +23,8 @@ import org.pepstock.jem.plugin.preferences.PreferencesManager;
 /**
  * The activator class controls the plug-in life cycle.
  * This is the entry point of JEM plugin
+ * @author Enrico Frigo
+ * @version 1.4
  */
 public class Activator extends AbstractUIPlugin implements IWorkbenchListener{
 

@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2015   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2015   Simone "Busy" Businaro
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * 
- * @author Simone Businaro
+ * @author Simone "Busy" Businaro
  * @version 1.0
  * 
  *          It represent the server part of the communication during the join

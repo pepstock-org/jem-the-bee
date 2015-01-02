@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Enrico - initial API and implementation
+*     Enrico Frigo - initial API and implementation
  ******************************************************************************/
 package org.pepstock.jem.plugin.views.jobs.output;
 

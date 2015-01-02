@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Enrico - initial API and implementation
+ *     Andrea "Stock" Stocchero - initial API and implementation
  ******************************************************************************/
 package org.pepstock.jem.plugin;
 
@@ -46,6 +46,7 @@ import org.pepstock.jem.rest.services.UploadListener;
  * REST) and exposes all methods to get all information.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 1.4
  * 
  */
 public class Client {

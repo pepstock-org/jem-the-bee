@@ -20,6 +20,8 @@ import javax.xml.transform.TransformerException;
 
 /**
  * The Class ValidationExceptionThrower.
+ * @author Andrea "Stock" Stocchero
+ * @version 1.3
  */
 public class ValidationExceptionThrower {
 

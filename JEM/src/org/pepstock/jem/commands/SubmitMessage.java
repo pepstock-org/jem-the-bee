@@ -28,6 +28,7 @@ import org.pepstock.jem.log.MessageLevel;
  * It implements {@link MessageInterface}
  * 
  * @see Message
+ * @author Alessandro Zambrini
  */
 public enum SubmitMessage implements MessageInterface{
 		
