@@ -18,6 +18,7 @@ package org.pepstock.jem.node.resources.definition;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.TabBar;
 
@@ -36,7 +37,7 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	
 	private String description = null;
 	
-	private LinkedList<SectionDescriptor> sections = new LinkedList<SectionDescriptor>();
+	private List<SectionDescriptor> sections = new LinkedList<SectionDescriptor>();
 	
 	/**
 	 * For serialization
@@ -75,7 +76,7 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	/**
 	 * @return the sections
 	 */
-	public LinkedList<SectionDescriptor> getSections() {
+	public List<SectionDescriptor> getSections() {
 		return sections;
 	}
 
@@ -85,7 +86,7 @@ public class ResourceDescriptor implements Serializable, ResourcePartDescriptor 
 	 */
 	public void addSections(SectionDescriptor... sections) {
 		for (SectionDescriptor s : sections) {
-			this.sections.addLast(s);
+			this.sections.add(s);
 		}
 	}
 

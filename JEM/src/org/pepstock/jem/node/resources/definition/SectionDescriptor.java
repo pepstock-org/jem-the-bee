@@ -18,6 +18,7 @@ package org.pepstock.jem.node.resources.definition;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.pepstock.jem.node.resources.definition.fields.AbstractFieldDescriptor;
 
@@ -38,7 +39,7 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 	
 	private boolean propertiesEditor = false;
 	
-	private LinkedList<AbstractFieldDescriptor> fields = new LinkedList<AbstractFieldDescriptor>();
+	private List<AbstractFieldDescriptor> fields = new LinkedList<AbstractFieldDescriptor>();
 	
 	/**
 	 * Creates a Section without name
@@ -87,7 +88,7 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 	/**
 	 * @return the fields
 	 */
-	public LinkedList<AbstractFieldDescriptor> getFields() {
+	public List<AbstractFieldDescriptor> getFields() {
 		return fields;
 	}
 
@@ -98,7 +99,7 @@ public class SectionDescriptor implements Serializable, ResourcePartDescriptor {
 	public void addFields(AbstractFieldDescriptor... fields) {
 		// scans fields and add to section
 		for (AbstractFieldDescriptor arf : fields) {
-			this.fields.addLast(arf);
+			this.fields.add(arf);
 		}
 	}
 	

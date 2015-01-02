@@ -34,7 +34,7 @@ public class LogBuffer {
 	
 	private static final LogBuffer BUFFER = new LogBuffer();
     
-	private final LinkedList<String> logRows = new LinkedList<String>();
+	private final List<String> logRows = new LinkedList<String>();
 	
     private long maxRows = DEFAULT_MAXIMUM_ROWS; 
 	
@@ -59,10 +59,10 @@ public class LogBuffer {
 	 */
 	public void addLog(StringBuffer buffer){
 		// adds record to end
-        logRows.addLast(buffer.toString());
+        logRows.add(buffer.toString());
         // if maximum is reachied, removes the first 
         if (logRows.size() > maxRows){
-        	logRows.removeFirst();
+        	logRows.remove(0);
         }
 	}
 	

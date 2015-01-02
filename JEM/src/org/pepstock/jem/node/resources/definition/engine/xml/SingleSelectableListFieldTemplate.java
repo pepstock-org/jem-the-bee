@@ -60,7 +60,7 @@ public class SingleSelectableListFieldTemplate extends SingleValueFieldTemplate 
 	/**
 	 * The list of the possible values of the field.
 	 */
-	private LinkedList<ValueTemplate> values = new LinkedList<ValueTemplate>();
+	private List<ValueTemplate> values = new LinkedList<ValueTemplate>();
 	
 	/**
 	 * Returns the property that indicates whether the field is a radio button (<code>true</code> value)
@@ -88,7 +88,7 @@ public class SingleSelectableListFieldTemplate extends SingleValueFieldTemplate 
 	 * @see ValueTemplate
 	 */
 	public void add(ValueTemplate value) {
-		this.values.addLast(value);
+		this.values.add(value);
 	}
 
 	/**

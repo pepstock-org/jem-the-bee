@@ -62,12 +62,12 @@ public class WidgetFactory {
 			toReturn = render((TabPropertiesPanel)new TabPropertiesPanel(resource, descriptor));
 			((TabPropertiesPanel)toReturn).getTabPanel().selectTab(0);
 		} else {
-			SectionDescriptor sd = descriptor.getSections().getFirst();
+			SectionDescriptor sd = descriptor.getSections().get(0);
 			if (sd.isPropertiesEditor()){
 				toReturn = render (new CustomPropertiesEditor(resource, sd, descriptor.getType()));
 			} else {
 				// if the section contains only a list field descriptor, render it properly
-				if (sd.getFields().getFirst() instanceof TextListFieldDescriptor) {
+				if (sd.getFields().get(0) instanceof TextListFieldDescriptor) {
 					toReturn = render(new ListFieldPagePanel(resource, sd, descriptor.getType()));
 				} else {
 					// otherwise render as a simple page
@@ -122,7 +122,7 @@ public class WidgetFactory {
 			if (sd.isPropertiesEditor()){
 				page = render(new CustomPropertiesEditor(panel.getResource(), sd));
 			} else {
-				if (sd.getFields().getFirst() instanceof TextListFieldDescriptor) {
+				if (sd.getFields().get(0) instanceof TextListFieldDescriptor) {
 					page = render(new ListFieldPagePanel(panel.getResource(), sd));
 				} else {
 					page = render(new PagePropertiesPanel(panel.getResource(), sd));

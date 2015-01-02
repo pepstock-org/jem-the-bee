@@ -1,6 +1,6 @@
 /**
     JEM, the BEE - Job Entry Manager, the Batch Execution Environment
-    Copyright (C) 2012-2015   Andrea "Stock" Stocchero
+    Copyright (C) 2012-2015   Alessandro Zambrini
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -68,7 +68,7 @@ public class SectionTemplate {
 	/**
 	 * The list of the fields of the section.
 	 */
-	private LinkedList<AbstractFieldTemplate> fields = new LinkedList<AbstractFieldTemplate>();
+	private List<AbstractFieldTemplate> fields = new LinkedList<AbstractFieldTemplate>();
 	
 	/**
 	 * Returns the name of the section.
@@ -106,7 +106,7 @@ public class SectionTemplate {
 	 * @see AbstractFieldTemplate
 	 */
 	public void add(AbstractFieldTemplate field) {
-		this.fields.addLast(field);
+		this.fields.add(field);
 	}
 
 	/**

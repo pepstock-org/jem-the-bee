@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.resources.definition.ResourceMessage;
 import org.pepstock.jem.node.resources.definition.XmlConfigurationResourceDefinition;
@@ -316,26 +314,9 @@ public class ResourceTemplateReader {
 		LogAppl.getInstance().emit(ResourceMessage.JEMR021I, newResourceDescriptor.getType(), this.resourceTemplateURL);
 		if (null != this.xmlConfigurationResourceDefinition) {
 			this.xmlConfigurationResourceDefinition.setResourceDescriptor(newResourceDescriptor);
-			if (null != this.resourceDescriptor && !this.resourceDescriptor.getType().equalsIgnoreCase(newResourceDescriptor.getType())) {
-				// resource changed type
-				try {
-					Main.RESOURCE_DEFINITION_MANAGER.changeResourceType(this.xmlConfigurationResourceDefinition, this.resourceDescriptor.getType());
-					this.resourceDescriptor = newResourceDescriptor;
-					this.resourceTemplate = template;
-				} catch (ResourceDefinitionException rdEx) {
-					// debug
-					LogAppl.getInstance().debug(rdEx.getMessage(), rdEx);
-					// in case of error go back to the old type
-					this.xmlConfigurationResourceDefinition.setResourceDescriptor(this.resourceDescriptor);
-				}
-			} else {
-				this.resourceDescriptor = newResourceDescriptor;
-				this.resourceTemplate = template;
-			}
-		} else {
-			this.resourceDescriptor = newResourceDescriptor;
-			this.resourceTemplate = template;
 		}
+		this.resourceDescriptor = newResourceDescriptor;
+		this.resourceTemplate = template;
 	}
 
 	/**

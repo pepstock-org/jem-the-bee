@@ -57,7 +57,7 @@ public class ResourceTemplate {
 	 * The list of the sections of the resource template. <br>
 	 * All the field of a resource may be divided into sections.
 	 */
-	private LinkedList<SectionTemplate> sections = new LinkedList<SectionTemplate>();
+	private List<SectionTemplate> sections = new LinkedList<SectionTemplate>();
 	
 		
 	/**
@@ -96,7 +96,7 @@ public class ResourceTemplate {
 	 * @see SectionTemplate
 	 */
 	public void add(SectionTemplate section) {
-		this.sections.addLast(section);
+		this.sections.add(section);
 	}
 
 	/**

@@ -50,7 +50,7 @@ public class MultiSelectableListFieldTemplate extends AbstractFieldTemplate {
 	/**
 	 * The list of the possible values of the field.
 	 */
-	private LinkedList<ValueTemplate> values = new LinkedList<ValueTemplate>();
+	private List<ValueTemplate> values = new LinkedList<ValueTemplate>();
 
 	/**
 	 * Adds a value in the list of the possible values of the field.
@@ -58,7 +58,7 @@ public class MultiSelectableListFieldTemplate extends AbstractFieldTemplate {
 	 * @see ValueTemplate
 	 */
 	public void add(ValueTemplate value) {
-		this.values.addLast(value);
+		this.values.add(value);
 	}
 
 	/**

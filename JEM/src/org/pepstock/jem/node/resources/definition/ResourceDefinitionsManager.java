@@ -33,17 +33,12 @@ import org.pepstock.jem.annotations.Mode;
 import org.pepstock.jem.annotations.ResourceMetaData;
 import org.pepstock.jem.annotations.ResourceTemplate;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.CommonResourceDefinition;
 import org.pepstock.jem.node.configuration.CommonResourcesDefinition;
-import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.engine.ResourceTemplateException;
 import org.pepstock.jem.util.ClassLoaderUtil;
 import org.pepstock.jem.util.ObjectAndClassPathContainer;
 import org.pepstock.jem.util.VariableSubstituter;
-
-import com.hazelcast.core.IMap;
 
 /**
  * Contains all resource definitions for resources configuration.<br>
@@ -330,34 +325,6 @@ public class ResourceDefinitionsManager {
 		}
 		return resTemplate;
 	}
-	
-
-	/**
-	 * This method changes a resource type. It removes the old
-	 * {@link ResourceDefinition} and add the new one. Removes all the resource
-	 * of the previous type
-	 * 
-	 * @param newResourceDefinition the new {@link ResourceDefinition}
-	 * @param oldResourceType the old type to be removed
-	 * 
-	 * @throws ResourceDefinitionException if some error occurs.
-	 */
-	public void changeResourceType(ResourceDefinition newResourceDefinition, String oldResourceType) throws ResourceDefinitionException {
-		if (!hasResourceDefinition(newResourceDefinition.getDescriptor().getType())) {
-			this.resourceDefinitions.put(newResourceDefinition.getDescriptor().getType(), newResourceDefinition);
-		} else {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR023E, newResourceDefinition.getDescriptor().getType());
-			throw new ResourceDefinitionException(ResourceMessage.JEMR023E, newResourceDefinition.getDescriptor().getType());
-		}
-		this.resourceDefinitions.remove(oldResourceType);
-		LogAppl.getInstance().emit(ResourceMessage.JEMR025I, oldResourceType, newResourceDefinition.getDescriptor().getType());
-		try {
-			deleteAllResources(oldResourceType);
-			LogAppl.getInstance().emit(ResourceMessage.JEMR026I, oldResourceType);
-		} catch (ResourceDefinitionException rdEx) {
-			LogAppl.getInstance().emit(ResourceMessage.JEMR024W, rdEx, oldResourceType, newResourceDefinition.getDescriptor().getType());
-		}
-	}
 
 	/**
 	 * It returns the list of all the{@link ResourceDefinition}
@@ -368,36 +335,6 @@ public class ResourceDefinitionsManager {
 	 */
 	public Collection<ResourceDefinition> getAllResourceDefinitions() {
 		return resourceDefinitions.values();
-	}
-
-	/**
-	 * This method removes all common resources whose type (
-	 * {@link Resource#getType()}) is equals to the parameter
-	 * <code>resourceType</code>.
-	 * 
-	 * @param resourceType the type of the resources to be removed
-	 * 
-	 * @throws ResourceDefinitionException if some error occurs.
-	 * 
-	 * @see Resource
-	 */
-	public void deleteAllResources(String resourceType) throws ResourceDefinitionException {
-		IMap<String, Resource> resourceMap = Main.getHazelcast().getMap(Queues.COMMON_RESOURCES_MAP);
-		for (Resource resource : resourceMap.values()) {
-			if (resource.getType().equalsIgnoreCase(resourceType)) {
-				String name = resource.getName();
-				try {
-					// locks the key
-					resourceMap.lock(name);
-					// remove the resource from map
-					resource = resourceMap.remove(name);
-					LogAppl.getInstance().emit(ResourceMessage.JEMR019W, name, resource.getType());
-				} finally {
-					// unlocks always the key
-					resourceMap.unlock(name);
-				}
-			}
-		}
 	}
 
 	/**
