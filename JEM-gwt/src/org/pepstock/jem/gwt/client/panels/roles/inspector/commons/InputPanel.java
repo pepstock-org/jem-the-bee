@@ -86,7 +86,7 @@ public class InputPanel extends VerticalPanel {
 		label.setHeight(Sizes.toString(LABEL_HEIGHT));
 		add(label);
 		
-		textBox.setWidth(Sizes.HUNDRED_PERCENT);
+		textBox.setWidth("95%");
 		textBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
