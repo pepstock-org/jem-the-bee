@@ -59,4 +59,15 @@ public class StepJava extends AntTestCase{
 	public void testRMIWithAbend() throws Exception {
 		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_USE_RMI_ABEND.xml"), 1);
 	}
+	
+	/**
+	 * Test the sort ant task
+	 * 
+	 * @throws Exception
+	 */
+	public void testSecurityManagerWithAbend() throws Exception {
+		assertEquals(submit("stepjava/TEST_ANTUTILS_STEPJAVA_SECURITY_ABEND.xml"), 0);
+	}
+	
+	
 }

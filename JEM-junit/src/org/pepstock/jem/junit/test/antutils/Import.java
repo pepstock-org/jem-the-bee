@@ -16,22 +16,37 @@
  */
 package org.pepstock.jem.junit.test.antutils;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 /**
- * Is the jnuit suite dedicated to test the ant utility provided by the
- * JEM-enterprise library and the ant utility provide by the JEM.
  * 
  * @author Simone "Busy" Businaro
- * 
+ * @version 1.4
  */
-@RunWith(Suite.class)
-@SuiteClasses({ Clean.class, CommonResourcesTask.class, StepJava.class, Wrapper.class, Procedure.class,
-		ScriptTask.class, SortTask.class, 
-		RolesTask.class, CertificateTask.class, CopyDataSet.class,
-		GDGTask.class, NodeTask.class, Wait.class, Abend.class, Import.class })
-public class AntUtilsSuite {
+public class Import extends AntTestCase {
 
+	/**
+	 * Test copy import file
+	 * 
+	 * @throws Exception
+	 */
+	public void testCopyImport() throws Exception {
+		assertEquals(submit("imp/TEST_ANTUTILS_COPY_IMPORT.xml"), 0);
+	}
+	
+	/**
+	 * Test import
+	 * 
+	 * @throws Exception
+	 */
+	public void testImport() throws Exception {
+		assertEquals(submit("imp/TEST_ANTUTILS_IMPORT.xml"), 0);
+	}
+	
+	/**
+	 * Test delete import
+	 * 
+	 * @throws Exception
+	 */
+	public void testDeleteImport() throws Exception {
+		assertEquals(submit("imp/TEST_ANTUTILS_DELETE_IMPORT.xml"), 0);
+	}
 }

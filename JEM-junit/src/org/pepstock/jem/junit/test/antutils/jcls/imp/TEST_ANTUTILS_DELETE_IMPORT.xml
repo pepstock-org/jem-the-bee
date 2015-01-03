@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_DELETE_IMPORT" default="main" basedir=".">
+	<description>
+		Prints some System properties and environment variables
+    </description>
+
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_DELETE_IMPORT"/>
+		
+	<target name="main">
+		<delete file="${jem.source}/test_ant_import.xml"/>
+	</target>
+</project>

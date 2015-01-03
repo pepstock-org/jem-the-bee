@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ Clean.class, ChunkProcess.class, Tasklet.class,
-		CopyDataSet.class, Abend.class, Wait.class })
+		CopyDataSet.class, Abend.class, Wait.class, Import.class })
 public class SpringBatchSuite {
 
 }

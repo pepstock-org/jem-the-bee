@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="TEST_ANTUTILS_COPY_IMPORT" default="executeCopy" basedir=".">
+	<description>
+		This JCL is an example of how to copy file whithin a JCL using JEM 
+		feautures. As you will see with jem feautures copy files using JCL
+		will be very easy and exspecially you will not need absolute pat but
+		you can use environment viriable to refer to the global file system
+		so that your JCL will be platform independent.
+    </description>
+	
+	<!--
+	JEM properties definition
+	-->
+	<property name="jem.job.name" value="TEST_ANTUTILS_COPY_IMPORT"/>
+	<!--
+	ANT task definition
+	-->
+	<taskdef name="copy" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
+
+	<!-- 
+	COPY: copy the INPUT dataset to the OUTPUT dataset
+	-->
+	<target name="executeCopy">
+		<copy>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="${jem.source}/test_ant_import.xml"/>
+			</dataDescription>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset><![CDATA[<project>
+<!--
+ANT task definition
+-->
+<taskdef name="iefbr14" classname="org.pepstock.jem.ant.tasks.utilities.NullTask" />
+					
+<!-- 
+NULL: does nothing
+-->
+<target name="null">
+	<iefbr14></iefbr14>
+</target>
+</project>]]></dataset>	
+			</dataDescription>
+		</copy>
+	</target>
+</project>

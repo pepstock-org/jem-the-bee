@@ -21,7 +21,7 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef resource="org/pepstock/jem/ant/JemAntUtilTasks.properties"/>
 	
 	<target name="set-resources" depends="set-ftp,set-jdbc,set-jms-http,set-jppf,set-jndi,set-rmi,set-rest">
 	</target>

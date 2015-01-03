@@ -16,7 +16,7 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->
 
-	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
+	<taskdef resource="org/pepstock/jem/ant/tasks/JemAntTasks.properties"/>
 
 	<target name="main">
 		<step-java classname="org.pepstock.jem.junit.test.common.java.DeleteJunitDataSet">

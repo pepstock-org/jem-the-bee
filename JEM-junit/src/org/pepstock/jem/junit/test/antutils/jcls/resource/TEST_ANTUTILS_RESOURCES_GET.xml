@@ -21,7 +21,7 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef resource="org/pepstock/jem/ant/JemAntUtilTasks.properties"/>
 	
 	<target name="get-resources">
 		<resources license="Pepstock_JEM_AntUtil.license">

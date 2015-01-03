@@ -11,10 +11,8 @@
 	<property name="jem.job.environment" value="environment"/>
 	<property name="jem.job.affinity" value="affinity"/>
 	-->
-
-	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
-	<taskdef name="wrapper" classname="org.pepstock.jem.ant.tasks.WrapperTask" />
+	
+	<taskdef resource="org/pepstock/jem/ant/tasks/JemAntTasks.properties"/>
 
 	<target name="jndi">
 		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetJndi">

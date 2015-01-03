@@ -148,7 +148,6 @@ public class StartUpSystem {
 	 * To avoid any instantiation
 	 */
 	private StartUpSystem() {
-
 	}
 
 	/**

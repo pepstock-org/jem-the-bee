@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+    
+    <beans:import resource="file:${jem.source}/test_sb_import.xml"/>
+    
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="TEST_SPRINGBATCH_IMPORT" />
+	</beans:bean>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.EchoTasklet">
+		<beans:property name="message" value="TEST ECHO MESSAGE!" />
+	</beans:bean>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="TEST_SPRINGBATCH_IMPORT">
+		<step id="nothing">
+			<tasklet ref="null" />
+		</step>
+	</job>
+	
+</beans:beans>

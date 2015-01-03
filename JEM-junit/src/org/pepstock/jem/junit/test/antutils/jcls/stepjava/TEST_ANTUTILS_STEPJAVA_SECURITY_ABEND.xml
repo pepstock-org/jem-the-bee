@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<project name="TEST_ANTUTILS_STEPJAVA_USE_RMI_ABEND" default="rmi" basedir=".">
+<project name="TEST_ANTUTILS_STEPJAVA_SECURITY_ABEND" default="main" basedir=".">
 	<description>
 		This is an example of how to make use of datasource in JEM.
     </description>
 
-	<property name="jem.job.name" value="TEST_ANTUTILS_STEPJAVA_USE_RMI_ABEND" />
+	<property name="jem.job.name" value="TEST_ANTUTILS_STEPJAVA_SECURITY_ABEND" />
 	<property name="jem.job.lockingScope" value="task" />
 	<!-- 
 	<property name="jem.job.domain" value="domain"/>
@@ -14,9 +14,8 @@
 
 	<taskdef resource="org/pepstock/jem/ant/tasks/JemAntTasks.properties"/>
 
-	<target name="rmi">
-		<step-java classname="org.pepstock.jem.junit.test.antutils.java.GetRmi">
-			<arg value="-h" />
+	<target name="main">
+		<step-java classname="org.pepstock.jem.junit.test.antutils.java.TrySecurity">
 			<classpath>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 				<!-- 
@@ -25,8 +24,6 @@
 				-->
 				<pathelement path="${java.class.path}" />
 			</classpath>
-			<!-- DB datasource reference -->
-			<datasource name="JUNIT-RMI-RESOURCE" resource="JUNIT-RMI-RESOURCE"/>
 		</step-java>
 	</target>
 </project>
