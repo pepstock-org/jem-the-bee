@@ -109,8 +109,6 @@ public final class PermissionsPanel extends SplitLayoutPanel implements InspectL
 		add(center);
 		
 		viewStack.showStack(0);
-		
-		
 	}
 
 	/**

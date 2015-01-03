@@ -46,6 +46,11 @@ import org.pepstock.jem.util.rmi.RmiKeys;
  */
 class AntBatchSecurityManager extends BatchSecurityManager {
 	
+	// this is a constant and but be maintained if ANT community will change the security manager
+	// this is necessary because is not allowed to change a security manager (only is ANT one)
+	private static final String ANT_PERMISSIONS = "org.apache.tools.ant.types.Permissions";
+	private static final String ANT_SECURITY_MANAGER = "org.apache.tools.ant.types.Permissions$MySM";
+	
 	private boolean isAdministrator = false;
 	
 	private boolean isGrantor = false;
@@ -148,6 +153,40 @@ class AntBatchSecurityManager extends BatchSecurityManager {
 		}
 		return super.checkBatchPermission(permission);
 	}
+	
+	/**
+	 * Scans the stack trace element to understand if setSecurity manager is allowed.
+	 * <br>
+	 * ONLY ANT engine can set security manager and it does with
+	 * <code>org.apache.tools.ant.types.Permissions</code> class.
+	 * <br>
+	 * if it arrives with <code>org.apache.tools.ant.types.Permissions$MySM</code> means that
+	 * ANT security manager delegates us to check but we can't do it.
+	 * <br>
+	 * If it tries to change it by a ANT task, is not allowed!
+	 * 
+	 * @return <code>true</code> if ANT is initializing the task otherwise o=always false.
+	 */
+	private boolean isAllowedSetSecurityManager(){
+		StackTraceElement[] elements = Thread.getAllStackTraces().get(Thread.currentThread());
+		boolean thisFound = false;
+		for (StackTraceElement element : elements){
+			// before must be in the stack trace this class
+			if (element.getClassName().equalsIgnoreCase(getClass().getName())){
+				thisFound = true;
+				// checks if is called by Security manager of ANT
+				// if yes, it's delegating... that means that some one try to set the security manager
+				// and this is NOT allowed.
+			} else if (element.getClassName().equalsIgnoreCase(ANT_SECURITY_MANAGER) && thisFound){
+				return false;
+				// if it is called by the permission, that means teh ANT is intsalling own security
+				// manager, MySM, and that's ALLOWED!!
+			} else if (element.getClassName().equalsIgnoreCase(ANT_PERMISSIONS) && thisFound){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -156,6 +195,14 @@ class AntBatchSecurityManager extends BatchSecurityManager {
 	 */
 	@Override
 	public void checkPermission(Permission perm) {
+		// checks if someone add a security manager
+		if (perm instanceof RuntimePermission && "setSecurityManager".equalsIgnoreCase(perm.getName())){
+			if (!isAllowedSetSecurityManager()){
+				LogAppl.getInstance().emit(NodeMessage.JEMC274E);
+				throw new SecurityException(NodeMessage.JEMC274E.toMessage().getMessage());
+			}
+			return;
+		}
 		// this check is necessary to avoid that someone
 		// set jem properties, accessing outside of GFS
 		if (perm instanceof PropertyPermission && "write".equalsIgnoreCase(perm.getActions()) && perm.getName().startsWith("jem")){

@@ -38,6 +38,10 @@ public class RemovePanel extends VerticalPanel {
 	/**
 	 * 
 	 */
+	public static final int SPACING = 5;
+	/**
+	 * 
+	 */
 	public static final int WIDTH = 100;
 
 	private final Button remove = new Button("Remove");
@@ -52,7 +56,7 @@ public class RemovePanel extends VerticalPanel {
 	 */
 	public RemovePanel() {
 		setWidth(Sizes.toString(WIDTH));
-		setSpacing(5);
+		setSpacing(SPACING);
 		// sets disable the buttons because
 		// they will be available when a permission will select
 		// or inserted in text box

@@ -23,7 +23,7 @@ import org.pepstock.jem.gwt.client.panels.roles.inspector.commons.PermissionItem
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.Role;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 
 /**
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class AdvancedPermissionsPanel extends HorizontalPanel implements ResizeCapable {
+public class AdvancedPermissionsPanel extends ScrollPanel implements ResizeCapable {
 
 	/**
 	 * Constructs all UI using role instance information
@@ -42,8 +42,6 @@ public class AdvancedPermissionsPanel extends HorizontalPanel implements ResizeC
 	 * 
 	 */
 	public AdvancedPermissionsPanel(Role role) {
-		setSpacing(10);
-		
 		PermissionItem item = new PermissionItem("Internal Service", "Internal services necessary for Extended ANT utilities", Permissions.INTERNAL_SERVICES);
 		
 		PermissionItem item2 = new PermissionItem("Local File System Access", "Accessibility to local file system of node's machine", Permissions.LOCAL_FILE_SYSTEM_ACCESS);

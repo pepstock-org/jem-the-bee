@@ -18,6 +18,7 @@ package org.pepstock.jem.springbatch.tasks;
 
 import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -275,6 +276,9 @@ public abstract class JemTasklet implements Tasklet{
 		} catch (NamingException e) {
 			isAbended = true;
 			throw new SpringBatchException(SpringBatchMessage.JEMS043E, e);
+		} catch (RemoteException e) {
+			isAbended = true;
+			throw new SpringBatchException(SpringBatchMessage.JEMS045E, e, this.getClass().getName(), e.getMessage());
 		} catch (IOException e) {
 			isAbended = true;
 			throw new SpringBatchException(SpringBatchMessage.JEMS044E, e, e.getMessage());

@@ -19,6 +19,7 @@ package org.pepstock.jem.jbpm.tasks;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -359,8 +360,10 @@ public class JemWorkItemHandler implements WorkItemHandler {
 			// setting the boolean to TRUE
 			isExecutionStarted = true;
 			return item.execute(parms);
+		} catch (RemoteException e) {
+			throw new JemException(e);	
 		} catch (RuntimeException e) {
-			throw e;			
+			throw e;				
 		} catch (Exception e) {
 			throw new JemException(e);
 		} finally {

@@ -180,7 +180,6 @@ public final class UsersPanel extends HorizontalPanel implements InspectListener
 	 */
 	@Override
 	public void onResize(int availableWidth, int availableHeight) {
-
 		int widthInputPanel = InputPanel.SPACING + InputPanel.WIDTH + InputPanel.SPACING;
 
 		int widthRemovePanel = InputPanel.SPACING + RemovePanel.WIDTH + InputPanel.SPACING;
@@ -193,7 +192,6 @@ public final class UsersPanel extends HorizontalPanel implements InspectListener
 
 		scroller.setHeight(Sizes.toString(height));
 		scroller.setWidth(Sizes.toString(width));
-
 	}
 	
 	/* (non-Javadoc)

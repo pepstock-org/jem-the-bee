@@ -86,7 +86,7 @@ public class InputPanel extends VerticalPanel {
 		label.setHeight(Sizes.toString(LABEL_HEIGHT));
 		add(label);
 		
-		textBox.setVisibleLength(40);
+		textBox.setWidth(Sizes.HUNDRED_PERCENT);
 		textBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -100,7 +100,6 @@ public class InputPanel extends VerticalPanel {
 
 		});
 		textBox.addKeyPressHandler(new KeyPressHandler() {
-			
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER && add.isEnabled()){

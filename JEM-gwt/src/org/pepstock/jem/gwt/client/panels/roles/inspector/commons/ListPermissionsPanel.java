@@ -239,11 +239,10 @@ public abstract class ListPermissionsPanel extends HorizontalPanel implements In
 	 */
     @Override
     public void onResize(int availableWidth, int availableHeight) {
-    	
     	int widthInputPanel = InputPanel.SPACING + InputPanel.WIDTH + InputPanel.SPACING;
     	
-    	int widthRemovePanel = InputPanel.SPACING + RemovePanel.WIDTH + InputPanel.SPACING;
-
+    	int widthRemovePanel = RemovePanel.SPACING + RemovePanel.WIDTH + RemovePanel.SPACING;
+    	
     	int width = availableWidth - widthInputPanel - widthRemovePanel - InputPanel.SPACING - InputPanel.SPACING
     			- Sizes.MAIN_TAB_PANEL_BORDER - Sizes.MAIN_TAB_PANEL_BORDER;
     	
