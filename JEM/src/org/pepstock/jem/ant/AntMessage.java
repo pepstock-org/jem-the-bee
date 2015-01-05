@@ -509,7 +509,13 @@ public enum AntMessage implements MessageInterface{
 	 * "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you put a wrong syntax for properteis for a data source.<br>Please have a look to JCL.")
-	JEMA076E(76, "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR);
+	JEMA076E(76, "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR),
+	
+	/**
+	 * "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when you have a JAVA ANT task in your JCL defined with attribute fork=true. This is not allowed for security reason.<br>JEM overrides your configuration, setting the fork attribute to false.")
+	JEMA077W(76, "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

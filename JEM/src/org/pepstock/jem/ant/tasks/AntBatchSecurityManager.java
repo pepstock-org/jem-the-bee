@@ -48,8 +48,8 @@ class AntBatchSecurityManager extends BatchSecurityManager {
 	
 	// this is a constant and but be maintained if ANT community will change the security manager
 	// this is necessary because is not allowed to change a security manager (only is ANT one)
-	private static final String ANT_PERMISSIONS = "org.apache.tools.ant.types.Permissions";
-	private static final String ANT_SECURITY_MANAGER = "org.apache.tools.ant.types.Permissions$MySM";
+	private static final String ANT_PERMISSIONS = org.apache.tools.ant.types.Permissions.class.getName();
+	private static final String ANT_SECURITY_MANAGER = ANT_PERMISSIONS+"$MySM";
 	
 	private boolean isAdministrator = false;
 	

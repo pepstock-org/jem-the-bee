@@ -30,6 +30,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.UnknownElement;
 import org.apache.tools.ant.helper.AntXMLContext;
+import org.apache.tools.ant.taskdefs.Java;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.Step;
 import org.pepstock.jem.ant.AntException;
@@ -315,6 +316,28 @@ public class StepListener implements BuildListener {
 	 */
 	@Override
 	public void taskStarted(BuildEvent event) {
+		// checks if you are using a JAVA ANT task with FORK
+		// this option is not allowed because with the fork
+		// the application is out of secured environment,
+		// that means without security manager
+
+		// checks if is cast-able
+		if (event.getTask() != null){
+			UnknownElement ue = (UnknownElement)event.getTask();
+			ue.maybeConfigure();
+			Task task = (Task)ue.getTask();
+			// if is a ANT JAVA TASK
+			if (task instanceof Java && !(task instanceof StepJava)){
+				// gets AJAV task
+				Java java = (Java)task;
+				// and force FORK to false
+				java.setFork(false);
+				
+				// shows the message of the force of fork.
+				event.getProject().log(AntMessage.JEMA077W.toMessage().getFormattedMessage(event.getTask().getTaskName()));
+			}
+		}
+		
 		// if task locking scope is set, locks resources
 		if (isTaskLockingScope()){
 			loadForLock(event.getTask());
