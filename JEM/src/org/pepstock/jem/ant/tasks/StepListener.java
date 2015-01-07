@@ -17,11 +17,13 @@
 package org.pepstock.jem.ant.tasks;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
@@ -323,19 +325,43 @@ public class StepListener implements BuildListener {
 
 		// checks if is cast-able
 		if (event.getTask() != null){
-			UnknownElement ue = (UnknownElement)event.getTask();
-			ue.maybeConfigure();
-			Task task = (Task)ue.getTask();
+			Task task = null;
+			// checks if is an Unknown element
+			if (event.getTask() instanceof UnknownElement){
+				// gets ANT task
+				UnknownElement ue = (UnknownElement)event.getTask();
+				ue.maybeConfigure();
+				task = (Task)ue.getTask();
+			} else if (event.getTask() instanceof Task){
+				// gets the task
+				// here if the ANT task is already configured
+				// mainly on sequential, parallel and JEM procedure
+				task = (Task)event.getTask();
+			}
 			// if is a ANT JAVA TASK
 			if (task instanceof Java && !(task instanceof StepJava)){
 				// gets AJAV task
 				Java java = (Java)task;
+				boolean isFork = true;
+				 try {
+					 // reflection to understand if the attribute fork is set to true
+					 // unfortunately ANT java task don't have any get method to have fork value
+					Field f = java.getClass().getDeclaredField("fork");
+					 isFork = (Boolean)FieldUtils.readField(f, java, true);
+				} catch (SecurityException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				} catch (NoSuchFieldException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				} catch (IllegalAccessException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);				}
 				// and force FORK to false
 				java.setFork(false);
-				
-				// shows the message of the force of fork.
-				event.getProject().log(AntMessage.JEMA077W.toMessage().getFormattedMessage(event.getTask().getTaskName()));
+				if (isFork){
+					// shows the message of the force of fork.
+					event.getProject().log(AntMessage.JEMA077W.toMessage().getFormattedMessage(event.getTask().getTaskName()));
+				}
 			}
+
 		}
 		
 		// if task locking scope is set, locks resources

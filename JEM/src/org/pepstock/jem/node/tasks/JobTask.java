@@ -293,11 +293,12 @@ public abstract class JobTask extends CommandLineTask {
 
 			// writes JEM log with headers
 			JobLogManager.printHeader(job);
-
+		
 			// start process and save instance
 			process = builder.start();
 			// wait for end of job execution
 			returnCode = process.waitFor();
+			
 			// check if cancelled, setting the return code 222
 			if (isCancelled){
 				returnCode = Result.CANCELED;

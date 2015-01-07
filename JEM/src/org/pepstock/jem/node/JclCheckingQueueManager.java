@@ -149,7 +149,6 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		try {
 			// using the factory, validates, checks and loads JCL into JOB
 			Factory.loadJob(prejob);
-			
 			// check if user is grant for job submitting
 			User user = new User(job.getUser());
 			user.setOrgUnitId(job.getOrgUnit());
