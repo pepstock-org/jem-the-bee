@@ -1,6 +1,12 @@
 package org.pepstock.jem.junit.init;
 
+/**
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
+ */
 public class RestConf {
+	
 	private String url;
 	
 	private String user;

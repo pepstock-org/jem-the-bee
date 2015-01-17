@@ -66,6 +66,11 @@ public class StepListener implements BuildListener {
 	// you can have more than 1 tasks, sets 100 as maximum number of tasks
 	private static final int MAX_TASKS_FOR_TARGET = 100;
 	
+	// this is the FORK attribute name of JAVA ANT task
+	// JAVA ANT task doesn't publish any get method to get it
+	// and then it uses reflection to get it
+	private static final String ANT_JAVA_TASK_FORK_ATTRIBUTE_NAME = "fork";
+	
 	private int stepOrder = MAX_TASKS_FOR_TARGET;
 	
 	private TasksDoor door = null;
@@ -346,14 +351,15 @@ public class StepListener implements BuildListener {
 				 try {
 					 // reflection to understand if the attribute fork is set to true
 					 // unfortunately ANT java task don't have any get method to have fork value
-					Field f = java.getClass().getDeclaredField("fork");
+					Field f = java.getClass().getDeclaredField(ANT_JAVA_TASK_FORK_ATTRIBUTE_NAME);
 					 isFork = (Boolean)FieldUtils.readField(f, java, true);
 				} catch (SecurityException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				} catch (NoSuchFieldException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				} catch (IllegalAccessException e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);				}
+					LogAppl.getInstance().ignore(e.getMessage(), e);				
+				}
 				// and force FORK to false
 				java.setFork(false);
 				if (isFork){

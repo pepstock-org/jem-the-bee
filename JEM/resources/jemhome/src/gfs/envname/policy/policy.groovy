@@ -27,8 +27,8 @@ def hostnames = SYSINFO.getNetworkProperties().get("hostnames");
 if (hostnames != null){
 	items = hostnames.split(',')
 	items.each{ 
-		if (it.indexOf(".") > -1){
-			names = it.split('.');
+		if (it.indexOf('.') > -1){
+			names = it.split('\\.');
 			shortHostname = names[0];
 			RESULT.affinities.add(shortHostname);			
 		} else {

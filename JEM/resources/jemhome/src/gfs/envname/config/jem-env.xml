@@ -70,6 +70,10 @@
 			</properties>
 		</listener>
 		
+		<listener
+			className="org.pepstock.jem.node.https.HttpJobListener">
+		</listener>
+		
 		<!-- listener className="org.pepstock.jem.listeners.JobOutputArchiveListener">
 			<properties>
 				<property name="license" value="Pepstock_JEM_AntUtil.license" />

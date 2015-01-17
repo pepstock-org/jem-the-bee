@@ -25,14 +25,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
-import java.security.KeyException;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocketFactory;
+
 import org.apache.commons.io.FileUtils;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.security.Crypto;
@@ -40,6 +46,8 @@ import org.pepstock.jem.node.security.Crypto;
 import com.hazelcast.config.SocketInterceptorConfig;
 
 /**
+ * Utility to manage the keystores and keys, managed inside the JEM node.<br>
+ * 
  * @author Simone "Busy" Businaro
  * @version 1.0
  * 
@@ -52,39 +60,85 @@ public class KeyStoreUtil {
 	 * Private constructor to avoid any instantiation 
 	 */
 	private KeyStoreUtil() {
-		
 	}
 
 	/**
+	 * Returns the keystores with symmetric keys of used for socket interceptor.
+	 * 
 	 * @return return keystore info
 	 */
 	public static synchronized KeyStoresInfo getKeyStoresInfo() {
 		if (INFO == null) {
+			// gets key store properteis from HC configuration
 			SocketInterceptorConfig config = Main.getHazelcast().getConfig().getNetworkConfig().getSocketInterceptorConfig();
+			// creates keystore
 			INFO = Factory.createKeyStoresInfo(config.getProperties());
 		}
 		return INFO;
 	}
 	
 	/**
+	 * Returns a SSL socket factory creating asymmetric keys at runtime.
 	 * 
-	 * @param keystoreInfo
-	 * @return
-	 * @throws KeyStoreException 
-	 * @throws IOException 
-	 * @throws CertificateException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws Exception
+	 * @return a SSL socket factory for HTTPS listener 
+	 * @throws KeyStoreException if any errors occurs to get keys
+	 */
+	public static SSLServerSocketFactory getSSLServerSocketFactory() throws KeyStoreException {
+		try {
+			// gets a key stores created at runtime
+			ByteArrayInputStream baos = SelfSignedCertificate.getCertificate();
+			KeyStore keystore  = KeyStore.getInstance("jks");
+			// loads the keystore
+			keystore.load(baos, SelfSignedCertificate.CERTIFICATE_PASSWORD.toCharArray());
+			KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(
+					KeyManagerFactory.getDefaultAlgorithm());
+			
+			// initialiazes the key manager
+			kmfactory.init(keystore, SelfSignedCertificate.CERTIFICATE_PASSWORD.toCharArray());
+			KeyManager[] keymanagers = kmfactory.getKeyManagers();
+			// creates SSL socket factory
+			SSLContext sslcontext = SSLContext.getInstance("TLS");
+			sslcontext.init(keymanagers, null, null);
+			return sslcontext.getServerSocketFactory();
+		} catch (UnrecoverableKeyException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (KeyManagementException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (CertificateException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (SecurityException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		} catch (OperatorCreationException e) {
+			throw new KeyStoreException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * Gets a key store using a entity with teh information where it has to read and 
+	 * load into the keystore
+	 * 
+	 * @param keystoreInfo entity with information about keystore
+	 * @return a new keystore
+	 * @throws KeyStoreException if any error occurs during the keystore creation
 	 */
 	static KeyStore getKeystore(KeyStoreInfo keystoreInfo) throws KeyStoreException {
+		// gets keystore
 		KeyStore keystore = KeyStore.getInstance(keystoreInfo.getType());
 		InputStream is = null;
 		try {
+			// if the entity must read the keystore from memory
+			// used the bytes of the entity and
 			if (keystoreInfo.getBytes() != null){
 				is = new ByteArrayInputStream(keystoreInfo.getBytes().toByteArray());
 			} else {
+				// otherwise it reads the keystore from the file system 
 				is = new FileInputStream(keystoreInfo.getFile());
 			}
+			// loads the key store
 			keystore.load(is, keystoreInfo.getPassword().toCharArray());
 		} catch (FileNotFoundException e) {
 			throw new KeyStoreException(e.getMessage(), e);
@@ -95,6 +149,8 @@ public class KeyStoreUtil {
 		} catch (IOException e) {
 			throw new KeyStoreException(e.getMessage(), e);
 		} finally {
+			// if inputstream is not null
+			// it closes
 			if (is != null){
 				try {
 					is.close();
@@ -113,14 +169,8 @@ public class KeyStoreUtil {
 	 * This key store will be used when the client will used a private key to
 	 * connect to the cluster and the cluster will used the relative public key
 	 * present in the x509 certificate to verify the identity of the client.
-	 * @param keystoreInfo 
-	 * @throws Exception 
-	 * @throws UnrecoverableKeyException 
-	 * @throws IOException 
-	 * @throws CertificateException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws KeyStoreException 
-	 * @throws KeyException if any exception occurs during key store creation
+	 * @param keystoreInfo entity with information about keystore
+	 * @throws KeyStoreException if any exception occurs during key store creation
 	 * 
 	 */
 	public static void generate(KeyStoreInfo keystoreInfo) throws KeyStoreException {
@@ -138,8 +188,11 @@ public class KeyStoreUtil {
 			// with that alias otherwise does nothing
 			if (keystoreInfo.getSymmetricKeyAlias() != null && keystoreInfo.getSymmetricKeyPwd() != null && 
 					keystore.getKey(keystoreInfo.getSymmetricKeyAlias(), keystoreInfo.getSymmetricKeyPwd().toCharArray()) == null) {
+				// creates simmetricKey
 				Key secretKey = Crypto.generateSymmetricKey();
+				// adds the key
 				keystore.setKeyEntry(keystoreInfo.getSymmetricKeyAlias(), secretKey, keystoreInfo.getSymmetricKeyPwd().toCharArray(), null);
+				// saves the keystore
 				save(keystore, keystoreInfo);
 			}
 		} catch (UnrecoverableKeyException e) {
@@ -154,23 +207,19 @@ public class KeyStoreUtil {
 	}
 
 	/**
-	 * 
-	 * @param keystore
-	 * @param keystoreFile
-	 * @param keystoreBackupFile
-	 * @param keystorePasswd
-	 * @throws IOException 
-	 * @throws CertificateException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws KeyStoreException 
-	 * @throws Exception
+	 * Saves the kwystore on the file
+	 * @param keystore keystore to be saved
+	 * @param info Key store info with all necessary info to save it 
+	 * @throws KeyStoreException if any error occurs saving the key store
 	 */
 	static void save(KeyStore keystore, KeyStoreInfo info) throws KeyStoreException {
 		OutputStream os = null;
 		try {
+			// creates the file stream
 			os = new FileOutputStream(info.getFile());
+			// stores the file 
 			keystore.store(os, info.getPassword().toCharArray());
-			os.close();
+			// checks if it must be backuped
 			if (info.getBackupFile() != null){
 				// read keystore to check if is consistent
 				getKeystore(info);
@@ -185,6 +234,7 @@ public class KeyStoreUtil {
 		} catch (CertificateException e) {
 			throw new KeyStoreException(e.getMessage(), e);
 		} finally {
+			// always it closes the outut stream
 			if (os != null){
 				try {
 					os.close();

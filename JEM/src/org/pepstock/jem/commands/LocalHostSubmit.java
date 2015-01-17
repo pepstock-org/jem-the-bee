@@ -19,6 +19,7 @@ package org.pepstock.jem.commands;
 import java.util.Map;
 
 import org.pepstock.jem.commands.util.HazelcastUtil;
+import org.pepstock.jem.log.LogAppl;
 
 import com.hazelcast.core.HazelcastInstance;
 
@@ -153,8 +154,12 @@ public class LocalHostSubmit extends AbstractConnectedClusterSubmit {
 	 * @param args command-line arguments
 	 */
 	public static void main(String[] args) {
+		Times.start();
 		LocalHostSubmit submit = new LocalHostSubmit();
 		SubmitResult sr = submit.execute(args);
+		LogAppl.getInstance().emit(SubmitMessage.JEMW010I, submit.getResident());
+		Times.end();
+		LogAppl.getInstance().emit(SubmitMessage.JEMW011I, Times.toReadable());
 		System.exit(sr.getRc());
 	}
 }

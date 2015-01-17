@@ -219,6 +219,8 @@ public abstract class SubmitCommandLine extends UserIDCommand {
 			beforeJobSubmit();
 			// subit job
 			jobSubmit();
+			// takes the time 
+			Times.submit();
 			// gets return code
 			rc = afterJobSubmit();
 		} catch (ParseException e) {

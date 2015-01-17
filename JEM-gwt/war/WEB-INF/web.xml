@@ -121,6 +121,11 @@
 		<servlet-name>getClusterGroupName</servlet-name>
 		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetClusterGroupName</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>getHttpMember</servlet-name>
+		<servlet-class>org.pepstock.jem.gwt.server.servlet.GetHttpMember</servlet-class>
+	</servlet>
 
 	<servlet>
 		<servlet-name>getClusterMembers</servlet-name>
@@ -290,6 +295,11 @@
 	<servlet-mapping>
 		<servlet-name>logout</servlet-name>
 		<url-pattern>/servlet/logout</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>getHttpMember</servlet-name>
+		<url-pattern>/servlet/getHttpMember</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

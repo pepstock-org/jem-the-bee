@@ -16,15 +16,15 @@
 */
 package org.pepstock.jem.junit.init;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.pepstock.jem.commands.HttpSubmit;
-import org.pepstock.jem.commands.LocalHostSubmit;
 import org.pepstock.jem.commands.Submit;
-import org.pepstock.jem.commands.SubmitParameters;
 import org.pepstock.jem.commands.SubmitResult;
+import org.pepstock.jem.junit.init.submitters.AbstractSubmitter;
+import org.pepstock.jem.junit.init.submitters.HttpSubmitter;
+import org.pepstock.jem.junit.init.submitters.LocalHostSubmitter;
+import org.pepstock.jem.junit.init.submitters.SubmitSubmitter;
 
 /**
  * 
@@ -68,68 +68,14 @@ public class Task implements Callable<SubmitResult> {
 
 	@Override
 	public SubmitResult call() throws Exception {
+		AbstractSubmitter s = null;
 		if (selectedSubmitter.getReferenceClass().equals(HttpSubmit.class)) {
-			// get args
-			String[] args = getArguments(HttpSubmit.class, jcl, type, wait,
-					printout);
-			HttpSubmit submit = new HttpSubmit();
-			return submit.execute(args);
+			s = new HttpSubmitter(selectedSubmitter, jcl, type, wait, printout);
 		} else if (selectedSubmitter.getReferenceClass().equals(Submit.class)) {
-			// get args
-			String[] args = getArguments(Submit.class, jcl, type, wait,
-					printout);
-			Submit submit = new Submit();
-			return submit.execute(args);
+			s = new SubmitSubmitter(selectedSubmitter, jcl, type, wait, printout);
 		} else {
-			// get args
-			String[] args = getArguments(LocalHostSubmit.class, jcl, type,
-					wait, printout);
-			LocalHostSubmit submit = new LocalHostSubmit();
-			return submit.execute(args);
+			s = new LocalHostSubmitter(selectedSubmitter, jcl, type, wait, printout);
 		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private String[] getArguments(Class clazz, String jcl, String type,
-			boolean wait, boolean printout) {
-		List<String> list = new ArrayList<String>();
-		String paramJcl = null;
-		String paramType = null;
-		String paramWait = null;
-		String paramPrintOut = null;
-		if (clazz.equals(HttpSubmit.class)) {
-			paramJcl = SubmitParameters.JCL.getName();
-			paramType = SubmitParameters.TYPE.getName();
-			paramWait = SubmitParameters.WAIT.getName();
-		}
-		if (clazz.equals(Submit.class)) {
-			paramJcl = SubmitParameters.JCL.getName();
-			paramType = SubmitParameters.TYPE.getName();
-			paramWait = SubmitParameters.WAIT.getName();
-			paramPrintOut = SubmitParameters.PRINT_OUTPUT.getName();
-		}
-		if (clazz.equals(LocalHostSubmit.class)) {
-			paramJcl = SubmitParameters.JCL.getName();
-			paramType = SubmitParameters.TYPE.getName();
-			paramWait = SubmitParameters.WAIT.getName();
-			paramPrintOut = SubmitParameters.PRINT_OUTPUT.getName();
-		}
-		for (int i = 0; i < selectedSubmitter.getParams().size(); i++) {
-			list.add("-" + selectedSubmitter.getParams().get(i).getName());
-			list.add(selectedSubmitter.getParams().get(i).getValue());
-		}
-		list.add("-" + paramJcl);
-		list.add(jcl);
-		list.add("-" + paramType);
-		list.add(type);
-		list.add("-" + paramWait);
-		list.add(String.valueOf(wait));
-		if (paramPrintOut != null){
-			list.add("-" + paramPrintOut);
-			list.add(String.valueOf(printout));
-		}
-		
-		System.err.println(list);
-		return list.toArray(new String[list.size()]);
+		return s.call();
 	}
 }

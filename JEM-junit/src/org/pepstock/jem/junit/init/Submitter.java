@@ -31,6 +31,8 @@ public class Submitter {
 	private Class referenceClass;
 
 	private Boolean selected;
+	
+	private Boolean embedded = Boolean.TRUE;
 
 	private List<Param> params;
 
@@ -46,6 +48,20 @@ public class Submitter {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the embedded
+	 */
+	public Boolean getEmbedded() {
+		return embedded;
+	}
+
+	/**
+	 * @param embedded the embedded to set
+	 */
+	public void setEmbedded(Boolean embedded) {
+		this.embedded = embedded;
 	}
 
 	/**
@@ -92,4 +108,11 @@ public class Submitter {
 		this.params = params;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+    @Override
+    public String toString() {
+	    return "Submitter [name=" + name + ", referenceClass=" + referenceClass + ", selected=" + selected + ", embedded=" + embedded + ", params=" + params + "]";
+    }
 }

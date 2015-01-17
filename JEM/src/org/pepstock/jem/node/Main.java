@@ -50,7 +50,19 @@ import com.hazelcast.core.HazelcastInstance;
  * 
  */
 public class Main {
+	
+	/**
+	 * Increments the Hazelcast port for RMI listener. 
+	 * That means maximum 100 nodes per machines
+	 */
+	public static final int INCREMENT_RMI_PORT = 100;
 
+	/**
+	 * Increments the Hazelcast port for HTTP listener. 
+	 * That means maximum 100 nodes per machines
+	 */
+	public static final int INCREMENT_HTTP_PORT = 200;
+	
 	/**
 	 * If <code>true</code>, this instance of node is the oldest one of cluster.<br>
 	 * <br>
@@ -226,16 +238,19 @@ public class Main {
 			// execution
 			// uses the TCP port defined for Hazelcast cluster, adding a
 			// constant number 200
-			int objectPort = Main.getNode().getPort() + 200;
-			LogAppl.getInstance().emit(NodeMessage.JEMC013I, String.valueOf(objectPort));
-			RegistryContainer.createInstance(objectPort);
+			int objectRmiPort = Main.getNode().getPort() + INCREMENT_RMI_PORT;
+			LogAppl.getInstance().emit(NodeMessage.JEMC013I, String.valueOf(objectRmiPort));
+			RegistryContainer.createInstance(objectRmiPort);
 			LogAppl.getInstance().emit(NodeMessage.JEMC014I);
-			Main.getNode().setRmiPort(objectPort);
+			Main.getNode().setRmiPort(objectRmiPort);
 			NodeInfoUtility.checkAndStoreNodeInfo(Main.getNode());
 
 			Main.getStatisticsManager().init();
 
 			RmiStartUp.initialize();
+			
+			int objectHttpsPort = Main.getNode().getPort() + INCREMENT_HTTP_PORT;
+			HttpsInternalSubmitter.start(objectHttpsPort);
 
 			// and at the end, wait this thread...
 			waitState();

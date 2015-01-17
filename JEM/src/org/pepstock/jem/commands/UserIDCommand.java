@@ -67,6 +67,19 @@ public class UserIDCommand {
 	public String getGroupID() {
 		return groupID;
 	}
+	
+	/**
+	 * Returns the amount of memory used
+	 * @return the amount of memory used
+	 */
+	public long getResident(){
+		try {
+			return SIGAR.getProcMem(SIGAR.getPid()).getResident() / 1024;
+		} catch (SigarException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			return -1;
+		}
+	}
 
 	/**
 	 * @param groupID the groupID to set

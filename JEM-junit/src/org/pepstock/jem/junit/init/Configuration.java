@@ -93,7 +93,7 @@ public class Configuration {
 
 	/**
 	 * 
-	 * @param restclient object to set
+	 * @param restconf object to set
 	 */
 	public void setRestconf(RestConf restconf) {
 		this.restconf = restconf;
@@ -108,6 +108,6 @@ public class Configuration {
 		String xml = FileUtils
 				.readFileToString(new File(Configuration.class
 						.getResource("Configuration.xml").getFile()));
-		Configuration.unmarshall(xml);
+		System.err.println(Configuration.unmarshall(xml).getSubmitters());
 	}
 }

@@ -5,9 +5,11 @@
 		<password>pwd</password>
 	</restconf>
 	<submitters>
-		<!-- submitter>
+		<submitter>
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
+			<selected>true</selected> 
+			<embedded>false</embedded> 			
 			<params>
 				<param>
 				     <name>host</name>
@@ -17,20 +19,21 @@
 				     <name>password</name>
 				     <value>jem_password</value>
 				</param>
-				<param>
+				<!-- param>
 				     <name>privateKey</name>
 				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
 				</param>
 				<param>
 				     <name>privateKeyPwd</name>
 				     <value>jempassword</value>
-				</param>
+				</param-->
 			</params>
-		</submitter-->
-		<submitter> 
+		</submitter>
+		<!-- submitter> 
 		    <name>LOCAL_HOST_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
-			<selected>true</selected> 			   
+			<selected>true</selected> 
+			<embedded>false</embedded> 			   
 			<params>
 				<param>
 				     <name>env</name>
@@ -51,13 +54,14 @@
 				<param>
 				     <name>privateKeyPwd</name>
 				     <value>jempassword</value>
-				</param-->
+				</param>
 			</params>
-		</submitter>
+		</submitter-->
 		<!-- submitter>
 		    <name>HTTP_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.HttpSubmit</referenceClass>
 			<selected>true</selected> 
+			<embedded>false</embedded> 			   
 			<params>
 				<param>
 				     <name>host</name>

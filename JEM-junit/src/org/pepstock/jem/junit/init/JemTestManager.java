@@ -27,6 +27,8 @@ import org.pepstock.jem.commands.HttpSubmit;
 import org.pepstock.jem.commands.LocalHostSubmit;
 import org.pepstock.jem.commands.Submit;
 import org.pepstock.jem.commands.SubmitResult;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
  * Is the manager responsible of the submission of all the jobs inside the junit
@@ -63,6 +65,11 @@ public class JemTestManager {
 		for (Submitter submitter : conf.getSubmitters()) {
 			if (submitter.getSelected() != null
 					&& submitter.getSelected() == true) {
+				if (submitter.getEmbedded() == null){
+					submitter.setEmbedded(Boolean.TRUE);
+				} else if (!submitter.getEmbedded() && System.getenv(ConfigKeys.JEM_HOME) == null){
+					throw new JemException(ConfigKeys.JEM_HOME+" is missing!");
+				}
 				selectedSubmitter = submitter;
 				if (!selectedSubmitter.getReferenceClass().equals(
 						HttpSubmit.class)

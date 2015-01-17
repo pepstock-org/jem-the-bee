@@ -39,11 +39,13 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Node is starting", MessageLevel.INFO
 	 */
+	@Description(explanation = "Informs that JEM node is starting")
 	JEMC001I(1, "Node is starting", MessageLevel.INFO),
 
 	/**
 	 * "Hazelcast node is starting", MessageLevel.INFO
 	 */
+	@Description(explanation = "Informs that Hazelcast cluster is starting.")
 	JEMC002I(2, "Hazelcast node is starting", MessageLevel.INFO),
 
 	/**
@@ -53,9 +55,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC003I(3, "Hazelcast node [{0}] started", MessageLevel.INFO),
 
 	/**
-	 * "Unable to resolve hostname for the Hazelcast node", MessageLevel.ERROR
+	 * "Unable to start HTTPS submitter", MessageLevel.ERROR
 	 */
-	JEMC004E(4, "Unable to resolve hostname for the Hazelcast node", MessageLevel.ERROR),
+	@Description(explanation = "HTTPS submitter is not able to start. Check the ports allocation.")
+	JEMC004E(4, "Unable to start HTTPS submitter", MessageLevel.ERROR),
 
 	/**
 	 * "System property {0} not found", MessageLevel.ERROR
@@ -116,6 +119,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "RMI registry started", MessageLevel.INFO
 	 */
+	@Description(explanation = "Informs that RMI registry listener is started.")
 	JEMC014I(14, "RMI registry started", MessageLevel.INFO),
 
 	/**
@@ -167,9 +171,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC022I(22, "Job {0} is running on process {1}", MessageLevel.INFO),
 
 	/**
-	 * "Unable to resolve hostname", MessageLevel.ERROR
+	 * "HTTPS connection error: {0}", MessageLevel.ERROR
 	 */
-	JEMC023E(23, "Unable to resolve hostname", MessageLevel.ERROR),
+	@Description(explanation = "HTTPS worker has got a connection error. <br>Please che the root cause exception.")
+	JEMC023E(23, "HTTPS connection error: {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Member removed \"{0}\" is not in {1} queue", MessageLevel.ERROR
@@ -229,12 +234,13 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Unable to submit job", MessageLevel.ERROR
 	 */
-	@Description(explanation = "Client MessageLevel.")
+	@Description(explanation = "It occurs when the submitter is not able to submit a job.<br>Please have a look to the root cause exception")
 	JEMC033E(33, "Unable to submit job", MessageLevel.ERROR),
 
 	/**
 	 * "Job lifecycle listeners are ready", MessageLevel.INFO
 	 */
+	@Description(explanation = "Informs that the job lifecycle listeners are loaded and ready to work.")
 	JEMC034I(34, "Job lifecycle listeners are ready", MessageLevel.INFO),
 
 	/**
@@ -308,11 +314,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC045I(45, "{0} keys loaded for \"{1}\" queue", MessageLevel.INFO),
 
 	/**
-	 * "GRS Status display before {0}\n {1}", MessageLevel.INFO
+	 * "HTTPS submitter is starting on port {0}", MessageLevel.INFO
 	 */
-	// @Description(explanation =
-	// "Display all contentions inside of GRS system.")
-	// JEMC046I(46, "GRS Status display before {0}\n {1}", MessageLevel.INFO),
+	@Description(explanation = "Display the listening HTTPS submitter port.")
+	JEMC046I(46, "HTTPS submitter is starting on port {0}", MessageLevel.INFO),
 
 	/**
 	 * "Job {0} is ended in exception:\n {1}", MessageLevel.ERROR
@@ -370,7 +375,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Missing required options:\n{0}, MessageLevel.INFO
 	 */
-	@Description(explanation = "Display all necessary options and how command usage, because the command has been launched with all mandatory options.<br>" + "Check command line")
+	@Description(explanation = "Display all necessary options and how command usage, because the command has been launched without all mandatory options.<br>" + "Check command line")
 	JEMC056I(56, "Missing required options:\n{0}", MessageLevel.INFO),
 
 	/**
@@ -1690,11 +1695,42 @@ public enum NodeMessage implements MessageInterface {
 	 */
 	@Description(explanation = "It occurs when the migration of jobs ends. Shows which map was affected.")
 	JEMC282I(282, "Resource migration is ended", MessageLevel.INFO),
+	
 	/**
 	 * "XML: {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the migration ends with exception and shows the XML.")
-	JEMC283I(283, "XML: {0}", MessageLevel.INFO);
+	JEMC283I(283, "XML: {0}", MessageLevel.INFO),
+	
+	/**
+	 * "{0} method is not supported from{1}", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the client access to HTTPS submitter without using POST.<br> Please checks the client implementation.")
+	JEMC284W(284, "{0} method is not supported from {1}", MessageLevel.WARNING),
+	
+	/**
+	 * "URI {0} action is not supported from {1}", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the client access to HTTPS submitter using a wrong URI.<br> Please checks the client implementation.")
+	JEMC285W(285, "URI {0} action is not supported from {1}", MessageLevel.WARNING),
+	
+	/**
+	 * "Wrong signature for user {0} from {1}", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the client access to HTTPS submitter using a wrong signature.<br> Please checks the client execution.")
+	JEMC286W(286, "Wrong signature for user {0} from {1}", MessageLevel.WARNING),
+	
+	/**
+	 * "Signature for user {0} is missing from {1}", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the client access to HTTPS submitter without passing any signature.<br> Please checks the client execution.")
+	JEMC287W(287, "Signature for user {0} is missing from {1}", MessageLevel.WARNING),
+	
+	/**
+	 * "Environment or password of JEM environment is not valid from {0}", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the client access to HTTPS submitter with worng environment or password.<br> Please checks the client execution.")
+	JEMC288W(288, "Environment or password of JEM environment is not valid from {0}", MessageLevel.WARNING);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

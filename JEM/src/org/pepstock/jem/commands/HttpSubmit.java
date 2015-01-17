@@ -19,6 +19,7 @@ package org.pepstock.jem.commands;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.util.HttpUtil;
+import org.pepstock.jem.log.LogAppl;
 
 /**
  * Submits JCL into JEM, by http.<br>
@@ -85,8 +86,12 @@ public class HttpSubmit extends AbstractRemoteSubmit {
 	 * @param args command-line arguments
 	 */
 	public static void main(String[] args) {
+		Times.start();
 		HttpSubmit submit = new HttpSubmit();
 		SubmitResult sr = submit.execute(args);
+		LogAppl.getInstance().emit(SubmitMessage.JEMW010I, submit.getResident());
+		Times.end();
+		LogAppl.getInstance().emit(SubmitMessage.JEMW011I, Times.toReadable());
 		System.exit(sr.getRc());
 	}
 

@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.commands;
 
+import org.pepstock.jem.log.Description;
 import org.pepstock.jem.log.Message;
 import org.pepstock.jem.log.MessageCode;
 import org.pepstock.jem.log.MessageInterface;
@@ -75,8 +76,38 @@ public enum SubmitMessage implements MessageInterface{
 	/**
 	 * "Unable to get output of job {0}", MessageLevel.ERROR
 	 */
-	JEMW009E(9, "Unable to get output of job {0}", MessageLevel.ERROR);
+	JEMW009E(9, "Unable to get output of job {0}", MessageLevel.ERROR),
 	
+	/**
+	 * "Memory used by submit: {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "Display the amout of memory used by submit")
+	JEMW010I(10, "Memory used by submit: {0}", MessageLevel.INFO),
+	
+	/**
+	 * "Duration: {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "Display the amout of milliseconds to submit the job and to end.")
+	JEMW011I(11, "Duration: {0}", MessageLevel.INFO),
+	
+	/**
+	 * "Argument {0} is unknown", MessageLevel.ERROR)
+	 * 
+	 * ******* PAY ATTENTION **********
+	 * This message is not used in JAVA code but in Javascript one (see NodeJS submit)
+	 */
+	@Description(explanation = "It occurs when submitting a job with NodeJS, there is an unplanned argument. <br> PLease check the command line used to submit the job.")
+	JEMW012E(12, "Argument {0} is unknown", MessageLevel.ERROR),
+
+	/**
+	 * "Connecting to JEM node {0}:{1}", MessageLevel.INFO
+	 * 
+	 * ******* PAY ATTENTION **********
+	 * This message is not used in JAVA code but in Javascript one (see NodeJS submit)
+	 */
+	@Description(explanation = "It occurs when submitting a job with NodeJS, it shows which JEM nod eis used to submit.")
+	JEMW013I(13, "Connecting to JEM node {0}:{1}", MessageLevel.INFO);
+
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>IoMessage</code>. 
 	 * @see Message
