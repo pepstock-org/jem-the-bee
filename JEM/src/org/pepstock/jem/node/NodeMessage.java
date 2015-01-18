@@ -1730,7 +1730,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "Environment or password of JEM environment is not valid from {0}", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when the client access to HTTPS submitter with worng environment or password.<br> Please checks the client execution.")
-	JEMC288W(288, "Environment or password of JEM environment is not valid from {0}", MessageLevel.WARNING);
+	JEMC288W(288, "Environment or password of JEM environment is not valid from {0}", MessageLevel.WARNING),
+	
+	/**
+	 * "Unable to callback {0} after the end of the job {1}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the job lifecycle listener is not able to connect the clinet in HTTP listening mode.<br>Please have a look to the root exception.")
+	JEMC289E(289, "Unable to callback {0} after the end of the job {1}", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

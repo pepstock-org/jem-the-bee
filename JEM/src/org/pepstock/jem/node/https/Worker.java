@@ -75,12 +75,15 @@ public class Worker implements Runnable {
             	httpService.handleRequest(httpConnection, context);
             }
         } catch (ConnectionClosedException ex) {
+        	// client close the connection
         	LogAppl.getInstance().ignore(ex.getMessage(), ex);
         	LogAppl.getInstance().emit(NodeMessage.JEMC023E, "Client closed connection ("+clientAddress.getHostAddress()+")");
         } catch (IOException ex) {
+        	// any I/O error
         	LogAppl.getInstance().ignore(ex.getMessage(), ex);
         	LogAppl.getInstance().emit(NodeMessage.JEMC023E, "I/O error ("+clientAddress.getHostAddress()+")");
         } catch (HttpException ex) {
+        	// Protocol exception
         	LogAppl.getInstance().ignore(ex.getMessage(), ex);
         	LogAppl.getInstance().emit(NodeMessage.JEMC023E, "Unrecoverable HTTP protocol violation ("+clientAddress.getHostAddress()+")");
         } finally {
@@ -88,7 +91,6 @@ public class Worker implements Runnable {
             try {
                 httpConnection.shutdown();
             } catch (IOException e) {
-            	e.printStackTrace();
             	LogAppl.getInstance().ignore(e.getMessage(), e);
             }
         }

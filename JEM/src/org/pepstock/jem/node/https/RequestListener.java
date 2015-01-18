@@ -45,9 +45,9 @@ public class RequestListener extends Thread {
 	
 	private static final String THREAD_NAME = StringUtils.substringAfterLast(RequestListener.class.getName(), ".").toLowerCase();
 
-	private final int MAXIMUM_WORKERS = 20;
+	private static final int MAXIMUM_WORKERS = 20;
 
-	private final ExecutorService executorService = Executors.newFixedThreadPool(MAXIMUM_WORKERS);
+	private static final ExecutorService executorService = Executors.newFixedThreadPool(MAXIMUM_WORKERS);
 
 	private final HttpConnectionFactory<DefaultBHttpServerConnection> connectionFactory;
 
@@ -78,20 +78,26 @@ public class RequestListener extends Thread {
 	 */
 	@Override
 	public void run() {
+		// starts here
 		LogAppl.getInstance().emit(NodeMessage.JEMC046I, String.valueOf(serverSocket.getLocalPort()));
-		while (!Thread.interrupted()) {
+		boolean isForever= true;
+		// ends only if interrupted
+		while (isForever) {
 			try {
 				// Set up HTTP connection
 				Socket socket = serverSocket.accept();
+				// creates https connection
 				HttpServerConnection conn = connectionFactory.createConnection(socket);
 				// Start worker thread
 				Worker w = new Worker(socket.getInetAddress(), httpService, conn);
+				// puts on the pool.
 				executorService.execute(w);
-			} catch (InterruptedIOException ex) {
-				break;
+			} catch (InterruptedIOException e) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC004E, e);
+				isForever = false;
 			} catch (IOException e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC004E, e);
-				break;
+				isForever = false;
 			}
 		}
 	}

@@ -187,25 +187,13 @@ public class SubmitHandler implements HttpRequestHandler {
 				LogAppl.getInstance().emit(NodeMessage.JEMC288W, host);
 				throw new HttpException(NodeMessage.JEMC288W.toMessage().getFormattedMessage(host));
 			}
-			// gets JCL type, OPTIONAL
-			String type = parms.get(SubmitParameters.TYPE.getName());
-			// gets filename of JCL, used as JOB NAME when the JCL factory
-			// is not able to parse the JCL
-			String fileName = parms.get(SubmitParameters.JCL.getName());
-			// gets the HTTP port of the HTTP server used by the client 
-			// to wait the answer, OPTIONAL
-			String callbackPort = parms.get(JOB_SUBMIT_CALLBACK_PORT_KEY);
-			// gets if the client is waiting for the end of the job 
-			boolean isWait = Parser.parseBoolean(parms.get(SubmitParameters.WAIT.getName()), false);
-			// gets if the client wants to have back the output of the job
-			String printOutput = parms.get(SubmitParameters.PRINT_OUTPUT.getName());
 			
 			// reads teh second row of the body, with the JCL
 			String jcl = StringUtils.substringAfter(result, DELIMITER);
 			
 			// sets the entity to send back, submitting the job.
 			// it returns the JOBID
-			StringEntity resultEntity = new StringEntity(submit(fileName, jcl, type, user, isWait, host, callbackPort, printOutput), ContentType.create(RESPONSE_MIME_TYPE, CharSet.DEFAULT_CHARSET_NAME));
+			StringEntity resultEntity = new StringEntity(submit(jcl, user, host, parms), ContentType.create(RESPONSE_MIME_TYPE, CharSet.DEFAULT_CHARSET_NAME));
 			// sets STATUS code and entity 
 			response.setStatusCode(HttpStatus.SC_OK);
 			response.setEntity(resultEntity);
@@ -240,7 +228,20 @@ public class SubmitHandler implements HttpRequestHandler {
 	 * @param isWait if the client is waiting for the result of job
 	 * @throws HttpException if any errors occurs 
 	 */
-	private String submit(String fileName, String content, String type, String user, boolean isWait, String host, String callbackPort, String printOutput) throws HttpException {
+	private String submit(String content, String user, String host, Map<String, String> parms) throws HttpException {
+		// gets JCL type, OPTIONAL
+		String type = parms.get(SubmitParameters.TYPE.getName());
+		// gets filename of JCL, used as JOB NAME when the JCL factory
+		// is not able to parse the JCL
+		String fileName = parms.get(SubmitParameters.JCL.getName());
+		// gets the HTTP port of the HTTP server used by the client 
+		// to wait the answer, OPTIONAL
+		String callbackPort = parms.get(JOB_SUBMIT_CALLBACK_PORT_KEY);
+		// gets if the client is waiting for the end of the job 
+		boolean isWait = Parser.parseBoolean(parms.get(SubmitParameters.WAIT.getName()), false);
+		// gets if the client wants to have back the output of the job
+		String printOutput = parms.get(SubmitParameters.PRINT_OUTPUT.getName());
+		
 		// creates a pre job using the JCL
 		PreJob preJob = new PreJob();
 		preJob.setJclContent(content);
