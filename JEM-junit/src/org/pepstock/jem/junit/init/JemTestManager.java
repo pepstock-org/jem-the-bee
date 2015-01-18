@@ -17,6 +17,8 @@
 package org.pepstock.jem.junit.init;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -118,7 +120,17 @@ public class JemTestManager {
 	 */
 	public Future<SubmitResult> submit(String jcl, String type, boolean wait,
 			boolean printout) {
-		Callable<SubmitResult> task = new Task(selectedSubmitter, jcl, type,
+		String newJcl = jcl;
+		if (selectedSubmitter.getNodeJs()){
+			try {
+	            File file = FileUtils.toFile(new URL(jcl));
+	            newJcl = file.getAbsolutePath();
+            } catch (MalformedURLException e) {
+	            e.printStackTrace();
+            }
+		}
+		
+		Callable<SubmitResult> task = new Task(selectedSubmitter, newJcl, type,
 				wait, printout);
 		Future<SubmitResult> submitResult = executor.submit(task);
 		return submitResult;

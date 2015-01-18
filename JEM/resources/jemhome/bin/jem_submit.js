@@ -14,6 +14,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+var startTime = process.hrtime();
+var submitTime = '';
+
 // required nodejs packages
 var https = require('https');
 var http = require('http');
@@ -87,15 +90,23 @@ for (var i = 2; i < process.argv.length; i++) {
 		i++;
 		// gets wait state
 	} else if (element == '-wait') {
-		wait = true;
+		var waitStr = getArgument(i, 'wait');
+		i++;
+		if (waitStr == 'true'){
+			wait = true;
+		}
 		// gets info if the output of the job must be printed
 		// to the std output
 	} else if (element == '-printOutput') {
-		printOutput = true;
+		printOutputStr = getArgument(i, 'printOutput');
+		i++;
+		if (printOutputStr == 'true'){
+			printOutput = true;
+		}
 	} else {
 		// if here, some other argument are passed
 		// and this is not allowed
-		var err = new Error('JEMW0012 Argument ' + element + ' is unknown');
+		var err = new Error('JEMW0012 Argument "' + element + '" is unknown');
 		throw err;
 	}
 }
@@ -115,6 +126,7 @@ if (!jcl) {
 	var err = new Error('JEMC0056 Missing required options: jcl');
 	throw err;
 }
+
 // if the user asks to wait for the end of the job
 // it starts a HTTP server in listening mode
 // JEM job lifecycle module will contact this HTTP server
@@ -140,7 +152,7 @@ if (wait) {
 				var returnCode = body.substring(0, firstCR);
 				// if printOutput is set
 				if (printOutput) {
-					process.stdout.write('JEMC0246 Content of job ' + jobId + '\n');
+					process.stdout.write(new Date().toUTCString()+' JEMC0246 Content of job ' + jobId + '\n');
 					// prints on std output the rest of the body
 					// containing the output of the job
 					process.stdout.write(body.substring(firstCR + 1, body.length) + '\n');
@@ -150,8 +162,13 @@ if (wait) {
 					'Content-Type' : 'text/plain'
 				});
 				response.end('Nothing\n');
+
+				// writes all log records
+				process.stdout.write(new Date().toUTCString()+' JEMC0021 Job '+jobId+' is ended in return-code '+returnCode+ '\n');
+				process.stdout.write(new Date().toUTCString()+' JEMW0010 Memory used by submit: '+(process.memoryUsage().rss / 1024)+ '\n');
+				var endTime = process.hrtime(startTime);
+				console.log(new Date().toUTCString()+' JEMW0011 Duration: time to submit: %d, elapsed time: %d', (submitTime[0] * 1e9 + submitTime[1]) / 1e6, (endTime[0] * 1e9 + endTime[1]) / 1e6);
 				
-				process.stdout.write('JEMC0021 Job '+jobId+' is ended in return-code '+returnCode+ '\n');
 				// if the return code is 0, exit in 0
 				// otherwise in 1
 				if (returnCode == 0) {
@@ -171,7 +188,7 @@ if (wait) {
 	});
 	// starts the listening on the port
 	HTTPserver.listen(localPort, function() {
-		process.stdout.write('JEMC0046 HTTP submitter is starting on port ' + localPort + '\n');
+		process.stdout.write(new Date().toUTCString()+' JEMC0046 HTTP submitter is starting on port ' + localPort + '\n');
 		// when here, the port is allocated
 		// and it can starts the submit
 		// calling to have the environment name
@@ -187,7 +204,7 @@ if (wait) {
 				// it tries here with the new port
 				// if error, is recursive
 				HTTPserver.listen(localPort, function() {
-					process.stdout.write('JEMC0046 HTTP submitter is starting on port ' + localPort + '\n');
+					process.stdout.write(new Date().toUTCString()+' JEMC0046 HTTP submitter is starting on port ' + localPort + '\n');
 					// it can starts the submit
 					// calling to have the environment name
 					getClusterName(httpUrl);
@@ -225,7 +242,7 @@ function getArgument(i, what) {
  * and submit the job
  */
 function submit() {
-	process.stdout.write('JEMW0013 Connecting to JEM node ' + host + ':' + port + '\n');
+	process.stdout.write(new Date().toUTCString()+' JEMW0013 Connecting to JEM node ' + host + ':' + port + '\n');
 	// creates the HTTPS option
 	// the rejectUnauthorized MUST be false
 	// in the headers, connection MUST be keep-alive
@@ -258,13 +275,17 @@ function submit() {
 			// closes the socket, sending a SYNC
 			res.socket.end('Nothing\n');
 			
-			process.stdout.write('JEMC0020 Job '+jobId+' is submitted for processing\n');
+			process.stdout.write(new Date().toUTCString()+' JEMC0020 Job '+jobId+' is submitted for processing\n');
 			// catch the CLOSE of socket to close
 			// the process if it has been submitted 
 			// with -wait=false
 			res.socket.on('close', function(error){
 				// if no wait
 				if (!wait){
+					//writes logs
+					process.stdout.write(new Date().toUTCString()+' JEMW0010 Memory used by submit: '+(process.memoryUsage().rss / 1024)+ '\n');
+					var endTime = process.hrtime(startTime);
+					console.log(new Date().toUTCString()+' JEMW0011 Duration: time to submit: %d, elapsed time: %d', (submitTime[0] * 1e9 + submitTime[1]) / 1e6, (endTime[0] * 1e9 + endTime[1]) / 1e6);
 					// exit ALWAYS in 0 without waiting
 					process.exit(0);
 				}
@@ -272,7 +293,7 @@ function submit() {
 		});
 	}).on('error', function(e) {
 		// HTTPS exception
-		console.log('JEMW0003E Unable to submit into JEM: ' + e.message);
+		console.log(new Date().toUTCString()+' JEMW0003E Unable to submit into JEM: ' + e.message);
 		throw e;
 	});
 	// reads the JCL file, in UTF-8
@@ -298,6 +319,8 @@ function submit() {
 			// adds teh signature value to query string
 			qString = qString + '&signature=' + signature;
 		}
+		// gets submittime
+		submitTime = process.hrtime(startTime);
 		// writes on the request the query string (always the first row)
 		req.write(qString + '\n');
 		// writes the JCl content, to submit
@@ -352,7 +375,7 @@ function getClusterName(httpUrl) {
 			});
 		}).on('error', function(e) {
 			// HTTPS exception
-			console.log('JEMW0002 Unable to get the name of JEM cluter: ' + e.message);
+			console.log(new Date().toUTCString()+' JEMW0002 Unable to get the name of JEM cluter: ' + e.message);
 			throw e;
 		});
 	} else {
@@ -377,7 +400,7 @@ function getClusterName(httpUrl) {
 			});
 		}).on('error', function(e) {
 			// HTTPS exception
-			console.log('JEMW0002 Unable to get the name of JEM cluter: ' + e.message);
+			console.log(new Date().toUTCString()+' JEMW0002 Unable to get the name of JEM cluter: ' + e.message);
 			throw e;
 		});
 	}
@@ -427,7 +450,7 @@ function getMember(jemUrl) {
 			});
 		}).on('error', function(e) {
 			// HTTPS exception
-			console.log('JEMW0001 Unable to get the members of JEM cluter: ' + e.message);
+			console.log(new Date().toUTCString()+' JEMW0001 Unable to get the members of JEM cluter: ' + e.message);
 			throw e;
 		});
 	} else {
@@ -450,7 +473,7 @@ function getMember(jemUrl) {
 			});
 		}).on('error', function(e) {
 			// HTTPS exception
-			console.log('JEMW0001 Unable to get the members of JEM cluter: ' + e.message);
+			console.log(new Date().toUTCString()+' JEMW0001 Unable to get the members of JEM cluter: ' + e.message);
 			throw e;
 		});
 	}

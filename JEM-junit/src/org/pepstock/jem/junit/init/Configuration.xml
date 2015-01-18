@@ -9,7 +9,8 @@
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
 			<selected>true</selected> 
-			<embedded>false</embedded> 			
+			<embedded>true</embedded>
+			<!-- nodeJs>true</nodeJs--> 			
 			<params>
 				<param>
 				     <name>host</name>
@@ -29,7 +30,7 @@
 				</param-->
 			</params>
 		</submitter>
-		<!-- submitter> 
+		<!--submitter> 
 		    <name>LOCAL_HOST_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
 			<selected>true</selected> 

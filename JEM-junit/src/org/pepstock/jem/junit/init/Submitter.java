@@ -33,6 +33,8 @@ public class Submitter {
 	private Boolean selected;
 	
 	private Boolean embedded = Boolean.TRUE;
+	
+	private Boolean nodeJs;
 
 	private List<Param> params;
 
@@ -92,6 +94,20 @@ public class Submitter {
 	 */
 	public void setSelected(Boolean selected) {
 		this.selected = selected;
+	}
+
+	/**
+	 * @return the nodeJs
+	 */
+	public Boolean getNodeJs() {
+		return nodeJs;
+	}
+
+	/**
+	 * @param nodeJs the nodeJs to set
+	 */
+	public void setNodeJs(Boolean nodeJs) {
+		this.nodeJs = nodeJs;
 	}
 
 	/**

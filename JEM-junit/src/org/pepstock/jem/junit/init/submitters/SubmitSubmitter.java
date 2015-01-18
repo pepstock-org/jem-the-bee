@@ -64,7 +64,9 @@ public class SubmitSubmitter extends AbstractSubmitter {
 			Submit submit = new Submit();
 			return submit.execute(args);				
 		} else {
-			int rc =  launch("jem_submit", args);
+			
+			String script = getSelectedSubmitter().getNodeJs() ? "jem_submit_js" : "jem_submit" ;
+			int rc =  launch(script, args);
 			SubmitResult res = new SubmitResult(rc, "null");
 			return res;
 		}
