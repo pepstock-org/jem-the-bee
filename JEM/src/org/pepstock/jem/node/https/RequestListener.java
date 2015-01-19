@@ -47,7 +47,7 @@ public class RequestListener extends Thread {
 
 	private static final int MAXIMUM_WORKERS = 20;
 
-	private static final ExecutorService executorService = Executors.newFixedThreadPool(MAXIMUM_WORKERS);
+	private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(MAXIMUM_WORKERS);
 
 	private final HttpConnectionFactory<DefaultBHttpServerConnection> connectionFactory;
 
@@ -91,7 +91,7 @@ public class RequestListener extends Thread {
 				// Start worker thread
 				Worker w = new Worker(socket.getInetAddress(), httpService, conn);
 				// puts on the pool.
-				executorService.execute(w);
+				EXECUTOR_SERVICE.execute(w);
 			} catch (InterruptedIOException e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC004E, e);
 				isForever = false;
