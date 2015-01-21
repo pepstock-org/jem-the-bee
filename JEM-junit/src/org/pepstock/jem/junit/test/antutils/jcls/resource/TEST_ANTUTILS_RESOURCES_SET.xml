@@ -173,7 +173,7 @@
 				<dataset>
 					<![CDATA[
 					  <resource name="JUNIT-RMI-RESOURCE" user="root" lastModified="2014-11-26 22:59:34.860 UTC" type="rmi">
-					    <property name="port" visible="true" override="false">5910</property>
+					    <property name="port" visible="true" override="false">5810</property>
 					    <property name="hostname" visible="true" override="false">127.0.0.1</property>
 					    <property name="ssl" visible="true" override="false">false</property>
 					    <property name="readOnly" visible="true" override="false">true</property>

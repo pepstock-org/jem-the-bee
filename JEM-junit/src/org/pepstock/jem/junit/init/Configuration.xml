@@ -9,8 +9,8 @@
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
 			<selected>true</selected> 
-			<embedded>false</embedded>
-			<!-- nodeJs>true</nodeJs--> 			
+			<embedded>true</embedded>
+			<nodeJs>false</nodeJs> 			
 			<params>
 				<param>
 				     <name>host</name>
@@ -30,10 +30,82 @@
 				</param-->
 			</params>
 		</submitter>
-		<!--submitter> 
+		<submitter> 
 		    <name>LOCAL_HOST_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
-			<selected>true</selected> 
+			<embedded>true</embedded> 			   
+			<params>
+				<param>
+				     <name>env</name>
+				     <value>TEST-Env</value>
+				</param>
+				<param>
+				     <name>port</name>
+				     <value>5710</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		<submitter>
+		    <name>HTTP_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.HttpSubmit</referenceClass>
+			<embedded>true</embedded> 			   
+			<params>
+				<param>
+				     <name>host</name>
+				     <value>https://127.0.0.1:8888</value>
+				</param>
+				<param>
+				     <name>user</name>
+				     <value>root</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>a</value>
+				</param>
+			</params>
+		</submitter>
+		<!-- 
+		NO EMBEDDED
+		-->
+		<submitter>
+		    <name>SUBMIT_NOEMBEDDED</name>
+			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
+			<embedded>false</embedded>
+			<nodeJs>false</nodeJs> 			
+			<params>
+				<param>
+				     <name>host</name>
+				     <value>https://localhost:8888</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		<submitter> 
+		    <name>LOCAL_HOST_SUBMIT_NOEMBEDDED</name>
+			<referenceClass>org.pepstock.jem.commands.LocalHostSubmit</referenceClass>
 			<embedded>false</embedded> 			   
 			<params>
 				<param>
@@ -55,13 +127,12 @@
 				<param>
 				     <name>privateKeyPwd</name>
 				     <value>jempassword</value>
-				</param>
+				</param-->
 			</params>
-		</submitter-->
-		<!-- submitter>
-		    <name>HTTP_SUBMIT</name>
+		</submitter>
+		<submitter>
+		    <name>HTTP_SUBMIT_NOEMBEDDED</name>
 			<referenceClass>org.pepstock.jem.commands.HttpSubmit</referenceClass>
-			<selected>true</selected> 
 			<embedded>false</embedded> 			   
 			<params>
 				<param>
@@ -77,6 +148,34 @@
 				     <value>a</value>
 				</param>
 			</params>
-		</submitter-->
+		</submitter>
+		<!-- 
+		NO EMBEDDED NODEJS
+		-->
+		<submitter>
+		    <name>SUBMIT_NOEMBEDDED_NODEJS</name>
+			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
+			<embedded>false</embedded>
+			<nodeJs>true</nodeJs> 			
+			<params>
+				<param>
+				     <name>host</name>
+				     <value>https://localhost:8888</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		
 	</submitters>
 </configuration>
