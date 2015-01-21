@@ -56,7 +56,14 @@ public abstract class JemTestCase extends TestCase {
 		return getTestCaseClass().getResource("jcls/" + name).toString();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public abstract String getType();
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public abstract Class<?> getTestCaseClass();
 }

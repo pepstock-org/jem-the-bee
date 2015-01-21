@@ -46,6 +46,11 @@ public class DataSourceConn {
 	public DataSourceConn() {
 	}
 	
+	/**
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		    System.err.println("parms: "+parameters);
 			Hashtable<String, String> env = new Hashtable<String, String>();

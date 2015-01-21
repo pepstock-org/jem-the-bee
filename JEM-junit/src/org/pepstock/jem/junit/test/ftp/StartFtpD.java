@@ -107,12 +107,12 @@ public class StartFtpD extends TestCase{
 
 	            int index = 0;
 	            for (File lib : files){
-	            	urls[index] = lib.toURL();
+	            	urls[index] = lib.toURI().toURL();
 	            	index++;
 	            }
 	            
 	            URLClassLoader u = new URLClassLoader(urls);
-	            Class c = u.loadClass("org.apache.ftpserver.FtpServerFactory");
+	            Class<?> c = u.loadClass("org.apache.ftpserver.FtpServerFactory");
 	            FtpServerFactory serverFactory = (FtpServerFactory)c.newInstance();
 	            
 	            ListenerFactory factory = new ListenerFactory();

@@ -12,8 +12,17 @@ import org.pepstock.jem.rest.entities.GfsRequest;
 import org.pepstock.jem.rest.entities.Jobs;
 import org.pepstock.jem.rest.services.GfsManager;
 
+/**
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
+ */
 public class GfsManagerTest extends TestCase {
 
+	/**
+	 * 
+	 * @throws Exception
+	 */
 	public void testGfsUpload() throws Exception {
 	}
 

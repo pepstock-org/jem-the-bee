@@ -17,6 +17,7 @@
 package org.pepstock.jem.junit.init;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
@@ -59,7 +60,9 @@ public class JemTestManager {
 	 * @param configurationFile
 	 * @throws Exception
 	 */
-	private JemTestManager(File configurationFile) throws Exception {
+	private JemTestManager(URL configurationUrl) throws Exception {
+		File configurationFile = File.createTempFile("config", ".cfg");
+		 FileUtils.copyURLToFile(configurationUrl, configurationFile);
 		String xml = FileUtils.readFileToString(configurationFile);
 		Configuration conf = Configuration.unmarshall(xml);
 		this.configuration = conf;
@@ -95,8 +98,13 @@ public class JemTestManager {
 	 */
 	public static JemTestManager getSharedInstance() throws Exception {
 		if (jemSubmit == null) {
-			return new JemTestManager(new File(JemTestManager.class
-					.getResource("Configuration.xml").getFile()));
+			String config = System.getProperty(ConfigKeys.JEM_CONFIG);
+			if (config != null){
+				File file = new File(config);
+				return new JemTestManager(file.toURI().toURL());	
+			} else {
+				return new JemTestManager(JemTestManager.class.getResource("Configuration.xml"));
+			}
 		}
 		return jemSubmit;
 	}
@@ -121,15 +129,19 @@ public class JemTestManager {
 	public Future<SubmitResult> submit(String jcl, String type, boolean wait,
 			boolean printout) {
 		String newJcl = jcl;
-		if (selectedSubmitter.getNodeJs()){
-			try {
-	            File file = FileUtils.toFile(new URL(jcl));
-	            newJcl = file.getAbsolutePath();
+		if (!selectedSubmitter.getEmbedded()){
+			File temp;
+            try {
+	            temp = File.createTempFile(type, ".jcl");
+	            URL url = new URL(jcl);
+	            FileUtils.copyURLToFile(url, temp);
+	            newJcl = temp.getAbsolutePath();
             } catch (MalformedURLException e) {
-	            e.printStackTrace();
+	            throw new RuntimeException(e);
+            } catch (IOException e) {
+	            throw new RuntimeException(e);
             }
 		}
-		
 		Callable<SubmitResult> task = new Task(selectedSubmitter, newJcl, type,
 				wait, printout);
 		Future<SubmitResult> submitResult = executor.submit(task);

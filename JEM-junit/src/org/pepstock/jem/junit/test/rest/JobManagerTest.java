@@ -13,6 +13,11 @@ import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 import org.pepstock.jem.rest.entities.Jobs;
 import org.pepstock.jem.rest.services.JobsManager;
 
+/**
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
+ */
 public class JobManagerTest extends TestCase {
 
 	/**

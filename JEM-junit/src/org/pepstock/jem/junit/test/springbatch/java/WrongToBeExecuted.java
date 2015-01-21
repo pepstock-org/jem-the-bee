@@ -25,7 +25,10 @@ import org.pepstock.jem.annotations.ToBeExecuted;
  */
 public class WrongToBeExecuted {
 
-
+	/**
+	 * 
+	 * @param error
+	 */
 	@ToBeExecuted
 	public void exec(String error){
 		System.err.println("If here, error!!!!");

@@ -45,7 +45,11 @@ public class RestToBeExecutedAndContext {
 	@AssignDataSource("JUNIT-REST-RESOURCE")
 	RestClient restC = null;
 
-
+	/**
+	 * 
+	 * @param stepContribution
+	 * @param chunkContext
+	 */
 	@ToBeExecuted
 	public void exec(StepContribution stepContribution, ChunkContext chunkContext){
 		

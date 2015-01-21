@@ -36,6 +36,7 @@ public class DeleteJunitDataSet {
 
 	/**
 	 * 
+	 * @param args 
 	 * @param args[0] is the folder on the jem.dataPaths to delete
 	 * @throws Exception
 	 */

@@ -59,13 +59,11 @@ public class SubmitSubmitter extends AbstractSubmitter {
 	public SubmitResult call() throws Exception {
 		// get args
 		String[] args = getArguments();
-		
 		if (getSelectedSubmitter().getEmbedded()){
 			Submit submit = new Submit();
 			return submit.execute(args);				
 		} else {
-			
-			String script = getSelectedSubmitter().getNodeJs() ? "jem_submit_js" : "jem_submit" ;
+			String script = (getSelectedSubmitter().getNodeJs() != null && getSelectedSubmitter().getNodeJs()) ? "jem_submit_js" : "jem_submit" ;
 			int rc =  launch(script, args);
 			SubmitResult res = new SubmitResult(rc, "null");
 			return res;

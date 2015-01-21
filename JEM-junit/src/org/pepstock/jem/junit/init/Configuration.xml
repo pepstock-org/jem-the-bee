@@ -9,7 +9,7 @@
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
 			<selected>true</selected> 
-			<embedded>true</embedded>
+			<embedded>false</embedded>
 			<!-- nodeJs>true</nodeJs--> 			
 			<params>
 				<param>

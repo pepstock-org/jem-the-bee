@@ -43,7 +43,9 @@ public class RestToBeExecuted {
 	@AssignDataSource("JUNIT-REST-RESOURCE")
 	RestClient restC = null;
 
-
+	/**
+	 * 
+	 */
 	@ToBeExecuted
 	public void exec(){
 		

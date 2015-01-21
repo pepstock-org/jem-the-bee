@@ -17,12 +17,23 @@ import org.apache.commons.io.FileUtils;
  */
 public class JmsServer {
 
+	/**
+	 * 
+	 */
 	public static String JUNIT_JMS_QUEUE_NAME = "queue/JUNIT_JMS_QUEUE_NAME";
 
+	/**
+	 * 
+	 */
 	public static String JUNIT_JMS_CONNECTIONFACTORY_NAME = "factory/ConnectionFactory";
 
+	/**
+	 * 
+	 */
 	public static String PROVIDER_URL = "tcp://localhost:10002";
-
+	/**
+	 * 
+	 */
 	public static String TEST_MESSAGE = "Jem Queue Test Message";
 
 	/**

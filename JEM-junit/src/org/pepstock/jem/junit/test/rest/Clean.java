@@ -8,7 +8,11 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.ant.AntFactory;
 import org.pepstock.jem.rest.entities.Jobs;
-
+/**
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
+ */
 public class Clean extends TestCase {
 
 	/**

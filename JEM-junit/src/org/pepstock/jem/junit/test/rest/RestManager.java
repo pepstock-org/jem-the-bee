@@ -16,6 +16,11 @@ import org.pepstock.jem.rest.services.GfsManager;
 import org.pepstock.jem.rest.services.JobsManager;
 import org.pepstock.jem.rest.services.LoginManager;
 
+/**
+ * 
+ * @author Andrea "Stock" Stocchero
+ * @version 2.2
+ */
 public class RestManager {
 
 	private JobsManager jobManager;
