@@ -19,7 +19,11 @@ package org.pepstock.jem.junit.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
 import org.pepstock.jem.junit.test.common.CommonSuite;
+import org.pepstock.jem.junit.test.jbpm.JBpmSuite;
+import org.pepstock.jem.junit.test.rest.RestSuite;
+import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
 
 /**
  * 
@@ -28,8 +32,7 @@ import org.pepstock.jem.junit.test.common.CommonSuite;
  */
 @RunWith(Suite.class)
 //@SuiteClasses({ JBpmSuite.class} , HttpSuite.class, FTPSuite.class , RestSuite.class)
-//, AntUtilsSuite.class, SpringBatchSuite.class, JBpmSuite.class, RestSuite.class
-@SuiteClasses({ CommonSuite.class})
+@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class, JBpmSuite.class, RestSuite.class})
 public class JemTestSuite {
 
 }
