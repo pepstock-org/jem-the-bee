@@ -27,8 +27,6 @@ import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import net.timewalker.ffmq3.FFMQConstants;
-
 /**
  * This class will show an example of how to use a JEM datasource
  * 
@@ -36,38 +34,6 @@ import net.timewalker.ffmq3.FFMQConstants;
  * 
  */
 public class ProduceJmsMessage {
-
-	/**
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void testJem() throws Exception {
-		// Create and initialize a JNDI context
-		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				FFMQConstants.JNDI_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL, JmsServer.PROVIDER_URL);
-		Context context = new InitialContext(env);
-
-		// Lookup a connection factory in the context
-		ConnectionFactory connFactory = (ConnectionFactory) context
-				.lookup(FFMQConstants.JNDI_CONNECTION_FACTORY_NAME);
-
-		// Obtain a JMS connection from the factory
-		Connection conn = connFactory.createConnection();
-		conn.start();
-		Session mySess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		Queue myQueue = (javax.jms.Queue) context
-				.lookup(JmsServer.JUNIT_JMS_QUEUE_NAME);
-		MessageProducer myMsgProducer = mySess.createProducer(myQueue);
-		TextMessage myTextMsg = mySess.createTextMessage();
-		myTextMsg.setText(JmsServer.TEST_MESSAGE);
-		System.out.println("Sending Message: " + myTextMsg.getText());
-		myMsgProducer.send(myTextMsg);
-		mySess.close();
-		conn.close();
-	}
 
 	/**
 	 * Get jms resource "jem-jms" from JCL and send a message on

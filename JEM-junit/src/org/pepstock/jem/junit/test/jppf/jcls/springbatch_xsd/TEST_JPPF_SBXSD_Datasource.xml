@@ -35,7 +35,7 @@
 		Jem Props
 	 -->
 	 
-	 <jem:configuration jobName="TEST_JPPF_SBXSD_DATASOURCE" environment="TEST-Env" classPath="${JEM_HOME}/lib/jem-junit.jar"/>
+	 <jem:configuration jobName="TEST_JPPF_SBXSD_DATASOURCE" environment="TEST-Env" classPath="${JEM_HOME}/lib/jem-junit.jar;${JEM_HOME}/lib/db/*"/>
 
 	<!-- 
 		Tasklet Defintion

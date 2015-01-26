@@ -200,7 +200,7 @@
 					    <property name="userid" visible="true" override="false">root</property>
 					    <property name="basicAuthentication" visible="true" override="false">true</property>
 					    <property name="password" visible="false" override="false">PWD</property>
-					    <property name="url" visible="true" override="false">https://localhost:8888/restAuth</property>
+					    <property name="url" visible="true" override="false">http://localhost:8888/restAuth</property>
 					    <customProperties/>
 					  </resource>
 					]]>

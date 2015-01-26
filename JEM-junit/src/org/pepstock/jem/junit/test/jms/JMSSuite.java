@@ -29,8 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ LoadLibraries.class, Clean.class, CreateJmsResource.class,
-		StartJmsServer.class, Producer.class, Consumer.class,
-		SbProducerConsumer.class })
+		StartJmsServer.class, SbProducerConsumer.class, Producer.class, Consumer.class,
+		 })
 public class JMSSuite {
 
 }

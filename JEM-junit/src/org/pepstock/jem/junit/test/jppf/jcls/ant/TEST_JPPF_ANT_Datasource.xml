@@ -9,8 +9,9 @@
 	<target name="test-T-Datasource">
 		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.JPPFTaskDatasource" parallelTaskNumber="2"  address="localhost:11111">
 			<classpath>
-				<pathelement path="${java.class.path}" />
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
+				<fileset dir="${JEM_HOME}/lib/db/" includes="*.jar"/>
+				<pathelement path="${java.class.path}" />
 			</classpath>
 			
 			<dataSource name="JUNIT_JPPF_JDBC_JEM" resource="JUNIT_JPPF_JDBC_JEM"/>
@@ -22,6 +23,7 @@
 		<jppf runnable="org.pepstock.jem.junit.test.jppf.java.RunnableDatasource" parallelTaskNumber="2"  address="localhost:11111">
 			<classpath>
 				<pathelement path="${java.class.path}" />
+				<fileset dir="${JEM_HOME}/lib/db/" includes="*.jar"/>
 				<pathelement path="${JEM_HOME}/lib/jem-junit.jar" />
 			</classpath>
 			

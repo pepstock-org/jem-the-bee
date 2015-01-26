@@ -28,8 +28,6 @@ import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import net.timewalker.ffmq3.FFMQConstants;
-
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
 import org.springframework.batch.core.StepContribution;
@@ -57,30 +55,34 @@ public class ProduceJmsSbTasklet extends JemTasklet {
 			ChunkContext chuckContext) throws TaskletException {
 		
 		try {
-			// Create and initialize a JNDI context
+			System.out.println("Connecting to jms server");
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY,
-					FFMQConstants.JNDI_CONTEXT_FACTORY);
-			env.put(Context.PROVIDER_URL, JmsServer.PROVIDER_URL);
-			Context context = new InitialContext(env);
-
-			// Lookup a connection factory in the context
-			ConnectionFactory connFactory = (ConnectionFactory) context
-					.lookup(FFMQConstants.JNDI_CONNECTION_FACTORY_NAME);
-
+					"org.pepstock.jem.node.tasks.jndi.JemContextFactory");
+			InitialContext context = new InitialContext(env);
+			// get jms resource, note that jem-jms is the name of the resource
+			// present in the JCL
+			Object jndiObject = (Object) context.lookup("jem-jms");
+			System.out.println("JNDI Object" + jndiObject);
+			Context jmsContex = (Context) context.lookup("jem-jms");
+			ConnectionFactory connFactory = (ConnectionFactory) jmsContex
+					.lookup(JmsServer.JUNIT_JMS_CONNECTIONFACTORY_NAME);
 			// Obtain a JMS connection from the factory
 			Connection conn = connFactory.createConnection();
 			conn.start();
+			System.out.println("Connected to jms server");
 			Session mySess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Queue myQueue = (javax.jms.Queue) context
+			Queue myQueue = (javax.jms.Queue) jmsContex
 					.lookup(JmsServer.JUNIT_JMS_QUEUE_NAME);
 			MessageProducer myMsgProducer = mySess.createProducer(myQueue);
 			TextMessage myTextMsg = mySess.createTextMessage();
 			myTextMsg.setText(JmsServer.TEST_MESSAGE);
-			System.out.println("Sending Message: " + myTextMsg.getText());
+			System.out.println("Sending message " + myTextMsg.getText() + " to "
+					+ JmsServer.JUNIT_JMS_QUEUE_NAME);
 			myMsgProducer.send(myTextMsg);
 			mySess.close();
 			conn.close();
+			System.out.println("Message sent");
 		} catch (Exception e) {
 			throw new TaskletException(e);
 		}

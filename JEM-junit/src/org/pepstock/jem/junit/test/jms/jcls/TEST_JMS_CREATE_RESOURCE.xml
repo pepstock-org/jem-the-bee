@@ -19,6 +19,8 @@
 				<dataset>
 					<![CDATA[
 						 <resource name="JUNIT-JMS-RESOURCE" type="jms" user="root" lastModified="2014-02-02 12:54:25.927 UTC">
+						   <property name="userid" visible="true" override="false">admin</property>   
+						   <property name="password" visible="false" override="false">admin</property>   
 						   <property name="java.naming.provider.url" visible="true" override="true">tcp://localhost:10002</property>
 						   <property name="java.naming.factory.initial" visible="true" override="true">net.timewalker.ffmq3.jndi.FFMQInitialContextFactory</property>
 						 </resource>

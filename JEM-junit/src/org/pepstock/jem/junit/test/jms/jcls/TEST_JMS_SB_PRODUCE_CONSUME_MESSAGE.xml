@@ -35,7 +35,7 @@
 		Jem Props
 	 -->
 	 
-	 <jem:configuration classPath="${jem.classpath}/jms/ffmq3-core.jar;${JEM_HOME}/lib/jem-junit.jar"/>
+	 <jem:configuration classPath="${jem.classpath}/jms/ffmq3-core.jar;${JEM_HOME}/lib/jem-junit.jar;${java.class.path}"/>
 
 	<!-- 
 		Tasklet Defintion

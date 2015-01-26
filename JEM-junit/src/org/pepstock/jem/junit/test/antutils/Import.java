@@ -28,25 +28,10 @@ public class Import extends AntTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void testCopyImport() throws Exception {
+	public void test() throws Exception {
 		assertEquals(submit("imp/TEST_ANTUTILS_COPY_IMPORT.xml"), 0);
-	}
-	
-	/**
-	 * Test import
-	 * 
-	 * @throws Exception
-	 */
-	public void testImport() throws Exception {
 		assertEquals(submit("imp/TEST_ANTUTILS_IMPORT.xml"), 0);
-	}
-	
-	/**
-	 * Test delete import
-	 * 
-	 * @throws Exception
-	 */
-	public void testDeleteImport() throws Exception {
 		assertEquals(submit("imp/TEST_ANTUTILS_DELETE_IMPORT.xml"), 0);
 	}
+	
 }

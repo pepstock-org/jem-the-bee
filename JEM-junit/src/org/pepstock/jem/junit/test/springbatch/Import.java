@@ -46,29 +46,13 @@ public class Import extends SpringBatchTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void testCopyImport() throws Exception {
+	public void test() throws Exception {
 		submitANT = true;
 		assertEquals(submit("imp/TEST_SPRINGBATCH_COPY_IMPORT.xml"), 0);
-	}
-	
-	/**
-	 * Test the wait ant utility
-	 * 
-	 * @throws Exception
-	 */
-	public void testImport() throws Exception {
 		submitANT = false;
 		assertEquals(submit("imp/TEST_SPRINGBATCH_IMPORT.xml"), 0);
-	}
-	
-	/**
-	 * Test the wait ant utility
-	 * 
-	 * @throws Exception
-	 */
-	public void testDeleteImport() throws Exception {
 		submitANT = true;
 		assertEquals(submit("imp/TEST_SPRINGBATCH_DELETE_IMPORT.xml"), 0);
 		submitANT = false;
-	}
+	}	
 }

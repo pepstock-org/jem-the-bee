@@ -243,9 +243,9 @@ public final class MainLauncherTasklet extends JemTasklet {
 			classPathFile = FilenameUtils.normalize(classPathFile, true);
 			// checks if a item contains more than 1 path
 			String[] paths = null;
-			if (classPathFile.contains(File.separator)){
+			if (classPathFile.contains(File.pathSeparator)){
 				// substitute variables if there are and split
-				paths = StringUtils.split(JobsProperties.getInstance().replacePlaceHolders(classPathFile), File.separator);
+				paths = StringUtils.split(JobsProperties.getInstance().replacePlaceHolders(classPathFile), File.pathSeparator);
 			} else if (classPathFile.contains(";")){
 				// substitute variables if there are and split
 				paths = StringUtils.split(JobsProperties.getInstance().replacePlaceHolders(classPathFile), ";");
