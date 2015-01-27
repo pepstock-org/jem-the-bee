@@ -176,7 +176,7 @@ public abstract class PolicyAffinityLoader extends FileAlterationListenerAdaptor
 					NodeInfoUtility.storeNodeInfo(Main.getNode());
 					Main.INPUT_QUEUE_MANAGER.checkJobsInQueue();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, this.getClass().getName());
 			}
 			LogAppl.getInstance().emit(NodeMessage.JEMC050I, Main.EXECUTION_ENVIRONMENT);
