@@ -47,6 +47,14 @@ import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Generate X.509 certificates programmatically leveraging on Bouncycastle lightweight API.
+ * <br>
+ * list of DN attributes:<br>
+ * CN: CommonName<br>
+ * OU: OrganizationalUnit<br>
+ * O: Organization<br>
+ * L: Locality<br>
+ * S: StateOrProvinceName<br>
+ * C: CountryName<br>
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -60,7 +68,7 @@ final class SelfSignedCertificate {
     // uses RSA
     private static final String CERTIFICATE_ALGORITHM = "RSA";
     // DN for certificate
-    private static final String CERTIFICATE_DN = "CN=cn, O=org, L=pepstock, ST=jem, C=http";
+    private static final String CERTIFICATE_DN = "CN=jem, O=pepstock, L=verona, S=vr, C=it";
     // uses 1024 bit
     private static final int CERTIFICATE_BITS = 1024;
     
