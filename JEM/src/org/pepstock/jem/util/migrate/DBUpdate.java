@@ -77,6 +77,7 @@ abstract class DBUpdate {
 	 * @param query SQL statement to execute on database to get objects in XMl format
 	 * @throws SQLException  if any error occurs 
 	 */
+	@SuppressWarnings("resource")
 	void query(String query) throws SQLException{
 		// open connection
 		// getting a connection from pool
