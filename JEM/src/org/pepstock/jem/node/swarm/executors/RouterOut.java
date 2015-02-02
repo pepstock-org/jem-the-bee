@@ -69,14 +69,14 @@ public class RouterOut implements Callable<Boolean>, Serializable {
 			throw new SwarmException(SwarmNodeMessage.JEMO008E, job);
 		}
 		IMap<String, Job> routedQueue = hazelcastInstance.getMap(Queues.ROUTED_QUEUE);
-		// if job is in wating mode than add job to ROUTED QUEUE
+		// if job is in waiting mode than add job to ROUTED QUEUE
 		if (!job.isNowait()) {
 			routedQueue.put(job.getRoutingInfo().getId(), job);
 			LogAppl.getInstance().emit(SwarmNodeMessage.JEMO013I, job);
+			// gets topic object and adds itself as listener
+			ITopic<Job> topic = hazelcastInstance.getTopic(Queues.ENDED_JOB_TOPIC);
+			topic.publish(job);
 		}
-		// gets topic object and adds itself as listener
-		ITopic<Job> topic = hazelcastInstance.getTopic(Queues.ENDED_JOB_TOPIC);
-		topic.publish(job);
 		return true;
 	}
 }

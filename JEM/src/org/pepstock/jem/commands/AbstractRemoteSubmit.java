@@ -209,7 +209,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 		// could be useful to factories, listeners and during job execution to
 		// job itself
 		job.setInputArguments(ManagementFactory.getRuntimeMXBean().getInputArguments());
-		
+		job.setNowait(true);
 		
 		// uses file name as job name, if file name exists
 		if (jobName != null){
