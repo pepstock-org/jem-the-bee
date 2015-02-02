@@ -517,10 +517,12 @@ public class JobsManager extends DefaultService {
 						callPurge(storedJob);
 					}
 
-					// sends a topic to all subscribers
-					// telling them that jobs is ended
-					ITopic<Job> topic = getInstance().getTopic(Queues.ENDED_JOB_TOPIC);
-					topic.publish(storedJob);
+					if (!storedJob.isNowait()){
+						// sends a topic to all subscribers
+						// telling them that jobs is ended
+						ITopic<Job> topic = getInstance().getTopic(Queues.ENDED_JOB_TOPIC);
+						topic.publish(storedJob);
+					}
 				}
 			} finally {
 				// always unlocks the key
@@ -743,6 +745,9 @@ public class JobsManager extends DefaultService {
 		// creates job id and sets it
 		String jobId = Factory.createJobId(job, id);
 		job.setId(jobId);
+		
+		// via HTTP is not possible to wait the end of job
+		job.setNowait(true);
 
 		// puts the pre job in a queue for validating
 		IQueue<PreJob> jclCheckingQueue = getInstance().getQueue(Queues.JCL_CHECKING_QUEUE);

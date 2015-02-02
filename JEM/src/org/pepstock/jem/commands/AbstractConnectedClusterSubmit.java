@@ -268,8 +268,10 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		super.setJob(job);
 
 		// gets topic object and adds itself as listener
-		ITopic<Job> topic = client.getTopic(Queues.ENDED_JOB_TOPIC);
-		topic.addMessageListener(this);
+		if (isWait()){
+			ITopic<Job> topic = client.getTopic(Queues.ENDED_JOB_TOPIC);
+			topic.addMessageListener(this);
+		}
 
 		// puts the pre job in a queue for validating and miving to right QUEUE
 		// (input if is correct, output if is wrong)

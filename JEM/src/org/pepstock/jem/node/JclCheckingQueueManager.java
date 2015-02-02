@@ -371,8 +371,10 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// because the client, which submits jcl is still waiting for a
 		// notification
 		// client needs notification if "-nowait" parameter is not used
-		ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
-		topic.publish(job);		
+		if (!job.isNowait()){
+			ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
+			topic.publish(job);
+		}
 	}
 
 

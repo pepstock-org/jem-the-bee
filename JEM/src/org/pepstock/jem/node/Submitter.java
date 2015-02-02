@@ -233,9 +233,11 @@ public class Submitter implements Runnable {
 		// fires event that the job is ended
 		Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addJobLifecycleEvent(new JobLifecycleEvent(Queues.OUTPUT_QUEUE, job));
 
-		// send a topic to client which is wait for
-		ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
-		topic.publish(job);
+		if (!job.isNowait()){
+			// send a topic to client which is wait for
+			ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
+			topic.publish(job);
+		}
 	}
 	
 	/**
