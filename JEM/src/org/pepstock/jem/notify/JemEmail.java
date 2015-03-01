@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.mail.internet.InternetAddress;
+
 import org.pepstock.jem.notify.engine.NotifierInterface;
 import org.pepstock.jem.notify.exception.NotifyException;
 
@@ -80,14 +82,14 @@ public class JemEmail implements NotifyObject {
 	 * 
 	 * @see JemInternetAddress
 	 */
-	private List<JemInternetAddress> toEmailAddresses = null;
+	private List<InternetAddress> toEmailAddresses = null;
 
 	/**
 	 * Constructor that initializes the email addresses destination of the email
 	 * with an empty {@link ArrayList}
 	 */
 	public JemEmail() {
-		this.toEmailAddresses = new ArrayList<JemInternetAddress>();
+		this.toEmailAddresses = new ArrayList<InternetAddress>();
 	}
 
 	/**
@@ -265,12 +267,12 @@ public class JemEmail implements NotifyObject {
 	 * @return true if this <code>JemEmail</code> contains the parameter address
 	 *         <code>emailAddress</code>, false otherwise.
 	 */
-	public boolean conatainsToEmailAddress(JemInternetAddress emailAddress) {
+	public boolean conatainsToEmailAddress(InternetAddress emailAddress) {
 		if (null == emailAddress) {
 			return false;
 		}
 		for (int i = 0; i < this.toEmailAddresses.size(); i++) {
-			JemInternetAddress toEmailAddress = this.toEmailAddresses.get(i);
+			InternetAddress toEmailAddress = this.toEmailAddresses.get(i);
 			if (emailAddress.toString().trim().equalsIgnoreCase(toEmailAddress.toString().trim())) {
 				return true;
 			}
@@ -285,7 +287,7 @@ public class JemEmail implements NotifyObject {
 	 * @param emailAddress the {@link JemInternetAddress} that will be added to
 	 *            this <code>JemEmail</code>.
 	 */
-	public void addToEmailAddress(JemInternetAddress emailAddress) {
+	public void addToEmailAddress(InternetAddress emailAddress) {
 		if (!this.conatainsToEmailAddress(emailAddress)) {
 			this.toEmailAddresses.add(emailAddress);
 		}
@@ -299,7 +301,7 @@ public class JemEmail implements NotifyObject {
 	 *         contained in this <code>JemEmail</code>.
 	 * @see Collection
 	 */
-	public Collection<JemInternetAddress> getAllToEmailAddresses() {
+	public Collection<InternetAddress> getAllToEmailAddresses() {
 		return this.toEmailAddresses;
 	}
 
@@ -312,7 +314,7 @@ public class JemEmail implements NotifyObject {
 	 *            <code>JemEmail</code>.
 	 * @see List
 	 */
-	public void addToEmailAddresses(List<JemInternetAddress> toEmailAddresses) {
+	public void addToEmailAddresses(List<InternetAddress> toEmailAddresses) {
 		if (null != toEmailAddresses) {
 			for (int i = 0; i < toEmailAddresses.size(); i++) {
 				this.addToEmailAddress(toEmailAddresses.get(i));
@@ -328,7 +330,7 @@ public class JemEmail implements NotifyObject {
 	 *            {@link JemInternetAddress} that will be added to this
 	 *            <code>JemEmail</code>.
 	 */
-	public void addToEmailAddresses(JemInternetAddress[] toEmailAddresses) {
+	public void addToEmailAddresses(InternetAddress[] toEmailAddresses) {
 		if (null != toEmailAddresses) {
 			for (int i = 0; i < toEmailAddresses.length; i++) {
 				this.addToEmailAddress(toEmailAddresses[i]);

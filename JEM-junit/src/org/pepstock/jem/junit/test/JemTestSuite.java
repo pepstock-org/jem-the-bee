@@ -22,6 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
 import org.pepstock.jem.junit.test.common.CommonSuite;
 import org.pepstock.jem.junit.test.http.HttpSuite;
+import org.pepstock.jem.junit.test.jbpm.JBpmSuite;
 import org.pepstock.jem.junit.test.rest.RestSuite;
 import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
 
@@ -33,7 +34,7 @@ import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
 @RunWith(Suite.class)
 // @SuiteClasses(FTPSuite.class, JMSSuite.class,JPPFSuite.class })
 @SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
-		RestSuite.class, HttpSuite.class})
+		RestSuite.class, HttpSuite.class, JBpmSuite.class})
 public class JemTestSuite {
 
 }

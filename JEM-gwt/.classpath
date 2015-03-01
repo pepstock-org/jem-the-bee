@@ -10,16 +10,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gflot-3.2.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-150.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15on-150.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/shiro-core-1.2.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/shiro-web-1.2.3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.7.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hazelcast-all-2.6.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-apache-client4-1.18.1.jar"/>
@@ -35,6 +30,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-xc-1.9.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-server-1.18.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jersey-servlet-1.18.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-151.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15on-151.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.9.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.7.10.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.7.10.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

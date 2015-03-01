@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.notify.JemEmail;
-import org.pepstock.jem.notify.JemInternetAddress;
 import org.pepstock.jem.notify.NotifyMessage;
 import org.pepstock.jem.notify.exception.FactoryException;
 import org.pepstock.jem.util.VariableSubstituter;
@@ -104,7 +104,7 @@ public class Factory {
 	 * @return a <code>List</code> of {@link JemInternetAddress}
 	 * @throws FactoryException if an error occurs.
 	 */
-	public static List<JemInternetAddress> createToEmailAddresses(Collection<String> toEmailAddresses) throws FactoryException{
+	public static List<InternetAddress> createToEmailAddresses(Collection<String> toEmailAddresses) throws FactoryException{
 		String[] addressesTo = toEmailAddresses.toArray(new String[toEmailAddresses.size()]);
 		return createToEmailAddresses(addressesTo);
 	}
@@ -118,12 +118,12 @@ public class Factory {
 	 * @return a <code>List</code> of {@link JemInternetAddress}
 	 * @throws FactoryException if an error occurs.
 	 */
-	public static List<JemInternetAddress> createToEmailAddresses(String[] toEmailAddresses) throws FactoryException {
-		List<JemInternetAddress> toEAddresses = new ArrayList<JemInternetAddress>();
+	public static List<InternetAddress> createToEmailAddresses(String[] toEmailAddresses) throws FactoryException {
+		List<InternetAddress> toEAddresses = new ArrayList<InternetAddress>();
 		if (null != toEmailAddresses) {
 			for (int i = 0; i < toEmailAddresses.length; i++) {
 				try {
-					JemInternetAddress address = new JemInternetAddress(toEmailAddresses[i].trim());
+					InternetAddress address = new InternetAddress(toEmailAddresses[i].trim());
 					toEAddresses.add(address);
 				} catch (AddressException aEx) {
 					LogAppl.getInstance().emit(NotifyMessage.JEMN001E, aEx, toEmailAddresses[i].trim());

@@ -21,6 +21,7 @@
 
 	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
 	<target name="compile-jem" depends="make-jem-directories">
+		<echo>Java version: ${java.version}</echo>
 		<javac srcdir="${jem.workspace}/${jem.source.directory}" destdir="${jem.workspace}/${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
 				<pathelement path="${jem.workspace}/${jem.classes.directory}" />

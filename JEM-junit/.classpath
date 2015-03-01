@@ -6,6 +6,7 @@
 	<classpathentry kind="lib" path="/JEM/lib/xstream/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/logging/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/logging/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/xstream/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-client.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common-node.jar"/>
@@ -22,7 +23,6 @@
 	<classpathentry kind="lib" path="jms/lib/ffmq3-tools.jar"/>
 	<classpathentry kind="lib" path="jms/lib/mx4j-3.0.2.jar"/>
 	<classpathentry kind="lib" path="jms/lib/mx4j-remote-3.0.2.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/logging/commons-logging-1.1.3.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/jms/jms-1.1.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/lang/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="jersey/asm-3.3.1.jar"/>
