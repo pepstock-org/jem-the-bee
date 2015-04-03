@@ -8,13 +8,13 @@ Download from [here](http://www.pepstock.org/download.htm)!
  
 ###What's new in release 2.2?###
   
-  * **[JBoss JBPM](JBossJBPM_as_JCL)** integration, using BPMN2 as JCL
-  * **[BASH](BASH_as_JCL) and [Windows CMD](CMD_as_JCL)** integration, as JCLs
-  * **[REST API](REST)** fully implemented
-  * **[Deployer of JEM](Depolyment)** by a JEM ANT task which can deploy artifacts on JEM by REST
+  * **[JBoss JBPM](../../wiki/JBossJBPM_as_JCL)** integration, using BPMN2 as JCL
+  * **[BASH](../../wiki/BASH_as_JCL) and [Windows CMD](../../wiki/CMD_as_JCL)** integration, as JCLs
+  * **[REST API](../../wiki/REST)** fully implemented
+  * **[Deployer of JEM](../../wiki/Depolyment)** by a JEM ANT task which can deploy artifacts on JEM by REST
   * **Oracle and IBM DB2** compatibility to be used for the maps persistence
-  * **JEM [Annotations](Annotations)** to set data descriptions and data sources on own fields, avoiding to write all JNDI calls
-  * [Submitting](Scripts#Submitting_jobs_by_NodeJS_script) jobs by **NodeJS**, to reduce the amount of needed memory 
+  * **JEM [Annotations](../../wiki/Annotations)** to set data descriptions and data sources on own fields, avoiding to write all JNDI calls
+  * [Submitting](../../wiki/Scripts#Submitting_jobs_by_NodeJS_script) jobs by **NodeJS**, to reduce the amount of needed memory 
  
 ###What is it?###
  
@@ -30,7 +30,7 @@ Download from [here](http://www.pepstock.org/download.htm)!
  * **Spring Batch improvements**: reduced the configuration related to JEM and custom tags to use in the better way JEM features, like datadescriptions, datasets, datasources and locks!
  * **Big-Data enable**: first possible integration with [Apache Hadoop](http://hadoop.apache.org/) using [Spring for Hadoop](http://projects.spring.io/spring-hadoop/)
  * **Vertical scalability**: for users who have got big machines with many resources can use a unique node, changing dinamically the number of jobs which can be run.
- * **Parallel Computing**: uses multiple processing elements simultaneously, breaking the business logic into independent parts so that each processing element can execute its part of the algorithm simultaneously with the others. JEM uses [JPPF integration](ParallelComputingJPPF) to perform parallel tasks 
+ * **Parallel Computing**: uses multiple processing elements simultaneously, breaking the business logic into independent parts so that each processing element can execute its part of the algorithm simultaneously with the others. JEM uses [JPPF integration](../../wiki/ParallelComputingJPPF) to perform parallel tasks 
  * **WEB User interface**: complete web interface to work on JEM cluster
  * **Eclipse plugin**: a plugin for Eclipse which provides to developers the capability to connect to many JEM environments and work on them, testing own batch application
  * **Job Monitoring**: by user interface, you can monitor all job executions
@@ -46,6 +46,6 @@ Download from [here](http://www.pepstock.org/download.htm)!
  
 ###Let's start###
  
-Read the [wiki](Home) to see in details all capabilities of JEM.
-Start with the [installation instructions](Installation). Enjoy!
+Read the [wiki](../../wiki/Home) to see in details all capabilities of JEM.
+Start with the [installation instructions](../../wiki/Installation). Enjoy!
 
