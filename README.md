@@ -3,6 +3,8 @@
 ##Version 2.2 Bergamotto has been released! (January, 2015)##
  
 Download from [here](http://www.pepstock.org/download.htm)!
+
+<p><img align="right" src="http://www.pepstock.org/resources/jem-home.png"/>
  
 **Play with JEM version 2.1!** Download the sandbox from [here](http://www.pepstock.org/download/jem-v2.1-centos-x64-sandbox.ova), for both Virtual Box and VMWare player, and try it!
  
@@ -40,3 +42,5 @@ Download from [here](http://www.pepstock.org/download.htm)!
  * **GlusterFS and Apache HDFS**: used and configured to be used as global file systems for JEM
  * **Global resources system**: engine to synchronize resources (mainly files) inside the cluster
  * **License**: JEM, the BEE is under GPL version 3!! JEM, the BEE Eclipse plugin is under EPL version 1
+
+</p>
