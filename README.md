@@ -6,7 +6,7 @@ Download from [here](http://www.pepstock.org/download.htm)!
 
 **Play with JEM version 2.1!** Download the sandbox from [here](http://www.pepstock.org/download/jem-v2.1-centos-x64-sandbox.ova), for both Virtual Box and VMWare player, and try it!
  
-##What's new in release 2.2?##
+###What's new in release 2.2?###
   
   * **[JBoss JBPM](JBossJBPM_as_JCL)** integration, using BPMN2 as JCL
   * **[BASH](BASH_as_JCL) and [Windows CMD](CMD_as_JCL)** integration, as JCLs
@@ -15,13 +15,13 @@ Download from [here](http://www.pepstock.org/download.htm)!
   * **Oracle and IBM DB2** compatibility to be used for the maps persistence
   * **JEM [Annotations](Annotations)** to set data descriptions and data sources on own fields, avoiding to write all JNDI calls
   * [Submitting](Scripts#Submitting_jobs_by_NodeJS_script) jobs by **NodeJS**, to reduce the amount of needed memory 
-
-##What is it?## 
-
+ 
+###What is it?###
+ 
 **JEM** is java and cloud application which implements a batch execution environment which is able to manage the execution of batches. You could consider it as an application server for batches and long running activities.
-
-##Features##  
-
+ 
+###Main features###
+ 
  * **Cloud-aware**: runs on cluster mode
  * **Cross platform**: is a java application, so can run everywhere!
  * **Swarm**: engine to join different JEM groups together, routing the execution of jobs on another group! Consider it like "the cloud of clouds"!
@@ -43,5 +43,9 @@ Download from [here](http://www.pepstock.org/download.htm)!
  * **GlusterFS and Apache HDFS**: used and configured to be used as global file systems for JEM
  * **Global resources system**: engine to synchronize resources (mainly files) inside the cluster
  * **License**: JEM, the BEE is under GPL version 3!! JEM, the BEE Eclipse plugin is under EPL version 1
-
+ 
+###Let's start###
+ 
+Read the wiki to see in details all capabilities of JEM.
+Start with the [installation instructions](Installation). Enjoy!
 
