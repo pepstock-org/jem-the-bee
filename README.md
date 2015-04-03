@@ -46,6 +46,6 @@ Download from [here](http://www.pepstock.org/download.htm)!
  
 ###Let's start###
  
-Read the wiki to see in details all capabilities of JEM.
+Read the [wiki](Home) to see in details all capabilities of JEM.
 Start with the [installation instructions](Installation). Enjoy!
 
