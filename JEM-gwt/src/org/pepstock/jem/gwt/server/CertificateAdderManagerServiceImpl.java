@@ -79,6 +79,7 @@ public class CertificateAdderManagerServiceImpl extends FileUploadManager implem
 	                	throw new JemException(UserInterfaceMessage.JEMG051E.toMessage().getFormattedMessage(e.getMessage()));
 	                }
 	        	} else {
+	        		// send Exception
 	        		throw new JemException(UserInterfaceMessage.JEMG050E.toMessage().getFormattedMessage(CertificateAdder.FILE_UPLOAD_FIELD));
 	        	}
 	        } else {
