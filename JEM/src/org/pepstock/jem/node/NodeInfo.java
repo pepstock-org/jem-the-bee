@@ -47,6 +47,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.NodeInfoBean;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
 
@@ -101,6 +102,10 @@ public class NodeInfo implements Serializable {
 	private Map<String, RequestLock> requests = new ConcurrentHashMap<String, RequestLock>();
 
 	private boolean isOperational = true;
+	
+	private final String javaVendor = System.getProperty(ConfigKeys.JAVA_VENDOR);
+			
+	private final String javaVersion = System.getProperty(ConfigKeys.JAVA_VERSION);
 
 	private final ReentrantLock lock = new ReentrantLock();
 
@@ -441,6 +446,20 @@ public class NodeInfo implements Serializable {
 	}
 
 	/**
+	 * @return the javaVendor
+	 */
+	public String getJavaVendor() {
+		return javaVendor;
+	}
+
+	/**
+	 * @return the javaVersion
+	 */
+	public String getJavaVersion() {
+		return javaVersion;
+	}
+
+	/**
 	 * @return the lock
 	 */
 	public ReentrantLock getLock() {
@@ -473,6 +492,8 @@ public class NodeInfo implements Serializable {
 		nodeInfoBean.setJemVersion(this.getJemVersion());
 		nodeInfoBean.setSwarmNode(this.isSwarmNode());
 		nodeInfoBean.setType(this.getClass().getName());
+		nodeInfoBean.setJavaVendor(this.getJavaVendor());
+		nodeInfoBean.setJavaVersion(this.getJavaVersion());
 		return nodeInfoBean;
 	}
 

@@ -85,8 +85,28 @@ public class DefaultJobTask extends JobTask {
 		File jclFile = Main.getOutputSystem().getJclFile(job);
 		// gest the use of job
 		String user = job.isUserSurrogated() ? job.getJcl().getUser() : job.getUser();
-		//creates the JAVA command to execute
-		JavaCommand command = new JavaCommand();
+		
+		// checks if job has got a specific JDK
+		JavaCommand command = null;
+		// checks if job st a specific JAVA
+		if (job.getJcl().getJava() != null){
+			// if yes, check if java is defined in the node
+			if (Main.getJavaRuntimes().containsKey(job.getJcl().getJava())){
+				command = new JavaCommand(Main.getJavaRuntimes().get(job.getJcl().getJava()));
+			} else {
+				// otherwise Exception
+				// because the java is not defined
+				throw new IOException("Java '"+job.getJcl().getJava()+"' is not defined!");
+			}
+		} else if (Main.getDefaultJavaRuntime() != null){
+			//creates the JAVA command to execute
+			// using the default runtime set by node configuration
+			command = new JavaCommand(Main.getDefaultJavaRuntime());
+		} else {
+			//creates the JAVA command to execute
+			// without any java home
+			command = new JavaCommand();
+		}
 		// sets all java option
 		// heap sizes
 		// system properties

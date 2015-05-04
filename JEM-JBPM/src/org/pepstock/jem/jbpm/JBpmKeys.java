@@ -117,6 +117,12 @@ public final class JBpmKeys {
 	public static final String JBPM_PRIOR_CLASSPATH = AntKeys.ANT_PRIOR_CLASSPATH;
 
 	/**
+	 * Is the attribute value for property element inside of
+	 * process element, to set java version to use. Is optional.
+	 */
+	public static final String JBPM_JAVA = AntKeys.ANT_JAVA;
+	
+	/**
 	 * Is the name use during binding of DataPaths container
 	 */
 	public static final String JBPM_DATAPATHS_BIND_NAME = AntKeys.ANT_DATAPATHS_BIND_NAME;

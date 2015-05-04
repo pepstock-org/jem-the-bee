@@ -40,6 +40,7 @@ import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.RolesQueuePredicate;
 import org.pepstock.jem.node.security.User;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
+import org.pepstock.jem.node.tasks.shell.JavaCommand;
 import org.pepstock.jem.node.tasks.shell.Shell;
 import org.pepstock.jem.util.Parser;
 
@@ -290,7 +291,11 @@ public abstract class JobTask extends CommandLineTask {
 			for (Map.Entry<String, String> e : env.entrySet()) {
 				map.put(e.getKey(), e.getValue());
 			}
-
+			// adds a custom JAVA runtime to be executed
+			if (getCommand().getJavaHome() != null){
+				map.put(JavaCommand.JAVA_HOME, getCommand().getJavaHome());
+			}
+			
 			// writes JEM log with headers
 			JobLogManager.printHeader(job);
 		

@@ -99,6 +99,10 @@ public final class System extends DefaultInspectorItem {
 	    layoutSysInfo.setHTML(5, 0, "Maximum heap size used for jobs (MB)");
 	    layoutSysInfo.setWidget(5, 1, new HTML(String.valueOf(env.getMemory())));
 
+	    layoutSysInfo.setHTML(6, 0, "Java Virtual Machine");
+	    layoutSysInfo.setWidget(6, 1, new HTML("Vendor: "+node.getJavaVendor()+", Version: "+node.getJavaVersion()));
+
+	    
 	    UITools.setFlexTableStyles(layoutSysInfo, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
 	    		Styles.INSTANCE.inspector().rowLight(),

@@ -59,6 +59,8 @@ public final class Jcl extends AbstractJcl implements Serializable {
 	
 	private String priorClassPath = null;
 	
+	private String java = null;
+	
 	private Map<String, Object> properties = null;
 
 	/**
@@ -203,7 +205,21 @@ public final class Jcl extends AbstractJcl implements Serializable {
 		}
 		return contentToBeExecuted;
 	}
-	
+
+	/**
+	 * @return the java
+	 */
+	public String getJava() {
+		return java;
+	}
+
+	/**
+	 * @param java the java to set
+	 */
+	public void setJava(String java) {
+		this.java = java;
+	}
+
 	/**
 	 * Creates a Unknown jcl, when JEM is not able to parse completely a JCL
 	 * @return a unknown JCL

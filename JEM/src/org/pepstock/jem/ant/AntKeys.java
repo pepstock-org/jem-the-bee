@@ -83,9 +83,15 @@ public final class AntKeys {
 
 	/**
 	 * Is the <code>name</code> attribute value for property element inside of
-	 * project element, to set locjking scope. Must be "job", "step" or "task". Is optional. Default is "job"
+	 * project element, to set locking scope. Must be "job", "step" or "task". Is optional. Default is "job"
 	 */
 	public static final String ANT_LOCKING_SCOPE = "jem.job.lockingScope";
+		
+	/**
+	 * Is the <code>name</code> attribute value for property element inside of
+	 * project element, to set java version name you need.
+	 */
+	public static final String ANT_JAVA = "jem.job.java";
 	
 	/**
 	 * Is constant to define locking scope to job level

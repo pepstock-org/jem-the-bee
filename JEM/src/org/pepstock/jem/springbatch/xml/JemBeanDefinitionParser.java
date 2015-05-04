@@ -59,6 +59,8 @@ public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
 	
 	static final String CLASSPATH_ATTRIBUTE =  "classPath";
 	
+	static final String JAVA_ATTRIBUTE =  "java";
+	
 	static final String LOCKINGSCOPE_ATTRIBUTE =  "lockingScope";
 	
 	/**
@@ -88,6 +90,7 @@ public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
 		Util.setProperty(element, builder, EMAIL_ATTRIBUTE);
 		Util.setProperty(element, builder, USER_ATTRIBUTE);
 		Util.setProperty(element, builder, CLASSPATH_ATTRIBUTE);
+		Util.setProperty(element, builder, JAVA_ATTRIBUTE);
 		Util.setProperty(element, builder, LOCKINGSCOPE_ATTRIBUTE);
 		Util.setProperty(element, builder, OPTIONS_ATTRIBUTE);
 		Util.setProperty(element, builder, PARAMETERS_ATTRIBUTE);

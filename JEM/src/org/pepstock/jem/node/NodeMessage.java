@@ -1736,7 +1736,25 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to callback {0} after the end of the job {1}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the job lifecycle listener is not able to connect the clinet in HTTP listening mode.<br>Please have a look to the root exception.")
-	JEMC289E(289, "Unable to callback {0} after the end of the job {1}", MessageLevel.ERROR);
+	JEMC289E(289, "Unable to callback {0} after the end of the job {1}", MessageLevel.ERROR),
+	
+	/**
+	 * "JAVA {0} on {1} has been loaded", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and usable from JEM to execute jobs.")
+	JEMC290I(290, "JAVA {0} on {1} has been loaded", MessageLevel.INFO),
+	
+	/**
+	 * "JAVA {0} on {1} has been loaded and used as default", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and usable from JEM to execute jobs. it uses as default.")
+	JEMC291I(291, "JAVA {0} on {1} has been loaded and used as default", MessageLevel.INFO),
+	
+	/**
+	 * "JAVA {0} on {1} does not exist", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and the folder of JAVA home doesn't exists.<br>Please have a look to the node configuration.")
+	JEMC292E(292, "JAVA {0} on {1} does not exist", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

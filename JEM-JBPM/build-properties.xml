@@ -1,6 +1,6 @@
 <project name="jem-jbpm-properties" basedir=".">
 	<!-- set the position of the jem repository relative to the enterprise one -->
-	<property name="jem.repository" value="../../jem-the-bee-GC" />
+	<property name="jem.repository" value="../../jem-the-bee-GH" />
 	<!-- import common properties -->
 	<import file="${jem.repository}/JEM/build-common-properties.xml" />
 	<!--properties for JEM-enterprise project -->

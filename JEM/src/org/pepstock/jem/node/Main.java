@@ -18,6 +18,7 @@ package org.pepstock.jem.node;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -208,6 +209,17 @@ public class Main {
 	 * environment and other object used to hanlde the routhing phase.
 	 */
 	public static final Swarm SWARM = new Swarm();
+	
+	/**
+	 * List of java runtimes installed on the machine
+	 */
+	private static final Map<String, String> JAVA_RUNTIMES = new HashMap<String, String>();
+	
+	/**
+	 * Contains the default runtime set by node configuration. if null;
+	 * it uses for all executed jobs the same java used by JEM node
+	 */
+	private static String DEFAULT_JAVA_RUNTIME = null;
 
 	// all nodes of cluster must check and validate jcls and prejobs in
 	// JCL_CHECKING queue
@@ -305,7 +317,28 @@ public class Main {
 			}
 		}
 	}
-	
+
+	/**
+	 * @return the javaRuntimes
+	 */
+	public static Map<String, String> getJavaRuntimes() {
+		return JAVA_RUNTIMES;
+	}
+
+	/**
+	 * @return the defaultJavaRuntime
+	 */
+	public static String getDefaultJavaRuntime() {
+		return DEFAULT_JAVA_RUNTIME;
+	}
+
+	/**
+	 * @param defaultJavaRuntime the defaultJavaRuntime to set
+	 */
+	public static void setDefaultJavaRuntime(String defaultJavaRuntime) {
+		DEFAULT_JAVA_RUNTIME = defaultJavaRuntime;
+	}
+
 	/**
 	 * @return the Affinity loader
 	 */

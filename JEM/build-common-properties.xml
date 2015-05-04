@@ -8,8 +8,8 @@
 	<!-- compilation properties -->
 	<property name="jem.javac.debug" value="true" />
 	<property name="jem.javac.debuglevel" value="lines,vars,source" />
-	<property name="jem.javac.source" value="1.7" />
-	<property name="jem.javac.target" value="1.7" />
+	<property name="jem.javac.source" value="1.6" />
+	<property name="jem.javac.target" value="1.6" />
 	<property name="jem.javac.includeantruntime" value="false" />
 
 	<!-- jem common properties used in other build -->

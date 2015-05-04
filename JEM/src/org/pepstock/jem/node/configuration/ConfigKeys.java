@@ -176,6 +176,22 @@ public final class ConfigKeys {
 	public static final String EXECUTION_ENVIRONMENT_FIELD = "executionEnviroment";
 	
 	/**
+	 * Tag name used for java runtimes. Is an alias, to do not use the
+	 * real instance name
+	 * 
+	 * @see ConfigKeys#JAVA_RUNTIMES_FIELD
+	 */
+	public static final String JAVA_RUNTIMES_ALIAS = "java-runtimes";
+
+	/**
+	 * Field name use for java runtimes. In XML file, there is the alias
+	 * <code>execution-environment</code>
+	 * 
+	 * @see ConfigKeys#JAVA_RUNTIMES_ALIAS
+	 */
+	public static final String JAVA_RUNTIMES_FIELD = "javaRuntimes";
+	
+	/**
 	 * Tag name used for datasets rules. Is an alias, to do not use the
 	 * real instance name
 	 * 

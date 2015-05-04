@@ -233,7 +233,7 @@ public class JBpmFactory extends AbstractFactory {
 
 		// extracts the locking scope and checks if the value is correct
 		// the value is not save in JCL because is not helpful to node but
-		// at runtime so it will be read again from ANT listener
+		// at runtime so it will be read again from JBPM listener
 		String lockingScopeProperty = p.getProperty(JBpmKeys.JBPM_LOCKING_SCOPE);
 		if (lockingScopeProperty != null && 
 				!lockingScopeProperty.equalsIgnoreCase(JBpmKeys.JBPM_JOB_SCOPE) &&
@@ -242,57 +242,68 @@ public class JBpmFactory extends AbstractFactory {
 			throw new JBpmException(JBpmMessage.JEMM032E, JBpmKeys.JBPM_LOCKING_SCOPE, lockingScopeProperty);		
 		}
 		
-		// Extracts from ANT enviroment property
+		// Extracts from JBPM enviroment property
 		String environment = p.getProperty(JBpmKeys.JBPM_ENVIRONMENT);
 		// if null, uses current environment assigned to JEM NODE
 		if (environment == null) {
 			environment = Main.EXECUTION_ENVIRONMENT.getEnvironment();
 		}
 
-		// Extracts from ANT domain property
+		// Extracts from JBPM domain property
 		String domain = p.getProperty(JBpmKeys.JBPM_DOMAIN);
 		// if null, uses domain default
 		if (domain == null) {
 			domain = Jcl.DEFAULT_DOMAIN;
 		}
 
-		// Extracts from ANT email addresses notification property
+		// Extracts from JBPM email addresses notification property
 		String emailAddresses = p.getProperty(JBpmKeys.JBPM_EMAILS_NOTIFICATION);
 		if(null != emailAddresses) {
 			jcl.setEmailNotificationAddresses(emailAddresses);
 		}
-		// Extracts from ANT affinity property
+		// Extracts from JBPM affinity property
 		String affinity = p.getProperty(JBpmKeys.JBPM_AFFINITY);
 		// if null, uses affinity default
 		if (affinity == null) {
 			affinity = Jcl.DEFAULT_AFFINITY;
 		}
 
-		// Extracts from ANT user property
+		// Extracts from JBPM user property
 		String user = p.getProperty(JBpmKeys.JBPM_USER);
 		if(null != user) {
 			jcl.setUser(user);
 		}
 
-		// Extracts from ANT classpath property
+		// Extracts from JBPM classpath property
 		String classPath = p.getProperty(JBpmKeys.JBPM_CLASSPATH);
 		// if classpath is not set, changes if some variables are in
 		if (classPath != null) {
 			jcl.setClassPath(super.resolvePathNames(classPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
 
-		// Extracts from ANT prior classpath property
+		// Extracts from JBPM prior classpath property
 		String priorClassPath = p.getProperty(JBpmKeys.JBPM_PRIOR_CLASSPATH);
 		// if classpath is not set, changes if some variables are in
 		if (priorClassPath != null) {
 			jcl.setPriorClassPath(super.resolvePathNames(priorClassPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
+		
+		// Extracts from JBPM java version property
+		String java = p.getProperty(JBpmKeys.JBPM_JAVA);
+		if(null != java) {
+			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
+				affinity = affinity + "," + java;
+			} else {
+				affinity = java;
+			}
+			jcl.setJava(java);
+		}
 
-		// Extracts from ANT memory property. If missing, default is 256 
+		// Extracts from JBPM memory property. If missing, default is 256 
 		int memory = Parser.parseInt(p.getProperty(JBpmKeys.JBPM_MEMORY), Jcl.DEFAULT_MEMORY);
-		// Extracts from ANT hold property. If missing, default is FALSE
+		// Extracts from JBPM hold property. If missing, default is FALSE
 		boolean hold = Parser.parseBoolean(p.getProperty(JBpmKeys.JBPM_HOLD), false);
-		// Extracts from ANT priority property. If missing, default is 10
+		// Extracts from JBPM priority property. If missing, default is 10
 		int priority = Parser.parseInt(p.getProperty(JBpmKeys.JBPM_PRIORITY), Jcl.DEFAULT_PRIORITY);
 
 		// saves all info inside of JCL object for further computing

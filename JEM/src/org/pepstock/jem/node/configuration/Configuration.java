@@ -35,6 +35,8 @@ import com.thoughtworks.xstream.XStream;
 public class Configuration {
 
 	private ExecutionEnvironment executionEnviroment = null;
+	
+	private JavaRuntimes javaRuntimes = null;
 
 	private List<Factory> factories = null;
 
@@ -74,6 +76,22 @@ public class Configuration {
 	 */
 	public void setExecutionEnviroment(ExecutionEnvironment executionEnviroment) {
 		this.executionEnviroment = executionEnviroment;
+	}
+	
+	/**
+	 * Returns the JAVA runtime installed on machine and available
+	 * @return the javaRuntimes
+	 */
+	public JavaRuntimes getJavaRuntimes() {
+		return javaRuntimes;
+	}
+
+	/**
+	 * Sets the JAVA runtime installed on machine and available
+	 * @param javaRuntimes the javaRuntimes to set
+	 */
+	public void setJavaRuntimes(JavaRuntimes javaRuntimes) {
+		this.javaRuntimes = javaRuntimes;
 	}
 
 	/**
@@ -238,7 +256,6 @@ public class Configuration {
 		xstream.alias(ConfigKeys.RESOURCES_DEFINITION_ALIAS, CommonResourcesDefinition.class);
 		xstream.addImplicitCollection(CommonResourcesDefinition.class, ConfigKeys.RESOURCES_ELEMENT);
 		
-		
 		xstream.aliasField(ConfigKeys.RESOURCE_DEFINITIONS_ALIAS, Configuration.class, ConfigKeys.RESOURCE_DEFINITIONS_FIELD);
 		xstream.aliasField(ConfigKeys.EXECUTION_ENVIRONMENT_ALIAS, Configuration.class, ConfigKeys.EXECUTION_ENVIRONMENT_FIELD);
 		xstream.aliasField(ConfigKeys.PARALLEL_JOBS_ALIAS, ExecutionEnvironment.class, ConfigKeys.PARALLEL_JOBS_FIELD);
@@ -248,6 +265,10 @@ public class Configuration {
 		xstream.aliasField(ConfigKeys.DATA_ALIAS, Paths.class, ConfigKeys.DATA_ELEMENT);
 		xstream.addImplicitCollection(DataPaths.class, ConfigKeys.PATHS_ELEMENT);
 		xstream.processAnnotations(Path.class);
+		
+		xstream.aliasField(ConfigKeys.JAVA_RUNTIMES_ALIAS, Configuration.class, ConfigKeys.JAVA_RUNTIMES_FIELD);
+		xstream.processAnnotations(JavaRuntimes.class);
+		xstream.processAnnotations(Java.class);
 		
 		Object config = null;
 		try {

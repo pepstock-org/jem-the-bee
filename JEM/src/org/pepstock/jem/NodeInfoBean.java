@@ -74,7 +74,11 @@ public class NodeInfoBean implements Serializable {
 	
 	private String type = null;
 
-	private String jemVersion;
+	private String jemVersion = null;
+	
+	private String javaVendor = null;
+	
+	private String javaVersion =  null;
 
 	/**
 	 * Constructs the node info object
@@ -379,6 +383,34 @@ public class NodeInfoBean implements Serializable {
 	}
 
 	/**
+	 * @return the javaVendor
+	 */
+	public String getJavaVendor() {
+		return javaVendor;
+	}
+
+	/**
+	 * @param javaVendor the javaVendor to set
+	 */
+	public void setJavaVendor(String javaVendor) {
+		this.javaVendor = javaVendor;
+	}
+
+	/**
+	 * @return the javaVersion
+	 */
+	public String getJavaVersion() {
+		return javaVersion;
+	}
+
+	/**
+	 * @param javaVersion the javaVersion to set
+	 */
+	public void setJavaVersion(String javaVersion) {
+		this.javaVersion = javaVersion;
+	}
+
+	/**
 	 * @return the totalMemory
 	 */
 	public long getTotalMemory() {
@@ -397,9 +429,9 @@ public class NodeInfoBean implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "NodeInfoBean [hostname=" + hostname + ", ipaddress=" + ipaddress + ", port=" + port + ", rmiPort=" + rmiPort + ", processId=" + processId + ", status=" + status + ", jobNames=" + jobNames + ", isSwarmNode=" + isSwarmNode + ",key=" + key
-				+ ", label=" + label + ", executionEnvironment=" + executionEnvironment + ", systemArchitecture=" + systemArchitecture + ", systemName=" + systemName + ", availableProcessors=" + availableProcessors + ", totalMemory=" + totalMemory
-				+ ", startedTime=" + startedTime + ", isOperational=" + isOperational + ", jemVersion=" + jemVersion + "]";
+		return "NodeInfoBean [hostname=" + hostname + ", ipaddress=" + ipaddress + ", port=" + port + ", rmiPort=" + rmiPort + ", processId=" + processId + ", status=" + status + ", jobNames=" + jobNames + ", key=" + key + ", label=" + label
+				+ ", executionEnvironment=" + executionEnvironment + ", systemArchitecture=" + systemArchitecture + ", systemName=" + systemName + ", availableProcessors=" + availableProcessors + ", totalMemory=" + totalMemory + ", startedTime="
+				+ startedTime + ", isOperational=" + isOperational + ", isSwarmNode=" + isSwarmNode + ", type=" + type + ", jemVersion=" + jemVersion + ", javaVendor=" + javaVendor + ", javaVersion=" + javaVersion + "]";
 	}
-	
+
 }

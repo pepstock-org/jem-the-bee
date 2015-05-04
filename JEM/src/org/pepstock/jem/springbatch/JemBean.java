@@ -52,6 +52,8 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	
 	private String parameters = null;
 	
+	private String java = null;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -135,6 +137,20 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 		this.parameters = parameters;
 	}
 
+	/**
+	 * @return the java
+	 */
+	public String getJava() {
+		return java;
+	}
+
+	/**
+	 * @param java the java to set
+	 */
+	public void setJava(String java) {
+		this.java = java;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
 	 */
@@ -171,10 +187,7 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	 */
 	@Override
 	public String toString() {
-		return "JemBean [classPath=" + classPath + ", priorClassPath=" + priorClassPath + ", lockingScope=" + lockingScope + ", options=" + options + ", parameters=" + parameters + ", getJobName()=" + getJobName() + ", getAffinity()=" + getAffinity()
-				+ ", getEmailNotificationAddresses()=" + getEmailNotificationAddresses() + ", getMemory()=" + getMemory() + ", getPriority()=" + getPriority() + ", isHold()=" + isHold() + ", getUser()=" + getUser() + ", getEnvironment()="
-				+ getEnvironment() + ", getDomain()=" + getDomain() + "]";
+		return "JemBean [classPath=" + classPath + ", priorClassPath=" + priorClassPath + ", lockingScope=" + lockingScope + ", options=" + options + ", parameters=" + parameters + ", java=" + java + "]";
 	}
 
-	
 }

@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node.tasks.shell;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +31,13 @@ import org.pepstock.jem.log.JemRuntimeException;
  *
  */
 public class JavaCommand extends Command {
+	
+	/**
+	 * Environment variable for JAVA HOME
+	 */
+	public static final String JAVA_HOME = "JAVA_HOME";
+	
+	private static final String SUB_FOLDER_JAVA_COMMAND_NAME = "bin";
 	
 	private static final String JAVA_COMMAND_NAME = "java";
 	
@@ -45,14 +54,39 @@ public class JavaCommand extends Command {
 	 * The list of command-line arguments.
 	 */
 	private List<String> classArguments = new LinkedList<String>();
+	
+	private String javaHome = null;
 
 	/**
 	 * Constructor setting java as command name
-	 * 
-	 * @param name java command name
 	 */
 	public JavaCommand() {
 		super(JAVA_COMMAND_NAME);
+	}
+
+	
+	/**
+	 * Constructor setting java as command name using the java home of JAVA
+	 * 
+	 * @param javaHome java home path
+	 * @throws IOException if any error occurs checking if JAVA command exists
+	 */
+	public JavaCommand(String javaHome) throws IOException{
+		this();
+		this.javaHome = javaHome;
+		// creates the complete path of JAVA command
+		String javaCommand = javaHome + File.separator + SUB_FOLDER_JAVA_COMMAND_NAME + File.separator + JAVA_COMMAND_NAME;
+		// uses the " if any blank is in the path
+		String name = "\""+javaCommand+"\"";
+		// overrides the name
+		super.setName(name);
+	}
+
+	/**
+	 * @return the javaHome
+	 */
+	public String getJavaHome() {
+		return javaHome;
 	}
 
 	/**

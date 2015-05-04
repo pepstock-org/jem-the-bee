@@ -427,7 +427,7 @@ public enum JBpmMessage implements MessageInterface{
 	JEMM063E(63, "Unable to get process", MessageLevel.ERROR);
 	
 	/**
-	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 
+	 * The {@link Message} created in the constructor corresponding to instances of JBPM utilities. 
 	 * @see Message
 	 */
 	private Message message;

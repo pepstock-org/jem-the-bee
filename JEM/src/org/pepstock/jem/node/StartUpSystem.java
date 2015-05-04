@@ -60,6 +60,8 @@ import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.node.configuration.Database;
 import org.pepstock.jem.node.configuration.Factory;
+import org.pepstock.jem.node.configuration.Java;
+import org.pepstock.jem.node.configuration.JavaRuntimes;
 import org.pepstock.jem.node.configuration.Listener;
 import org.pepstock.jem.node.configuration.Node;
 import org.pepstock.jem.node.configuration.Paths;
@@ -596,8 +598,48 @@ public class StartUpSystem {
 		LogAppl.getInstance().emit(NodeMessage.JEMC008I, configFile);
 
 		loadPaths();
+		loadJavaRuntimes();
+		
 		PROPERTIES.putAll(System.getProperties());
 		loadExecutionEnvironment();
+	}
+	
+	/**
+	 * 
+	 * @throws ConfigurationException
+	 */
+	private static void loadJavaRuntimes()  throws ConfigurationException {
+		JavaRuntimes runtimes = JEM_NODE_CONFIG.getJavaRuntimes();
+		if (runtimes != null){
+			// adds current one
+			String affinities = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity();
+			boolean updated = false;
+			for (Java java : runtimes.getJavas()){
+				File file = new File(java.getPath());
+				if (file.exists() && file.isDirectory()){
+					if (affinities != null){
+						affinities = affinities + "," + java.getName();
+					} else {
+						affinities = java.getName();
+					}
+					updated = true;
+					String normalizedFolder = FilenameUtils.normalizeNoEndSeparator(java.getPath());
+					Main.getJavaRuntimes().put(java.getName(), normalizedFolder);
+					if (java.isDefault()){
+						Main.setDefaultJavaRuntime(normalizedFolder);
+						LogAppl.getInstance().emit(NodeMessage.JEMC291I, java.getName(), normalizedFolder);
+					} else {
+						LogAppl.getInstance().emit(NodeMessage.JEMC290I, java.getName(), normalizedFolder);	
+					}
+				} else {
+					LogAppl.getInstance().emit(NodeMessage.JEMC292E, java.getName(), file.getAbsolutePath());
+					throw new ConfigurationException(NodeMessage.JEMC292E.toMessage().getFormattedMessage(java.getName(), file.getAbsolutePath()));
+				}
+			}
+			if (updated){
+				JEM_NODE_CONFIG.getExecutionEnviroment().setAffinity(affinities);
+			}
+		}
 	}
 
 	/**
@@ -1347,7 +1389,6 @@ public class StartUpSystem {
 				// check if it's a AffinityLoader. if not, exception occurs.
 				if (objectNode instanceof NodeInfo) {
 					Main.setNode((NodeInfo) objectNode);
-
 					// gets properties defined. If not empty, substitutes
 					// the value of property with variables
 					Properties propsOfNode = node.getProperties();

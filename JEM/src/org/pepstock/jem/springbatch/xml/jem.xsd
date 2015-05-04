@@ -25,10 +25,12 @@
 				use="optional" />
 			<xsd:attribute name="user" type="xsd:string" use="optional" />
 			<xsd:attribute name="classPath" type="xsd:string" use="optional" />
+			<xsd:attribute name="java" type="xsd:string" use="optional" />
+			
 			<xsd:attribute name="lockingScope" type="xsd:string"
 				use="optional" />
 			<xsd:attribute name="options" type="xsd:string" use="optional" />
-			<xsd:attribute name="parameters" type="xsd:string" />
+			<xsd:attribute name="parameters" type="xsd:string" use="optional" />
 		</xsd:complexType>
 	</xsd:element>
 	

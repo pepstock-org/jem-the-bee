@@ -101,7 +101,7 @@ public final class ImplementationsContainer {
 	/**
 	 * Returns the list of data description instances defined for passed Task.
 	 * 
-	 * @param item ANT task instance
+	 * @param item JBPM task instance
 	 * @return list of data description instances
 	 */
 	List<DataDescriptionImpl> getDataDescriptionsByItem(Task item) {

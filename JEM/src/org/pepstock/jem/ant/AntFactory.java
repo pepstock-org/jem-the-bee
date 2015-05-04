@@ -242,6 +242,17 @@ public class AntFactory extends AbstractFactory {
 		if (priorClassPath != null) {
 			jcl.setPriorClassPath(super.resolvePathNames(priorClassPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
+		
+		// Extracts from ANT java version property
+		String java = p.getProperty(AntKeys.ANT_JAVA);
+		if(null != java) {
+			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
+				affinity = affinity + "," + java;
+			} else {
+				affinity = java;
+			}
+			jcl.setJava(java);
+		}
 
 		// Extracts from ANT memory property. If missing, default is 256 
 		int memory = Parser.parseInt(p.getProperty(AntKeys.ANT_MEMORY), Jcl.DEFAULT_MEMORY);

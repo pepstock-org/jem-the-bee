@@ -176,6 +176,15 @@ public class SpringBatchFactory extends AbstractFactory {
 			String classPath = bean.getPriorClassPath();
 			bean.setPriorClassPath(super.resolvePathNames(classPath, ConfigKeys.JEM_CLASSPATH_PATH_NAME));
 		}
+		
+		// Extracts from ANT java version property
+		if (bean.getJava() != null) {
+			if (bean.getAffinity() != null && !bean.getAffinity().equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
+				bean.setAffinity(bean.getAffinity() + "," + bean.getJava());
+			} else {
+				bean.setAffinity(bean.getJava());
+			}
+		}
 
 		// load all information inside JCL object
 		jcl.setJobName(bean.getJobName());
