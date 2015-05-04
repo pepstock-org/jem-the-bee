@@ -21,6 +21,11 @@
 		<!--  to configure maximum amount of memory (in MB) to execute a process. Default 128 -->
 		<!-- memory>128</memory-->
 	</execution-environment>
+	
+	<!--java-runtimes>
+		<java name="jdk6">C:\Program Files\Java\jdk1.6.0_35\</java>
+		<java name="jdk7" default="true">C:\Program Files\Java\jdk1.7.0_71\</java>
+	</java-runtimes-->
 
 	<paths>
 		<!-- the path where the stored all output files of job execution -->
