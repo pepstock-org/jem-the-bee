@@ -75,7 +75,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	private BeanDefinition parseTasklet(Element element) {
 		// gets main laucnher tasklet
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(MainLauncherTasklet.class);
-		// reads teh mandatory attribute if class name
+		// reads the mandatory attribute if class name
 		component.addPropertyValue(CLASS_NAME_ATTRIBUTE, element.getAttribute(CLASS_NAME_ATTRIBUTE));
 		return component.getBeanDefinition();
 	}

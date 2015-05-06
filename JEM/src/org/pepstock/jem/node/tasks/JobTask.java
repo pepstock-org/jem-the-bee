@@ -292,7 +292,9 @@ public abstract class JobTask extends CommandLineTask {
 				map.put(e.getKey(), e.getValue());
 			}
 			// adds a custom JAVA runtime to be executed
+			// if is set
 			if (getCommand().getJavaHome() != null){
+				// sets env variable with the right JAVA HOME
 				map.put(JavaCommand.JAVA_HOME, getCommand().getJavaHome());
 			}
 			

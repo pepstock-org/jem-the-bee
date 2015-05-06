@@ -291,11 +291,13 @@ public class JBpmFactory extends AbstractFactory {
 		// Extracts from JBPM java version property
 		String java = p.getProperty(JBpmKeys.JBPM_JAVA);
 		if(null != java) {
+			// adds automatically the java version name as an affinity
 			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
-				affinity = affinity + "," + java;
+				affinity = affinity + Jcl.AFFINITY_SEPARATOR + java;
 			} else {
 				affinity = java;
 			}
+			// stores java version
 			jcl.setJava(java);
 		}
 

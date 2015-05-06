@@ -49,7 +49,7 @@ import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
 import org.pepstock.jem.util.CharSet;
 
 /**
- * Utility to migrate teh jobs and resources (changed on own XML format)
+ * Utility to migrate the jobs and resources (changed on own XML format)
  * from version 2.1 and 2.2.
  * 
  * @author Andrea "Stock" Stocchero

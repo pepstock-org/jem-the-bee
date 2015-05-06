@@ -88,7 +88,7 @@ public class DefaultJobTask extends JobTask {
 		
 		// checks if job has got a specific JDK
 		JavaCommand command = null;
-		// checks if job st a specific JAVA
+		// checks if job sets a specific JAVA
 		if (job.getJcl().getJava() != null){
 			// if yes, check if java is defined in the node
 			if (Main.getJavaRuntimes().containsKey(job.getJcl().getJava())){
@@ -104,7 +104,7 @@ public class DefaultJobTask extends JobTask {
 			command = new JavaCommand(Main.getDefaultJavaRuntime());
 		} else {
 			//creates the JAVA command to execute
-			// without any java home
+			// without any java home. Uses the JEM JVM
 			command = new JavaCommand();
 		}
 		// sets all java option

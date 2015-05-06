@@ -118,7 +118,7 @@ public final class ResourceDBUpdate extends DBUpdate{
 					transformer.transform(source, result);
 					// gets resource object
 					Resource res = (Resource) xs.fromXML(writer.toString());
-					// saves teh object by DB manager
+					// saves the object by DB manager
 					String statement = CommonResourcesDBManager.getInstance().getSqlContainer().getUpdateStatement();
 					CommonResourcesDBManager.getInstance().update(statement, res);
 					

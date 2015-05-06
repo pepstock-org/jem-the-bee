@@ -1754,7 +1754,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "JAVA {0} on {1} does not exist", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and the folder of JAVA home doesn't exists.<br>Please have a look to the node configuration.")
-	JEMC292E(292, "JAVA {0} on {1} does not exist", MessageLevel.ERROR);
+	JEMC292E(292, "JAVA {0} on {1} does not exist", MessageLevel.ERROR),
+	
+	/**
+	 * "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and the JAVA definition says it's the default but there is already another default JAVA set.<br>Please have a look to the node configuration.")
+	JEMC293W(293, "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

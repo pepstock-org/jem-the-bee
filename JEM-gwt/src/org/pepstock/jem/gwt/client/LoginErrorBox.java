@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Is the component with all panels to show that has an error during the request
- * for checking if the session is already authenticated and retrieving teh
+ * for checking if the session is already authenticated and retrieving the
  * logged users.<br>
  * Remember when the JEM nodes are all down, receives the message id error
  * JEM0064.

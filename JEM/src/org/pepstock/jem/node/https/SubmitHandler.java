@@ -188,7 +188,7 @@ public class SubmitHandler implements HttpRequestHandler {
 				throw new HttpException(NodeMessage.JEMC288W.toMessage().getFormattedMessage(host));
 			}
 			
-			// reads teh second row of the body, with the JCL
+			// reads the second row of the body, with the JCL
 			String jcl = StringUtils.substringAfter(result, DELIMITER);
 			
 			// sets the entity to send back, submitting the job.

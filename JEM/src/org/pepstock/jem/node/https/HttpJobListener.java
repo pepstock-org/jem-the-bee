@@ -95,12 +95,12 @@ public class HttpJobListener implements JobLifecycleListener {
 				StringBuilder sb = new StringBuilder();
 				sb.append(job.getResult().getReturnCode()).append("\n");
 				// if client needs output
-				// it adds teh output of job
+				// it adds the output of job
 				if (printOutput){
 					File file = Main.getOutputSystem().getMessagesLogFile(job);
 					sb.append(FileUtils.readFileToString(file));
 				}
-				// creates teh HTTP entity
+				// creates the HTTP entity
 				StringEntity entity = new StringEntity(sb.toString(), ContentType.create("text/plain", CharSet.DEFAULT_CHARSET_NAME));
 
 				// prepares POST request and basic response handler

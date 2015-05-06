@@ -246,11 +246,13 @@ public class AntFactory extends AbstractFactory {
 		// Extracts from ANT java version property
 		String java = p.getProperty(AntKeys.ANT_JAVA);
 		if(null != java) {
+			// adds automatically the java version name as an affinity
 			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
-				affinity = affinity + "," + java;
+				affinity = affinity + Jcl.AFFINITY_SEPARATOR + java;
 			} else {
 				affinity = java;
 			}
+			// stores java version
 			jcl.setJava(java);
 		}
 

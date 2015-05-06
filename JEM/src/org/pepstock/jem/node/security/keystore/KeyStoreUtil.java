@@ -118,7 +118,7 @@ public class KeyStoreUtil {
 	}
 	
 	/**
-	 * Gets a key store using a entity with teh information where it has to read and 
+	 * Gets a key store using a entity with the information where it has to read and 
 	 * load into the keystore
 	 * 
 	 * @param keystoreInfo entity with information about keystore

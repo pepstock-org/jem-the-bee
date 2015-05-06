@@ -23,8 +23,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
+ * Is the XML element of JEM node configuration which contains all the JVM installed on the machine 
+ * to use when a job needs a specific JVM.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 3.0
  */
 @XStreamAlias(ConfigKeys.JAVA_RUNTIMES_ALIAS)
 public class JavaRuntimes {

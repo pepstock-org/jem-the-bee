@@ -179,7 +179,7 @@ class AntBatchSecurityManager extends BatchSecurityManager {
 				// and this is NOT allowed.
 			} else if (element.getClassName().equalsIgnoreCase(ANT_SECURITY_MANAGER) && thisFound){
 				return false;
-				// if it is called by the permission, that means teh ANT is intsalling own security
+				// if it is called by the permission, that means the ANT is intsalling own security
 				// manager, MySM, and that's ALLOWED!!
 			} else if (element.getClassName().equalsIgnoreCase(ANT_PERMISSIONS) && thisFound){
 				return true;

@@ -212,6 +212,7 @@ public class Main {
 	
 	/**
 	 * List of java runtimes installed on the machine
+	 * the key os the tag for JVM and the value is the JAVA HOME
 	 */
 	private static final Map<String, String> JAVA_RUNTIMES = new HashMap<String, String>();
 	
@@ -246,7 +247,7 @@ public class Main {
 
 			// starts the configuration loading and sub component instantiation
 			StartUpSystem.run();
-			// starts a RMI regirty container for objects necessary from job
+			// starts a RMI registry container for objects necessary from job
 			// execution
 			// uses the TCP port defined for Hazelcast cluster, adding a
 			// constant number 200
@@ -268,7 +269,7 @@ public class Main {
 			waitState();
 
 		} catch (ConfigurationException e) {
-			// occurs when we have some misconfiguration. Node ends
+			// occurs when we have some mis-configuration. Node ends
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E, e);
 			exitCode = 12;
 		} catch (RemoteException e) {

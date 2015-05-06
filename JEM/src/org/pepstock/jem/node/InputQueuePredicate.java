@@ -111,7 +111,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 			// if affinity is default, accepts it
 			if (!jcl.getAffinity().equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)) {
 				// splits affinities, putting in lower case (to ignore case)
-				String[] jobAffinities = jcl.getAffinity().split(",");
+				String[] jobAffinities = jcl.getAffinity().split(Jcl.AFFINITY_SEPARATOR);
 				// scans the job affinities
 				for (int i = 0; i < jobAffinities.length; i++) {
 					// if job affinity isn't in node affinities, skips it

@@ -43,7 +43,7 @@ public class RegistryWrapper implements Registry {
 	 * Builds the registry wrapper, having the arguments, the RMI registry and 
 	 * if it has been configured in readOnly.
 	 * @param delegate a registry instance to use as delegated
-	 * @param readOnly if teh user can use only lookup and list
+	 * @param readOnly if the user can use only lookup and list
 	 */
 	RegistryWrapper(Registry delegate, boolean readOnly) {
 		super();

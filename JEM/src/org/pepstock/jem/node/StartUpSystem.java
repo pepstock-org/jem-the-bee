@@ -605,37 +605,62 @@ public class StartUpSystem {
 	}
 	
 	/**
-	 * 
-	 * @throws ConfigurationException
+	 * Loads the JVM to use and installed in the same machine of the node.
+	 * This can be used by JCL from the job.
+	 * @throws ConfigurationException if any errors occurs
 	 */
 	private static void loadJavaRuntimes()  throws ConfigurationException {
+		// gets java runtimes configuration
 		JavaRuntimes runtimes = JEM_NODE_CONFIG.getJavaRuntimes();
+		// if there is		
 		if (runtimes != null){
-			// adds current one
+			// gets the affinitity
+			// because it adds automatically the JVM tag names as affinity of this node
 			String affinities = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity();
 			boolean updated = false;
+			// scans all java configuration
 			for (Java java : runtimes.getJavas()){
+				// creates the file
 				File file = new File(java.getPath());
+				// if file exists and is a folder ok,
+				// otherwise this is a wrong directory 
 				if (file.exists() && file.isDirectory()){
+					// checks if some static affinities are set
 					if (affinities != null){
-						affinities = affinities + "," + java.getName();
+						// if yes, it adds the JVM tag name
+						affinities = affinities + Jcl.AFFINITY_SEPARATOR + java.getName();
 					} else {
+						// if no, sets as affinity the JVM name
 						affinities = java.getName();
 					}
 					updated = true;
+					// normalized the folder for the OS system where JEM node is running
 					String normalizedFolder = FilenameUtils.normalizeNoEndSeparator(java.getPath());
+					// stores this new JVM to the collection
 					Main.getJavaRuntimes().put(java.getName(), normalizedFolder);
-					if (java.isDefault()){
+					// if the JVM is set as default
+					if (java.isDefault() && Main.getDefaultJavaRuntime() == null){
+						// sets default and writes a message
 						Main.setDefaultJavaRuntime(normalizedFolder);
 						LogAppl.getInstance().emit(NodeMessage.JEMC291I, java.getName(), normalizedFolder);
+					} else if (java.isDefault() && Main.getDefaultJavaRuntime() != null){
+						// the default is already set!
+						// ignore the default and writes a warning
+						LogAppl.getInstance().emit(NodeMessage.JEMC293W, java.getName());
+						// notifies that there is a JVM definition
+						LogAppl.getInstance().emit(NodeMessage.JEMC290I, java.getName(), normalizedFolder);	
 					} else {
+						// notifies that there is a JVM definition
 						LogAppl.getInstance().emit(NodeMessage.JEMC290I, java.getName(), normalizedFolder);	
 					}
 				} else {
+					// if java home doesn't exist, exception
 					LogAppl.getInstance().emit(NodeMessage.JEMC292E, java.getName(), file.getAbsolutePath());
 					throw new ConfigurationException(NodeMessage.JEMC292E.toMessage().getFormattedMessage(java.getName(), file.getAbsolutePath()));
 				}
 			}
+			// if the affinities has been updated
+			// stores the new value
 			if (updated){
 				JEM_NODE_CONFIG.getExecutionEnviroment().setAffinity(affinities);
 			}

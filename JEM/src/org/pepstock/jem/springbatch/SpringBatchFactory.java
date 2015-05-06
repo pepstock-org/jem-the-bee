@@ -179,8 +179,9 @@ public class SpringBatchFactory extends AbstractFactory {
 		
 		// Extracts from ANT java version property
 		if (bean.getJava() != null) {
+			// adds automatically the java version name as an affinity
 			if (bean.getAffinity() != null && !bean.getAffinity().equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
-				bean.setAffinity(bean.getAffinity() + "," + bean.getJava());
+				bean.setAffinity(bean.getAffinity() + Jcl.AFFINITY_SEPARATOR + bean.getJava());
 			} else {
 				bean.setAffinity(bean.getJava());
 			}

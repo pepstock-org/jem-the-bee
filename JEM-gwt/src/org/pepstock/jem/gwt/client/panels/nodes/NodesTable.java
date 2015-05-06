@@ -195,7 +195,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 							value = Jcl.DEFAULT_AFFINITY;
 						}
 						nodeInfoBean.getExecutionEnvironment().getStaticAffinities().clear();
-						String[] affinities = value.split(",");
+						String[] affinities = value.split(Jcl.AFFINITY_SEPARATOR);
 						for (int i=0; i<affinities.length; i++){
 							nodeInfoBean.getExecutionEnvironment().getStaticAffinities().add(affinities[i]);
 						}
@@ -409,7 +409,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 			if (!i.hasNext()){
 				return sb.toString();
 			}
-			sb.append(",");
+			sb.append(Jcl.AFFINITY_SEPARATOR);
 		}
 	}
 
