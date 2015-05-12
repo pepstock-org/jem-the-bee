@@ -16,8 +16,11 @@
  */
 package org.pepstock.jem.springbatch;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -62,6 +65,8 @@ public class SpringBatchFactory extends AbstractFactory {
 	private SpringBatchJobLifecycleListener listener = null;
 	
 	private boolean isJobRepositoryPersistent = false;
+	
+	private File jdbcJar = null;
 
 	/**
 	 * Empty constructor. Do nothing
@@ -93,6 +98,12 @@ public class SpringBatchFactory extends AbstractFactory {
 				listener = new SpringBatchJobLifecycleListener();
 				listener.init(getProperties());
 				Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addListener(JobLifecycleListener.class, listener);
+				
+				URL url = DataSourceFactory.getDriverJar(getProperties());
+				if ("jar".equalsIgnoreCase(url.getProtocol())){
+					JarURLConnection connection = (JarURLConnection) url.openConnection();
+					jdbcJar = new File(connection.getJarFileURL().toURI());
+				}
 			} catch (Exception e) {
 				throw new ConfigurationException(e);
 			}
@@ -274,7 +285,11 @@ public class SpringBatchFactory extends AbstractFactory {
 	 */
 	@Override
 	public JobTask createJobTask(Job job) {
-		return new SpringBatchTask(job, this);
+		SpringBatchTask task =  new SpringBatchTask(job, this);
+		if (isJobRepositoryPersistent && jdbcJar != null){
+			task.setAdditionalClasspathForJobRegistry(jdbcJar.getAbsolutePath());
+		}
+		return task;
 	}
 
 	/**

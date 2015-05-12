@@ -141,7 +141,7 @@ public class JobLogManager {
 			// calculate cpu used on the step.
 			// Sigar gives total amount of cpu of process so a difference with
 			// previous one is mandatory
-			long cpu = proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU;
+			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU, 100);
 			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), 10));
 
 			// saved for next step

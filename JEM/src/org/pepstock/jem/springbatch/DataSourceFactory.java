@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.springbatch;
 
+import java.net.URL;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -54,6 +55,15 @@ public final class DataSourceFactory {
 				props.containsKey(JDBC_USER_KEY) &&
 				props.containsKey(JDBC_PASSWORD_KEY);
 	}
+	
+	public static URL getDriverJar(Properties props){
+		if (!isJobRepositoryPersistent(props)){
+			return null;
+		}
+		String driver = props.getProperty(JDBC_DRIVER_KEY);
+		return DataSourceFactory.class.getResource('/'+driver.replace('.', '/')+".class");
+	}
+	
 	
 	public static String getDataSourceType(Properties props){
 		return props.getProperty(JDBC_TYPE_KEY);

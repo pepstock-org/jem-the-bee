@@ -45,6 +45,8 @@ public class SpringBatchTask extends DefaultJobTask {
 	private static final String[] FOLDER = {"spring", "springbatch"};
 	
 	private static final String JOB_ID_PARAMETER = "jem.job.id";
+	
+	private String additionalClasspathForJobRegistry = null;
 
 	/**
 	 * Constructs the object save job instance to execute
@@ -54,6 +56,20 @@ public class SpringBatchTask extends DefaultJobTask {
 	 */
 	public SpringBatchTask(Job job, JemFactory factory) {
 		super(job, factory);
+	}
+
+	/**
+	 * @return the additionalClasspathForJobRegistry
+	 */
+	String getAdditionalClasspathForJobRegistry() {
+		return additionalClasspathForJobRegistry;
+	}
+
+	/**
+	 * @param additionalClasspathForJobRegistry the additionalClasspathForJobRegistry to set
+	 */
+	void setAdditionalClasspathForJobRegistry(String additionalClasspathForJobRegistry) {
+		this.additionalClasspathForJobRegistry = additionalClasspathForJobRegistry;
 	}
 
 	/**
@@ -88,7 +104,14 @@ public class SpringBatchTask extends DefaultJobTask {
 			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
 			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
 		}
-
+		
+		
+		System.err.println(getAdditionalClasspathForJobRegistry());
+		if (getAdditionalClasspathForJobRegistry() != null){
+			currentClassPath = currentClassPath + File.pathSeparator + getAdditionalClasspathForJobRegistry();
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
+		}
+		System.err.println(currentClassPath);
 		JavaCommand jCommand = getCommand();
 		jCommand.setClassPath(currentClassPath);
 		
