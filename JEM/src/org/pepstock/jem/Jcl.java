@@ -61,6 +61,10 @@ public final class Jcl extends AbstractJcl implements Serializable {
 	
 	private String java = null;
 	
+	/**
+	 * Put @GWTTransinet to improve serialization performance.
+	 */
+	@GwtTransient
 	private Map<String, Object> properties = null;
 
 	/**

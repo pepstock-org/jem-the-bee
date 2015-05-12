@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
 
@@ -156,5 +157,21 @@ public abstract class AbstractFactory implements JemFactory {
 		// create file object in class path
 		return new File(path, fileName);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#afterNodeStarted()
+	 */
+	@Override
+	public void afterNodeStarted() throws ConfigurationException{
+		// do nothing
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.NodeLifeCycleListener#beforeNodeStopped()
+	 */
+	@Override
+	public void beforeNodeStopped() {
+		// do nothing
+		
+	}
 }

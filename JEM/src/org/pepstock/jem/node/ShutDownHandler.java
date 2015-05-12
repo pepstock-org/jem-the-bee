@@ -17,6 +17,7 @@
 package org.pepstock.jem.node;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.persistence.DBPoolManager;
 import org.pepstock.jem.util.TimeUtils;
@@ -132,6 +133,11 @@ public class ShutDownHandler extends Thread {
 		// stops the statistics timer
 		if (Main.getStatisticsManager() != null) {
 			Main.getStatisticsManager().stop();
+		}
+		
+		// calls all factories to notify that is closing
+		for (JemFactory factory : Main.FACTORIES_LIST.values()){
+			factory.beforeNodeStopped();
 		}
 
 		// interrupt Multicast Service

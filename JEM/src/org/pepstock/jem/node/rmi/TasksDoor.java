@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 import org.pepstock.jem.Step;
 import org.pepstock.jem.util.rmi.RmiObject;
@@ -50,6 +51,21 @@ public interface TasksDoor extends RmiObject {
 	 */
 	JobStartedObjects setJobStarted(String jobId, String processId) throws RemoteException;
 
+	/**
+	 * Sets the process-id of process where the job is executing.<br>
+	 * This represents the job starting point.<br>
+	 * Login the user that is submitting the job.<br>
+	 * Stores the process-id and return a list of roles assigned to user of job and storage groups manager.
+	 * 
+	 * @param jobId
+	 * @param processId process-id of process where the job is executing
+	 * @param props Job properties created at runtime
+	 * @return collection of roles with permission for user of job and storage groups manager
+	 * @throws RemoteException occurs if errors
+	 */
+	JobStartedObjects setJobStarted(String jobId, String processId, Map<String, Object> props) throws RemoteException;
+
+	
 	/**
 	 * Called when a step of job is started.
 	 * 

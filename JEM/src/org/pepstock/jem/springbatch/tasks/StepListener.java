@@ -20,6 +20,8 @@ import java.lang.management.ManagementFactory;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -34,6 +36,7 @@ import org.pepstock.jem.node.rmi.TasksDoor;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.SpringBatchException;
+import org.pepstock.jem.springbatch.SpringBatchJobLifecycleListener;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
 import org.pepstock.jem.springbatch.items.DataDescriptionItem;
@@ -112,6 +115,9 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	 */
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
+		System.err.println(jobExecution.getId());
+		System.err.println(jobExecution.getJobId());
+		
 		if (locker == null){
 			try {
 				locker = new Locker();
@@ -119,7 +125,7 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				throw new SpringBatchRuntimeException(e.getMessageInterface(), e, e.getObjects().toArray());
 			}
 		}
-		// check if is already instatiated. If yes, does nothing
+		// check if is already instantiated. If yes, does nothing
 		if (door == null) {
 			// get port number from env var
 			// SpringBatchTask has passed and set this information (MUST)
@@ -136,13 +142,19 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 				if (locator.hasRmiObject(TasksDoor.NAME)) {
 					// gets remote object
 					door = (TasksDoor) locator.getRmiObject(TasksDoor.NAME);
+					// creates a properties object with JOB instance ID and 
+					// JOB EXECUTION ID
+					 Map<String, Object> props = new HashMap<String, Object>();
+					props.put(SpringBatchJobLifecycleListener.JOB_INSTANCE_ID, jobExecution.getJobId());
+					props.put(SpringBatchJobLifecycleListener.JOB_EXECUTION_ID, jobExecution.getId());
+					
 					// send to JEM node the current process id.
 					// uses JMX implementation of JDK.
 					// BE CAREFUL! Not all JVM returns the value in same format
 					// receives all roles for job user and stores in a static
 					// reference
 					// of realm
-					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName());
+					JobStartedObjects objects = door.setJobStarted(JobId.VALUE, ManagementFactory.getRuntimeMXBean().getName(), props);
 					
 					// PAY attention: after creating data paths container
 					// calls a getabsolutepath method to load all necessary classes in classloader.

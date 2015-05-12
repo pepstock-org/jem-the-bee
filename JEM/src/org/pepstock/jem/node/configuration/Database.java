@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.node.configuration;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
@@ -26,7 +27,9 @@ import java.util.Properties;
  * @version 1.0	
  *
  */
-public class Database {
+public class Database implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private String url = null;
 	
@@ -119,6 +122,6 @@ public class Database {
 	 */
 	@Override
 	public String toString() {
-		return "Database [url=" + url + ", driver=" + driver + ", user=" + user + ", password=" + password + "]";
+		return "Database [url=" + url + ", driver=" + driver + ", user=" + user + "]";
 	}
 }

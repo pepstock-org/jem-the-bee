@@ -43,6 +43,8 @@ public class SpringBatchTask extends DefaultJobTask {
 	private static final long serialVersionUID = 1L;
 	
 	private static final String[] FOLDER = {"spring", "springbatch"};
+	
+	private static final String JOB_ID_PARAMETER = "jem.job.id";
 
 	/**
 	 * Constructs the object save job instance to execute
@@ -91,9 +93,16 @@ public class SpringBatchTask extends DefaultJobTask {
 		jCommand.setClassPath(currentClassPath);
 		
 		Map<String, Object> jclMap = jcl.getProperties();
+		String sbParms = null;
+		if (jclMap.containsKey(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE)){
+			sbParms = jclMap.get(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE).toString();
+			sbParms = sbParms + " " + JOB_ID_PARAMETER + "=" + job.getId();
+		} else {
+			sbParms = JOB_ID_PARAMETER + "=" + job.getId();
+		}
 
 		jCommand.setClassName(SpringBatchLauncher.class.getName());
 		jCommand.setClassArguments(jclFile.getName(), (jclMap.containsKey(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE)) ? jclMap.get(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE).toString() : "", 
-				job.getName(), (jclMap.containsKey(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE)) ? jclMap.get(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE).toString() : "");
+				job.getName(), sbParms);
 	}
 }

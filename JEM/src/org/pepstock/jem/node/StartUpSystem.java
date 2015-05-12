@@ -185,6 +185,13 @@ public class StartUpSystem {
 		}
 		// start multicast service
 		startMulticastService();
+		
+		// notifies all factories that
+		// node is started
+		for (JemFactory factory : Main.FACTORIES_LIST.values()){
+			factory.afterNodeStarted();
+		}
+
 	}
 
 	/**
@@ -347,6 +354,7 @@ public class StartUpSystem {
 			
 			// bring in memory the persisted queue
 			loadQueues();
+		
 		} finally {
 			lock.unlock();
 		}
@@ -1019,7 +1027,7 @@ public class StartUpSystem {
 			// gets SQL container
 			SQLContainer container = manager.getSqlContainer();
 			// gets a result set which searches for the table anme
-			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE" });
+			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE", "ALIAS" });
 			// if result set is empty, it creates the table
 			if (!rs.next()) {
 				// creates table and return a empty set because if empty of

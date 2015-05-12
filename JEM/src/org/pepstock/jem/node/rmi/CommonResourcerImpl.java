@@ -17,9 +17,11 @@
 package org.pepstock.jem.node.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import javax.naming.Reference;
 
+import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
@@ -103,6 +105,19 @@ public class CommonResourcerImpl extends AuthorizedDefaultRmiObject implements C
 			throw new RemoteException(e.getMessage(), e);
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.rmi.CommonResourcer#getJclFactoryProperties(java.lang.String)
+	 */
+	@Override
+	public Properties getJemFactoryProperties(String type) throws RemoteException {
+		if (Main.FACTORIES_LIST.containsKey(type)){
+			JemFactory factory = Main.FACTORIES_LIST.get(type);
+			return factory.getProperties();
+		} else {
+			throw new RemoteException("Jem Factory "+type+" does not exist");
+		}
 	}
 
 }
