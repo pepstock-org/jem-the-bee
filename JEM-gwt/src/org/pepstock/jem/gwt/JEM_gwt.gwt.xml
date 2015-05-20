@@ -15,6 +15,9 @@
 	<!-- LOGGING configuration -->
 	<inherits name="com.google.gwt.logging.Logging"/>
 	
+	<define-property name="gwt.logging.firebugHandler" values="ENABLED, DISABLED" />
+	<define-property name="gwt.logging.popupHandler" values="ENABLED, DISABLED" />
+	
     <set-property name="gwt.logging.consoleHandler" value="DISABLED"/>
     <set-property name="gwt.logging.firebugHandler" value="DISABLED"/>
     <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
