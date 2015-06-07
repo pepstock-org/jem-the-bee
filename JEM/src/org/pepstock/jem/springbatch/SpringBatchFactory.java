@@ -285,11 +285,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	 */
 	@Override
 	public JobTask createJobTask(Job job) {
-		SpringBatchTask task =  new SpringBatchTask(job, this);
-		if (isJobRepositoryPersistent && jdbcJar != null){
-			task.setAdditionalClasspathForJobRegistry(jdbcJar.getAbsolutePath());
-		}
-		return task;
+		return  new SpringBatchTask(job, this, (isJobRepositoryPersistent && jdbcJar != null) ? jdbcJar.getAbsolutePath() : null);
 	}
 
 	/**

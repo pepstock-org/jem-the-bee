@@ -17,6 +17,8 @@
 package org.pepstock.jem.node;
 
 import java.text.MessageFormat;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hyperic.sigar.Sigar;
@@ -38,7 +40,7 @@ import org.pepstock.jem.util.DateFormatter;
  */
 public class JobLogManager {
 	// used to save the previous cpu extracted. this is a workaround
-	private static long PREVIOUS_CPU = 0L;
+	private static final Map<String, Long> PREVIOUS_CPU = new ConcurrentHashMap<String, Long>();
 
 	private static final MessageFormat HEADER_JOB = new MessageFormat("J E M  job log -- Node {0}");
 
@@ -88,7 +90,7 @@ public class JobLogManager {
 	 */
 	public static void printJobStarted(Job job) {
 		// clear cpu because here a new process is started
-		PREVIOUS_CPU = 0;
+		PREVIOUS_CPU.put(job.getId(), 0L);
 		CancelableTask task = Main.CURRENT_TASKS.get(job.getId());
 		if (task != null){
 			Main.getOutputSystem().writeJobLog(job, getFormattedMessage(ROW_JOB_PID, job.getName(), task.getProcessId()));
@@ -141,11 +143,11 @@ public class JobLogManager {
 			// calculate cpu used on the step.
 			// Sigar gives total amount of cpu of process so a difference with
 			// previous one is mandatory
-			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU, 100);
+			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU.get(job.getId()), 100);
 			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), 10));
 
 			// saved for next step
-			PREVIOUS_CPU = cpu;
+			PREVIOUS_CPU.put(job.getId(), cpu);
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
@@ -177,7 +179,7 @@ public class JobLogManager {
 	 */
 	public static void printFooter(Job job, int returnCode, String exception) {
 		// clear cpu because here the process is ended
-		PREVIOUS_CPU = 0;
+		PREVIOUS_CPU.remove(job.getId());
 		Main.getOutputSystem().writeJobLog(job, " ");
 		Main.getOutputSystem().writeJobLog(job, getFormattedMessage(ROW_JOB_TIME_ENDED, job.getName(), DateFormatter.getDate(job.getEndedTime(), "HH:mm:ss "), returnCode));
 		if (exception != null){

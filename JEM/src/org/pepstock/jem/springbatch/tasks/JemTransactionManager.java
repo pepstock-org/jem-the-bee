@@ -21,11 +21,18 @@ import java.rmi.RemoteException;
 
 import javax.sql.DataSource;
 
+import org.pepstock.jem.springbatch.SpringBatchMessage;
+import org.pepstock.jem.springbatch.SpringBatchRuntimeException;
+import org.springframework.batch.support.DatabaseType;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.support.MetaDataAccessException;
 
 /**
+ * Extends the OOTB data source TM of Spring Batc, using and setting the data source defined
+ * in the JCL factory properties.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 3.0
  */
 public class JemTransactionManager extends DataSourceTransactionManager {
 
@@ -34,8 +41,8 @@ public class JemTransactionManager extends DataSourceTransactionManager {
 	private String databaseType = null;
 
 	/**
-	 * 
-	 * @return
+	 * Returns the data base type
+	 * @return the data base type
 	 */
 	String getDatabaseType(){
 		return databaseType;
@@ -46,6 +53,9 @@ public class JemTransactionManager extends DataSourceTransactionManager {
 	 */
 	@Override
 	public void setDataSource(DataSource dataSource) {
+		// It's not possible to set a datasource.
+		// it can use ONLY the data source which can be defined
+		// by JCL factory properties
 		throw new UnsupportedOperationException(JemJobRepository.UNABLE_OVERRIDE);
 	}
 
@@ -55,20 +65,25 @@ public class JemTransactionManager extends DataSourceTransactionManager {
 	@Override
 	public void afterPropertiesSet() {
 		try {
+			// creates the data source  by RMI
 			DataSourceContainer.createInstances();
+			// if null, EXCEPTION
 			if (DataSourceContainer.getDataSource() == null){
-				// FIXME
-				throw new RuntimeException("data source is null");
+				throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS055E);
 			}
+			// uses the SUPER method to set the data source 
+			// it can not use the set method of this class
 			super.setDataSource(DataSourceContainer.getDataSource());
-			databaseType = DataSourceContainer.getDataSourceType();
+			// gets database type from data source
+			databaseType = DatabaseType.fromMetaData(getDataSource()).getProductName();
 		} catch (RemoteException e) {
-			// FIXME
-			
+			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS056E, e);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS056E, e);
+		} catch (MetaDataAccessException e) {
+			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS066E, e);
 		}
+		// calls the method of the OOTB TM of Spring Batch
 		super.afterPropertiesSet();
 	}
 }

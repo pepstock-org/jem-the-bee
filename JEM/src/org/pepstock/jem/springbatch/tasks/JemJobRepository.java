@@ -24,11 +24,15 @@ import org.springframework.batch.item.database.support.DataFieldMaxValueIncremen
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
+ * Is a custom implementation of SB job repository which will use a JEM transaction manager to access to the data source,
+ * defined in the SB JCL, to save the status of job for restart it, in cause of error
+ *  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
 public final class JemJobRepository extends JobRepositoryFactoryBean {
 	
+	// common label for error when you try to override some methods
 	static final String UNABLE_OVERRIDE = "Unable to override JEM configuration";
 
 	/* (non-Javadoc)
@@ -36,27 +40,38 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		
+		// gets TM
+		// be aware that the TM to use MUST be a JEMTRANSATIONMANAGER
 		JemTransactionManager jemTm = null;
 		
+		// gets the TM defined in jCL
 		PlatformTransactionManager tm = super.getTransactionManager();
 		
+		// if doesn't exist
 		if (tm == null){
+			// creates a JEM transaction manager at runtime
 			jemTm = new JemTransactionManager();
+			// and calls the afterproperties of bean
 			jemTm.afterPropertiesSet();
 		} else if (tm instanceof JemTransactionManager){
+			// if the defined is JEM TM, just set 
 			jemTm = (JemTransactionManager) tm;
 		} else {
+			// if the TM defined in JCL is NOT a JEM TM
+			// it doesn't create any error
+			// but ignore the TM defined, and creates a new JEM TM
 			jemTm = new JemTransactionManager();
+			// and calls the afterproperties of bean
 			jemTm.afterPropertiesSet();
 		}
-		
+		// sets the new TRANSACTION manager
 		super.setTransactionManager(jemTm);
 		
+		// gets the data source and database type from transation manager
 		DataSource dataSource = jemTm.getDataSource();
 		super.setDataSource(dataSource);
 		super.setDatabaseType(jemTm.getDatabaseType());
-		
+		// calls the super after properties
 		super.afterPropertiesSet();
 	}
 
@@ -65,6 +80,7 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setClobType(int type) {
+		// you must use the default
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -73,6 +89,9 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setDataSource(DataSource dataSource) {
+		// It's not possible to set a datasource.
+		// it can use ONLY the data source which can be defined
+		// by JCL factory properties
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -81,6 +100,8 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setDatabaseType(String dbType) {
+		// It's not possible to set a data base type.
+		// it can use ONLY the data base type extracted from data source
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -89,6 +110,7 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setIncrementerFactory(DataFieldMaxValueIncrementerFactory incrementerFactory) {
+		// you must use the default
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -97,6 +119,7 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setMaxVarCharLength(int maxVarCharLength) {
+		// you must use the default
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -105,6 +128,7 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setSerializer(ExecutionContextSerializer serializer) {
+		// you must use the default
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 
@@ -113,6 +137,7 @@ public final class JemJobRepository extends JobRepositoryFactoryBean {
 	 */
 	@Override
 	public void setTablePrefix(String tablePrefix) {
+		// you must use the default
 		throw new UnsupportedOperationException(UNABLE_OVERRIDE);
 	}
 }

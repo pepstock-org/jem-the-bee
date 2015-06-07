@@ -373,9 +373,81 @@ public enum SpringBatchMessage implements MessageInterface{
 	/**
 	 * "Class \"{0}\" does not have any public static void main method", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs whene the launcher can try to execute a java main class but the class does not have any main method.<br>" + "Check the class  and the signature of main method.")
-	JEMS054E(54, "Class \"{0}\" does not have any public static void main method", MessageLevel.ERROR);
+	@Description(explanation = "It occurs when the launcher can try to execute a java main class but the class does not have any main method.<br>" + "Check the class  and the signature of main method.")
+	JEMS054E(54, "Class \"{0}\" does not have any public static void main method", MessageLevel.ERROR),
 
+	/**
+	 * "Data source for job restart-ability is null", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the JEM transaction manager or job explorer don't have any data source instance to manage the restartability of jobs.<br>" + "Check the JEM SpringBatch JCL factory in JEM environment configuration file.")
+	JEMS055E(55, "Data source for job restartability is null", MessageLevel.ERROR),
+
+	/**
+	 * "Unable to get data source definition from JEM", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the JEM transaction manager or job explorer don't get datasource defintion by RMI from JEM.<br>" + "Check the root cause exception.")
+	JEMS056E(56, "Unable to get data source definition from JEM", MessageLevel.ERROR),
+	
+	/**
+	 * "Data source type is missing", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the data source type property is not set.<br>" + "Check the JEM SpringBatch JCL factory in JEM environment configuration file.")
+	JEMS057E(57, "Data source type is missing", MessageLevel.ERROR),
+
+	/**
+	 * "Unable to find the schema for {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the data source type is incorrect because the schema file is not present for this type.<br>" + "Check the JEM SpringBatch JCL factory in JEM environment configuration file.")
+	JEMS058E(58, "Unable to find the schema for {0}", MessageLevel.ERROR),
+	
+	/**
+	 * "Database schema for {0} has been loaded", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the data source schema file has been loaded.")
+	JEMS059I(59, "Database schema for {0} has been loaded", MessageLevel.INFO),
+	
+	/**
+	 * "Database schema must be created because missing", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the data source schema must be created.")
+	JEMS060I(60, "Database schema must be created because missing", MessageLevel.INFO),
+	
+	/**
+	 * "Database schema has been created", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the data source schemahas been created.")
+	JEMS061I(61, "Database schema has been created", MessageLevel.INFO),
+	
+	/**
+	 * "Unable to create database schema", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when it was not able to create the database schema for job repository.<br>" + "Check the root cause exception.")
+	JEMS062E(62, "Unable to create database schema", MessageLevel.ERROR),
+	
+	/**
+	 * Repair job {0} because cancelled or crashed within a node", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when it a job has been cancelled and JEM node repairs the job repository database.")
+	JEMS063I(63, "Repair job {0} because cancelled or crashed within a node", MessageLevel.INFO),
+	
+	/**
+	 * "Unable to repair the cancelled job (executionId: {0})", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when it was not able to repair (update) the database of job repository.<br>" + "Check the root cause exception.")
+	JEMS064E(64, "Unable to repair the cancelled job executionId: {0})", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to clean job repository after job (instanceId: {0}) correctly completed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when it was not able to clean (delete) the database of job repository when the job ended correctly.<br>" + "Check the root cause exception.")
+	JEMS065E(65, "Unable to clean job repository after job (instanceId: {0}) correctly completed", MessageLevel.ERROR),
+	
+	/**
+	 * "Unable to get data base type from datasource", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when it was not able to get the database type from data source.<br>" + "Check the SB JCL definition.")
+	JEMS066E(66, "Unable to get data base type from datasource", MessageLevel.ERROR);
+	
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

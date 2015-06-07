@@ -27,6 +27,9 @@ import org.pepstock.jem.springbatch.DataSourceFactory;
 import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
+ * It contains the data source instance for job repository.It asks by RMI to JEM node to get
+ * all properties used to deine SpringBatch JCL factory, necessary to create a data source.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -34,29 +37,33 @@ final class DataSourceContainer {
 	
 	private static DataSource DATASOURCE_INSTANCE = null;
 	
-	private static String DATASOURCE_TYPE_INSTANCE = null;
-
 	/**
-	 * To avoid any instatiation
+	 * To avoid any instantiation
 	 */
 	private DataSourceContainer() {
-		
 	}
 	
-	static void createInstances() throws RemoteException, UnknownHostException{
+	/**
+	 * Creates the data source instance and get the data source type.
+	 * 
+	 * @throws RemoteException if any RMI exception occurs getting the JCL factory properties
+	 * @throws UnknownHostException if any RMI exception occurs getting the JCL factory properties
+	 */
+	static synchronized void createInstances() throws RemoteException, UnknownHostException{
+		// creates the data source instance ONLY the first time 
 		if (DATASOURCE_INSTANCE == null){
+			// gets by RMI of JCL factory properties
 			Properties jdbcProps = InitiatorManager.getCommonResourcer().getJemFactoryProperties(SpringBatchFactory.SPRINGBATCH_TYPE);
+			// creates a data source 
 			DATASOURCE_INSTANCE = DataSourceFactory.createDataSource(jdbcProps);
-			DATASOURCE_TYPE_INSTANCE = DataSourceFactory.getDataSourceType(jdbcProps);
 		}
 	}
 
-	static synchronized DataSource getDataSource(){
+	/**
+	 * Returns the data source instance
+	 * @return the data source instance
+	 */
+	static DataSource getDataSource(){
 		return DATASOURCE_INSTANCE;
 	}
-
-	static synchronized String getDataSourceType(){
-		return DATASOURCE_TYPE_INSTANCE;
-	}
-
 }

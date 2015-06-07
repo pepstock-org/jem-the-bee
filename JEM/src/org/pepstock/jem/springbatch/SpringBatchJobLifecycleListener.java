@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleListener;
+import org.springframework.batch.core.ExitStatus;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -45,8 +47,14 @@ import org.pepstock.jem.node.events.JobLifecycleListener;
  */
 public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	
+	/**
+	 * Internal property to save the job instance ID of Springbatch
+	 */
 	public static final String JOB_INSTANCE_ID = "job.instance.id";
 	
+	/**
+	 * Internal property to save the job execution ID of Springbatch
+	 */
 	public static final String JOB_EXECUTION_ID = "job.execution.id";
 	
 	private static final String DELETE_FROM_STEP_EXECUTION_CONTEXT = "DELETE FROM batch_step_execution_context WHERE STEP_EXECUTION_ID IN (SELECT STEP_EXECUTION_ID FROM springbatch.batch_step_execution WHERE JOB_EXECUTION_ID = ?)";
@@ -63,43 +71,37 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	
 	private static final String GET_JOB_EXECUTION_IDS_BY_INSTANCE = "SELECT JOB_EXECUTION_ID FROM batch_job_execution WHERE JOB_INSTANCE_ID = ?";
 	
+	private static final String UPDATE_STEP_EXECUTION = "UPDATE batch_step_execution SET END_TIME = ?, STATUS = ? WHERE STEP_NAME= ? AND JOB_EXECUTION_ID = ?";
+
+	private static final String UPDATE_JOB_EXECUTION = "UPDATE batch_job_execution SET END_TIME = ?, STATUS = ?, EXIT_CODE = ? WHERE JOB_EXECUTION_ID = ?";
+
+	
 	private static final String SCHEMA_RESOURCE_FORMAT = "org/springframework/batch/core/schema-{0}.sql";
 
 	private static final String TABLES_JOB_INSTANCE = "batch_job_instance";
 
 	private BasicDataSource datasource = null;
 	
-	/**
-	 * 
-	 */
-	public SpringBatchJobLifecycleListener() {
-		
-	}
-
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.events.JobLifecycleListener#init(java.util.Properties)
 	 */
 	@Override
 	public void init(Properties properties) {
-	
 		StringWriter ws = new StringWriter();
-		
 		String dataBaseType = DataSourceFactory.getDataSourceType(properties);
 		if (dataBaseType == null) {
-			// FIXME
-			throw new RuntimeException("Database type is null");
+			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS057E);
 		} else {
 			InputStream is = null;
 			try {
 				is = this.getClass().getClassLoader().getResourceAsStream(MessageFormat.format(SCHEMA_RESOURCE_FORMAT, dataBaseType));
 				if (is == null) {
-					throw new IOException("Unale to find the schema for '" + dataBaseType + "'");
+					throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS058E, dataBaseType);
 				}
 				IOUtils.copy(is, ws);
-				// FIXME log
+				LogAppl.getInstance().emit(SpringBatchMessage.JEMS059I, dataBaseType);
 			} catch (IOException e) {
-				// FIXME
-				throw new RuntimeException(e);
+				throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS058E, e, dataBaseType);
 			} finally {
 				if (is != null) {
 					try {
@@ -113,7 +115,6 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
-			
 			datasource = (BasicDataSource)DataSourceFactory.createDataSource(properties);
 			conn = datasource.getConnection();
 			conn.setAutoCommit(false);
@@ -122,8 +123,8 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 			ResultSet rs = md.getTables(null, null, TABLES_JOB_INSTANCE, new String[] { "TABLE", "ALIAS" });
 			boolean tablesToBeCreate = !rs.next();
 			rs.close();
-			// FIXME log
 			if (tablesToBeCreate){
+				LogAppl.getInstance().emit(SpringBatchMessage.JEMS060I);
 				stmt = conn.createStatement();
 				for (String sql : StringUtils.split(ws.toString(), ';')) {
 					if (sql.trim().length() > 0) {
@@ -131,7 +132,7 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 					}
 				}
 				conn.commit();
-				// FIXME log
+				LogAppl.getInstance().emit(SpringBatchMessage.JEMS061I);
 			}
 		} catch (SQLException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
@@ -139,11 +140,10 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 				try {
 					conn.rollback();
 				} catch (SQLException e1) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
+					LogAppl.getInstance().ignore(e1.getMessage(), e1);
 				}
 			}
-			// FIXME
-			throw new RuntimeException(e);
+			throw new SpringBatchRuntimeException(SpringBatchMessage.JEMS062E, e);
 		} finally {
 			if (stmt != null) {
 				try {
@@ -196,17 +196,18 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	 */
 	@Override
 	public void ended(Job job) {
-		if (job.getResult().getReturnCode() == Result.SUCCESS){
-			Map<String, Object> props = job.getJcl().getProperties();
-			if (props != null && props.containsKey(JOB_INSTANCE_ID) && props.containsKey(JOB_EXECUTION_ID)){
-				Long jobInstanceId = (Long)props.get(JOB_INSTANCE_ID);  
-//				Long jobExecutionId = (Long)props.get(JOB_EXECUTION_ID);
+		Map<String, Object> props = job.getJcl().getProperties();
+		if (props != null && props.containsKey(JOB_INSTANCE_ID) && props.containsKey(JOB_EXECUTION_ID)){
+			Long jobInstanceId = (Long)props.get(JOB_INSTANCE_ID);  
+			Long jobExecutionId = (Long)props.get(JOB_EXECUTION_ID);
+			if (job.getResult().getReturnCode() == Result.SUCCESS){
 				clean(jobInstanceId);
+			} else if (job.getResult().getReturnCode() == Result.CANCELED || job.getResult().getReturnCode() == Result.FATAL){
+				LogAppl.getInstance().emit(SpringBatchMessage.JEMS063I, job);
+				String stepName = job.getCurrentStep().getName();
+				repair(jobExecutionId, stepName);
 			}
-		} else if (job.getResult().getReturnCode() == Result.CANCELED){
-			// FIXME
 		}
-
 	}
 	
 	/**
@@ -231,13 +232,14 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 			delete(conn, DELETE_FROM_JOB_INSTANCE, jobInstanceId);
 			conn.commit();
 		} catch (SQLException e) {
-			// FIXME
-			e.printStackTrace();
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS065E, e, jobInstanceId);
+			
 			if (conn != null){
 				try {
 					conn.rollback();
 				} catch (SQLException e1) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
+					LogAppl.getInstance().ignore(e1.getMessage(), e1);
 				}
 			}
 		} finally {
@@ -251,6 +253,39 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param jobInstanceId
+	 * @param jobExecutionId
+	 */
+	void repair(Long jobExecutionId, String stepName){
+		Connection conn = null;
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			update(conn, UPDATE_STEP_EXECUTION, jobExecutionId, stepName);
+			update(conn, UPDATE_JOB_EXECUTION, jobExecutionId, null);
+			conn.commit();
+		} catch (SQLException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS064E, e, jobExecutionId);
+			if (conn != null){
+				try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					LogAppl.getInstance().ignore(e1.getMessage(), e1);
+				}
+			}
+		} finally {
+			try {
+				if (conn != null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+			}
+		}
+	}
 	/**
 	 * 
 	 * @param connection
@@ -323,5 +358,40 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param connection
+	 * @param sql
+	 * @param id
+	 * @throws SQLException
+	 */
+	private static void update(Connection connection, String sql, Long id, String stepName) throws SQLException{
+		PreparedStatement updateStmt = null;
+		try {
+			updateStmt = connection.prepareStatement(sql);
+			// set resource name in prepared statement
+			Timestamp endedTime = new Timestamp(System.currentTimeMillis());
+			String status = ExitStatus.FAILED.getExitCode();
+			updateStmt.setTimestamp(1, endedTime);
+			updateStmt.setString(2, status);
+			if (stepName != null){
+				updateStmt.setString(3, stepName);
+			} else {
+				updateStmt.setString(3, status);
+			}
+			updateStmt.setLong(4, id);
+			// executes the statement
+			updateStmt.executeUpdate();
+		} finally{
+			// closes statement
+			try {
+				if (updateStmt != null){
+					updateStmt.close();
+				}
+			} catch (SQLException e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+			}
 
+		}
+	}
 }

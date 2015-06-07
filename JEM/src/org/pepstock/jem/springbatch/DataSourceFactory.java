@@ -24,6 +24,10 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 /**
+ * Utility of SpringBatch to set the restartability of jobs.<br>
+ * It collects all keys necessary to configure data source of SB JCL.<br>
+ * It exposes the methods to create a data source pool.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -45,9 +49,14 @@ public final class DataSourceFactory {
 	 * To avoid any instantiation
 	 */
 	private DataSourceFactory() {
-		
 	}
 	
+	/**
+	 * Checks if the properties object contains all necessary keys to setup a data source pool.
+	 * 
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return <code>true</code> if properties contains all necessary keys, otherwise <code>false</code>
+	 */
 	public static boolean isJobRepositoryPersistent(Properties props){
 		return props.containsKey(JDBC_DRIVER_KEY) &&
 				props.containsKey(JDBC_URL_KEY) &&
@@ -56,6 +65,12 @@ public final class DataSourceFactory {
 				props.containsKey(JDBC_PASSWORD_KEY);
 	}
 	
+	/**
+	 * Returns the URL of JDBC driver, defined in SB JCL configuration, using reflection.
+	 * 
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return URL of JDBC driver
+	 */
 	public static URL getDriverJar(Properties props){
 		if (!isJobRepositoryPersistent(props)){
 			return null;
@@ -64,15 +79,42 @@ public final class DataSourceFactory {
 		return DataSourceFactory.class.getResource('/'+driver.replace('.', '/')+".class");
 	}
 	
-	
+	/**
+	 * Returns the data source type of JDBC definition.<br>
+	 * Here are the supported JDBC type (from <code>org.springframework.batch.support.DatabaseType</code>):
+	 * <br>
+	 * <pre>
+	 * db2          DB2("DB2"), DB2ZOS("DB2ZOS")
+	 * derby        DERBY("Apache Derby")
+	 * h2           H2("H2")
+	 * hsqldb       HSQL("HSQL Database Engine")
+	 * mysql        MYSQL("MySQL")
+	 * oracle10g    ORACLE("Oracle")
+	 * postgresql   POSTGRES("PostgreSQL")
+	 * sqlserver    SQLSERVER("Microsoft SQL Server")
+	 * sybase       SYBASE("Sybase")
+	 * sqlf         SQLITE("SQLite")
+	 * </pre>
+	 * <br>
+	 * 
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return the data source type.
+	 */
 	public static String getDataSourceType(Properties props){
 		return props.getProperty(JDBC_TYPE_KEY);
 	}
 
+	/**
+	 * Creates a data source pool to connect to a data base.
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return a data source to use for restartability
+	 */
 	public static DataSource createDataSource(Properties props){
+		// checks if properties are all set
 		if (!isJobRepositoryPersistent(props)){
 			return null;
 		}
+		// gets all properties
 		String driver = props.getProperty(JDBC_DRIVER_KEY);
 		String url = props.getProperty(JDBC_URL_KEY);
 		String user = props.getProperty(JDBC_USER_KEY);
@@ -80,6 +122,7 @@ public final class DataSourceFactory {
 		
 		String jdbcProperties = props.getProperty(JDBC_PROPERTIES_KEY);
 		
+		// creates the data source
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName(driver);
 		dataSource.setUrl(url);

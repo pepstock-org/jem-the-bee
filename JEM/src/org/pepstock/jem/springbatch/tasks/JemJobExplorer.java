@@ -21,10 +21,15 @@ import java.rmi.RemoteException;
 
 import javax.sql.DataSource;
 
+import org.pepstock.jem.springbatch.SpringBatchException;
+import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
 import org.springframework.batch.core.repository.ExecutionContextSerializer;
 
 /**
+ * Custom job explorer of SpringBatch which uses a JCL configuration of data source
+ * to use for restartability.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -36,19 +41,21 @@ public class JemJobExplorer extends JobExplorerFactoryBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		try {
+			// creates the data source  by RMI
 			DataSourceContainer.createInstances();
+			// if null, EXCEPTION
 			if (DataSourceContainer.getDataSource() == null){
-				// FIXME
-				throw new RuntimeException("data source is null");
+				throw new SpringBatchException(SpringBatchMessage.JEMS055E);
 			}
+			// uses the SUPER method to set the data source 
+			// it can not use the set method of this class
 			super.setDataSource(DataSourceContainer.getDataSource());
 		} catch (RemoteException e) {
-			// FIXME
-			
+			throw new SpringBatchException(SpringBatchMessage.JEMS056E, e);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new SpringBatchException(SpringBatchMessage.JEMS056E, e);
 		}
+		// calls the method of the OOTB TM of Spring Batch
 		super.afterPropertiesSet();
 	}
 
@@ -57,6 +64,9 @@ public class JemJobExplorer extends JobExplorerFactoryBean {
 	 */
 	@Override
 	public void setDataSource(DataSource dataSource) {
+		// It's not possible to set a datasource.
+		// it can use ONLY the data source which can be defined
+		// by JCL factory properties
 		throw new UnsupportedOperationException(JemJobRepository.UNABLE_OVERRIDE);
 	}
 
@@ -66,6 +76,8 @@ public class JemJobExplorer extends JobExplorerFactoryBean {
 	 */
 	@Override
 	public void setSerializer(ExecutionContextSerializer serializer) {
+		// It's not possible to set a serializer.
+		// it can use ONLY the serializer OOTB
 		throw new UnsupportedOperationException(JemJobRepository.UNABLE_OVERRIDE);
 	}
 
@@ -74,6 +86,8 @@ public class JemJobExplorer extends JobExplorerFactoryBean {
 	 */
 	@Override
 	public void setTablePrefix(String tablePrefix) {
+		// It's not possible to set a table prefix.
+		// it can use ONLY the table prefix OOTB
 		throw new UnsupportedOperationException(JemJobRepository.UNABLE_OVERRIDE);
 	}
 	
