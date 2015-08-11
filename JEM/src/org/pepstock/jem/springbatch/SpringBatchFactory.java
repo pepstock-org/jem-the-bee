@@ -116,7 +116,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	 */
 	@Override
 	public void beforeNodeStopped() {
-		if (isJobRepositoryPersistent){
+		if (isJobRepositoryPersistent && listener != null){
 			listener.close();	
 		}
 		super.beforeNodeStopped();
