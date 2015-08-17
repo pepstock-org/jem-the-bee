@@ -9,7 +9,7 @@ Download previous versions from [here](http://www.pepstock.org/download.htm)!
 ###What's new in release 2.3?###
   
   * **[Multiple java runtimes](../../wiki/ConfiguringJEMNode)** which allows you to use the JRE you need for business logic
-  * **[SpringBacth restartability](../../wiki/JCLReferenceUsingSpringBatch)** out of the box, provided by JEM
+  * **[SpringBatch restartability](../../wiki/JCLReferenceUsingSpringBatch)** out of the box, provided by JEM
   * **[PowerShell](../../wiki/PS_as_JCL)** integration, as JCL
   * JEM is distributed compiled by Java 7
  
