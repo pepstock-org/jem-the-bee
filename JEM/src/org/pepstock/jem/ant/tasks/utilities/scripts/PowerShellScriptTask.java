@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.ant.tasks.utilities.scripts;
 
+import java.io.File;
+
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 
@@ -62,21 +64,21 @@ public class PowerShellScriptTask extends ShellScriptTask {
     	// executes the script
        	super.execute();
     }
-    
-    /**
-     * Sets the shell and parameters to ANT task passed as argument
-     * 
-     * @param antTask shell script ant task to set
-     */
-    public static final void setWindowsStepExec(ShellScriptTask antTask){
-    	// override the shell and suffix 
-    	antTask.setShell(SHELL);
-    	antTask.setSuffix(SUFFIX);
-    	// sets arguments
-    	antTask.createArg().setValue(ARG_0);
-    	antTask.createArg().setValue(ARG_1);
-    	antTask.createArg().setValue(ARG_2);
-    	antTask.createArg().setValue(ARG_3);
-    	antTask.createArg().setValue(ARG_4);
-     }
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.ant.tasks.utilities.ShellScriptTask#getScriptName(java.io.File)
+	 */
+	@Override
+	protected String getScriptName(File file) {
+		String name = file.getAbsolutePath();
+		// checks if the script file name contains a blank.
+		// if yes, it uses teh syntax &"[filename]"
+		if (name.contains(" ")){
+			return "&\""+name+"\"";
+		} else {
+			return name;
+		}
+	}
+	
+	
 }

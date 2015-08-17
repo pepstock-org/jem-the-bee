@@ -193,7 +193,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 */
 	private StringBuilder getAntJcl(String content, Properties jemProperties) throws AntException{
 		StringBuilder resultDD = new StringBuilder();
-		
+
 		StringBuilder result = new StringBuilder();
 	    result.append("<?xml version=\"1.0\"?>");
 	    result.append("<project default=\"exec\" basedir=\".\">");
@@ -208,17 +208,21 @@ public abstract class ScriptFactory extends AntFactory {
 	    		result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
 	    	}
 	    }
+    
 	    // sets the ANT task which will execute the script
 	    result.append("<taskdef name=\"script\" classname=\""+getAntTask().getName()+"\" />");
 	    result.append("<target name=\"exec\">");
-	    // writes all script
-	    result.append("<script><![CDATA[");
+	    // writes all script. Sets failonerror to TRUE, because is a single step
+	    result.append("<script failonerror=\"true\"><![CDATA[");
 		result.append(content);
 	    result.append("]]>");
 	    result.append(resultDD);
 	    result.append("</script>");
 	    result.append("</target>");
 	    result.append("</project>");
+	    
+	    System.out.println(result);
+	    
 	    return result;
 	}
 

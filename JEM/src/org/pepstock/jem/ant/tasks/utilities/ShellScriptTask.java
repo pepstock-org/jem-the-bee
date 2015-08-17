@@ -37,7 +37,7 @@ import org.pepstock.jem.util.CharSet;
  * 
  */
 public class ShellScriptTask extends StepExec {
-
+	
 	private StringBuilder script = new StringBuilder();
 	private String shell = null;
 	private File temporaryScriptFile = null;
@@ -49,7 +49,7 @@ public class ShellScriptTask extends StepExec {
 	 */
 	public ShellScriptTask() {
 	}
-
+	
 	/**
 	 * Adds line in the ANT task, changes possible variables.
 	 * 
@@ -91,14 +91,13 @@ public class ShellScriptTask extends StepExec {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-
+	
 	/**
 	 * Execute the task
 	 * 
 	 * @throws if shell is missing or execution will end in error.
 	 */
 	public void execute() throws BuildException {
-
 		// if shell is missing, throws an exception
 		if (shell == null) {
 			throw new BuildException(AntMessage.JEMA019E.toMessage().getFormattedMessage());
@@ -108,7 +107,7 @@ public class ShellScriptTask extends StepExec {
 		// and executes!
 		try {
 			writeScript();
-			super.createArg().setValue(temporaryScriptFile.getAbsolutePath());
+			super.createArg().setValue(getScriptName(temporaryScriptFile));
 			super.setExecutable(shell);
 			super.execute();
 		} finally {
@@ -150,4 +149,15 @@ public class ShellScriptTask extends StepExec {
 		}
 	}
 
+	/**
+	 * This method is invoked to get the script name to be execute.
+	 * Some script languages would like to change it adding specific chars.
+	 * 
+	 * @param file file of script
+	 * @return script name to be executed
+	 */
+	protected String getScriptName(File file){
+		return file.getAbsolutePath();
+	}
+	
 }

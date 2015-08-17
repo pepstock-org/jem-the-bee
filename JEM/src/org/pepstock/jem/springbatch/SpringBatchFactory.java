@@ -62,7 +62,7 @@ public class SpringBatchFactory extends AbstractFactory {
 
 	private static final String SPRINGBATCH_TYPE_DESCRIPTION = "Spring Batch";
 	
-	private SpringBatchJobLifecycleListener listener = null;
+	private transient SpringBatchJobLifecycleListener listener = null;
 	
 	private boolean isJobRepositoryPersistent = false;
 	
