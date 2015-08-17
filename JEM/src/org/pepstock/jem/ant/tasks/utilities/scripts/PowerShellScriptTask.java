@@ -40,9 +40,6 @@ public class PowerShellScriptTask extends ShellScriptTask {
 	private static final String ARG_3 = "-nologo";
 	
 	private static final String ARG_4 = "-command";
-
-//	  bypass -nologo -command "& {.\diskResize.ps1}"
-	
 	
 	// creates a file with this extension
 	private static final String SUFFIX = ".ps1";

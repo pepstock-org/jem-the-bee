@@ -31,7 +31,7 @@ public class PowerShellFactory extends ScriptFactory {
 	/**
 	 * public key which indicates the JCL type for ANT
 	 */
-	public static final String CMD_TYPE = "powershell";
+	public static final String CMD_TYPE = "ps";
 	
 	private static final String CMD_TYPE_DESCRIPTION = "PowerShell script";
 	

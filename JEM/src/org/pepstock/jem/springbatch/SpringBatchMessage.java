@@ -446,8 +446,13 @@ public enum SpringBatchMessage implements MessageInterface{
 	 * "Unable to get data base type from datasource", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it was not able to get the database type from data source.<br>" + "Check the SB JCL definition.")
-	JEMS066E(66, "Unable to get data base type from datasource", MessageLevel.ERROR);
+	JEMS066E(66, "Unable to get data base type from datasource", MessageLevel.ERROR),
 	
+	/**
+	 * "JOB ID: {0}
+	 */
+	@Description(explanation = "It occurs when before a job starts to show the jobID that you can use to restart it in case of failure.")
+	JEMS067I(67, "JOB ID: {0}", MessageLevel.INFO);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

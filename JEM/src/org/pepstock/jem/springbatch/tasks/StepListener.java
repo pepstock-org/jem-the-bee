@@ -29,6 +29,7 @@ import javax.naming.NamingException;
 
 import org.pepstock.jem.Result;
 import org.pepstock.jem.Step;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.rmi.JobStartedObjects;
@@ -115,8 +116,8 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 	 */
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
-		System.err.println(jobExecution.getId());
-		System.err.println(jobExecution.getJobId());
+		LogAppl.getInstance().emit(SpringBatchMessage.JEMS067I, jobExecution.getId());
+		// to evaluate usage of jobExecution.getJobId()
 		
 		if (locker == null){
 			try {

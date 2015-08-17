@@ -35,7 +35,12 @@
 		<factory className="org.pepstock.jem.springbatch.SpringBatchFactory">
 			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
 			<properties>
-				<!-- <property name="property.name" value="property.value"/> -->
+				<!-- <property name="property.name" value="property.value"/> 
+				<property name="jem.jdbc.url" value="jdbc:mysql://hostname/springbatch" /> 
+				<property name="jem.jdbc.driver" value="com.mysql.jdbc.Driver" /> 
+				<property name="jem.jdbc.user" value="userid" /> 
+				<property name="jem.jdbc.password" value="blahblah" />
+				<property name="jem.jdbc.type" value="mysql" /-->
 			</properties>
 		</factory>
 		<factory className="org.pepstock.jem.ant.BashFactory">
@@ -52,6 +57,14 @@
 				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
 			</properties>
 		</factory>
+		<factory className="org.pepstock.jem.ant.PowerShellFactory">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+
 		<!-- factory className="org.pepstock.jem.jbpm.JBpmFactory">
 			<properties>
 			</properties>
