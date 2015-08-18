@@ -515,7 +515,13 @@ public enum AntMessage implements MessageInterface{
 	 * "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when you have a JAVA ANT task in your JCL defined with attribute fork=true. This is not allowed for security reason.<br>JEM overrides your configuration, setting the fork attribute to false.")
-	JEMA077W(76, "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING);
+	JEMA077W(77, "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING),
+	
+	/**
+	 * "Field \"{0}\" must be defined static or is not an integer" , MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when you define a wrong field to set you return code byannotation.<br>Please have a look to your code. The filed must be static and an int instance.")
+	JEMA078E(78, "Field \"{0}\" must be defined static or is not an integer" , MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 

@@ -156,8 +156,7 @@ public final class ImplementationsContainer {
 	 * description name.
 	 * 
 	 * @see ImplementationsContainer#MESSAGE_FORMAT
-	 * @param target target name
-	 * @param task task name
+	 * @param item data description step task
 	 * @return the key of map (always lower-case)
 	 */
 	private String createKey(DataDescriptionStep item) {

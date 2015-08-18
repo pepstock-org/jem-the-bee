@@ -71,6 +71,11 @@ public class StepListener implements BuildListener {
 	// and then it uses reflection to get it
 	private static final String ANT_JAVA_TASK_FORK_ATTRIBUTE_NAME = "fork";
 	
+	// this is the RESULTPROPERTY attribute name of ANT tasks
+	// ANT task doesn't publish any get method to get it
+	// and then it uses reflection to get it
+	private static final String ANT_TASK_RESULT_PROPERTY_ATTRIBUTE_NAME = "resultProperty";
+	
 	private int stepOrder = MAX_TASKS_FOR_TARGET;
 	
 	private TasksDoor door = null;
@@ -80,6 +85,9 @@ public class StepListener implements BuildListener {
 	private String lockingScope = AntKeys.ANT_JOB_SCOPE;
 	
 	private Locker locker = null;
+	
+	// this the variable which store the max return code of task for each target
+	private int maxTargetReturnCode = Result.SUCCESS;
 
 	/**
 	 * Empty constructor
@@ -291,7 +299,7 @@ public class StepListener implements BuildListener {
 
 				// checks if has an exception.If yes, sets ERROR, otherwise
 				// SUCCESS
-				step.setReturnCode((event.getException() != null) ? Result.ERROR : Result.SUCCESS);
+				step.setReturnCode((event.getException() != null) ? Math.max(Result.ERROR, maxTargetReturnCode) : maxTargetReturnCode);
 				// checks if has an exception, sets the exception message
 				if (event.getException() != null){
 					step.setException(event.getException().getMessage());
@@ -314,6 +322,7 @@ public class StepListener implements BuildListener {
 			}
 		}
 		batchSM.setInternalAction(false);
+		maxTargetReturnCode = Result.SUCCESS;
 	}
 
 	/**
@@ -398,6 +407,52 @@ public class StepListener implements BuildListener {
 				throw new BuildException(e);
 			}
 		}
+		DataDescriptionStep item = StepsContainer.getInstance().getCurrent();
+		if (item != null){
+			Integer rc = ReturnCodesContainer.getInstance().getReturnCode(item);
+			if (rc != null){
+				maxTargetReturnCode = Math.max(maxTargetReturnCode, ReturnCodesContainer.getInstance().getReturnCode(item));
+			} 
+		} else {
+			// checks if is cast-able
+			if (event.getTask() != null){
+				Task task = null;
+				// checks if is an Unknown element
+				if (event.getTask() instanceof UnknownElement){
+					// gets ANT task
+					UnknownElement ue = (UnknownElement)event.getTask();
+					ue.maybeConfigure();
+					task = (Task)ue.getTask();
+				} else if (event.getTask() instanceof Task){
+					// gets the task
+					// here if the ANT task is already configured
+					// mainly on sequential, parallel and JEM procedure
+					task = (Task)event.getTask();
+				}
+				if (task != null){
+					try {
+						// reflection to understand if the attribute fork is set to true
+						// unfortunately ANT java task don't have any get method to have fork value
+						Field f = task.getClass().getDeclaredField(ANT_TASK_RESULT_PROPERTY_ATTRIBUTE_NAME);
+						Object obj = FieldUtils.readField(f, task, true);
+						if (obj != null){
+							String resultProperty = event.getProject().getProperty(obj.toString());
+							if (resultProperty != null){
+								maxTargetReturnCode = Math.max(maxTargetReturnCode, Parser.parseInt(resultProperty, Result.SUCCESS));
+							}
+						}
+					} catch (SecurityException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					} catch (NoSuchFieldException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					} catch (IllegalAccessException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);				
+					}
+				}
+			}
+		}
+		// removes always teh step instance
+		StepsContainer.getInstance().setCurrent(null);
 	}
 
 	/**

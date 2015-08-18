@@ -69,8 +69,8 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	private String name = null;
 
 	private int order = 0;
-
-	private static final String RESULT_KEY = "step-exec.result";
+	
+	private String resultProperty = null;
 
 	private final List<DataDescription> dataDescriptions = new ArrayList<DataDescription>();
 
@@ -88,7 +88,6 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 		// stops the execution of ANT if error occurs
 		super.setFailonerror(false);
 		super.setFailIfExecutionFails(true);
-		super.setResultProperty(RESULT_KEY);
 	}
 
 	/**
@@ -142,6 +141,15 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	@Override
 	public String getTargetName() {
 		return getOwningTarget().getName();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.taskdefs.ExecTask#setResultProperty(java.lang.String)
+	 */
+	@Override
+	public void setResultProperty(String resultProperty) {
+		super.setResultProperty(resultProperty);
+		this.resultProperty = resultProperty;
 	}
 
 	/**
@@ -197,6 +205,10 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		StepsContainer.getInstance().setCurrent(this);
+		if (resultProperty == null){
+			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
+		}
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception
 		// before calling the main class
@@ -251,12 +263,11 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 		} finally {
 			batchSM.setInternalAction(true);
 			
-			Object rcObject = PropertyHelper.getPropertyHelper(getProject()).getProperty(RESULT_KEY);
+			Object rcObject = PropertyHelper.getPropertyHelper(getProject()).getProperty(resultProperty);
 			if (rcObject != null) {
 				returnCode = Parser.parseInt(rcObject.toString(), Result.SUCCESS);
 			}
-			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
-
+			ReturnCodesContainer.getInstance().setReturnCode(this, returnCode);
 
 			// finally and always must release the locks previously asked
 			// checks datasets list

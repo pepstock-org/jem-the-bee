@@ -84,11 +84,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class StepJava extends Java  implements DataDescriptionStep {
 	
-	/**
-	 * Internal property used to save the result of step
-	 */
-    public static final String RESULT_KEY = "step-java.result";
-	
 	private String id = DataDescriptionStep.DEFAULT_ID;
 	
 	private String name = null;
@@ -102,6 +97,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	private final List<Lock> locks = new ArrayList<Lock>(); 
 	
 	private String classname = null;
+	
+	private String resultProperty = null;
+	
+	private Class<?> clazz = null;
+	
+	private Map<String, Object> sharedData = SharedHashMap.getInstance(); 
 
 	/**
 	 * Calls super constructor and set fail-on-error to <code>true</code>.
@@ -167,6 +168,15 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	@Override
 	public String getTargetName() {
 		return getOwningTarget().getName();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.taskdefs.Java#setResultProperty(java.lang.String)
+	 */
+	@Override
+	public void setResultProperty(String resultProperty) {
+		super.setResultProperty(resultProperty);
+		this.resultProperty = resultProperty;
 	}
 
 
@@ -253,6 +263,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		StepsContainer.getInstance().setCurrent(this);
+		
+		if (resultProperty == null){
+			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
+		}
+		
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception 
 		// before calling the main class
@@ -416,11 +432,23 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			throw new BuildException(e);
 		} finally {
 			batchSM.setInternalAction(true);
-			String rcObject = System.getProperty(RESULT_KEY);
-			if (rcObject != null){
-				returnCode = Parser.parseInt(rcObject, Result.SUCCESS);
-			}
-			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
+			// only if I don't have any error
+			// gets the return code
+			if (returnCode == Result.SUCCESS){
+				// checks if launcher is used
+				// if not, gets return code from class
+				if (clazz != null){
+					returnCode = ReturnCodesContainer.getInstance().getReturnCode(clazz);
+				} else {
+					// checks if there is the system property with return code 
+					Object javaMainLauncherRC = sharedData.get(JavaMainClassLauncher.class.getName());
+					if (javaMainLauncherRC != null){
+						returnCode = Parser.parseInt(javaMainLauncherRC.toString(), Result.SUCCESS);
+					}
+				}
+			} 
+			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, resultProperty, returnCode);
+			
 			// checks datasets list
 			if (ddList != null && !ddList.isEmpty()) {
 				StringBuilder exceptions = new StringBuilder();
@@ -539,7 +567,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				}
 			} else {
 				// if no classpath, can substitute here
-				Class<?> clazz = Class.forName(getClassname());
+				clazz = Class.forName(getClassname());
 				SetFields.applyByAnnotation(clazz);
 			}
 		} catch (ClassNotFoundException e) {

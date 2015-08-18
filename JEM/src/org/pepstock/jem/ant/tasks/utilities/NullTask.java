@@ -19,6 +19,7 @@ package org.pepstock.jem.ant.tasks.utilities;
 import javax.naming.NamingException;
 
 import org.apache.tools.ant.BuildException;
+import org.pepstock.jem.annotations.ReturnCode;
 import org.pepstock.jem.ant.tasks.StepJava;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 
@@ -30,6 +31,9 @@ import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
  * 
  */
 public class NullTask extends StepJava {
+	
+	@ReturnCode
+	private static int returnCode = 15;
 	
 	/**
 	 * Empty constructor
