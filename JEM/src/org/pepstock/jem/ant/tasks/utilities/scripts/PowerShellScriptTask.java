@@ -25,7 +25,7 @@ import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
  * Shell script task, which uses POWERSHELL shell to execute the content of ANT task element.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0	
+ * @version 2.3	
  *
  */
 public class PowerShellScriptTask extends ShellScriptTask {
@@ -72,7 +72,7 @@ public class PowerShellScriptTask extends ShellScriptTask {
 	protected String getScriptName(File file) {
 		String name = file.getAbsolutePath();
 		// checks if the script file name contains a blank.
-		// if yes, it uses teh syntax &"[filename]"
+		// if yes, it uses the syntax &"[filename]"
 		if (name.contains(" ")){
 			return "&\""+name+"\"";
 		} else {

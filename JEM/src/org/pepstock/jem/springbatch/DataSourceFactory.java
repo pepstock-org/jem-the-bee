@@ -29,7 +29,7 @@ import org.apache.commons.dbcp.BasicDataSource;
  * It exposes the methods to create a data source pool.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 public final class DataSourceFactory {
 	

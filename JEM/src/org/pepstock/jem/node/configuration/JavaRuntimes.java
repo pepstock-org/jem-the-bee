@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * to use when a job needs a specific JVM.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 @XStreamAlias(ConfigKeys.JAVA_RUNTIMES_ALIAS)
 public class JavaRuntimes {

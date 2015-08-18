@@ -14,23 +14,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.annotations;
+package org.pepstock.jem.junit.test.antutils.java;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.pepstock.jem.Result;
+import org.pepstock.jem.annotations.ExitCode;
+import org.pepstock.jem.util.Parser;
 
 /**
- * Annotation used to set return code from JAVA code
- * of resource
+ * Do nothing.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 2.3
- *
+ * @version 1.0
+ * 
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ReturnCode {
+public class NullWithReturnCodeByAnnotationTask {
 	
+	@ExitCode
+	private static int EXIT_CODE = Result.SUCCESS;
+	
+	/**
+	 * Main program, called by StepJava class. Sets the exit code passed by argument.
+	 * 
+	 * @param args exit code to use
+	 */
+	public static void main(String[] args) {
+		if (args != null && args.length == 1){
+			EXIT_CODE = Parser.parseInt(args[0], Result.SUCCESS);
+		}
+	}
+
 }

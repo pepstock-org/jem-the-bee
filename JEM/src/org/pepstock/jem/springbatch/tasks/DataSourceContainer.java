@@ -31,7 +31,7 @@ import org.pepstock.jem.springbatch.SpringBatchFactory;
  * all properties used to deine SpringBatch JCL factory, necessary to create a data source.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 final class DataSourceContainer {
 	

@@ -14,29 +14,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node;
+package org.pepstock.jem.ant.tasks;
 
-import org.pepstock.jem.node.configuration.ConfigurationException;
+import java.io.Serializable;
 
 /**
- * This interface is used to be informed when the node is ready (post Hazelcast startup(
- * and when the node is ending (before to close Hazelcast)
+ * Interface used to return the exit code from java code executed in a different ANT classloader
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public interface NodeLifeCycleListener {
-	
-	
-	/**
-	 * This method is called after the cluster startup
-	 * @throws ConfigurationException if any error occurs during the setup of factory
-	 */
-	void afterNodeStarted() throws ConfigurationException;
-	
-	/**
-	 * This method is called before the cluster ends, to clean up the resources
-	 */
-	void beforeNodeStopped();
+public interface ReturnCode extends Serializable{
 
+	/**
+	 * Sets the return code
+	 * @param returnCode
+	 */
+	void setRC(int returnCode);
+	
+	/**
+	 * Gets the return code
+	 * @return return code
+	 */
+	int getRC();
+	
 }

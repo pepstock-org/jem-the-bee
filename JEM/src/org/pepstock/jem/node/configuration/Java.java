@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
  * A machine can be set as default to use for all jobs. The content is th JAVA_HOME path of this JVM.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 @XStreamAlias("java")
 @XStreamConverter(value=ToAttributedValueConverter.class, strings={"path"})

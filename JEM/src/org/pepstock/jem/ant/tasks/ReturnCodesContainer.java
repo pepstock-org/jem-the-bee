@@ -27,7 +27,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
 import org.pepstock.jem.Result;
-import org.pepstock.jem.annotations.ReturnCode;
+import org.pepstock.jem.annotations.ExitCode;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
@@ -204,7 +204,7 @@ public final class ReturnCodesContainer {
 		// scans all declared fields
 		for (Field field : clazz.getDeclaredFields()){
 			// if has got data description annotation
-			if (field.isAnnotationPresent(ReturnCode.class)){
+			if (field.isAnnotationPresent(ExitCode.class)){
 				// get the static field and nly if integer
 				try {
 					Object obj = null;

@@ -22,7 +22,7 @@ import org.pepstock.jem.ant.tasks.utilities.scripts.PowerShellScriptTask;
  * Is a JCL factory which enables to submit WINDOWS PowerShell script file as JCL (wrapped in an ANT file).
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 public class PowerShellFactory extends ScriptFactory {
 

@@ -14,33 +14,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.utilities;
+package org.pepstock.jem.annotations;
 
-import java.lang.management.ManagementFactory;
-
-import javax.naming.NamingException;
-
-import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Is a utility (both a task ANT and a main program) that return doing nothing.<br>
+ * Annotation used to set return code from JAVA code
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
- * 
+ * @version 2.3
+ *
  */
-public class NullWithReturnCodeTask {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ExitCode {
 	
-	/**
-	 * Main program, called by StepJava class. It does nothing.
-	 * 
-	 * @param args not used
-	 * @throws NamingException 
-	 * @throws InvalidDatasetNameException 
-	 */
-	public static void main(String[] args) throws NamingException, InvalidDatasetNameException {
-		System.err.println(ManagementFactory.getRuntimeMXBean().getName());
-		System.exit(77);
-	}
-
 }

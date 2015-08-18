@@ -30,6 +30,7 @@ import org.apache.tools.ant.property.LocalProperties;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.DataSetImpl;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.Result;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
@@ -58,6 +59,8 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 	private final List<Lock> locks = new ArrayList<Lock>();
 
 	private Task nestedTask = null;
+	
+	private String resultProperty = null;
 
 	/**
 	 * @return the id
@@ -110,6 +113,20 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 	@Override
 	public String getTargetName() {
 		return getOwningTarget().getName();
+	}
+	
+	/**
+	 * @return the resultProperty
+	 */
+	public String getResultProperty() {
+		return resultProperty;
+	}
+
+	/**
+	 * @param resultProperty the resultProperty to set
+	 */
+	public void setResultProperty(String resultProperty) {
+		this.resultProperty = resultProperty;
 	}
 
 	/**
@@ -177,6 +194,16 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 	 */
 	@Override
 	public void execute() throws BuildException {
+		// sets the current step
+		StepsContainer.getInstance().setCurrent(this);
+		// checks if the result property is set
+		// if not, it sets automatically
+		// one based on target, task and id
+		if (resultProperty == null){
+			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
+		}
+		int returnCode = Result.SUCCESS;
+		
 		// this boolean is necessary to understand if I have an exception
 		// before calling the main class
 		boolean isExecutionStarted = false;
@@ -233,13 +260,19 @@ public class WrapperTask extends Task implements TaskContainer, DataDescriptionS
 			isExecutionStarted = true;
 			nestedTask.perform();
 		} catch (BuildException e1) {
+			returnCode = Result.ERROR;
 			throw e1;
 		} catch (RemoteException e) {
+			returnCode = Result.ERROR;
 			throw new BuildException(e);
 		} catch (IOException e) {
+			returnCode = Result.ERROR;
 			throw new BuildException(e);
 		} finally {
 			batchSM.setInternalAction(true);
+			// stores the return code
+			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, resultProperty, returnCode);
+			
 			// finally and always must release the locks previously asked
 			// checks datasets list
 			if (ddList != null && !ddList.isEmpty()) {

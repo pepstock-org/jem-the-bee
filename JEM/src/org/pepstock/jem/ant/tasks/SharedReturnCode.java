@@ -19,40 +19,58 @@ package org.pepstock.jem.ant.tasks;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.pepstock.jem.Result;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.ReverseURLClassLoader;
 
 /**
- * With this HashMap you can share the data of map across hierarchy of Classloaders.
+ * With this class you can share the data of the exit code of JAVA code across hierarchy of Classloaders.
  *  
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 2.3	
  *
  */
-public final class SharedHashMap extends HashMap<String, Object> implements Map<String, Object>{
+public final class SharedReturnCode implements ReturnCode{
 
 	private static final long serialVersionUID = 1L;
 
 	//  Common instance shared across a proxy
-    private static Map<String, Object> instance = null;
+    private static ReturnCode instance = null;
+    
+    private int returnCode = Result.SUCCESS;
     
     /**
      * Empty and private constructor
      */
-    private SharedHashMap() {
+    private SharedReturnCode() {
     }
 
+    /* (non-Javadoc)
+     * @see org.pepstock.jem.ant.tasks.ReturnCode#setRC(int)
+     */
+    @Override
+    public void setRC(int returnCode) {
+    	this.returnCode = returnCode;
+    }
+
+    /* (non-Javadoc)
+     * @see org.pepstock.jem.ant.tasks.ReturnCode#getRC()
+     */
+    @Override
+    public int getRC() {
+    	return returnCode;
+    }
+    
     /**
-     * This is a singleton. If instance is not null, means that local map is already loaded.
+     * This is a singleton. If instance is not null, means that local integer is already loaded.
      * If null and classload is ANT classloader, then uses the proxy to load the instance from parent classloader, 
      * otherwise it creates a new instance.
      * @return shared HashMap.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Map<String, Object> getInstance() {
-        ClassLoader myClassLoader = SharedHashMap.class.getClassLoader();
+	public static ReturnCode getInstance() {
+        ClassLoader myClassLoader = SharedReturnCode.class.getClassLoader();
         if (instance==null) {
             // The root classloader is sun.misc.Launcher package. If we are not in a sun package,
             // we need to get hold of the instance of ourself from the class in the root classloader.
@@ -63,7 +81,7 @@ public final class SharedHashMap extends HashMap<String, Object> implements Map<
 						// So we find our parent classloader
 						ClassLoader parentClassLoader = myClassLoader.getParent();
 						// And get the other version of our current class
-						Class otherClassInstance = parentClassLoader.loadClass(SharedHashMap.class.getName());
+						Class otherClassInstance = parentClassLoader.loadClass(SharedReturnCode.class.getName());
 						// And call its getInstance method - this gives the correct instance of ourself
 						Method getInstanceMethod = otherClassInstance.getDeclaredMethod("getInstance", new Class[] {});
 						Object otherAbsoluteSingleton = getInstanceMethod.invoke(null, new Object[] { } );
@@ -72,31 +90,25 @@ public final class SharedHashMap extends HashMap<String, Object> implements Map<
 						// So instead, we use java.lang.reflect.Proxy to wrap it in an object that
 						// supports our interface, and the proxy will use reflection to pass through all calls
 						// to the object.
-						instance = (Map<String, Object>) Proxy.newProxyInstance(myClassLoader,
-						                                     new Class[] { Map.class },
+						instance = (ReturnCode) Proxy.newProxyInstance(myClassLoader,
+						                                     new Class[] { ReturnCode.class },
 						                                     new DelegateInvocationHandler(otherAbsoluteSingleton));
 					} catch (SecurityException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-//						LogAppl.getInstance().debug(e.getMessage(), e);
+						LogAppl.getInstance().debug(e.getMessage(), e);
 					}
             // We're in the root classloader, so the instance we have here is the correct one
             } else {
-                instance = new SharedHashMap();
+                instance = new SharedReturnCode();
             }
         }
         return instance;

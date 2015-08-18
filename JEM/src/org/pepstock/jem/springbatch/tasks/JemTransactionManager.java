@@ -32,7 +32,7 @@ import org.springframework.jdbc.support.MetaDataAccessException;
  * in the JCL factory properties.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 public class JemTransactionManager extends DataSourceTransactionManager {
 

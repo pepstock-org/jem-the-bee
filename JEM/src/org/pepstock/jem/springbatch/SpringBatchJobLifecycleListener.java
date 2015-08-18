@@ -43,7 +43,7 @@ import org.springframework.batch.core.ExitStatus;
 
 /**
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	

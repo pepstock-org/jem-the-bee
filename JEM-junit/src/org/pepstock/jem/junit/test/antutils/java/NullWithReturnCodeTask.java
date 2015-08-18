@@ -14,13 +14,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.ant.tasks.utilities;
+package org.pepstock.jem.junit.test.antutils.java;
 
-import javax.naming.NamingException;
-
-import org.apache.tools.ant.BuildException;
-import org.pepstock.jem.ant.tasks.StepJava;
-import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
+import org.pepstock.jem.Result;
+import org.pepstock.jem.util.Parser;
 
 /**
  * Is a utility (both a task ANT and a main program) that return doing nothing.<br>
@@ -29,35 +26,19 @@ import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
  * @version 1.0
  * 
  */
-public class NullTask extends StepJava {
+public class NullWithReturnCodeTask {
 	
 	/**
-	 * Empty constructor
-	 */
-	public NullTask() {
-	}
-
-	/**
-	 * Sets itself as main program and calls <code>execute</code> method of
-	 * superclass (StepJava).
+	 * Main program, called by StepJava class. Sets the exit code passed by argument.
 	 * 
-	 * @throws BuildException occurs if an error occurs
-	 */
-	@Override
-	public void execute() throws BuildException {
-		super.setClassname(NullTask.class.getName());
-		super.execute();
-	}
-
-	/**
-	 * Main program, called by StepJava class. It does nothing.
-	 * 
-	 * @param args not used
-	 * @throws NamingException 
-	 * @throws InvalidDatasetNameException 
+	 * @param args exit code to use
 	 */
 	public static void main(String[] args) {
-		// do nothing
+		int exitCode = Result.SUCCESS;
+		if (args != null && args.length == 1){
+			exitCode = Parser.parseInt(args[0], Result.SUCCESS);
+		}
+		System.exit(exitCode);
 	}
 
 }

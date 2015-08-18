@@ -220,9 +220,6 @@ public abstract class ScriptFactory extends AntFactory {
 	    result.append("</script>");
 	    result.append("</target>");
 	    result.append("</project>");
-	    
-	    System.out.println(result);
-	    
 	    return result;
 	}
 

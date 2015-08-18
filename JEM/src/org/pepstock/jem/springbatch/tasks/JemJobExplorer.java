@@ -31,7 +31,7 @@ import org.springframework.batch.core.repository.ExecutionContextSerializer;
  * to use for restartability.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 3.0
+ * @version 2.3
  */
 public class JemJobExplorer extends JobExplorerFactoryBean {
 

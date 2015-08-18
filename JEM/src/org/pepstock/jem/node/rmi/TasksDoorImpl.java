@@ -90,13 +90,11 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 				// replaces job instance in queue
 				if (props != null && !props.isEmpty()){
 					Map<String, Object> jclProps = storedJob.getJcl().getProperties();
-					System.err.println(jclProps);
 					if (jclProps != null){
 						jclProps.putAll(props);
 					} else {
 						storedJob.getJcl().setProperties(props);
 					}
-					System.err.println(jclProps);
 				}
 				runningQueue.replace(storedJob.getId(), storedJob);
 			} else {

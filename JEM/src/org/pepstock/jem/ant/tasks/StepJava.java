@@ -61,7 +61,6 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
-import org.pepstock.jem.util.Parser;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -102,7 +101,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	
 	private Class<?> clazz = null;
 	
-	private Map<String, Object> sharedData = SharedHashMap.getInstance(); 
+	private ReturnCode sharedRC = SharedReturnCode.getInstance(); 
 
 	/**
 	 * Calls super constructor and set fail-on-error to <code>true</code>.
@@ -263,8 +262,13 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		// sets the current step
 		StepsContainer.getInstance().setCurrent(this);
-		
+		// reset the return code
+		sharedRC.setRC(Result.SUCCESS);
+		// checks if the result property is set
+		// if not, it sets automatically
+		// one based on target, task and id
 		if (resultProperty == null){
 			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
 		}
@@ -440,13 +444,11 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				if (clazz != null){
 					returnCode = ReturnCodesContainer.getInstance().getReturnCode(clazz);
 				} else {
-					// checks if there is the system property with return code 
-					Object javaMainLauncherRC = sharedData.get(JavaMainClassLauncher.class.getName());
-					if (javaMainLauncherRC != null){
-						returnCode = Parser.parseInt(javaMainLauncherRC.toString(), Result.SUCCESS);
-					}
+					// gets return code by proxy due to different classloader 
+					returnCode = sharedRC.getRC();
 				}
 			} 
+			// stores the return code
 			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, resultProperty, returnCode);
 			
 			// checks datasets list

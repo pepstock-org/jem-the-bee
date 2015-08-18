@@ -90,7 +90,7 @@ public class JavaMainClassLauncher {
 				// stores it as system property
 				// using the className as KEY
 				if (returnCode != Result.SUCCESS){
-					SharedHashMap.getInstance().put(JavaMainClassLauncher.class.getName(), String.valueOf(returnCode));
+					SharedReturnCode.getInstance().setRC(returnCode);
 				}
 			} catch (InvocationTargetException e) {
 				throw new JemException(e.getCause().getMessage(), e);
