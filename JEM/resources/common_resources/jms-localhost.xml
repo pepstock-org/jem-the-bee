@@ -1,0 +1,7 @@
+<resource name="JMSlocalhost" type="jms">
+	<property name="java.naming.provider.url" override="false">tcp://localhost:10002</property>
+	<property name="java.naming.factory.initial" override="false">net.timewalker.ffmq3.jndi.FFMQInitialContextFactory</property>
+	<property name="connectionFactoryName" override="false">factory/QueueConnectionFactory</property>
+	<property name="username" override="false">admin</property>
+	<property name="password" encrypt="true" override="false">admin</property>
+</resource>

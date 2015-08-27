@@ -16,11 +16,11 @@
 		<!-- to refers the environment variable -->
 	<property environment="env"/>
 
-	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.tasks.utilities.GDGTask" />
 
 	<target name="step1">
 	    <!-- define the gdg -->
-	    <gdg license="Pepstock_JEM_AntUtil.license">
+	    <gdg>
 			<dataDescription name="GDG_REBUILD1" disposition="NEW">
 				<dataSet name="test_antutils/gdg/rebuild1"/>
 			</dataDescription>
@@ -36,7 +36,7 @@
 				</dataSet>
 			</dataDescription>
 		</gdg>
-	    <gdg license="Pepstock_JEM_AntUtil.license">
+	    <gdg>
 			<dataDescription name="GDG_REBUILD1" disposition="OLD">
 				<dataSet name="test_antutils/gdg/rebuild1"/>
 			</dataDescription>

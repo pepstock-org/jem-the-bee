@@ -22,14 +22,14 @@
 	ANT task definition
 	-->
 	<taskdef name="copy" classname="org.pepstock.jem.ant.tasks.utilities.CopyTask" />
-	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.tasks.utilities.GDGTask" />
 	
 	<!-- 
 	COPY: copy a GDG generation 0, addind additional records defined inside a INLINE dataset, into a new generation
 	-->
 	<target name="testcopy">
 	    <!-- define the gdg -->
-    	<gdg id="define" license="Pepstock_JEM_AntUtil.license">
+    	<gdg id="define">
 			<dataDescription name="GDG_COPY" disposition="NEW">
 				<dataSet name="test_antutils/gdg/copy"/>
 			</dataDescription>

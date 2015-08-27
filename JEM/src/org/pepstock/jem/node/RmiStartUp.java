@@ -21,7 +21,8 @@ import java.rmi.RemoteException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.rmi.CommonResourcer;
 import org.pepstock.jem.node.rmi.CommonResourcerImpl;
-import org.pepstock.jem.node.rmi.ExternalObject;
+import org.pepstock.jem.node.rmi.InternalUtilities;
+import org.pepstock.jem.node.rmi.InternalUtilitiesImpl;
 import org.pepstock.jem.node.rmi.ResourceLocker;
 import org.pepstock.jem.node.rmi.ResourceLockerImpl;
 import org.pepstock.jem.node.rmi.TasksDoor;
@@ -36,8 +37,6 @@ import org.pepstock.jem.util.rmi.RegistryContainer;
  */
 public class RmiStartUp {
 	
-	private static final String CLASS_FOR_EXTERNAL = "org.pepstock.jem.ant.AntUtilManager";
-
 	/**
 	 * to avoid any instantiation
 	 */
@@ -62,38 +61,13 @@ public class RmiStartUp {
 			RegistryContainer.getInstance().addRmiObject(CommonResourcer.NAME, new CommonResourcerImpl());
 			LogAppl.getInstance().emit(NodeMessage.JEMC015I, CommonResourcer.NAME);
 
-			// loads external objects
-			loadExternalObjects();
+			// create and load RMI object for internal services, used by ANT utilities
+			RegistryContainer.getInstance().addRmiObject(InternalUtilities.NAME, new InternalUtilitiesImpl());
+			LogAppl.getInstance().emit(NodeMessage.JEMC015I, InternalUtilities.NAME);
 
 		} catch (RemoteException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC016E, e, TasksDoor.NAME);
 			throw e;
 		}
-	}
-	
-	/**
-	 * Loads external RMI object
-	 */
-	private static void loadExternalObjects(){
-		try {
-			// Try to load internal utilities. Due to they are not free
-			// and in another project, avoiding to create useless dependency they are
-			// loaded dynamically, by reflection
-			Class<?> internals = Class.forName(CLASS_FOR_EXTERNAL);
-			ExternalObject externalObject = (ExternalObject)internals.newInstance();
-			// create and load RMI object for internal utilities
-			RegistryContainer.getInstance().addRmiObject(externalObject.getName(), externalObject.getObject());
-			LogAppl.getInstance().emit(NodeMessage.JEMC195I, externalObject.getName());
-		} catch (ClassNotFoundException e) {
-			// ignore the stack trace
-			LogAppl.getInstance().ignore(e.getMessage(), e);
-			LogAppl.getInstance().emit(NodeMessage.JEMC196W, CLASS_FOR_EXTERNAL);
-		} catch (InstantiationException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-		} catch (IllegalAccessException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-		} catch (RemoteException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC196W, e, CLASS_FOR_EXTERNAL);
-		} 	
 	}
 }

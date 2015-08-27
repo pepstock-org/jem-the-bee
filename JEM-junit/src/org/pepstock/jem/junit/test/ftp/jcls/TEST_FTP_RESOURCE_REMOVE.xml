@@ -4,10 +4,10 @@
 		This job removes the FTP resource used to test FTP functionalities.
     </description>
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 
 	<target name="remove">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					REMOVE JUNIT-FTP-RESOURCE;

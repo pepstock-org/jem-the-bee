@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="ROLES" default="step3" basedir=".">
+	<description>
+		ROLES actions
+    </description>
+
+	<!--
+	GET FTPlocalhost;
+	GETLIST;
+	REMOVE
+	GRANT jobs:* TO RoleProva;
+	REVOKE jobs:* TO RoleProva;	
+	REMOVE RoleProva;
+	ADD Stock,Pluto,Paperino TO RoleProva;
+	DELETE Pluto FROM RoleProva;
+	-->
+
+	<property name="jem.job.name" value="ROLES"/>
+	<property name="jem.job.environment" value="C0-CRM"/>
+	
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
+
+	<target name="step1">
+		<resources>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST *;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+	<target name="step2" depends="step1">
+		<resources>
+			<dataDescription name="mioNoEnc" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					<resources>
+					  <resource name="FTPlocalhost" type="ftp">
+					    <property name="url" visible="true" override="false">ftp://localhost:2121</property>
+					    <property name="username" visible="true" override="false">admin</property>
+					    <property name="password" visible="false" override="false">admin</property>
+					  </resource>
+					</resources>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET SOURCE mioNoEnc NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+
+	<target name="step3" depends="step2">
+		<resources>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST *;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

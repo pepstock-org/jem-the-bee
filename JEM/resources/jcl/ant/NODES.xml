@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="NODES" default="step1" basedir=".">
+	<description>
+		NODES action
+		
+		START *;
+		DRAIN 192*;
+		START 192*;
+
+    </description>
+
+
+	<property name="jem.job.name" value="NODES"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+
+	<taskdef name="nodes" classname="org.pepstock.jem.ant.tasks.utilities.NodesTask" />
+
+	<target name="step1">
+		<nodes>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					DRAIN *; 
+				</dataSet>
+			</dataDescription>
+		</nodes>
+	</target>
+
+</project>

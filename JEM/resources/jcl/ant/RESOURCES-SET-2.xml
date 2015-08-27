@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project name="ROLES" default="step3" basedir=".">
+	<description>
+		ROLES actions
+    </description>
+
+	<!--
+
+	-->
+
+	<property name="jem.job.name" value="ROLES"/>
+	<property name="jem.job.environment" value="C0-CRM"/>
+	
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
+
+	<target name="step1">
+		<resources>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST *;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+	<target name="step2" depends="step1">
+		<resources>
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataset>
+					<![CDATA[
+					<resources>
+					  <resource name="FTPlocalhost" type="ftp">
+					    <property name="url" visible="true" override="false">ftp://localhost:2121</property>
+					    <property name="username" visible="true" override="false">admin</property>
+						<property name="password" visible="false" override="false" 
+									hash="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918">466fe5d76972a1589195039c327959e33e3854f2a515dbf359e6112e79d53e6b</property>
+					  </resource>
+					</resources>
+					]]>
+				</dataset>
+			</dataDescription>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					SET ;
+					SET SOURCE INPUT;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+
+	<target name="step3" depends="step2">
+		<resources>
+			<dataDescription name="OUTPUT" sysout="true" disposition="NEW"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST * NOENCRYPTION;
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

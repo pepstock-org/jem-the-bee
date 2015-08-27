@@ -9,12 +9,12 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 	
 
 	<!-- set resource JMS and HTTP -->
 	<target name="set-jms">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JMS" disposition="SHR">
 				<dataset>
 					<![CDATA[

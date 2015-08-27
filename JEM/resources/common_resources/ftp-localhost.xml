@@ -1,0 +1,5 @@
+<resource name="FTPlocalhost" type="ftp">
+	<property name="url" override="false" visible="true">ftp://localhost:2121</property>
+	<property name="username" override="false" visible="true">admin</property>
+	<property name="password" override="false" visible="false">admin</property>
+</resource>

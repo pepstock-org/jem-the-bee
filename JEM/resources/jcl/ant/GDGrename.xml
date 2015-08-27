@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="GDG-RENAME" default="gdg-rename" basedir=".">
+	<description>
+		RENAME GDGs
+    </description>
+
+	<property name="jem.job.name" value="GDG-RENAME"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!-- to refers the environment variable -->
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+
+	<target name="gdg-rename">
+		<gdg>
+
+			<dataDescription name="GDG1" disposition="OLD">
+				<dataSet name="gdg/jemtest"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    RENAME GDG GDG1 00020 TO PIPPO;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+</project>

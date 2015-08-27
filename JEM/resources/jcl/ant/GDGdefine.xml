@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="GDG-DEF" default="gdg-definition" basedir=".">
+	<description>
+		DEFINE 2 GDGs
+    </description>
+
+	<property name="jem.job.name" value="GDG-DEF"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.domain" value="domain"/-->
+	<!-- to refers the environment variable -->
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+
+	<target name="gdg-definition">
+		<gdg>
+			<dataDescription name="GDG3" disposition="NEW">
+				<dataSet name="gdg3/test-001"/>
+			</dataDescription>
+
+			<dataDescription name="GDG1" disposition="NEW">
+				<dataSet name="gdg/test-001"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    DEFINE GDG GDG1 NOEMPTY;
+					DEFINE GDG GDG3 NOEMPTY;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+	<!--gdg>
+		<dataDescription name="GDG1" disposition="NEW">
+			<dataSet name="gdg/jemtest"/>
+		</dataDescription>
+
+		<dataDescription name="GDG2" disposition="NEW">
+			<dataSet name="gdg2/jemtest"/>
+		</dataDescription>
+
+		<dataDescription name="COMMAND" disposition="SHR">
+			<dataSet>
+                DEFINE GDG GDG1 NOEMPTY;
+                DEFINE GDG GDG2 ;
+			</dataSet>
+		</dataDescription>
+	</gdg-->
+
+	
+</project>

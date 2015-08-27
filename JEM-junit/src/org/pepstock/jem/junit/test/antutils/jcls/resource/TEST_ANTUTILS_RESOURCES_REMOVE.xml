@@ -20,10 +20,10 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef resource="org/pepstock/jem/ant/JemAntUtilTasks.properties"/>
+	<taskdef resource="org/pepstock/jem/ant/tasks/JemAntTasks.properties"/>
 	
 	<target name="remove-resources">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					REMOVE JUNIT-FTP-RESOURCE;

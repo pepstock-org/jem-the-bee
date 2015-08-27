@@ -21,14 +21,14 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef resource="org/pepstock/jem/ant/JemAntUtilTasks.properties"/>
+	<taskdef resource="org/pepstock/jem/ant/tasks/JemAntTasks.properties"/>
 	
 	<target name="set-resources" depends="set-ftp,set-jdbc,set-jms-http,set-jppf,set-jndi,set-rmi,set-rest">
 	</target>
 	
 	<!-- set resource JDBC -->
 	<target name="set-jdbc">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JDBC" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -53,7 +53,7 @@
 	
 	<!-- set resource FTP -->
 	<target name="set-ftp">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="FTP" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -76,7 +76,7 @@
 
 	<!-- set resource JMS and HTTP -->
 	<target name="set-jms-http">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JMS" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -122,7 +122,7 @@
 
 	<!-- set resource JPPF -->
 	<target name="set-jppf">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JPPF" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -144,7 +144,7 @@
 	
 	<!-- set resource JNDI -->
 	<target name="set-jndi">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JNDI" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -168,7 +168,7 @@
 	
 	<!-- set resource RMI -->
 	<target name="set-rmi">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="RMI" disposition="SHR">
 				<dataset>
 					<![CDATA[
@@ -192,7 +192,7 @@
 	
 	<!-- set resource JNDI -->
 	<target name="set-rest">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="REST" disposition="SHR">
 				<dataset>
 					<![CDATA[

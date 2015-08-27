@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="STATS" default="step1" basedir=".">
+	<description>
+		STATS action
+    </description>
+
+
+	<property name="jem.job.name" value="STATS"/>
+	<property name="jem.job.environment" value="C0-CRM"/>
+
+	<taskdef name="output" classname="org.pepstock.jem.ant.tasks.utilities.OutputCollectTask" />
+
+	<target name="step1">
+		<output>
+			<arg value="-days"/>
+			<arg value="-1"/>
+			<!--arg value="-date"/>
+			<arg value="20130101"/-->
+			<arg value="-class"/>
+			<arg value="org.pepstock.jem.node.stats.DefaultTransformAndLoader"/>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			
+		</output>
+	</target>
+
+</project>
