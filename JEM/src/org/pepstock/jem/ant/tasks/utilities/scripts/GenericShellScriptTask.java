@@ -17,7 +17,6 @@
 package org.pepstock.jem.ant.tasks.utilities.scripts;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +28,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.ant.GenericScriptFactory;
 import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
+import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.VariableSubstituter;
 
 /**
@@ -54,8 +54,9 @@ public class GenericShellScriptTask extends ShellScriptTask {
 		try {
 			// gets teh complete command to be executed
 			String hexCommand = getProject().getProperty(GenericScriptFactory.GENERIC_COMMAND_PROPERTY);
-			// the Script factry set the value in HEX format to avoid error during XML encoding
-			String command = new String(Hex.decodeHex(hexCommand.toCharArray()), Charset.defaultCharset());
+			// the Script factory set the value in HEX format to avoid error during XML encoding
+			Hex hex = new Hex(CharSet.DEFAULT);
+			String command = new String(hex.decode(hexCommand.getBytes(CharSet.DEFAULT)), CharSet.DEFAULT);
 			// parses the command
 			parse(command);
 

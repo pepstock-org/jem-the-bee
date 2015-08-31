@@ -135,6 +135,7 @@ public class ShellScriptTask extends StepExec {
 		try {
 			// creates a temporary file 
 			temporaryScriptFile = File.createTempFile("script", suffix, null);
+			temporaryScriptFile.setExecutable(true);
 			temporaryScriptFile.deleteOnExit();
 			// writes the script
 			fos = new FileOutputStream(temporaryScriptFile);

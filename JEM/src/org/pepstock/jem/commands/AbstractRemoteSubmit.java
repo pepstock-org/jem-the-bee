@@ -170,6 +170,10 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 	 */
 	@Override
 	public void jobSubmit() throws SubmitException {
+		// add JEM url handler factory if the user will use
+		// JEM url to add JCL content from GFS of JEM
+		URL.setURLStreamHandlerFactory(new JemURLStreamHandlerFactory());
+		
 		String jobName= null;
 		// gets URL of JCL content, reads and loads it into Prejob object,
 		// setting the JCL type

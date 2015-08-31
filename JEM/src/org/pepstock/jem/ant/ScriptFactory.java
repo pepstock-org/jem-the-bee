@@ -31,6 +31,7 @@ import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.ant.tasks.ValueParser;
 import org.pepstock.jem.factories.JclFactoryException;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Is a JCL factory which enables to submit a script directly, withou having any ANT file.<br>
@@ -96,7 +97,8 @@ public abstract class ScriptFactory extends AntFactory {
 			for (Entry<Object, Object> entry : getProperties().entrySet()){
 				// it puts in HEX format to avoid
 				// XML error by encoding
-				String value = Hex.encodeHexString(entry.getValue().toString().getBytes());
+				Hex hex = new Hex(CharSet.DEFAULT);
+				String value = new String(hex.encode(entry.getValue().toString().getBytes()));
 				jemProperties.put(entry.getKey(), value);
 			}
 			// creates ANT file 

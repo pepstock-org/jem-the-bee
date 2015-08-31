@@ -16,8 +16,15 @@
 */
 package org.pepstock.jem.node;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.factories.JclFactory;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.factories.JemFactory;
@@ -27,7 +34,7 @@ import org.pepstock.jem.log.LogAppl;
  * Creates a new JCL object to load into PreJob object (using static methods)
  * 
  * @author Andrea "Stock" Stocchero
- * 
+ * @version 1.0
  */
 public class Factory {
 
@@ -51,6 +58,10 @@ public class Factory {
 	 *             has an exception creating and validating the JCL source
 	 */
 	public static void loadJob(PreJob prejob) throws JclFactoryException {
+		// checks and load (if necessary)
+		// the JCL content from GFS
+		// if JEM URL has been set
+		loadJclFromURL(prejob);
 		Jcl jcl = null;
 		// prejob without type
 		if (prejob.getJclType() == null){
@@ -106,4 +117,32 @@ public class Factory {
 		}
 		throw new JclFactoryException(NodeMessage.JEMC143E.toMessage().getFormattedMessage("null"));
 	}
+	
+	/**
+	 * Checks if who submitted the job used the JEM URL, to get the content
+	 * from JEM GFS.
+	 * 
+	 * @param prejob prejob to check
+	 * @throws JclFactoryException if the URL is malformed
+	 */
+	private static void loadJclFromURL(PreJob prejob) throws JclFactoryException{
+		// only URL is not null and url is JEM URL
+		if (prejob.getUrl() != null && prejob.getUrl().startsWith(JemURLStreamHandlerFactory.PROTOCOL)){
+			try {
+				// gets URL using the JEM URL Stream handler
+				URL url = new URL(prejob.getUrl());
+				// reads teh content from GFS
+				StringWriter sw = new StringWriter();
+				// open Stream using JEM URL Stream handler
+				IOUtils.copy(url.openStream(), sw);
+				// sets content to pre job
+				prejob.setJclContent(sw.getBuffer().toString());
+			} catch (MalformedURLException e) {
+				throw new JclFactoryException(prejob.getUrl(), e);
+			} catch (IOException e) {
+				throw new JclFactoryException(prejob.getUrl(), e);
+			}
+		}
+	}
+	
 }

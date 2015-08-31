@@ -34,14 +34,13 @@ public class PreJob implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 */
 	private Job job = null;
 
 	private String jclContent = null;
 
 	private String jclType = null;
+	
+	private String url = null;
 
 	/**
 	 * Constructor without any arguments
@@ -105,12 +104,32 @@ public class PreJob implements Serializable {
 	public void setJclType(String jclType) {
 		this.jclType = jclType;
 	}
+	
+	/**
+	 * Gets the JEM url (ONLY if the submit uses a JEM URL), otherwise always null.<br>
+	 * JEM URL is the locator of file in JEM GFS.
+	 * 
+	 * @return the url JEM url to locate a resource in JEM GFS
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * Sets the JEM url (ONLY if the submit uses a JEM URL)<br>
+	 * JEM URL is the locator of file in JEM GFS.
+	 * @param url the JEM url to locate a resource in JEM GFS
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "PreJob [job=" + job + ", jclType=" + jclType + "]";
+		return "PreJob [job=" + job + ", jclType=" + jclType + ", url=" + url + "]";
 	}
+
 }

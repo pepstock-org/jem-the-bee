@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
@@ -64,6 +66,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 * Empty constructor
 	 */
 	public JclCheckingQueueManager() {
+		URL.setURLStreamHandlerFactory(new JemURLStreamHandlerFactory());
 	}
 
 	/**

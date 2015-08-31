@@ -106,7 +106,13 @@ public enum SubmitMessage implements MessageInterface{
 	 * This message is not used in JAVA code but in Javascript one (see NodeJS submit)
 	 */
 	@Description(explanation = "It occurs when submitting a job with NodeJS, it shows which JEM nod eis used to submit.")
-	JEMW013I(13, "Connecting to JEM node {0}:{1}", MessageLevel.INFO);
+	JEMW013I(13, "Connecting to JEM node {0}:{1}", MessageLevel.INFO),
+	
+	/**
+	 * "{0} is not a valid GFS file type", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when submitting a job using a jem URL and the URL is not well formed.<br> Please have a look about JEM URL.")
+	JEMW014E(14, "{0} is not a valid GFS file type", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>IoMessage</code>. 
