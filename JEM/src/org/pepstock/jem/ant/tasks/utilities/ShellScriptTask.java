@@ -107,7 +107,11 @@ public class ShellScriptTask extends StepExec {
 		// and executes!
 		try {
 			writeScript();
-			super.createArg().setValue(getScriptName(temporaryScriptFile));
+			
+			String scriptName = getScriptName(temporaryScriptFile);
+			if (isScriptNameLastArg()){
+				super.createArg().setValue(scriptName);
+			}
 			super.setExecutable(shell);
 			super.execute();
 		} finally {
@@ -158,6 +162,10 @@ public class ShellScriptTask extends StepExec {
 	 */
 	protected String getScriptName(File file){
 		return file.getAbsolutePath();
+	}
+	
+	protected boolean isScriptNameLastArg(){
+		return true;
 	}
 	
 }

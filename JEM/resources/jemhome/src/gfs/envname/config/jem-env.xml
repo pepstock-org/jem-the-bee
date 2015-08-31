@@ -19,9 +19,7 @@
 	<statistics-manager/>
 
 	<!-- node className="org.pepstock.jem.grs.GrsNode">
-		<properties>
-			<property name="license" value="Pepstock_JEM_GRS.license" />
-		</properties>
+		<properties/>
 	</node-->
 
 	<factories>
@@ -64,6 +62,17 @@
 				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
 			</properties>
 		</factory>
+
+		<!--factory className="org.pepstock.jem.ant.GenericScriptFactory">
+			<properties>
+				<property name="jem.generic.jcl.type" value=""/>
+				<property name="jem.generic.jcl.type.description" value=""/>
+				<property name="jem.generic.jcl.comment" value="#"/>
+				<property name="jem.generic.jcl.tag" value=""/>
+				<property name="jem.generic.jcl.mode" value=""/>
+				<property name="jem.generic.command" value=""/>
+			</properties>
+		</factory-->
 
 		<!-- factory className="org.pepstock.jem.jbpm.JBpmFactory">
 			<properties>

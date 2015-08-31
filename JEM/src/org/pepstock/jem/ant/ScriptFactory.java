@@ -19,8 +19,10 @@ package org.pepstock.jem.ant;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
@@ -78,7 +80,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 * @return the ANT task to use to execute the script
 	 */
 	public abstract Class<?> getAntTask();
-
+	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.AntFactory#createJcl(java.lang.String)
 	 */
@@ -88,6 +90,15 @@ public abstract class ScriptFactory extends AntFactory {
 		try {
 			// reads script extracting the JEM properties
 			Properties jemProperties = getProperties(content);
+			
+			// by default, it loads all properties
+			// sets on JCL factory definition as additional properties
+			for (Entry<Object, Object> entry : getProperties().entrySet()){
+				// it puts in HEX format to avoid
+				// XML error by encoding
+				String value = Hex.encodeHexString(entry.getValue().toString().getBytes());
+				jemProperties.put(entry.getKey(), value);
+			}
 			// creates ANT file 
 			result = getAntJcl(content, jemProperties);
 		} catch (Exception e) {
