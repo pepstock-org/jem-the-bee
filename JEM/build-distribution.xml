@@ -39,7 +39,6 @@
 		<copy todir="${working.jemhome.directory}/lib">
 			<fileset dir="${jem.workspace}/${jem.library.directory}">
 				<exclude name="junit/" />
-				<exclude name="proguard/" />
 			</fileset>
 		</copy>
 		<!-- jem-gwt war -->
@@ -60,7 +59,6 @@
 		</manifest>
 		<!-- COPY licences files -->
 		<copy file="${jem.workspace}/${license.file}" todir="${working.jemhome.directory}" />
-		<copy file="${jem.workspace}/${license.file.exception}" todir="${working.jemhome.directory}" />
 		<!-- create zip file containing the distribution -->
 		<zip destfile="${distribute.directory}/${zip.name}" basedir="${working.directory}" />
 	</target>
