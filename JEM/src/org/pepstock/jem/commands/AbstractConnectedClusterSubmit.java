@@ -202,7 +202,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	public void jobSubmit() throws SubmitException {
 		// add JEM url handler factory if the user will use
 		// JEM url to add JCL content from GFS of JEM
-		URL.setURLStreamHandlerFactory(new JemURLStreamHandlerFactory());
+		SetURLFactory.install();
 		// sets HC with Log4j
 		System.setProperty("hazelcast.logging.type", "log4j");
 		// creates a new Client instance of Hazelcast

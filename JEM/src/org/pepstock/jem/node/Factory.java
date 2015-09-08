@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.Jcl;
@@ -73,7 +74,7 @@ public class Factory {
 			// get factory from map, loaded during startup of node
 			JemFactory factory = Main.FACTORIES_LIST.get(prejob.getJclType().toLowerCase());
 			// creates JCL object using the factory
-			jcl = Factory.createJcl(prejob.getJclContent(), factory);
+			jcl = Factory.createJcl(prejob.getJclContent(), prejob.getJob().getInputArguments(), factory);
 		}
 		// sets JCL type
 		jcl.setType(prejob.getJclType().toLowerCase());
@@ -93,8 +94,14 @@ public class Factory {
 	 * @throws JclFactoryException the factory has an exception creating and
 	 *             validating the JCL source
 	 */
-	private static Jcl createJcl(String content, JclFactory factory) throws JclFactoryException {
-		return factory.createJcl(content);
+	private static Jcl createJcl(String content, List<String> inputArguments, JclFactory factory) throws JclFactoryException {
+		try {
+			return factory.createJcl(content, inputArguments);
+		} catch (Error e) {
+			// it catches here if
+			// there is any error related to reflection
+			throw new JclFactoryException(e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -106,7 +113,7 @@ public class Factory {
 	private static Jcl scanAllJclFactories(PreJob prejob) throws JclFactoryException{
 		for (JemFactory factory : Main.FACTORIES_LIST.values()){
 			try {
-				Jcl jcl =  Factory.createJcl(prejob.getJclContent(), factory);
+				Jcl jcl =  Factory.createJcl(prejob.getJclContent(), prejob.getJob().getInputArguments(), factory);
 				prejob.setJclType(factory.getType());
 				return jcl;
 				// Exception class must be caught 

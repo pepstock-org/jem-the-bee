@@ -40,7 +40,7 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public class JemURLStreamHandler extends URLStreamHandler {
+public final class JemURLStreamHandler extends URLStreamHandler {
 	
 	// separator of schemes
 	private static final String SEMICOLONS = ":";

@@ -26,7 +26,7 @@ import java.net.URLStreamHandlerFactory;
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public class JemURLStreamHandlerFactory implements URLStreamHandlerFactory {
+public final class JemURLStreamHandlerFactory implements URLStreamHandlerFactory {
 	
 	/**
 	 * Protocol for JEM

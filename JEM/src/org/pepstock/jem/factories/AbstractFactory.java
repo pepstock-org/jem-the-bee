@@ -102,8 +102,6 @@ public abstract class AbstractFactory implements JemFactory {
 	public void setClassPath(List<String> classpath) {
 		this.classpath = classpath;
 	}
-	
-	
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.factories.JobTaskFactory#getClassPath()

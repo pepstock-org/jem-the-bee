@@ -86,7 +86,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 * @see org.pepstock.jem.ant.AntFactory#createJcl(java.lang.String)
 	 */
 	@Override
-	public final Jcl createJcl(String content) throws JclFactoryException {
+	public final Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		StringBuilder result = null;
 		try {
 			// reads script extracting the JEM properties
@@ -109,7 +109,7 @@ public abstract class ScriptFactory extends AntFactory {
 		Jcl jcl;
 		try {
 			// used ANTJcl to create the JCL 
-			jcl = super.createJcl(result.toString());
+			jcl = super.createJcl(result.toString(), inputArguments);
 		} catch (JclFactoryException e) {
 			// At this time type=ANT and it's not correct
 			// so overrides the new type

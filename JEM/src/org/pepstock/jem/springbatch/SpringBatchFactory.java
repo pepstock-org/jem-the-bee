@@ -22,9 +22,11 @@ import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.AbstractFactory;
@@ -131,7 +133,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	 * @throws JclFactoryException if syntax is not correct, a exception occurs
 	 */
 	@Override
-	public Jcl createJcl(String content) throws JclFactoryException {
+	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates JCL object setting the source code
 		Jcl jcl = new Jcl();
 		jcl.setType(SPRINGBATCH_TYPE);
@@ -139,7 +141,7 @@ public class SpringBatchFactory extends AbstractFactory {
 
 		// check validation of content
 		try {
-			validate(jcl);
+			validate(jcl, inputArguments);
 		} catch (Exception e) {
 			throw new JclFactoryException(jcl, e);
 		}
@@ -161,7 +163,8 @@ public class SpringBatchFactory extends AbstractFactory {
 	 * @throws SAXException if any exception occurs
 	 * @throws IOException if any exception occurs
 	 */
-	private void validate(Jcl jcl) throws SpringBatchException, SAXException, IOException {
+	private void validate(Jcl jcl, List<String> inputArguments) throws SpringBatchException, SAXException, IOException {
+		System.err.println(inputArguments);
 		XMLParser parser;
 		JemBean bean = null;
 
@@ -266,10 +269,26 @@ public class SpringBatchFactory extends AbstractFactory {
 		// if options are set, add to JCL
 		if (bean.getOptions() != null) {
 			jclMap.put(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE, bean.getOptions());
+		} else if (inputArguments != null && !inputArguments.isEmpty()){
+			// checks if the options are set on Java properties, in the input parameters
+			for (String arg : inputArguments){
+				if (arg.startsWith(JemBeanDefinitionParser.JAVA_PROPERTY_OPTIONS_ATTRIBUTE)){
+					String value = StringUtils.substringAfter(arg, JemBeanDefinitionParser.JAVA_PROPERTY_OPTIONS_ATTRIBUTE);
+					jclMap.put(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE, value);
+				}
+			}
 		}
 		// if parameters are set, add to JCL
 		if (bean.getParameters() != null) {
 			jclMap.put(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE, bean.getParameters());
+		} else if (inputArguments != null && !inputArguments.isEmpty()){
+			// checks if the options are set on Java properties, in the input parameters
+			for (String arg : inputArguments){
+				if (arg.startsWith(JemBeanDefinitionParser.JAVA_PROPERTY_PARAMETERS_ATTRIBUTE)){
+					String value = StringUtils.substringAfter(arg, JemBeanDefinitionParser.JAVA_PROPERTY_PARAMETERS_ATTRIBUTE);
+					jclMap.put(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE, value);
+				}
+			}
 		}
 		jcl.setProperties(jclMap);
 	}

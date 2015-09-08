@@ -67,11 +67,21 @@ public class JemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
 	 * Constant to define options of Springbatch
 	 */
 	public static final String OPTIONS_ATTRIBUTE =  "options";
+	
+	/**
+	 * Property "options" added to submit as java properties
+	 */
+	public static final String JAVA_PROPERTY_OPTIONS_ATTRIBUTE =  "-Djem.springbatch."+OPTIONS_ATTRIBUTE+"=";
 
 	/**
 	 * Constant to define parameters of Springbatch
 	 */
 	public static final String PARAMETERS_ATTRIBUTE =  "parameters";
+	
+	/**
+	 * Property "parameters" added to submit as java properties
+	 */
+	public static final String JAVA_PROPERTY_PARAMETERS_ATTRIBUTE =  "-Djem.springbatch."+PARAMETERS_ATTRIBUTE+"=";
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser#doParse(org.w3c.dom.Element, org.springframework.beans.factory.support.BeanDefinitionBuilder)

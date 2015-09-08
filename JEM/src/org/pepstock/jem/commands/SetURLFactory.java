@@ -13,28 +13,35 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test;
+*/
+package org.pepstock.jem.commands;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
-import org.pepstock.jem.junit.test.common.CommonSuite;
-import org.pepstock.jem.junit.test.http.HttpSuite;
-import org.pepstock.jem.junit.test.jbpm.JBpmSuite;
-import org.pepstock.jem.junit.test.rest.RestSuite;
-import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
+import java.net.URL;
 
 /**
- * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 2.3
  */
-@RunWith(Suite.class)
-//@SuiteClasses({SpringBatchSuite.class })
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
-		RestSuite.class, HttpSuite.class, JBpmSuite.class})
-public class JemTestSuite {
+public final class SetURLFactory {
+	
+	private static boolean installed = false;
+
+	/**
+	 * to avoid any instantiation
+	 */
+	private SetURLFactory() {
+	}
+	
+	/**
+	 * Installs the JEM URL factory, checking if is already done
+	 */
+	public synchronized static void install(){
+		if (!installed){
+			// add JEM url handler factory if the user will use
+			// JEM url to add JCL content from GFS of JEM
+			URL.setURLStreamHandlerFactory(new JemURLStreamHandlerFactory());
+			installed = true;
+		}
+	}
 
 }

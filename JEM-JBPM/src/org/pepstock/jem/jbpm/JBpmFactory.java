@@ -18,6 +18,7 @@ package org.pepstock.jem.jbpm;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -99,7 +100,7 @@ public class JBpmFactory extends AbstractFactory {
 	 * @see org.pepstock.jem.factories.JclFactory#createJcl(java.lang.String)
 	 */
 	@Override
-	public Jcl createJcl(String content) throws JclFactoryException {
+	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates a default JCL
 		Jcl jcl = new Jcl();
 		// sets type and content
