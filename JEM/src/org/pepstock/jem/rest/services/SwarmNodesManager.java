@@ -17,23 +17,20 @@
 package org.pepstock.jem.rest.services;
 
 import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.NodeInfoBean;
-import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.Nodes;
-import org.pepstock.jem.rest.entities.ReturnedObject;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
-import org.pepstock.jem.rest.entities.SwarmConfig;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
 import org.pepstock.jem.util.filters.Filter;
 
-import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * REST Client side of SWARM NODES service.
@@ -46,171 +43,131 @@ public class SwarmNodesManager extends AbstractRestManager {
 	/**
 	 * Creates a new REST manager using a RestClient
 	 * 
-	 * @param restClient
-	 *            REST client instance
+	 * @param restClient REST client instance
 	 */
 	public SwarmNodesManager(RestClient restClient) {
-		super(restClient);
+		super(restClient, SwarmNodesManagerPaths.MAIN);
 	}
-
 
 	/**
 	 * Returns the list of all nodes joined the cluster.
 	 * 
-	 * @param filter
-	 *            ipaddress or hostname filter
+	 * @param filter ipaddress or hostname filter
 	 * @return collection of nodes
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<NodeInfoBean> getNodes(String filter) throws JemException {
-		SwarmNodesPostService<Nodes, String> service = new SwarmNodesPostService<Nodes, String>(SwarmNodesManagerPaths.LIST);
-		GenericType<JAXBElement<Nodes>> generic = new GenericType<JAXBElement<Nodes>>() {
-
-		};
-		Nodes beans = service.execute(generic, filter);
-		return beans.getNodes();
+	@SuppressWarnings("unchecked")
+	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
+		try {
+			// creates the returned object
+			ClientResponse response = get(SwarmNodesManagerPaths.LIST, filter);
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+		} catch (Exception e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
 
 	/**
 	 * Returns the list of all nodes joined the cluster. UNKNOWN members are not
 	 * returned
 	 * 
-	 * @param filter
-	 *            a String that will be parsed as a {@link Filter}
+	 * @param filter a String that will be parsed as a {@link Filter}
 	 * @return collection of nodes
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws JemException {
-		SwarmNodesPostService<Nodes, String> service = new SwarmNodesPostService<Nodes, String>(SwarmNodesManagerPaths.LIST_BY_FILTER);
-		GenericType<JAXBElement<Nodes>> generic = new GenericType<JAXBElement<Nodes>>() {
-
-		};
-		Nodes beans = service.execute(generic, filter);
-		return beans.getNodes();
+	@SuppressWarnings("unchecked")
+	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
+		try {
+			// creates the returned object
+			ClientResponse response = get(SwarmNodesManagerPaths.LIST_BY_FILTER, filter);
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+		} catch (Exception e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
 
 	/**
 	 * Starts swarm nodes, using a future task by executor service of Hazelcast.
 	 * 
 	 * @return always TRUE
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public boolean start() throws JemException {
-		SwarmNodesGetService<BooleanReturnedObject> service = new SwarmNodesGetService<BooleanReturnedObject>(SwarmNodesManagerPaths.START);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		BooleanReturnedObject result = service.execute(generic, null);
-		return result.isValue();
+	public boolean start() throws RestException {
+		return putAndGetBoolean(SwarmNodesManagerPaths.START);
 	}
-	
+
 	/**
 	 * Shuts down all the swarm nodes, using a future task by executor service
 	 * of Hazelcast.
 	 * 
 	 * @return always true
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public boolean drain() throws JemException {
-		SwarmNodesGetService<BooleanReturnedObject> service = new SwarmNodesGetService<BooleanReturnedObject>(SwarmNodesManagerPaths.DRAIN);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		BooleanReturnedObject result = service.execute(generic, null);
-		return result.isValue();
+	public boolean drain() throws RestException {
+		return putAndGetBoolean(SwarmNodesManagerPaths.DRAIN);
 	}
-	
+
 	/**
 	 * Returns the status of swarm
 	 * 
 	 * @return status if swarm
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String getStatus() throws JemException {
-		SwarmNodesGetService<StringReturnedObject> service = new SwarmNodesGetService<StringReturnedObject>(SwarmNodesManagerPaths.STATUS);
-		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
-
-		};
-		StringReturnedObject result = service.execute(generic, null);
-		return result.getValue();
-	}
-	
-	/**
-	 * Returns the swarm configuration. It always exist because it always created after the first startup of JEM. 
-	 * It uses a name to use as a key in map, but this key is a constant
-	 * 
-     * @param name key of configuration object
-     * @return swarm configuration item.
-	 * @throws JemException if any exception occurs
-	 */
-	public SwarmConfiguration getSwarmConfiguration(String name) throws JemException {
-		SwarmNodesPostService<SwarmConfig, String> service = new SwarmNodesPostService<SwarmConfig, String>(SwarmNodesManagerPaths.GET_CONFIG);
-		GenericType<JAXBElement<SwarmConfig>> generic = new GenericType<JAXBElement<SwarmConfig>>() {
-
-		};
-		SwarmConfig result = service.execute(generic, name);
-		return result.getConfiguration();
-	}
-	
-	/**
-     * Updates the swarm configuration.  
-     * 
-     * @param conf configuration instance to update
-     * @return return the new object
-	 * @throws JemException if any exception occurs
-	 */
-	public SwarmConfiguration updateSwarmConfiguration(SwarmConfiguration conf) throws JemException {
-		SwarmNodesPostService<SwarmConfig, SwarmConfig> service = new SwarmNodesPostService<SwarmConfig, SwarmConfig>(SwarmNodesManagerPaths.UPDATE_CONFIG);
-		GenericType<JAXBElement<SwarmConfig>> generic = new GenericType<JAXBElement<SwarmConfig>>() {
-
-		};
-		if (conf != null){
-			SwarmConfig config = new SwarmConfig();
-			config.setConfiguration(conf);
-			SwarmConfig result = service.execute(generic, config);
-			return result.getConfiguration();
+	public String getStatus() throws RestException {
+		try {
+			// creates the returned object
+			ClientResponse response = get(SwarmNodesManagerPaths.STATUS);
+			String result = response.getEntity(String.class);
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return result;
+			} else {
+				throw new RestException(response.getStatus(), result);
+			}
+		} catch (Exception e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
 		}
-		return null;
-	}
-	
-	/**
-	 * Inner service, which extends post the default get service.
-	 * 
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
-	 */
-	class SwarmNodesGetService<T extends ReturnedObject> extends DefaultGetService<T, String> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public SwarmNodesGetService(String subService) {
-			super(SwarmNodesManager.this.getClient(), SwarmNodesManagerPaths.MAIN, subService);
-		}
-
 	}
 
 	/**
-	 * Inner service, which extends post the default post service.
+	 * Returns the swarm configuration. It always exist because it always
+	 * created after the first startup of JEM. It uses a name to use as a key in
+	 * map, but this key is a constant
 	 * 
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
+	 * @param name key of configuration object
+	 * @return swarm configuration item.
+	 * @throws RestException if any exception occurs
 	 */
-	class SwarmNodesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public SwarmNodesPostService(String subService) {
-			super(SwarmNodesManager.this.getClient(), SwarmNodesManagerPaths.MAIN, subService);
+	public SwarmConfiguration getSwarmConfiguration(String name) throws RestException {
+		try {
+			// creates the returned object
+			ClientResponse response = get(SwarmNodesManagerPaths.GET_CONFIG);
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return response.getEntity(SwarmConfiguration.class);
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+		} catch (Exception e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
 		}
-
 	}
-
 }

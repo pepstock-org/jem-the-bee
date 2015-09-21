@@ -18,15 +18,12 @@ package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * Represents the parameter containing all info to perform a request about GFS.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.1
  */
-@XmlRootElement
 public class GfsRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;

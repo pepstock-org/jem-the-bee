@@ -27,37 +27,37 @@ public final class StatisticsManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "stats";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "stats";
 
 	/**
 	 * Key to define the path to bind get samples method
 	 */
-	public static final String GET_SAMPLES = CommonPaths.QUERYSTRING_SEPARATOR +  "getSamples";
+	public static final String GET_SAMPLES = CommonPaths.PATH_SEPARATOR +  "getSamples";
 
 	/**
 	 * Key to define the path to bind get current sample method
 	 */
-	public static final String GET_CURRENT_SAMPLE = CommonPaths.QUERYSTRING_SEPARATOR +  "getCurrentSample";
+	public static final String GET_CURRENT_SAMPLE = CommonPaths.PATH_SEPARATOR +  "getCurrentSample";
 
 	/**
 	 * Key to define the path to bind get result of display requestors (for GRS) method
 	 */
-	public static final String DISPLAY_REQUESTORS = CommonPaths.QUERYSTRING_SEPARATOR +  "displayRequestor";
+	public static final String DISPLAY_REQUESTORS = CommonPaths.PATH_SEPARATOR +  "displayRequestors";
 
 	/**
 	 * Key to define the path to bind get all redo statements method
 	 */
-	public static final String GET_ALL_REDO_STATEMENTS = CommonPaths.QUERYSTRING_SEPARATOR +  "getAllRedoStatements";
+	public static final String GET_ALL_REDO_STATEMENTS = CommonPaths.PATH_SEPARATOR +  "getAllRedoStatements";
 	
 	/**
 	 * Key to define the path to bind get about method
 	 */
-	public static final String ABOUT = CommonPaths.QUERYSTRING_SEPARATOR +  "about";
+	public static final String ABOUT = CommonPaths.PATH_SEPARATOR +  "about";
 	
 	/**
 	 * Key to define the path to bind get about method
 	 */
-	public static final String INFOS = CommonPaths.QUERYSTRING_SEPARATOR +  "infos";
+	public static final String INFOS = CommonPaths.PATH_SEPARATOR +  "infos";
 	
 	/**
 	 * To avoid any instantiation

@@ -18,31 +18,27 @@ package org.pepstock.jem.rest.services;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBElement;
+import javax.ws.rs.core.Response.Status;
 
-import org.apache.http.HttpStatus;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
-import org.pepstock.jem.rest.entities.GfsFileList;
-import org.pepstock.jem.rest.entities.GfsOutputContent;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.GfsRequest;
-import org.pepstock.jem.rest.entities.ReturnedObject;
 import org.pepstock.jem.rest.paths.GfsManagerPaths;
 
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * REST service to manage GFS.
@@ -64,7 +60,7 @@ public class GfsManager extends AbstractRestManager {
 	 *            REST client instance
 	 */
 	public GfsManager(RestClient restClient) {
-		super(restClient);
+		super(restClient, GfsManagerPaths.MAIN);
 	}
 	
 	/**
@@ -96,33 +92,21 @@ public class GfsManager extends AbstractRestManager {
 	 * @param type type of file
 	 * @param request file name
 	 * @return content of file
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String getFile(GfsRequest request) throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-		GenericType<JAXBElement<GfsOutputContent>> generic = new GenericType<JAXBElement<GfsOutputContent>>() {
-		};
-		try {
-			// creates the complete path of REST service, setting also the output format (XML)
-			JAXBElement<GfsOutputContent> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.OUTPUT_FILE_CONTENT_PATH).accept(MediaType.APPLICATION_XML).post(generic, request);
-			// gets the returned object
-			GfsOutputContent object = jaxbContact.getValue();
-	    	// checks if has got any exception
-	    	// Exception must be saved as attribute of returned object
-			if (object.hasException()) {
-				throw new JemException(object.getExceptionMessage());
+	public String getFile(GfsRequest request) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = post(GfsManagerPaths.OUTPUT_FILE_CONTENT_PATH, request);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(String.class);
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
 			}
-			return object.getContent();
-		} catch (UniformInterfaceException e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			// checks http status 
-			if (e.getResponse().getStatus() != 204) {
-				throw new JemException(e.getMessage(), e);
-			}
-			return null;
-		}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 
 	/**
@@ -130,33 +114,22 @@ public class GfsManager extends AbstractRestManager {
 	 * @param type type of files
 	 * @param request specific folder
 	 * @return list of files
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public GfsFileList getFilesList(GfsRequest request) throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-		GenericType<JAXBElement<GfsFileList>> generic = new GenericType<JAXBElement<GfsFileList>>() {
-		};
-		try {
-			// creates the complete path of REST service, setting also the output format (XML)
-			JAXBElement<GfsFileList> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_LIST).accept(MediaType.APPLICATION_XML).post(generic, request);
-			// gets the returned object
-			GfsFileList object = jaxbContact.getValue();
-	    	// checks if has got any exception
-	    	// Exception must be saved as attribute of returned object
-			if (object.hasException()) {
-				throw new JemException(object.getExceptionMessage());
+	@SuppressWarnings("unchecked")
+	public Collection<GfsFile> getFilesList(GfsRequest request) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = post(GfsManagerPaths.FILE_LIST, request);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return (List<GfsFile>)JsonUtil.getInstance().deserializeList(response, GfsFile.class);
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
 			}
-			return object;
-		} catch (UniformInterfaceException e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			// checks http status 
-			if (e.getResponse().getStatus() != 204) {
-				throw new JemException(e.getMessage(), e);
-			}
-			return null;
-		}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 
 	/**
@@ -168,7 +141,6 @@ public class GfsManager extends AbstractRestManager {
 	public int upload(UploadedGfsFile file) throws JemException {
 		// gets the web resource
 		// adding paths for upload
-		WebResource resource = getClient().getBaseWebResource().path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_UPLOAD);
 		ClientResponse response = null;
 		FileInputStream fis = null;
 		try {
@@ -208,9 +180,12 @@ public class GfsManager extends AbstractRestManager {
 				chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
 				
 				// creates and performs post HTTP
-				response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);
+				
+				response = post(GfsManagerPaths.FILE_UPLOAD, chunkFile);
+				
 				// checks if everything went OK!
-				if (response.getStatus() != HttpStatus.SC_OK) {
+				if (response.getStatus() != Status.OK.getStatusCode()) {
+					System.err.println(response);
 					throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 				}
 				// close the response and activate the listeners
@@ -231,6 +206,9 @@ public class GfsManager extends AbstractRestManager {
 			} else {
 				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			}
+			
+			System.err.println(chunkFile.getFilePath());
+			
 			// is the LAST call
 			chunkFile.setTransferComplete(true);
 			// where to put the file (GFS type)
@@ -239,9 +217,9 @@ public class GfsManager extends AbstractRestManager {
 			chunkFile.setLastUpdate(file.getUploadedFile().lastModified());
 			
 			// creates and performs post HTTP
-			response =  resource.accept(MediaType.APPLICATION_OCTET_STREAM).post(ClientResponse.class, chunkFile);	
+			response = post(GfsManagerPaths.FILE_UPLOAD, chunkFile);
 			// checks if everything went OK!
-			if (response.getStatus() != HttpStatus.SC_OK) {
+			if (response.getStatus() != Status.OK.getStatusCode()) {
 				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 			}
 			// activate the listeners
@@ -255,6 +233,7 @@ public class GfsManager extends AbstractRestManager {
 			}
 			return e.getResponse().getStatus();
 		} catch (IOException e) {
+			e.printStackTrace();
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new JemException(e.getMessage(), e);
 		} finally {
@@ -291,52 +270,23 @@ public class GfsManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * delete a file of a specific type
-	 * @param type type of file
+	 * Delete a file of a specific type
 	 * @param request file name
-	 * @throws JemException if any exception occurs
+	 * @return <code>true</code> if the file has been deleted otherwise <code>false</code>
+	 * @throws RestException if any exception occurs
 	 */
-	public void delete(GfsRequest request) throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
-		};
-		try {
-			// creates the complete path of REST service, setting also the output format (XML)
-			JAXBElement<ReturnedObject> jaxbContact = resource.path(GfsManagerPaths.MAIN).path(GfsManagerPaths.FILE_DELETE).accept(MediaType.APPLICATION_XML).post(generic, request);
-			// gets the returned object
-			ReturnedObject object = jaxbContact.getValue();
-	    	// checks if has got any exception
-	    	// Exception must be saved as attribute of returned object
-			if (object.hasException()) {
-				throw new JemException(object.getExceptionMessage());
+	public boolean delete(GfsRequest request) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = post(GfsManagerPaths.FILE_DELETE, request);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(Boolean.class);
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
 			}
-		} catch (UniformInterfaceException e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			// checks http status 
-			if (e.getResponse().getStatus() != 204) {
-				throw new JemException(e.getMessage(), e);
-			}
-		}
-	}
-	
-	/**
-	 * Inner service, which extends post the default post service.
-	 * 
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
-	 */
-	class GfsPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public GfsPostService(String subService) {
-			super(GfsManager.this.getClient(), GfsManagerPaths.MAIN, subService);
-		}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 }

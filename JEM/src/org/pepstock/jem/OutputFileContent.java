@@ -18,15 +18,12 @@ package org.pepstock.jem;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * Container of log file content. Wraps a string-buffer.
  * 
  * @author Andrea "Stock" Stocchero
  * 
  */
-@XmlRootElement
 public class OutputFileContent implements Serializable {
 
 	private static final long serialVersionUID = 1L;

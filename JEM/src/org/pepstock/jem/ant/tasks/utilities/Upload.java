@@ -27,6 +27,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.RestClientFactory;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.services.GfsManager;
 import org.pepstock.jem.rest.services.LoginManager;
@@ -141,7 +142,7 @@ public class Upload extends Task {
 	        	// executes destination task
 	        	dd.execute();
 	        }
-		} catch (JemException e) {
+		} catch (RestException e) {
 			throw new BuildException(e);
 		} finally {
 			// checks if to do logoff or not
@@ -149,7 +150,7 @@ public class Upload extends Task {
 				try {
 					// logoff from JEM
 					loginManager.logoff();
-				} catch (JemException e) {
+				} catch (RestException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
@@ -161,7 +162,7 @@ public class Upload extends Task {
 	 * @param loginManager login manager 
 	 * @throws JemException if any exception occurs
 	 */
-	private void login(LoginManager loginManager) throws JemException{
+	private void login(LoginManager loginManager) throws RestException{
 		// gets user from login manager
 		user = loginManager.getUser();
 		if (user == null) {

@@ -33,6 +33,7 @@ import org.pepstock.jem.util.UtilMessage;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
@@ -105,6 +106,7 @@ public abstract class RestClient {
 	    	client = ApacheHttpClient4.create(config);
 	    }
 	    // to add log, use addFilter method with LoggingFilter to std output
+	    client.addFilter(new LoggingFilter(System.out));
 	   	return client;
 	}
 }

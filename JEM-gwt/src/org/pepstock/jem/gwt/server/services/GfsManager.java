@@ -221,13 +221,13 @@ public class GfsManager extends DefaultService {
 	 * @throws ServiceMessageException
 	 *             if any exception occurred during uploading
 	 */
-	public void uploadChunk(UploadedGfsChunkFile chunkFile)
+	public boolean uploadChunk(UploadedGfsChunkFile chunkFile)
 			throws ServiceMessageException {
 		checkAuthentication();
 		checkGfsPermission(chunkFile.getType());
 		DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(
 				new WriteChunk(chunkFile), getMember());
-		task.getResult();
+		return task.getResult();
 	}
 
 	/**

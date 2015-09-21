@@ -25,21 +25,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.http.HttpStatus;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
-import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.services.GfsManager;
-import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.rest.entities.GfsFileList;
-import org.pepstock.jem.rest.entities.GfsOutputContent;
 import org.pepstock.jem.rest.entities.GfsRequest;
-import org.pepstock.jem.rest.entities.ReturnedObject;
 import org.pepstock.jem.rest.paths.GfsManagerPaths;
+
+import com.sun.jersey.spi.resource.Singleton;
 
 
 /**
@@ -49,6 +46,7 @@ import org.pepstock.jem.rest.paths.GfsManagerPaths;
  * @author Enrico Frigo
  * 
  */
+@Singleton
 @Path(GfsManagerPaths.MAIN)
 public class GfsManagerImpl extends DefaultServerResource {
 
@@ -70,26 +68,21 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(GfsManagerPaths.FILE_LIST)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public GfsFileList getFilesList(GfsRequest request) throws JemException {
-		GfsFileList gfsContainer = new GfsFileList();
-		if (isEnable()) {
-			if (gfsManager == null) {
-				initManager();
-			}
-			Collection<GfsFile> gfsList;
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getFilesList(GfsRequest request) {
+		Response resp = check();
+		if (resp == null){
 			try {
-				gfsList = gfsManager.getFilesList(request.getType(), request.getItem(), request.getPathName());
-				gfsContainer.setGfsFiles(gfsList);
-				gfsContainer.setPath(request.getItem());
+				Collection<GfsFile> gfsList = gfsManager.getFilesList(request.getType(), request.getItem(), request.getPathName());
+				return ok(gfsList);
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				gfsContainer.setExceptionMessage(e.getMessage());
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(gfsContainer);
+			return resp;
 		}
-		return gfsContainer;
 	}
 
 
@@ -107,25 +100,21 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(GfsManagerPaths.OUTPUT_FILE_CONTENT_PATH)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public GfsOutputContent getFile(GfsRequest request) throws JemException {
-		GfsFileList gfsContainer = new GfsFileList();
-		GfsOutputContent gfsFile = new GfsOutputContent();
-		if (isEnable()) {
-			if (gfsManager == null) {
-				initManager();
-			}
-
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getFile(GfsRequest request) {
+		Response resp = check();
+		if (resp == null){
 			try {
-				gfsFile.setContent(gfsManager.getFile(request.getType(), request.getItem(), request.getPathName()));
+				String content = gfsManager.getFile(request.getType(), request.getItem(), request.getPathName());
+				return ok(content);
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				gfsContainer.setExceptionMessage(e.getMessage());
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(gfsContainer);
+			return resp;
 		}
-		return gfsFile;
 	}
 
 	/**
@@ -135,28 +124,22 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(GfsManagerPaths.FILE_UPLOAD)
-	@Consumes({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	@Consumes({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadFile(UploadedGfsChunkFile chunk) {
-		if (isEnable()) {
-			if (gfsManager == null) {
-				initManager();
-			}
+		Response resp = check();
+		if (resp == null){
 			try {
-				gfsManager.uploadChunk(chunk);
-			} catch (ServiceMessageException e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC265E, chunk.getFilePath(),e);
-				String msg = NodeMessage.JEMC265E.toMessage().getFormattedMessage(chunk.getFilePath());
-				return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(msg).build();
+				return ok(gfsManager.uploadChunk(chunk));
+			} catch (Exception e) {
+				LogAppl.getInstance().emit(NodeMessage.JEMC265E, chunk.getFilePath(), e);
+				return severError(new MessageException(NodeMessage.JEMC265E, chunk.getFilePath()));
 			}
 		} else {
-			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-			return Response.status(HttpStatus.SC_SERVICE_UNAVAILABLE).entity(msg).build();
-		}		
-		return Response.status(HttpStatus.SC_OK).entity("OK").build();
+			return resp;
+		}
 	}
-	
-	 
 	
 	/**
 	 * REST service which delete on GFS 
@@ -172,33 +155,30 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(GfsManagerPaths.FILE_DELETE)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public ReturnedObject deleteFile(GfsRequest request) throws JemException {
-		ReturnedObject object = new ReturnedObject();
-		if (isEnable()) {
-			if (gfsManager == null) {
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteFile(GfsRequest request) {
+		Response resp = check();
+		if (resp == null){
 			try {
-				if (!gfsManager.deleteFile(request.getType(), request.getItem(), request.getPathName())){
-					throw new JemException("Unable to delete "+request.getItem());
-				}
+				return ok(gfsManager.deleteFile(request.getType(), request.getItem(), request.getPathName()));
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				object.setExceptionMessage(e.getMessage());
+				return severError(new MessageException(UserInterfaceMessage.JEMG045E, e.getMessage()));
 			}
 		} else {
-			setUnableExcepton(object);
+			return resp;
 		}
-		return object;
 	}
 	
-	/**
-	 * Initializes a jobs manager
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
-	private synchronized void initManager() {
+    @Override
+    boolean init() throws Exception {
 		if (gfsManager == null) {
 			gfsManager = new GfsManager();
 		}
-	}
+	    return true;
+    }
 }

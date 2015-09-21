@@ -17,19 +17,18 @@
 package org.pepstock.jem.rest.services;
 
 import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import javax.ws.rs.core.Response.Status;
 
-import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.CertificateEntry;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.Certificates;
-import org.pepstock.jem.rest.entities.ReturnedObject;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.paths.CertificatesManagerPaths;
 
-import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * REST service to manage certificates for users.
@@ -45,22 +44,37 @@ public class CertificatesManager extends AbstractRestManager {
 	 * @param restClient REST client instance
 	 */
 	public CertificatesManager(RestClient restClient) {
-		super(restClient);
+		super(restClient, CertificatesManagerPaths.MAIN);
 	}
 
 	/**
 	 * Returns all certificates for all users, using the filter 
 	 * @param filterParm filter to have a subset of certificates
 	 * @return a list of certificates
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<CertificateEntry> getCertificates(String filterParm) throws JemException {
-		CertificatesPostService<Certificates, String> service = new CertificatesPostService<Certificates, String>(CertificatesManagerPaths.GET);
-		GenericType<JAXBElement<Certificates>> generic = new GenericType<JAXBElement<Certificates>>() {
-
-		};
-		Certificates result = service.execute(generic, filterParm);
-		return result.getEntries();
+	@SuppressWarnings("unchecked")
+	public Collection<CertificateEntry> getCertificates(String filterParm) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = post(CertificatesManagerPaths.GET, filterParm);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return (List<CertificateEntry>)JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
+//		CertificatesPostService<CertificatesRequest, String> service = new CertificatesPostService<CertificatesRequest, String>(CertificatesManagerPaths.GET);
+//		GenericType<JAXBElement<CertificatesRequest>> generic = new GenericType<JAXBElement<CertificatesRequest>>() {
+//
+//		};
+//		CertificatesRequest result = service.execute(generic, filterParm);
+//		return result.getEntries();
 	}
 	
 	/**
@@ -68,69 +82,50 @@ public class CertificatesManager extends AbstractRestManager {
 	 * @param certificate a set of bytes which represents the certificates
 	 * @param alias userid associated to certificate
 	 * @return returns <code>true</code> if it has been able to add it, otherwise <code>false</code>
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Boolean addCertificates(byte[] certificate, String alias) throws JemException {
-		CertificatesPostService<BooleanReturnedObject, Certificates> service = new CertificatesPostService<BooleanReturnedObject, Certificates>(CertificatesManagerPaths.ADD);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		// only if parameters are not null the REST call will be performed, otherwise
-		// returns false
-		if (certificate != null && alias != null){
-			Certificates c = new Certificates();
-			c.setCertificate(certificate);
-			c.setAlias(alias);
-			
-			BooleanReturnedObject result = service.execute(generic, c);
-			return result.isValue();
-		} else {
-			return false;
-		}
+	public Boolean addCertificates(byte[] certificate, String alias) throws RestException {
+	    try {
+	    	String path = PathReplacer.path(CertificatesManagerPaths.ADD).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
+			// creates the returned object
+			ClientResponse response = post(path, certificate);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(Boolean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return false;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
-	 * Removes a list of certificates and their associated alias.
-	 * @param entries list of certificates to be removed
+	 * Removes a certificate by associated alias.
+	 * @param alias alias of certificate to be removed
 	 * @return returns <code>true</code> if it has been able to remove the entries, otherwise <code>false</code>
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Boolean removeCertificates(Collection<CertificateEntry> entries) throws JemException {
-		CertificatesPostService<BooleanReturnedObject, Certificates> service = new CertificatesPostService<BooleanReturnedObject, Certificates>(CertificatesManagerPaths.REMOVE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		// only if parameter is not null and not empty the REST call will be performed, otherwise
-		// returns false		
-		if (entries != null && !entries.isEmpty()){
-			Certificates c = new Certificates();
-			c.setEntries(entries);
-		
-			BooleanReturnedObject result = service.execute(generic, c);
-			return result.isValue();
-		} else {
-			return false;
-		}
+	public Boolean removeCertificates(String alias) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = delete(CertificatesManagerPaths.REMOVE.replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias));
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(Boolean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return false;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }	
 	}
-
-	/**
-	 * Inner service, which extends post the default post service.
-	 * 
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
-	 */
-	class CertificatesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public CertificatesPostService(String subService) {
-			super(CertificatesManager.this.getClient(), CertificatesManagerPaths.MAIN, subService);
-		}
-
-	}
-
 }

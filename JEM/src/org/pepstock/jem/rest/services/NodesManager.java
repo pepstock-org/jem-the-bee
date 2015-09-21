@@ -17,24 +17,22 @@
 package org.pepstock.jem.rest.services;
 
 import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.NodeInfoBean;
-import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.UpdateNode;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.affinity.Result;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.ConfigurationFileContent;
-import org.pepstock.jem.rest.entities.Nodes;
-import org.pepstock.jem.rest.entities.ReturnedObject;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
 import org.pepstock.jem.util.filters.Filter;
 
-import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * REST Client side of NODES service.
@@ -51,7 +49,7 @@ public class NodesManager extends AbstractRestManager {
 	 *            REST client instance
 	 */
 	public NodesManager(RestClient restClient) {
-		super(restClient);
+		super(restClient, NodesManagerPaths.MAIN);
 	}
 
 
@@ -60,15 +58,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param filter filter contains all tokens to performs filtering
 	 * @return collection of nodes
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<NodeInfoBean> getNodes(String filter) throws JemException {
-		NodesPostService<Nodes, String> service = new NodesPostService<Nodes, String>(NodesManagerPaths.LIST);
-		GenericType<JAXBElement<Nodes>> generic = new GenericType<JAXBElement<Nodes>>() {
-
-		};
-		Nodes beans = service.execute(generic, filter);
-		return beans.getNodes();
+	@SuppressWarnings("unchecked")
+	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = get(NodesManagerPaths.LIST, filter);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -76,15 +85,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param filter filter contains all tokens to performs filtering
 	 * @return collection of nodes
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<NodeInfoBean> getSwarmNodes(String filter) throws JemException {
-		NodesPostService<Nodes, String> service = new NodesPostService<Nodes, String>(NodesManagerPaths.SWARM_LIST);
-		GenericType<JAXBElement<Nodes>> generic = new GenericType<JAXBElement<Nodes>>() {
-
-		};
-		Nodes beans = service.execute(generic, filter);
-		return beans.getNodes();
+	@SuppressWarnings("unchecked")
+	public Collection<NodeInfoBean> getSwarmNodes(String filter) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = get(NodesManagerPaths.SWARM_LIST, filter);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -92,30 +112,37 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param filter a String that will be parsed as a {@link Filter}
 	 * @return collection of nodes
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws JemException {
-		NodesPostService<Nodes, String> service = new NodesPostService<Nodes, String>(NodesManagerPaths.LIST_BY_FILTER);
-		GenericType<JAXBElement<Nodes>> generic = new GenericType<JAXBElement<Nodes>>() {
-
-		};
-		Nodes beans = service.execute(generic, filter);
-		return beans.getNodes();
+	@SuppressWarnings("unchecked")
+	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
+	    try {
+			// creates the returned object
+			ClientResponse response = get(NodesManagerPaths.LIST_BY_FILTER, filter);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 
 	/**
 	 * Update the domain or static affinities of node
 	 * @param node node to update
 	 * @return always true
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public boolean update(NodeInfoBean node) throws JemException {
-		NodesPostService<BooleanReturnedObject, NodeInfoBean> service = new NodesPostService<BooleanReturnedObject, NodeInfoBean>(NodesManagerPaths.UPDATE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		BooleanReturnedObject result = service.execute(generic, node);
-		return result.isValue();
+	public boolean update(String key, UpdateNode update) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.UPDATE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+		return putAndGetBoolean(path, update);
 	}
 	
 	/**
@@ -123,15 +150,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param node node where execute a future task to get top command 
 	 * @return content file in String
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String top(NodeInfoBean node) throws JemException {
-		NodesPostService<StringReturnedObject, NodeInfoBean> service = new NodesPostService<StringReturnedObject, NodeInfoBean>(NodesManagerPaths.TOP);
-		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
-
-		};
-		StringReturnedObject result = service.execute(generic, node);
-		return result.getValue();
+	public String top(String key) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.TOP).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = get(path);
+			String result = response.getEntity(String.class);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return result;
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -139,15 +177,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param node node where execute a future task to get top command 
 	 * @return content file in String
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String log(NodeInfoBean node) throws JemException {
-		NodesPostService<StringReturnedObject, NodeInfoBean> service = new NodesPostService<StringReturnedObject, NodeInfoBean>(NodesManagerPaths.LOG);
-		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
-
-		};
-		StringReturnedObject result = service.execute(generic, node);
-		return result.getValue();
+	public String log(String key) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.LOG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = get(path);
+			String result = response.getEntity(String.class);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return result;
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -162,15 +211,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param node node where execute a future task to get top command 
 	 * @return content file in String
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String displayCluster(NodeInfoBean node) throws JemException {
-		NodesPostService<StringReturnedObject, NodeInfoBean> service = new NodesPostService<StringReturnedObject, NodeInfoBean>(NodesManagerPaths.DISPLAY_CLUSTER);
-		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
-
-		};
-		StringReturnedObject result = service.execute(generic, node);
-		return result.getValue();
+	public String displayCluster(String key) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.DISPLAY_CLUSTER).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = get(path);
+			String result = response.getEntity(String.class);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return result;
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -179,48 +239,27 @@ public class NodesManager extends AbstractRestManager {
 	 * @param node node where execute a future task to get the config file 
 	 * @param what type of configuration file to return
 	 * @return Configuration file container
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getNodeConfigFile(NodeInfoBean node, String what) throws JemException {
-		if (node == null || what == null){
-			throw new JemException("node or what is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setNode(node);
-		parm.setWhat(what);
-		
-		NodesPostService<ConfigurationFileContent, ConfigurationFileContent> service = new NodesPostService<ConfigurationFileContent, ConfigurationFileContent>(NodesManagerPaths.GET_NODE_CONFIG_FILE);
-		GenericType<JAXBElement<ConfigurationFileContent>> generic = new GenericType<JAXBElement<ConfigurationFileContent>>() {
-
-		};
-		ConfigurationFileContent result = service.execute(generic, parm);
-		return result.getFile();
-	}
-	
-	/**
-	 * Saves the configuration file for the node
-	 * 
-	 * @param node node where execute a future task to get the config file 
-	 * @param file configuration file to save
-	 * @param what type of configuration file to return
-	 * @return Configuration file container
-	 * @throws JemException if any exception occurs
-	 */
-	public ConfigurationFile saveNodeConfigFile(NodeInfoBean node, ConfigurationFile file, String what) throws JemException {
-		if (node == null || what == null || file == null){
-			throw new JemException("node or what or file is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setNode(node);
-		parm.setWhat(what);
-		parm.setFile(file);
-		
-		NodesPostService<ConfigurationFileContent, ConfigurationFileContent> service = new NodesPostService<ConfigurationFileContent, ConfigurationFileContent>(NodesManagerPaths.SAVE_NODE_CONFIG_FILE);
-		GenericType<JAXBElement<ConfigurationFileContent>> generic = new GenericType<JAXBElement<ConfigurationFileContent>>() {
-
-		};
-		ConfigurationFileContent result = service.execute(generic, parm);
-		return result.getFile();
+	public ConfigurationFile getNodeConfigFile(String key, String what) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG_FILE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
+				replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = get(path);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(ConfigurationFile.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -228,45 +267,26 @@ public class NodesManager extends AbstractRestManager {
 	 * 
 	 * @param what type of configuration file to return
 	 * @return Configuration file container
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getEnvConfigFile(String what) throws JemException {
-		if (what == null){
-			throw new JemException("what is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setWhat(what);
-		
-		NodesPostService<ConfigurationFileContent, ConfigurationFileContent> service = new NodesPostService<ConfigurationFileContent, ConfigurationFileContent>(NodesManagerPaths.GET_ENV_CONFIG_FILE);
-		GenericType<JAXBElement<ConfigurationFileContent>> generic = new GenericType<JAXBElement<ConfigurationFileContent>>() {
-
-		};
-		ConfigurationFileContent result = service.execute(generic, parm);
-		return result.getFile();
-	}
-	
-	/**
-	 * Returns the configuration file for the environment after saving it
-	 * 
-	 * @param file configuration file to save 
-	 * @param what type of configuration file to return
-	 * @return Configuration new file container
-	 * @throws JemException if any exception occurs
-	 */
-	public ConfigurationFile saveEnvConfigFile(ConfigurationFile file, String what) throws JemException {
-		if (what == null || file == null){
-			throw new JemException("what or file is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setWhat(what);
-		parm.setFile(file);
-		
-		NodesPostService<ConfigurationFileContent, ConfigurationFileContent> service = new NodesPostService<ConfigurationFileContent, ConfigurationFileContent>(NodesManagerPaths.SAVE_ENV_CONFIG_FILE);
-		GenericType<JAXBElement<ConfigurationFileContent>> generic = new GenericType<JAXBElement<ConfigurationFileContent>>() {
-
-		};
-		ConfigurationFileContent result = service.execute(generic, parm);
-		return result.getFile();
+	public ConfigurationFile getEnvConfigFile(String what) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = get(path);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(ConfigurationFile.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
 	
 	/**
@@ -274,22 +294,11 @@ public class NodesManager extends AbstractRestManager {
 	 * @param content content of configuration file
 	 * @param what type of config file
 	 * @return always true
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Boolean checkConfigFile(String content, String what) throws JemException {
-		if (what == null || content == null){
-			throw new JemException("what or content is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setWhat(what);
-		parm.setContent(content);
-		
-		NodesPostService<BooleanReturnedObject, ConfigurationFileContent> service = new NodesPostService<BooleanReturnedObject, ConfigurationFileContent>(NodesManagerPaths.SAVE_ENV_CONFIG_FILE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		BooleanReturnedObject result = service.execute(generic, parm);
-		return result.isValue();
+	public Boolean checkConfigFile(String content, String what) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
+		return putAndGetBoolean(path, content);
 	}
 	
 	/**
@@ -297,42 +306,25 @@ public class NodesManager extends AbstractRestManager {
 	 * @param node node where execute a future task  
 	 * @param content type of affinity policy
 	 * @return always true
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Result checkAffinityPolicy(NodeInfoBean node, String content) throws JemException {
-		if (node == null || content == null){
-			throw new JemException("node or content is null!");
-		}
-		ConfigurationFileContent parm = new ConfigurationFileContent();
-		parm.setNode(node);
-		parm.setContent(content);
-		
-		NodesPostService<ConfigurationFileContent, ConfigurationFileContent> service = new NodesPostService<ConfigurationFileContent, ConfigurationFileContent>(NodesManagerPaths.SAVE_NODE_CONFIG_FILE);
-		GenericType<JAXBElement<ConfigurationFileContent>> generic = new GenericType<JAXBElement<ConfigurationFileContent>>() {
-
-		};
-		ConfigurationFileContent result = service.execute(generic, parm);
-		return result.getResult();
+	public Result checkAffinityPolicy(String key, String content) throws RestException {
+		String path = PathReplacer.path(NodesManagerPaths.CHECK_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+	    try {
+			// creates the returned object
+			ClientResponse response = post(path, content);
+			if (response.getStatus() == Status.OK.getStatusCode()){
+				return response.getEntity(Result.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+				String result = response.getEntity(String.class);
+				LogAppl.getInstance().debug(result);
+				return null;
+			} else {
+				throw new RestException(response.getStatus(), response.getEntity(String.class));
+			}
+	    } catch (Exception e){
+	    	LogAppl.getInstance().debug(e.getMessage(), e);
+    		throw new RestException(e);
+	    }
 	}
-	
-	/**
-	 * Inner service, which extends post the default post service.
-	 *  
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
-	 */
-	class NodesPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public NodesPostService(String subService) {
-			super(NodesManager.this.getClient(), NodesManagerPaths.MAIN, subService);
-		}
-
-	}
-
 }

@@ -16,37 +16,36 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Arrays;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.OutputTree;
+import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.PreJob;
-import org.pepstock.jem.gwt.server.UserInterfaceMessage;
+import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.JclContent;
-import org.pepstock.jem.rest.entities.JobOutputFileContent;
-import org.pepstock.jem.rest.entities.JobOutputListArgument;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.rest.entities.JobStatusContent;
-import org.pepstock.jem.rest.entities.JobSystemActivityContent;
-import org.pepstock.jem.rest.entities.Jobs;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
+import org.pepstock.jem.rest.entities.JobQueue;
+import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;
+
+import com.sun.jersey.spi.resource.Singleton;
 
 /**
  * Rest service to manage jobs queues.<br>
@@ -55,6 +54,7 @@ import org.pepstock.jem.rest.paths.JobsManagerPaths;
  * @author Andrea "Stock" Stocchero
  *
  */
+@Singleton
 @Path(JobsManagerPaths.MAIN)
 public class JobsManagerImpl extends DefaultServerResource  {
 
@@ -67,121 +67,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return a jobs container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
-	@Path(JobsManagerPaths.INPUT)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getInputQueue(String jobNameFilter) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
+	@GET
+	@Path(JobsManagerPaths.LIST)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING)String jobNameFilter) {
+		Response resp = check();
+		if (resp == null){
+			try{
+				JobQueue jQueue = getJobQueue(queue);
+				return (jQueue == null) ? badRequest(queue) : ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter));
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			Collection<Job> jobs;
-            try {
-	            jobs = jobsManager.getInputQueue(jobNameFilter);
-				jobsContainer.setJobs(jobs);
-				jobsContainer.setQueueName(Queues.INPUT_QUEUE);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
 		} else {
-			setUnableExcepton(jobsContainer);
+			return resp;
 		}
-		return jobsContainer;
-	}
-
-	/**
-	 * REST service which returns jobs in running queue, by job name filter
-	 * 
-	 * @param jobNameFilter job name filter
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(JobsManagerPaths.RUNNING)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getRunningQueue(String jobNameFilter) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
-			Collection<Job> jobs;
-            try {
-	            jobs = jobsManager.getRunningQueue(jobNameFilter);
-				jobsContainer.setJobs(jobs);
-				jobsContainer.setQueueName(Queues.RUNNING_QUEUE);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
-		} else {
-			setUnableExcepton(jobsContainer);
-		}
-		return jobsContainer;
-	}
-
-	/**
-	 * REST service which returns jobs in output queue, by job name filter
-	 * 
-	 * @param jobNameFilter job name filter   
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(JobsManagerPaths.OUTPUT)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getOutputQueue(String jobNameFilter) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
-			Collection<Job> jobs;
-            try {
-	            jobs = jobsManager.getOutputQueue(jobNameFilter);
-				jobsContainer.setJobs(jobs);
-				jobsContainer.setQueueName(Queues.OUTPUT_QUEUE);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
-		} else {
-			setUnableExcepton(jobsContainer);
-		}
-		return jobsContainer;
-	}
-
-	/**
-	 * REST service which returns jobs in routing queue, by job name filter
-	 * 
-	 * @param jobNameFilter job name filter
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(JobsManagerPaths.ROUTING)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getRoutingQueue(String jobNameFilter) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
-			Collection<Job> jobs;
-            try {
-	            jobs = jobsManager.getRoutingQueue(jobNameFilter);
-				jobsContainer.setJobs(jobs);
-				jobsContainer.setQueueName(Queues.ROUTING_QUEUE);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
-		} else {
-			setUnableExcepton(jobsContainer);
-		}
-		return jobsContainer;
 	}
 
 	/**
@@ -191,26 +93,22 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return a jobs container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(JobsManagerPaths.JOB_STATUS)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JobStatusContent getJobStatus(String jobNameFilter) throws JemException {
-		JobStatusContent jobsContainer = new JobStatusContent();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobStatus(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter) {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(jobsManager.getJobStatus(jobNameFilter));
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-            try {
-	            JobStatus jobStatus = jobsManager.getJobStatus(jobNameFilter);
-				jobsContainer.setJobStatus(jobStatus);
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
 		} else {
-			setUnableExcepton(jobsContainer);
+			return resp;
 		}
-		return jobsContainer;
 	}
 	
 	/**
@@ -220,67 +118,34 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return a jobs container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(JobsManagerPaths.JOB_BY_ID)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getJobById(Jobs jobsParm) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsParm.getQueueName() != null && jobsParm.getId() != null){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobById(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				Collection<Job> jobs = new ArrayList<Job>();
-				try {
-					Job job = jobsManager.getJobById(jobsParm.getQueueName(), jobsParm.getId());
-					if (job != null){
-						jobs.add(job);
-					}
-					jobsContainer.setJobs(jobs);
-					jobsContainer.setQueueName(jobsParm.getQueueName());	            
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					jobsContainer.setExceptionMessage(e.getMessage());
-				}				
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(job);
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(jobsContainer);
+			return resp;
 		}
-		return jobsContainer;
-	}
-	
-	/**
-	 * REST service which returns jobs ended by ID
-	 * 
-	 * @param jobIdFilter job id filter
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(JobsManagerPaths.ENDED_JOB_BY_ID)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Jobs getEndedJobById(String jobIdFilter) throws JemException {
-		Jobs jobsContainer = new Jobs();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
-			Collection<Job> jobs = new ArrayList<Job>();
-            try {
-	            Job job = jobsManager.getEndedJobById(jobIdFilter);
-	            if (job != null){
-	            	jobs.add(job);
-	            }	            
-				jobsContainer.setJobs(jobs);
-				jobsContainer.setQueueName(Queues.OUTPUT_QUEUE);	            
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-            	jobsContainer.setExceptionMessage(e.getMessage());
-            }				
-		} else {
-			setUnableExcepton(jobsContainer);
-		}
-		return jobsContainer;
 	}
 	
 	/**
@@ -290,28 +155,34 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.HOLD)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject hold(Jobs jobs) throws JemException {
-		BooleanReturnedObject ro = new BooleanReturnedObject();
-		ro.setValue(false);
-		if (isEnable()){
-			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hold(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-	                ro.setValue(jobsManager.hold(jobs.getJobs(), jobs.getQueueName()));
-                } catch (Exception e) {
-                	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-                	ro.setExceptionMessage(e.getMessage());
-                }
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(jobsManager.hold(Arrays.asList(job), jQueue.getName()));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
 
 	/**
@@ -321,28 +192,34 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.RELEASE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject release(Jobs jobs) throws JemException {
-		BooleanReturnedObject ro = new BooleanReturnedObject();
-		ro.setValue(false);
-		if (isEnable()) {
-			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response release(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					ro.setValue(jobsManager.release(jobs.getJobs(), jobs.getQueueName()));
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					ro.setExceptionMessage(e.getMessage());
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
 				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(jobsManager.release(Arrays.asList(job), jQueue.getName()));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
 
 	/**
@@ -352,28 +229,31 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.CANCEL)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject cancel(Jobs jobs) throws JemException {
-		BooleanReturnedObject ro = new BooleanReturnedObject();
-		ro.setValue(false);
-		if (isEnable()){
-			if (!jobs.getJobs().isEmpty()){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response cancel(@PathParam(JobsManagerPaths.JOBID) String id, @PathParam(JobsManagerPaths.FORCE) String force) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				boolean isCancelForce  = Boolean.parseBoolean(force);
+				if (id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					ro.setValue(jobsManager.cancel(jobs.getJobs(), jobs.isCancelForce()));
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					ro.setExceptionMessage(e.getMessage());
+				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
+				if (job != null){
+					return ok(jobsManager.cancel(Arrays.asList(job), isCancelForce));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
 				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
 	
 	/**
@@ -383,28 +263,34 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.PURGE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject purge(Jobs jobs) throws JemException {
-		BooleanReturnedObject ro = new BooleanReturnedObject();
-		ro.setValue(false);
-		if (isEnable()){
-			if (jobs.getQueueName() != null && !jobs.getJobs().isEmpty()){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response purge(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					ro.setValue(jobsManager.purge(jobs.getJobs(), jobs.getQueueName()));
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					ro.setExceptionMessage(e.getMessage());
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
 				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
 	
 	/**
@@ -414,58 +300,66 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.UPDATE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject update(Jobs jobs) throws JemException {
-		BooleanReturnedObject ro = new BooleanReturnedObject();
-		ro.setValue(false);
-		// only if there is a job and only 1
-		if (isEnable()){
-			if (jobs.getQueueName() != null && jobs.getJobs().size() == 1){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response update(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, UpdateJob job) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					ro.setValue(jobsManager.update(jobs.getJobs().iterator().next(), jobs.getQueueName()));
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					ro.setExceptionMessage(e.getMessage());
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
 				}
+				job.setId(id);
+				return ok(jobsManager.update(job, jQueue.getName()));
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
 	
 	/**
 	 * Submits a job in JEM, returning the job id
 	 * 
-	 * @param preJob job to submit 
+	 * @param preJcl job to submit 
 	 * @return job ID calculated after submission
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@PUT
 	@Path(JobsManagerPaths.SUBMIT)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public StringReturnedObject submit(PreJob preJob) throws JemException {
-		StringReturnedObject jobid = new StringReturnedObject();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response submit(PreJcl preJcl) {
+		Response resp = check();
+		if (resp == null){
 			try {
-				String id = jobsManager.submit(preJob);
-				jobid.setValue(id);
+				if (preJcl.getContent() == null){
+					return Response.status(Status.BAD_REQUEST).entity(preJcl).build();
+				}
+				// creates a pre job using the JCL
+				PreJob preJob = new PreJob();
+				preJob.setJclContent(preJcl.getContent());
+				// sets JCL type
+				preJob.setJclType(preJcl.getType());
+				// creates a job
+				Job job = new Job();
+				preJob.setJob(job);
+				return ok(jobsManager.submit(preJob));
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-				jobid.setExceptionMessage(e.getMessage());
-			}			
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
+			}
 		} else {
-			setUnableExcepton(jobid);
+			return resp;
 		}
-		return jobid;
 	}
 	
 	/**
@@ -475,38 +369,33 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return a tree with all references to output files
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(JobsManagerPaths.OUTPUT_TREE)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JobOutputTreeContent getOutputTree(Jobs jobs) throws JemException {
-		JobOutputTreeContent content = new JobOutputTreeContent();
-		
-		if (isEnable()){
-			if (jobs.getQueueName() != null && jobs.getJobs().size() == 1){
-				if (jobsManager == null){
-					initManager();
+	public Response getOutputTree(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					Job job = jobs.getJobs().iterator().next();
-					OutputTree tree = jobsManager.getOutputTree(job, jobs.getQueueName());
-					content.setJclContent(tree.getJclContent());
-					content.setFirstLevelItems(tree.getFirstLevelItems());
-					content.setJob(job);
-					for (List<OutputListItem> items : tree.getSecondLevelItems()){
-						if (!items.isEmpty()){
-							String key = items.get(0).getParent();
-							content.getSecondLevelItems().put(key, items);
-						}
-					}
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					content.setExceptionMessage(e.getMessage());
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
 				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(jobsManager.getOutputTree(job, jQueue.getName()));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}
 
 	/**
@@ -519,24 +408,30 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(JobsManagerPaths.OUTPUT_FILE_CONTENT)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JobOutputFileContent getOutputFileContent(JobOutputListArgument jobFileContent) throws JemException {
-		JobOutputFileContent content = new JobOutputFileContent();
-		if (isEnable()){
-			if (jobsManager == null){
-				initManager();
-			}
+	public Response getOutputFileContent(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, OutputListItem item) {
+		Response resp = check();
+		if (resp == null){
 			try {
-	            OutputFileContent fileContent = jobsManager.getOutputFileContent(jobFileContent.getJob(), jobFileContent.getItem());
-	            content.setJob(jobFileContent.getJob());
-	            content.setOutputFileContent(fileContent);
-            } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-				content.setExceptionMessage(e.getMessage());
-            }
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				}
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					return ok(jobsManager.getOutputFileContent(job, item));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
+			}
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}
 
 	/**
@@ -546,29 +441,35 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return content JCL
 	 * @throws JemException if JEM group is not available or not authorized  
 	 */
-	@POST
+	@GET
 	@Path(JobsManagerPaths.JCL_CONTENT)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JclContent getJcl(Jobs jobs) throws JemException {
-		JclContent content = new JclContent();
-		if (isEnable()){
-			if (jobs.getQueueName() != null && jobs.getJobs().size() == 1){
-				if (jobsManager == null){
-					initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJcl(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) throws JemException {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (queue == null || id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					Job job = jobs.getJobs().iterator().next();
-					String jclContent = jobsManager.getJcl(job, jobs.getQueueName());
-					content.setContent(jclContent);
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					content.setExceptionMessage(e.getMessage());
+				JobQueue jQueue = getJobQueue(queue);
+				if (jQueue == null){
+					return Response.status(Status.BAD_REQUEST).entity(queue).build();
 				}
+				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				if (job != null){
+					// FIX ME!!! Serve questa chiamata?
+					return ok(jobsManager.getJcl(job, jQueue.getName()));
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}
 	
 	/**
@@ -578,37 +479,49 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @return system information of job
 	 * @throws JemException if JEM group is not available or not authorized  
 	 */
-	@POST
+	@GET
 	@Path(JobsManagerPaths.JOB_SYSTEM_ACTIVITY)
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public JobSystemActivityContent getJobSystemActivity(Jobs jobs) throws JemException {
-		JobSystemActivityContent content = new JobSystemActivityContent();
-		if (isEnable()){
-			if (jobs.getJobs().size() == 1){
-				if (jobsManager == null){
-					initManager();
+	public Response getJobSystemActivity(@PathParam(JobsManagerPaths.JOBID) String id) throws JemException {
+		Response resp = check();
+		if (resp == null){
+			try {
+				if (id == null){
+					return Response.status(Status.BAD_REQUEST).entity(id).build();
 				}
-				try {
-					Job job = jobs.getJobs().iterator().next();
-					JobSystemActivity jobContent = jobsManager.getJobSystemActivity(job);
-					content.setJobSystemActivity(jobContent);
-				} catch (Exception e) {
-					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, e, e.getMessage());
-					content.setExceptionMessage(e.getMessage());
+				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
+				if (job != null){
+					JobSystemActivity activity = jobsManager.getJobSystemActivity(job);
+					if (activity != null){
+						return ok(activity);
+					} else {
+						return Response.status(Status.NOT_FOUND).entity(id).build();
+					}
+				} else {
+					return Response.status(Status.NOT_FOUND).entity(id).build();
 				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}	
 	
-	/**
-	 * Initializes a jobs manager
+	
+	private JobQueue getJobQueue(String queueName){
+		return JobQueue.getQueueByPath(queueName);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-	private synchronized void initManager(){
+    @Override
+    boolean init() throws Exception {
 		if (jobsManager == null){
 			jobsManager = new JobsManager();
 		}
-	}
+		return true;
+    }
 }

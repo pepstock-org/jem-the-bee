@@ -35,9 +35,9 @@ public class UserPreference implements Serializable {
 	 * Returns true if value is a string
 	 * @return returns true if value is a string
 	 */
-	public boolean isValueString(){
-		return valueString !=null;
-	}
+//	public boolean isValueString(){
+//		return valueString !=null;
+//	}
 
 	/**
 	 * @return the valueString

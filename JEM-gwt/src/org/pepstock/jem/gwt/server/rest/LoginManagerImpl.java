@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,17 +26,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.LoginManager;
+import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
+import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.rest.entities.Account;
-import org.pepstock.jem.rest.entities.LoggedUserContent;
-import org.pepstock.jem.rest.entities.ReturnedObject;
-import org.pepstock.jem.rest.entities.UserPreferencesContent;
 import org.pepstock.jem.rest.paths.LoginManagerPaths;
+
+import com.sun.jersey.spi.resource.Singleton;
 
 /**
  * Rest service to get logged user, to log in and log out.
@@ -41,6 +47,7 @@ import org.pepstock.jem.rest.paths.LoginManagerPaths;
  * @author Andrea "Stock" Stocchero
  *
  */
+@Singleton
 @Path(LoginManagerPaths.MAIN)
 public class LoginManagerImpl extends DefaultServerResource  {
 
@@ -54,26 +61,26 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 */
 	@GET
 	@Path(LoginManagerPaths.GET_USER)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public LoggedUserContent getUser() throws JemException{
-		LoggedUserContent content = new LoggedUserContent();
-		if (isEnable()){
-			if (loginManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUser(){
+		Response resp = check();
+		if (resp == null){
+			try{
+				LoggedUser user = loginManager.getUser();
+				if (user != null){
+					return ok(user);
+				} else {
+					return Response.status(Status.NOT_FOUND).build();
+				}
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            LoggedUser user = loginManager.getUser();
-	            content.setLoggedUser(user);
-            } catch (Exception e) {
-            	LogAppl.getInstance().ignore(e.getMessage(), e);
-	            content.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}
-
 	/**
 	 * Logs in the user in JEM. 
 	 * 
@@ -85,57 +92,73 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 */
 	@PUT
 	@Path(LoginManagerPaths.LOGIN)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public LoggedUserContent login(Account account) throws JemException{
-		LoggedUserContent content = new LoggedUserContent();
-		if (isEnable()){
-			if (loginManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response login(Account account){
+		Response resp = check();
+		if (resp == null){
 			try {
 				LoggedUser user = loginManager.login(account.getUserId(), account.getPassword());
-				content.setLoggedUser(user);
+				return ok(user);
+			} catch(ServiceMessageException e){
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
+				return unauthorized(e);
             } catch (Exception e) {
-            	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-	            content.setExceptionMessage(e.getMessage());
+            	LogAppl.getInstance().ignore(e.getMessage(), e);
+            	return severError(e);
             }
 		} else {
-			setUnableExcepton(content);
+			return resp;
 		}
-		return content;
 	}
-
 
 	/**
 	 * Logs off from JEM.
-	 * 
+	 * @return 
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF)
-	public void logoff() throws JemException {
-		if (isEnable()){
-			if (loginManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logoff() {
+		Response resp = check();
+		if (resp == null){
+			try {
+				Boolean status = loginManager.logoff(null);
+				return ok(status);
+			} catch(Exception e){
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
+				return unauthorized(e);
 			}
-			loginManager.logoff(null);
+		} else {
+			return resp;
 		}
 	}
 
 	/**
 	 * Logs off from JEM saving user preferences.
 	 * @param preferences user preferences to store
+	 * @return 
 	 * 
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES)
-	public void logoff(UserPreferencesContent preferences) throws JemException {
-		if (isEnable()){
-			if (loginManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logoff(Map<String, UserPreference> preferences) {
+		Response resp = check();
+		if (resp == null){
+			try {
+				Boolean status = loginManager.logoff(preferences);
+				return ok(status);
+			} catch(Exception e){
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
+				return unauthorized(e);
 			}
-			loginManager.logoff(preferences.getPreferences());
+		} else {
+			return resp;
 		}
 	}
 	
@@ -148,30 +171,32 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 */
 	@POST
 	@Path(LoginManagerPaths.SAVE_PREFERENCES)
-	public ReturnedObject storePreferences(UserPreferencesContent preferences) throws JemException {
-		ReturnedObject ro = new ReturnedObject();
-		if (isEnable()){
-			if (loginManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response storePreferences(Map<String, UserPreference> preferences) {
+		Response resp = check();
+		if (resp == null){
 			try {
-	            loginManager.storePreferences(preferences.getPreferences());
-            } catch (Exception e) {
-            	LogAppl.getInstance().ignore(e.getMessage(), e);
-	            ro.setExceptionMessage(e.getMessage());
-            }
+				Boolean status = loginManager.storePreferences(preferences);
+				return ok(status);
+			} catch(Exception e){
+				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
+				return unauthorized(e);
+			}
 		} else {
-			setUnableExcepton(ro);
+			return resp;
 		}
-		return ro;
 	}
-	
-	/**
-	 * Initialize the manager
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
-	private synchronized void initManager() {
+    @Override
+    boolean init() throws Exception {
 		if (loginManager == null) {
 			loginManager = new LoginManager();
 		}
-	}
+		return true;
+    }
+    
 }

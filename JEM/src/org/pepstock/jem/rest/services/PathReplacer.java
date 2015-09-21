@@ -14,46 +14,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.rest.entities;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package org.pepstock.jem.rest.services;
 
 /**
- * Is a POJO class used for all methods which return a string.
- * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 2.3
  */
-@XmlRootElement
-public class StringReturnedObject extends ReturnedObject {
+public final class PathReplacer {
 
-	private String value = null;
+	private String path = null;
+
+	/**
+	 * @param path
+	 */
+	private PathReplacer(String path) {
+		super();
+		this.path = path;
+	}
+
+	static PathReplacer path(String path){
+		PathReplacer replacer = new PathReplacer(path);
+		return replacer;
+	}
 	
-	/**
-	 * Empty constructor
-	 */
-	public StringReturnedObject() {
+	PathReplacer replace(String parm, String value){
+		path = path.replace(parm, value);
+		return this;
 	}
 
-	/**
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "StringReturnedObject [value=" + value + "]";
+	String build(){
+		return path;
 	}
 }

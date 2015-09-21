@@ -19,13 +19,6 @@ package org.pepstock.jem.node.security;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.pepstock.jem.rest.maps.UserPreferencesMapAdapter;
-
 
 /**
  * Entity class which represents the current logged user. It contains all authorizations
@@ -35,8 +28,8 @@ import org.pepstock.jem.rest.maps.UserPreferencesMapAdapter;
  *
  */
 // uses Accessory Type to avoid to have REST error serializing user preferences
-@XmlAccessorType(XmlAccessType.FIELD) 
-@XmlRootElement
+//@XmlAccessorType(XmlAccessType.FIELD) 
+//@XmlRootElement
 public class LoggedUser extends Subject {
 	
 	private static final long serialVersionUID = 1L;
@@ -49,7 +42,7 @@ public class LoggedUser extends Subject {
 	private Map<String, Boolean> authorized = new HashMap<String, Boolean>();
 	
 	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
-	@XmlJavaTypeAdapter(UserPreferencesMapAdapter.class)
+//	@XmlJavaTypeAdapter(UserPreferencesMapAdapter.class)
 	private Map<String, UserPreference> preferences = new HashMap<String, UserPreference>();
 	
 	private OrganizationalUnit organizationalUnit = null;

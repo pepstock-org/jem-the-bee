@@ -16,10 +16,14 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.rest.entities.ReturnedObject;
 
 /**
  * Abstract REST server resource, which provides a helpful method to check if the
@@ -29,24 +33,63 @@ import org.pepstock.jem.rest.entities.ReturnedObject;
  *
  */
 public abstract class DefaultServerResource {
+	
+	final AtomicBoolean managerLoaded = new AtomicBoolean(false);
+	
+	final Response check(){
+		if (isEnable()){
+			try {
+				if (!managerLoaded.get()){
+					synchronized (managerLoaded) {
+						managerLoaded.set(init());
+                    }
+				}
+	            return null;
+            } catch (Exception e) {
+            	LogAppl.getInstance().ignore(e.getMessage(), e);
+            	return severError(e);
+            }
+		} else {
+			return unableExcepton();
+		}
+	}
 
+	boolean init() throws Exception{
+		return true;
+	}
+	
 	/**
 	 * Returns <code>true</code> if JEM group is available (at least one member up and running).
 	 * 
 	 * @return <code>true</code> if JEM group is available (at least one member up and running), otherwise <code>false</code>
 	 */
-	protected boolean isEnable(){
+	final boolean isEnable(){
 		return SharedObjects.getInstance().isDataClusterAvailable();
 	}
 	
-	/**
-	 * Sets the exception for JEM cluster not available to returned object of REST call.
-	 * 
-	 * @param object returned object of REST call
-	 */
-	void setUnableExcepton(ReturnedObject object){
+	final Response ok(){
+		return Response.ok().build();
+	}
+	
+	final Response badRequest(Object obj){
+		return Response.status(Status.BAD_REQUEST).entity(obj).build();
+	}
+	
+	final Response ok(Object obj){
+		return Response.ok().entity(obj).build();
+	}
+	
+	final Response unauthorized(Exception e){
+		return Response.status(Status.UNAUTHORIZED).entity(e.getMessage()).build();
+	}
+	
+	final Response severError(Exception e){
+		return Response.serverError().entity(e.getMessage()).build();
+	}
+	
+	final Response unableExcepton(){
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
 		String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-		object.setExceptionMessage(msg);
+		return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
 	}
 }

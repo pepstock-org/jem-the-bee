@@ -27,26 +27,26 @@ public final class GfsManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "gfs";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "gfs";
 
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String FILE_LIST = CommonPaths.QUERYSTRING_SEPARATOR +  "ls";
+	public static final String FILE_LIST = CommonPaths.PATH_SEPARATOR +  "ls";
 	
 	/**
 	 * "bin" parameter on url
 	 */
-	public static final String FILE_UPLOAD = CommonPaths.QUERYSTRING_SEPARATOR +  "upload";
+	public static final String FILE_UPLOAD = CommonPaths.PATH_SEPARATOR +  "upload";
 	
 	/**
 	 * "bin" parameter on url
 	 */
-	public static final String FILE_DELETE = CommonPaths.QUERYSTRING_SEPARATOR +  "delete";
+	public static final String FILE_DELETE = CommonPaths.PATH_SEPARATOR +  "delete";
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String OUTPUT_FILE_CONTENT_PATH = CommonPaths.QUERYSTRING_SEPARATOR +  "cat";
+	public static final String OUTPUT_FILE_CONTENT_PATH = CommonPaths.PATH_SEPARATOR +  "cat";
 
 	/**
 	 * To avoid any instantiation

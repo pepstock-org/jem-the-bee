@@ -16,30 +16,38 @@
 */
 package org.pepstock.jem.rest;
 
+import javax.ws.rs.core.Response.Status;
+
 /**
- * Abstract REST manager, which contains th REST client to use on REST calls.
- *  
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 2.3
  */
-public abstract class AbstractRestManager {
+public class RestException extends Exception {
 	
-	private RestClient client = null; 
+	private static final long serialVersionUID = 1L;
+
+	private int statusCode = Status.SERVICE_UNAVAILABLE.getStatusCode();
 
 	/**
- 	 * Creates a new REST manager using a RestClient
-	 * @param restClient REST client instance
+	 * @param statusCode 
+	 * @param message
 	 */
-	public AbstractRestManager(RestClient restClient) {
-		this.client = restClient;
+	public RestException(int statusCode, String message) {
+		super("["+statusCode+"] "+message);
+		this.statusCode = statusCode;
 	}
 
 	/**
-	 * @return the client
+	 * @param cause
 	 */
-	public RestClient getClient() {
-		return client;
+	public RestException(Throwable cause) {
+		super(cause);
 	}
 
-
+	/**
+	 * @return the statusCode
+	 */
+	public int getStatusCode() {
+		return statusCode;
+	}
 }

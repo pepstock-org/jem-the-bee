@@ -27,43 +27,38 @@ public final class SwarmNodesManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "swarmNodes";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "swarmNodes";
 
 	/**
 	 * Key to define the path to bind get nodes list method
 	 */
-	public static final String LIST = CommonPaths.QUERYSTRING_SEPARATOR +  "list";
+	public static final String LIST = CommonPaths.PATH_SEPARATOR +  "list";
 
 	/**
 	 * Key to define the path to bind get nodes list method by filter
 	 */
-	public static final String LIST_BY_FILTER = CommonPaths.QUERYSTRING_SEPARATOR +  "listByFilter";
+	public static final String LIST_BY_FILTER = CommonPaths.PATH_SEPARATOR +  "listByFilter";
 	
 	/**
 	 * Key to define the path to bind start method
 	 */
-	public static final String START = CommonPaths.QUERYSTRING_SEPARATOR +  "start";
+	public static final String START = CommonPaths.PATH_SEPARATOR +  "start";
 	
 	/**
 	 * Key to define the path to bind drain method
 	 */
-	public static final String DRAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "drain";
+	public static final String DRAIN = CommonPaths.PATH_SEPARATOR +  "drain";
 	
 	/**
 	 * Key to define the path to bind get status method
 	 */
-	public static final String STATUS = CommonPaths.QUERYSTRING_SEPARATOR +  "status";
+	public static final String STATUS = CommonPaths.PATH_SEPARATOR +  "status";
 	
 	/**
 	 * Key to define the path to bind get config method
 	 */
-	public static final String GET_CONFIG = CommonPaths.QUERYSTRING_SEPARATOR +  "getConfig";
+	public static final String GET_CONFIG = CommonPaths.PATH_SEPARATOR +  "getConfig";
 	
-	/**
-	 * Key to define the path to bind update config method
-	 */
-	public static final String UPDATE_CONFIG = CommonPaths.QUERYSTRING_SEPARATOR +  "updateConfig";
-
 	/**
 	 * To avoid any instantiation
 	 */

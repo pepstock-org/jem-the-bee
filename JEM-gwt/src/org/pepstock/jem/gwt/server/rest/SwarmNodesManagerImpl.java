@@ -16,20 +16,22 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.RoutingConfigManager;
 import org.pepstock.jem.gwt.server.services.SwarmNodesManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.Nodes;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
-import org.pepstock.jem.rest.entities.SwarmConfig;
+import org.pepstock.jem.node.configuration.SwarmConfiguration;
+import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
 
 /**
@@ -53,25 +55,22 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @return a nodes container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(SwarmNodesManagerPaths.LIST)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Nodes getNodes(String nodesFilter) throws JemException {
-		Nodes nodes = new Nodes();
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(swarmNodesManager.getNodes(nodesFilter));
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            nodes.setNodes(swarmNodesManager.getNodes(nodesFilter));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(nodes);
+			return resp;
 		}
-		return nodes;
 	}
 	
 	/**
@@ -81,25 +80,22 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @return a nodes container
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(SwarmNodesManagerPaths.LIST_BY_FILTER)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Nodes getNodesByFilter(String nodesFilter) throws JemException {
-		Nodes nodes = new Nodes();
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(swarmNodesManager.getNodesByFilter(nodesFilter));
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            nodes.setNodes(swarmNodesManager.getNodesByFilter(nodesFilter));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(nodes);
+			return resp;
 		}
-		return nodes;
 	}
 	
 	/**
@@ -108,26 +104,22 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@GET
+	@PUT
 	@Path(SwarmNodesManagerPaths.START)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject start() throws JemException {
-		BooleanReturnedObject result = new BooleanReturnedObject();
-		result.setValue(false);
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response start() {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(swarmNodesManager.start());
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            result.setValue(swarmNodesManager.start());
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            result.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(result);
+			return resp;
 		}
-		return result;
 	}
 	
 	/**
@@ -136,26 +128,22 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@GET
+	@PUT
 	@Path(SwarmNodesManagerPaths.DRAIN)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject drain() throws JemException {
-		BooleanReturnedObject result = new BooleanReturnedObject();
-		result.setValue(false);
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response drain() {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(swarmNodesManager.drain());
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            result.setValue(swarmNodesManager.drain());
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            result.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(result);
+			return resp;
 		}
-		return result;
 	}
 	
 	/**
@@ -166,23 +154,20 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 */
 	@GET
 	@Path(SwarmNodesManagerPaths.STATUS)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public StringReturnedObject getStatus() throws JemException {
-		StringReturnedObject result = new StringReturnedObject();
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getStatus() {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(swarmNodesManager.getStatus());
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return severError(e);
 			}
-			try {
-	            result.setValue(swarmNodesManager.getStatus());
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            result.setExceptionMessage(e.getMessage());
-            }
 		} else {
-			setUnableExcepton(result);
+			return resp;
 		}
-		return result;
 	}
 	
 	/**
@@ -192,64 +177,35 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @return configuration of SWARM
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
-	@POST
+	@GET
 	@Path(SwarmNodesManagerPaths.GET_CONFIG)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public SwarmConfig getSwarmConfiguration(String name) throws JemException {
-		SwarmConfig result = new SwarmConfig();
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
-			}
-			try {
-				result.setConfiguration(routingConfManager.getSwarmConfiguration(name));
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSwarmConfiguration() {
+		Response resp = check();
+		if (resp == null){
+			try{
+				return ok(routingConfManager.getSwarmConfiguration(SwarmConfiguration.DEFAULT_NAME));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return severError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			return resp;
 		}
-		return result;
 	}
 	
-	/**
-	 * REST service which updates and returns the configuration of SWARM environment
-	 * @param config configuration of swarm
-	 * 
-	 * @return configuration new configuration updated
-	 * @throws JemException if JEM group is not available or not authorized 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-	@POST
-	@Path(SwarmNodesManagerPaths.UPDATE_CONFIG)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public SwarmConfig updateSwarmConfiguration(SwarmConfig config) throws JemException {
-		SwarmConfig result = new SwarmConfig();
-		if (isEnable()){
-			if (swarmNodesManager == null){
-				initManager();
-			}
-			if (config.getConfiguration() != null){
-				try {
-					result.setConfiguration(routingConfManager.updateSwarmConfiguration(config.getConfiguration()));
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					result.setExceptionMessage(e.getMessage());
-				}
-			}
-		} else {
-			setUnableExcepton(result);
-		}
-		return result;
-	}
-	
-	/**
-	 * Initialize the manager
-	 */
-	private synchronized void initManager() {
+    @Override
+    boolean init() throws Exception {
 		if (swarmNodesManager == null) {
 			swarmNodesManager = new SwarmNodesManager();
+		}
+		if (routingConfManager == null){
 			routingConfManager = new RoutingConfigManager();
 		}
-	}
+		return true;
+    }
 }
