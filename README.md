@@ -1,6 +1,6 @@
 # jem-the-bee
 
-##Version 2.3 Bergamotto is coming soon! (September, 2015)##
+##Version 2.3 Bergamotto is coming soon! (October, 2015)##
  
 Download previous versions from [here](http://www.pepstock.org/download.htm)!
 
@@ -11,6 +11,8 @@ Download previous versions from [here](http://www.pepstock.org/download.htm)!
   * **[Multiple java runtimes](../../wiki/ConfiguringJEMNode)** which allows you to use the JRE you need for business logic
   * **[SpringBatch restartability](../../wiki/JCLReferenceUsingSpringBatch)** out of the box, provided by JEM
   * **[PowerShell](../../wiki/PS_as_JCL)** integration, as JCL
+  * **Generic Shell** JCL, which allows you to create your JCL based on a whatever shell script language
+  * **REST** interface improvements 
   * JEM is distributed compiled by Java 7
  
  
