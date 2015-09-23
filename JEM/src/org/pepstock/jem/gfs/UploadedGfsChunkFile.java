@@ -19,8 +19,6 @@ package org.pepstock.jem.gfs;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  * 
@@ -31,7 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @version 2.0
  * 
  */
-@XmlRootElement
 public class UploadedGfsChunkFile implements Serializable {
 
 	private static final long serialVersionUID = 1L;

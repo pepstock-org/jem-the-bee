@@ -138,7 +138,7 @@ public class GfsManager extends AbstractRestManager {
 	 * @return response status
 	 * @throws JemException
 	 */
-	public int upload(UploadedGfsFile file) throws JemException {
+	public int upload(UploadedGfsFile file) throws RestException {
 		// gets the web resource
 		// adding paths for upload
 		ClientResponse response = null;
@@ -185,8 +185,7 @@ public class GfsManager extends AbstractRestManager {
 				
 				// checks if everything went OK!
 				if (response.getStatus() != Status.OK.getStatusCode()) {
-					System.err.println(response);
-					throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
+					throw new RestException(response.getStatus(),NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 				}
 				// close the response and activate the listeners
 				response.close();
@@ -206,9 +205,6 @@ public class GfsManager extends AbstractRestManager {
 			} else {
 				chunkFile.setFilePath(file.getGfsPath()+file.getUploadedFile().getName());
 			}
-			
-			System.err.println(chunkFile.getFilePath());
-			
 			// is the LAST call
 			chunkFile.setTransferComplete(true);
 			// where to put the file (GFS type)
@@ -220,7 +216,7 @@ public class GfsManager extends AbstractRestManager {
 			response = post(GfsManagerPaths.FILE_UPLOAD, chunkFile);
 			// checks if everything went OK!
 			if (response.getStatus() != Status.OK.getStatusCode()) {
-				throw new JemException(NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
+				throw new RestException(response.getStatus(), NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), response.getEntity(String.class)));
 			}
 			// activate the listeners
 			fireUploadListeners(readNum);
@@ -229,13 +225,12 @@ public class GfsManager extends AbstractRestManager {
 		} catch (UniformInterfaceException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			if (e.getResponse().getStatus() != 204) {
-				throw new JemException(e.getMessage(), e);
+				throw new RestException(e.getResponse().getStatus(), NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), e.getMessage()));
 			}
 			return e.getResponse().getStatus();
 		} catch (IOException e) {
-			e.printStackTrace();
 			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new JemException(e.getMessage(), e);
+			throw new RestException(Status.INTERNAL_SERVER_ERROR.getStatusCode(), NodeMessage.JEMC265E.toMessage().getFormattedMessage(file.getUploadedFile().getAbsolutePath(), e.getMessage()));
 		} finally {
 			// if file inut stream
 			// is open, it closes

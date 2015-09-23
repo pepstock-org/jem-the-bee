@@ -57,14 +57,14 @@ public abstract class AbstractRestManager {
 	/**
 	 * @return the client
 	 */
-	public RestClient getClient() {
+	RestClient getClient() {
 		return client;
 	}
 	
 	/**
 	 * @return the mainPath
 	 */
-	public String getMainPath() {
+	String getMainPath() {
 		return mainPath;
 	}
 	

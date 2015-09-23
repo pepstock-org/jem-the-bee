@@ -156,7 +156,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @return swarm configuration item.
 	 * @throws RestException if any exception occurs
 	 */
-	public SwarmConfiguration getSwarmConfiguration(String name) throws RestException {
+	public SwarmConfiguration getSwarmConfiguration() throws RestException {
 		try {
 			// creates the returned object
 			ClientResponse response = get(SwarmNodesManagerPaths.GET_CONFIG);

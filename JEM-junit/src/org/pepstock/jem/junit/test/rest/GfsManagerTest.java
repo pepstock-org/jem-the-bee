@@ -1,15 +1,16 @@
 package org.pepstock.jem.junit.test.rest;
 
 import java.io.File;
+import java.util.Collection;
 
 import junit.framework.TestCase;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJob;
+import org.pepstock.jem.PreJcl;
+import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.rest.entities.GfsFileList;
 import org.pepstock.jem.rest.entities.GfsRequest;
-import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.services.GfsManager;
 
 /**
@@ -45,7 +46,7 @@ public class GfsManagerTest extends TestCase {
 		assertNotNull(resposnse);
 		gfsRequest.setItem("test_rest/");
 		gfsRequest.setType(GfsFileType.DATA);
-		GfsFileList list=RestManager.getSharedInstance().getGfsManager().getFilesList(gfsRequest);
+		Collection<GfsFile> list=RestManager.getSharedInstance().getGfsManager().getFilesList(gfsRequest);
 		assertNotNull(list);
 	}
 
@@ -56,16 +57,15 @@ public class GfsManagerTest extends TestCase {
 	 */
 	private void loadData() throws Exception{
 		File jcl=getJcl("TEST_REST_LOAD_DATA.xml");
-		PreJob prejob=RestManager.getSharedInstance().createJob(jcl, "ant");
+		PreJcl prejob=RestManager.getSharedInstance().createJcl(jcl, "ant");
 		// get jobid
 		String jobId=RestManager.getSharedInstance().getJobManager().submit(prejob);
 		// verify output
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			Jobs jobs=RestManager.getSharedInstance().getJobManager().getOutputQueue(jobId);
-			if(jobs!=null && jobs.getJobs()!=null && !jobs.getJobs().isEmpty()){
-				Job job=jobs.getJobs().iterator().next();
+			Job job = RestManager.getSharedInstance().getJobManager().getJobById(jobId, JobQueue.OUTPUT);
+			if(job!=null){
 				assertEquals(job.getResult().getReturnCode(), 0);
 				break;
 			}

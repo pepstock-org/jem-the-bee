@@ -1,11 +1,9 @@
 package org.pepstock.jem.junit.test.rest;
 
 import java.io.File;
-import java.net.URL;
 
-import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJob;
-import org.pepstock.jem.commands.util.Factory;
+import org.apache.commons.io.FileUtils;
+import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.junit.init.JemTestManager;
 import org.pepstock.jem.junit.init.RestConf;
 import org.pepstock.jem.node.security.LoggedUser;
@@ -95,14 +93,16 @@ public class RestManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public PreJob createJob(File jcl, String jobType) throws Exception{
-		URL urlJcl = new URL("file:"+jcl.getAbsolutePath());
-		PreJob preJob = Factory.createPreJob(urlJcl);
-		preJob.setJclType(jobType);
-		Job job = new Job();
-		job.setUser(user);
-		preJob.setJob(job);
-		return preJob;
+	public PreJcl createJcl(File jcl, String jobType) throws Exception{
+//		URL urlJcl = new URL("file:"+jcl.getAbsolutePath());
+//		PreJob preJob = Factory.createPreJob(urlJcl);
+		PreJcl preJcl = new PreJcl();
+		preJcl.setContent(FileUtils.readFileToString(jcl));
+		preJcl.setType(jobType);
+//		Job job = new Job();
+//		job.setUser(user);
+//		preJob.setJob(job);
+		return preJcl;
 	}
 
 }

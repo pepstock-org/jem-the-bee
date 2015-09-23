@@ -61,7 +61,7 @@ public class JobsManager extends AbstractRestManager {
 	 * This is common method to extract jobs from different queues by filter
 	 * string
 	 * 
-	 * @param method
+	 * @param queue
 	 *            queue name to use to get the right map
 	 * @param filter
 	 *            filter string
@@ -69,8 +69,8 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<Job> getJobs(String queue, String filter) throws RestException {
-		String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue).build();
+	public Collection<Job> getJobs(JobQueue queue, String filter) throws RestException {
+		String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).build();
 	    try {
 			// creates the returned object
 			ClientResponse response = get(path, filter);
@@ -95,13 +95,13 @@ public class JobsManager extends AbstractRestManager {
 	 * 
 	 * @param id
 	 *            collections of jobs to hold
-	 * @param queueName
+	 * @param queue
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
-	public Boolean hold(String id, String queueName) throws RestException {
-    	String path = PathReplacer.path(JobsManagerPaths.HOLD).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	public Boolean hold(String id, JobQueue queue) throws RestException {
+    	String path = PathReplacer.path(JobsManagerPaths.HOLD).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		return putAndGetBoolean(path);
 	}
@@ -110,15 +110,15 @@ public class JobsManager extends AbstractRestManager {
 	 * Releases jobs in INPUT, OUTPUT or ROUTING queue, which were previously
 	 * hold.
 	 * 
-	 * @param id
+	 * @param queue
 	 *            collections of jobs to hold
 	 * @param queueName
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
-	public Boolean release(String id, String queueName) throws RestException {
-		String path = PathReplacer.path(JobsManagerPaths.RELEASE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	public Boolean release(String id, JobQueue queue) throws RestException {
+		String path = PathReplacer.path(JobsManagerPaths.RELEASE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		return putAndGetBoolean(path);
 	}
@@ -127,8 +127,8 @@ public class JobsManager extends AbstractRestManager {
 	 * Cancel a set of jobs currently in running. If force is set to true, JEM
 	 * uses force mode to cancel jobs.
 	 * 
-	 * @param jobs
-	 *            list of jobs to cancel
+	 * @param id
+	 *            id of job to cancel
 	 * @param force
 	 *            if true, uses force attribute to cancel jobs
 	 * @return always true!
@@ -143,15 +143,15 @@ public class JobsManager extends AbstractRestManager {
 	/**
 	 * Purge (removing any output) jobs from INPUT, OUTPUT or ROUTING queue.
 	 * 
-	 * @param jobs
+	 * @param id
 	 *            collections of jobs to purge
-	 * @param queueName
+	 * @param queue
 	 *            map where jobs are
 	 * @return true is it holds them, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
-	public Boolean purge(String id, String queueName) throws RestException {
-		String path = PathReplacer.path(JobsManagerPaths.PURGE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	public Boolean purge(String id, JobQueue queue) throws RestException {
+		String path = PathReplacer.path(JobsManagerPaths.PURGE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		return putAndGetBoolean(path);
 	}
@@ -167,8 +167,8 @@ public class JobsManager extends AbstractRestManager {
 	 * @return true if it updated, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
-	public Boolean update(String id, String queueName, UpdateJob updateJob) throws RestException {
-		String path = PathReplacer.path(JobsManagerPaths.UPDATE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	public Boolean update(String id, JobQueue queue, UpdateJob updateJob) throws RestException {
+		String path = PathReplacer.path(JobsManagerPaths.UPDATE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		return putAndGetBoolean(path, updateJob);
 	}	
@@ -206,9 +206,9 @@ public class JobsManager extends AbstractRestManager {
 	 * @return JCL content
 	 * @throws RestException if any exception occurs
 	 */
-	public String getJcl(String id, String queueName) throws RestException {
+	public String getJcl(String id, JobQueue queue) throws RestException {
 	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.JCL_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	    	String path = PathReplacer.path(JobsManagerPaths.JCL_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 	    	// creates the returned object
 			ClientResponse response =  get(path);
@@ -240,9 +240,9 @@ public class JobsManager extends AbstractRestManager {
 	 * @return object with all folder structure
 	 * @throws RestException if any exception occurs
 	 */
-	public OutputTree getOutputTree(String id, String queueName) throws RestException {
+	public OutputTree getOutputTree(String id, JobQueue queue) throws RestException {
 	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_TREE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_TREE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 	    	// creates the returned object
 			ClientResponse response =  get(path);
@@ -272,9 +272,9 @@ public class JobsManager extends AbstractRestManager {
 	 * @return object with file content
 	 * @throws RestException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(String id, String queueName, OutputListItem item) throws RestException {
+	public OutputFileContent getOutputFileContent(String id, JobQueue queue, OutputListItem item) throws RestException {
 	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 	    	// creates the returned object
 			ClientResponse response =  post(path, item);
@@ -332,9 +332,9 @@ public class JobsManager extends AbstractRestManager {
 	 * @return job, if found, otherwise null
 	 * @throws RestException if any exception occurs
 	 */
-	public Job getJobById(String id, String queueName) throws RestException {
+	public Job getJobById(String id, JobQueue queue) throws RestException {
 	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.JOB_BY_ID).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queueName).
+	    	String path = PathReplacer.path(JobsManagerPaths.JOB_BY_ID).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 	    	// creates the returned object
 			ClientResponse response =  get(path);
@@ -363,7 +363,7 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Job getEndedJobById(String id) throws RestException {
-		return getJobById(id, JobQueue.OUTPUT.getPath());
+		return getJobById(id, JobQueue.OUTPUT);
 	}
 	
 	/**

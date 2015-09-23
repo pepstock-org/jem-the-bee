@@ -18,8 +18,6 @@ package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * POJO Container of user-id and password to use in REST login manager to log in JEM web application.<br>
  * Uses the annotation XmlRootElement to be serialized. 
@@ -28,7 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @version 2.2
  *
  */
-@XmlRootElement
 public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;

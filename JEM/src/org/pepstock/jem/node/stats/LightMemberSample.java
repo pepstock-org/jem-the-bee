@@ -34,7 +34,6 @@ import java.util.Map;
  * @version 1.0
  * 
  */
-//@XmlAccessorType(XmlAccessType.FIELD)
 public class LightMemberSample extends AbstractMemberSample implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -59,12 +58,8 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 
 	private List<FileSystemUtilization> fileSystems = new LinkedList<FileSystemUtilization>();
 
-//	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
-//	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> mapsStats = new HashMap<String, LightMapStats>();
 	
-//	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
-//	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> internalMapsStats = new HashMap<String, LightMapStats>();
 	
 	/**

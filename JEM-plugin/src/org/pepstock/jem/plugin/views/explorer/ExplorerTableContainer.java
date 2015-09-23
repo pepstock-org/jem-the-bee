@@ -53,6 +53,7 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
@@ -346,7 +347,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to open the editor!", 
 						"Error occurred during opening of editor: "+e.getMessage(), MessageLevel.ERROR);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors to download the file
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to get "+getFile().getName()+"!", 
@@ -404,7 +405,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 						searcher.setText(getFilter());
 					}
 				});
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors from REST APi
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to load data", e.getMessage(), MessageLevel.ERROR);

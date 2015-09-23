@@ -35,6 +35,8 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.entities.JobQueue;
 
 /**
  * File drag listener utility, enables to open files of output directory of a job., using DND.
@@ -46,7 +48,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 	
 	private Job job = null;
 	
-	private String queueName = null;
+	private JobQueue queueName = null;
 
 	private TreeViewer treeViewer = null;
 
@@ -67,14 +69,14 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 	/**
 	 * @return the queueName
 	 */
-	public String getQueueName() {
+	public JobQueue getQueueName() {
 		return queueName;
 	}
 
 	/**
 	 * @param queueName the queueName to set
 	 */
-	public void setQueueName(String queueName) {
+	public void setQueueName(JobQueue queueName) {
 		this.queueName = queueName;
 	}
 
@@ -172,10 +174,10 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
      * @throws IOException 
      * @throws Exception if any error occurs
      */
-    private File dragProducedOutput(ProducedOutput out) throws JemException, IOException{
+    private File dragProducedOutput(ProducedOutput out) throws RestException, IOException{
     	OutputListItem item = out.getOutItem();
 		// rest call
-		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, out.getOutItem());
+		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, queueName, out.getOutItem());
 		String fileName = FilenameUtils.getName(item.getFileRelativePath());
 		return FilesUtil.writeToTempFile(fileName, ofc.getContent());
     }
@@ -196,7 +198,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
         }
 
 		@Override
-		public void execute() throws JemException {
+		public void execute() throws Exception {
 			try {
 				if (job.getJcl().getContent() == null){
 					// REST call to download JCL
@@ -243,7 +245,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
                 } catch (IOException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
-                } catch (JemException e) {
+                } catch (RestException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
                 }
@@ -279,7 +281,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 				// download a single files
 				File file = dragProducedOutput(getOutput());
 				getEvent().data = new String[] { file.getAbsolutePath() };
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
 			} catch (IOException e) {

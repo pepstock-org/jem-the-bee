@@ -28,6 +28,7 @@ import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.FilesUtil;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * File drag listener utility, enables only DATA and SOURCE opening.
@@ -176,7 +177,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 				if (FileTransfer.getInstance().isSupportedType(getEvent().dataType)) {
 					getEvent().data = new String[] { file.getAbsolutePath() };
 				}
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to load file "+getFile().getName()+" !", 
 						"Error occurred during retrieving the file '"+getFile().getName()+"': "+e.getMessage(), MessageLevel.ERROR);

@@ -18,8 +18,6 @@ package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputListItem;
 
@@ -31,7 +29,6 @@ import org.pepstock.jem.OutputListItem;
  * @version 2.2
  *
  */
-@XmlRootElement
 public class JobOutputListArgument implements Serializable{
 
     private static final long serialVersionUID = 1L;

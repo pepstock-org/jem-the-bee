@@ -27,8 +27,8 @@ import org.apache.tools.ant.types.FileSet;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.services.GfsManager;
 
 /**
@@ -154,7 +154,7 @@ public class Destination extends Task {
                 		// uploads files
     					gfsManager.upload(uploadFile);
     					count++;
-    				} catch (JemException e) {
+    				} catch (RestException e) {
     					LogAppl.getInstance().ignore(e.getMessage(), e);
     					error++;
     					log(e.getMessage());

@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.views.Searcher;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.services.UploadListener;
 
 /**
@@ -165,12 +165,12 @@ public class FileUploadJob extends Job {
 					int status = Client.getInstance().upload(fileToupload);
 					// if Return Code HTTP not equals 200, excpetion
 					if (status != 200){
-						throw new JemException("Status code incorrect: "+status);
+						throw new RestException(status, "Status code incorrect: "+status);
 					}
 				}
 			}
 			return Status.OK_STATUS;
-		} catch (JemException e) {
+		} catch (RestException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			// shows the error with
 			// file and exception

@@ -33,6 +33,7 @@ import org.pepstock.jem.plugin.preferences.PreferencesManager;
 import org.pepstock.jem.plugin.util.LoginLoading;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Implements a view part which needs the login, using the environment header.
@@ -314,7 +315,7 @@ public abstract class LoginViewPart extends JemViewPart implements ShellContaine
 					}
 				}
 				Client.getInstance().login(choosed);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to login to "+getCoordinate().getName()+"!",
 						"Error occurred during login to '"+getCoordinate().getName()+"': "+e.getMessage(), MessageLevel.ERROR);
