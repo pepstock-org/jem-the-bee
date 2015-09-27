@@ -54,6 +54,7 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
 import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
@@ -331,7 +332,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
         @Override
         protected void execute() throws JemException {
 			try {
-				String content = null;
+				byte[] content = null;
 				// if source of data, you can download
 				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE){
 					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
@@ -341,7 +342,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				}
 				// activate the editor
 				// going in editor with the content of the file
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(new String(content, CharSet.DEFAULT), getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
 			} catch (PartInitException e) {
 				// if any errors from editing 
 				LogAppl.getInstance().ignore(e.getMessage(), e);

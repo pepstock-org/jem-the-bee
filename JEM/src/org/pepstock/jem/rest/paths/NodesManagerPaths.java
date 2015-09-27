@@ -62,7 +62,17 @@ public final class NodesManagerPaths {
 	 * Key to define the path to bind update node method
 	 */
 	public static final String UPDATE = CommonPaths.PATH_SEPARATOR +  "update" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
-	
+
+	/**
+	 * Key to define the path to bind start command node method
+	 */
+	public static final String START = CommonPaths.PATH_SEPARATOR +  "start"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
+	/**
+	 * Key to define the path to bind start command node method
+	 */
+	public static final String DRAIN = CommonPaths.PATH_SEPARATOR +  "drain"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
 	/**
 	 * Key to define the path to bind top command node method
 	 */

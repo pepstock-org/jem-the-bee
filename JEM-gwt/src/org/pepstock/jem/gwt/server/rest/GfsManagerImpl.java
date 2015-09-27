@@ -168,6 +168,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 				if (item == null){
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
+				
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				// sets the data
 				chunkFile.setChunk(content);

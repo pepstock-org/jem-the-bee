@@ -33,7 +33,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
@@ -231,9 +230,9 @@ public class InspectorViewPart extends JemViewPart {
 		public void execute() throws JemException {
 			try {
 				// loads file content
-				OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, queueName, getOutput().getOutItem());
+				String content = Client.getInstance().getOutputFileContent(job, queueName, getOutput().getOutItem());
 				// open text plain editor
-				getSite().getWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(ofc.getContent(), getOutput().getName()), 
+				getSite().getWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getOutput().getName()), 
 						"org.eclipse.ui.DefaultTextEditor");
 			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);

@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
+import java.util.Arrays;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -129,6 +131,65 @@ public class NodesManagerImpl extends DefaultServerResource {
 			return resp;
 		}
 	}
+	
+	/**
+	 * REST service which starts node
+	 * 
+	 * @param node node where executes command
+	 * @return returned object with value
+	 * @throws RestException if JEM group is not available or not authorized 
+	 */
+	@PUT
+	@Path(NodesManagerPaths.START)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response start(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.PLAIN);
+		if (resp == null){
+			try{
+				if (key == null){
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				NodeInfo node = manager.getNodeByKey(key);
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.start(Arrays.asList(node.getNodeInfoBean())).toString());
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severError(e);
+			}
+		} else {
+			return resp;
+		}
+	}
+
+	/**
+	 * REST service which drains node
+	 * 
+	 * @param node node where executes command
+	 * @return returned object with value
+	 * @throws RestException if JEM group is not available or not authorized 
+	 */
+	@PUT
+	@Path(NodesManagerPaths.DRAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response drain(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.PLAIN);
+		if (resp == null){
+			try{
+				if (key == null){
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				NodeInfo node = manager.getNodeByKey(key);
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.drain(Arrays.asList(node.getNodeInfoBean())).toString());
+			} catch (Exception e) {
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severError(e);
+			}
+		} else {
+			return resp;
+		}
+	}
+
 	
 	/**
 	 * REST service which updates node

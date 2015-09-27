@@ -165,7 +165,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 		public void execute() throws JemException {
 			try {
 				// gets content from JEM
-				String content = null;
+				byte[] content = null;
 				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE) {
 					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
 				} else {

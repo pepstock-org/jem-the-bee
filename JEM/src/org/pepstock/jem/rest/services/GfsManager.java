@@ -32,7 +32,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
+import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.rest.JsonUtil;
@@ -141,6 +143,16 @@ public class GfsManager extends AbstractRestManager {
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
+	}
+	
+	/**
+	 * Uploads a file via rest service
+	 * @param file internal file to upload the file
+	 * @return <code>true</code> if everything went OK, otherwise <code>false</code>
+	 * @throws RestException if any exception occurs
+	 */
+	public boolean putFile(UploadedGfsFile file) throws RestException{
+		return putFile(GfsFileType.getName(file.getType()), file.getGfsPath(), file.getUploadedFile(), file.getRelativePath());
 	}
 	
 	/**

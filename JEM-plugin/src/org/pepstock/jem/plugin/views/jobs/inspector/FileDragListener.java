@@ -23,7 +23,6 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.widgets.Shell;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
@@ -177,9 +176,9 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
     private File dragProducedOutput(ProducedOutput out) throws RestException, IOException{
     	OutputListItem item = out.getOutItem();
 		// rest call
-		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, queueName, out.getOutItem());
+		String content = Client.getInstance().getOutputFileContent(job, queueName, out.getOutItem());
 		String fileName = FilenameUtils.getName(item.getFileRelativePath());
-		return FilesUtil.writeToTempFile(fileName, ofc.getContent());
+		return FilesUtil.writeToTempFile(fileName, content);
     }
 
     /**

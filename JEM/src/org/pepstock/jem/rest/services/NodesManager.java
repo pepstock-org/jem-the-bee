@@ -147,7 +147,49 @@ public class NodesManager extends AbstractRestManager {
 			throw new RestException(response.getStatus(), result);
 		}
 	}
+
+	/**
+	 * Starts a node
+	 * @param node node to update
+	 * @return always true
+	 * @throws RestException if any exception occurs
+	 */
+	public boolean start(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(NodesManagerPaths.START).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
+	}
 	
+	/**
+	 * Starts a node
+	 * @param node node to update
+	 * @return always true
+	 * @throws RestException if any exception occurs
+	 */
+	public boolean drain(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(NodesManagerPaths.DRAIN).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
+	}
+
 	/**
 	 * Returns the top command result
 	 * 
@@ -218,6 +260,31 @@ public class NodesManager extends AbstractRestManager {
 			return null;
 		} else {
 			throw new RestException(response.getStatus(), result);
+		}
+	}
+
+	/**
+	 * Returns single node by its key
+	 * 
+	 * @param node node where execute a future task to get the config file 
+	 * @param what type of configuration file to return
+	 * @return Configuration file container
+	 * @throws RestException if any exception occurs
+	 */
+	public NodeInfoBean getNode(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this);
+		String path = PathReplacer.path(NodesManagerPaths.NODE_BY_KEY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(NodeInfoBean.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
 	

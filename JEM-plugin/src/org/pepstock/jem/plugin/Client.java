@@ -20,11 +20,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
@@ -36,7 +36,6 @@ import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.RestClientFactory;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
-import org.pepstock.jem.rest.entities.GfsRequest;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.services.GfsManager;
 import org.pepstock.jem.rest.services.JobsManager;
@@ -240,7 +239,7 @@ public class Client {
 	 * @return output file content
 	 * @throws RestException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, JobQueue queue, OutputListItem item) throws RestException {
+	public String getOutputFileContent(Job job, JobQueue queue, OutputListItem item) throws RestException {
 		return jobsManager.getOutputFileContent(job.getId(), queue, item);
 	}
 
@@ -252,8 +251,8 @@ public class Client {
 	 * @return file content in string format
 	 * @throws JemException if any exception occurs
 	 */
-	public String getGfsFile(int type, String path, String pathName) throws RestException {
-		return gfsManager.getFile(createGfsRequest(type, path, pathName));
+	public byte[] getGfsFile(int type, String path, String pathName) throws RestException {
+		return gfsManager.getFile(GfsFileType.getName(type), path, pathName);
 	}
 
 	/**
@@ -265,7 +264,7 @@ public class Client {
 	 * @throws JemException if any exception occurs
 	 */
 	public Collection<GfsFile> getGfsFileList(int type, String path, String pathName) throws RestException {
-		return gfsManager.getFilesList(createGfsRequest(type, path, pathName));
+		return gfsManager.getFilesList(GfsFileType.getName(type), path, pathName);
 	}
 	
 	/**
@@ -274,8 +273,8 @@ public class Client {
 	 * @return REST status
 	 * @throws JemException if any exception occurs
 	 */
-	public int upload(UploadedGfsFile file) throws RestException {
-		return gfsManager.upload(file);
+	public boolean upload(UploadedGfsFile file) throws RestException {
+		return gfsManager.putFile(file);
 	}
 	
 	/**
@@ -287,7 +286,7 @@ public class Client {
 	 * @throws RestException if any exception occurs
 	 */
 	public void delete(int type, String path, String pathName) throws RestException {
-		gfsManager.delete(createGfsRequest(type, path, pathName));
+		gfsManager.delete(GfsFileType.getName(type), path, pathName);
 	}
 	
 	/**
@@ -306,20 +305,6 @@ public class Client {
 	 */
 	public void removeUploadListener(UploadListener listener){
 		gfsManager.removeUploadListener(listener);
-	}
-	
-	/**
-	 * Returns a gfs request, with path or file and data path name, if exist 
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return a gfs request
-	 */
-	private GfsRequest createGfsRequest(int type, String path, String pathName){
-		GfsRequest request = new GfsRequest();
-		request.setItem(path);
-		request.setPathName(pathName);
-		request.setType(type);
-		return request;
 	}
 
 	/**
