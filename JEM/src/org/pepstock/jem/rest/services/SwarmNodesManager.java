@@ -16,9 +16,11 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.NodeInfoBean;
@@ -59,18 +61,15 @@ public class SwarmNodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
 		try {
+			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(SwarmNodesManagerPaths.LIST, filter);
+			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST);
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new RestException(e);
 		}
@@ -87,18 +86,15 @@ public class SwarmNodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
 		try {
+			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(SwarmNodesManagerPaths.LIST_BY_FILTER, filter);
+			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST_BY_FILTER);
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new RestException(e);
 		}
@@ -111,7 +107,15 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean start() throws RestException {
-		return putAndGetBoolean(SwarmNodesManagerPaths.START);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.put(SwarmNodesManagerPaths.START);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -122,7 +126,15 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean drain() throws RestException {
-		return putAndGetBoolean(SwarmNodesManagerPaths.DRAIN);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.put(SwarmNodesManagerPaths.DRAIN);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -132,18 +144,14 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String getStatus() throws RestException {
-		try {
-			// creates the returned object
-			ClientResponse response = get(SwarmNodesManagerPaths.STATUS);
-			String result = response.getEntity(String.class);
-			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return result;
-			} else {
-				throw new RestException(response.getStatus(), result);
-			}
-		} catch (Exception e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new RestException(e);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.get(SwarmNodesManagerPaths.STATUS);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else {
+			throw new RestException(response.getStatus(), result);
 		}
 	}
 
@@ -158,12 +166,13 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 */
 	public SwarmConfiguration getSwarmConfiguration() throws RestException {
 		try {
+			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(SwarmNodesManagerPaths.GET_CONFIG);
+			ClientResponse response = builder.get(SwarmNodesManagerPaths.GET_CONFIG);
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return response.getEntity(SwarmConfiguration.class);
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 		} catch (Exception e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);

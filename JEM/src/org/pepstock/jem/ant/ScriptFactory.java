@@ -98,7 +98,7 @@ public abstract class ScriptFactory extends AntFactory {
 				// it puts in HEX format to avoid
 				// XML error by encoding
 				Hex hex = new Hex(CharSet.DEFAULT);
-				String value = new String(hex.encode(entry.getValue().toString().getBytes()));
+				String value = new String(hex.encode(entry.getValue().toString().getBytes(CharSet.DEFAULT)), CharSet.DEFAULT);
 				jemProperties.put(entry.getKey(), value);
 			}
 			// creates ANT file 

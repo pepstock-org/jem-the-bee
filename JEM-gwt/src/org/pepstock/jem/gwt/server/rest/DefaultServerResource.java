@@ -16,12 +16,8 @@
 */
 package org.pepstock.jem.gwt.server.rest;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 
@@ -30,33 +26,54 @@ import org.pepstock.jem.log.LogAppl;
  * JEM group is available or not.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  *
  */
 public abstract class DefaultServerResource {
 	
-	final AtomicBoolean managerLoaded = new AtomicBoolean(false);
-	
-	final Response check(){
+	// boolean to check if it has to call teh init of the managers or not
+	private boolean managerLoaded = false;
+
+	// sync object
+	private final Object SYNC = new Object();
+
+	/**
+	 * Performs the same checks for all services
+	 * @return if there is any error, return the response, otherwise null.
+	 */
+	final Response check(ResponseBuilder builder){
+		// checks if environment is available
 		if (isEnable()){
 			try {
-				if (!managerLoaded.get()){
-					synchronized (managerLoaded) {
-						managerLoaded.set(init());
+				// checks if manager is loaded
+				if (!managerLoaded){
+					synchronized (SYNC) {
+						if (!managerLoaded){
+							// initialized 
+							managerLoaded = init();
+						}	                    
                     }
 				}
+				// everything is ok, there for return null
 	            return null;
             } catch (Exception e) {
+            	// throws a HTTP severe error
             	LogAppl.getInstance().ignore(e.getMessage(), e);
-            	return severError(e);
+            	return builder.severError(e);
             }
 		} else {
-			return unableExcepton();
+			// return the response that
+			// the environment is not ready
+			return builder.unableExcepton();
 		}
 	}
 
-	boolean init() throws Exception{
-		return true;
-	}
+	/**
+	 * Method called to init the service
+	 * @return true is ok, otherwise false
+	 * @throws Exception if any error occurs
+	 */
+	abstract boolean init() throws Exception;
 	
 	/**
 	 * Returns <code>true</code> if JEM group is available (at least one member up and running).
@@ -67,29 +84,4 @@ public abstract class DefaultServerResource {
 		return SharedObjects.getInstance().isDataClusterAvailable();
 	}
 	
-	final Response ok(){
-		return Response.ok().build();
-	}
-	
-	final Response badRequest(Object obj){
-		return Response.status(Status.BAD_REQUEST).entity(obj).build();
-	}
-	
-	final Response ok(Object obj){
-		return Response.ok().entity(obj).build();
-	}
-	
-	final Response unauthorized(Exception e){
-		return Response.status(Status.UNAUTHORIZED).entity(e.getMessage()).build();
-	}
-	
-	final Response severError(Exception e){
-		return Response.serverError().entity(e.getMessage()).build();
-	}
-	
-	final Response unableExcepton(){
-		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-		String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-		return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
-	}
 }

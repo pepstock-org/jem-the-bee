@@ -32,7 +32,7 @@ public class GfsRequest implements Serializable {
 	
 	private String pathName = null;
 	
-	private int type = -1;
+	private String type = null;
 
 	/**
 	 * Empty constructor
@@ -72,14 +72,14 @@ public class GfsRequest implements Serializable {
 	/**
 	 * @return the type
 	 */
-	public int getType() {
+	public String getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(int type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

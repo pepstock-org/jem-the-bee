@@ -19,7 +19,6 @@ package org.pepstock.jem.gwt.client.panels.jobs.commons.inspector;
 import java.util.List;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.gwt.client.ResizeCapable;
@@ -202,7 +201,7 @@ public class Output extends SplitLayoutPanel implements SyntaxHighlighter, Resiz
 	    });
 	}
 
-	private class GetOutputFileContentAsyncCallback extends ServiceAsyncCallback<OutputFileContent> {
+	private class GetOutputFileContentAsyncCallback extends ServiceAsyncCallback<String> {
 
 		@Override
 		public void onJemFailure(Throwable caught) {
@@ -210,16 +209,16 @@ public class Output extends SplitLayoutPanel implements SyntaxHighlighter, Resiz
 		}
 
 		@Override
-		public void onJemSuccess(OutputFileContent result) {
+		public void onJemSuccess(String result) {
 			// creates the label of output
 			String content = null;
 			// uses highligther to show the data in PLAIN way
-			if (result.getContent() ==  null){
+			if (result ==  null){
 				content = JemConstants.NONE_BRACKETS;
-			} else if (result.getContent().trim().length() == 0){
+			} else if (result.trim().length() == 0){
 				content = JemConstants.NONE_BRACKETS;
 			} else {
-				content = result.getContent();
+				content = result;
 			}
 			
 			viewOutput.setContent(content);

@@ -29,7 +29,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobSystemActivity;
@@ -61,25 +60,24 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	private JobsManager jobsManager = null;
 	
 	/**
-	 * REST service which returns jobs in input queue, by job name filter
+	 * REST service which returns jobs in passed queue, by job filters
 	 * 
 	 * @param jobNameFilter job name filter
 	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
 	@Path(JobsManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING)String jobNameFilter) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
 				JobQueue jQueue = getJobQueue(queue);
-				return (jQueue == null) ? badRequest(queue) : ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter));
+				return (jQueue == null) ? ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE) : ResponseBuilder.JSON.ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -98,13 +96,13 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobStatus(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(jobsManager.getJobStatus(jobNameFilter));
+				return ResponseBuilder.JSON.ok(jobsManager.getJobStatus(jobNameFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -123,25 +121,26 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobById(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
+				System.err.println(jQueue.getName()+" "+id+" "+job);
 				if (job != null){
-					return ok(job);
+					return ResponseBuilder.JSON.ok(job);
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -158,27 +157,27 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.HOLD)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response hold(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					return ok(jobsManager.hold(Arrays.asList(job), jQueue.getName()));
+					return ResponseBuilder.PLAIN.ok(jobsManager.hold(Arrays.asList(job), jQueue.getName()).toString());
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -195,27 +194,27 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.RELEASE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response release(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					return ok(jobsManager.release(Arrays.asList(job), jQueue.getName()));
+					return ResponseBuilder.PLAIN.ok(jobsManager.release(Arrays.asList(job), jQueue.getName()).toString());
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -232,24 +231,24 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.CANCEL)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response cancel(@PathParam(JobsManagerPaths.JOBID) String id, @PathParam(JobsManagerPaths.FORCE) String force) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
 				boolean isCancelForce  = Boolean.parseBoolean(force);
 				if (id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
 				if (job != null){
-					return ok(jobsManager.cancel(Arrays.asList(job), isCancelForce));
+					return ResponseBuilder.PLAIN.ok(jobsManager.cancel(Arrays.asList(job), isCancelForce).toString());
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -266,27 +265,27 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.PURGE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response purge(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					return ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()));
+					return ResponseBuilder.PLAIN.ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()));
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -303,23 +302,23 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.UPDATE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response update(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, UpdateJob job) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				job.setId(id);
-				return ok(jobsManager.update(job, jQueue.getName()));
+				return ResponseBuilder.PLAIN.ok(jobsManager.update(job, jQueue.getName()).toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -336,13 +335,13 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@PUT
 	@Path(JobsManagerPaths.SUBMIT)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response submit(PreJcl preJcl) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
 				if (preJcl.getContent() == null){
-					return Response.status(Status.BAD_REQUEST).entity(preJcl).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				// creates a pre job using the JCL
 				PreJob preJob = new PreJob();
@@ -352,10 +351,10 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				// creates a job
 				Job job = new Job();
 				preJob.setJob(job);
-				return ok(jobsManager.submit(preJob));
+				return ResponseBuilder.PLAIN.ok(jobsManager.submit(preJob));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -371,27 +370,28 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 */
 	@GET
 	@Path(JobsManagerPaths.OUTPUT_TREE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOutputTree(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					return ok(jobsManager.getOutputTree(job, jQueue.getName()));
+					return ResponseBuilder.JSON.ok(jobsManager.getOutputTree(job, jQueue.getName()));
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -407,27 +407,28 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 */
 	@POST
 	@Path(JobsManagerPaths.OUTPUT_FILE_CONTENT)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getOutputFileContent(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, OutputListItem item) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					return ok(jobsManager.getOutputFileContent(job, item));
+					return ResponseBuilder.PLAIN.ok(jobsManager.getOutputFileContent(job, item));
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -444,28 +445,27 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	@GET
 	@Path(JobsManagerPaths.JCL_CONTENT)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getJcl(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) throws JemException {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getJcl(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				if (queue == null || id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+				if (id == null){
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				JobQueue jQueue = getJobQueue(queue);
 				if (jQueue == null){
-					return Response.status(Status.BAD_REQUEST).entity(queue).build();
+					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
 				if (job != null){
-					// FIX ME!!! Serve questa chiamata?
-					return ok(jobsManager.getJcl(job, jQueue.getName()));
+					return ResponseBuilder.PLAIN.ok(jobsManager.getJcl(job, jQueue.getName()));
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -481,28 +481,29 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 */
 	@GET
 	@Path(JobsManagerPaths.JOB_SYSTEM_ACTIVITY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response getJobSystemActivity(@PathParam(JobsManagerPaths.JOBID) String id) throws JemException {
-		Response resp = check();
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobSystemActivity(@PathParam(JobsManagerPaths.JOBID) String id) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try {
 				if (id == null){
-					return Response.status(Status.BAD_REQUEST).entity(id).build();
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
 				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
 				if (job != null){
 					JobSystemActivity activity = jobsManager.getJobSystemActivity(job);
 					if (activity != null){
-						return ok(activity);
+						return ResponseBuilder.JSON.ok(activity);
 					} else {
-						return Response.status(Status.NOT_FOUND).entity(id).build();
+						return ResponseBuilder.JSON.notFound(id);
 					}
 				} else {
-					return Response.status(Status.NOT_FOUND).entity(id).build();
+					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;

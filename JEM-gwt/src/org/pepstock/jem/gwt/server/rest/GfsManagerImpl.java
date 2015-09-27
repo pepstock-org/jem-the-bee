@@ -16,16 +16,22 @@
  */
 package org.pepstock.jem.gwt.server.rest;
 
-import java.util.Collection;
-
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.http.protocol.HTTP;
 import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.GfsManager;
@@ -33,7 +39,6 @@ import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.rest.entities.GfsRequest;
 import org.pepstock.jem.rest.paths.GfsManagerPaths;
 
 import com.sun.jersey.spi.resource.Singleton;
@@ -43,13 +48,14 @@ import com.sun.jersey.spi.resource.Singleton;
  * Rest service to manage gfs.<br>
  * Pay attention to URL (@path) annotation
  * 
- * @author Enrico Frigo
+ * @author Andrea "Stock" Stocchero
+ * @version 2.3
  * 
  */
 @Singleton
 @Path(GfsManagerPaths.MAIN)
 public class GfsManagerImpl extends DefaultServerResource {
-
+	
 	private GfsManager gfsManager = null;
 
 	/**
@@ -66,19 +72,27 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * @throws JemException
 	 *             if any error occurs
 	 */
-	@POST
-	@Path(GfsManagerPaths.FILE_LIST)
+	@GET
+	@Path(GfsManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getFilesList(GfsRequest request) {
-		Response resp = check();
+	public Response getFilesList(@PathParam(GfsManagerPaths.TYPE) String type, 
+			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
+			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try {
-				Collection<GfsFile> gfsList = gfsManager.getFilesList(request.getType(), request.getItem(), request.getPathName());
-				return ok(gfsList);
+				int typeInt = GfsFileType.getType(type);
+				if (typeInt == GfsFileType.NO_TYPE){
+					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.TYPE);
+				}
+				if (item == null){
+					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
+				}
+				return ResponseBuilder.JSON.ok(gfsManager.getFilesList(typeInt, item, pathName));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -98,19 +112,27 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * @throws JemException
 	 *             if any error occurs
 	 */
-	@POST
-	@Path(GfsManagerPaths.OUTPUT_FILE_CONTENT_PATH)
+	@GET
+	@Path(GfsManagerPaths.GET_CONTENT)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getFile(GfsRequest request) {
-		Response resp = check();
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response getFile(@PathParam(GfsManagerPaths.TYPE) String type, 
+			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
+			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		Response resp = check(ResponseBuilder.OCTET_STREAM);
 		if (resp == null){
 			try {
-				String content = gfsManager.getFile(request.getType(), request.getItem(), request.getPathName());
-				return ok(content);
+				int typeInt = GfsFileType.getType(type);
+				if (typeInt == GfsFileType.NO_TYPE){
+					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.TYPE);
+				}
+				if (item == null){
+					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
+				}
+				return ResponseBuilder.OCTET_STREAM.ok(gfsManager.getFile(typeInt, item, pathName));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.OCTET_STREAM.severError(e);
 			}
 		} else {
 			return resp;
@@ -122,19 +144,51 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * @param chunk chunk file to upload
 	 * @return
 	 */
+	// FIXME
 	@POST
-	@Path(GfsManagerPaths.FILE_UPLOAD)
-//	@Consumes({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadFile(UploadedGfsChunkFile chunk) {
-		Response resp = check();
+	@Path(GfsManagerPaths.UPLOAD)
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces(MediaType.TEXT_PLAIN)
+//	public Response uploadFile(UploadedGfsChunkFile chunk) {
+	public Response uploadFile(@PathParam(GfsManagerPaths.TYPE) String type, 
+			@PathParam(GfsManagerPaths.RANDOM_CODE) int fileCode,
+			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item,
+			@DefaultValue("-1") @QueryParam(GfsManagerPaths.LAST_UPDATE_QUERY_STRING) long lastUpdate,
+			@QueryParam(GfsManagerPaths.COMPLETED_QUERY_STRING) boolean transferComplete,
+			@HeaderParam(HTTP.CONTENT_LEN) int length,
+			byte[] content) {
+		
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				return ok(gfsManager.uploadChunk(chunk));
+				int typeInt = GfsFileType.getType(type);
+				if (typeInt == GfsFileType.NO_TYPE){
+					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
+				}
+				if (item == null){
+					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
+				}
+				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
+				// sets the data
+				chunkFile.setChunk(content);
+				// sets unique code
+				chunkFile.setFileCode(fileCode);
+				// relative path must be used
+				// when you want to upload the file
+				// maintaining a relative path of source file
+				chunkFile.setFilePath(item);
+				// sets transfer is not the LAST
+				chunkFile.setTransferComplete(transferComplete);
+				// number of bytes
+				chunkFile.setNumByteToWrite(length);
+				// where to put the file (GFS type)
+				chunkFile.setType(typeInt);
+				// sets the update time 
+				chunkFile.setLastUpdate((lastUpdate < 0) ? System.currentTimeMillis() : lastUpdate);
+				return ResponseBuilder.PLAIN.ok(gfsManager.uploadChunk(chunkFile).toString());
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC265E, chunk.getFilePath(), e);
-				return severError(new MessageException(NodeMessage.JEMC265E, chunk.getFilePath()));
+				LogAppl.getInstance().emit(NodeMessage.JEMC265E, item, e);
+				return ResponseBuilder.JSON.severError(new MessageException(NodeMessage.JEMC265E, item));
 			}
 		} else {
 			return resp;
@@ -153,18 +207,27 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * @throws JemException
 	 *             if any error occurs
 	 */
-	@POST
-	@Path(GfsManagerPaths.FILE_DELETE)
+	@DELETE
+	@Path(GfsManagerPaths.DELETE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteFile(GfsRequest request) {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response deleteFile(@PathParam(GfsManagerPaths.TYPE) String type, 
+			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
+			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				return ok(gfsManager.deleteFile(request.getType(), request.getItem(), request.getPathName()));
+				int typeInt = GfsFileType.getType(type);
+				if (typeInt == GfsFileType.NO_TYPE){
+					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
+				}
+				if (item == null){
+					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
+				}
+				return ResponseBuilder.PLAIN.ok(gfsManager.deleteFile(typeInt, item, pathName).toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				return severError(new MessageException(UserInterfaceMessage.JEMG045E, e.getMessage()));
+				return ResponseBuilder.PLAIN.severError(new MessageException(UserInterfaceMessage.JEMG045E, e.getMessage()));
 			}
 		} else {
 			return resp;

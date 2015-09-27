@@ -16,9 +16,11 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.log.LogAppl;
@@ -56,25 +58,18 @@ public class CertificatesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<CertificateEntry> getCertificates(String filterParm) throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = post(CertificatesManagerPaths.GET, filterParm);
+			ClientResponse response = builder.filter(filterParm).get(CertificatesManagerPaths.GET);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<CertificateEntry>)JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
-//		CertificatesPostService<CertificatesRequest, String> service = new CertificatesPostService<CertificatesRequest, String>(CertificatesManagerPaths.GET);
-//		GenericType<JAXBElement<CertificatesRequest>> generic = new GenericType<JAXBElement<CertificatesRequest>>() {
-//
-//		};
-//		CertificatesRequest result = service.execute(generic, filterParm);
-//		return result.getEntries();
 	}
 	
 	/**
@@ -85,23 +80,16 @@ public class CertificatesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean addCertificates(byte[] certificate, String alias) throws RestException {
-	    try {
-	    	String path = PathReplacer.path(CertificatesManagerPaths.ADD).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
-			// creates the returned object
-			ClientResponse response = post(path, certificate);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(Boolean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return false;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.APPLICATION_OCTET_STREAM);
+		String path = PathReplacer.path(CertificatesManagerPaths.ADD).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
+		// creates the returned object
+		ClientResponse response = builder.post(path, certificate);
+		String value = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 	
 	/**
@@ -111,21 +99,15 @@ public class CertificatesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean removeCertificates(String alias) throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = delete(CertificatesManagerPaths.REMOVE.replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias));
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(Boolean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return false;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }	
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(CertificatesManagerPaths.REMOVE).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
+		// creates the returned object
+		ClientResponse response = builder.delete(path);
+		String value = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 }

@@ -27,7 +27,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.LoginManager;
@@ -64,18 +63,18 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(){
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
 				LoggedUser user = loginManager.getUser();
 				if (user != null){
-					return ok(user);
+					return ResponseBuilder.JSON.ok(user);
 				} else {
-					return Response.status(Status.NOT_FOUND).build();
+					return ResponseBuilder.JSON.notFound("loggedUser");
 				}
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -95,17 +94,17 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(Account account){
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try {
 				LoggedUser user = loginManager.login(account.getUserId(), account.getPassword());
-				return ok(user);
+				return ResponseBuilder.JSON.ok(user);
 			} catch(ServiceMessageException e){
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return unauthorized(e);
+				return ResponseBuilder.JSON.unauthorized(e);
             } catch (Exception e) {
             	LogAppl.getInstance().ignore(e.getMessage(), e);
-            	return severError(e);
+            	return ResponseBuilder.JSON.severError(e);
             }
 		} else {
 			return resp;
@@ -120,16 +119,16 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response logoff() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
 				Boolean status = loginManager.logoff(null);
-				return ok(status);
+				return ResponseBuilder.PLAIN.ok(status.toString());
 			} catch(Exception e){
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return unauthorized(e);
+				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
 			return resp;
@@ -146,16 +145,15 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response logoff(Map<String, UserPreference> preferences) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
-				Boolean status = loginManager.logoff(preferences);
-				return ok(status);
+				return ResponseBuilder.PLAIN.ok(loginManager.logoff(preferences).toString());
 			} catch(Exception e){
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return unauthorized(e);
+				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
 			return resp;
@@ -172,16 +170,16 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	@POST
 	@Path(LoginManagerPaths.SAVE_PREFERENCES)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response storePreferences(Map<String, UserPreference> preferences) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try {
 				Boolean status = loginManager.storePreferences(preferences);
-				return ok(status);
+				return ResponseBuilder.PLAIN.ok(status.toString());
 			} catch(Exception e){
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return unauthorized(e);
+				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
 			return resp;

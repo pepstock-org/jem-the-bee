@@ -30,15 +30,6 @@
 	<classpathentry kind="lib" path="jersey/jackson-jaxrs-1.9.2.jar"/>
 	<classpathentry kind="lib" path="jersey/jackson-mapper-asl-1.9.2.jar"/>
 	<classpathentry kind="lib" path="jersey/jackson-xc-1.9.2.jar"/>
-	<classpathentry kind="lib" path="jersey/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="jersey/jaxb-core.jar"/>
-	<classpathentry kind="lib" path="jersey/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-apache-client4-1.18.1.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-bundle-1.18.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-core-1.18.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-json-1.18.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-server-1.18.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-servlet-1.18.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/JEM/lib/springbatch/spring-batch-core-2.2.6.RELEASE.jar"/>
@@ -65,5 +56,15 @@
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.servlet-3.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.struts-3.1.4.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JBPM"/>
+	<classpathentry kind="lib" path="jersey/jersey-apache-client4-1.9.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-bundle-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-client-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-core-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-json-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-multipart-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-server-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jersey-servlet-1.19.jar"/>
+	<classpathentry kind="lib" path="jersey/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="jersey/mimepull-1.4.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

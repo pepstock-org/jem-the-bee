@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.util.Factory;
@@ -423,15 +422,14 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		Set<Member> set = cluster.getMembers();
 		Member member = set.iterator().next();
 		// calls a distributed task to get standard output and error
-		DistributedTask<OutputFileContent> task = new DistributedTask<OutputFileContent>(new GetMessagesLog(getJob()), member);
+		DistributedTask<String> task = new DistributedTask<String>(new GetMessagesLog(getJob()), member);
 		ExecutorService executorService = client.getExecutorService();
 		executorService.execute(task);
-		OutputFileContent content;
 		try {
 			// gets content
-			content = task.get();
+			String content = task.get();
 			// prints the content
-			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content.getContent());
+			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content);
 		} catch (InterruptedException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
 		} catch (ExecutionException e) {

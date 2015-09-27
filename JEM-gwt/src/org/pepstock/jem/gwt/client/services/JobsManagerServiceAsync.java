@@ -22,7 +22,6 @@ import java.util.Map;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 
@@ -116,7 +115,7 @@ public interface JobsManagerServiceAsync {
 	 * @param item
 	 * @param callback
 	 */
-	void getOutputFileContent(Job job, OutputListItem item, AsyncCallback<OutputFileContent> callback);
+	void getOutputFileContent(Job job, OutputListItem item, AsyncCallback<String> callback);
 
 	/**
 	 * Some attributes are changed by UI and calls this method to store the new

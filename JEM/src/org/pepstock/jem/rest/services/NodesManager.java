@@ -16,9 +16,11 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.NodeInfoBean;
@@ -63,18 +65,15 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(NodesManagerPaths.LIST, filter);
+			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.LIST);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -90,18 +89,15 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getSwarmNodes(String filter) throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(NodesManagerPaths.SWARM_LIST, filter);
+			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.SWARM_LIST);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -117,18 +113,15 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(NodesManagerPaths.LIST_BY_FILTER, filter);
+			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.LIST_BY_FILTER);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -141,8 +134,18 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean update(String key, UpdateNode update) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.UPDATE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		return putAndGetBoolean(path, update);
+		// creates the returned object
+		ClientResponse response = builder.put(path, update);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -153,23 +156,18 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String top(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.TOP).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = get(path);
-			String result = response.getEntity(String.class);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return result;
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -180,23 +178,18 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String log(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.LOG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = get(path);
-			String result = response.getEntity(String.class);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return result;
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -214,23 +207,18 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String displayCluster(String key) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.DISPLAY_CLUSTER).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = get(path);
-			String result = response.getEntity(String.class);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return result;
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -242,24 +230,21 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public ConfigurationFile getNodeConfigFile(String key, String what) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this);
 		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG_FILE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
 				replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = get(path);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(ConfigurationFile.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(ConfigurationFile.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 	
 	/**
@@ -270,23 +255,19 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public ConfigurationFile getEnvConfigFile(String what) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this);
 		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = get(path);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(ConfigurationFile.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		// creates the returned object
+		ClientResponse response = builder.get(path);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(ConfigurationFile.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 	
 	/**
@@ -297,8 +278,16 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean checkConfigFile(String content, String what) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-		return putAndGetBoolean(path, content);
+		// creates the returned object
+		ClientResponse response = builder.put(path, content);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -309,22 +298,18 @@ public class NodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Result checkAffinityPolicy(String key, String content) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(NodesManagerPaths.CHECK_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-	    try {
-			// creates the returned object
-			ClientResponse response = post(path, content);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(Result.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		// creates the returned object
+		ClientResponse response = builder.post(path, content);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(Result.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 }

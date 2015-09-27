@@ -18,10 +18,13 @@ package org.pepstock.jem.gwt.server.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,8 +32,8 @@ import org.pepstock.jem.gwt.server.services.CertificatesManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.paths.CertificatesManagerPaths;
+import org.pepstock.jem.rest.paths.CommonPaths;
 
-import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
@@ -54,18 +57,18 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
-	@POST
+	@GET
 	@Path(CertificatesManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCertificates(String filterParm) {
-		Response resp = check();
+	public Response getCertificates(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String filterParm) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(certificatesManager.getCertificates(filterParm));
+				return ResponseBuilder.JSON.ok(certificatesManager.getCertificates(filterParm));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -83,20 +86,21 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(CertificatesManagerPaths.ADD)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response addCertificate(@PathParam(CertificatesManagerPaths.ALIAS) String alias, byte[] certificate) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				if (certificate != null && alias != null) {
-					return ok(certificatesManager.addCertificate(certificate, alias));
-				} else {
-					return Response.status(Status.BAD_REQUEST).build();
+				if (alias == null){
+					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
+				} else if (certificate == null){
+					return ResponseBuilder.PLAIN.badRequest("certificate");
 				}
+				return ResponseBuilder.PLAIN.ok(certificatesManager.addCertificate(certificate, alias).toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -114,19 +118,18 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	@DELETE
 	@Path(CertificatesManagerPaths.REMOVE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response removeCertificate(@PathParam(CertificatesManagerPaths.ALIAS) String alias) throws JemException {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				if (alias != null) {
-					return ok(certificatesManager.removeCertificate(alias));
-				} else {
-					return Response.status(Status.BAD_REQUEST).build();
+				if (alias == null){
+					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
 				}
+				return ResponseBuilder.PLAIN.ok(certificatesManager.removeCertificate(alias));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;

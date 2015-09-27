@@ -24,6 +24,35 @@ package org.pepstock.jem.rest.paths;
  */
 public final class GfsManagerPaths {
 	
+	public static final String TYPE = "type";
+	
+	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
+
+	public static final String RANDOM_CODE = "random-code";
+	
+	public static final String RANDOM_CODE_PATH_PARAM = "{"+RANDOM_CODE+"}";
+	
+	/**
+	 * Query parameter path name
+	 */
+	public static final String PATH_NAME_QUERY_STRING = "pathName";
+
+	/**
+	 * Query parameter item
+	 */
+	public static final String ITEM_QUERY_STRING = "item";
+
+	/**
+	 * Query parameter last upate
+	 */
+	public static final String LAST_UPDATE_QUERY_STRING = "lastUpdate";
+
+	/**
+	 * Query parameter last upate
+	 */
+	public static final String COMPLETED_QUERY_STRING = "completed";
+	
+	
 	/**
 	 * Key to define the path to bind this services
 	 */
@@ -32,21 +61,22 @@ public final class GfsManagerPaths {
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String FILE_LIST = CommonPaths.PATH_SEPARATOR +  "ls";
+	public static final String LIST = CommonPaths.PATH_SEPARATOR +  "list"  + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 	
 	/**
 	 * "bin" parameter on url
 	 */
-	public static final String FILE_UPLOAD = CommonPaths.PATH_SEPARATOR +  "upload";
+	public static final String UPLOAD = CommonPaths.PATH_SEPARATOR +  "upload" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + RANDOM_CODE_PATH_PARAM;
 	
 	/**
 	 * "bin" parameter on url
 	 */
-	public static final String FILE_DELETE = CommonPaths.PATH_SEPARATOR +  "delete";
+	public static final String DELETE = CommonPaths.PATH_SEPARATOR +  "delete" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
+	
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String OUTPUT_FILE_CONTENT_PATH = CommonPaths.PATH_SEPARATOR +  "cat";
+	public static final String GET_CONTENT = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

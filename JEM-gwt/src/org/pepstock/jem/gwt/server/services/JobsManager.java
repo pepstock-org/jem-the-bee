@@ -40,7 +40,6 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
@@ -746,14 +745,14 @@ public class JobsManager extends DefaultService {
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
+	public String getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
 		// builds permission
 		String permission = Permissions.SEARCH_JOBS + job.getName();
 		// checks if the user is authorized to get file
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
 	
-		DistributedTaskExecutor<OutputFileContent> task = new DistributedTaskExecutor<OutputFileContent>(new GetOutputFileContent(item), getMember());
+		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetOutputFileContent(item), getMember());
 		return task.getResult();
 	}
 

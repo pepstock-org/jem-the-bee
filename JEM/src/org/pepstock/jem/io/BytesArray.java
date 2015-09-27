@@ -46,8 +46,6 @@ public class BytesArray implements Serializable {
 	public BytesArray() {
 		this(BUFFER_SIZE);
 	}
-
-	
 	
 	/**
 	 * Constructs a new array of bytes and the size is a parameter.

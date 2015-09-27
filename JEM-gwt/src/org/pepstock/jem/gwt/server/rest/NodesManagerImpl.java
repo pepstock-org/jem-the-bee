@@ -40,12 +40,15 @@ import org.pepstock.jem.rest.entities.ConfigType;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
 
+import com.sun.jersey.spi.resource.Singleton;
+
 /**
  * REST services published in the web part, to manage nodes.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
+@Singleton
 @Path(NodesManagerPaths.MAIN)
 public class NodesManagerImpl extends DefaultServerResource {
 
@@ -63,14 +66,14 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) throws RestException {
-		Response resp = check();
+	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(manager.getNodes(nodesFilter));
+				return ResponseBuilder.JSON.ok(manager.getNodes(nodesFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -88,14 +91,14 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.SWARM_LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSwarmNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) throws RestException {
-		Response resp = check();
+	public Response getSwarmNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(manager.getSwarmNodes(nodesFilter));
+				return ResponseBuilder.JSON.ok(manager.getSwarmNodes(nodesFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -113,14 +116,14 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.LIST_BY_FILTER)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) throws RestException {
-		Response resp = check();
+	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(manager.getNodesByFilter(nodesFilter));
+				return ResponseBuilder.JSON.ok(manager.getNodesByFilter(nodesFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -137,17 +140,17 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@PUT
 	@Path(NodesManagerPaths.UPDATE)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam(NodesManagerPaths.NODEKEY) String key, UpdateNode update) throws RestException {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response update(@PathParam(NodesManagerPaths.NODEKEY) String key, UpdateNode update) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
 				if (key == null || update == null){
-					return badRequest(key);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
 				if (node == null){
-					return badRequest(key);
+					return ResponseBuilder.PLAIN.notFound(key);
 				}
 				NodeInfoBean bean = node.getNodeInfoBean();
 				if (update.getAffinity() != null){
@@ -174,10 +177,10 @@ public class NodesManagerImpl extends DefaultServerResource {
 						bean.getExecutionEnvironment().setMemory(memoryValue);
 					}
 				}
-				return ok(manager.update(bean));
+				return ResponseBuilder.PLAIN.ok(manager.update(bean).toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -195,18 +198,18 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.NODE_BY_KEY)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodeByKey(@PathParam(NodesManagerPaths.NODEKEY) String key) throws RestException {
-		Response resp = check();
+	public Response getNodeByKey(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
 				if (key == null){
-					return badRequest(key);
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(node.getNodeInfoBean());
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(node.getNodeInfoBean());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -223,19 +226,19 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(NodesManagerPaths.TOP)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response top(@PathParam(NodesManagerPaths.NODEKEY) String key) throws RestException {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response top(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
 				if (key == null){
-					return badRequest(key);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(manager.top(node.getNodeInfoBean()));
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.top(node.getNodeInfoBean()));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -252,19 +255,19 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(NodesManagerPaths.LOG)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response log(@PathParam(NodesManagerPaths.NODEKEY) String key) throws RestException {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response log(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
 				if (key == null){
-					return badRequest(key);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(manager.log(node.getNodeInfoBean()));
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.log(node.getNodeInfoBean()));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -281,19 +284,19 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(NodesManagerPaths.DISPLAY_CLUSTER)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response displayCluster(@PathParam(NodesManagerPaths.NODEKEY) String key) throws RestException {
-		Response resp = check();
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response displayCluster(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
 				if (key == null){
-					return badRequest(key);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(manager.displayCluster(node.getNodeInfoBean()));
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.displayCluster(node.getNodeInfoBean()));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -311,22 +314,22 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.GET_NODE_CONFIG_FILE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodeConfigFile(@PathParam(NodesManagerPaths.NODEKEY) String key,  @PathParam(NodesManagerPaths.WHAT) String what) throws RestException {
-		Response resp = check();
+	public Response getNodeConfigFile(@PathParam(NodesManagerPaths.NODEKEY) String key,  @PathParam(NodesManagerPaths.WHAT) String what) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				if (key == null|| what == null){
-					return badRequest(key);
+				if (key == null){
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				ConfigType type = ConfigType.getTypeByPath(what);
 				if (type == null){
-					return badRequest(what);
+					ResponseBuilder.JSON.badRequest(NodesManagerPaths.WHAT);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(manager.getNodeConfigFile(node.getNodeInfoBean(), type.getName()));
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.getNodeConfigFile(node.getNodeInfoBean(), type.getName()));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -344,15 +347,15 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@Path(NodesManagerPaths.GET_ENV_CONFIG_FILE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEnvConfigFile(@PathParam(NodesManagerPaths.WHAT) String what) throws RestException {
-		Response resp = check();
+	public Response getEnvConfigFile(@PathParam(NodesManagerPaths.WHAT) String what) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
 				ConfigType type = ConfigType.getTypeByPath(what);
-				return (type == null) ? badRequest(what) : ok(manager.getEnvConfigFile(what));
+				return (type == null) ? ResponseBuilder.JSON.notFound(NodesManagerPaths.WHAT) : ResponseBuilder.JSON.ok(manager.getEnvConfigFile(what));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -368,17 +371,17 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 */
 	@PUT
 	@Path(NodesManagerPaths.CHECK_CONFIG_FILE)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response checkConfigFile(@PathParam(NodesManagerPaths.WHAT) String what, String content) throws RestException {
-		Response resp = check();
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response checkConfigFile(@PathParam(NodesManagerPaths.WHAT) String what, String content) {
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{				
 				ConfigType type = ConfigType.getTypeByPath(what);
-				return (type == null || content == null) ? badRequest(what) : ok(manager.checkConfigFile(content, what));
+				return (type == null || content == null) ? ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.WHAT) : ResponseBuilder.PLAIN.ok(manager.checkConfigFile(content, what).toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -394,20 +397,20 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 */
 	@POST
 	@Path(NodesManagerPaths.CHECK_AFFINITY_POLICY)
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response checkAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key, String content) throws RestException {
-		Response resp = check();
+	public Response checkAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key, String content) {
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
 				if (key == null || content == null){
-					return badRequest(key);
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				NodeInfo node = manager.getNodeByKey(key);
-				return (node == null) ? badRequest(key) : ok(manager.checkAffinityPolicy(node.getNodeInfoBean(), content));
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.checkAffinityPolicy(node.getNodeInfoBean(), content));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;

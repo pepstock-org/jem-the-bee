@@ -26,7 +26,6 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.gfs.GfsFileType;
-import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.services.GfsManager;
@@ -119,6 +118,12 @@ public class Destination extends Task {
 		
 		// gets GFS type
 		int gfsType = GfsFileType.getType(type);
+		// check if GFS type is correct
+		// if not EXCEPTION
+		if (gfsType == GfsFileType.NO_TYPE){
+			throw new BuildException(AntMessage.JEMA063E.toMessage().getFormattedMessage("type"));
+		}
+		
 		// shows the message
 		log(AntMessage.JEMA067I.toMessage().getFormattedMessage(GfsFileType.getName(gfsType)));
 		
@@ -142,17 +147,9 @@ public class Destination extends Task {
             	File file = new File(fs.getDir(), includedFiles[i]);
             	// only if exists it will be uploaded
             	if (file.exists()){
-            		// creates a uploaded file
-                	UploadedGfsFile uploadFile = new UploadedGfsFile();
-                	// sets all attributes to
-                	// upload the files
-                	uploadFile.setType(gfsType);
-                	uploadFile.setUploadedFile(file);
-                	uploadFile.setGfsPath(path);
-                	uploadFile.setRelativePath(includedFiles[i]);
                 	try {
                 		// uploads files
-    					gfsManager.upload(uploadFile);
+    					gfsManager.putFile(GfsFileType.getName(gfsType), path, file, includedFiles[i]);
     					count++;
     				} catch (RestException e) {
     					LogAppl.getInstance().ignore(e.getMessage(), e);

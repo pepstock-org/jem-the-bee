@@ -18,6 +18,7 @@ package org.pepstock.jem.rest.services;
 
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.log.LogAppl;
@@ -54,22 +55,18 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public LoggedUser getUser() throws RestException{
-	    try {
-			// creates the returned object
-			ClientResponse response = get(LoginManagerPaths.GET_USER);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(LoggedUser.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this);
+		// creates the returned object
+		ClientResponse response = builder.get(LoginManagerPaths.GET_USER);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(LoggedUser.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
@@ -80,18 +77,14 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public LoggedUser login(Account account) throws RestException{
-	    try {
-			// creates the returned object
-			ClientResponse response = put(LoginManagerPaths.LOGIN, account);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(LoggedUser.class);
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this);
+		// creates the returned object
+		ClientResponse response = builder.put(LoginManagerPaths.LOGIN, account);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(LoggedUser.class);
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
@@ -100,18 +93,15 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean logoff() throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = delete(LoginManagerPaths.LOGOFF);
-			Boolean value = response.getEntity(Boolean.class);
-			if (response.getStatus() != Status.OK.getStatusCode()){
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-			return value;
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF);
+		String value = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 	
 	/**
@@ -122,18 +112,15 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean logoff(Map<String, UserPreference> userPreferences) throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = delete(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES, userPreferences);
-			Boolean value = response.getEntity(Boolean.class);
-			if (response.getStatus() != Status.OK.getStatusCode()){
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-			return value;
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES, userPreferences);
+		String value = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 	
 	/**
@@ -144,17 +131,14 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean storePreferences(Map<String, UserPreference> userPreferences) throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = post(LoginManagerPaths.SAVE_PREFERENCES, userPreferences);
-			Boolean value = response.getEntity(Boolean.class);
-			if (response.getStatus() != Status.OK.getStatusCode()){
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-			return value;
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.post(LoginManagerPaths.SAVE_PREFERENCES, userPreferences);
+		String value = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			throw new RestException(response.getStatus(), value);
+		}
 	}	
 }

@@ -34,12 +34,15 @@ import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
 
+import com.sun.jersey.spi.resource.Singleton;
+
 /**
  *  REST services published in the web part, to manage swarm nodes and configuration.
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
+@Singleton
 @Path(SwarmNodesManagerPaths.MAIN)
 public class SwarmNodesManagerImpl extends DefaultServerResource {
 
@@ -60,13 +63,13 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(swarmNodesManager.getNodes(nodesFilter));
+				return ResponseBuilder.JSON.ok(swarmNodesManager.getNodes(nodesFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -85,13 +88,13 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(swarmNodesManager.getNodesByFilter(nodesFilter));
+				return ResponseBuilder.JSON.ok(swarmNodesManager.getNodesByFilter(nodesFilter));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -107,15 +110,15 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@PUT
 	@Path(SwarmNodesManagerPaths.START)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response start() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				return ok(swarmNodesManager.start());
+				return ResponseBuilder.PLAIN.ok(swarmNodesManager.start().toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -131,15 +134,15 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@PUT
 	@Path(SwarmNodesManagerPaths.DRAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response drain() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				return ok(swarmNodesManager.drain());
+				return ResponseBuilder.PLAIN.ok(swarmNodesManager.drain().toString());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -155,15 +158,15 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(SwarmNodesManagerPaths.STATUS)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getStatus() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				return ok(swarmNodesManager.getStatus());
+				return ResponseBuilder.PLAIN.ok(swarmNodesManager.getStatus());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -182,13 +185,13 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSwarmConfiguration() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(routingConfManager.getSwarmConfiguration(SwarmConfiguration.DEFAULT_NAME));
+				return ResponseBuilder.JSON.ok(routingConfManager.getSwarmConfiguration(SwarmConfiguration.DEFAULT_NAME));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;

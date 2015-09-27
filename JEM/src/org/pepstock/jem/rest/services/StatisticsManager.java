@@ -16,9 +16,11 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.log.LogAppl;
@@ -57,22 +59,19 @@ public class StatisticsManager extends AbstractRestManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Collection<LightSample> getSamples() throws RestException {
-	    try {
+		try{
+			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.GET_SAMPLES);
+			ClientResponse response = builder.get(StatisticsManagerPaths.GET_SAMPLES);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<LightSample>)JsonUtil.getInstance().deserializeList(response, LightSample.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		} catch (IOException e){
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
 
 	/**
@@ -82,22 +81,14 @@ public class StatisticsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public LightSample getCurrentSample() throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.GET_CURRENT_SAMPLE);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(LightSample.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this);
+		// creates the returned object
+		ClientResponse response = builder.get(StatisticsManagerPaths.GET_CURRENT_SAMPLE);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(LightSample.class);
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
@@ -109,19 +100,15 @@ public class StatisticsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String displayRequestors(String resourceKey)throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.DISPLAY_REQUESTORS, resourceKey);
-			String result = response.getEntity(String.class);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return result;
-			} else {
-				throw new RestException(response.getStatus(), result);
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response = builder.filter(resourceKey).get(StatisticsManagerPaths.DISPLAY_REQUESTORS);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -134,18 +121,15 @@ public class StatisticsManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<RedoStatement> getAllRedoStatements() throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS);
+			ClientResponse response = builder.get(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<RedoStatement>)JsonUtil.getInstance().deserializeList(response, RedoStatement.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -157,18 +141,14 @@ public class StatisticsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public About getAbout()throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.ABOUT);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(About.class);
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this);
+		// creates the returned object
+		ClientResponse response = builder.get(StatisticsManagerPaths.ABOUT);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(About.class);
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 	
 	/**
@@ -179,14 +159,15 @@ public class StatisticsManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<String> getEnvironmentInformation()throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = get(StatisticsManagerPaths.INFOS);
+			ClientResponse response = builder.get(StatisticsManagerPaths.INFOS);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<String>)JsonUtil.getInstance().deserializeList(response, String.class);
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }

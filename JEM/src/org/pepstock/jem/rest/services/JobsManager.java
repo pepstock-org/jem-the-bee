@@ -16,16 +16,17 @@
  */
 package org.pepstock.jem.rest.services;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJcl;
@@ -70,20 +71,20 @@ public class JobsManager extends AbstractRestManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Collection<Job> getJobs(JobQueue queue, String filter) throws RestException {
-		String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).build();
 	    try {
-			// creates the returned object
-			ClientResponse response = get(path, filter);
+			RequestBuilder builder = RequestBuilder.media(this);
+			String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).build();
+	    	// creates the returned object
+			ClientResponse response = builder.filter(filter).get(path);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<Job>)JsonUtil.getInstance().deserializeList(response, Job.class);
 			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
+				LogAppl.getInstance().debug(getValue(response, String.class));
 				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -101,9 +102,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean hold(String id, JobQueue queue) throws RestException {
-    	String path = PathReplacer.path(JobsManagerPaths.HOLD).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
-    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-		return putAndGetBoolean(path);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(JobsManagerPaths.HOLD).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -118,9 +129,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean release(String id, JobQueue queue) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(JobsManagerPaths.RELEASE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-		return putAndGetBoolean(path);
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -135,9 +156,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean cancel(String id, boolean force) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
     	String path = PathReplacer.path(JobsManagerPaths.CANCEL).replace(JobsManagerPaths.FORCE_PATH_PARAM, String.valueOf(force)).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-		return putAndGetBoolean(path);
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}	
 
 	/**
@@ -151,9 +182,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean purge(String id, JobQueue queue) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(JobsManagerPaths.PURGE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-		return putAndGetBoolean(path);
+		// creates the returned object
+		ClientResponse response = builder.put(path);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return false;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 	
 	/**
@@ -168,9 +209,17 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean update(String id, JobQueue queue, UpdateJob updateJob) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		String path = PathReplacer.path(JobsManagerPaths.UPDATE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
     			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-		return putAndGetBoolean(path, updateJob);
+		// creates the returned object
+		ClientResponse response = builder.put(path, updateJob);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(result);
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}	
 
 	/**
@@ -182,18 +231,15 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String submit(PreJcl preJcl) throws RestException {
-	    try {
-			// creates the returned object
-			ClientResponse response =  put(JobsManagerPaths.SUBMIT, preJcl);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(String.class);
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// creates the returned object
+		ClientResponse response =  builder.put(JobsManagerPaths.SUBMIT, preJcl);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -207,25 +253,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String getJcl(String id, JobQueue queue) throws RestException {
-	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.JCL_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
-	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-	    	// creates the returned object
-			ClientResponse response =  get(path);
-			
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(String.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return Jcl.CONTENT_NOT_AVAILABLE;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(JobsManagerPaths.JCL_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// creates the returned object
+		ClientResponse response =  builder.get(path);
+		String result = response.getEntity(String.class);	
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return Jcl.CONTENT_NOT_AVAILABLE;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -241,25 +281,19 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public OutputTree getOutputTree(String id, JobQueue queue) throws RestException {
-	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_TREE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
-	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-	    	// creates the returned object
-			ClientResponse response =  get(path);
-			
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(OutputTree.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		RequestBuilder builder = RequestBuilder.media(this);
+		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_TREE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// creates the returned object
+		ClientResponse response =  builder.get(path);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(OutputTree.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			LogAppl.getInstance().debug(getValue(response, String.class));
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
@@ -272,26 +306,20 @@ public class JobsManager extends AbstractRestManager {
 	 * @return object with file content
 	 * @throws RestException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(String id, JobQueue queue, OutputListItem item) throws RestException {
-	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
-	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-	    	// creates the returned object
-			ClientResponse response =  post(path, item);
-			
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(OutputFileContent.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-	    } catch (Exception e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+	public String getOutputFileContent(String id, JobQueue queue, OutputListItem item) throws RestException {
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// creates the returned object
+		ClientResponse response =  builder.post(path, item);
+		String result = response.getEntity(String.class);
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			return null;
+		} else {
+			throw new RestException(response.getStatus(), result);
+		}
 	}
 
 	/**
@@ -304,19 +332,16 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public JobStatus getJobStatus(String filter) throws RestException {
-	    try {
-	    	// creates the returned object
-			ClientResponse response =  get(JobsManagerPaths.JOB_STATUS, filter);
+		try{
+			RequestBuilder builder = RequestBuilder.media(this);
+			// creates the returned object
+			ClientResponse response =  builder.filter(filter).get(JobsManagerPaths.JOB_STATUS);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (JobStatus)JsonUtil.getInstance().deserialize(response, JobStatus.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -333,21 +358,21 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Job getJobById(String id, JobQueue queue) throws RestException {
-	    try {
-	    	String path = PathReplacer.path(JobsManagerPaths.JOB_BY_ID).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
-	    			replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
-	    	// creates the returned object
-			ClientResponse response =  get(path);
+		try{
+			RequestBuilder builder = RequestBuilder.media(this);
+			String path = PathReplacer.path(JobsManagerPaths.JOB_BY_ID).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+					replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+			// creates the returned object
+			ClientResponse response =  builder.get(path);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (Job)JsonUtil.getInstance().deserialize(response, Job.class);
 			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
+				LogAppl.getInstance().debug(getValue(response, String.class));
 				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -377,20 +402,20 @@ public class JobsManager extends AbstractRestManager {
 	 */
 	public JobSystemActivity getJobSystemActivity(String id) throws RestException {
 	    try {
+	    	RequestBuilder builder = RequestBuilder.media(this);
 	    	String path = PathReplacer.path(JobsManagerPaths.JOB_SYSTEM_ACTIVITY).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 	    	// creates the returned object
-			ClientResponse response =  get(path);
+			ClientResponse response =  builder.get(path);
 			
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (JobSystemActivity)JsonUtil.getInstance().deserialize(response, JobSystemActivity.class);
 			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
+				LogAppl.getInstance().debug(getValue(response, String.class));
 				return null;
 			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
+				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (Exception e){
+	    } catch (IOException e){
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }

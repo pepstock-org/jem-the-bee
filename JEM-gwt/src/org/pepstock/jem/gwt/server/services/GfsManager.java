@@ -131,8 +131,7 @@ public class GfsManager extends DefaultService {
 	 * @throws Exception
 	 *             if any error occurs
 	 */
-	public String getFile(int type, String file, String pathName)
-			throws ServiceMessageException {
+	public byte[] getFile(int type, String file, String pathName) throws ServiceMessageException {
 		// checks authentication only if
 		// the request is for data. All other file systems
 		// are always available in READ
@@ -142,12 +141,11 @@ public class GfsManager extends DefaultService {
 			// checks user authentication
 			// if not, this method throws an exception
 			checkAuthorization(new StringPermission(filesPermission));
-		}
-		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(
-				new GetFile(type, file, pathName), getMember());
+		} 
+		DistributedTaskExecutor<byte[]> task = new DistributedTaskExecutor<byte[]>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
 	}
-
+	
 	/**
 	 * Checks if the user has got the authorization to scan GFS
 	 * 
@@ -218,10 +216,11 @@ public class GfsManager extends DefaultService {
 	 * 
 	 * @param chunkFile
 	 *            to upload
+	 * @return true if the chunk write ended correctly, otherwise false 
 	 * @throws ServiceMessageException
 	 *             if any exception occurred during uploading
 	 */
-	public boolean uploadChunk(UploadedGfsChunkFile chunkFile)
+	public Boolean uploadChunk(UploadedGfsChunkFile chunkFile)
 			throws ServiceMessageException {
 		checkAuthentication();
 		checkGfsPermission(chunkFile.getType());
@@ -245,7 +244,7 @@ public class GfsManager extends DefaultService {
 	 * @throws Exception
 	 *             if any error occurs
 	 */
-	public boolean deleteFile(int type, String file, String pathName)
+	public Boolean deleteFile(int type, String file, String pathName)
 			throws ServiceMessageException {
 		checkAuthentication();
 		checkGfsPermission(type);

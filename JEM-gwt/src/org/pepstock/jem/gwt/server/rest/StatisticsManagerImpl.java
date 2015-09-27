@@ -33,12 +33,15 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 
+import com.sun.jersey.spi.resource.Singleton;
+
 /**
  * REST services published in the web part, to manage statistics and administration stuff.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
+@Singleton
 @Path(StatisticsManagerPaths.MAIN)
 public class StatisticsManagerImpl extends DefaultServerResource {
 
@@ -56,13 +59,13 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSamples() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(statisticsManager.getSamples());
+				return ResponseBuilder.JSON.ok(statisticsManager.getSamples());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -81,13 +84,13 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCurrentSample() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(statisticsManager.getCurrentSample());
+				return ResponseBuilder.JSON.ok(statisticsManager.getCurrentSample());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -107,15 +110,15 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(StatisticsManagerPaths.DISPLAY_REQUESTORS)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response displayRequestors(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String resourceKey) {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.PLAIN);
 		if (resp == null){
 			try{
-				return ok(statisticsManager.displayRequestors(resourceKey));
+				return ResponseBuilder.PLAIN.ok(statisticsManager.displayRequestors(resourceKey));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.PLAIN.severError(e);
 			}
 		} else {
 			return resp;
@@ -134,13 +137,13 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllRedoStatements() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(statisticsManager.getAllRedoStatements());
+				return ResponseBuilder.JSON.ok(statisticsManager.getAllRedoStatements());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -159,13 +162,13 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAbout() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(statisticsManager.getAbout());
+				return ResponseBuilder.JSON.ok(statisticsManager.getAbout());
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
@@ -184,13 +187,13 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEnvironmentInformation() {
-		Response resp = check();
+		Response resp = check(ResponseBuilder.JSON);
 		if (resp == null){
 			try{
-				return ok(Arrays.asList(statisticsManager.getAbout()));
+				return ResponseBuilder.JSON.ok(Arrays.asList(statisticsManager.getEnvironmentInformation()));
 			} catch (Exception e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return severError(e);
+				return ResponseBuilder.JSON.severError(e);
 			}
 		} else {
 			return resp;
