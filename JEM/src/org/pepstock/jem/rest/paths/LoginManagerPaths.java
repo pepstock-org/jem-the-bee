@@ -27,12 +27,12 @@ public class LoginManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.PATH_SEPARATOR +   "auth";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +   "user";
 	
 	/**
 	 * Key to define the path to bind user management method
 	 */
-	public static final String GET_USER = CommonPaths.PATH_SEPARATOR +   "getUser";
+	public static final String GET = CommonPaths.PATH_SEPARATOR +   "get";
 	
 	/**
 	 * Key to define the path to bind login management method

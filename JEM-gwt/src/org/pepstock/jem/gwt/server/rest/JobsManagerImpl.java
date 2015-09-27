@@ -406,7 +406,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@POST
-	@Path(JobsManagerPaths.OUTPUT_FILE_CONTENT)
+	@Path(JobsManagerPaths.OUTPUT_FILE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getOutputFileContent(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, OutputListItem item) {
@@ -443,7 +443,7 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@GET
-	@Path(JobsManagerPaths.JCL_CONTENT)
+	@Path(JobsManagerPaths.JCL)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getJcl(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {

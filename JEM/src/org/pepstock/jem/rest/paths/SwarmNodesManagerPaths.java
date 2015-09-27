@@ -27,7 +27,7 @@ public final class SwarmNodesManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "swarmNodes";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "swarm";
 
 	/**
 	 * Key to define the path to bind get nodes list method
@@ -57,7 +57,7 @@ public final class SwarmNodesManagerPaths {
 	/**
 	 * Key to define the path to bind get config method
 	 */
-	public static final String GET_CONFIG = CommonPaths.PATH_SEPARATOR +  "getConfig";
+	public static final String CONFIG = CommonPaths.PATH_SEPARATOR +  "config";
 	
 	/**
 	 * To avoid any instantiation

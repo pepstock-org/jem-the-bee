@@ -55,7 +55,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_SAMPLES)
+	@Path(StatisticsManagerPaths.SAMPLES)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSamples() {
@@ -80,7 +80,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_CURRENT_SAMPLE)
+	@Path(StatisticsManagerPaths.CURRENT_SAMPLE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCurrentSample() {
@@ -133,7 +133,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS)
+	@Path(StatisticsManagerPaths.REDO_STATEMENTS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllRedoStatements() {

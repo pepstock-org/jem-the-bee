@@ -100,7 +100,7 @@ public class GfsManager extends AbstractRestManager {
 	 */
 	public byte[] getFile(String type, String item, String pathName) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.APPLICATION_OCTET_STREAM);
-		String path = PathReplacer.path(GfsManagerPaths.GET_CONTENT).replace(GfsManagerPaths.TYPE_PATH_PARAM, type).build();
+		String path = PathReplacer.path(GfsManagerPaths.GET).replace(GfsManagerPaths.TYPE_PATH_PARAM, type).build();
 		Map<String, String> queryParams = new HashMap<String, String>();
 		queryParams.put(GfsManagerPaths.ITEM_QUERY_STRING, item);
 		if (pathName != null){
@@ -183,8 +183,8 @@ public class GfsManager extends AbstractRestManager {
 		Random random = new Random();
 		int randomNumber = random.nextInt(Integer.MAX_VALUE);
 		
-		String path = PathReplacer.path(GfsManagerPaths.UPLOAD).replace(GfsManagerPaths.TYPE_PATH_PARAM, type)
-				.replace(GfsManagerPaths.RANDOM_CODE_PATH_PARAM, String.valueOf(randomNumber)).build();
+		String path = PathReplacer.path(GfsManagerPaths.PUT).replace(GfsManagerPaths.TYPE_PATH_PARAM, type)
+				.replace(GfsManagerPaths.FILE_CODE_PATH_PARAM, String.valueOf(randomNumber)).build();
 		
 		// relative path must be used
 		// when you want to upload the file

@@ -28,9 +28,9 @@ public final class GfsManagerPaths {
 	
 	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
 
-	public static final String RANDOM_CODE = "random-code";
+	public static final String FILE_CODE = "fileCode";
 	
-	public static final String RANDOM_CODE_PATH_PARAM = "{"+RANDOM_CODE+"}";
+	public static final String FILE_CODE_PATH_PARAM = "{"+FILE_CODE+"}";
 	
 	/**
 	 * Query parameter path name
@@ -66,7 +66,7 @@ public final class GfsManagerPaths {
 	/**
 	 * "bin" parameter on url
 	 */
-	public static final String UPLOAD = CommonPaths.PATH_SEPARATOR +  "upload" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + RANDOM_CODE_PATH_PARAM;
+	public static final String PUT = CommonPaths.PATH_SEPARATOR +  "put" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + FILE_CODE_PATH_PARAM;
 	
 	/**
 	 * "bin" parameter on url
@@ -76,7 +76,7 @@ public final class GfsManagerPaths {
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String GET_CONTENT = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

@@ -41,7 +41,7 @@ public final class NodesManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String NODE_BY_KEY = CommonPaths.PATH_SEPARATOR +  "nodebykey" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;;
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;;
 
 	/**
 	 * Key to define the path to bind get nodes list method
@@ -91,17 +91,17 @@ public final class NodesManagerPaths {
 	/**
 	 * Key to define the path to bind get node config file method
 	 */
-	public static final String GET_NODE_CONFIG_FILE = CommonPaths.PATH_SEPARATOR +  "getNodeConfigFile" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String GET_NODE_CONFIG = CommonPaths.PATH_SEPARATOR +  "nodeConfig" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind get environment config file method
 	 */
-	public static final String GET_ENV_CONFIG_FILE = CommonPaths.PATH_SEPARATOR +  "getEnvConfigFile"  + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String GET_ENV_CONFIG = CommonPaths.PATH_SEPARATOR +  "envConfig"  + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind save environment config file method
 	 */
-	public static final String CHECK_CONFIG_FILE = CommonPaths.PATH_SEPARATOR +  "checkConfigFile" + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String CHECK_CONFIG = CommonPaths.PATH_SEPARATOR +  "checkConfig" + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind save environment config file method

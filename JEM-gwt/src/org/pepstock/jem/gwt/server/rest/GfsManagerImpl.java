@@ -113,7 +113,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 *             if any error occurs
 	 */
 	@GET
-	@Path(GfsManagerPaths.GET_CONTENT)
+	@Path(GfsManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response getFile(@PathParam(GfsManagerPaths.TYPE) String type, 
@@ -146,12 +146,12 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 */
 	// FIXME
 	@POST
-	@Path(GfsManagerPaths.UPLOAD)
+	@Path(GfsManagerPaths.PUT)
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.TEXT_PLAIN)
 //	public Response uploadFile(UploadedGfsChunkFile chunk) {
 	public Response uploadFile(@PathParam(GfsManagerPaths.TYPE) String type, 
-			@PathParam(GfsManagerPaths.RANDOM_CODE) int fileCode,
+			@PathParam(GfsManagerPaths.FILE_CODE) int fileCode,
 			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item,
 			@DefaultValue("-1") @QueryParam(GfsManagerPaths.LAST_UPDATE_QUERY_STRING) long lastUpdate,
 			@QueryParam(GfsManagerPaths.COMPLETED_QUERY_STRING) boolean transferComplete,

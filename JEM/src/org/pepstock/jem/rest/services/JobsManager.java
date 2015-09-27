@@ -254,7 +254,7 @@ public class JobsManager extends AbstractRestManager {
 	 */
 	public String getJcl(String id, JobQueue queue) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		String path = PathReplacer.path(JobsManagerPaths.JCL_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+		String path = PathReplacer.path(JobsManagerPaths.JCL).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		// creates the returned object
 		ClientResponse response =  builder.get(path);
@@ -308,7 +308,7 @@ public class JobsManager extends AbstractRestManager {
 	 */
 	public String getOutputFileContent(String id, JobQueue queue, OutputListItem item) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE_CONTENT).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
+		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).
 				replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
 		// creates the returned object
 		ClientResponse response =  builder.post(path, item);

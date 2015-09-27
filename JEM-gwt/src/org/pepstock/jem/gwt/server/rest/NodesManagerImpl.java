@@ -256,7 +256,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @throws RestException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path(NodesManagerPaths.NODE_BY_KEY)
+	@Path(NodesManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodeByKey(@PathParam(NodesManagerPaths.NODEKEY) String key) {
@@ -372,7 +372,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @throws RestException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path(NodesManagerPaths.GET_NODE_CONFIG_FILE)
+	@Path(NodesManagerPaths.GET_NODE_CONFIG)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodeConfigFile(@PathParam(NodesManagerPaths.NODEKEY) String key,  @PathParam(NodesManagerPaths.WHAT) String what) {
@@ -405,7 +405,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @throws RestException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path(NodesManagerPaths.GET_ENV_CONFIG_FILE)
+	@Path(NodesManagerPaths.GET_ENV_CONFIG)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEnvConfigFile(@PathParam(NodesManagerPaths.WHAT) String what) {
@@ -431,7 +431,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @throws RestException if JEM group is not available or not authorized 
 	 */
 	@PUT
-	@Path(NodesManagerPaths.CHECK_CONFIG_FILE)
+	@Path(NodesManagerPaths.CHECK_CONFIG)
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response checkConfigFile(@PathParam(NodesManagerPaths.WHAT) String what, String content) {

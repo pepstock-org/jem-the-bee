@@ -181,7 +181,7 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path(SwarmNodesManagerPaths.GET_CONFIG)
+	@Path(SwarmNodesManagerPaths.CONFIG)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSwarmConfiguration() {

@@ -32,12 +32,12 @@ public final class StatisticsManagerPaths {
 	/**
 	 * Key to define the path to bind get samples method
 	 */
-	public static final String GET_SAMPLES = CommonPaths.PATH_SEPARATOR +  "getSamples";
+	public static final String SAMPLES = CommonPaths.PATH_SEPARATOR +  "samples";
 
 	/**
 	 * Key to define the path to bind get current sample method
 	 */
-	public static final String GET_CURRENT_SAMPLE = CommonPaths.PATH_SEPARATOR +  "getCurrentSample";
+	public static final String CURRENT_SAMPLE = CommonPaths.PATH_SEPARATOR +  "currentSample";
 
 	/**
 	 * Key to define the path to bind get result of display requestors (for GRS) method
@@ -47,7 +47,7 @@ public final class StatisticsManagerPaths {
 	/**
 	 * Key to define the path to bind get all redo statements method
 	 */
-	public static final String GET_ALL_REDO_STATEMENTS = CommonPaths.PATH_SEPARATOR +  "getAllRedoStatements";
+	public static final String REDO_STATEMENTS = CommonPaths.PATH_SEPARATOR +  "redoStatements";
 	
 	/**
 	 * Key to define the path to bind get about method

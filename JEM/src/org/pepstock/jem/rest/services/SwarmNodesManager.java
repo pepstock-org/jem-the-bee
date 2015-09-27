@@ -168,7 +168,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 		try {
 			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = builder.get(SwarmNodesManagerPaths.GET_CONFIG);
+			ClientResponse response = builder.get(SwarmNodesManagerPaths.CONFIG);
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return response.getEntity(SwarmConfiguration.class);
 			} else {

@@ -273,7 +273,7 @@ public class NodesManager extends AbstractRestManager {
 	 */
 	public NodeInfoBean getNode(String key) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this);
-		String path = PathReplacer.path(NodesManagerPaths.NODE_BY_KEY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+		String path = PathReplacer.path(NodesManagerPaths.GET).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
 
 		// creates the returned object
 		ClientResponse response = builder.get(path);
@@ -298,7 +298,7 @@ public class NodesManager extends AbstractRestManager {
 	 */
 	public ConfigurationFile getNodeConfigFile(String key, String what) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this);
-		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG_FILE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
+		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
 				replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
 
 		// creates the returned object
@@ -323,7 +323,7 @@ public class NodesManager extends AbstractRestManager {
 	 */
 	public ConfigurationFile getEnvConfigFile(String what) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this);
-		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
+		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
 		// creates the returned object
 		ClientResponse response = builder.get(path);
 		if (response.getStatus() == Status.OK.getStatusCode()){
@@ -346,7 +346,7 @@ public class NodesManager extends AbstractRestManager {
 	 */
 	public Boolean checkConfigFile(String content, String what) throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
-		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG_FILE).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
+		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
 		// creates the returned object
 		ClientResponse response = builder.put(path, content);
 		String result = response.getEntity(String.class);

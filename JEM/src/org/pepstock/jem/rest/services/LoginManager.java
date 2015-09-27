@@ -57,7 +57,7 @@ public class LoginManager extends AbstractRestManager {
 	public LoggedUser getUser() throws RestException{
 		RequestBuilder builder = RequestBuilder.media(this);
 		// creates the returned object
-		ClientResponse response = builder.get(LoginManagerPaths.GET_USER);
+		ClientResponse response = builder.get(LoginManagerPaths.GET);
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(LoggedUser.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){

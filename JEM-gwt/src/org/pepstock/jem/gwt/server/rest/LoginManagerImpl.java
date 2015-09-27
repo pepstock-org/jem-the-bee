@@ -59,7 +59,7 @@ public class LoginManagerImpl extends DefaultServerResource  {
 	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
-	@Path(LoginManagerPaths.GET_USER)
+	@Path(LoginManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(){

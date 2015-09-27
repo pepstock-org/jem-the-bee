@@ -47,26 +47,6 @@ public final class JobsManagerPaths  {
 	 */
 	public static final String LIST = CommonPaths.PATH_SEPARATOR + "list" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM;
 
-//	/**
-//	 * Key to define the path to bind input management method
-//	 */
-//	public static final String INPUT = CommonPaths.PATH_SEPARATOR + "input";
-//
-//	/**
-//	 * Key to define the path to bind running management method
-//	 */
-//	public static final String RUNNING = CommonPaths.PATH_SEPARATOR + "running";
-//
-//	/**
-//	 * Key to define the path to bind output management method
-//	 */
-//	public static final String OUTPUT = CommonPaths.PATH_SEPARATOR + "output";
-//
-//	/**
-//	 * Key to define the path to bind routing management method
-//	 */
-//	public static final String ROUTING = CommonPaths.PATH_SEPARATOR + "routing";
-
 	/**
 	 * Key to define the path to bind hold action method
 	 */
@@ -105,12 +85,12 @@ public final class JobsManagerPaths  {
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String OUTPUT_FILE_CONTENT = CommonPaths.PATH_SEPARATOR + "outputFileContent" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+	public static final String OUTPUT_FILE = CommonPaths.PATH_SEPARATOR + "outputFile" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind get job jcl content method
 	 */
-	public static final String JCL_CONTENT = CommonPaths.PATH_SEPARATOR + "jclContent"+ CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+	public static final String JCL = CommonPaths.PATH_SEPARATOR + "jcl"+ CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind get job status content method

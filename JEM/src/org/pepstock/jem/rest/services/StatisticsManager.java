@@ -62,7 +62,7 @@ public class StatisticsManager extends AbstractRestManager {
 		try{
 			RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = builder.get(StatisticsManagerPaths.GET_SAMPLES);
+			ClientResponse response = builder.get(StatisticsManagerPaths.SAMPLES);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<LightSample>)JsonUtil.getInstance().deserializeList(response, LightSample.class);
 			} else {
@@ -83,7 +83,7 @@ public class StatisticsManager extends AbstractRestManager {
 	public LightSample getCurrentSample() throws RestException {
 		RequestBuilder builder = RequestBuilder.media(this);
 		// creates the returned object
-		ClientResponse response = builder.get(StatisticsManagerPaths.GET_CURRENT_SAMPLE);
+		ClientResponse response = builder.get(StatisticsManagerPaths.CURRENT_SAMPLE);
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(LightSample.class);
 		} else {
@@ -123,7 +123,7 @@ public class StatisticsManager extends AbstractRestManager {
 	    try {
 	    	RequestBuilder builder = RequestBuilder.media(this);
 			// creates the returned object
-			ClientResponse response = builder.get(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS);
+			ClientResponse response = builder.get(StatisticsManagerPaths.REDO_STATEMENTS);
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<RedoStatement>)JsonUtil.getInstance().deserializeList(response, RedoStatement.class);
 			} else {
