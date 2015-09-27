@@ -37,7 +37,17 @@ public class SingleRestClient extends RestClient {
 	 * @throws Exception if any SSL errors occurs
 	 */
 	public SingleRestClient(String uriString) {
-		super(uriString);
+		this(uriString, false);
+	}
+	
+	/**
+	 * Creates the object using the base URL of rest
+	 * @param uriString URL to access to JEM by HTTP
+	 * @param debug <code>true</code> if debug is needed
+	 * @throws Exception if any SSL errors occurs
+	 */
+	public SingleRestClient(String uriString, boolean debug) {
+		super(uriString, debug);
 		client = initialHttpClient();
 	}
 

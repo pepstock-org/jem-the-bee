@@ -43,7 +43,19 @@ public class HTTPBaseAuthRestClient extends RestClient {
 	 * @param password password of userid
 	 */
 	public HTTPBaseAuthRestClient(String uriString, String userid, String password) {
-		super(uriString);
+		this(uriString, userid, password, false);
+	}
+	
+	/**
+	 * Constructs the object.
+	 * 
+	 * @param uriString REST context, restAuth
+	 * @param userid user id to authenticate
+	 * @param password password of userid
+	 * @param debug <code>true</code> if debug is needed
+	 */
+	public HTTPBaseAuthRestClient(String uriString, String userid, String password, boolean debug) {
+		super(uriString, debug);
 		this.userid = userid;
 		this.password = password;
 		client = initialHttpClient();
