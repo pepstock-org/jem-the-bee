@@ -21,6 +21,7 @@
 	COPY: copy the INPUT dataset to the OUTPUT dataset
 	-->
 	<target name="executeCopy">
+		<delete file="${jem.source}/test_sb_import.xml"/>
 		<copy>
 			<dataDescription name="OUTPUT" disposition="NEW">
 				<dataSet name="${jem.source}/test_sb_import.xml"/>

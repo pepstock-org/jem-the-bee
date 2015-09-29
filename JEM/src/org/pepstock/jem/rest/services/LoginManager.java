@@ -16,29 +16,26 @@
 */
 package org.pepstock.jem.rest.services;
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBElement;
+import java.util.Map;
 
-import org.pepstock.jem.log.JemException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
+
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
-import org.pepstock.jem.rest.entities.LoggedUserContent;
-import org.pepstock.jem.rest.entities.ReturnedObject;
-import org.pepstock.jem.rest.entities.UserPreferencesContent;
 import org.pepstock.jem.rest.paths.LoginManagerPaths;
 
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * REST service to manage user authentication and get and set of user preferences.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 2.3
  *
  */
 public class LoginManager extends AbstractRestManager {
@@ -48,113 +45,138 @@ public class LoginManager extends AbstractRestManager {
 	 * @param restClient REST client instance
 	 */
     public LoginManager(RestClient restClient) {
-	    super(restClient);
+	    super(restClient, LoginManagerPaths.MAIN);
     }
 
 	/**
 	 * Returns the user already logged otherwise null.
 	 * 
 	 * @return the user already logged otherwise null
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public LoggedUser getUser() throws JemException{
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-	    GenericType<JAXBElement<LoggedUserContent>> generic = new GenericType<JAXBElement<LoggedUserContent>>() {
-	    };
-	    try {
-	    	// creates the complete path of REST service, setting also the output format (XML)
-	    	JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.GET_USER).accept(MediaType.APPLICATION_XML).get(generic);
-	    	// gets the returned object
-	    	LoggedUserContent object = jaxbContact.getValue();
-	    	// checks if has got any exception
-	    	// Exception must be saved as attribute of returned object
-			if (object.hasException()){
-				throw new JemException(object.getExceptionMessage());
-			}
-			// returns the logged user
-			return object.getLoggedUser();
-	    } catch (UniformInterfaceException e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-	    	// checks http status 
-	    	if (e.getResponse().getStatus() != 204){
-	    		throw new JemException(e.getMessage(), e);
-	    	}
-	    	return null;
-	    }
+	public LoggedUser getUser() throws RestException{
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
+		RequestBuilder builder = RequestBuilder.media(this);
+		// performs REST call
+		ClientResponse response = builder.get(LoginManagerPaths.GET);
+		// if HTTP status code is OK,parses the result to a logged user object
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(LoggedUser.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the user id is not logged 
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
 	 * Performs the login to JEM, by userid and password.
 	 * 
 	 * @param account userid and password
-	 * @return logged user
-	 * @throws JemException if any exception occurs
+	 * @return logged user object
+	 * @throws RestException if any exception occurs
 	 */
-	public LoggedUser login(Account account) throws JemException{
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-		GenericType<JAXBElement<LoggedUserContent>> generic = new GenericType<JAXBElement<LoggedUserContent>>() {
-		};
-		// creates the complete path of REST service, setting also the output format (XML)
-		JAXBElement<LoggedUserContent> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGIN).accept(MediaType.APPLICATION_XML).put(generic, account);
-		// gets the returned object
-		LoggedUserContent object = jaxbContact.getValue();
-    	// checks if has got any exception
-    	// Exception must be saved as attribute of returned object		
-		if (object.hasException()){
-			throw new JemException(object.getExceptionMessage());
+	public LoggedUser login(Account account) throws RestException{
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
+		RequestBuilder builder = RequestBuilder.media(this);
+		// performs REST call adding the account information
+		ClientResponse response = builder.put(LoginManagerPaths.LOGIN, account);
+		// if HTTP status code is OK,parses the result to a logged user object
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(LoggedUser.class);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
-		return object.getLoggedUser();
 	}
 
 	/**
 	 * Performs the logoff from JEM.
-	 * 
-	 * @throws JemException if any exception occurs
+	 * @return <code>true</code> is logoff is done
+	 * @throws RestException if any exception occurs
 	 */
-	public void logoff() throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the complete path of REST service, setting also the output format (XML)
-		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF).accept(MediaType.APPLICATION_XML).delete();
+	public boolean logoff() throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// performs REST call
+		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string		
+		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 	
 	/**
 	 * Performs the logoff from JEM, storing the user preferences.
 	 * 
 	 * @param userPreferences map of user preferences
-	 * @throws JemException if any exception occurs
+	 * @return <code>true</code> is logoff is done
+	 * @throws RestException if any exception occurs
 	 */
-	public void logoff(UserPreferencesContent userPreferences) throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the complete path of REST service, setting also the output format (XML)
-		resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES).accept(MediaType.APPLICATION_XML).delete(userPreferences);
+	public boolean logoff(Map<String, UserPreference> userPreferences) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// performs REST call setting the preferences
+		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES, userPreferences);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string	
+		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), value);
+		}
 	}
 	
 	/**
-	 * Stores into JEM the user preferences.\
+	 * Stores into JEM the user preferences.
 	 * 
+	 * @return <code>true</code> if storing of preference went OK
 	 * @param userPreferences map of user preferences
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public void storePreferences(UserPreferencesContent userPreferences) throws JemException {
-		// gets the web resource
-		WebResource resource = getClient().getBaseWebResource();
-		// creates the returned object
-		GenericType<JAXBElement<ReturnedObject>> generic = new GenericType<JAXBElement<ReturnedObject>>() {
-		};
-		// creates the complete path of REST service, setting also the output format (XML)
-		JAXBElement<ReturnedObject> jaxbContact = resource.path(LoginManagerPaths.MAIN).path(LoginManagerPaths.SAVE_PREFERENCES).accept(MediaType.APPLICATION_XML).post(generic, userPreferences);
-		// gets the returned object
-		ReturnedObject object = jaxbContact.getValue();
-    	// checks if has got any exception
-    	// Exception must be saved as attribute of returned object		
-		if (object.hasException()){
-			throw new JemException(object.getExceptionMessage());
+	public boolean storePreferences(Map<String, UserPreference> userPreferences) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type		
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// performs REST call setting the preferences
+		ClientResponse response = builder.post(LoginManagerPaths.SAVE_PREFERENCES, userPreferences);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return Boolean.parseBoolean(value);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), value);
 		}
 	}	
 }

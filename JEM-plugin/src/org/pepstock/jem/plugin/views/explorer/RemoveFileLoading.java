@@ -19,6 +19,7 @@ import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.Loading;
 import org.pepstock.jem.plugin.util.Notifier;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Delete file from GFS action.
@@ -65,7 +66,7 @@ public class RemoveFileLoading  extends Loading {
 		try {
 			// REST call to remove the file 
 			Client.getInstance().delete(container.getType(), file.getLongName(), file.getDataPathName());
-		} catch (JemException e) {
+		} catch (RestException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			Notifier.showMessage(getDisplay().getActiveShell(), "Unable to delete " + file.getName(), e.getMessage(), MessageLevel.ERROR);
 		}

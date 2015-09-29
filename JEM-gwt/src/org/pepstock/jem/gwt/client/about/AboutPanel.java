@@ -21,7 +21,6 @@ import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.About;
-import org.pepstock.jem.node.NodeLicense;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -91,7 +90,7 @@ public class AboutPanel extends AbstractInspector {
 	    aboutTable.setHTML(2, 0, "Build time");
 	    aboutTable.setHTML(2, 1, about.getCreationTime());
 
-		Label licensesLabel = new Label("Installed Licences");
+		Label licensesLabel = new Label("Licence");
 		licensesLabel.setWidth(Sizes.HUNDRED_PERCENT);
 		licensesLabel.setStyleName(Styles.INSTANCE.inspector().title());
 		licensesLabel.addStyleName(Styles.INSTANCE.common().bold());
@@ -99,31 +98,18 @@ public class AboutPanel extends AbstractInspector {
 		FlexTable licensesTable = new FlexTable();
 		licensesTable.setCellPadding(10);
 		licensesTable.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-	    
-		if (!about.getLicenses().isEmpty()) {
-		    int row = 0;
-		    for (NodeLicense license : about.getLicenses()) {
-		    	StringBuilder builder = new StringBuilder();
-		    	builder.append("Module: <b>"+license.getModule()+"</b>, ");
-		    	builder.append("File name: <b>"+license.getFileName()+"</b><br/>");
-		    	builder.append("Subject: <b>"+license.getSubject()+"</b>, ");
-		    	builder.append("Email: <b>"+license.getEmail()+"</b>, ");
-		    	builder.append("Issue date: <b>"+license.getIssuedate()+"</b>, ");
-		    	builder.append("Expire date: <b>"+license.getExpiredate()+"</b>, ");
-		    	builder.append("Max nodes: <b>"+license.getMaxnodes()+"</b>");
-		    	licensesTable.setHTML(row, 0, builder.toString());
-			    row++;
-		    }
-		} else {
-			licensesTable.setHTML(0, 0, "(none)");
-		}
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("<center>GNU GENERAL PUBLIC LICENSE</center><br/>");
+		builder.append("<center>Version 3, 29 June 2007</center><br/>");
+		builder.append("<br/>");
+		builder.append("<center>Copyright (C) 2007 Free Software Foundation, Inc. http://fsf.org/</center><br/>");
+		builder.append("<center>Everyone is permitted to copy and distribute verbatim copies</center><br/>");
+		builder.append("<center>of this license document, but changing it is not allowed.</center>");
+		licensesTable.setHTML(0, 0, builder.toString());
 	    
 	    // styles
 	    UITools.setFlexTableRowStyles(aboutTable, 
-	    		Styles.INSTANCE.inspector().rowDark(), 
-	    		Styles.INSTANCE.inspector().rowLight());
-	    
-	    UITools.setFlexTableRowStyles(licensesTable, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
 	    		Styles.INSTANCE.inspector().rowLight());
 	    

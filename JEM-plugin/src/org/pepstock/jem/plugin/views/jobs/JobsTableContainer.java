@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -49,8 +50,8 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.inspector.InspectorViewPart;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.entities.JobQueue;
 
 /**
  * Table container of jobs of JEM. It contains a table for each type of jobs queue of JEM.
@@ -73,7 +74,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	
 	private TableColumnLayout layout = new TableColumnLayout();
 	
-	private String queueName = null;
+	private JobQueue queue = null;
 
 	private Collection<Job> data = new ArrayList<Job>();
 	
@@ -81,10 +82,10 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 * Constructor of object with folder and job queue name 
 	 * @param parent tabbed panel, container of this
 	 * @param style style for composites
-	 * @param queueName job queue name
+	 * @param queue job queue 
 	 */
-	public JobsTableContainer(TabFolder parent, int style, String queueName) {
-		this.queueName = queueName;
+	public JobsTableContainer(TabFolder parent, int style, JobQueue queue) {
+		this.queue = queue;
 		composite = new Composite(parent, style); // style
 		composite.setLayout(new GridLayout(1, false));
 		
@@ -122,8 +123,8 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	/**
 	 * @return the queueName
 	 */
-	public String getQueueName() {
-		return queueName;
+	public JobQueue getQueue() {
+		return queue;
 	}
 	
 	/**
@@ -182,9 +183,11 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 * 
 	 * @param filter searching filter
 	 * @return a collection of jobs
-	 * @throws JemException if any error occurs
+	 * @throws RestException if any error occurs
 	 */
-	public abstract Jobs loadData(String filter) throws JemException;
+	public Collection<Job> loadData(String filter) throws RestException{
+    	return Client.getInstance().refreshJobs(getQueue(), filter);
+	};
 	
 	/**
 	 * Returns the name of queue name, readable
@@ -293,13 +296,10 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 		 * @see org.pepstock.jem.plugin.util.Loading#execute()
 		 */
         @Override
-        protected void execute() throws JemException {
-			Jobs jobs = null;
+        protected void execute() throws Exception {
 			try {
-				// loads data, requsting to the server by REST
-				jobs = loadData(getFilter());
 				// if data is not provided, creates a empty collections
-				data = (jobs != null && jobs.getJobs() != null) ? jobs.getJobs() : new ArrayList<Job>();
+				data = loadData(getFilter());
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						// sets data to table
@@ -308,7 +308,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 						number.setText(String.valueOf(data.size()));
 					}
 				});
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any error occurs on REST calls
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(JobsTableContainer.this, "Unable to load data", e.getMessage(), MessageLevel.ERROR);
@@ -341,15 +341,15 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
         protected void execute() throws JemException {
 			try {
 				// loads the output tree
-				JobOutputTreeContent currentData = Client.getInstance().getOutputTree(getJob(), getQueueName());
+				OutputTree currentData = Client.getInstance().getOutputTree(getJob(), getQueue());
 				// gets inspector view part to open
 				InspectorViewPart inspector = (InspectorViewPart)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(InspectorViewPart.ID);
 				// sets all necessary data
 				inspector.setData(currentData);
 				inspector.setJob(getJob());
-				inspector.setQueueName(getQueueName());
+				inspector.setQueueName(getQueue());
 				inspector.setFocus();
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any error occurs on REST calls
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to load job "+getJob().getName()+" !", 

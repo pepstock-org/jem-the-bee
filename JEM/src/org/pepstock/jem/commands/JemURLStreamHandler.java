@@ -28,7 +28,7 @@ import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
- * Is able to manage JEM URL insid teh JEM node (not outside). <br>
+ * Is able to manage JEM URL insid the JEM node (not outside). <br>
  * JEM URL should address files (or entry of file) inside of GFS.<br>
  * Here are possible syntax:<br>
  * <br>
@@ -54,7 +54,7 @@ public final class JemURLStreamHandler extends URLStreamHandler {
 	protected URLConnection openConnection(URL u) throws IOException {
 		// gets the complete URL
 		String url = u.toString();
-		// gets the substring after jem: and teh other semicolon
+		// gets the substring after jem: and the other semicolon
 		String subScheme = StringUtils.substringBetween(url, SEMICOLONS, SEMICOLONS);
 		
 		// the subscheme MUST be one of GFS types

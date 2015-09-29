@@ -138,7 +138,7 @@ public class Factory {
 			try {
 				// gets URL using the JEM URL Stream handler
 				URL url = new URL(prejob.getUrl());
-				// reads teh content from GFS
+				// reads the content from GFS
 				StringWriter sw = new StringWriter();
 				// open Stream using JEM URL Stream handler
 				IOUtils.copy(url.openStream(), sw);

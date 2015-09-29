@@ -16,13 +16,8 @@
 */
 package org.pepstock.jem.node.executors;
 
-import java.util.Collection;
-
-import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.About;
 import org.pepstock.jem.node.NodeInfoUtility;
-import org.pepstock.jem.node.NodeLicense;
-import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 /**
@@ -37,31 +32,16 @@ public class GetAbout extends DefaultExecutor<About>{
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Calls an executor to extract all licences information, only if enterprise
-	 * configuration is running
+	 * Calls an executor to extract all information
 	 * @return bean with all info to show on UI
 	 * @throws ExecutorException 
 	 * @throws Exception occurs if errors
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public About execute() throws ExecutorException {
 		// I need the reflection to avoid to distribute 
 		// create reference on enterprise
 		About about = new About();
-		try {
-			Class clazz = Class.forName("org.pepstock.jem.license.GetLicensesInfo");
-			DefaultExecutor<Collection<NodeLicense>> da = (DefaultExecutor<Collection<NodeLicense>>) clazz.newInstance();
-			about.getLicenses().addAll(da.execute());
-		} catch (ClassNotFoundException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
-		} catch (InstantiationException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
-		} catch (IllegalAccessException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
-		} catch (ExecutorException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC207E, e);
-		}
 		loadManifest(about);
 		return about;
 	}

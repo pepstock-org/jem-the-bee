@@ -23,6 +23,7 @@ import org.pepstock.jem.gwt.client.services.GfsManagerService;
 import org.pepstock.jem.gwt.server.services.GfsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Is GWT server service which can provide all methods to manage global file
@@ -82,7 +83,12 @@ public class GfsManagerServiceImpl extends DefaultManager implements GfsManagerS
 			initManager();
 		}
 		try {
-			return gfsManager.getFile(type, file, pathName);
+			byte[] content = gfsManager.getFile(type, file, pathName);
+			String result = null;
+			if (content != null){
+				result = new String(content, CharSet.DEFAULT);
+			}
+			return result;
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, ex);
 			// creates a new Exception to avoid to try

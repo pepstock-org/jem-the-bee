@@ -41,6 +41,7 @@ import org.pepstock.jem.plugin.util.LoginLoading;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.util.ShellLoading;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * The header of view part with environment connection information and 
@@ -295,7 +296,7 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 			try {
 				// performs the login by REST
 				Client.getInstance().login(getCoordinate());
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any error occurs
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to login to "+getCoordinate().getName()+"!", 

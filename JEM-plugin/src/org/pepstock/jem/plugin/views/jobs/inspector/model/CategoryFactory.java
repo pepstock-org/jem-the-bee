@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.pepstock.jem.OutputListItem;
+import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.plugin.util.Images;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 /**
  * Creates the complete tree of output directory of a job.
  * 
@@ -51,7 +51,7 @@ public class CategoryFactory {
      * @param outputTree tree of output directory
      * @return a list of categories
      */
-	public static List<Category> getCategories(JobOutputTreeContent outputTree) {
+	public static List<Category> getCategories(OutputTree outputTree) {
 		List<Category> categories = new LinkedList<Category>();
 		
 		// general job info
@@ -77,17 +77,35 @@ public class CategoryFactory {
 				category.getProducedOutputs().add(out);
 			}
 			// scans second level
-			for (String key : outputTree.getSecondLevelItems().keySet()) {
-				Category subCategory = new Category(key);
-				subCategory.setImage(Images.DIRECTORY);
-				for (OutputListItem item : outputTree.getSecondLevelItems().get(key)) {
-					ProducedOutput out = new ProducedOutput(item.getLabel(), item.getFileRelativePath());
-					out.setOutItem(item);
-					out.setImage(Images.FILE);
-					subCategory.getProducedOutputs().add(out);
+			
+			//FIXME
+			for (List<OutputListItem> items : outputTree.getSecondLevelItems()){
+				if (!items.isEmpty()){
+					String key = items.get(0).getParent();
+//					content.getSecondLevelItems().put(key, items);
+					Category subCategory = new Category(key);
+					subCategory.setImage(Images.DIRECTORY);
+					for (OutputListItem item : items) {
+						ProducedOutput out = new ProducedOutput(item.getLabel(), item.getFileRelativePath());
+						out.setOutItem(item);
+						out.setImage(Images.FILE);
+						subCategory.getProducedOutputs().add(out);
+					}
+					category.getSubCategories().add(subCategory);
 				}
-				category.getSubCategories().add(subCategory);
 			}
+//			
+//			for (String key : outputTree.getSecondLevelItems().keySet()) {
+//				Category subCategory = new Category(key);
+//				subCategory.setImage(Images.DIRECTORY);
+//				for (OutputListItem item : outputTree.getSecondLevelItems().get(key)) {
+//					ProducedOutput out = new ProducedOutput(item.getLabel(), item.getFileRelativePath());
+//					out.setOutItem(item);
+//					out.setImage(Images.FILE);
+//					subCategory.getProducedOutputs().add(out);
+//				}
+//				category.getSubCategories().add(subCategory);
+//			}
 		}
 		return categories;
 	}

@@ -53,6 +53,8 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
@@ -330,7 +332,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
         @Override
         protected void execute() throws JemException {
 			try {
-				String content = null;
+				byte[] content = null;
 				// if source of data, you can download
 				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE){
 					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
@@ -340,13 +342,13 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				}
 				// activate the editor
 				// going in editor with the content of the file
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(new String(content, CharSet.DEFAULT), getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
 			} catch (PartInitException e) {
 				// if any errors from editing 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to open the editor!", 
 						"Error occurred during opening of editor: "+e.getMessage(), MessageLevel.ERROR);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors to download the file
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to get "+getFile().getName()+"!", 
@@ -404,7 +406,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 						searcher.setText(getFilter());
 					}
 				});
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors from REST APi
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to load data", e.getMessage(), MessageLevel.ERROR);

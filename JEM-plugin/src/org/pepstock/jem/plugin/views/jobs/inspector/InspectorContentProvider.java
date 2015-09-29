@@ -12,9 +12,9 @@ package org.pepstock.jem.plugin.views.jobs.inspector;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
 
 /**
  * Content provider for tree when it is in inspect mode in a job
@@ -56,7 +56,7 @@ public class InspectorContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object parent) {
 		if (parent != null) {
-			JobOutputTreeContent ot = (JobOutputTreeContent) parent;
+			OutputTree ot = (OutputTree) parent;
 			// creates whole tree
 			return CategoryFactory.getCategories(ot).toArray();
 		}

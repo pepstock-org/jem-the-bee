@@ -120,7 +120,7 @@ public class CurrentUser {
 	public String getStringPreference(String key){
 		if (key != null){
 			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().get(key);
-			if (pref != null && pref.isValueString()){
+			if (pref != null && pref.getValueString() != null){
 				return pref.getValueString();
 			}
 		}
@@ -135,7 +135,7 @@ public class CurrentUser {
 	public List<String> getListPreference(String key){
 		if (key != null){
 			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().get(key);
-			if (pref != null && !pref.isValueString()){
+			if (pref != null && !(pref.getValueString() != null)){
 				return pref.getValueList();
 			}
 		}

@@ -34,7 +34,7 @@ import org.pepstock.jem.node.sgm.PathsContainer;
  * @version 1.2	
  *
  */
-public class GetFile extends Get<String> {
+public class GetFile extends Get<byte[]> {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -45,6 +45,7 @@ public class GetFile extends Get<String> {
 	 * @see GfsFile
 	 * @param file the folder (relative to type of GFS) to use to read files and directories
 	 * @param pathName path data name for the file argument
+	 * @param base64 if true, the content of file will be encoded in base 64
 	 * 
 	 */
 	public GetFile(int type, String file, String pathName) {
@@ -55,7 +56,7 @@ public class GetFile extends Get<String> {
 	 * @see org.pepstock.jem.node.executors.gfs.Get#getResult(java.io.File)
 	 */
 	@Override
-	public String getResult(String parentPath, File file) throws ExecutorException {
+	public byte[] getResult(String parentPath, File file) throws ExecutorException {
 		// it must be a file!!! 
 		// Otherwise EXCEPTION
 		if (!file.isFile()){
@@ -64,7 +65,7 @@ public class GetFile extends Get<String> {
 		// reads all file in a string
 		// and return it
 		try {
-			return FileUtils.readFileToString(file);
+			return FileUtils.readFileToByteArray(file);
 		} catch (IOException e) {
 			throw new ExecutorException(NodeMessage.JEMC242E, e, file);
 		}
@@ -74,7 +75,7 @@ public class GetFile extends Get<String> {
 	 * @see org.pepstock.jem.node.executors.gfs.Get#getResultForDataPath()
 	 */
 	@Override
-	public String getResultForDataPath() throws ExecutorException {
+	public byte[] getResultForDataPath() throws ExecutorException {
 		// if here, it's reading a file from data path.
 		// if path name is not null
 		if (getPathName() != null){

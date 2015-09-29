@@ -16,25 +16,32 @@
  */
 package org.pepstock.jem.gwt.server.rest;
 
+import java.util.Arrays;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.StatisticsManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.rest.entities.Stats;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
+import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 
+import com.sun.jersey.spi.resource.Singleton;
+
 /**
- * REST services published in the web part, to manage statistics and administration stuff.
+ * REST services published in the web part, to manage statistics and
+ * administration stuff.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
+@Singleton
 @Path(StatisticsManagerPaths.MAIN)
 public class StatisticsManagerImpl extends DefaultServerResource {
 
@@ -44,56 +51,58 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * REST service which returns list of collected sample in the JEM cluster
 	 * 
 	 * @return a list of statistics from all nodes
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_SAMPLES)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Stats getSamples() throws JemException {
-		Stats result = new Stats();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Path(StatisticsManagerPaths.SAMPLES)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSamples() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setSamples(statisticsManager.getSamples());
+				// returns samples
+				return ResponseBuilder.JSON.ok(statisticsManager.getSamples());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
 
 	/**
 	 * REST service which last sample with all statistics on JEM nodes
 	 * 
 	 * @return last statistics sample
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_CURRENT_SAMPLE)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Stats getCurrentSample() throws JemException {
-		Stats result = new Stats();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Path(StatisticsManagerPaths.CURRENT_SAMPLE)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getCurrentSample() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setCurrentSample(statisticsManager.getCurrentSample());
+				// returns sample
+				return ResponseBuilder.JSON.ok(statisticsManager.getCurrentSample());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
 
 	/**
@@ -103,120 +112,129 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 *            wild card of resources name
 	 * 
 	 * @return list of requestors
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
-	@POST
+	@GET
 	@Path(StatisticsManagerPaths.DISPLAY_REQUESTORS)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public StringReturnedObject displayRequestors(String resourceKey) throws JemException {
-		StringReturnedObject result = new StringReturnedObject();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response displayRequestors(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String resourceKey) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setValue(statisticsManager.displayRequestors(resourceKey));
+				// returns requestors
+				return ResponseBuilder.PLAIN.ok(statisticsManager.displayRequestors(resourceKey));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
 
 	/**
-	 * REST service which list of REDo statements which are waiting of DB will be restarted
+	 * REST service which list of REDo statements which are waiting of DB will
+	 * be restarted
 	 * 
 	 * @return list of REDO statementes
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
-	@Path(StatisticsManagerPaths.GET_ALL_REDO_STATEMENTS)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Stats getAllRedoStatements() throws JemException {
-		Stats result = new Stats();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Path(StatisticsManagerPaths.REDO_STATEMENTS)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllRedoStatements() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setRedoStatements(statisticsManager.getAllRedoStatements());
+				// returns redo statements
+				return ResponseBuilder.JSON.ok(statisticsManager.getAllRedoStatements());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
 
 	/**
 	 * REST service which returns the JEM "about", with licenses, versions, etc.
 	 * 
 	 * @return JEM "about", with licenses, versions, etc
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.ABOUT)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Stats getAbout() throws JemException {
-		Stats result = new Stats();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAbout() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setAbout(statisticsManager.getAbout());
+				// returns about
+				return ResponseBuilder.JSON.ok(statisticsManager.getAbout());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
-	
+
 	/**
 	 * REST service which returns a list of information about JEM environment
 	 * 
 	 * @return a list of information about JEM environment
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.INFOS)
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Stats getEnvironmentInformation() throws JemException {
-		Stats result = new Stats();
-		if (isEnable()) {
-			if (statisticsManager == null) {
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getEnvironmentInformation() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				result.setInfos(statisticsManager.getEnvironmentInformation());
+				// returns env info
+				return ResponseBuilder.JSON.ok(Arrays.asList(statisticsManager.getEnvironmentInformation()));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				result.setExceptionMessage(e.getMessage());
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
 
-	/**
-	 * Initialize the manager
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-	private synchronized void initManager() {
+	@Override
+	boolean init() throws Exception {
 		if (statisticsManager == null) {
 			statisticsManager = new StatisticsManager();
 		}
+		return true;
 	}
 }

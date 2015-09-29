@@ -35,7 +35,7 @@ public abstract class Loading {
 				try {
 					// executes REST service
 					execute();	
-				} catch (JemException e) {
+				} catch (Exception e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 					// nop
 				} finally {
@@ -55,6 +55,6 @@ public abstract class Loading {
 	 * Executes all logic, calling REST services 
 	 * @throws JemException if any error occurs
 	 */
-	protected abstract void execute() throws JemException;
+	protected abstract void execute() throws Exception;
 
 }

@@ -59,4 +59,18 @@ public class FilesUtil {
 		FileUtils.write(file, content);
 		return file;
 	}
+	
+	/**
+	 * Writes a byte stream in a file in temporary folder.
+	 * 
+	 * @param fileName file name in temporary folder
+	 * @param content content of file, in string format, to write 
+	 * @return file created in temporary folder
+	 * @throws IOException if any error occurs
+	 */
+	public static final File writeToTempFile(String fileName, byte[] content) throws IOException{
+		File file = new File(TEMP_DIRECTORY, fileName);
+		FileUtils.writeByteArrayToFile(file, content);
+		return file;
+	}
 }

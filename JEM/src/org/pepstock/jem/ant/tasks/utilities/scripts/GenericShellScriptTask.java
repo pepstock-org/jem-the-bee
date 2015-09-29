@@ -52,7 +52,7 @@ public class GenericShellScriptTask extends ShellScriptTask {
 	@Override
 	public void execute() throws BuildException {
 		try {
-			// gets teh complete command to be executed
+			// gets the complete command to be executed
 			String hexCommand = getProject().getProperty(GenericScriptFactory.GENERIC_COMMAND_PROPERTY);
 			// the Script factory set the value in HEX format to avoid error during XML encoding
 			Hex hex = new Hex(CharSet.DEFAULT);

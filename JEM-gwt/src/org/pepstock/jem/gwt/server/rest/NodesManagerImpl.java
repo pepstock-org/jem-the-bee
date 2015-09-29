@@ -13,25 +13,36 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.NodeInfoBean;
+import org.pepstock.jem.UpdateNode;
 import org.pepstock.jem.gwt.server.services.NodesManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.ConfigurationFile;
+import org.pepstock.jem.node.ExecutionEnvironment;
+import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.affinity.Result;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.ConfigurationFileContent;
-import org.pepstock.jem.rest.entities.Nodes;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
+import org.pepstock.jem.rest.entities.ConfigType;
+import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
+
+import com.sun.jersey.spi.resource.Singleton;
 
 /**
  * REST services published in the web part, to manage nodes.
@@ -39,412 +50,608 @@ import org.pepstock.jem.rest.paths.NodesManagerPaths;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
+@Singleton
 @Path(NodesManagerPaths.MAIN)
 public class NodesManagerImpl extends DefaultServerResource {
 
-	private NodesManager nodesManager = null;
-	
-	
+	private NodesManager manager = null;
+
 	/**
 	 * REST service which returns nodes, by nodes name filter
 	 * 
-	 * @param nodesFilter nodes name filter
-	 * @return a nodes container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param nodesFilter
+	 *            nodes name filter
+	 * @return a list of nodes
 	 */
-	@POST
+	@GET
 	@Path(NodesManagerPaths.LIST)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Nodes getNodes(String nodesFilter) throws JemException {
-		Nodes nodes = new Nodes();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            nodes.setNodes(nodesManager.getNodes(nodesFilter));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// returns the list of nodes
+				return ResponseBuilder.JSON.ok(manager.getNodes(nodesFilter));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
 	/**
-	 * REST service which returns swarm nodes, by swarn nodes name filter
+	 * REST service which returns swarm nodes, by swarm nodes name filter
 	 * 
-	 * @param nodesFilter nodes name filter
-	 * @return a nodes container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param nodesFilter
+	 *            nodes name filter
+	 * @return a list of nodes
 	 */
-	@POST
+	@GET
 	@Path(NodesManagerPaths.SWARM_LIST)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Nodes getSwarmNodes(String nodesFilter) throws JemException {
-		Nodes nodes = new Nodes();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSwarmNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            nodes.setNodes(nodesManager.getSwarmNodes(nodesFilter));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// returns the list of nodes
+				return ResponseBuilder.JSON.ok(manager.getSwarmNodes(nodesFilter));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
 	/**
-	 * REST service which returns nodes, by  nodes filters
+	 * REST service which returns nodes, by nodes filters
 	 * 
-	 * @param nodesFilter nodes name filter
-	 * @return a nodes container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param nodesFilter
+	 *            nodes name filter
+	 * @return a list of nodes
 	 */
-	@POST
+	@GET
 	@Path(NodesManagerPaths.LIST_BY_FILTER)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Nodes getNodesByFilter(String nodesFilter) throws JemException {
-		Nodes nodes = new Nodes();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            nodes.setNodes(nodesManager.getNodesByFilter(nodesFilter));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// returns the lsit of nodes
+				return ResponseBuilder.JSON.ok(manager.getNodesByFilter(nodesFilter));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
+	/**
+	 * REST service which starts node
+	 * 
+	 * @param key
+	 *            node key where executes command
+	 * @return <code>true</code> if ended correctly
+	 */
+	@PUT
+	@Path(NodesManagerPaths.START)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response start(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if node key is null, bad request
+				if (key == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// get node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns true is OK
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.start(Arrays.asList(node.getNodeInfoBean())).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
+
+	/**
+	 * REST service which drains node
+	 * 
+	 * @param key
+	 *            node key where executes command
+	 * @return <code>true</code> if ended correctly
+	 */
+	@PUT
+	@Path(NodesManagerPaths.DRAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response drain(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if node key is null, bad request
+				if (key == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// get node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns true is OK
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.drain(Arrays.asList(node.getNodeInfoBean())).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
+
 	/**
 	 * REST service which updates node
 	 * 
-	 * @param node node to be updated
-	 * @return returned object
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param key
+	 *            node key where executes command
+	 * @param update
+	 *            container of attributes to change on node
+	 * @return <code>true</code> if ended correctly
 	 */
-	@POST
+	@PUT
 	@Path(NodesManagerPaths.UPDATE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject update(NodeInfoBean node) throws JemException {
-		BooleanReturnedObject nodes = new BooleanReturnedObject();
-		nodes.setValue(false);
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response update(@PathParam(NodesManagerPaths.NODEKEY) String key, UpdateNode update) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            nodes.setValue(nodesManager.update(node));
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// if key or update attributes are missing, bad request
+				if (key == null || update == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found
+				if (node == null) {
+					return ResponseBuilder.PLAIN.notFound(key);
+				}
+				// creates info bean
+				// IT DOESN'T USE the INTERNAL OBJECT of NODEINFO
+				// TO AVOID MUTLI ACCESS TO THE SAME OBJECT
+				NodeInfoBean bean = createNodeInfoBean(node);
+				// checks if wants to change affinity
+				if (update.getAffinity() != null) {
+					// clear the affinities
+					bean.getExecutionEnvironment().getStaticAffinities().clear();
+					// scans and add all affinities
+					String[] affinities = update.getAffinity().split(Jcl.AFFINITY_SEPARATOR);
+					for (int i = 0; i < affinities.length; i++) {
+						bean.getExecutionEnvironment().getStaticAffinities().add(affinities[i]);
+					}
+				}
+				// checks if wants to change the domain
+				if (update.getDomain() != null && !update.getDomain().equalsIgnoreCase(bean.getExecutionEnvironment().getDomain())) {
+					// update the domain
+					bean.getExecutionEnvironment().setDomain(update.getDomain());
+				}
+				// checks if wants to change the parallel jobs
+				if (update.getParallelJobs() >= ExecutionEnvironment.MINIMUM_PARALLEL_JOBS && update.getParallelJobs() <= ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS) {
+					// checks if inside of right range
+					int jobsValue = Math.max(Math.min(update.getParallelJobs(), ExecutionEnvironment.MAXIMUM_PARALLEL_JOBS), ExecutionEnvironment.MINIMUM_PARALLEL_JOBS);
+					if (bean.getExecutionEnvironment().getParallelJobs() != jobsValue) {
+						bean.getExecutionEnvironment().setParallelJobs(jobsValue);
+					}
+				}
+				// checks if wants to change memory attribute
+				if (update.getMemory() >= ExecutionEnvironment.MINIMUM_MEMORY && update.getMemory() <= ExecutionEnvironment.MAXIMUM_MEMORY) {
+					// gets value and checks again if it ust be changed
+					int memoryValue = Math.max(Math.min(update.getMemory(), ExecutionEnvironment.MAXIMUM_MEMORY), ExecutionEnvironment.MINIMUM_MEMORY);
+					if (bean.getExecutionEnvironment().getMemory() != memoryValue) {
+						bean.getExecutionEnvironment().setMemory(memoryValue);
+					}
+				}
+				// returns true if OK
+				return ResponseBuilder.PLAIN.ok(manager.update(bean).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
 	/**
 	 * REST service which returns the result of TOP command
 	 * 
-	 * @param node node where executes command
-	 * @return returned object with value
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @see NodeInfoBeans
+	 * @param key
+	 *            node key where executes command
+	 * @return a node info bean object
 	 */
-	@POST
-	@Path(NodesManagerPaths.TOP)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public StringReturnedObject top(NodeInfoBean node) throws JemException {
-		StringReturnedObject nodes = new StringReturnedObject();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@GET
+	@Path(NodesManagerPaths.GET)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodeByKey(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            String value = nodesManager.top(node);
-	            nodes.setValue(value);
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// if key is missing, bad request
+				if (key == null) {
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the node
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(node.getNodeInfoBean());
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
+	/**
+	 * REST service which returns the result of TOP command
+	 * 
+	 * @param key
+	 *            node key where executes command
+	 * @return the string of top command result
+	 */
+	@GET
+	@Path(NodesManagerPaths.TOP)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response top(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if key is missing, bad request
+				if (key == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the top
+				// command result
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.top(node.getNodeInfoBean()));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
+
 	/**
 	 * REST service which returns the result of LOG command
 	 * 
-	 * @param node node where executes command
-	 * @return returned object with value
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param key
+	 *            node key where executes command
+	 * @return the string of log command result
 	 */
-	@POST
+	@GET
 	@Path(NodesManagerPaths.LOG)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public StringReturnedObject log(NodeInfoBean node) throws JemException {
-		StringReturnedObject nodes = new StringReturnedObject();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response log(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            String value = nodesManager.log(node);
-	            nodes.setValue(value);
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// if key is missing, bad request
+				if (key == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the log
+				// result
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.log(node.getNodeInfoBean()));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
 	/**
 	 * REST service which returns the result of DISPLAY CLUSTER command
 	 * 
-	 * @param node node where executes command
-	 * @return returned object with value
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param key
+	 *            node key where executes command
+	 * @return the string of disCluster command result
 	 */
-	@POST
+	@GET
 	@Path(NodesManagerPaths.DISPLAY_CLUSTER)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public StringReturnedObject displayCluster(NodeInfoBean node) throws JemException {
-		StringReturnedObject nodes = new StringReturnedObject();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response displayCluster(@PathParam(NodesManagerPaths.NODEKEY) String key) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-	            String value = nodesManager.displayCluster(node);
-	            nodes.setValue(value);
-            } catch (Exception e) {
-	            LogAppl.getInstance().ignore(e.getMessage(), e);
-	            nodes.setExceptionMessage(e.getMessage());
-            }
+				// if key is missing, bad request
+				if (key == null) {
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the command
+				// result
+				return (node == null) ? ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(manager.displayCluster(node.getNodeInfoBean()));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
+			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
+
 	/**
 	 * REST service which returns the configuration file of node
 	 * 
-	 * @param content container with all parms to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param key
+	 *            node key where executes command
+	 * @param type
+	 *            type of configuration file requested
+	 * @see ConfigType
+	 * @return a configuration file instance
 	 */
-	@POST
-	@Path(NodesManagerPaths.GET_NODE_CONFIG_FILE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ConfigurationFileContent getNodeConfigFile(ConfigurationFileContent content) throws JemException {
-		ConfigurationFileContent nodes = new ConfigurationFileContent();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getNode() != null && content.getWhat() != null){
-				try {
-					ConfigurationFile file = nodesManager.getNodeConfigFile(content.getNode(), content.getWhat());
-					nodes.setFile(file);
-					nodes.setNode(content.getNode());
-					nodes.setWhat(content.getWhat());
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					nodes.setExceptionMessage(e.getMessage());
+	@GET
+	@Path(NodesManagerPaths.GET_NODE_CONFIG)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNodeConfigFile(@PathParam(NodesManagerPaths.NODEKEY) String key, @PathParam(NodesManagerPaths.TYPE) String type) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if key is missing, bad request
+				if (key == null) {
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
+				// gets and checks the type of configuration file
+				// if wrong, bad request
+				ConfigType cType = ConfigType.getTypeByPath(type);
+				if (cType == null) {
+					ResponseBuilder.JSON.badRequest(NodesManagerPaths.TYPE);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the
+				// configuration file
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.getNodeConfigFile(node.getNodeInfoBean(), cType.getName()));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
-	/**
-	 * REST service which save a new configuration file of node
-	 * 
-	 * @param content container with all parms to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(NodesManagerPaths.SAVE_NODE_CONFIG_FILE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ConfigurationFileContent saveNodeConfigFile(ConfigurationFileContent content) throws JemException {
-		ConfigurationFileContent nodes = new ConfigurationFileContent();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getNode() != null && content.getWhat() != null && content.getFile() != null){
-				try {
-					ConfigurationFile file = nodesManager.saveNodeConfigFile(content.getNode(), content.getFile(), content.getWhat());
-					nodes.setFile(file);
-					nodes.setNode(content.getNode());
-					nodes.setWhat(content.getWhat());
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					nodes.setExceptionMessage(e.getMessage());
-				}
-			}
-		} else {
-			setUnableExcepton(nodes);
-		}
-		return nodes;
-	}
-	
-	
+
 	/**
 	 * REST service which returns the configuration file of JEM environment
 	 * 
-	 * @param content container with all params to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param type
+	 *            type of configuration file requested
+	 * @return a configuration file instance
 	 */
-	@POST
-	@Path(NodesManagerPaths.GET_ENV_CONFIG_FILE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ConfigurationFileContent getEnvConfigFile(ConfigurationFileContent content) throws JemException {
-		ConfigurationFileContent nodes = new ConfigurationFileContent();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getWhat() != null){
-				try {
-					ConfigurationFile file = nodesManager.getEnvConfigFile(content.getWhat());
-					nodes.setFile(file);
-					nodes.setWhat(content.getWhat());
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					nodes.setExceptionMessage(e.getMessage());
-				}
+	@GET
+	@Path(NodesManagerPaths.GET_ENV_CONFIG)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getEnvConfigFile(@PathParam(NodesManagerPaths.TYPE) String type) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// gets and checks the type of configuration file
+				// if wrong, bad request
+				ConfigType cType = ConfigType.getTypeByPath(type);
+				return (cType == null) ? ResponseBuilder.JSON.notFound(NodesManagerPaths.TYPE) : ResponseBuilder.JSON.ok(manager.getEnvConfigFile(type));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(nodes);
+			// returns an exception
+			return resp;
 		}
-		return nodes;
 	}
-	
-	/**
-	 * REST service which saves a new configuration file of JEM environment
-	 * 
-	 * @param content container with all parms to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
-	 */
-	@POST
-	@Path(NodesManagerPaths.SAVE_ENV_CONFIG_FILE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ConfigurationFileContent saveEnvConfigFile(ConfigurationFileContent content) throws JemException {
-		ConfigurationFileContent nodes = new ConfigurationFileContent();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getWhat() != null && content.getFile() != null){
-				try {
-					ConfigurationFile file = nodesManager.saveEnvConfigFile(content.getFile(), content.getWhat());
-					nodes.setFile(file);
-					nodes.setWhat(content.getWhat());
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					nodes.setExceptionMessage(e.getMessage());
-				}
-			}
-		} else {
-			setUnableExcepton(nodes);
-		}
-		return nodes;
-	}
-	
+
 	/**
 	 * REST service which checks a configuration file content
 	 * 
-	 * @param content container with all parms to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param content
+	 *            configuration content to check
+	 * @param type
+	 *            type of configuration file requested
+	 * @return <code>true</code> if ended correctly
 	 */
-	@POST
-	@Path(NodesManagerPaths.CHECK_CONFIG_FILE)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public BooleanReturnedObject checkConfigFile(ConfigurationFileContent content) throws JemException {
-		BooleanReturnedObject result = new BooleanReturnedObject();
-		result.setValue(false);
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getWhat() != null && content.getContent() != null){
-				try {
-					Boolean isCorrect = nodesManager.checkConfigFile(content.getContent(), content.getWhat());
-					result.setValue(isCorrect);
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					result.setExceptionMessage(e.getMessage());
-				}
+	@PUT
+	@Path(NodesManagerPaths.CHECK_CONFIG)
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response checkConfigFile(@PathParam(NodesManagerPaths.TYPE) String type, String content) {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.PLAIN);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// gets and checks the type of configuration file
+				// if wrong, bad request
+				ConfigType cType = ConfigType.getTypeByPath(type);
+				return (cType == null || content == null) ? ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.TYPE) : ResponseBuilder.PLAIN.ok(manager.checkConfigFile(content, type).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
-	
+
 	/**
 	 * REST service which checks affinity file content
 	 * 
-	 * @param content container with all parms to perform call
-	 * @return configuration file
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param key
+	 *            node key where executes command
+	 * @param content
+	 *            affinity policy content to check
+	 * @return result object
+	 * @see Result
 	 */
 	@POST
 	@Path(NodesManagerPaths.CHECK_AFFINITY_POLICY)
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ConfigurationFileContent checkAffinityPolicy(ConfigurationFileContent content) throws JemException {
-		ConfigurationFileContent result = new ConfigurationFileContent();
-		if (isEnable()){
-			if (nodesManager == null){
-				initManager();
-			}
-			if (content.getNode() != null && content.getContent() != null){
-				try {
-					Result checkedResult = nodesManager.checkAffinityPolicy(content.getNode(), content.getContent());
-					result.setResult(checkedResult);
-				} catch (Exception e) {
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-					result.setExceptionMessage(e.getMessage());
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response checkAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key, String content) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if key or content are missing, bad request
+				if (key == null || content == null) {
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found, otherwise returns the result
+				// of checking
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.checkAffinityPolicy(node.getNodeInfoBean(), content));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
-			setUnableExcepton(result);
+			// returns an exception
+			return resp;
 		}
-		return result;
 	}
-	
+
 	/**
-	 * Initialize the manager
+	 * Creates a Node info bean starting from a node
+	 * 
+	 * @param node
+	 *            node to clone into a info bean
+	 * @return the nod info bean instance
 	 */
-	private synchronized void initManager() {
-		if (nodesManager == null) {
-			nodesManager = new NodesManager();
+	private NodeInfoBean createNodeInfoBean(NodeInfo node) {
+		NodeInfoBean nodeInfoBean = new NodeInfoBean();
+		nodeInfoBean.setKey(node.getKey());
+		nodeInfoBean.setLabel(node.getLabel());
+		nodeInfoBean.setHostname(node.getHostname());
+		nodeInfoBean.setIpaddress(node.getIpaddress());
+		if (!node.getJobs().isEmpty()) {
+			for (String jobName : node.getJobs().values()) {
+				nodeInfoBean.getJobNames().add(jobName);
+			}
 		}
+		nodeInfoBean.setPort(node.getPort());
+		nodeInfoBean.setProcessId(node.getProcessId());
+		nodeInfoBean.setRmiPort(node.getRmiPort());
+		nodeInfoBean.setStatus(node.getStatus().getDescription());
+		nodeInfoBean.setExecutionEnvironment(node.getExecutionEnvironment());
+		nodeInfoBean.setStartedTime(node.getStartedTime());
+		nodeInfoBean.setOperational(node.isOperational());
+		nodeInfoBean.setJemVersion(node.getJemVersion());
+		nodeInfoBean.setSwarmNode(node.isSwarmNode());
+		nodeInfoBean.setType(node.getClass().getName());
+		nodeInfoBean.setJavaVendor(node.getJavaVendor());
+		nodeInfoBean.setJavaVersion(node.getJavaVersion());
+		return nodeInfoBean;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
+	 */
+	@Override
+	boolean init() throws Exception {
+		if (manager == null) {
+			manager = new NodesManager();
+		}
+		return true;
 	}
 }

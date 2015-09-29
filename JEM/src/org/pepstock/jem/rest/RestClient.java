@@ -33,6 +33,7 @@ import org.pepstock.jem.util.UtilMessage;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
@@ -51,13 +52,26 @@ public abstract class RestClient {
 
 	private URI baseURI = null;
 	
+	private boolean debug = false;
+	
 	/**
 	 * Creates the object using the base URL of rest
 	 * @param uriString URL to access to JEM by HTTP
 	 * @throws Exception if any SSL errors occurs
 	 */
 	public RestClient(String uriString){
+		this(uriString, false);
+	}
+	
+	/**
+	 * Creates the object using the base URL of rest, setting the debug
+	 * @param uriString URL to access to JEM by HTTP
+	 * @param debug <code>true</code> sets the debug or not.
+	 * @throws Exception if any SSL errors occurs
+	 */
+	public RestClient(String uriString, boolean debug){
 		baseURI = UriBuilder.fromUri(uriString).build();
+		this.debug = debug;
 	}
 	
 	/**
@@ -73,6 +87,14 @@ public abstract class RestClient {
 		return baseURI;
 	}
 	
+	/**
+	 * Returns <code>true</code> if debug is set
+	 * @return <code>true</code> if debug is set
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
 	/**
 	 * Returns a Apache HTTP client, ready to use 
 	 * @return Apache HTTP client instance
@@ -105,6 +127,9 @@ public abstract class RestClient {
 	    	client = ApacheHttpClient4.create(config);
 	    }
 	    // to add log, use addFilter method with LoggingFilter to std output
-	   	return client;
+	    if (client != null && debug){
+	    	client.addFilter(new LoggingFilter(System.out));
+	    }
+	    return client;
 	}
 }

@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.GwtTransient;
  * @author Andrea "Stock" Stocchero
  * 
  */
+//@JsonIgnoreProperties( {"properties", "content", "contentToBeExecuted"})
 public final class Jcl extends AbstractJcl implements Serializable {
 
 	private static final long serialVersionUID = 1L;

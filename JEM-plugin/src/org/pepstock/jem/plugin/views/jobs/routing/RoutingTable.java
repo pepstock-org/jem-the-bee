@@ -16,13 +16,10 @@ import java.util.Collections;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.TabFolder;
-import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.commons.JemTableColumn;
 import org.pepstock.jem.plugin.views.jobs.JobColumnSorter;
 import org.pepstock.jem.plugin.views.jobs.JobsTableContainer;
-import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.JobQueue;
 
 /**
  * Table container of jobs in ROUTING queue of JEM.
@@ -62,7 +59,7 @@ public class RoutingTable extends JobsTableContainer {
 	 * @param style style for composites
 	 */
     public RoutingTable(TabFolder parent, int style) {
-	    super(parent, style, Queues.ROUTING_QUEUE);
+	    super(parent, style, JobQueue.ROUTING);
 	}
 
 	/* (non-Javadoc)
@@ -94,13 +91,5 @@ public class RoutingTable extends JobsTableContainer {
     @Override
     public JobColumnSorter getColumnSorter() {
 	    return COLUMN_SORTER;
-    }
-    
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.plugin.views.tabbedQueues.QueueTab#loadData(java.lang.String)
-	 */
-    @Override
-    public Jobs loadData(String filter) throws JemException {
-    	return Client.getInstance().refreshRouting(filter);
     }
 }

@@ -38,6 +38,7 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.affinity.CheckAffinityPolicy;
 import org.pepstock.jem.node.executors.affinity.GetAffinityPolicy;
@@ -103,6 +104,41 @@ public class NodesManager extends DefaultService {
 	public Collection<NodeInfoBean> getSwarmNodes(String nodesFilter) throws ServiceMessageException {
 		return getNodes(nodesFilter, true);
 	}
+	
+    /**
+     * Stores the node on Hazelcast map for nodes.
+     * Before doing it, it checks if there is already the instance store on Hazelcast (maybe do to crashed)
+     * and removes it and loads the new one.
+     * @param key NodeInfo node information
+     * 
+     * @param info node information to store
+     * @return 
+     * @throws ServiceMessageException 
+     * @throws ConfigurationException if any configuration error occurs
+     * 
+     */
+    public NodeInfo getNodeByKey(String key) throws ServiceMessageException {
+    	// gets HC map
+        IMap<String, NodeInfo> nodes = getInstance().getMap(Queues.NODES_MAP);
+        boolean isLock=false;
+        Lock lock = getInstance().getLock(Queues.NODES_MAP_LOCK);
+		try {
+			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock){
+				return nodes.get(key);
+			} else {
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, Queues.NODES_MAP);
+			}
+		} catch (InterruptedException e) {
+			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.NODES_MAP);
+        } finally {
+			// unlocks always the map
+			if(isLock){
+				lock.unlock();
+			}
+		}
+    }
+
 
 	/**
 	 * Returns the list of all nodes joined the cluster. UNKNOWN members are not returned

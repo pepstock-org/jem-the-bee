@@ -27,6 +27,11 @@ import java.util.List;
  *
  */
 public final class GfsFileType {
+	
+	/**
+	 * for the GFS/data folder
+	 */
+	public static final int NO_TYPE = -1;
 		
 	/**
 	 * for the GFS/data folder
@@ -108,7 +113,7 @@ public final class GfsFileType {
 		} else if (GfsFileType.BINARY_NAME.equalsIgnoreCase(name)) {
 			return GfsFileType.BINARY;
 		}
-		return GfsFileType.DATA;
+		return NO_TYPE;
 	}
 	
 	/**
@@ -135,7 +140,7 @@ public final class GfsFileType {
 			name = GfsFileType.BINARY_NAME;
 			break;
 		default:
-			name = GfsFileType.DATA_NAME;
+			name = null;
 			break;
 		}
 		return name;

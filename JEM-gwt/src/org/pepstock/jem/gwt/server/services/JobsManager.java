@@ -40,11 +40,11 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
@@ -149,7 +149,7 @@ public class JobsManager extends DefaultService {
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	private Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
+	public Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
 		// creates a filter object
 		Filter filter = null;
 		try {
@@ -561,6 +561,30 @@ public class JobsManager extends DefaultService {
 	 *             if any exception occurs
 	 */
 	public Boolean update(Job job, String queueName) throws ServiceMessageException {
+		Jcl jcl = job.getJcl();
+		UpdateJob updateJob = new UpdateJob();
+		updateJob.setId(job.getId());
+		updateJob.setAffinity(jcl.getAffinity());
+		updateJob.setDomain(jcl.getDomain());
+		updateJob.setEnvironment(jcl.getEnvironment());
+		updateJob.setMemory(jcl.getMemory());
+		updateJob.setPriority(jcl.getPriority());
+		return update(updateJob, queueName);
+	}
+	
+	/**
+	 * Updates some attributes of job. Usually is used in input queue to change
+	 * environment, domain, affinity, memory or priority.
+	 * 
+	 * @param job
+	 *            job to update
+	 * @param queueName
+	 *            map where job is
+	 * @return true if it updated, otherwise false
+	 * @throws ServiceMessageException 
+	 *             if any exception occurs
+	 */
+	public Boolean update(UpdateJob job, String queueName) throws ServiceMessageException {
 		// builds permission
 		String permission = Permissions.JOBS_UPDATE;
 		// checks if the user is authorized to update job
@@ -577,10 +601,28 @@ public class JobsManager extends DefaultService {
 				// and stores new job
 				Job storedJob = queue.get(job.getId());
 				Jcl storedJcl = storedJob.getJcl();
-				// sets JCL because JCL is not
-				// serialized to GWT (too big)
-				job.getJcl().setContent(storedJcl.getContent());
-				queue.replace(job.getId(), job);
+				
+				// checks if it must change the environment attribute
+				if (job.getEnvironment() != null && !job.getEnvironment().equalsIgnoreCase(storedJcl.getEnvironment())){
+					storedJcl.setEnvironment(job.getEnvironment());
+				}
+				// checks if it must change the domain attribute
+				if (job.getDomain() != null && !job.getDomain().equalsIgnoreCase(storedJcl.getDomain())){
+					storedJcl.setDomain(job.getDomain());
+				}
+				// checks if it must change the affinity attribute
+				if (job.getAffinity() != null && !job.getAffinity().equalsIgnoreCase(storedJcl.getAffinity())){
+					storedJcl.setAffinity(job.getAffinity());
+				}
+				// checks if it must change the priority attribute
+				if (job.getPriority() >= 0 && job.getPriority() != storedJcl.getPriority()){
+					storedJcl.setPriority(job.getPriority());
+				}
+				// checks if it must change the priority attribute
+				if (job.getMemory() >= 0 && job.getMemory() != storedJcl.getMemory()){
+					storedJcl.setMemory(job.getMemory());
+				}
+				queue.replace(job.getId(), storedJob);
 			}
 		} finally {
 			// unlocks always the key
@@ -700,14 +742,14 @@ public class JobsManager extends DefaultService {
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
+	public String getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
 		// builds permission
 		String permission = Permissions.SEARCH_JOBS + job.getName();
 		// checks if the user is authorized to get file
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
 	
-		DistributedTaskExecutor<OutputFileContent> task = new DistributedTaskExecutor<OutputFileContent>(new GetOutputFileContent(item), getMember());
+		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetOutputFileContent(item), getMember());
 		return task.getResult();
 	}
 

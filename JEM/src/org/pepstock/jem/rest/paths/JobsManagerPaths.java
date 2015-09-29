@@ -21,99 +21,110 @@ package org.pepstock.jem.rest.paths;
  * Contains all labels for jobs service to use to create REST URL.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  *
  */
 public final class JobsManagerPaths  {
 	
 	/**
+	 * Path parameter name to define the queue of job/s
+	 */
+	public static final String QUEUE = "queue";
+
+	/**
+	 * Path parameter REST format to define the queue of job/s
+	 */
+	public static final String QUEUE_PATH_PARAM = "{"+QUEUE+"}";
+
+	/**
+	 * Path parameter name to define the jobid to search
+	 */
+	public static final String JOBID = "jobid";
+	
+	/**
+	 * Path parameter REST format to define the jobid to search
+	 */
+	public static final String JOBID_PATH_PARAM = "{"+JOBID+"}";
+
+	/**
+	 * Path parameter name to define if the cancel is in FORCE mode
+	 */
+	public static final String FORCE = "force";
+	
+	/**
+	 * Path parameter REST format to define if the cancel is in FORCE mode
+	 */
+	public static final String FORCE_PATH_PARAM = "{"+FORCE+"}";
+
+	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR + "jobs";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR + "jobs";
 
 	/**
-	 * Key to define the path to bind input management method
+	 * Key to define the path to bind list of jobs method
 	 */
-	public static final String INPUT = CommonPaths.QUERYSTRING_SEPARATOR + "input";
-
-	/**
-	 * Key to define the path to bind running management method
-	 */
-	public static final String RUNNING = CommonPaths.QUERYSTRING_SEPARATOR + "running";
-
-	/**
-	 * Key to define the path to bind output management method
-	 */
-	public static final String OUTPUT = CommonPaths.QUERYSTRING_SEPARATOR + "output";
-
-	/**
-	 * Key to define the path to bind routing management method
-	 */
-	public static final String ROUTING = CommonPaths.QUERYSTRING_SEPARATOR + "routing";
+	public static final String LIST = CommonPaths.PATH_SEPARATOR + "list" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind hold action method
 	 */
-	public static final String HOLD = CommonPaths.QUERYSTRING_SEPARATOR + "hold";
+	public static final String HOLD = CommonPaths.PATH_SEPARATOR + "hold" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind release action method
 	 */
-	public static final String RELEASE = CommonPaths.QUERYSTRING_SEPARATOR + "release";
+	public static final String RELEASE = CommonPaths.PATH_SEPARATOR + "release"+ CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind cancel action method
 	 */
-	public static final String CANCEL = CommonPaths.QUERYSTRING_SEPARATOR + "cancel";
+	public static final String CANCEL = CommonPaths.PATH_SEPARATOR + "cancel"+ CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM + CommonPaths.PATH_SEPARATOR + FORCE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind purge jobs action method
+	 * Key to define the path to bind purge job action method
 	 */
-	public static final String PURGE = CommonPaths.QUERYSTRING_SEPARATOR + "purge";
+	public static final String PURGE = CommonPaths.PATH_SEPARATOR + "purge" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind purge jobs action method
+	 * Key to define the path to bind update job action method
 	 */
-	public static final String UPDATE = CommonPaths.QUERYSTRING_SEPARATOR + "update";
+	public static final String UPDATE = CommonPaths.PATH_SEPARATOR + "update" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind submit action method
 	 */
-	public static final String SUBMIT = CommonPaths.QUERYSTRING_SEPARATOR + "submit";
+	public static final String SUBMIT = CommonPaths.PATH_SEPARATOR + "submit";
 
 	/**
 	 * Key to define the path to bind get job output tree method
 	 */
-	public static final String OUTPUT_TREE = CommonPaths.QUERYSTRING_SEPARATOR + "outputTree";
+	public static final String OUTPUT_TREE = CommonPaths.PATH_SEPARATOR + "outputTree" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind get job output file content method
 	 */
-	public static final String OUTPUT_FILE_CONTENT = CommonPaths.QUERYSTRING_SEPARATOR + "outputFileContent";
+	public static final String OUTPUT_FILE = CommonPaths.PATH_SEPARATOR + "outputFile" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind get job jcl content method
 	 */
-	public static final String JCL_CONTENT = CommonPaths.QUERYSTRING_SEPARATOR + "jclContent";
+	public static final String JCL = CommonPaths.PATH_SEPARATOR + "jcl"+ CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind get job status content method
 	 */
-	public static final String JOB_STATUS = CommonPaths.QUERYSTRING_SEPARATOR + "jobStatus";
+	public static final String STATUS = CommonPaths.PATH_SEPARATOR + "status";
 	
 	/**
 	 * Key to define the path to bind get job by id
 	 */
-	public static final String JOB_BY_ID = CommonPaths.QUERYSTRING_SEPARATOR + "jobById";
-	
-	/**
-	 * Key to define the path to bind get ended job by id
-	 */
-	public static final String ENDED_JOB_BY_ID = CommonPaths.QUERYSTRING_SEPARATOR + "endedJobById";
+	public static final String GET_BY_ID = CommonPaths.PATH_SEPARATOR + "getById" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind get system activity of running job
 	 */
-	public static final String JOB_SYSTEM_ACTIVITY = CommonPaths.QUERYSTRING_SEPARATOR + "jobSystemActivty";
+	public static final String SYSTEM_ACTIVITY = CommonPaths.PATH_SEPARATOR + "systemActivty" + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

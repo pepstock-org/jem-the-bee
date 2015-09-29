@@ -23,76 +23,101 @@ package org.pepstock.jem.rest.paths;
  * @version 2.2
  */
 public final class NodesManagerPaths {
+
+	/**
+	 * Path parameter name to define the type of configuration file is requested
+	 */
+	public static final String TYPE = "type";
+	
+	/**
+	 * Path parameter REST format to define the type of configuration file is requested
+	 */
+	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
+
+	/**
+	 * Path parameter name to define the node key to search a node
+	 */
+	public static final String NODEKEY = "nodekey";
+	
+	/**
+	 * Path parameter REST format to define the node key to search a node
+	 */
+	public static final String NODEKEY_PATH_PARAM = "{"+NODEKEY+"}";
 	
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "nodes";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "nodes";
+
+	/**
+	 * Key to define the path to bind get a node
+	 */
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;;
 
 	/**
 	 * Key to define the path to bind get nodes list method
 	 */
-	public static final String LIST = CommonPaths.QUERYSTRING_SEPARATOR +  "list";
+	public static final String LIST = CommonPaths.PATH_SEPARATOR +  "list";
 
 	/**
 	 * Key to define the path to bind get swarm nodes list method
 	 */
-	public static final String SWARM_LIST = CommonPaths.QUERYSTRING_SEPARATOR +  "swarmList";
+	public static final String SWARM_LIST = CommonPaths.PATH_SEPARATOR +  "swarmList";
 	
 	/**
 	 * Key to define the path to bind get nodes list method by filter
 	 */
-	public static final String LIST_BY_FILTER = CommonPaths.QUERYSTRING_SEPARATOR +  "listByFilter";
+	public static final String LIST_BY_FILTER = CommonPaths.PATH_SEPARATOR +  "listByFilter";
 	
 	/**
 	 * Key to define the path to bind update node method
 	 */
-	public static final String UPDATE = CommonPaths.QUERYSTRING_SEPARATOR +  "update";
-	
+	public static final String UPDATE = CommonPaths.PATH_SEPARATOR +  "update" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
+	/**
+	 * Key to define the path to bind start command node method
+	 */
+	public static final String START = CommonPaths.PATH_SEPARATOR +  "start"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
+	/**
+	 * Key to define the path to bind drain command node method
+	 */
+	public static final String DRAIN = CommonPaths.PATH_SEPARATOR +  "drain"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
 	/**
 	 * Key to define the path to bind top command node method
 	 */
-	public static final String TOP = CommonPaths.QUERYSTRING_SEPARATOR +  "top";
+	public static final String TOP = CommonPaths.PATH_SEPARATOR +  "top"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind log command node method
 	 */
-	public static final String LOG = CommonPaths.QUERYSTRING_SEPARATOR +  "log";
+	public static final String LOG = CommonPaths.PATH_SEPARATOR +  "log"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind top command node method
+	 * Key to define the path to bind display cluster command node method
 	 */
-	public static final String DISPLAY_CLUSTER = CommonPaths.QUERYSTRING_SEPARATOR +  "displayCluster";
+	public static final String DISPLAY_CLUSTER = CommonPaths.PATH_SEPARATOR +  "displayCluster" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind get node config file method
+	 * Key to define the path to bind get node configuration file method
 	 */
-	public static final String GET_NODE_CONFIG_FILE = CommonPaths.QUERYSTRING_SEPARATOR +  "getNodeConfigFile";
+	public static final String GET_NODE_CONFIG = CommonPaths.PATH_SEPARATOR +  "nodeConfig" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 
 	/**
-	 * Key to define the path to bind save node config file method
+	 * Key to define the path to bind get environment configuration file method
 	 */
-	public static final String SAVE_NODE_CONFIG_FILE = CommonPaths.QUERYSTRING_SEPARATOR +  "saveNodeConfigFile";
-
-	/**
-	 * Key to define the path to bind get environment config file method
-	 */
-	public static final String GET_ENV_CONFIG_FILE = CommonPaths.QUERYSTRING_SEPARATOR +  "getEnvConfigFile";
+	public static final String GET_ENV_CONFIG = CommonPaths.PATH_SEPARATOR +  "envConfig"  + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind save environment config file method
+	 * Key to define the path to bind check node configuration file method
 	 */
-	public static final String SAVE_ENV_CONFIG_FILE = CommonPaths.QUERYSTRING_SEPARATOR +  "saveEnvConfigFile";
+	public static final String CHECK_CONFIG = CommonPaths.PATH_SEPARATOR +  "checkConfig" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind save environment config file method
+	 * Key to define the path to bind check affintiy policy file method
 	 */
-	public static final String CHECK_CONFIG_FILE = CommonPaths.QUERYSTRING_SEPARATOR +  "checkConfigFile";
-	
-	/**
-	 * Key to define the path to bind save environment config file method
-	 */
-	public static final String CHECK_AFFINITY_POLICY = CommonPaths.QUERYSTRING_SEPARATOR +  "checkAffinityPolicy";
+	public static final String CHECK_AFFINITY_POLICY = CommonPaths.PATH_SEPARATOR +  "checkAffinityPolicy" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

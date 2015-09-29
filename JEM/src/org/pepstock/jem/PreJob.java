@@ -18,8 +18,6 @@ package org.pepstock.jem;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * It is used before to move in projob queue. Afterwards the factory will check
  * the jcl (creating that) and then will be moved the job in "input" queue for
@@ -29,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Andrea "Stock" Stocchero
  * 
  */
-@XmlRootElement
 public class PreJob implements Serializable {
 
 	private static final long serialVersionUID = 1L;

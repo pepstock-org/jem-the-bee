@@ -16,38 +16,35 @@
  */
 package org.pepstock.jem.rest.services;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
+import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.PreJob;
-import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.rest.AbstractRestManager;
+import org.pepstock.jem.OutputTree;
+import org.pepstock.jem.PreJcl;
+import org.pepstock.jem.UpdateJob;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
-import org.pepstock.jem.rest.entities.BooleanReturnedObject;
-import org.pepstock.jem.rest.entities.JclContent;
-import org.pepstock.jem.rest.entities.JobOutputFileContent;
-import org.pepstock.jem.rest.entities.JobOutputListArgument;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.rest.entities.JobStatusContent;
-import org.pepstock.jem.rest.entities.JobSystemActivityContent;
-import org.pepstock.jem.rest.entities.Jobs;
-import org.pepstock.jem.rest.entities.ReturnedObject;
-import org.pepstock.jem.rest.entities.StringReturnedObject;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;
 
-import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * REST Client side of JOBS service.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  * 
  */
 public class JobsManager extends AbstractRestManager {
@@ -55,304 +52,336 @@ public class JobsManager extends AbstractRestManager {
 	/**
 	 * Creates a new REST manager using a RestClient
 	 * 
-	 * @param restClient
-	 *            REST client instance
+	 * @param restClient REST client instance
 	 */
 	public JobsManager(RestClient restClient) {
-		super(restClient);
+		super(restClient, JobsManagerPaths.MAIN);
 	}
 
 	/**
-	 * Returns the list of jobs in INPUT, a filter string composed by UI filters
+	 * This is common method to extract jobs from different queues by filter
+	 * string
 	 * 
-	 * @param jobNameFilter
-	 *            filter string
+	 * @param queue queue name to use to get the right map
+	 * @param filter filter string
 	 * @return collection of jobs
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Jobs getInputQueue(String jobNameFilter) throws JemException {
-		return getJobs(JobsManagerPaths.INPUT, jobNameFilter);
+	@SuppressWarnings("unchecked")
+	public Collection<Job> getJobs(JobQueue queue, String filter) throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// replaces on the path the queue of the jobs to search
+			String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).build();
+			// performs the request adding the filter query param
+			ClientResponse response = builder.filter(filter).get(path);
+			// if HTTP status code is OK,parses the result to list of jobs
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (List<Job>) JsonUtil.getInstance().deserializeList(response, Job.class);
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throw an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
 
 	/**
-	 * Returns the list of jobs in RUNNING, a filter string composed by UI
-	 * filters
-	 * 
-	 * @param jobNameFilter
-	 *            filter string
-	 * @return collection of jobs
-	 * @throws JemException if any exception occurs
-	 */
-	public Jobs getRunningQueue(String jobNameFilter) throws JemException {
-		return getJobs(JobsManagerPaths.RUNNING, jobNameFilter);
-	}
-
-	/**
-	 * Returns the list of jobs in OUTPUT, a filter string composed by UI
-	 * filters
-	 * 
-	 * @param jobNameFilter
-	 *            filter string
-	 * @return collection of jobs
-	 * @throws JemException if any exception occurs
-	 */
-	public Jobs getOutputQueue(String jobNameFilter) throws JemException {
-		return getJobs(JobsManagerPaths.OUTPUT, jobNameFilter);
-	}
-
-	/**
-	 * Returns the list of jobs in ROUTING, a filter string composed by UI
-	 * filters
-	 * 
-	 * @param jobNameFilter
-	 *            filter string
-	 * @return collection of jobs
-	 * @throws JemException if any exception occurs
-	 */
-	public Jobs getRoutingQueue(String jobNameFilter) throws JemException {
-		return getJobs(JobsManagerPaths.ROUTING, jobNameFilter);
-	}
-
-	/**
-	 * Holds jobs in INPUT, OUTPUT or ROUTING queue. To set HOLD means that it
+	 * Holds a job in INPUT, OUTPUT or ROUTING queue. To set HOLD means that it
 	 * can't be executed or removed from queue.
 	 * 
-	 * @param jobs
-	 *            collections of jobs to hold
-	 * @param queueName
-	 *            map where jobs are
+	 * @param id job id to hold
+	 * @param queue map where the job is
 	 * @return true is it holds them, otherwise false
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Boolean hold(Collection<Job> jobs, String queueName) throws JemException {
-		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.HOLD);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
-		if (result == null){
+	public Boolean hold(String id, JobQueue queue) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.HOLD).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
 			return false;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
 		}
-		return result.isValue();
 	}
 
 	/**
 	 * Releases jobs in INPUT, OUTPUT or ROUTING queue, which were previously
 	 * hold.
 	 * 
-	 * @param jobs
-	 *            collections of jobs to hold
-	 * @param queueName
-	 *            map where jobs are
-	 * @return true is it holds them, otherwise false
-	 * @throws JemException if any exception occurs
+	 * @param id job id to release
+	 * @param queue map where the job is
+	 * @return true is it releases the job, otherwise false
+	 * @throws RestException if any exception occurs
 	 */
-	public Boolean release(Collection<Job> jobs, String queueName) throws JemException {
-		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.RELEASE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
-		if (result == null){
+	public Boolean release(String id, JobQueue queue) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.RELEASE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
 			return false;
-		}
-		return result.isValue();
-	}
-
-	/**
-	 * Cancel a set of jobs currently in running. If force is set to true, JEM
-	 * uses force mode to cancel jobs.
-	 * 
-	 * @param jobs
-	 *            list of jobs to cancel
-	 * @param force
-	 *            if true, uses force attribute to cancel jobs
-	 * @return always true!
-	 * @throws JemException if any exception occurs
-	 */
-	public Boolean cancel(Collection<Job> jobs, boolean force) throws JemException {
-		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.CANCEL);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setCancelForce(force);
-		
-		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
-		if (result == null){
-			return false;
-		}
-		return result.isValue();
-	}	
-
-	/**
-	 * Purge (removing any output) jobs from INPUT, OUTPUT or ROUTING queue.
-	 * 
-	 * @param jobs
-	 *            collections of jobs to purge
-	 * @param queueName
-	 *            map where jobs are
-	 * @return true is it holds them, otherwise false
-	 * @throws JemException if any exception occurs
-	 */
-	public Boolean purge(Collection<Job> jobs, String queueName) throws JemException {
-		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.PURGE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
-		if (result == null){
-			return false;
-		}
-		return result.isValue();
-	}
-	
-	/**
-	 * Updates some attributes of job. Usually is used in input queue to change
-	 * environment, domain, affinity, memory or priority.
-	 * 
-	 * @param job
-	 *            job to update
-	 * @param queueName
-	 *            map where job is
-	 * @return true if it updated, otherwise false
-	 * @throws JemException if any exception occurs
-	 */
-	public Boolean update(Job job, String queueName) throws JemException {
-		JobsPostService<BooleanReturnedObject, Jobs> service = new JobsPostService<BooleanReturnedObject, Jobs>(JobsManagerPaths.UPDATE);
-		GenericType<JAXBElement<BooleanReturnedObject>> generic = new GenericType<JAXBElement<BooleanReturnedObject>>() {
-
-		};
-		Collection<Job> jobs = new ArrayList<Job>();
-		jobs.add(job);
-
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		BooleanReturnedObject result = service.execute(generic, jobsEnvelop);
-		if (result == null){
-			return false;
-		}
-		return result.isValue();
-	}	
-
-	/**
-	 * Submits a new job (passed as argument) in JEM.
-	 * 
-	 * @param preJob
-	 *            job to submit
-	 * @return Job id after submission
-	 * @throws JemException if any exception occurs
-	 */
-	public String submit(PreJob preJob) throws JemException {
-		GenericType<JAXBElement<StringReturnedObject>> generic = new GenericType<JAXBElement<StringReturnedObject>>() {
-
-		};
-		JobsPostService<StringReturnedObject, PreJob> service = new JobsPostService<StringReturnedObject, PreJob>(JobsManagerPaths.SUBMIT);
-
-		StringReturnedObject jobid = service.execute(generic, preJob);
-		if (jobid == null){
-			return null;
 		} else {
-			return jobid.getValue();
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
+		}
+	}
+
+	/**
+	 * Cancels a job currently running. If force is set to true, JEM uses force
+	 * mode to cancel job.
+	 * 
+	 * @param id id of job to cancel
+	 * @param force if true, uses force attribute to cancel job
+	 * @return true is it cancels the job, otherwise false
+	 * @throws RestException if any exception occurs
+	 */
+	public Boolean cancel(String id, boolean force) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path job id and if force must be used
+		String path = PathReplacer.path(JobsManagerPaths.CANCEL).replace(JobsManagerPaths.FORCE_PATH_PARAM, String.valueOf(force)).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
+			return false;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
+		}
+	}
+
+	/**
+	 * Purge (removing any output) a job from INPUT, OUTPUT or ROUTING queue.
+	 * 
+	 * @param id job id to purge
+	 * @param queue map where the job is
+	 * @return true is it purges the job, otherwise false
+	 * @throws RestException if any exception occurs
+	 */
+	public Boolean purge(String id, JobQueue queue) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.PURGE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return Boolean.parseBoolean(result);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
+			return false;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
+		}
+	}
+
+	/**
+	 * Updates some attributes of a job. Usually is used in input queue to
+	 * change environment, domain, affinity, memory or priority.
+	 * 
+	 * @param id job id to update
+	 * @param queue map where the job is
+	 * @param updateJob attributes it must changed
+	 * @return true is it purges the job, otherwise false
+	 * @throws RestException if any exception occurs
+	 */
+	public Boolean update(String id, JobQueue queue, UpdateJob updateJob) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.UPDATE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call, passing the update job attributes in JSON in the
+		// HTTP body
+		ClientResponse response = builder.put(path, updateJob);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return Boolean.parseBoolean(result);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
+		}
+	}
+
+	/**
+	 * Submits a new job by its JCL into JEM.
+	 * 
+	 * @param preJcl an object which contains the JCL content and the JCL type
+	 * @see PreJcl
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submit(PreJcl preJcl) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// performs REST call, passing the preJcl object in JSON in the HTTP
+		// body
+		ClientResponse response = builder.put(JobsManagerPaths.SUBMIT, preJcl);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the job ID
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return result;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
 		}
 	}
 
 	/**
 	 * Retrieves job JCL from INPUT, RUNNING, OUTPUT or ROUTING queue.
 	 * 
-	 * @param job
-	 *            job used to extract JCl
-	 * @param queueName
-	 *            map where job is
+	 * @param id job id to get JCL
+	 * @param queue map where the job is
 	 * @return JCL content
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String getJcl(Job job, String queueName) throws JemException {
-		GenericType<JAXBElement<JclContent>> generic = new GenericType<JAXBElement<JclContent>>() {
-
-		};
-		Collection<Job> jobs = new ArrayList<Job>();
-		jobs.add(job);
-
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		JobsPostService<JclContent, Jobs> service = new JobsPostService<JclContent, Jobs>(JobsManagerPaths.JCL_CONTENT);
-		JclContent result = service.execute(generic, jobsEnvelop);
-		if (result == null){
-			return null;
+	public String getJcl(String id, JobQueue queue) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.JCL).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.get(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the JCL content
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
+			return Jcl.CONTENT_NOT_AVAILABLE;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
 		}
-		return result.getContent();
 	}
 
 	/**
 	 * Returns all folder in tree representation of job output folder.<br>
 	 * Retrieves folder structure only if job is RUNNING or OUTPUT queue.
 	 * 
-	 * @param job
-	 *            job used to extract folder structure. Needs to have output
-	 *            folder
-	 * @param queueName
-	 *            map where job is
+	 * @param id job id to get output tree
+	 * @param queue map where the job is
 	 * @return object with all folder structure
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public JobOutputTreeContent getOutputTree(Job job, String queueName) throws JemException {
-		JobsPostService<JobOutputTreeContent, Jobs> service = new JobsPostService<JobOutputTreeContent, Jobs>(JobsManagerPaths.OUTPUT_TREE);
-		GenericType<JAXBElement<JobOutputTreeContent>> generic = new GenericType<JAXBElement<JobOutputTreeContent>>() {
-
-		};
-		Collection<Job> jobs = new ArrayList<Job>();
-		jobs.add(job);
-
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		jobsEnvelop.setQueueName(queueName);
-		
-		return service.execute(generic, jobsEnvelop);
+	public OutputTree getOutputTree(String id, JobQueue queue) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
+		RequestBuilder builder = RequestBuilder.media(this);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_TREE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call
+		ClientResponse response = builder.get(path);
+		// if HTTP status code is ok, returns the output tree
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return response.getEntity(OutputTree.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			LogAppl.getInstance().debug(getValue(response, String.class));
+			return null;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
 	}
 
 	/**
 	 * Returns the content of specific file inside of job output folder.
 	 * 
-	 * @param job
-	 *            job used to extract file. Needs to have output folder
-	 * @param item
-	 *            file descriptor, created by a previous call to getOutputTree
+	 * @param id job id to get output
+	 * @param queue map where the job is
+	 * @param item file descriptor, created by a previous call to getOutputTree
 	 * @return object with file content
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
-		GenericType<JAXBElement<JobOutputFileContent>> generic = new GenericType<JAXBElement<JobOutputFileContent>>() {
-
-		};
-		JobOutputListArgument jobFileContent = new JobOutputListArgument();
-		jobFileContent.setJob(job);
-		jobFileContent.setItem(item);
-		
-		JobsPostService<JobOutputFileContent, JobOutputListArgument> service = new JobsPostService<JobOutputFileContent, JobOutputListArgument>(JobsManagerPaths.OUTPUT_FILE_CONTENT);
-		JobOutputFileContent ofc = service.execute(generic, jobFileContent);
-		
-		if (ofc == null){
+	public String getOutputFileContent(String id, JobQueue queue, OutputListItem item) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the queue of the jobs to search and job id
+		String path = PathReplacer.path(JobsManagerPaths.OUTPUT_FILE).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+		// performs REST call, passing the item in the HTTP body in JSON format
+		ClientResponse response = builder.post(path, item);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the output content
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return result;
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+			// the job id passed as path parameters hasn't identified any job
 			return null;
 		} else {
-			return ofc.getOutputFileContent();
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			throw new RestException(response.getStatus(), result);
 		}
 	}
 
@@ -360,139 +389,128 @@ public class JobsManager extends AbstractRestManager {
 	 * Returns a job status by filter.<br>
 	 * Filter must be job name (no pattern with wild-cards) or job id
 	 * 
-	 * @param filter
-	 *            job name (no pattern with wild-cards) or job id
+	 * @param filter job name (no pattern with wild-cards) or job id
 	 * @return job status
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public JobStatus getJobStatus(String filter) throws JemException {
-		GenericType<JAXBElement<JobStatusContent>> generic = new GenericType<JAXBElement<JobStatusContent>>() {
-
-		};
-		JobsPostService<JobStatusContent, String> service = new JobsPostService<JobStatusContent, String>(JobsManagerPaths.JOB_STATUS);
-		JobStatusContent sc = service.execute(generic, filter);
-		
-		if (sc == null){
-			return null;
-		} else {
-			return sc.getJobStatus();
+	public JobStatus getJobStatus(String filter) throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// performs REST call, setting the filter as query parameter
+			ClientResponse response = builder.filter(filter).get(JobsManagerPaths.STATUS);
+			// if HTTP status code is ok, returns the status object
+			// parsing from JSON
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (JobStatus) JsonUtil.getInstance().deserialize(response, JobStatus.class);
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throws an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
 		}
 	}
-	
+
 	/**
 	 * Returns a job by its job id.
 	 * 
-	 * @param queueName
-	 *            map name
-	 * @param jobId
-	 *            job id to search
+	 * @param id job id to search
+	 * @param queue map where the job is
 	 * @return job, if found, otherwise null
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Job getJobById(String queueName, String jobId) throws JemException {
-		JobsPostService<Jobs, Jobs> service = new JobsPostService<Jobs, Jobs>(JobsManagerPaths.JOB_BY_ID);
-		GenericType<JAXBElement<Jobs>> generic = new GenericType<JAXBElement<Jobs>>() {
-
-		};
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setId(jobId);
-		jobsEnvelop.setQueueName(queueName);
-		
-		Jobs jobs = service.execute(generic, jobsEnvelop);
-		if (jobs == null || jobs.getJobs() == null || jobs.getJobs().isEmpty()){
-			return null;
-		} else {
-			return jobs.getJobs().iterator().next();
-		}		
+	public Job getJobById(String id, JobQueue queue) throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// replaces on the path the queue of the jobs to search and job id
+			String path = PathReplacer.path(JobsManagerPaths.GET_BY_ID).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+			// performs REST call
+			ClientResponse response = builder.get(path);
+			// if HTTP status code is ok, returns the job object
+			// parsing from JSON
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (Job) JsonUtil.getInstance().deserialize(response, Job.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+				// the job id passed as path parameters hasn't identified any
+				// job
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				LogAppl.getInstance().debug(getValue(response, String.class));
+				return null;
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throws an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
-	
+
 	/**
 	 * Returns a job by its job id, searching it in OUTPUT and ROUTED maps.<br>
 	 * If job is not in output, tries searching it in ROUTED
 	 * 
-	 * @param jobId
-	 *            job id
+	 * @param id job id to search
 	 * @return job instance
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Job getEndedJobById(String jobId) throws JemException {
-		JobsPostService<Jobs, String> service = new JobsPostService<Jobs, String>(JobsManagerPaths.ENDED_JOB_BY_ID);
-		GenericType<JAXBElement<Jobs>> generic = new GenericType<JAXBElement<Jobs>>() {
-
-		};
-		Jobs jobs = service.execute(generic, jobId);
-		if (jobs == null || jobs.getJobs() == null || jobs.getJobs().isEmpty()){
-			return null;
-		} else {
-			return jobs.getJobs().iterator().next();
-		}
+	public Job getEndedJobById(String id) throws RestException {
+		return getJobById(id, JobQueue.OUTPUT);
 	}
-	
+
 	/**
 	 * Returns system information about resource consumption of job in running
 	 * phase.
 	 * 
-	 * @param job
-	 *            job to use to gather system information
+	 * @param id job id to get system information
 	 * @return system activity information
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public JobSystemActivity getJobSystemActivity(Job job) throws JemException {
-		GenericType<JAXBElement<JobSystemActivityContent>> generic = new GenericType<JAXBElement<JobSystemActivityContent>>() {
-
-		};
-		Collection<Job> jobs = new ArrayList<Job>();
-		jobs.add(job);
-
-		Jobs jobsEnvelop = new Jobs();
-		jobsEnvelop.setJobs(jobs);
-		
-		JobsPostService<JobSystemActivityContent, Jobs> service = new JobsPostService<JobSystemActivityContent, Jobs>(JobsManagerPaths.JOB_SYSTEM_ACTIVITY);
-		JobSystemActivityContent sa = service.execute(generic, jobsEnvelop);
-		
-		if (sa == null){
-			return null;
-		} else {
-			return sa.getJobSystemActivity();
+	public JobSystemActivity getJobSystemActivity(String id) throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// replaces on the path the job id
+			String path = PathReplacer.path(JobsManagerPaths.SYSTEM_ACTIVITY).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+			// performs REST call
+			ClientResponse response = builder.get(path);
+			// if HTTP status code is ok, returns the system activity
+			// parsing from JSON
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (JobSystemActivity) JsonUtil.getInstance().deserialize(response, JobSystemActivity.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+				// the job id passed as path parameters hasn't identified any
+				// job
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				LogAppl.getInstance().debug(getValue(response, String.class));
+				return null;
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throws an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
 		}
 	}
-	
-	/**
-	 * This is common method to extract jobs from different queues by filter
-	 * string
-	 * 
-	 * @param method
-	 *            queue name to use to get the right map
-	 * @param filter
-	 *            filter string
-	 * @return collection of jobs
-	 * @throws JemException if any exception occurs
-	 */
-	private Jobs getJobs(String method, String filter) throws JemException {
-		JobsPostService<Jobs, String> service = new JobsPostService<Jobs, String>(method);
-		GenericType<JAXBElement<Jobs>> generic = new GenericType<JAXBElement<Jobs>>() {
-
-		};
-		return service.execute(generic, filter);
-	}
-	
-	/**
-	 * Inner service, which extends post the default post service.
-	 * @author Andrea "Stock" Stocchero
-	 * @version 2.2
-	 */
-	class JobsPostService<T extends ReturnedObject, S> extends DefaultPostService<T, S> {
-
-		/**
-		 * Constructs the REST service, using HTTP client and service and subservice paths, passed as argument
-		 * 
-		 * @param subService subservice path
-		 * 
-		 */
-		public JobsPostService(String subService) {
-			super(JobsManager.this.getClient(), JobsManagerPaths.MAIN, subService);
-		}
-
-	}
-
 }

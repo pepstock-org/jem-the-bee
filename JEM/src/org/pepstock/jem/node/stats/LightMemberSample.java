@@ -22,12 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.pepstock.jem.rest.maps.StatsMapAdapter;
-
 /**
  * Is a bean with a subset of all information usually extract inside the JEM node.
  * <br>
@@ -40,7 +34,6 @@ import org.pepstock.jem.rest.maps.StatsMapAdapter;
  * @version 1.0
  * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public class LightMemberSample extends AbstractMemberSample implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -65,12 +58,8 @@ public class LightMemberSample extends AbstractMemberSample implements Serializa
 
 	private List<FileSystemUtilization> fileSystems = new LinkedList<FileSystemUtilization>();
 
-	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
-	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> mapsStats = new HashMap<String, LightMapStats>();
 	
-	// PAY ATTENTION: HashMap are not supported by REST. For this reason there is a specific adapter
-	@XmlJavaTypeAdapter(StatsMapAdapter.class)
 	private Map<String, LightMapStats> internalMapsStats = new HashMap<String, LightMapStats>();
 	
 	/**

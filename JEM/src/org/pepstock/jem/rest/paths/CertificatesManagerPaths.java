@@ -25,24 +25,34 @@ package org.pepstock.jem.rest.paths;
 public final class CertificatesManagerPaths {
 	
 	/**
+	 * REST path parameter name
+	 */
+	public static final String ALIAS = "alias";
+	
+	/**
+	 * Path parameter which is used to assign the alias of certificates
+	 */
+	public static final String ALIAS_PATH_PARAM = "{"+ALIAS+"}";
+	
+	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "certificates";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "certificates";
 
 	/**
 	 * Key to define the path to bind get certificates method
 	 */
-	public static final String GET = CommonPaths.QUERYSTRING_SEPARATOR +  "get";
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get";
 
 	/**
 	 * Key to define the path to bind add certificates method
 	 */
-	public static final String ADD = CommonPaths.QUERYSTRING_SEPARATOR +  "add";
+	public static final String ADD = CommonPaths.PATH_SEPARATOR +  "add" + CommonPaths.PATH_SEPARATOR + ALIAS_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind remove certificates method
 	 */
-	public static final String REMOVE = CommonPaths.QUERYSTRING_SEPARATOR +  "remove";
+	public static final String REMOVE = CommonPaths.PATH_SEPARATOR +  "remove" + CommonPaths.PATH_SEPARATOR + ALIAS_PATH_PARAM;
 
 	
 	/**

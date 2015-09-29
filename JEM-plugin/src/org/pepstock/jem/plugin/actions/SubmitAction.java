@@ -28,6 +28,7 @@ import org.pepstock.jem.plugin.preferences.Coordinate;
 import org.pepstock.jem.plugin.preferences.PreferencesManager;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.views.LoginDialog;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Action of popup menu on package explorer of Eclipse to submit the selected
@@ -146,7 +147,7 @@ public class SubmitAction implements IObjectActionDelegate {
 				// submit the job
 				String id = Client.getInstance().submit(getFile());
 				Notifier.showMessage(shell, "Job submitted!", "Job submitted with id: " + id, MessageLevel.INFO);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any error occurs during the submit by REST
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(shell, "Unable to login to " + getCoordinate().getName() + "!", "Error occurred during login to '" + getCoordinate().getName() + "': " + e.getMessage(), MessageLevel.ERROR);

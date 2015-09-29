@@ -23,11 +23,21 @@ package org.pepstock.jem.rest.paths;
  * @version 2.2
  */
 public final class CommonPaths {
+	
+	/**
+	 * Query parameter name for filters
+	 */
+	public static final String FILTER_QUERY_STRING = "filter";
+
+	/**
+	 * Default value of filter parmater if missing
+	 */
+	public static final String DEFAULT_FILTER = "*";
 
 	/**
 	 * String to define a query string separator
 	 */
-	public static final String QUERYSTRING_SEPARATOR = "/";
+	public static final String PATH_SEPARATOR = "/";
 	
 	/**
 	 * To avoid any instantiation

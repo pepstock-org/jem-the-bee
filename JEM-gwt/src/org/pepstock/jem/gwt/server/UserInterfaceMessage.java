@@ -425,22 +425,29 @@ public enum UserInterfaceMessage implements MessageInterface {
 	JEMG067E(67, "Unable to call executor. Cause: {0}.", MessageLevel.ERROR),
 	
 	/**
-	 * "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.INFO
+	 * "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file path is read by system property.")
-	JEMG068E(68, "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.INFO),
+	JEMG068E(68, "Keystore file \"{0}\" has been read from system property \"{1}\"", MessageLevel.ERROR),
 
 	/**
-	 * "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.INFO
+	 * "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file absolute path is read by Hazelcast configuration file.")
-	JEMG069E(69, "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.INFO),
+	JEMG069E(69, "Keystore file \"{0}\" has been read from Halzelcast config, absolute path", MessageLevel.ERROR),
 	
 	/**
-	 * "Keystore file \"{0}\" has been read from Halzelcast config, realtive path, using web context", MessageLevel.INFO
+	 * "Keystore file \"{0}\" has been read from Halzelcast config, realtive path, using web context", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the web application is started and the key store to connect to JEM cluster is mandatory. Informs that the file relative path is read by Hazelcast configuration file and uses the ServletContext to read the file.")
-	JEMG070E(70, "Keystore file \"{0}\" has been read from Halzelcast config, relative path", MessageLevel.INFO);
+	JEMG070E(70, "Keystore file \"{0}\" has been read from Halzelcast config, relative path", MessageLevel.ERROR),
+
+	/**
+	 * "Parameter \"{0}\" is missing", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the REST call is incompleted and a parameter is missing.<br>Please check the REST call.")
+	JEMG071E(71, "Parameter \"{0}\" is missing", MessageLevel.ERROR);
+
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 
 	 * @see Message
