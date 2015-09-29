@@ -35,7 +35,7 @@ import com.sun.jersey.api.client.ClientResponse;
  * REST service to manage user authentication and get and set of user preferences.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 2.3
  *
  */
 public class LoginManager extends AbstractRestManager {
@@ -55,16 +55,26 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public LoggedUser getUser() throws RestException{
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(LoginManagerPaths.GET);
+		// if HTTP status code is OK,parses the result to a logged user object
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(LoggedUser.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the user id is not logged 
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -73,16 +83,23 @@ public class LoginManager extends AbstractRestManager {
 	 * Performs the login to JEM, by userid and password.
 	 * 
 	 * @param account userid and password
-	 * @return logged user
+	 * @return logged user object
 	 * @throws RestException if any exception occurs
 	 */
 	public LoggedUser login(Account account) throws RestException{
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		// creates the returned object
+		// performs REST call adding the account information
 		ClientResponse response = builder.put(LoginManagerPaths.LOGIN, account);
+		// if HTTP status code is OK,parses the result to a logged user object
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(LoggedUser.class);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -93,13 +110,20 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean logoff() throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string		
 		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(value);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), value);
 		}
 	}
@@ -112,32 +136,46 @@ public class LoginManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean logoff(Map<String, UserPreference> userPreferences) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call setting the preferences
 		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES, userPreferences);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string	
 		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(value);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), value);
 		}
 	}
 	
 	/**
-	 * Stores into JEM the user preferences.\
+	 * Stores into JEM the user preferences.
 	 * 
-	 * @return <code>true</code> is logoff is done
+	 * @return <code>true</code> if storing of preference went OK
 	 * @param userPreferences map of user preferences
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean storePreferences(Map<String, UserPreference> userPreferences) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type		
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call setting the preferences
 		ClientResponse response = builder.post(LoginManagerPaths.SAVE_PREFERENCES, userPreferences);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String value = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(value);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), value);
 		}
 	}	

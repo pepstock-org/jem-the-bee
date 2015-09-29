@@ -35,20 +35,21 @@ public class JobManagerTest extends TestCase {
 	 */
 	public void test() throws Exception {
 		File jcl = getJcl("TEST_REST_WAIT.xml");
-		PreJcl prejcl = RestManager.getSharedInstance().createJcl(jcl, "ant");
+		PreJcl prejcl = RestManager.getInstance().createJcl(jcl, "ant");
 		// get jobid
-		String jobId = RestManager.getSharedInstance().getJobManager().submit(prejcl);
+		String jobId = RestManager.getInstance().getJobManager().submit(prejcl);
 		Job job = verifyInputQueue(jobId);
 		// release job
-		RestManager.getSharedInstance().getJobManager().release(job.getId(), JobQueue.INPUT);
+		RestManager.getInstance().getJobManager().release(job.getId(), JobQueue.INPUT);
 		verifyRunningQueue(jobId);
 		job = verifyOutputQueue(jobId);
 
 		// verify jcl content
-		String jclContent = RestManager.getSharedInstance().getJobManager().getJcl(job.getId(), JobQueue.INPUT);
+		String jclContent = RestManager.getInstance().getJobManager().getJcl(job.getId(), JobQueue.OUTPUT);
+		System.out.println(jclContent);
 		assertTrue(jclContent.contains("TEST_REST_WAIT"));
 		// verify output tree
-		OutputTree outputTree=RestManager.getSharedInstance().getJobManager().getOutputTree(job.getId(), JobQueue.INPUT);
+		OutputTree outputTree=RestManager.getInstance().getJobManager().getOutputTree(job.getId(), JobQueue.OUTPUT);
 		assertTrue(outputTree!=null);
 	}
 
@@ -63,7 +64,7 @@ public class JobManagerTest extends TestCase {
 		Job job = null;
 		while (true) {
 			// verify if is finished that is if it is in the output queue
-			job = RestManager.getSharedInstance().getJobManager().getJobById(jobId, JobQueue.INPUT);
+			job = RestManager.getInstance().getJobManager().getJobById(jobId, JobQueue.INPUT);
 			if (job != null) {
 				assertEquals(job.getId(), jobId);
 				assertTrue(job.getJcl().isHold());
@@ -85,9 +86,10 @@ public class JobManagerTest extends TestCase {
 		// running queue verify output
 		while (true) {
 			// verify if is finished that is if it is in the output queue
-			Job job = RestManager.getSharedInstance().getJobManager().getJobById(jobId, JobQueue.RUNNING);
+			Job job = RestManager.getInstance().getJobManager().getJobById(jobId, JobQueue.RUNNING);
 			if (job != null) {
 				assertEquals(job.getId(), jobId);
+				assertNotNull(RestManager.getInstance().getJobManager().getJobSystemActivity(job.getId()));
 				break;
 			}
 			Thread.sleep(500);
@@ -107,7 +109,7 @@ public class JobManagerTest extends TestCase {
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			job = RestManager.getSharedInstance().getJobManager().getJobById(jobId, JobQueue.OUTPUT);
+			job = RestManager.getInstance().getJobManager().getJobById(jobId, JobQueue.OUTPUT);
 			if (job != null) {
 				assertEquals(job.getId(), jobId);
 				break;

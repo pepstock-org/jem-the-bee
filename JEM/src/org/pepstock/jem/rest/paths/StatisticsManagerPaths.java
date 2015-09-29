@@ -55,7 +55,7 @@ public final class StatisticsManagerPaths {
 	public static final String ABOUT = CommonPaths.PATH_SEPARATOR +  "about";
 	
 	/**
-	 * Key to define the path to bind get about method
+	 * Key to define the path to bind get JEM information method
 	 */
 	public static final String INFOS = CommonPaths.PATH_SEPARATOR +  "infos";
 	

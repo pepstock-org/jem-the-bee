@@ -24,13 +24,24 @@ package org.pepstock.jem.rest.paths;
  */
 public final class NodesManagerPaths {
 
-	public static final String WHAT = "what";
+	/**
+	 * Path parameter name to define the type of configuration file is requested
+	 */
+	public static final String TYPE = "type";
 	
-	public static final String WHAT_PATH_PARAM = "{"+WHAT+"}";
+	/**
+	 * Path parameter REST format to define the type of configuration file is requested
+	 */
+	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
 
-	
+	/**
+	 * Path parameter name to define the node key to search a node
+	 */
 	public static final String NODEKEY = "nodekey";
 	
+	/**
+	 * Path parameter REST format to define the node key to search a node
+	 */
 	public static final String NODEKEY_PATH_PARAM = "{"+NODEKEY+"}";
 	
 	/**
@@ -39,7 +50,7 @@ public final class NodesManagerPaths {
 	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "nodes";
 
 	/**
-	 * Key to define the path to bind this services
+	 * Key to define the path to bind get a node
 	 */
 	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;;
 
@@ -69,7 +80,7 @@ public final class NodesManagerPaths {
 	public static final String START = CommonPaths.PATH_SEPARATOR +  "start"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
 	/**
-	 * Key to define the path to bind start command node method
+	 * Key to define the path to bind drain command node method
 	 */
 	public static final String DRAIN = CommonPaths.PATH_SEPARATOR +  "drain"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
@@ -84,27 +95,27 @@ public final class NodesManagerPaths {
 	public static final String LOG = CommonPaths.PATH_SEPARATOR +  "log"  + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind top command node method
+	 * Key to define the path to bind display cluster command node method
 	 */
 	public static final String DISPLAY_CLUSTER = CommonPaths.PATH_SEPARATOR +  "displayCluster" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind get node config file method
+	 * Key to define the path to bind get node configuration file method
 	 */
-	public static final String GET_NODE_CONFIG = CommonPaths.PATH_SEPARATOR +  "nodeConfig" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String GET_NODE_CONFIG = CommonPaths.PATH_SEPARATOR +  "nodeConfig" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 
 	/**
-	 * Key to define the path to bind get environment config file method
+	 * Key to define the path to bind get environment configuration file method
 	 */
-	public static final String GET_ENV_CONFIG = CommonPaths.PATH_SEPARATOR +  "envConfig"  + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String GET_ENV_CONFIG = CommonPaths.PATH_SEPARATOR +  "envConfig"  + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind save environment config file method
+	 * Key to define the path to bind check node configuration file method
 	 */
-	public static final String CHECK_CONFIG = CommonPaths.PATH_SEPARATOR +  "checkConfig" + CommonPaths.PATH_SEPARATOR + WHAT_PATH_PARAM;
+	public static final String CHECK_CONFIG = CommonPaths.PATH_SEPARATOR +  "checkConfig" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind save environment config file method
+	 * Key to define the path to bind check affintiy policy file method
 	 */
 	public static final String CHECK_AFFINITY_POLICY = CommonPaths.PATH_SEPARATOR +  "checkAffinityPolicy" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 

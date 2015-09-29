@@ -55,7 +55,7 @@ public final class SwarmNodesManagerPaths {
 	public static final String STATUS = CommonPaths.PATH_SEPARATOR +  "status";
 	
 	/**
-	 * Key to define the path to bind get config method
+	 * Key to define the path to bind get configuration file method
 	 */
 	public static final String CONFIG = CommonPaths.PATH_SEPARATOR +  "config";
 	

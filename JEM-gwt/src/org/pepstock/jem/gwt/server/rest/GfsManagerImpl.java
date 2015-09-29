@@ -35,18 +35,14 @@ import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.GfsManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.rest.paths.GfsManagerPaths;
 
 import com.sun.jersey.spi.resource.Singleton;
 
-
 /**
- * Rest service to manage gfs.<br>
- * Pay attention to URL (@path) annotation
+ * Rest service to manage gfs>.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
@@ -55,120 +51,148 @@ import com.sun.jersey.spi.resource.Singleton;
 @Singleton
 @Path(GfsManagerPaths.MAIN)
 public class GfsManagerImpl extends DefaultServerResource {
-	
+
 	private GfsManager gfsManager = null;
 
 	/**
-	 * REST service which returns all read files on GFS. It checks also if the
-	 * user has got the authorization to read or write that folders.
+	 * REST service which returns all files on GFS for a specific path. It
+	 * checks also if the user has got the authorization to read or write that
+	 * folders.
 	 * 
 	 * @param type
-	 *            could a integer value
+	 *            GFS type where to perform the query
+	 * @param item
+	 *            item to search
+	 * @param pathName
+	 *            when the type is DATA, is the path name
 	 * @see GfsFile
-	 * @param request
-	 *            the folder (relative to type of GFS) to use to read files and
-	 *            directories and data path name of folder
+	 * @see GfsFileType
 	 * @return collections of files
-	 * @throws JemException
-	 *             if any error occurs
 	 */
 	@GET
 	@Path(GfsManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getFilesList(@PathParam(GfsManagerPaths.TYPE) String type, 
-			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
-			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+	public Response getFilesList(@PathParam(GfsManagerPaths.TYPE) String type, @QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, @QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// get the type of GFS in integer format
 				int typeInt = GfsFileType.getType(type);
-				if (typeInt == GfsFileType.NO_TYPE){
+				// if it's not correct, bad request
+				if (typeInt == GfsFileType.NO_TYPE) {
 					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.TYPE);
 				}
-				if (item == null){
+				// if item is missing, bad request
+				if (item == null) {
 					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
+				// returns the list of files
 				return ResponseBuilder.JSON.ok(gfsManager.getFilesList(typeInt, item, pathName));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-
 
 	/**
 	 * REST service which reads on GFS and returns the file
 	 * 
 	 * @param type
-	 *            could a integer value
-	 * @param request
-	 *            path where get the file from and data path name of file
+	 *            GFS type where to perform the query
+	 * @param item
+	 *            item to search
+	 * @param pathName
+	 *            when the type is DATA, is the path name
 	 * @see GfsFile
+	 * @see GfsFileType
 	 * @return content of file
-	 * @throws JemException
-	 *             if any error occurs
 	 */
 	@GET
 	@Path(GfsManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getFile(@PathParam(GfsManagerPaths.TYPE) String type, 
-			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
-			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+	public Response getFile(@PathParam(GfsManagerPaths.TYPE) String type, @QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, @QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		// it uses OCTETSTREAM response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.OCTET_STREAM);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// get the type of GFS in integer format
 				int typeInt = GfsFileType.getType(type);
-				if (typeInt == GfsFileType.NO_TYPE){
+				// if it's not correct, bad request
+				if (typeInt == GfsFileType.NO_TYPE) {
 					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.TYPE);
 				}
-				if (item == null){
+				// if item is missing, bad request
+				if (item == null) {
 					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
+				// returns the content of file
 				return ResponseBuilder.OCTET_STREAM.ok(gfsManager.getFile(typeInt, item, pathName));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.OCTET_STREAM.severError(e);
+				return ResponseBuilder.OCTET_STREAM.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
 	/**
-	 * Uploads a file. THIS IS STILL UNDER CONSTRUCTION 
-	 * @param chunk chunk file to upload
-	 * @return
+	 * Uploads a file by chunks, therefore multiple calls could be performed.
+	 * 
+	 * @param type
+	 *            GFS type where to perform the query
+	 * @param fileCode
+	 *            it's an integer (usually generated random) to use to create a
+	 *            temporaru file
+	 * @param item
+	 *            item where storing the content of REST call
+	 * @param lastUpdate
+	 *            last modified timestamp (in long format, optional)
+	 * @param transferComplete
+	 *            <code>true</code> means it's last call, otherwise false.
+	 * @param length
+	 *            reads from HTTP headers the length of the body
+	 * @param content
+	 *            bytes of the content
+	 * @return <code>true</code> if ended correctly otherwise false
 	 */
-	// FIXME
 	@POST
 	@Path(GfsManagerPaths.PUT)
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.TEXT_PLAIN)
-//	public Response uploadFile(UploadedGfsChunkFile chunk) {
-	public Response uploadFile(@PathParam(GfsManagerPaths.TYPE) String type, 
-			@PathParam(GfsManagerPaths.FILE_CODE) int fileCode,
-			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item,
-			@DefaultValue("-1") @QueryParam(GfsManagerPaths.LAST_UPDATE_QUERY_STRING) long lastUpdate,
-			@QueryParam(GfsManagerPaths.COMPLETED_QUERY_STRING) boolean transferComplete,
-			@HeaderParam(HTTP.CONTENT_LEN) int length,
-			byte[] content) {
-		
+	public Response putFile(@PathParam(GfsManagerPaths.TYPE) String type, @PathParam(GfsManagerPaths.FILE_CODE) int fileCode, @QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item,
+	        @DefaultValue("-1") @QueryParam(GfsManagerPaths.LAST_UPDATE_QUERY_STRING) long lastUpdate, @QueryParam(GfsManagerPaths.COMPLETED_QUERY_STRING) boolean transferComplete, @HeaderParam(HTTP.CONTENT_LEN) int length, byte[] content) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// get the type of GFS in integer format
 				int typeInt = GfsFileType.getType(type);
-				if (typeInt == GfsFileType.NO_TYPE){
+				// if it's not correct, bad request
+				if (typeInt == GfsFileType.NO_TYPE) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
 				}
-				if (item == null){
+				// if item is missing, bad request
+				if (item == null) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
-				
+				// creates a class with all parameters
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				// sets the data
 				chunkFile.setChunk(content);
@@ -184,65 +208,78 @@ public class GfsManagerImpl extends DefaultServerResource {
 				chunkFile.setNumByteToWrite(length);
 				// where to put the file (GFS type)
 				chunkFile.setType(typeInt);
-				// sets the update time 
+				// sets the update time
 				chunkFile.setLastUpdate((lastUpdate < 0) ? System.currentTimeMillis() : lastUpdate);
+				// return true if OK
 				return ResponseBuilder.PLAIN.ok(gfsManager.uploadChunk(chunkFile).toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().emit(NodeMessage.JEMC265E, item, e);
-				return ResponseBuilder.JSON.severError(new MessageException(NodeMessage.JEMC265E, item));
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
-	 * REST service which delete on GFS 
+	 * REST service which delete on GFS file
 	 * 
 	 * @param type
-	 *            could a integer value
-	 * @param request
-	 *            path where delete the file from and data path name of file
+	 *            GFS type where to perform the query
+	 * @param item
+	 *            item to search
+	 * @param pathName
+	 *            when the type is DATA, is the path name
 	 * @see GfsFile
-	 * @return <code>true</code> if delete
-	 * @throws JemException
-	 *             if any error occurs
+	 * @see GfsFileType
+	 * @return <code>true</code> if ended correctly
 	 */
 	@DELETE
 	@Path(GfsManagerPaths.DELETE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response deleteFile(@PathParam(GfsManagerPaths.TYPE) String type, 
-			@QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, 
-			@QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+	public Response deleteFile(@PathParam(GfsManagerPaths.TYPE) String type, @QueryParam(GfsManagerPaths.ITEM_QUERY_STRING) String item, @QueryParam(GfsManagerPaths.PATH_NAME_QUERY_STRING) String pathName) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// get the type of GFS in integer format
 				int typeInt = GfsFileType.getType(type);
-				if (typeInt == GfsFileType.NO_TYPE){
+				// if it's not correct, bad request
+				if (typeInt == GfsFileType.NO_TYPE) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
 				}
-				if (item == null){
+				// if item is missing, bad request
+				if (item == null) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
+				// returns true if OK
 				return ResponseBuilder.PLAIN.ok(gfsManager.deleteFile(typeInt, item, pathName).toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				return ResponseBuilder.PLAIN.severError(new MessageException(UserInterfaceMessage.JEMG045E, e.getMessage()));
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
-    @Override
-    boolean init() throws Exception {
+	@Override
+	boolean init() throws Exception {
 		if (gfsManager == null) {
 			gfsManager = new GfsManager();
 		}
-	    return true;
-    }
+		return true;
+	}
 }

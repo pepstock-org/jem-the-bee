@@ -66,7 +66,7 @@ public abstract class RestClient {
 	/**
 	 * Creates the object using the base URL of rest, setting the debug
 	 * @param uriString URL to access to JEM by HTTP
-	 * @param debug <code>true</code> sets teh debug or not.
+	 * @param debug <code>true</code> sets the debug or not.
 	 * @throws Exception if any SSL errors occurs
 	 */
 	public RestClient(String uriString, boolean debug){

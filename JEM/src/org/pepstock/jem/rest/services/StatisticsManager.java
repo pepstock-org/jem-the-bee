@@ -35,9 +35,10 @@ import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 import com.sun.jersey.api.client.ClientResponse;
 
 /**
- * REST Client side of STATISTICS or ADMINISTRATION services.
+ * REST Client side of STATISTICS or some ADMINISTRATION services.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  * 
  */
 public class StatisticsManager extends AbstractRestManager {
@@ -60,15 +61,23 @@ public class StatisticsManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<LightSample> getSamples() throws RestException {
 		try{
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 			RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+			// performs REST call
 			ClientResponse response = builder.get(StatisticsManagerPaths.SAMPLES);
+			// if HTTP status code is OK,parses the result to list of samples
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<LightSample>)JsonUtil.getInstance().deserializeList(response, LightSample.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 		} catch (IOException e){
+			// throw an exception of JSON parsing
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new RestException(e);
 		}
@@ -81,12 +90,19 @@ public class StatisticsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public LightSample getCurrentSample() throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(StatisticsManagerPaths.CURRENT_SAMPLE);
+		// if HTTP status code is OK,parses the result to current sample
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(LightSample.class);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -100,13 +116,20 @@ public class StatisticsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String displayRequestors(String resourceKey)throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		/// performs REST call passing the filter of resources to check
 		ClientResponse response = builder.filter(resourceKey).get(StatisticsManagerPaths.DISPLAY_REQUESTORS);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the result
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return result;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -121,32 +144,47 @@ public class StatisticsManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<RedoStatement> getAllRedoStatements() throws RestException {
 	    try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+	    	// performs REST call
 			ClientResponse response = builder.get(StatisticsManagerPaths.REDO_STATEMENTS);
+			// if HTTP status code is ok, returns the list of redo statements
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<RedoStatement>)JsonUtil.getInstance().deserializeList(response, RedoStatement.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 	    } catch (IOException e){
+	    	// throw an exception of JSON parsing
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
 	}
 
 	/**
-     * Returns a about object with information about version, creation and licenses
+     * Returns a about object with information about version, creation
      * @return about instance
 	 * @throws RestException if any exception occurs
 	 */
 	public About getAbout()throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(StatisticsManagerPaths.ABOUT);
+		// if HTTP status code is ok, returns the about
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(About.class);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -159,15 +197,23 @@ public class StatisticsManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<String> getEnvironmentInformation()throws RestException {
 	    try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+	    	// performs REST call
 			ClientResponse response = builder.get(StatisticsManagerPaths.INFOS);
+			// if HTTP status code is ok, returns the arrays of info
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<String>)JsonUtil.getInstance().deserializeList(response, String.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 	    } catch (IOException e){
+	    	// throw an exception of JSON parsing
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }

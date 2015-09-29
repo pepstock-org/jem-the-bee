@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
 import java.util.Arrays;
@@ -31,13 +31,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.gwt.server.services.JobsManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.rest.entities.JobQueue;
@@ -47,39 +47,49 @@ import org.pepstock.jem.rest.paths.JobsManagerPaths;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
- * Rest service to manage jobs queues.<br>
- * Pay attention to URL (@path) annotation
+ * Rest service to manage jobs.
  * 
  * @author Andrea "Stock" Stocchero
- *
+ * @version 2.3
+ * 
  */
 @Singleton
 @Path(JobsManagerPaths.MAIN)
-public class JobsManagerImpl extends DefaultServerResource  {
+public class JobsManagerImpl extends DefaultServerResource {
 
 	private JobsManager jobsManager = null;
-	
+
 	/**
 	 * REST service which returns jobs in passed queue, by job filters
 	 * 
-	 * @param jobNameFilter job name filter
-	 * @return a jobs container
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param jobNameFilter
+	 *            job name filter (default *)
+	 * @return a list of jobs
 	 */
 	@GET
 	@Path(JobsManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING)String jobNameFilter) {
+	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// gets the job queue by name
 				JobQueue jQueue = getJobQueue(queue);
+				// if queue is null, bad request otherwise it performs the query
 				return (jQueue == null) ? ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE) : ResponseBuilder.JSON.ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -87,99 +97,131 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * REST service which returns jobs status, by job name filter
 	 * 
-	 * @param jobNameFilter job name filter
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param jobNameFilter
+	 *            job name filter (default *)
+	 * @return a job status object
+	 * @see JobStatus
 	 */
 	@GET
-	@Path(JobsManagerPaths.JOB_STATUS)
+	@Path(JobsManagerPaths.STATUS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobStatus(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns the job status
 				return ResponseBuilder.JSON.ok(jobsManager.getJobStatus(jobNameFilter));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which returns job, by job id filter
 	 * 
-	 * @param jobsParm job id filter
-	 * @return a jobs container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @return the job instance
 	 */
 	@GET
-	@Path(JobsManagerPaths.JOB_BY_ID)
+	@Path(JobsManagerPaths.GET_BY_ID)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobById(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// checks if job id is missing
+				if (id == null) {
 					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks the queue if correct
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// searches the job by ID
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				System.err.println(jQueue.getName()+" "+id+" "+job);
-				if (job != null){
+				// if we have the job instance, ok!
+				if (job != null) {
 					return ResponseBuilder.JSON.ok(job);
 				} else {
+					// otherwise return not found
 					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Holds the jobs in a specific queue
 	 * 
-	 * @param jobs list and queue name of jobs to hold
-	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @return returns <code>true</code> if all jobs are changed, otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(JobsManagerPaths.HOLD)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response hold(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// checks if job id is missing
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks the queue if correct
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// searches the job by ID
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if we have the job instance, try to hold
+				if (job != null) {
+					// returns true if OK
 					return ResponseBuilder.PLAIN.ok(jobsManager.hold(Arrays.asList(job), jQueue.getName()).toString());
 				} else {
+					// otherwise return not found
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -187,36 +229,50 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * Releases holded jobs in a specific queue
 	 * 
-	 * @param jobs list and queue name of jobs to release
-	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @return returns <code>true</code> if all jobs are changed, otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(JobsManagerPaths.RELEASE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response release(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// checks if job id is missing
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks the queue if correct
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// searches the job by ID
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if we have the job instance, try to release
+				if (job != null) {
+					// returns true if OK
 					return ResponseBuilder.PLAIN.ok(jobsManager.release(Arrays.asList(job), jQueue.getName()).toString());
 				} else {
+					// otherwise not found
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -224,123 +280,166 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * Cancels jobs in execution
 	 * 
-	 * @param jobs list and queue name of jobs to cancel
-	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param id
+	 *            job id
+	 * @param force
+	 *            if set, performs a cancel with force attribute
+	 * @return returns <code>true</code> if all jobs are changed, otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(JobsManagerPaths.CANCEL)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response cancel(@PathParam(JobsManagerPaths.JOBID) String id, @PathParam(JobsManagerPaths.FORCE) String force) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				boolean isCancelForce  = Boolean.parseBoolean(force);
-				if (id == null){
+				// gets the force parameter
+				boolean isCancelForce = Boolean.parseBoolean(force);
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets the job by id
 				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// performs cancel returning true if OK
 					return ResponseBuilder.PLAIN.ok(jobsManager.cancel(Arrays.asList(job), isCancelForce).toString());
 				} else {
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Purges jobs from queues
 	 * 
-	 * @param jobs list and queue name of jobs to purge
-	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @return returns <code>true</code> if all jobs are changed, otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(JobsManagerPaths.PURGE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response purge(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks queue. If missing, bad request
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// gets job by id
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// performs the purge and return true if OK
 					return ResponseBuilder.PLAIN.ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()));
 				} else {
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Updates a job in queue
 	 * 
-	 * @param jobs list and queue name of jobs to update
-	 * @return returns <code>true</code> if all jobs are changed, otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @param job
+	 *            list of attributes of the job to be changed
+	 * @return <code>true</code> if ended correctly
 	 */
 	@PUT
 	@Path(JobsManagerPaths.UPDATE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response update(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, UpdateJob job) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks queue. If missing, bad request
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// sets to update job object the job id
 				job.setId(id);
+				// returns true if OK
 				return ResponseBuilder.PLAIN.ok(jobsManager.update(job, jQueue.getName()).toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Submits a job in JEM, returning the job id
 	 * 
-	 * @param preJcl job to submit 
+	 * @param preJcl
+	 *            job to submit
 	 * @return job ID calculated after submission
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@PUT
 	@Path(JobsManagerPaths.SUBMIT)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response submit(PreJcl preJcl) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (preJcl.getContent() == null){
+				// if the JCL is missing, bad request
+				if (preJcl.getContent() == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
 				// creates a pre job using the JCL
@@ -351,49 +450,64 @@ public class JobsManagerImpl extends DefaultServerResource  {
 				// creates a job
 				Job job = new Job();
 				preJob.setJob(job);
+				// submits and return JOBid
 				return ResponseBuilder.PLAIN.ok(jobsManager.submit(preJob));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Returns the tree with all output files produced by job
 	 * 
-	 * @param jobs job container with queue name
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
 	 * @return a tree with all references to output files
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
 	@Path(JobsManagerPaths.OUTPUT_TREE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOutputTree(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks queue. If missing, bad request
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// gets job by id
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// returns the output tre object
 					return ResponseBuilder.JSON.ok(jobsManager.getOutputTree(job, jQueue.getName()));
 				} else {
 					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -401,36 +515,50 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * Returns the content of requested output file for a specific job.
 	 * 
-	 * @param jobFileContent container with output file and job instances
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @param item
+	 *            type of output content is requested
 	 * @return content file
-	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@POST
 	@Path(JobsManagerPaths.OUTPUT_FILE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getOutputFileContent(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id, OutputListItem item) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks queue. If missing, bad request
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// gets job by id
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// returns the content of output
 					return ResponseBuilder.PLAIN.ok(jobsManager.getOutputFileContent(job, item));
 				} else {
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -438,62 +566,83 @@ public class JobsManagerImpl extends DefaultServerResource  {
 	/**
 	 * Returns the content of requested jcl for a specific job.
 	 * 
-	 * @param jobs job container with queue name
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
 	 * @return content JCL
-	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@GET
 	@Path(JobsManagerPaths.JCL)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getJcl(@PathParam(JobsManagerPaths.QUEUE) String queue, @PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets and checks queue. If missing, bad request
 				JobQueue jQueue = getJobQueue(queue);
-				if (jQueue == null){
+				if (jQueue == null) {
 					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.QUEUE);
 				}
+				// gets job by id
 				Job job = jobsManager.getJobById(jQueue.getName(), id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// returns JCL
 					return ResponseBuilder.PLAIN.ok(jobsManager.getJcl(job, jQueue.getName()));
 				} else {
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Returns the system information about the job in execution.
 	 * 
-	 * @param jobs job container with JOB IDS, process ids and members
+	 * @param id
+	 *            job id
 	 * @return system information of job
-	 * @throws JemException if JEM group is not available or not authorized  
 	 */
 	@GET
-	@Path(JobsManagerPaths.JOB_SYSTEM_ACTIVITY)
+	@Path(JobsManagerPaths.SYSTEM_ACTIVITY)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getJobSystemActivity(@PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				if (id == null){
+				// if id is missing, bad request
+				if (id == null) {
 					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
 				}
+				// gets job by id
 				Job job = jobsManager.getJobById(Queues.RUNNING_QUEUE, id);
-				if (job != null){
+				// if job is missing, not found
+				if (job != null) {
+					// gets system activity
 					JobSystemActivity activity = jobsManager.getJobSystemActivity(job);
-					if (activity != null){
+					// if missing, not found
+					if (activity != null) {
+						// returns the system activity o f the job
 						return ResponseBuilder.JSON.ok(activity);
 					} else {
 						return ResponseBuilder.JSON.notFound(id);
@@ -502,27 +651,38 @@ public class JobsManagerImpl extends DefaultServerResource  {
 					return ResponseBuilder.JSON.notFound(id);
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
-	}	
-	
-	
-	private JobQueue getJobQueue(String queueName){
+	}
+
+	/**
+	 * Returns the JOBQUEUE by a string
+	 * 
+	 * @see JobQueue
+	 * @param queueName
+	 *            queue name to search
+	 * @return a job queue instance or null if not found
+	 */
+	private JobQueue getJobQueue(String queueName) {
 		return JobQueue.getQueueByPath(queueName);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-    @Override
-    boolean init() throws Exception {
-		if (jobsManager == null){
+	@Override
+	boolean init() throws Exception {
+		if (jobsManager == null) {
 			jobsManager = new JobsManager();
 		}
 		return true;
-    }
+	}
 }

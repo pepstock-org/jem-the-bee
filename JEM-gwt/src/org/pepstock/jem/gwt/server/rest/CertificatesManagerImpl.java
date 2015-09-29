@@ -51,36 +51,44 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	/**
 	 * REST service which returns list of published certificates
 	 * 
-	 * @param filterParm filter for aliases
-	 * 
+	 * @param filterParm
+	 *            filter for aliases
 	 * @return a list of published certificates
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(CertificatesManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCertificates(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String filterParm) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns the list of certificates in JSON
 				return ResponseBuilder.JSON.ok(certificatesManager.getCertificates(filterParm));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
 	/**
 	 * REST service which adds a new certificate
-	 * @param alias alias of certificate
-	 * @param certificate certificate to be added 
 	 * 
-	 * @return returns <code>true</code> if added correctly, otherwise <code>false</code>
+	 * @param alias
+	 *            alias of certificate
+	 * @param certificate
+	 *            certificate to be added
+	 * 
+	 * @return returns <code>true</code> if added correctly, otherwise
+	 *         <code>false</code>
 	 * @throws JemException
 	 *             if JEM group is not available or not authorized
 	 */
@@ -89,20 +97,28 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addCertificate(@PathParam(CertificatesManagerPaths.ALIAS) String alias, byte[] certificate) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
-				if (alias == null){
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if alias is null, bad request
+				if (alias == null) {
 					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
-				} else if (certificate == null){
+				} else if (certificate == null) {
+					// if certificate is null, bad request
 					return ResponseBuilder.PLAIN.badRequest("certificate");
 				}
+				// return true if ended correctly otherwise false
 				return ResponseBuilder.PLAIN.ok(certificatesManager.addCertificate(certificate, alias).toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -110,40 +126,49 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	/**
 	 * REST service which removes a certificate by its alias
 	 * 
-	 * @param alias certificate's alias to be removed
-	 * @return returns <code>true</code> if removed correctly, otherwise <code>false</code>
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
+	 * @param alias
+	 *            certificate's alias to be removed
+	 * @return returns <code>true</code> if removed correctly, otherwise
+	 *         <code>false</code>
 	 */
 	@DELETE
 	@Path(CertificatesManagerPaths.REMOVE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response removeCertificate(@PathParam(CertificatesManagerPaths.ALIAS) String alias) throws JemException {
+	public Response removeCertificate(@PathParam(CertificatesManagerPaths.ALIAS) String alias) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
-				if (alias == null){
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// if alias is null, bad request
+				if (alias == null) {
 					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
 				}
-				return ResponseBuilder.PLAIN.ok(certificatesManager.removeCertificate(alias));
+				// return true if ended correctly otherwise false
+				return ResponseBuilder.PLAIN.ok(certificatesManager.removeCertificate(alias).toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
-    @Override
-    boolean init() throws Exception {
+	@Override
+	boolean init() throws Exception {
 		if (certificatesManager == null) {
 			certificatesManager = new CertificatesManager();
 		}
-	    return true;
-    }
+		return true;
+	}
 }

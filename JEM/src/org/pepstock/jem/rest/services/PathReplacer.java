@@ -17,6 +17,8 @@
 package org.pepstock.jem.rest.services;
 
 /**
+ * utility to build the rright URL path to perform the REST call, replacing the variables.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
@@ -25,23 +27,39 @@ public final class PathReplacer {
 	private String path = null;
 
 	/**
-	 * @param path
+	 * Creates the object using the path of REST service
+	 * @param path URL path of service
 	 */
 	private PathReplacer(String path) {
 		super();
 		this.path = path;
 	}
 
+	/**
+	 * Returns the object using the path of REST service
+	 * @param path URL path of service
+	 * @return  the replacer for additional calls
+	 */
 	static PathReplacer path(String path){
 		PathReplacer replacer = new PathReplacer(path);
 		return replacer;
 	}
 	
+	/**
+	 * Replaces inside the URL path service the variable
+	 * @param parm variable to change
+	 * @param value value to substitute
+	 * @return the replacer for additional calls
+	 */
 	PathReplacer replace(String parm, String value){
 		path = path.replace(parm, value);
 		return this;
 	}
 
+	/**
+	 * Returns the path with all performed substitutions.
+	 * @return the URL path
+	 */
 	String build(){
 		return path;
 	}

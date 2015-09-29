@@ -48,6 +48,6 @@ public class LoadLibraries extends TestCase {
 		uploaFile.setUploadedFile(fileToUpload);
 		uploaFile.setType(GfsFileType.CLASS);
 		uploaFile.setGfsPath("jms/");
-		RestManager.getSharedInstance().getGfsManager().putFile(uploaFile);
+		RestManager.getInstance().getGfsManager().putFile(uploaFile);
 	}
 }

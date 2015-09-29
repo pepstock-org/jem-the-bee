@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
 import java.util.Map;
@@ -44,157 +44,201 @@ import com.sun.jersey.spi.resource.Singleton;
  * Rest service to get logged user, to log in and log out.
  * 
  * @author Andrea "Stock" Stocchero
- *
+ * @version 2.3
+ * 
  */
 @Singleton
 @Path(LoginManagerPaths.MAIN)
-public class LoginManagerImpl extends DefaultServerResource  {
+public class LoginManagerImpl extends DefaultServerResource {
 
 	private LoginManager loginManager = null;
 
 	/**
-	 * Returns the logged user if already authenticated, otherwise returns <code>null</code>
+	 * Returns the logged user if already authenticated, otherwise returns
+	 * <code>null</code>
 	 * 
-	 * @return the logged user if already authenticated, otherwise returns <code>null</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @return the logged user if already authenticated, otherwise returns
+	 *         <code>null</code>
 	 */
 	@GET
 	@Path(LoginManagerPaths.GET)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(){
+	public Response getUser() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// get user
 				LoggedUser user = loginManager.getUser();
-				if (user != null){
+				// if not null, the user is already inside
+				if (user != null) {
 					return ResponseBuilder.JSON.ok(user);
 				} else {
+					// otherwise user not logged
 					return ResponseBuilder.JSON.notFound("loggedUser");
 				}
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
+
 	/**
-	 * Logs in the user in JEM. 
+	 * Logs in the user in JEM.
 	 * 
-	 * @see Account 
+	 * @see Account
 	 * @see LoggedUser
-	 * @param account account object 
+	 * @param account
+	 *            account object
 	 * @return logged user with permissions
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@PUT
 	@Path(LoginManagerPaths.LOGIN)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(Account account){
+	public Response login(Account account) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// performs the login
 				LoggedUser user = loginManager.login(account.getUserId(), account.getPassword());
+				// returns OK!
 				return ResponseBuilder.JSON.ok(user);
-			} catch(ServiceMessageException e){
+			} catch (ServiceMessageException e) {
+				// if here, there is a uthorization exception
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
 				return ResponseBuilder.JSON.unauthorized(e);
-            } catch (Exception e) {
-            	LogAppl.getInstance().ignore(e.getMessage(), e);
-            	return ResponseBuilder.JSON.severError(e);
-            }
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.severeError(e);
+			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
 	/**
 	 * Logs off from JEM.
-	 * @return 
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * 
+	 * @return
+	 * @throws JemException
+	 *             if JEM group is not available or not authorized
 	 */
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response logoff() {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				Boolean status = loginManager.logoff(null);
-				return ResponseBuilder.PLAIN.ok(status.toString());
-			} catch(Exception e){
+				// performs logoff and return true if OK
+				return ResponseBuilder.PLAIN.ok(loginManager.logoff(null).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
 				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
 	/**
 	 * Logs off from JEM saving user preferences.
-	 * @param preferences user preferences to store
-	 * @return 
 	 * 
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param preferences
+	 *            user preferences to store
+	 * @return
+	 * 
+	 * @throws JemException
+	 *             if JEM group is not available or not authorized
 	 */
 	@DELETE
 	@Path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response logoff(Map<String, UserPreference> preferences) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
+				// performs logoff and returns true if OK
 				return ResponseBuilder.PLAIN.ok(loginManager.logoff(preferences).toString());
-			} catch(Exception e){
+			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
 				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * Stores the user preferences in JEM.
-	 * @param preferences user preferences to store
+	 * 
+	 * @param preferences
+	 *            user preferences to store
 	 * @return a empty object is everything went ok
 	 * 
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @throws JemException
+	 *             if JEM group is not available or not authorized
 	 */
 	@POST
 	@Path(LoginManagerPaths.SAVE_PREFERENCES)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response storePreferences(Map<String, UserPreference> preferences) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
+		// if response not null means we have an exception
+		if (resp == null) {
 			try {
-				Boolean status = loginManager.storePreferences(preferences);
-				return ResponseBuilder.PLAIN.ok(status.toString());
-			} catch(Exception e){
+				// stores the preferences and return true if OK
+				return ResponseBuilder.PLAIN.ok(loginManager.storePreferences(preferences).toString());
+			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
 				return ResponseBuilder.PLAIN.unauthorized(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
-    @Override
-    boolean init() throws Exception {
+	@Override
+	boolean init() throws Exception {
 		if (loginManager == null) {
 			loginManager = new LoginManager();
 		}
 		return true;
-    }
-    
+	}
 }

@@ -13,17 +13,20 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.rest.entities;
 
 import java.io.Serializable;
 
 /**
+ * Is a bean that works as an envelop to return exception or other value when
+ * the REST calls produces a APPLICATION/JSON media type.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public class Message implements Serializable{
-	
+public class Message implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	private Object value = null;

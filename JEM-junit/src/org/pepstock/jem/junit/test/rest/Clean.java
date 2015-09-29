@@ -20,15 +20,15 @@ public class Clean extends TestCase {
 	 * @throws Exception
 	 */
 	public void testCleanJobs() throws Exception {
-		File jcl=getJcl("clean/TEST_REST_CLEAN_JOBS.xml");
-		PreJcl prejob=RestManager.getSharedInstance().createJcl(jcl, "ant");
+		File jcl= getJcl("clean/TEST_REST_CLEAN_JOBS.xml");
+		PreJcl prejob=RestManager.getInstance().createJcl(jcl, "ant");
 		// get jobid
-		String jobId=RestManager.getSharedInstance().getJobManager().submit(prejob);
+		String jobId = RestManager.getInstance().getJobManager().submit(prejob);
 		// verify output
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			Job job = RestManager.getSharedInstance().getJobManager().getEndedJobById(jobId);
+			Job job = RestManager.getInstance().getJobManager().getEndedJobById(jobId);
 			if(job != null){
 				assertEquals(job.getResult().getReturnCode(), 0);
 				break;
@@ -43,13 +43,13 @@ public class Clean extends TestCase {
 	 */
 	public void testCleanData() throws Exception {
 		File jcl=getJcl("clean/TEST_REST_DELETE_DATA.xml");
-		PreJcl prejob=RestManager.getSharedInstance().createJcl(jcl, AntFactory.ANT_TYPE);
+		PreJcl prejob=RestManager.getInstance().createJcl(jcl, AntFactory.ANT_TYPE);
 		// get jobid
-		String jobId=RestManager.getSharedInstance().getJobManager().submit(prejob);
+		String jobId=RestManager.getInstance().getJobManager().submit(prejob);
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			Job job = RestManager.getSharedInstance().getJobManager().getEndedJobById(jobId);
+			Job job = RestManager.getInstance().getJobManager().getEndedJobById(jobId);
 			if(job != null){
 				assertEquals(job.getResult().getReturnCode(), 0);
 				break;

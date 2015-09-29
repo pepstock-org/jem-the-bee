@@ -174,9 +174,6 @@ public class JobsManager extends DefaultService {
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
 
-		System.err.println(filter);
-		System.err.println(queueName);
-		
 		IMap<String, Job> jobs = getInstance().getMap(queueName);
 		// creates predicate
 		JobPredicate predicate = new JobPredicate(filter);

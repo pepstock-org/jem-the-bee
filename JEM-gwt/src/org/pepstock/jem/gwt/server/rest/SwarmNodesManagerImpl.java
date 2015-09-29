@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
 import javax.ws.rs.Consumes;
@@ -28,7 +28,6 @@ import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.RoutingConfigManager;
 import org.pepstock.jem.gwt.server.services.SwarmNodesManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.rest.paths.CommonPaths;
@@ -37,8 +36,9 @@ import org.pepstock.jem.rest.paths.SwarmNodesManagerPaths;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
- *  REST services published in the web part, to manage swarm nodes and configuration.
- *  
+ * REST services published in the web part, to manage swarm nodes and
+ * configuration.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
@@ -47,168 +47,202 @@ import com.sun.jersey.spi.resource.Singleton;
 public class SwarmNodesManagerImpl extends DefaultServerResource {
 
 	private SwarmNodesManager swarmNodesManager = null;
-	
+
 	private RoutingConfigManager routingConfManager = null;
-	
-	
+
 	/**
 	 * REST service which returns nodes, by nodes name filter
 	 * 
-	 * @param nodesFilter nodes name filter
-	 * @return a nodes container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param nodesFilter
+	 *            nodes name filter
+	 * @return a list of nodes for swarm
 	 */
 	@GET
 	@Path(SwarmNodesManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodes(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns nodes
 				return ResponseBuilder.JSON.ok(swarmNodesManager.getNodes(nodesFilter));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
-	 * REST service which returns nodes, by  nodes filters
+	 * REST service which returns nodes, by nodes filters
 	 * 
-	 * @param nodesFilter nodes name filter
-	 * @return a nodes container
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @param nodesFilter
+	 *            nodes name filter
+	 * @return a list of nodes
 	 */
 	@GET
 	@Path(SwarmNodesManagerPaths.LIST_BY_FILTER)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodesByFilter(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String nodesFilter) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns nodes
 				return ResponseBuilder.JSON.ok(swarmNodesManager.getNodesByFilter(nodesFilter));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which starts SWARM!
 	 * 
-	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @return returns <code>true</code> if ended correctly otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(SwarmNodesManagerPaths.START)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response start() {
+		// it uses PLAIN text response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns true if OK
 				return ResponseBuilder.PLAIN.ok(swarmNodesManager.start().toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which drains SWARM!
 	 * 
-	 * @return returns <code>true</code> if ended correctly otherwise <code>false</code>
-	 * @throws JemException if JEM group is not available or not authorized 
+	 * @return returns <code>true</code> if ended correctly otherwise
+	 *         <code>false</code>
 	 */
 	@PUT
 	@Path(SwarmNodesManagerPaths.DRAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response drain() {
+		// it uses plain text response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns true if OK
 				return ResponseBuilder.PLAIN.ok(swarmNodesManager.drain().toString());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which returns the status of SWARM!
 	 * 
 	 * @return the status of SWARM!
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
 	@Path(SwarmNodesManagerPaths.STATUS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getStatus() {
+		// it uses plain text response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns SWARM status
 				return ResponseBuilder.PLAIN.ok(swarmNodesManager.getStatus());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which return the configuration of SWARM environment
-	 * @param name name of swarm key of internal map
 	 * 
 	 * @return configuration of SWARM
-	 * @throws JemException if JEM group is not available or not authorized 
 	 */
 	@GET
 	@Path(SwarmNodesManagerPaths.CONFIG)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSwarmConfiguration() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns swarm configuration
 				return ResponseBuilder.JSON.ok(routingConfManager.getSwarmConfiguration(SwarmConfiguration.DEFAULT_NAME));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-    @Override
-    boolean init() throws Exception {
+	@Override
+	boolean init() throws Exception {
 		if (swarmNodesManager == null) {
 			swarmNodesManager = new SwarmNodesManager();
 		}
-		if (routingConfManager == null){
+		if (routingConfManager == null) {
 			routingConfManager = new RoutingConfigManager();
 		}
 		return true;
-    }
+	}
 }

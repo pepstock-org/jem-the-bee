@@ -28,7 +28,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.StatisticsManager;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
@@ -36,7 +35,8 @@ import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
- * REST services published in the web part, to manage statistics and administration stuff.
+ * REST services published in the web part, to manage statistics and
+ * administration stuff.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
@@ -51,23 +51,27 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * REST service which returns list of collected sample in the JEM cluster
 	 * 
 	 * @return a list of statistics from all nodes
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.SAMPLES)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSamples() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns samples
 				return ResponseBuilder.JSON.ok(statisticsManager.getSamples());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -76,23 +80,27 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * REST service which last sample with all statistics on JEM nodes
 	 * 
 	 * @return last statistics sample
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.CURRENT_SAMPLE)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCurrentSample() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns sample
 				return ResponseBuilder.JSON.ok(statisticsManager.getCurrentSample());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -104,48 +112,57 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 *            wild card of resources name
 	 * 
 	 * @return list of requestors
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.DISPLAY_REQUESTORS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response displayRequestors(@DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String resourceKey) {
+		// it uses PLAIN TEXT response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns requestors
 				return ResponseBuilder.PLAIN.ok(statisticsManager.displayRequestors(resourceKey));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severError(e);
+				return ResponseBuilder.PLAIN.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
 
 	/**
-	 * REST service which list of REDo statements which are waiting of DB will be restarted
+	 * REST service which list of REDo statements which are waiting of DB will
+	 * be restarted
 	 * 
 	 * @return list of REDO statementes
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.REDO_STATEMENTS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllRedoStatements() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns redo statements
 				return ResponseBuilder.JSON.ok(statisticsManager.getAllRedoStatements());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
@@ -154,60 +171,70 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * REST service which returns the JEM "about", with licenses, versions, etc.
 	 * 
 	 * @return JEM "about", with licenses, versions, etc
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.ABOUT)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAbout() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns about
 				return ResponseBuilder.JSON.ok(statisticsManager.getAbout());
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
+
 	/**
 	 * REST service which returns a list of information about JEM environment
 	 * 
 	 * @return a list of information about JEM environment
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
 	 */
 	@GET
 	@Path(StatisticsManagerPaths.INFOS)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEnvironmentInformation() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
-		if (resp == null){
-			try{
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// returns env info
 				return ResponseBuilder.JSON.ok(Arrays.asList(statisticsManager.getEnvironmentInformation()));
 			} catch (Exception e) {
+				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severError(e);
+				return ResponseBuilder.JSON.severeError(e);
 			}
 		} else {
+			// returns an exception
 			return resp;
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
-    @Override
-    boolean init() throws Exception {
+	@Override
+	boolean init() throws Exception {
 		if (statisticsManager == null) {
 			statisticsManager = new StatisticsManager();
 		}
 		return true;
-    }
+	}
 }

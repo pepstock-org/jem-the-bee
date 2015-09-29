@@ -21,20 +21,39 @@ package org.pepstock.jem.rest.paths;
  * Contains all labels for jobs service to use to create REST URL.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  *
  */
 public final class JobsManagerPaths  {
 	
+	/**
+	 * Path parameter name to define the queue of job/s
+	 */
 	public static final String QUEUE = "queue";
-	
+
+	/**
+	 * Path parameter REST format to define the queue of job/s
+	 */
 	public static final String QUEUE_PATH_PARAM = "{"+QUEUE+"}";
 
+	/**
+	 * Path parameter name to define the jobid to search
+	 */
 	public static final String JOBID = "jobid";
 	
+	/**
+	 * Path parameter REST format to define the jobid to search
+	 */
 	public static final String JOBID_PATH_PARAM = "{"+JOBID+"}";
 
+	/**
+	 * Path parameter name to define if the cancel is in FORCE mode
+	 */
 	public static final String FORCE = "force";
 	
+	/**
+	 * Path parameter REST format to define if the cancel is in FORCE mode
+	 */
 	public static final String FORCE_PATH_PARAM = "{"+FORCE+"}";
 
 	/**
@@ -43,7 +62,7 @@ public final class JobsManagerPaths  {
 	public static final String MAIN = CommonPaths.PATH_SEPARATOR + "jobs";
 
 	/**
-	 * Key to define the path to bind input management method
+	 * Key to define the path to bind list of jobs method
 	 */
 	public static final String LIST = CommonPaths.PATH_SEPARATOR + "list" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM;
 
@@ -63,12 +82,12 @@ public final class JobsManagerPaths  {
 	public static final String CANCEL = CommonPaths.PATH_SEPARATOR + "cancel"+ CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM + CommonPaths.PATH_SEPARATOR + FORCE_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind purge jobs action method
+	 * Key to define the path to bind purge job action method
 	 */
 	public static final String PURGE = CommonPaths.PATH_SEPARATOR + "purge" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind purge jobs action method
+	 * Key to define the path to bind update job action method
 	 */
 	public static final String UPDATE = CommonPaths.PATH_SEPARATOR + "update" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
@@ -95,17 +114,17 @@ public final class JobsManagerPaths  {
 	/**
 	 * Key to define the path to bind get job status content method
 	 */
-	public static final String JOB_STATUS = CommonPaths.PATH_SEPARATOR + "jobStatus";
+	public static final String STATUS = CommonPaths.PATH_SEPARATOR + "status";
 	
 	/**
 	 * Key to define the path to bind get job by id
 	 */
-	public static final String JOB_BY_ID = CommonPaths.PATH_SEPARATOR + "jobById" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+	public static final String GET_BY_ID = CommonPaths.PATH_SEPARATOR + "getById" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 	
 	/**
 	 * Key to define the path to bind get system activity of running job
 	 */
-	public static final String JOB_SYSTEM_ACTIVITY = CommonPaths.PATH_SEPARATOR + "jobSystemActivty" + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+	public static final String SYSTEM_ACTIVITY = CommonPaths.PATH_SEPARATOR + "systemActivty" + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

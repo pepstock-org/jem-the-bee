@@ -348,6 +348,7 @@ public class EmailNotifier implements NotifierInterface {
 	 * @see Email
 	 * @throws SendMailException if an error occurs.
 	 */
+	@SuppressWarnings("deprecation")
 	private void sendEmail(JemEmail email, Email sendingEmail) throws SendMailException {
 		try {
 			sendingEmail.setHostName(this.emailServer);

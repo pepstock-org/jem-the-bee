@@ -36,7 +36,7 @@ import com.sun.jersey.api.client.ClientResponse;
  * REST service to manage certificates for users.
  * 
  * @author Andrea "Stock" Stocchero
- * 
+ * @version 2.3
  */
 public class CertificatesManager extends AbstractRestManager {
 
@@ -50,63 +50,92 @@ public class CertificatesManager extends AbstractRestManager {
 	}
 
 	/**
-	 * Returns all certificates for all users, using the filter 
+	 * Returns all certificates for all users, using the filter
+	 * 
 	 * @param filterParm filter to have a subset of certificates
 	 * @return a list of certificates
 	 * @throws RestException if any exception occurs
 	 */
 	@SuppressWarnings("unchecked")
 	public Collection<CertificateEntry> getCertificates(String filterParm) throws RestException {
-	    try {
-	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filterParm).get(CertificatesManagerPaths.GET);
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return (List<CertificateEntry>)JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
+			// if status code is OK, parse the result within a list of objects
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (List<CertificateEntry>) JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
-	    } catch (IOException e){
-	    	LogAppl.getInstance().debug(e.getMessage(), e);
-    		throw new RestException(e);
-	    }
+		} catch (IOException e) {
+			// throw an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
 	}
-	
+
 	/**
-	 * Adds a new certificate for a specific alias. It returns <code>true</code> if it has been able to add it, otherwise <code>false</code>.
+	 * Adds a new certificate for a specific alias. It returns <code>true</code>
+	 * if it has been able to add it, otherwise <code>false</code>.
+	 * 
 	 * @param certificate a set of bytes which represents the certificates
 	 * @param alias userid associated to certificate
-	 * @return returns <code>true</code> if it has been able to add it, otherwise <code>false</code>
+	 * @return returns <code>true</code> if it has been able to add it,
+	 *         otherwise <code>false</code>
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean addCertificates(byte[] certificate, String alias) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type and APPLICATION/OCTET_STREAM as content type
+		// because it sends the certificate in bytes inside the HTTP body
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.APPLICATION_OCTET_STREAM);
+		// replaces to the path the alias information
 		String path = PathReplacer.path(CertificatesManagerPaths.ADD).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
-		// creates the returned object
+		// performs the request adding the bytes to the body
 		ClientResponse response = builder.post(path, certificate);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String value = response.getEntity(String.class);
-		if (response.getStatus() == Status.OK.getStatusCode()){
+		// if HTTP status code is OK, parse to boolean
+		if (response.getStatus() == Status.OK.getStatusCode()) {
 			return Boolean.parseBoolean(value);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), value);
 		}
 	}
-	
+
 	/**
 	 * Removes a certificate by associated alias.
+	 * 
 	 * @param alias alias of certificate to be removed
-	 * @return returns <code>true</code> if it has been able to remove the entries, otherwise <code>false</code>
+	 * @return returns <code>true</code> if it has been able to remove the
+	 *         entries, otherwise <code>false</code>
 	 * @throws RestException if any exception occurs
 	 */
 	public Boolean removeCertificates(String alias) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces to the path the alias information
 		String path = PathReplacer.path(CertificatesManagerPaths.REMOVE).replace(CertificatesManagerPaths.ALIAS_PATH_PARAM, alias).build();
-		// creates the returned object
+		// performs the request
 		ClientResponse response = builder.delete(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String value = response.getEntity(String.class);
-		if (response.getStatus() == Status.OK.getStatusCode()){
+		// if HTTP status code is OK, parse to boolean
+		if (response.getStatus() == Status.OK.getStatusCode()) {
 			return Boolean.parseBoolean(value);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), value);
 		}
 	}

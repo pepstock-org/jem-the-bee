@@ -61,15 +61,23 @@ public class SwarmNodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
 		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 			RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+			// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST);
+			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 		} catch (IOException e) {
+			// throw an exception of JSON parsing
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new RestException(e);
 		}
@@ -86,15 +94,23 @@ public class SwarmNodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
 		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 			RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+			// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST_BY_FILTER);
+			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 		} catch (IOException e) {
+			// throw an exception of JSON parsing
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new RestException(e);
 		}
@@ -103,36 +119,49 @@ public class SwarmNodesManager extends AbstractRestManager {
 	/**
 	 * Starts swarm nodes, using a future task by executor service of Hazelcast.
 	 * 
-	 * @return always TRUE
+	 * @return true is it started, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean start() throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.put(SwarmNodesManagerPaths.START);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
 
 	/**
-	 * Shuts down all the swarm nodes, using a future task by executor service
-	 * of Hazelcast.
+	 * Drains all nodes of swarm.
 	 * 
-	 * @return always true
+	 * @return true is it drained, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean drain() throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.put(SwarmNodesManagerPaths.DRAIN);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -144,39 +173,46 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public String getStatus() throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(SwarmNodesManagerPaths.STATUS);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the status
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return result;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
 
 	/**
 	 * Returns the swarm configuration. It always exist because it always
-	 * created after the first startup of JEM. It uses a name to use as a key in
-	 * map, but this key is a constant
+	 * created after the first startup of JEM.
 	 * 
-	 * @param name key of configuration object
 	 * @return swarm configuration item.
 	 * @throws RestException if any exception occurs
 	 */
 	public SwarmConfiguration getSwarmConfiguration() throws RestException {
-		try {
-			RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
-			ClientResponse response = builder.get(SwarmNodesManagerPaths.CONFIG);
-			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return response.getEntity(SwarmConfiguration.class);
-			} else {
-				throw new RestException(response.getStatus(), getValue(response, String.class));
-			}
-		} catch (Exception e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new RestException(e);
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
+		RequestBuilder builder = RequestBuilder.media(this);
+		// performs REST call
+		ClientResponse response = builder.get(SwarmNodesManagerPaths.CONFIG);
+		// if HTTP status code is ok, returns the swarm configuration parsing the body
+		if (response.getStatus() == Status.OK.getStatusCode()) {
+			return response.getEntity(SwarmConfiguration.class);
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
 }

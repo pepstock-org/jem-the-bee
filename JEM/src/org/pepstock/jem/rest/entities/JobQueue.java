@@ -13,31 +13,48 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.rest.entities;
 
 import org.pepstock.jem.node.Queues;
 
 /**
+ * Enumeration with a matrix between the queue keys of JEM node and the path
+ * usable on REST calls.
+ * 
+ * @see Queues
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
 public enum JobQueue {
-	
+
+	/**
+	 * Input queue and its path
+	 */
 	INPUT(Queues.INPUT_QUEUE, "input"),
+	/**
+	 * Running queue and its path
+	 */
 	RUNNING(Queues.RUNNING_QUEUE, "running"),
+	/**
+	 * Output queue and its path
+	 */
 	OUTPUT(Queues.OUTPUT_QUEUE, "output"),
+	/**
+	 * Routing queue and its path
+	 */
 	ROUTING(Queues.ROUTING_QUEUE, "routing");
-	
-	
+
 	private String name = null;
-	
+
 	private String path = null;
 
 	/**
-	 * @param name
-	 * @param description
-	 * @param path
+	 * Creates the object with queue name and the path for REST
+	 * 
+	 * @see Queues
+	 * @param name Hazelcast queue name
+	 * @param path REST path to use on URL
 	 */
 	private JobQueue(String name, String path) {
 		this.name = name;
@@ -57,23 +74,36 @@ public enum JobQueue {
 	public String getPath() {
 		return path;
 	}
-	
-	public static JobQueue getQueueByName(String name){
-		for (JobQueue queue : values()){
-			if (queue.getName().equalsIgnoreCase(name)){
+
+	/**
+	 * Returns the job queue type by Hazelcast queue name
+	 * 
+	 * @see Queues
+	 * @param name Hazelcast queue name
+	 * @return the job queue or null is the name is not correct
+	 */
+	public static JobQueue getQueueByName(String name) {
+		for (JobQueue queue : values()) {
+			if (queue.getName().equalsIgnoreCase(name)) {
 				return queue;
 			}
 		}
 		return null;
 	}
 
-	public static JobQueue getQueueByPath(String path){
-		for (JobQueue queue : values()){
-			if (queue.getPath().equalsIgnoreCase(path)){
+	/**
+	 * Returns the job queue type by URL path
+	 * 
+	 * @see Queues
+	 * @param path URL path
+	 * @return the job queue or null is the path is not correct
+	 */
+	public static JobQueue getQueueByPath(String path) {
+		for (JobQueue queue : values()) {
+			if (queue.getPath().equalsIgnoreCase(path)) {
 				return queue;
 			}
 		}
-		return null;		
+		return null;
 	}
-
 }

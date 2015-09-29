@@ -50,7 +50,7 @@ public class LoginManagerPaths {
 	public static final String LOGOFF_SAVING_PREFERENCES = CommonPaths.PATH_SEPARATOR +   "logoffSavingPreferences";
 	
 	/**
-	 * Key to define the path to bind store prefences method
+	 * Key to define the path to bind store preferences method
 	 */
 	public static final String SAVE_PREFERENCES = CommonPaths.PATH_SEPARATOR +   "savePreferences";
 

@@ -33,6 +33,7 @@ import org.codehaus.jackson.type.JavaType;
 import com.sun.jersey.api.client.ClientResponse;
 
 /**
+ * JSON utility which contains a Jackson OBJECT mapper to serialize and deserialize objects on REST calls and response.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
@@ -41,36 +42,35 @@ public final class JsonUtil {
 
 	private static final JsonUtil INSTANCE = new JsonUtil();
 	
+	// normal mapper to creates object
 	private ObjectMapper mapper = null;
 	
+	// object mapper to pretty print objects 
 	private ObjectMapper mapperPrettyPrint = null;
 	
 	/**
 	 * To avoid any instantiation
 	 */
 	private JsonUtil() {
+		// creates a normal mapper 
 		mapper = new ObjectMapper();
-
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
 				false);
 		mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		mapper.configure(DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-
 		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
-//			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			mapper.setDateFormat(sf);
 
-		
+		// creates a mapper to pretty print objects
 		mapperPrettyPrint = new ObjectMapper();
-
 		mapperPrettyPrint.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
 				false);
 		mapperPrettyPrint.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		mapperPrettyPrint.configure(DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-
 		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+		// this is the difference with the other mapper
+		// it indents the JSON
 		mapperPrettyPrint.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 	}
 	
@@ -91,28 +91,26 @@ public final class JsonUtil {
 	}
 
 	/**
-	 * 
-	 * @param response
-	 * @param cls
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * Transforms a REST response entity to a LIST of objects.
+	 * @param response REST response
+	 * @param cls Java type of list to return
+	 * @return list of objects of class instance
+	 * @throws JsonParseException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
 	 */
 	public List<?> deserializeList(ClientResponse response, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
 		return deserializeList(responseToString(response), cls);
 	}
 	
 	/**
-	 * 
-	 * @param json
-	 * @param cls
-	 * @param asList
-	 * @return
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
-	 * @throws RestException
+	 * Transforms a JSON string to a LIST of objects.
+	 * @param json JSON string
+	 * @param cls Java type of list to return
+	 * @return list of objects of class instance
+	 * @throws JsonParseException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
 	 */
 	public List<?> deserializeList(String json, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
 		JavaType typeInfo = mapper.getTypeFactory().constructCollectionType(List.class, cls);
@@ -121,43 +119,38 @@ public final class JsonUtil {
 	}
 
 	/**
-	 * 
-	 * @param json
-	 * @param cls
-	 * @param asList
-	 * @return
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
-	 * @throws RestException
+	 * Transforms a REST response entity to an object.
+	 * @param response REST response
+	 * @param cls Java type of the object
+	 * @return object of class instance
+	 * @throws JsonParseException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
 	 */
 	public Object deserialize(ClientResponse response, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
 		return deserialize(responseToString(response), cls);
 	}
 
 	/**
-	 * 
-	 * @param json
-	 * @param cls
-	 * @param asList
-	 * @return
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
-	 * @throws RestException
+	 * Transforms a JSON string to an object.
+	 * @param json JSON string
+	 * @param cls Java type of the object
+	 * @return object of class instance
+	 * @throws JsonParseException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
 	 */
 	public Object deserialize(String json, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(json, cls);
 	}
+	
 	/**
-	 * 
-	 * @param obj
-	 * @return
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonGenerationException 
-	 * @throws RestException 
-	 * @throws ApiException
+	 * Transforms an object to a JSON string.
+	 * @param obj object to serialize into a string
+	 * @return a JSON string which represents the object
+	 * @throws JsonGenerationException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
 	 */
 	public String serialize(Object obj) throws JsonGenerationException, JsonMappingException, IOException  {
 		if (obj != null){
@@ -167,12 +160,25 @@ public final class JsonUtil {
 		}
 	}
 	
+	/**
+	 * Reads the REST response body into a string
+	 * @param response REST response
+	 * @return a string which represents the body of REST response
+	 * @throws IOException if any error occurs
+	 */
 	public String responseToString(ClientResponse response) throws IOException{
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(response.getEntityInputStream(), writer);
 		return writer.toString();
 	}
 	
+	/**
+	 * Prints on standard output the JSON string, in pretty format
+	 * @param json JSON string to print
+	 * @throws JsonGenerationException if any JSON error occurs
+	 * @throws JsonMappingException if any JSON error occurs
+	 * @throws IOException if any JSON error occurs
+	 */
 	public void prettyPrint(String json) throws JsonGenerationException, JsonMappingException, IOException{
 		System.out.println(mapperPrettyPrint.writeValueAsString(json));
 	}

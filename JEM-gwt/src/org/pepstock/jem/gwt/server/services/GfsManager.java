@@ -133,15 +133,17 @@ public class GfsManager extends DefaultService {
 	 */
 	public byte[] getFile(int type, String file, String pathName) throws ServiceMessageException {
 		// checks authentication only if
-		// the request is for data. All other file systems
-		// are always available in READ
+		// the request is for data. 
 		if (type == GfsFileType.DATA) {
 			// creates the permission by file name
 			String filesPermission = Permissions.FILES_READ + file;
 			// checks user authentication
 			// if not, this method throws an exception
 			checkAuthorization(new StringPermission(filesPermission));
-		} 
+		} else {
+			// checks if you can see the other filesystems
+			checkGfsPermission(type);
+		}
 		DistributedTaskExecutor<byte[]> task = new DistributedTaskExecutor<byte[]>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
 	}

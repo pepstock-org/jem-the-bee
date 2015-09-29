@@ -40,6 +40,7 @@ import com.sun.jersey.api.client.ClientResponse;
  * REST Client side of NODES service.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  * 
  */
 public class NodesManager extends AbstractRestManager {
@@ -65,15 +66,23 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
 	    try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+	    	// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.LIST);
+			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 	    } catch (IOException e){
+	    	// throw an exception of JSON parsing
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -89,15 +98,23 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getSwarmNodes(String filter) throws RestException {
 	    try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+	    	// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.SWARM_LIST);
+			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 	    } catch (IOException e){
+	    	// throw an exception of JSON parsing
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
@@ -113,79 +130,115 @@ public class NodesManager extends AbstractRestManager {
 	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
 	    try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
 	    	RequestBuilder builder = RequestBuilder.media(this);
-			// creates the returned object
+	    	// performs the request adding the filter query param
 			ClientResponse response = builder.filter(filter).get(NodesManagerPaths.LIST_BY_FILTER);
+			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()){
 				return (List<NodeInfoBean>)JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
 				throw new RestException(response.getStatus(), getValue(response, String.class));
 			}
 	    } catch (IOException e){
+	    	// throw an exception of JSON parsing
 	    	LogAppl.getInstance().debug(e.getMessage(), e);
     		throw new RestException(e);
 	    }
 	}
 
 	/**
-	 * Update the domain or static affinities of node
-	 * @param node node to update
-	 * @return always true
+	 * Update some attributes of a node
+	 * @param key node key where performs the action
+	 * @param update set of attributes to change on node
+	 * @return <code>true</code> if action ended correctly, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean update(String key, UpdateNode update) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.UPDATE).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call passing the update node attributes
 		ClientResponse response = builder.put(path, update);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return false;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
 
 	/**
 	 * Starts a node
-	 * @param node node to update
-	 * @return always true
+	 * @param key node key where performs the action
+	 * @return <code>true</code> if action ended correctly, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean start(String key) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.START).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return false;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
 	
 	/**
-	 * Starts a node
-	 * @param node node to update
-	 * @return always true
+	 * Drains a node
+	 * @param key node key where performs the action
+	 * @return <code>true</code> if action ended correctly, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public boolean drain(String key) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.DRAIN).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.put(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return false;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -193,21 +246,30 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Returns the top command result
 	 * 
-	 * @param node node where execute a future task to get top command 
-	 * @return content file in String
+	 * @param key node key where performs the action
+	 * @return content of command result
 	 * @throws RestException if any exception occurs
 	 */
 	public String top(String key) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.TOP).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return result;
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -215,21 +277,30 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Returns part of JEM node log
 	 * 
-	 * @param node node where execute a future task to get top command 
-	 * @return content file in String
+	 * @param key node key where performs the action
+	 * @return content of command result
 	 * @throws RestException if any exception occurs
 	 */
 	public String log(String key) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.LOG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return result;
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -244,21 +315,30 @@ public class NodesManager extends AbstractRestManager {
     	}
 	 * </code>
 	 * 
-	 * @param node node where execute a future task to get top command 
-	 * @return content file in String
+	 * @param key node key where performs the action
+	 * @return content of command result
 	 * @throws RestException if any exception occurs
 	 */
 	public String displayCluster(String key) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.DISPLAY_CLUSTER).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean value
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return result;
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
@@ -266,24 +346,33 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Returns single node by its key
 	 * 
-	 * @param node node where execute a future task to get the config file 
-	 * @param what type of configuration file to return
+	 * @param key node key to search
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
 	public NodeInfoBean getNode(String key) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.GET).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-
-		// creates the returned object
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// if HTTP status code is ok, returns the node info object
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(NodeInfoBean.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -291,25 +380,35 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Returns the configuration file for the node
 	 * 
-	 * @param node node where execute a future task to get the config file 
-	 * @param what type of configuration file to return
+	 * @param key node key to search
+	 * @param type type of configuration file to return
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getNodeConfigFile(String key, String what) throws RestException {
+	public ConfigurationFile getNodeConfigFile(String key, String type) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
+		// replaces on the path the node key and the type of configuration file needed
 		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
-				replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-
-		// creates the returned object
+				replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// if HTTP status code is ok, returns the configuration file
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(ConfigurationFile.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -317,22 +416,33 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Returns the configuration file for the environment
 	 * 
-	 * @param what type of configuration file to return
+	 * @param type type of configuration file to return
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getEnvConfigFile(String what) throws RestException {
+	public ConfigurationFile getEnvConfigFile(String type) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-		// creates the returned object
+		// replaces on the path the type of configuration file needed
+		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG).replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
+		// performs REST call
 		ClientResponse response = builder.get(path);
+		// if HTTP status code is ok, returns the configuration file
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(ConfigurationFile.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}
@@ -340,42 +450,61 @@ public class NodesManager extends AbstractRestManager {
 	/**
 	 * Checks if syntax of content is correct.
 	 * @param content content of configuration file
-	 * @param what type of config file
-	 * @return always true
+	 * @param type type of configuration file to return
+	 * @return  <code>true</code> if action ended correctly, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
-	public Boolean checkConfigFile(String content, String what) throws RestException {
+	public Boolean checkConfigFile(String content, String type) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept
+		// type and the TEXT/PLAIN media type as content type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
-		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG).replace(NodesManagerPaths.WHAT_PATH_PARAM, what).build();
-		// creates the returned object
+		// replaces on the path the type of configuration file needed
+		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG).replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
+		// performs REST call passing the content to check
 		ClientResponse response = builder.put(path, content);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
 		String result = response.getEntity(String.class);
+		// if HTTP status code is ok, returns the boolean result
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return Boolean.parseBoolean(result);
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
 			throw new RestException(response.getStatus(), result);
 		}
 	}
 	
 	/**
 	 * Checks if syntax of affinity loader policy content is correct.
-	 * @param node node where execute a future task  
+	 * @param key node key to search
 	 * @param content type of affinity policy
-	 * @return always true
+	 * @return <code>true</code> if action ended correctly, otherwise false
 	 * @throws RestException if any exception occurs
 	 */
 	public Result checkAffinityPolicy(String key, String content) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as accept
+		// type and the TEXT/PLAIN media type as content type
 		RequestBuilder builder = RequestBuilder.media(this, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.CHECK_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
-		// creates the returned object
+		// performs REST call passing the content to check
 		ClientResponse response = builder.post(path, content);
+		// if HTTP status code is ok, returns the result of affinity
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(Result.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
 		}
 	}

@@ -213,9 +213,9 @@ public class Client {
 	/**
 	 * Returns the JCL content of JOB
 	 * @param job job instance used to get JCL content
-	 * @param queueName where to get JCL, queue name
+	 * @param queue where to get JCL, queue name
 	 * @return jcl content in string format
-	 * @throws restException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
 	public String getJcl(Job job, JobQueue queue) throws RestException {
 		return jobsManager.getJcl(job.getId(), queue);
@@ -224,7 +224,7 @@ public class Client {
 	/**
 	 * Returns the output file system tree of JOB
 	 * @param job job instance 
-	 * @param queueName where to get info, queue name
+	 * @param queue where to get info, queue name
 	 * @return output tree object
 	 * @throws RestException if any exception occurs
 	 */
@@ -235,6 +235,7 @@ public class Client {
 	/**
 	 * Returns the content file from output folder in string format
 	 * @param job Job used to search file content
+	 * @param queue where to get info, queue name
 	 * @param item item to search
 	 * @return output file content
 	 * @throws RestException if any exception occurs
@@ -249,7 +250,7 @@ public class Client {
 	 * @param path relative path of file
 	 * @param pathName data path name
 	 * @return file content in string format
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
 	public byte[] getGfsFile(int type, String path, String pathName) throws RestException {
 		return gfsManager.getFile(GfsFileType.getName(type), path, pathName);
@@ -261,7 +262,7 @@ public class Client {
 	 * @param path path relative path of folder
 	 * @param pathName data path name
 	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
 	public Collection<GfsFile> getGfsFileList(int type, String path, String pathName) throws RestException {
 		return gfsManager.getFilesList(GfsFileType.getName(type), path, pathName);
@@ -271,7 +272,7 @@ public class Client {
 	 * Upload a file to GFS
 	 * @param file file coordinates necessary to upload file
 	 * @return REST status
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
 	public boolean upload(UploadedGfsFile file) throws RestException {
 		return gfsManager.putFile(file);

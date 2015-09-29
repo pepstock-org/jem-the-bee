@@ -21,16 +21,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
-import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.paths.CommonPaths;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 /**
+ * Utility to creates a right REST request, defining the accept and content type of REST service to call.
+ *  
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
@@ -45,7 +44,11 @@ public final class RequestBuilder {
 	private Map<String, String> queryParams = new HashMap<String, String>();
 
 	/**
-	 * @param path
+	 * Creates the object with the client REST manager, content type and accept type
+	 * @param manager rest manager
+	 * @param contentType HTTP content type value
+	 * @param acceptType HTTP accept type value
+	 * @see MediaType
 	 */
 	private RequestBuilder(AbstractRestManager manager, String contentType, String acceptType) {
 		this.manager = manager;
@@ -53,20 +56,43 @@ public final class RequestBuilder {
 		this.acceptType = acceptType;
 	}
 
+	/**
+	 * Creates a request manager with content and accept type to APPLICATION/JSON
+	 * @param manager rest manager
+	 * @return the builder for further calls
+	 */
 	static RequestBuilder media(AbstractRestManager manager){
 		return RequestBuilder.media(manager, MediaType.APPLICATION_JSON);
 	}
 
-	
+	/**
+	 * Creates a request manager with accept type passed as argument and content type to APPLICATION/JSON
+	 * @param manager rest manager
+	 * @param acceptType HTTP accept type value
+	 * @return the builder for further calls
+	 */
 	static RequestBuilder media(AbstractRestManager manager, String acceptType){
 		return RequestBuilder.media(manager, acceptType, MediaType.APPLICATION_JSON );
 	}
 
+	/**
+	 *  Creates a request manager with accept and content types passed as arguments
+	 * @param manager rest manager
+	 * @param contentType HTTP content type value
+	 * @param acceptType HTTP accept type value
+	 * @return the builder for further calls
+	 */
 	static RequestBuilder media(AbstractRestManager manager, String acceptType, String contentType){
 		RequestBuilder replacer = new RequestBuilder(manager, contentType, acceptType);
 		return replacer;
 	}
 
+	/**
+	 * Adds a HTTP query parameter value to the parameter "filter".
+	 * @see CommonPaths.FILTER_QUERY_STRING
+	 * @param filter filter value to pass
+	 * @return the builder for further calls
+	 */
 	RequestBuilder filter(String filter){
 		if (filter != null){
 			queryParams.put(CommonPaths.FILTER_QUERY_STRING, filter);
@@ -74,8 +100,13 @@ public final class RequestBuilder {
 		return this;
 	}
 	
+	/**
+	 * Adds a complete map of HTTP query parameters (key/value).
+	 * @param queryParams map of HTTP query parameters
+	 * @return the builder for further calls
+	 */
 	RequestBuilder query(Map<String, String> queryParams){
-		if (queryParams != null){
+		if (queryParams != null && !queryParams.isEmpty()){
 			this.queryParams.putAll(queryParams);
 		}
 		return this;
@@ -87,80 +118,82 @@ public final class RequestBuilder {
 	 * @return web resource builder
 	 */
 	private WebResource.Builder getResource(String service){
-		// gets the web resource
+		// gets the web resource from manager
 		WebResource resource = manager.getClient().getBaseWebResource();
+		// sets the main path and service
 		resource =  resource.path(manager.getMainPath()).path(service);
+		// checks if there is any query parameter
 		if (queryParams != null && !queryParams.isEmpty()){
+			// loads all query parameter
 			for (Entry<String, String> entry : queryParams.entrySet()){
 				resource = resource.queryParam(entry.getKey(), entry.getValue());
 			}
 		}
+		// returns the REST resource
+		// setting content and accept types
 		return resource.type(contentType).accept(acceptType);
 	}
 
+	/**
+	 * Performs GET REST call
+	 * @param service service to call
+	 * @return REST client response
+	 */
 	ClientResponse get(String service){
 		return getResource(service).get(ClientResponse.class);
 	}
 
+	/**
+	 * Performs PUT REST call
+	 * @param service service to call
+	 * @return REST client response
+	 */
 	ClientResponse put(String service){
 		return getResource(service).put(ClientResponse.class);
 	}
 
+	/**
+	 * Performs PUT REST call
+	 * @param service service to call
+	 * @param parm object to serialize on the body to send
+	 * @return REST client response
+	 */
 	ClientResponse put(String service, Object parm){
 		if (parm == null){
 			return put(service);
 		}
 		return getResource(service).put(ClientResponse.class, parm);
 	}
-	
+
+	/**
+	 * Performs POST REST call
+	 * @param service service to call
+	 * @param parm object to serialize on the body to send
+	 * @return REST client response
+	 */
 	ClientResponse post(String service, Object parm){
 		return getResource(service).post(ClientResponse.class, parm);
 	}
 
+	/**
+	 * Performs DELETE REST call
+	 * @param service service to call
+	 * @return REST client response
+	 */
 	ClientResponse delete(String service){
 		return getResource(service).delete(ClientResponse.class);
 	}
 
+	/**
+	 * Performs DELETE REST call
+	 * @param service service to call
+	 * @param parm object to serialize on the body to send
+	 * @return REST client response
+	 */
 	ClientResponse delete(String service, Object parm){
 		if (parm == null){
 			return delete(service);
 		}
 		return getResource(service).delete(ClientResponse.class, parm);
-	}
-	
-	Boolean putAndGetBoolean(String path) throws RestException{
-		return putAndGetBoolean(path, null);
-	}
-
-	/**
-	 * 
-	 * @param path
-	 * @param parm
-	 * @return
-	 * @throws RestException
-	 */
-	Boolean putAndGetBoolean(String path, Object parm) throws RestException{
-		try {
-			// creates the returned object
-			ClientResponse response = null;
-			if (parm != null){
-				response = put(path, parm);
-			} else {
-				response = put(path);
-			}
-
-			if (response.getStatus() == Status.OK.getStatusCode()){
-				return response.getEntity(Boolean.class);
-			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-				String result = response.getEntity(String.class);
-				LogAppl.getInstance().debug(result);
-				return false;
-			} else {
-				throw new RestException(response.getStatus(), response.getEntity(String.class));
-			}
-		} catch (Exception e){
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new RestException(e);
-		}
 	}
 }

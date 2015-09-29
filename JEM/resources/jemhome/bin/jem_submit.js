@@ -72,7 +72,7 @@ for (var i = 2; i < process.argv.length; i++) {
 	} else if (element == '-jcl') {
 		jcl = getArgument(i, 'jcl');
 		i++;
-		// gets teh private key
+		// gets the private key
 		// this is necessary ONLY if
 		// JEM is working with SocketInterceptor
 	} else if (element == '-privateKey') {
@@ -197,7 +197,7 @@ if (wait) {
 		// if here, the port is already in use
 		if (err.code === 'EADDRINUSE') {
 			// increments the port and
-			// tries with teh new one
+			// tries with the new one
 			localPort++;
 			// sets timeout 250ms
 			setTimeout(function() {
@@ -316,7 +316,7 @@ function submit() {
 			sign.update(user);
 			// crypts the user and encode in HEX
 			var signature = sign.sign(key, 'hex');
-			// adds teh signature value to query string
+			// adds the signature value to query string
 			qString = qString + '&signature=' + signature;
 		}
 		// gets submittime
