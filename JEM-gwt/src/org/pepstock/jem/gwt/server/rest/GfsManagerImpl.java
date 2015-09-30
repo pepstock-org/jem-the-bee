@@ -95,7 +95,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -142,7 +142,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.OCTET_STREAM.severeError(e);
+				return ResponseBuilder.OCTET_STREAM.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -192,6 +192,9 @@ public class GfsManagerImpl extends DefaultServerResource {
 				if (item == null) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
+				if (length == 0){
+					return ResponseBuilder.PLAIN.noContent();
+				}
 				// creates a class with all parameters
 				UploadedGfsChunkFile chunkFile = new UploadedGfsChunkFile();
 				// sets the data
@@ -215,7 +218,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().emit(NodeMessage.JEMC265E, item, e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -262,7 +265,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG045E, e, e.getMessage());
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception

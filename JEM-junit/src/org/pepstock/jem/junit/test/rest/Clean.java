@@ -4,8 +4,8 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.ant.AntFactory;
 /**
  * 
@@ -21,9 +21,7 @@ public class Clean extends TestCase {
 	 */
 	public void testCleanJobs() throws Exception {
 		File jcl= getJcl("clean/TEST_REST_CLEAN_JOBS.xml");
-		PreJcl prejob=RestManager.getInstance().createJcl(jcl, "ant");
-		// get jobid
-		String jobId = RestManager.getInstance().getJobManager().submit(prejob);
+		String jobId = RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		// verify output
 		while (true) {
 			Thread.sleep(500);
@@ -43,9 +41,8 @@ public class Clean extends TestCase {
 	 */
 	public void testCleanData() throws Exception {
 		File jcl=getJcl("clean/TEST_REST_DELETE_DATA.xml");
-		PreJcl prejob=RestManager.getInstance().createJcl(jcl, AntFactory.ANT_TYPE);
 		// get jobid
-		String jobId=RestManager.getInstance().getJobManager().submit(prejob);
+		String jobId=RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue

@@ -71,7 +71,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -106,7 +106,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 				// if alias is null, bad request
 				if (alias == null) {
 					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
-				} else if (certificate == null) {
+				} else if (certificate == null || certificate.length == 0) {
 					// if certificate is null, bad request
 					return ResponseBuilder.PLAIN.badRequest("certificate");
 				}
@@ -115,7 +115,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -151,7 +151,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception

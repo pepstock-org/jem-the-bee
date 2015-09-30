@@ -5,8 +5,9 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJcl;
+import org.pepstock.jem.ant.AntFactory;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.rest.RestException;
@@ -50,9 +51,8 @@ public class GfsManagerTest extends TestCase {
 	 */
 	private void loadData() throws Exception{
 		File jcl=getJcl("TEST_REST_LOAD_DATA.xml");
-		PreJcl prejob=RestManager.getInstance().createJcl(jcl, "ant");
 		// get jobid
-		String jobId=RestManager.getInstance().getJobManager().submit(prejob);
+		String jobId=RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		// verify output
 		while (true) {
 			Thread.sleep(500);

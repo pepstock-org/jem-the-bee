@@ -18,7 +18,9 @@ package org.pepstock.jem.rest.services;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -29,7 +31,6 @@ import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.JsonUtil;
@@ -94,6 +95,39 @@ public class JobsManager extends AbstractRestManager {
 		}
 	}
 
+	/**
+	 * This is common method to extract jobs from different queues by filter
+	 * string
+	 * 
+	 * @param queue queue name to use to get the right map
+	 * @param filter filter string
+	 * @return collection of jobs
+	 * @throws RestException if any exception occurs
+	 */
+	@SuppressWarnings("unchecked")
+	public Collection<String> getJclTypes() throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// performs the request 
+			ClientResponse response = builder.get(JobsManagerPaths.GET_JCL_TYPES);
+			// if HTTP status code is OK,parses the result to map of jcl type
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (List<String>) JsonUtil.getInstance().deserializeList(response, String.class);
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throw an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
+	}
 	/**
 	 * Holds a job in INPUT, OUTPUT or ROUTING queue. To set HOLD means that it
 	 * can't be executed or removed from queue.
@@ -258,20 +292,109 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
-	 * Submits a new job by its JCL into JEM.
-	 * 
-	 * @param preJcl an object which contains the JCL content and the JCL type
-	 * @see PreJcl
+	 * Submits a job using a JEM URL where reading the JCL content located on GFS
+	 * @param url JEM URL (ONLY JEM URL is allowed) to read the JCL from GFS
 	 * @return Job id after submission
 	 * @throws RestException if any exception occurs
 	 */
-	public String submit(PreJcl preJcl) throws RestException {
-		// creates a request builder with the TEXT/PLAIN media type as accept
+	public String submitByURL(String url) throws RestException {
+		return submitByURL(url, null);
+	}
+	
+	/**
+	 * Submits a job using a JEM URL where reading the JCL content located on GFS and its JCL type
+	 * @param url JEM URL (ONLY JEM URL is allowed) to read the JCL from GFS
+	 * @param jclType JCL type
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submitByURL(String url, String jclType) throws RestException {
+		return submitByURL(url, jclType, new String[0]);
+	}
+
+	/**
+	 * Submits a job using a JEM URL where reading the JCL content located on GFS, its JCL type and 
+	 * a set of properties for JOB execution
+	 * @param url JEM URL (ONLY JEM URL is allowed) to read the JCL from GFS
+	 * @param jclType JCL type
+	 * @param jclProperties optional properties to pass to JOB
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submitByURL(String url, String jclType, String... jclProperties) throws RestException {
+		return submit(null, jclType, url, jclProperties);
+	}
+
+	/**
+	 * Submits a job using the JCL content
+	 * @param content JCL content
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submit(String content) throws RestException {
+		return submit(content, null);
+	}
+	
+	/**
+	 * Submits a job using the JCL content and its JCL type
+	 * @param content JCL content
+	 * @param jclType JCL type
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submit(String content, String jclType) throws RestException {
+		return submit(content, jclType, new String[0]);
+	}
+
+	/**
+	 * Submits a job using the JCL content, its JCL type and 
+	 * a set of properties for JOB execution
+	 * @param content JCL content
+	 * @param jclType JCL type
+	 * @param jclProperties optional properties to pass to JOB
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	public String submit(String content, String jclType, String... jclProperties) throws RestException {
+		return submit(content, jclType, null, jclProperties);
+	}
+
+	/**
+	 * Submits a new job by its JCL into JEM.
+	 * 
+	 * @param jclType JCL type
+	 * @param jclURL JEM URL (ONLY JEM URL is allowed) to read the JCL from GFS
+	 * @param jclProperties optional properties to pass to JOB
+	 * @param content JCL content
+	 * @return Job id after submission
+	 * @throws RestException if any exception occurs
+	 */
+	private String submit(String content, String jclType, String jclURL, String... jclProperties) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as accept and content
 		// type
-		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// performs REST call, passing the preJcl object in JSON in the HTTP
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
+		// adds item to search and data path name (if there is)
+		// as HTTP query parameters
+		Map<String, String> queryParams = new HashMap<String, String>();
+		if (jclType != null){
+			queryParams.put(JobsManagerPaths.JCL_TYPE_QUERY_STRING, jclType);
+		}
+		if (jclURL != null){
+			queryParams.put(JobsManagerPaths.JCL_URL_QUERY_STRING, jclURL);
+		}
+		if (jclProperties != null && jclProperties.length > 0){
+			StringBuilder queryJclProperties = new StringBuilder();
+			for (String prop : jclProperties){
+				if (queryJclProperties.length() >= 0){
+					queryJclProperties.append(JobsManagerPaths.JCL_PROPERTY_SEPARATOR);
+				}
+				queryJclProperties.append(prop);
+			}
+			queryParams.put(JobsManagerPaths.JCL_PROPERTIES_QUERY_STRING, queryJclProperties.toString());
+		}
+		// performs REST call, setting query string and JCL content in TEXT/PLAIN in the HTTP
 		// body
-		ClientResponse response = builder.put(JobsManagerPaths.SUBMIT, preJcl);
+		ClientResponse response = builder.query(queryParams).put(JobsManagerPaths.SUBMIT, content);
 		// because of the accept type is always TEXT/PLAIN
 		// it gets the string
 		String result = response.getEntity(String.class);

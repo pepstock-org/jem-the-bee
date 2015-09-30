@@ -378,20 +378,18 @@ public class NodesManager extends AbstractRestManager {
 	}
 	
 	/**
-	 * Returns the configuration file for the node
+	 * Returns the affinity policy file for the node
 	 * 
 	 * @param key node key to search
-	 * @param type type of configuration file to return
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getNodeConfigFile(String key, String type) throws RestException {
+	public ConfigurationFile getAffinityPolicy(String key) throws RestException {
 		// creates a request builder with the APPLICATION/JSON media type as
 		// accept type (the default)
 		RequestBuilder builder = RequestBuilder.media(this);
-		// replaces on the path the node key and the type of configuration file needed
-		String path = PathReplacer.path(NodesManagerPaths.GET_NODE_CONFIG).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).
-				replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
+		// replaces on the path the node key
+		String path = PathReplacer.path(NodesManagerPaths.GET_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
 		// performs REST call
 		ClientResponse response = builder.get(path);
 		// if HTTP status code is ok, returns the configuration file
@@ -410,68 +408,6 @@ public class NodesManager extends AbstractRestManager {
 			// IT MUST CONSUME the response
 			// otherwise there is a HTTP error
 			throw new RestException(response.getStatus(), getValue(response, String.class));
-		}
-	}
-	
-	/**
-	 * Returns the configuration file for the environment
-	 * 
-	 * @param type type of configuration file to return
-	 * @return Configuration file container
-	 * @throws RestException if any exception occurs
-	 */
-	public ConfigurationFile getEnvConfigFile(String type) throws RestException {
-		// creates a request builder with the APPLICATION/JSON media type as
-		// accept type (the default)
-		RequestBuilder builder = RequestBuilder.media(this);
-		// replaces on the path the type of configuration file needed
-		String path = PathReplacer.path(NodesManagerPaths.GET_ENV_CONFIG).replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
-		// performs REST call
-		ClientResponse response = builder.get(path);
-		// if HTTP status code is ok, returns the configuration file
-		if (response.getStatus() == Status.OK.getStatusCode()){
-			return response.getEntity(ConfigurationFile.class);
-		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
-			// the node key passed as path parameters hasn't identified any node
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			String result = getValue(response, String.class);
-			LogAppl.getInstance().debug(result);
-			return null;
-		} else {
-			// otherwise throws the exception using the
-			// body of response as message of exception
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			throw new RestException(response.getStatus(), getValue(response, String.class));
-		}
-	}
-	
-	/**
-	 * Checks if syntax of content is correct.
-	 * @param content content of configuration file
-	 * @param type type of configuration file to return
-	 * @return  <code>true</code> if action ended correctly, otherwise false
-	 * @throws RestException if any exception occurs
-	 */
-	public Boolean checkConfigFile(String content, String type) throws RestException {
-		// creates a request builder with the TEXT/PLAIN media type as accept
-		// type and the TEXT/PLAIN media type as content type
-		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
-		// replaces on the path the type of configuration file needed
-		String path = PathReplacer.path(NodesManagerPaths.CHECK_CONFIG).replace(NodesManagerPaths.TYPE_PATH_PARAM, type).build();
-		// performs REST call passing the content to check
-		ClientResponse response = builder.put(path, content);
-		// because of the accept type is always TEXT/PLAIN
-		// it gets the string
-		String result = response.getEntity(String.class);
-		// if HTTP status code is ok, returns the boolean result
-		if (response.getStatus() == Status.OK.getStatusCode()){
-			return Boolean.parseBoolean(result);
-		} else {
-			// otherwise throws the exception using the
-			// body of response as message of exception
-			throw new RestException(response.getStatus(), result);
 		}
 	}
 	
@@ -493,6 +429,41 @@ public class NodesManager extends AbstractRestManager {
 		// if HTTP status code is ok, returns the result of affinity
 		if (response.getStatus() == Status.OK.getStatusCode()){
 			return response.getEntity(Result.class);
+		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
+			// the node key passed as path parameters hasn't identified any node
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			String result = getValue(response, String.class);
+			LogAppl.getInstance().debug(result);
+			return null;
+		} else {
+			// otherwise throws the exception using the
+			// body of response as message of exception
+			// IT MUST CONSUME the response
+			// otherwise there is a HTTP error
+			throw new RestException(response.getStatus(), getValue(response, String.class));
+		}
+	}
+	
+	/**
+	 * Returns the affinity policy file for the node
+	 * 
+	 * @param key node key to search
+	 * @param content affinity policy content
+	 * @return Configuration file container
+	 * @throws RestException if any exception occurs
+	 */
+	public ConfigurationFile putAffinityPolicy(String key, String content) throws RestException {
+		// creates a request builder with the APPLICATION/JSON media type as
+		// accept type and TEXT plain as content type
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN);
+		// replaces on the path the node key and 
+		String path = PathReplacer.path(NodesManagerPaths.PUT_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
+		// performs REST call
+		ClientResponse response = builder.post(path, content);
+		// if HTTP status code is ok, returns the configuration file
+		if (response.getStatus() == Status.OK.getStatusCode()){
+			return response.getEntity(ConfigurationFile.class);
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
 			// the node key passed as path parameters hasn't identified any node
 			// IT MUST CONSUME the response

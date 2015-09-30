@@ -62,7 +62,7 @@ public abstract class DefaultServerResource {
 			} catch (Exception e) {
 				// throws a HTTP severe error
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return builder.severeError(e);
+				return builder.serverError(e);
 			}
 		} else {
 			// return the response that

@@ -16,7 +16,9 @@
  */
 package org.pepstock.jem.gwt.server.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -30,15 +32,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.UpdateJob;
+import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
+import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.paths.CommonPaths;
@@ -86,7 +91,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -118,7 +123,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -167,7 +172,41 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
+	
+	/**
+	 * REST service which returns jobs status, by job name filter
+	 * 
+	 * @param jobNameFilter
+	 *            job name filter (default *)
+	 * @return a job status object
+	 * @see JobStatus
+	 */
+	@GET
+	@Path(JobsManagerPaths.GET_JCL_TYPES)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobStatus() {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// translates a set to list
+				List<String> list = new ArrayList<String>(jobsManager.getJclTypes().keySet());
+				// returns the jcl types
+				return ResponseBuilder.JSON.ok(list);
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -218,7 +257,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -269,7 +308,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -316,7 +355,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -359,14 +398,14 @@ public class JobsManagerImpl extends DefaultServerResource {
 				// if job is missing, not found
 				if (job != null) {
 					// performs the purge and return true if OK
-					return ResponseBuilder.PLAIN.ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()));
+					return ResponseBuilder.PLAIN.ok(jobsManager.purge(Arrays.asList(job), jQueue.getName()).toString());
 				} else {
 					return ResponseBuilder.PLAIN.notFound(id);
 				}
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -412,7 +451,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -423,39 +462,62 @@ public class JobsManagerImpl extends DefaultServerResource {
 	/**
 	 * Submits a job in JEM, returning the job id
 	 * 
-	 * @param preJcl
-	 *            job to submit
+	 * @param jclType JCL type
+	 * @param jclURL JEM URL (ONLY JEM URL is allowed) to read the JCL from GFS
+	 * @param jclProperties optional properties to pass to JOB
+	 * @param content JCL content
 	 * @return job ID calculated after submission
 	 */
 	@PUT
 	@Path(JobsManagerPaths.SUBMIT)
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response submit(PreJcl preJcl) {
+	public Response submit(@QueryParam(JobsManagerPaths.JCL_TYPE_QUERY_STRING) String jclType, 
+			@QueryParam(JobsManagerPaths.JCL_URL_QUERY_STRING) String jclURL,
+			@QueryParam(JobsManagerPaths.JCL_PROPERTIES_QUERY_STRING) String jclProperties,
+			String content) {
 		// it uses PLAIN TEXT response builder
 		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.PLAIN);
 		// if response not null means we have an exception
 		if (resp == null) {
 			try {
+				// checks if there is a valid content
+				boolean hasContent = content != null && content.trim().length() > 0;
 				// if the JCL is missing, bad request
-				if (preJcl.getContent() == null) {
-					return ResponseBuilder.PLAIN.badRequest(JobsManagerPaths.JOBID);
+				if (!hasContent && jclURL == null) {
+					throw new MessageException(UserInterfaceMessage.JEMG073E, JobsManagerPaths.JCL_URL_QUERY_STRING);
+				}
+				if (jclURL != null && !jclURL.startsWith(JemURLStreamHandlerFactory.PROTOCOL)){
+					throw new MessageException(UserInterfaceMessage.JEMG074E);
+				}
+				if (hasContent && jclURL != null) {
+					throw new MessageException(UserInterfaceMessage.JEMG072E, JobsManagerPaths.JCL_URL_QUERY_STRING);
 				}
 				// creates a pre job using the JCL
 				PreJob preJob = new PreJob();
-				preJob.setJclContent(preJcl.getContent());
+				if (hasContent){
+					preJob.setJclContent(content);
+				}
 				// sets JCL type
-				preJob.setJclType(preJcl.getType());
+				preJob.setJclType(jclType);
 				// creates a job
 				Job job = new Job();
+				if (jclProperties != null && jclProperties.length() > 0){
+					String[] props = StringUtils.split(jclProperties, JobsManagerPaths.JCL_PROPERTY_SEPARATOR);
+					job.setInputArguments(Arrays.asList(props));
+				}
 				preJob.setJob(job);
+				// set URL if not null
+				if (jclURL != null){
+					preJob.setUrl(jclURL);
+				}
 				// submits and return JOBid
 				return ResponseBuilder.PLAIN.ok(jobsManager.submit(preJob));
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -504,7 +566,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -555,7 +617,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -604,7 +666,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -653,7 +715,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception

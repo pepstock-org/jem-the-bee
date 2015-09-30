@@ -85,6 +85,15 @@ public final class ResponseBuilder {
 	}
 
 	/**
+	 * Creates a no content response if HTTP body is empty
+	 * 
+	 * @return HTTP response with error
+	 */
+	Response noContent() {
+		return Response.status(Status.NO_CONTENT).entity(envelop(UserInterfaceMessage.JEMG075E.toMessage())).build();
+	}
+
+	/**
 	 * Creates a not found response.
 	 * 
 	 * @param obj
@@ -127,13 +136,13 @@ public final class ResponseBuilder {
 	}
 
 	/**
-	 * Creates the response when a severe error occurs
+	 * Creates the response when a server error occurs
 	 * 
 	 * @param e
 	 *            exception to include on the response
 	 * @return HTTP response with error
 	 */
-	Response severeError(Exception e) {
+	Response serverError(Exception e) {
 		return Response.serverError().entity(envelop(e.getMessage())).build();
 	}
 

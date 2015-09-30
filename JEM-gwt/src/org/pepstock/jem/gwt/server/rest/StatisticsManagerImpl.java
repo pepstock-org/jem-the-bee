@@ -68,7 +68,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -97,7 +97,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -129,7 +129,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -159,7 +159,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -188,7 +188,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -217,7 +217,7 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception

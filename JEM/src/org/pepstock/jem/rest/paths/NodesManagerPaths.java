@@ -25,16 +25,6 @@ package org.pepstock.jem.rest.paths;
 public final class NodesManagerPaths {
 
 	/**
-	 * Path parameter name to define the type of configuration file is requested
-	 */
-	public static final String TYPE = "type";
-	
-	/**
-	 * Path parameter REST format to define the type of configuration file is requested
-	 */
-	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
-
-	/**
 	 * Path parameter name to define the node key to search a node
 	 */
 	public static final String NODEKEY = "nodekey";
@@ -100,24 +90,19 @@ public final class NodesManagerPaths {
 	public static final String DISPLAY_CLUSTER = CommonPaths.PATH_SEPARATOR +  "displayCluster" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 	
 	/**
-	 * Key to define the path to bind get node configuration file method
+	 * Key to define the path to bind get affinity policy file method
 	 */
-	public static final String GET_NODE_CONFIG = CommonPaths.PATH_SEPARATOR +  "nodeConfig" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
+	public static final String GET_AFFINITY_POLICY = CommonPaths.PATH_SEPARATOR +  "getAffinityPolicy" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
 	/**
-	 * Key to define the path to bind get environment configuration file method
-	 */
-	public static final String GET_ENV_CONFIG = CommonPaths.PATH_SEPARATOR +  "envConfig"  + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
-	
-	/**
-	 * Key to define the path to bind check node configuration file method
-	 */
-	public static final String CHECK_CONFIG = CommonPaths.PATH_SEPARATOR +  "checkConfig" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
-	
-	/**
-	 * Key to define the path to bind check affintiy policy file method
+	 * Key to define the path to bind check affinity policy file method
 	 */
 	public static final String CHECK_AFFINITY_POLICY = CommonPaths.PATH_SEPARATOR +  "checkAffinityPolicy" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
+
+	/**
+	 * Key to define the path to bind put affinity policy file method
+	 */
+	public static final String PUT_AFFINITY_POLICY = CommonPaths.PATH_SEPARATOR +  "putAffinityPolicy" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.gwt.server;
 
+import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.log.Description;
 import org.pepstock.jem.log.Message;
 import org.pepstock.jem.log.MessageCode;
@@ -446,7 +447,31 @@ public enum UserInterfaceMessage implements MessageInterface {
 	 * "Parameter \"{0}\" is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the REST call is incompleted and a parameter is missing.<br>Please check the REST call.")
-	JEMG071E(71, "Parameter \"{0}\" is missing", MessageLevel.ERROR);
+	JEMG071E(71, "Parameter \"{0}\" is missing", MessageLevel.ERROR),
+
+	/**
+	 * "Query parameter \"{0}\" is set but JCL content is not null", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the REST call is submitting a jcl using both JEM URL and JCL content.<br>Please check the REST call.")
+	JEMG072E(72, "Query parameter \"{0}\" is set but JCL content is not null", MessageLevel.ERROR),
+	
+	/**
+	 * "Query parameter \"{0}\" and JCL content are null", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the REST call is submitting a jcl and JEM URL and JCL content are null.<br>Please check the REST call.")
+	JEMG073E(73, "Query parameter \"{0}\" and JCL content are null", MessageLevel.ERROR),
+	
+	/**
+	 *  "URL passed is not allowed. Only \""+JemURLStreamHandlerFactory.PROTOCOL+"\" is allowed", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the REST call is submitting a jcl by JEM URL but the protocol is not correct.<br>Please check the REST call.")
+	JEMG074E(74, "URL passed is not allowed. Only \""+JemURLStreamHandlerFactory.PROTOCOL+"\" is allowed", MessageLevel.ERROR),
+
+	/**
+	 *  "Content is empty", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the REST call has got an empty HTTP body and the service needs a content.<br>Please check the REST call.")
+	JEMG075E(75, "Content is empty", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 

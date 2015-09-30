@@ -22,7 +22,6 @@ import org.pepstock.jem.UpdateNode;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.affinity.Result;
-import org.pepstock.jem.rest.entities.ConfigType;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -71,17 +70,12 @@ public class NodesManagerTest extends TestCase {
 		assertNotNull(log);
 		String cluster = RestManager.getInstance().getNodesManager().displayCluster(node.getKey());
 		assertNotNull(cluster);
-		ConfigurationFile file = RestManager.getInstance().getNodesManager().getNodeConfigFile(node.getKey(), ConfigType.NODE_CONFIG.getPath());
-		assertNotNull(file);
-		assertNotNull(file.getContent());
-		boolean ok = RestManager.getInstance().getNodesManager().checkConfigFile(file.getContent(), ConfigType.NODE_CONFIG.getPath());
-		assertEquals(ok, true);
-		file = RestManager.getInstance().getNodesManager().getNodeConfigFile(node.getKey(), ConfigType.NODE_AFFINITY.getPath());
+		ConfigurationFile file = RestManager.getInstance().getNodesManager().getAffinityPolicy(node.getKey());
 		assertNotNull(file);
 		assertNotNull(file.getContent());
 		Result result = RestManager.getInstance().getNodesManager().checkAffinityPolicy(node.getKey(), file.getContent());
 		assertNotNull(result);
-		file = RestManager.getInstance().getNodesManager().getEnvConfigFile(ConfigType.ENVIRONMENT_CONFIG.getPath());
+		file = RestManager.getInstance().getNodesManager().putAffinityPolicy(node.getKey(), file.getContent());
 		assertNotNull(file);
 		assertNotNull(file.getContent());
 		UpdateNode update = new UpdateNode();

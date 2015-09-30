@@ -55,7 +55,27 @@ public final class JobsManagerPaths  {
 	 * Path parameter REST format to define if the cancel is in FORCE mode
 	 */
 	public static final String FORCE_PATH_PARAM = "{"+FORCE+"}";
+	
+	/**
+	 * Query parameter to get the type of JCL to submit
+	 */
+	public static final String JCL_TYPE_QUERY_STRING  = "type";
 
+	/**
+	 * Query parameter to get the JEM URL of JCL to submit
+	 */
+	public static final String JCL_URL_QUERY_STRING  = "url";
+
+	/**
+	 * Query parameter to get the properties of JCL to submit
+	 */
+	public static final String JCL_PROPERTIES_QUERY_STRING  = "properties";
+	
+	/**
+	 * JCL properties separator
+	 */
+	public static final String JCL_PROPERTY_SEPARATOR  = ",";
+	
 	/**
 	 * Key to define the path to bind this services
 	 */
@@ -120,6 +140,11 @@ public final class JobsManagerPaths  {
 	 * Key to define the path to bind get job by id
 	 */
 	public static final String GET_BY_ID = CommonPaths.PATH_SEPARATOR + "getById" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+
+	/**
+	 * Key to define the path to bind get all jcl type inside the JEM
+	 */
+	public static final String GET_JCL_TYPES = CommonPaths.PATH_SEPARATOR + "getJclTypes";
 	
 	/**
 	 * Key to define the path to bind get system activity of running job

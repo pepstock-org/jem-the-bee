@@ -1,9 +1,5 @@
 package org.pepstock.jem.junit.test.rest;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.junit.init.JemTestManager;
 import org.pepstock.jem.junit.init.RestConf;
 import org.pepstock.jem.node.security.LoggedUser;
@@ -147,20 +143,4 @@ public class RestManager{
 	public SwarmNodesManager getSwarmNodesManager() {
 		return swarmNodesManager;
 	}
-
-	/**
-	 * Create job from jcl
-	 * 
-	 * @param jcl
-	 * @param jobType
-	 * @return
-	 * @throws Exception
-	 */
-	public PreJcl createJcl(File jcl, String jobType) throws Exception{
-		PreJcl preJcl = new PreJcl();
-		preJcl.setContent(FileUtils.readFileToString(jcl));
-		preJcl.setType(jobType);
-		return preJcl;
-	}
-
 }

@@ -35,10 +35,11 @@ import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.UpdateNode;
 import org.pepstock.jem.gwt.server.services.NodesManager;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.ExecutionEnvironment;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.affinity.Result;
-import org.pepstock.jem.rest.entities.ConfigType;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.NodesManagerPaths;
 
@@ -79,7 +80,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -110,7 +111,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -141,7 +142,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -178,7 +179,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -215,7 +216,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -293,7 +294,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -331,7 +332,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -369,7 +370,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -407,7 +408,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -445,16 +446,16 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
 			return resp;
 		}
 	}
-
+	
 	/**
-	 * REST service which returns the configuration file of node
+	 * REST service which returns the affinity policy file of node
 	 * 
 	 * @param key
 	 *            node key where executes command
@@ -464,10 +465,10 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @return a configuration file instance
 	 */
 	@GET
-	@Path(NodesManagerPaths.GET_NODE_CONFIG)
+	@Path(NodesManagerPaths.GET_AFFINITY_POLICY)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodeConfigFile(@PathParam(NodesManagerPaths.NODEKEY) String key, @PathParam(NodesManagerPaths.TYPE) String type) {
+	public Response getAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key) {
 		// it uses JSON response builder
 		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
@@ -478,89 +479,15 @@ public class NodesManagerImpl extends DefaultServerResource {
 				if (key == null) {
 					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
-				// gets and checks the type of configuration file
-				// if wrong, bad request
-				ConfigType cType = ConfigType.getTypeByPath(type);
-				if (cType == null) {
-					ResponseBuilder.JSON.badRequest(NodesManagerPaths.TYPE);
-				}
 				// gets node by key
 				NodeInfo node = manager.getNodeByKey(key);
 				// if node is missing, not found, otherwise returns the
 				// configuration file
-				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.getNodeConfigFile(node.getNodeInfoBean(), cType.getName()));
+				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.getNodeConfigFile(node.getNodeInfoBean(), ConfigKeys.AFFINITY));
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
-			}
-		} else {
-			// returns an exception
-			return resp;
-		}
-	}
-
-	/**
-	 * REST service which returns the configuration file of JEM environment
-	 * 
-	 * @param type
-	 *            type of configuration file requested
-	 * @return a configuration file instance
-	 */
-	@GET
-	@Path(NodesManagerPaths.GET_ENV_CONFIG)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEnvConfigFile(@PathParam(NodesManagerPaths.TYPE) String type) {
-		// it uses JSON response builder
-		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.JSON);
-		// if response not null means we have an exception
-		if (resp == null) {
-			try {
-				// gets and checks the type of configuration file
-				// if wrong, bad request
-				ConfigType cType = ConfigType.getTypeByPath(type);
-				return (cType == null) ? ResponseBuilder.JSON.notFound(NodesManagerPaths.TYPE) : ResponseBuilder.JSON.ok(manager.getEnvConfigFile(type));
-			} catch (Exception e) {
-				// catches the exception and return it
-				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
-			}
-		} else {
-			// returns an exception
-			return resp;
-		}
-	}
-
-	/**
-	 * REST service which checks a configuration file content
-	 * 
-	 * @param content
-	 *            configuration content to check
-	 * @param type
-	 *            type of configuration file requested
-	 * @return <code>true</code> if ended correctly
-	 */
-	@PUT
-	@Path(NodesManagerPaths.CHECK_CONFIG)
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response checkConfigFile(@PathParam(NodesManagerPaths.TYPE) String type, String content) {
-		// it uses PLAIN text response builder
-		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.PLAIN);
-		// if response not null means we have an exception
-		if (resp == null) {
-			try {
-				// gets and checks the type of configuration file
-				// if wrong, bad request
-				ConfigType cType = ConfigType.getTypeByPath(type);
-				return (cType == null || content == null) ? ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.TYPE) : ResponseBuilder.PLAIN.ok(manager.checkConfigFile(content, type).toString());
-			} catch (Exception e) {
-				// catches the exception and return it
-				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.PLAIN.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -589,8 +516,12 @@ public class NodesManagerImpl extends DefaultServerResource {
 		// if response not null means we have an exception
 		if (resp == null) {
 			try {
+				// checks if there is a valid content
+				if (content == null || content.trim().length() == 0){
+					return ResponseBuilder.JSON.noContent();
+				}
 				// if key or content are missing, bad request
-				if (key == null || content == null) {
+				if (key == null) {
 					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				// gets node by key
@@ -601,7 +532,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.severeError(e);
+				return ResponseBuilder.JSON.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -609,6 +540,60 @@ public class NodesManagerImpl extends DefaultServerResource {
 		}
 	}
 
+	/**
+	 * REST service which checks affinity file content
+	 * 
+	 * @param key
+	 *            node key where executes command
+	 * @param content
+	 *            affinity policy content to check
+	 * @return result object
+	 * @see Result
+	 */
+	@POST
+	@Path(NodesManagerPaths.PUT_AFFINITY_POLICY)
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key, String content) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// checks if there is a valid content
+				if (content == null || content.trim().length() == 0){
+					return ResponseBuilder.JSON.noContent();
+				}
+				// if key or content are missing, bad request
+				if (key == null) {
+					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
+				}
+				// gets node by key
+				NodeInfo node = manager.getNodeByKey(key);
+				// if node is missing, not found
+				if (node == null){
+					return ResponseBuilder.JSON.notFound(key);
+				}
+				// gets the current affinity file
+				// because we need to maintain the last update attribute
+				ConfigurationFile file = manager.getNodeConfigFile(node.getNodeInfoBean(), ConfigKeys.AFFINITY);
+				// sets the content
+				file.setContent(content);
+				//sets type
+				file.setType(ConfigKeys.AFFINITY);
+				// stores the affinity policy
+				return ResponseBuilder.JSON.ok(manager.saveNodeConfigFile(node.getNodeInfoBean(), file, ConfigKeys.AFFINITY));
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.serverError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
 	/**
 	 * Creates a Node info bean starting from a node
 	 * 

@@ -1,13 +1,15 @@
 package org.pepstock.jem.junit.test.rest;
 
 import java.io.File;
+import java.util.Collection;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputTree;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.ant.AntFactory;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.services.JobsManager;
 
@@ -35,9 +37,8 @@ public class JobManagerTest extends TestCase {
 	 */
 	public void test() throws Exception {
 		File jcl = getJcl("TEST_REST_WAIT.xml");
-		PreJcl prejcl = RestManager.getInstance().createJcl(jcl, "ant");
 		// get jobid
-		String jobId = RestManager.getInstance().getJobManager().submit(prejcl);
+		String jobId = RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		Job job = verifyInputQueue(jobId);
 		// release job
 		RestManager.getInstance().getJobManager().release(job.getId(), JobQueue.INPUT);
@@ -51,8 +52,12 @@ public class JobManagerTest extends TestCase {
 		// verify output tree
 		OutputTree outputTree=RestManager.getInstance().getJobManager().getOutputTree(job.getId(), JobQueue.OUTPUT);
 		assertTrue(outputTree!=null);
+		
+		Collection<String> list = RestManager.getInstance().getJobManager().getJclTypes();
+		assertNotNull(list);
+		assertTrue(list.contains(AntFactory.ANT_TYPE));
 	}
-
+	
 	/**
 	 * Verify that the job is in the input queue
 	 * 

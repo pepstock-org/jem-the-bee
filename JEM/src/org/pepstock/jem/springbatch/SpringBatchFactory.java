@@ -164,7 +164,6 @@ public class SpringBatchFactory extends AbstractFactory {
 	 * @throws IOException if any exception occurs
 	 */
 	private void validate(Jcl jcl, List<String> inputArguments) throws SpringBatchException, SAXException, IOException {
-		System.err.println(inputArguments);
 		XMLParser parser;
 		JemBean bean = null;
 

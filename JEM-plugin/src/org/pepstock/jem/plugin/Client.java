@@ -22,7 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
-import org.pepstock.jem.PreJcl;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsFile;
@@ -200,11 +199,8 @@ public class Client {
 	 */
 	public String submit(File jcl) throws RestException  {
 		try {
-			// creates a prejob
-			PreJcl prejcl = new PreJcl();
-			prejcl.setContent(FileUtils.readFileToString(jcl));
 			// submits job and returns JOB ID
-			return jobsManager.submit(prejcl);
+			return jobsManager.submit(FileUtils.readFileToString(jcl));
 		} catch (IOException e) {
 			throw new RestException(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
 		}
