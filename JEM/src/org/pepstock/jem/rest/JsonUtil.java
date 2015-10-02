@@ -67,8 +67,8 @@ public final class JsonUtil {
 				false);
 		mapperPrettyPrint.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		mapperPrettyPrint.configure(DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+//		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+//		mapperPrettyPrint.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
 		// this is the difference with the other mapper
 		// it indents the JSON
 		mapperPrettyPrint.enable(SerializationConfig.Feature.INDENT_OUTPUT);
@@ -179,7 +179,7 @@ public final class JsonUtil {
 	 * @throws JsonMappingException if any JSON error occurs
 	 * @throws IOException if any JSON error occurs
 	 */
-	public void prettyPrint(String json) throws JsonGenerationException, JsonMappingException, IOException{
+	public void prettyPrint(Object json) throws JsonGenerationException, JsonMappingException, IOException{
 		System.out.println(mapperPrettyPrint.writeValueAsString(json));
 	}
 }

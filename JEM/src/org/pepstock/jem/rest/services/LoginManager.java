@@ -16,14 +16,11 @@
 */
 package org.pepstock.jem.rest.services;
 
-import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
@@ -127,56 +124,4 @@ public class LoginManager extends AbstractRestManager {
 			throw new RestException(response.getStatus(), value);
 		}
 	}
-	
-	/**
-	 * Performs the logoff from JEM, storing the user preferences.
-	 * 
-	 * @param userPreferences map of user preferences
-	 * @return <code>true</code> is logoff is done
-	 * @throws RestException if any exception occurs
-	 */
-	public boolean logoff(Map<String, UserPreference> userPreferences) throws RestException {
-		// creates a request builder with the TEXT/PLAIN media type as accept
-		// type
-		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// performs REST call setting the preferences
-		ClientResponse response = builder.delete(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES, userPreferences);
-		// because of the accept type is always TEXT/PLAIN
-		// it gets the string	
-		String value = response.getEntity(String.class);
-		// if HTTP status code is ok, returns the boolean value
-		if (response.getStatus() == Status.OK.getStatusCode()){
-			return Boolean.parseBoolean(value);
-		} else {
-			// otherwise throws the exception using the
-			// body of response as message of exception
-			throw new RestException(response.getStatus(), value);
-		}
-	}
-	
-	/**
-	 * Stores into JEM the user preferences.
-	 * 
-	 * @return <code>true</code> if storing of preference went OK
-	 * @param userPreferences map of user preferences
-	 * @throws RestException if any exception occurs
-	 */
-	public boolean storePreferences(Map<String, UserPreference> userPreferences) throws RestException {
-		// creates a request builder with the TEXT/PLAIN media type as accept
-		// type		
-		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
-		// performs REST call setting the preferences
-		ClientResponse response = builder.post(LoginManagerPaths.SAVE_PREFERENCES, userPreferences);
-		// because of the accept type is always TEXT/PLAIN
-		// it gets the string
-		String value = response.getEntity(String.class);
-		// if HTTP status code is ok, returns the boolean value
-		if (response.getStatus() == Status.OK.getStatusCode()){
-			return Boolean.parseBoolean(value);
-		} else {
-			// otherwise throws the exception using the
-			// body of response as message of exception
-			throw new RestException(response.getStatus(), value);
-		}
-	}	
 }
