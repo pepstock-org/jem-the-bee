@@ -16,12 +16,9 @@
  */
 package org.pepstock.jem.gwt.server.rest;
 
-import java.util.Map;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,7 +31,6 @@ import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.paths.LoginManagerPaths;
 
@@ -75,7 +71,19 @@ public class LoginManagerImpl extends DefaultServerResource {
 				LoggedUser user = loginManager.getUser();
 				// if not null, the user is already inside
 				if (user != null) {
-					return ResponseBuilder.JSON.ok(user);
+					// creates a clone of logged user
+					// because it doesn't set preferences
+					// to avoid to change them
+					// and create inconsistency on them
+					// because they are readable ONLY from JEM
+					LoggedUser newUser = new LoggedUser();
+					newUser.setId(user.getId());
+					newUser.setName(user.getName());
+					newUser.setOrganizationalUnit(user.getOrganizationalUnit());
+					newUser.setAuthorized(user.getAuthorized());
+					// sets null preferences
+					newUser.setPreferences(null);
+					return ResponseBuilder.JSON.ok(newUser);
 				} else {
 					// otherwise user not logged
 					return ResponseBuilder.JSON.notFound("loggedUser");
@@ -112,9 +120,21 @@ public class LoginManagerImpl extends DefaultServerResource {
 		if (resp == null) {
 			try {
 				// performs the login
-				LoggedUser user = loginManager.login(account.getUserId(), account.getPassword());
+				LoggedUser user = loginManager.login(account.getUserid(), account.getPassword());
+				// creates a clone of logged user
+				// because it doen't set preferences
+				// to avoid to change them
+				// and create inconsistency on them
+				// because they are readable ONLY from JEM
+				LoggedUser newUser = new LoggedUser();
+				newUser.setId(user.getId());
+				newUser.setName(user.getName());
+				newUser.setOrganizationalUnit(user.getOrganizationalUnit());
+				newUser.setAuthorized(user.getAuthorized());
+				// sets null preferences
+				newUser.setPreferences(null);
 				// returns OK!
-				return ResponseBuilder.JSON.ok(user);
+				return ResponseBuilder.JSON.ok(newUser);
 			} catch (ServiceMessageException e) {
 				// if here, there is a uthorization exception
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
@@ -150,74 +170,6 @@ public class LoginManagerImpl extends DefaultServerResource {
 			try {
 				// performs logoff and return true if OK
 				return ResponseBuilder.PLAIN.ok(loginManager.logoff(null).toString());
-			} catch (Exception e) {
-				// catches the exception and return it
-				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return ResponseBuilder.PLAIN.unauthorized(e);
-			}
-		} else {
-			// returns an exception
-			return resp;
-		}
-	}
-
-	/**
-	 * Logs off from JEM saving user preferences.
-	 * 
-	 * @param preferences
-	 *            user preferences to store
-	 * @return
-	 * 
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
-	 */
-	@DELETE
-	@Path(LoginManagerPaths.LOGOFF_SAVING_PREFERENCES)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response logoff(Map<String, UserPreference> preferences) {
-		// it uses PLAIN TEXT response builder
-		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.PLAIN);
-		// if response not null means we have an exception
-		if (resp == null) {
-			try {
-				// performs logoff and returns true if OK
-				return ResponseBuilder.PLAIN.ok(loginManager.logoff(preferences).toString());
-			} catch (Exception e) {
-				// catches the exception and return it
-				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());
-				return ResponseBuilder.PLAIN.unauthorized(e);
-			}
-		} else {
-			// returns an exception
-			return resp;
-		}
-	}
-
-	/**
-	 * Stores the user preferences in JEM.
-	 * 
-	 * @param preferences
-	 *            user preferences to store
-	 * @return a empty object is everything went ok
-	 * 
-	 * @throws JemException
-	 *             if JEM group is not available or not authorized
-	 */
-	@POST
-	@Path(LoginManagerPaths.SAVE_PREFERENCES)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response storePreferences(Map<String, UserPreference> preferences) {
-		// it uses PLAIN TEXT response builder
-		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.PLAIN);
-		// if response not null means we have an exception
-		if (resp == null) {
-			try {
-				// stores the preferences and return true if OK
-				return ResponseBuilder.PLAIN.ok(loginManager.storePreferences(preferences).toString());
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG039E, e, e.getMessage());

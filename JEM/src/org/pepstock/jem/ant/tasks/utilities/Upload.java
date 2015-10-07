@@ -168,7 +168,7 @@ public class Upload extends Task {
 		if (user == null) {
 			// create object account with userid and password
 			Account account = new Account();
-			account.setUserId(userid);
+			account.setUserid(userid);
 			account.setPassword(password);
 			// performs login and save logged user
 			user = loginManager.login(account);

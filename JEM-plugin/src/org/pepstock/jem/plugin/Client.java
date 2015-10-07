@@ -157,7 +157,7 @@ public class Client {
 		if (user == null) {
 			// creates a new account
 			Account account = new Account();
-			account.setUserId(coordinate.getUserId());
+			account.setUserid(coordinate.getUserId());
 			account.setPassword(coordinate.getPassword());
 
 			// login to JEM

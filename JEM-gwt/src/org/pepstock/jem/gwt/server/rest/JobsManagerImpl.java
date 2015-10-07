@@ -179,7 +179,51 @@ public class JobsManagerImpl extends DefaultServerResource {
 			return resp;
 		}
 	}
-	
+
+	/**
+	 * REST service which returns job, by job id filter
+	 * 
+	 * @param queue
+	 *            queue of JEM where perform query
+	 * @param id
+	 *            job id
+	 * @return the job instance
+	 */
+	@GET
+	@Path(JobsManagerPaths.GET_ONLY_BY_ID)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getJobById(@PathParam(JobsManagerPaths.JOBID) String id) {
+		// it uses JSON response builder
+		// also checking the common status of REST services
+		Response resp = check(ResponseBuilder.JSON);
+		// if response not null means we have an exception
+		if (resp == null) {
+			try {
+				// checks if job id is missing
+				if (id == null) {
+					return ResponseBuilder.JSON.badRequest(JobsManagerPaths.JOBID);
+				}
+				// searches the job by ID
+				Job job = jobsManager.getJobById(id);
+				// if we have the job instance, ok!
+				if (job != null) {
+					return ResponseBuilder.JSON.ok(job);
+				} else {
+					// otherwise return not found
+					return ResponseBuilder.JSON.notFound(id);
+				}
+			} catch (Exception e) {
+				// catches the exception and return it
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return ResponseBuilder.JSON.serverError(e);
+			}
+		} else {
+			// returns an exception
+			return resp;
+		}
+	}
+
 	/**
 	 * REST service which returns jobs status, by job name filter
 	 * 
@@ -192,7 +236,7 @@ public class JobsManagerImpl extends DefaultServerResource {
 	@Path(JobsManagerPaths.GET_JCL_TYPES)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getJobStatus() {
+	public Response getJclTypes() {
 		// it uses JSON response builder
 		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);

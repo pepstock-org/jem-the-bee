@@ -467,27 +467,31 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@GET
 	@Path(NodesManagerPaths.GET_AFFINITY_POLICY)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key) {
-		// it uses JSON response builder
+		// it uses PLAIN response builder
 		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.JSON);
+		Response resp = check(ResponseBuilder.PLAIN);
 		// if response not null means we have an exception
 		if (resp == null) {
 			try {
 				// if key is missing, bad request
 				if (key == null) {
-					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				// gets node by key
 				NodeInfo node = manager.getNodeByKey(key);
 				// if node is missing, not found, otherwise returns the
 				// configuration file
-				return (node == null) ? ResponseBuilder.JSON.notFound(key) : ResponseBuilder.JSON.ok(manager.getNodeConfigFile(node.getNodeInfoBean(), ConfigKeys.AFFINITY));
+				if (node ==null){
+					ResponseBuilder.PLAIN.notFound(key);
+				}
+				ConfigurationFile file = manager.getNodeConfigFile(node.getNodeInfoBean(), ConfigKeys.AFFINITY);
+				return (file == null) ?  ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(file.getContent());
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.serverError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception
@@ -553,27 +557,27 @@ public class NodesManagerImpl extends DefaultServerResource {
 	@POST
 	@Path(NodesManagerPaths.PUT_AFFINITY_POLICY)
 	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response putAffinityPolicy(@PathParam(NodesManagerPaths.NODEKEY) String key, String content) {
-		// it uses JSON response builder
+		// it uses PLAIN response builder
 		// also checking the common status of REST services
-		Response resp = check(ResponseBuilder.JSON);
+		Response resp = check(ResponseBuilder.PLAIN);
 		// if response not null means we have an exception
 		if (resp == null) {
 			try {
 				// checks if there is a valid content
 				if (content == null || content.trim().length() == 0){
-					return ResponseBuilder.JSON.noContent();
+					return ResponseBuilder.PLAIN.noContent();
 				}
 				// if key or content are missing, bad request
 				if (key == null) {
-					return ResponseBuilder.JSON.badRequest(NodesManagerPaths.NODEKEY);
+					return ResponseBuilder.PLAIN.badRequest(NodesManagerPaths.NODEKEY);
 				}
 				// gets node by key
 				NodeInfo node = manager.getNodeByKey(key);
 				// if node is missing, not found
 				if (node == null){
-					return ResponseBuilder.JSON.notFound(key);
+					return ResponseBuilder.PLAIN.notFound(key);
 				}
 				// gets the current affinity file
 				// because we need to maintain the last update attribute
@@ -583,11 +587,12 @@ public class NodesManagerImpl extends DefaultServerResource {
 				//sets type
 				file.setType(ConfigKeys.AFFINITY);
 				// stores the affinity policy
-				return ResponseBuilder.JSON.ok(manager.saveNodeConfigFile(node.getNodeInfoBean(), file, ConfigKeys.AFFINITY));
+				ConfigurationFile resultFile = manager.saveNodeConfigFile(node.getNodeInfoBean(), file, ConfigKeys.AFFINITY);
+				return (resultFile == null) ?  ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(resultFile.getContent());
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				return ResponseBuilder.JSON.serverError(e);
+				return ResponseBuilder.PLAIN.serverError(e);
 			}
 		} else {
 			// returns an exception

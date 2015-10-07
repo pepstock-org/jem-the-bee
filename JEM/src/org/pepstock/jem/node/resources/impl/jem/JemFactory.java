@@ -103,7 +103,7 @@ public class JemFactory  extends AbstractObjectFactory {
 			if (user == null) {
 				// creates a Account object
 				Account account = new Account();
-				account.setUserId(username);
+				account.setUserid(username);
 				account.setPassword(password);
 				// log in
 				manager.login(account);

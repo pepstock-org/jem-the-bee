@@ -87,7 +87,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.TYPE);
 				}
 				// if item is missing, bad request
-				if (item == null) {
+				if (item == null || item.trim().length() == 0) {
 					return ResponseBuilder.JSON.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
 				// returns the list of files
@@ -134,7 +134,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.TYPE);
 				}
 				// if item is missing, bad request
-				if (item == null) {
+				if (item == null || item.trim().length() == 0) {
 					return ResponseBuilder.OCTET_STREAM.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
 				// returns the content of file
@@ -189,7 +189,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
 				}
 				// if item is missing, bad request
-				if (item == null) {
+				if (item == null || item.trim().length() == 0) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
 				if (length == 0){
@@ -257,7 +257,7 @@ public class GfsManagerImpl extends DefaultServerResource {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.TYPE);
 				}
 				// if item is missing, bad request
-				if (item == null) {
+				if (item == null || item.trim().length() == 0) {
 					return ResponseBuilder.PLAIN.badRequest(GfsManagerPaths.ITEM_QUERY_STRING);
 				}
 				// returns true if OK

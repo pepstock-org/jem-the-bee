@@ -26,8 +26,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version 1.4
  */
 @RunWith(Suite.class)
-@SuiteClasses({ Clean.class, LoginManagerTest.class, CertificatesManagerTest.class, JobManagerTest.class, 
-	GfsManagerTest.class, NodesManagerTest.class, SwarmManagerTest.class, StatisticsManagerTest.class })
+@SuiteClasses({ Clean.class, JobManagerTest.class, 
+	GfsManagerTest.class, NodesManagerTest.class, SwarmManagerTest.class, 
+	StatisticsManagerTest.class, CertificatesManagerTest.class })
 public class RestSuite {
 
 }

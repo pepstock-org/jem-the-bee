@@ -584,6 +584,46 @@ public class JobsManager extends AbstractRestManager {
 	}
 
 	/**
+	 * Returns a job by its job id.
+	 * 
+	 * @param id job id to search
+	 * @return job, if found, otherwise null
+	 * @throws RestException if any exception occurs
+	 */
+	public Job getJobById(String id) throws RestException {
+		try {
+			// creates a request builder with the APPLICATION/JSON media type as
+			// accept type (the default)
+			RequestBuilder builder = RequestBuilder.media(this);
+			// replaces on the path the job id
+			String path = PathReplacer.path(JobsManagerPaths.GET_ONLY_BY_ID).replace(JobsManagerPaths.JOBID_PATH_PARAM, id).build();
+			// performs REST call
+			ClientResponse response = builder.get(path);
+			// if HTTP status code is ok, returns the job object
+			// parsing from JSON
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				return (Job) JsonUtil.getInstance().deserialize(response, Job.class);
+			} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+				// the job id passed as path parameters hasn't identified any
+				// job
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				LogAppl.getInstance().debug(getValue(response, String.class));
+				return null;
+			} else {
+				// otherwise throws the exception using the
+				// body of response as message of exception
+				// IT MUST CONSUME the response
+				// otherwise there is a HTTP error
+				throw new RestException(response.getStatus(), getValue(response, String.class));
+			}
+		} catch (IOException e) {
+			// throws an exception of JSON parsing
+			LogAppl.getInstance().debug(e.getMessage(), e);
+			throw new RestException(e);
+		}
+	}
+	/**
 	 * Returns a job by its job id, searching it in OUTPUT and ROUTED maps.<br>
 	 * If job is not in output, tries searching it in ROUTED
 	 * 

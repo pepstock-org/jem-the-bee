@@ -30,7 +30,7 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	private String userId = null;
+	private String userid = null;
 	
 	private String password = null;
 	
@@ -45,8 +45,8 @@ public class Account implements Serializable {
 	 *  
 	 * @return the userId
 	 */
-	public String getUserId() {
-		return userId;
+	public String getUserid() {
+		return userid;
 	}
 
 	/**
@@ -54,8 +54,8 @@ public class Account implements Serializable {
 	 * 
 	 * @param userId the userId to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserid(String userId) {
+		this.userid = userId;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class Account implements Serializable {
 	 */
     @Override
     public String toString() {
-	    return "Account [userId=" + userId + "]";
+	    return "Account [userId=" + userid + "]";
     }
 
 	

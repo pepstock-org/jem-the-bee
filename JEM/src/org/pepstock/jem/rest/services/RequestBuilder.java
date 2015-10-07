@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MediaType;
 
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.paths.CommonPaths;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -139,8 +140,12 @@ public final class RequestBuilder {
 	 * @param service service to call
 	 * @return REST client response
 	 */
-	ClientResponse get(String service){
-		return getResource(service).get(ClientResponse.class);
+	ClientResponse get(String service) throws RestException{
+		try {
+			return getResource(service).get(ClientResponse.class);
+		} catch (Exception e) {
+			throw new RestException(e);
+		}
 	}
 
 	/**
@@ -148,8 +153,12 @@ public final class RequestBuilder {
 	 * @param service service to call
 	 * @return REST client response
 	 */
-	ClientResponse put(String service){
-		return getResource(service).put(ClientResponse.class);
+	ClientResponse put(String service) throws RestException{
+		try{
+			return getResource(service).put(ClientResponse.class);
+		} catch (Exception e) {
+			throw new RestException(e);
+		}
 	}
 
 	/**
@@ -158,11 +167,15 @@ public final class RequestBuilder {
 	 * @param parm object to serialize on the body to send
 	 * @return REST client response
 	 */
-	ClientResponse put(String service, Object parm){
-		if (parm == null){
-			return put(service);
+	ClientResponse put(String service, Object parm) throws RestException{
+		try{
+			if (parm == null){
+				return put(service);
+			}
+			return getResource(service).put(ClientResponse.class, parm);
+		} catch (Exception e) {
+			throw new RestException(e);
 		}
-		return getResource(service).put(ClientResponse.class, parm);
 	}
 
 	/**
@@ -171,8 +184,12 @@ public final class RequestBuilder {
 	 * @param parm object to serialize on the body to send
 	 * @return REST client response
 	 */
-	ClientResponse post(String service, Object parm){
-		return getResource(service).post(ClientResponse.class, parm);
+	ClientResponse post(String service, Object parm) throws RestException{
+		try{
+			return getResource(service).post(ClientResponse.class, parm);
+		} catch (Exception e) {
+			throw new RestException(e);
+		}
 	}
 
 	/**
@@ -180,8 +197,12 @@ public final class RequestBuilder {
 	 * @param service service to call
 	 * @return REST client response
 	 */
-	ClientResponse delete(String service){
-		return getResource(service).delete(ClientResponse.class);
+	ClientResponse delete(String service) throws RestException{
+		try{
+			return getResource(service).delete(ClientResponse.class);
+		} catch (Exception e) {
+			throw new RestException(e);
+		}
 	}
 
 	/**
@@ -190,10 +211,14 @@ public final class RequestBuilder {
 	 * @param parm object to serialize on the body to send
 	 * @return REST client response
 	 */
-	ClientResponse delete(String service, Object parm){
-		if (parm == null){
-			return delete(service);
+	ClientResponse delete(String service, Object parm) throws RestException{
+		try{
+			if (parm == null){
+				return delete(service);
+			}
+			return getResource(service).delete(ClientResponse.class, parm);
+		} catch (Exception e) {
+			throw new RestException(e);
 		}
-		return getResource(service).delete(ClientResponse.class, parm);
 	}
 }
