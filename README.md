@@ -12,7 +12,7 @@ Download previous versions from [here](http://www.pepstock.org/download.htm)!
   * **[SpringBatch restartability](../../wiki/JCLReferenceUsingSpringBatch#restartability)** out of the box, provided by JEM
   * **[PowerShell](../../wiki/PS_as_JCL)** integration, as JCL
   * **Generic Shell** JCL, which allows you to create your JCL based on a whatever shell script language
-  * **REST** interface improvements 
+  * **[REST](../../wiki/REST)** interface improvements 
   * JEM is distributed compiled by Java 7
  
  
