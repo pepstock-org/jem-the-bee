@@ -35,12 +35,14 @@ public enum SpringBatchMessage implements MessageInterface{
 	/**
 	 * "Data path is null", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the system property <code>jem.data</code> is null.<br>Check node log because some exception should be occurred.")
 	JEMS001E(1, "Data path is null", MessageLevel.ERROR),
 	
 	/**
 	 * "RMI port is null", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the system property <code>jem.rmi.port</code> is null.<br>Check node log because some exception should be occurred.")
 	JEMS002E(2, "RMI port is null", MessageLevel.ERROR),
 	
@@ -95,12 +97,14 @@ public enum SpringBatchMessage implements MessageInterface{
 	/**
 	 *"Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when data description is not a output stream, as expect<br>Check JCL definition.")
 	JEMS010E(10, "Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR),
 
 	/**
 	 *"Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when data description is not a input stream, as expect<br>Check JCL definition.")
 	JEMS011E(11, "Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR),
 	

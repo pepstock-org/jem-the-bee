@@ -39,12 +39,14 @@ public enum UserInterfaceMessage implements MessageInterface {
 	/**
 	 * "Executor call back exception.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "Internal error during a command from user interface.")
 	JEMG001E(1, "Executor call back exception.", MessageLevel.ERROR),
 
 	/**
 	 * "Executor call back result {0}.", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "Internal error during a command from user interface.")
 	JEMG002I(2, "Executor call back result {0}.", MessageLevel.INFO),
 	
@@ -72,6 +74,7 @@ public enum UserInterfaceMessage implements MessageInterface {
 	/**
 	 * Hazelcast node [{0}] started", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "Display the UUID of Hazelcast member")
 	JEMG007I(7, "Hazelcast node [{0}] started", MessageLevel.INFO),
 
@@ -193,12 +196,14 @@ public enum UserInterfaceMessage implements MessageInterface {
 	/**
 	 * "Unable to {0} resource: invalid resource instance \"{1}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the resource passed to be managed is wrong.<br>Check resource defintion file or command.")
 	JEMG028E(28, "Unable to {0} resource: invalid resource instance \"{1}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to submit job: {0} is null", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs during job submit when the user or password parameter is null.<br>Check command arguments.")
 	JEMG029E(29, "Unable to submit job: {0} is null", MessageLevel.ERROR),
 	
@@ -404,6 +409,7 @@ public enum UserInterfaceMessage implements MessageInterface {
 	/**
 	 * "Unable to indent document {0}.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the web application try to indent a document but it receives an error.<br> Please have a look to generated exception.")
 	JEMG064E(64, "Unable to indent document {0}.", MessageLevel.ERROR),
 	

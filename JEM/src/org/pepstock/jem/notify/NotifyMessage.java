@@ -56,6 +56,7 @@ public enum NotifyMessage implements MessageInterface{
 	/**
 	 * "Error creating email text with text template: [{0}].", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs if there is a problem substituting the values of the fields of the Job and of the NodeInfo inside the text of the notification email of the end of the job.<br>An exception is thrown.<br>Check the email template file. Check if the email text template is well formed. The variables inside the template are so done: ${variable name}, for example ${jem.job.startedTime}.")
 	JEMN004E(4, "Error creating email text with text template: [{0}].", MessageLevel.ERROR),
 
@@ -63,6 +64,7 @@ public enum NotifyMessage implements MessageInterface{
 	 * "Error creating email subject with subject template: [{0}].",
 	 * MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "<br>It occurs if there is a problem substituting the values of the fields of the Job and of the NodeInfo inside the subject of the notification email of the end of the job.<br>An exception is thrown.<br>Check the email template file. Check if the email subject template is well formed. The variables inside the template are so done: ${variable name}, for example ${jem.job.startedTime}.")
 	JEMN005E(5, "Error creating email subject with subject template: [{0}].", MessageLevel.ERROR),
 

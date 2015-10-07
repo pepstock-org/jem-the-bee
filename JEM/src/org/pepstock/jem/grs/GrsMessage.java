@@ -35,6 +35,7 @@ public enum GrsMessage implements MessageInterface{
 	/**
 	 * "You can't override GrsRequestLock instance.", Message.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when programmatically you call <code>setRequest</code> method.")
 	JEMV001I(1, "You can't override GrsRequestLock instance.", MessageLevel.INFO);
 	

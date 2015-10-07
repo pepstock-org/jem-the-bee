@@ -47,6 +47,7 @@ public enum JBpmMessage implements MessageInterface{
 	/**
 	 * "Unable to create a data description implementation", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when a data description implementation method throw an exception.<br> Please check JCL data description definition.")
 	JEMM003E(3, "Unable to create a data description implementation", MessageLevel.ERROR),
 	

@@ -35,6 +35,7 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 * "Data path is null", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the system property <code>jem.data</code> is null.<br>Check node log because some exception should be occurred.")
 	JEMA001E(1, "Data path is null", MessageLevel.ERROR),
 	
@@ -134,12 +135,14 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 *"Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when data description is not a output stream, as expect<br>Check JCL definition.")
 	JEMA016E(16, "Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR),
 
 	/**
 	 *"Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when data description is not a input stream, as expect<br>Check JCL definition.")
 	JEMA017E(17, "Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR),
 	
@@ -223,6 +226,7 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 * "Key  \"{0}\" for resource  \"{1}\" can not be overrided", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when you try to override a property which is defined as not overridable."+
 	 "<br>Check resource definition.")
 	JEMA029E(29, "Key  \"{0}\" for resource  \"{1}\" can not be overrided", MessageLevel.ERROR),
@@ -508,6 +512,7 @@ public enum AntMessage implements MessageInterface{
 	/**
 	 * "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when you put a wrong syntax for properteis for a data source.<br>Please have a look to JCL.")
 	JEMA076E(76, "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR),
 	

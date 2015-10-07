@@ -101,6 +101,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "{0}", MessageLevel.INFO - used for Hazelcast log records
 	 */
+	@Deprecated
 	@Description(explanation = "Display all messages produced by Hazelcast, errors as well.")
 	JEMC011I(11, "{0}", MessageLevel.INFO),
 
@@ -322,6 +323,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Job {0} is ended in exception:\n {1}", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC047E(47, "Job {0} is ended in exception:\n {1}", MessageLevel.ERROR),
 
 	/**
@@ -351,18 +353,21 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "{0} is added", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "Display the common resource added.")
 	JEMC052I(52, "Resource {0} is added", MessageLevel.INFO),
 
 	/**
 	 * "{0} is replaced", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "Display the common resource removed.")
 	JEMC053I(53, "Resource {0} is replaced", MessageLevel.INFO),
 
 	/**
 	 * "Unable to add or replace a resource", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "Internal error.")
 	JEMC054E(54, "Unable to add or replace a resource", MessageLevel.ERROR),
 
@@ -401,26 +406,31 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "{0} is removed", MessageLevel.INFO
 	 */
+	@Deprecated
 	JEMC061I(61, "Resource {0} is removed", MessageLevel.INFO),
 
 	/**
 	 * "{0} doesn't exist", MessageLevel.WARNING
 	 */
+	@Deprecated
 	JEMC062W(62, "Resource {0} does not exist", MessageLevel.WARNING),
 
 	/**
 	 * Resource {0} properties:\n{1}, MessageLevel.INFO
 	 */
+	@Deprecated
 	JEMC063I(63, "Resource {0} properties:\n{1}", MessageLevel.INFO),
 
 	/**
 	 * Resources list:\n{0}, MessageLevel.INFO
 	 */
+	@Deprecated
 	JEMC064I(64, "Resources list:\n{0}", MessageLevel.INFO),
 
 	/**
 	 * "Error while substituting variable on string {0}", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC065E(65, "Error while substituting variable on string {0}", MessageLevel.ERROR),
 
 	/**
@@ -462,6 +472,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Error during creation of database for environment {0}." , MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC073E(73, "Error during creation of database for environment {0}.", MessageLevel.ERROR),
 
 	/**
@@ -522,12 +533,14 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Database for environment {0} already present.", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs during the creation of a new environment in case the database is alreadty present, for example because you have installed the same environment in different machines.")
 	JEMC083I(83, "Database for environment {0} already present.", MessageLevel.INFO),
 
 	/**
 	 * "File  {0} is been modified. {1}", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when a configuration file is been modified.")
 	JEMC084I(84, "File  {0} is been modified. {1} ", MessageLevel.INFO),
 
@@ -579,6 +592,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * Unable to read {0} object after javascript execution", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "Errors during retreving the object result after javascript execution.<br>Check the javascript policy file.")
 	JEMC092E(92, "Unable to read {0} object after javascript execution", MessageLevel.ERROR),
 
@@ -603,6 +617,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * Hazelcast configuration file for the environment is null., MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when it's not possible to locate Hazelcast configuration file.<br>Check the location and path for JEM node installation.")
 	JEMC096E(96, "Hazelcast configuration file \"{0}\" for the environment is null.", MessageLevel.ERROR),
 
@@ -650,6 +665,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "User not allowed for permission {0}", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC105E(105, "User not allowed for permission {0}", MessageLevel.ERROR),
 
 	/**
@@ -677,12 +693,14 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Changed database encryption for environment {0}.", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs during during the execution of the command ChangeDbEncryption if the database is already encrypted.")
 	JEMC110I(110, "Changed database encryption for environment {0}.", MessageLevel.INFO),
 
 	/**
 	 * "Encrypted database for environment {0}.", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs during during the execution of the command ChangeDbEncryption if the database is not encrypted.")
 	JEMC111I(111, "Encrypted database for environment {0}.", MessageLevel.INFO),
 
@@ -717,6 +735,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Connection object instance is null.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC117E(117, "Connection object instance is null.", MessageLevel.ERROR),
 
 	/**
@@ -732,6 +751,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "User \"{0}\" have not got the {1}.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMC120E(120, "User \"{0}\" have not got the {1}.", MessageLevel.ERROR),
 
 	/**
@@ -1162,12 +1182,14 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Remote-object \"{0}\" is added", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "Display the name of RMI EXTERNAL object, binded on registry. It's used for ANT utilities")
 	JEMC195I(195, "External Remote-object \"{0}\" is added", MessageLevel.INFO),
 
 	/**
 	 * "Unable to add remote-object \"{0}\"", MessageLevel.WARNING
 	 */
+	@Deprecated
 	@Description(explanation = "Display the name of RMI object which wasn't able to be binded on registry. See the exception. It's used for ANT utilities")
 	JEMC196W(196, "Unable to add external remote-object by \"{0}\"", MessageLevel.WARNING),
 
@@ -1219,6 +1241,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Error while decrypting password", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "Error while decrypting password")
 	JEMC204E(204, "Error while decrypting password", MessageLevel.ERROR),
 
@@ -1238,6 +1261,7 @@ public enum NodeMessage implements MessageInterface {
 	/**
 	 * "Unable to load licenses information", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when is not able to read the licenses, required by user interface. Please check licenses files.")
 	JEMC207E(207, "Unable to load licenses information", MessageLevel.ERROR),
 

@@ -103,6 +103,7 @@ public enum JPPFMessage implements MessageInterface{
 	/**
 	 * {0} ended without any result", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs before merging when result is null.<br> Please check with JEM administrator.")
 	JEMJ012E(12, "{0} ended without any result", MessageLevel.ERROR),
 	

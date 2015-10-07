@@ -261,12 +261,14 @@ public enum AntUtilMessage implements MessageInterface{
 	/**
 	 * "Attribute  \"license\" is missing", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when you did not put any license file. Please check the file name of license and put it in persistence path, adding licence attribute.")
 	JEMZ038E(38, "Attribute  \"license\" is missing", MessageLevel.ERROR),
 	
 	/**
 	 * "Attribute  \"license\" is missing", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when you did not put a valid license file which does not exist. Please check the file name of license and put it in persistence path.")
 	JEMZ039E(39, "License file  \"{0}\" does not exist", MessageLevel.ERROR),
 	
@@ -363,6 +365,7 @@ public enum AntUtilMessage implements MessageInterface{
 	/**
 	 *"Certificate with alias \"{0}\" is added", MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It informs that certificate with given alias is added.")
 	JEMZ055I(55, "Certificate with alias \"{0}\" is added", MessageLevel.INFO),
 

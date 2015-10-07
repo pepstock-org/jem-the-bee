@@ -128,6 +128,7 @@ public enum SwarmNodeMessage implements MessageInterface {
 	/**
 	 * ""Unable to store node information in memory data map", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the swarm node is not able to store its data in Hazelcast.<br>Please contact your JEM administrators.")
 	JEMO016E(16, "Unable to store swarm node information in memory data map", MessageLevel.ERROR),
 

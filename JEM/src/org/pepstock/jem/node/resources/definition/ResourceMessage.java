@@ -66,12 +66,13 @@ public enum ResourceMessage implements MessageInterface{
 	@Description(explanation = "It occurs if there is a problem reading the resource template for the resources User interface.<br>An exception is thrown.<br>Check if the resource template is an XML well formed and correct it.")
 	JEMR005E(5, "Error reading resource template \"{0}\".", MessageLevel.ERROR),
 
-//	/**
-//	 * "The resource template xml file \"{0}\" has been deleted, using previous ResourceTemplate. Create new resource template file \"{0}\" inside directory: {1}."
-//	 * , MessageLevel.WARNING
-//	 */
-//	@Description(explanation = "<br>It occurs if someone delete the resource template file for the resource template User interface (specified in the log: {0}).<br>No exception is thrown, but this warning is logged.<br>Create a new resource template xml file in the correct directory, and automatically it will be reloaded, so no node restart is needed.")
-//	JEMR006W(6, "The resource template xml \"{0}\" has been deleted, using previous ResourceTemplate. Create new resource template file \"{0}\" inside directory: {1}.", MessageLevel.WARNING),
+	/**
+	 * "The resource template xml file \"{0}\" has been deleted, using previous ResourceTemplate. Create new resource template file \"{0}\" inside directory: {1}."
+	 * , MessageLevel.WARNING
+	 */
+	@Deprecated
+	@Description(explanation = "<br>It occurs if someone delete the resource template file for the resource template User interface (specified in the log: {0}).<br>No exception is thrown, but this warning is logged.<br>Create a new resource template xml file in the correct directory, and automatically it will be reloaded, so no node restart is needed.")
+	JEMR006W(6, "The resource template xml \"{0}\" has been deleted, using previous ResourceTemplate. Create new resource template file \"{0}\" inside directory: {1}.", MessageLevel.WARNING),
 
 	/**
 	 * "Error building {0}. {1} is null. It is mandatory.", MessageLevel.ERROR
@@ -140,6 +141,7 @@ public enum ResourceMessage implements MessageInterface{
 	/**
 	 * "No resource template is configured for Resource\"{0}\". Add template xml file in configuration.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs getting the ResourceDescriptor associated to a resource when no resource template xml is configured. Add template file in configuration")
 	JEMR017E(17, "No resource template is configured for Resource\"{0}\". Add template in configuration.", MessageLevel.ERROR),
 	
@@ -154,6 +156,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Removed resource \"{0}\" of type \"{1}\": type no longer exists!"
 	 * , MessageLevel.WARNING
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the sturtup phase of jem is found a resource of type no longer existing: it is removed.")
 	JEMR019W(19, "Removed resource \"{0}\" of type \"{1}\": type no longer exists!", MessageLevel.WARNING),
 
@@ -188,6 +191,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Changing a resource definition type from \"{0}\" to \"{1}\", it was not possible to clean the resources of the old type!"
 	 * , MessageLevel.WARN
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when changing the type of a resource definition it was not possible to remove the resource of the old type")
 	JEMR024W(24, "Changing a resource definition type from \"{0}\" to \"{1}\", it was not possible to clean the resources of the old type!", MessageLevel.WARNING),
 	
@@ -195,6 +199,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Changed the resource definition type from \"{0}\" to \"{1}\"."
 	 * , MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when changing the type of a resource definition.")
 	JEMR025I(25, "Changed the resource definition type from \"{0}\" to \"{1}\".", MessageLevel.INFO),
 	
@@ -202,6 +207,7 @@ public enum ResourceMessage implements MessageInterface{
 	 * "Deleted all resources of type: \"{0}\"."
 	 * , MessageLevel.INFO
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when a resource type is deleted: all corresponding resources must be removed.")
 	JEMR026I(26, "Deleted all resources of type: \"{0}\".", MessageLevel.INFO),
 	

@@ -46,11 +46,13 @@ public enum IoMessage implements MessageInterface{
 	/**
 	 * "Encoding must not be null.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMI003E(3, "Encoding must not be null.", MessageLevel.ERROR),
 	
 	/**
 	 * "Stream Closed.", MessageLevel.ERROR
 	 */
+	@Deprecated
 	JEMI004E(4, "Stream Closed.", MessageLevel.ERROR);
 
 	/**
