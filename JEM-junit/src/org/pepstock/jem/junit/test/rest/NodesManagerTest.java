@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.UpdateNode;
-import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.affinity.Result;
 
@@ -70,14 +69,12 @@ public class NodesManagerTest extends TestCase {
 		assertNotNull(log);
 		String cluster = RestManager.getInstance().getNodesManager().displayCluster(node.getKey());
 		assertNotNull(cluster);
-		ConfigurationFile file = RestManager.getInstance().getNodesManager().getAffinityPolicy(node.getKey());
-		assertNotNull(file);
-		assertNotNull(file.getContent());
-		Result result = RestManager.getInstance().getNodesManager().checkAffinityPolicy(node.getKey(), file.getContent());
+		String content = RestManager.getInstance().getNodesManager().getAffinityPolicy(node.getKey());
+		assertNotNull(content);
+		Result result = RestManager.getInstance().getNodesManager().checkAffinityPolicy(node.getKey(), content);
 		assertNotNull(result);
-		file = RestManager.getInstance().getNodesManager().putAffinityPolicy(node.getKey(), file.getContent());
-		assertNotNull(file);
-		assertNotNull(file.getContent());
+		content = RestManager.getInstance().getNodesManager().putAffinityPolicy(node.getKey(), content);
+		assertNotNull(content);
 		UpdateNode update = new UpdateNode();
 		update.setDomain("NewDomain");
 		update.setParallelJobs(10);

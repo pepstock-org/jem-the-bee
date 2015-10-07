@@ -142,6 +142,11 @@ public final class JobsManagerPaths  {
 	public static final String GET_BY_ID = CommonPaths.PATH_SEPARATOR + "getById" + CommonPaths.PATH_SEPARATOR + QUEUE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
 
 	/**
+	 * Key to define the path to bind get job by id
+	 */
+	public static final String GET_ONLY_BY_ID = CommonPaths.PATH_SEPARATOR + "getOnlyById" + CommonPaths.PATH_SEPARATOR + JOBID_PATH_PARAM;
+
+	/**
 	 * Key to define the path to bind get all jcl type inside the JEM
 	 */
 	public static final String GET_JCL_TYPES = CommonPaths.PATH_SEPARATOR + "getJclTypes";

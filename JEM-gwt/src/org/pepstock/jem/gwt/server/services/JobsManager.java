@@ -60,6 +60,7 @@ import org.pepstock.jem.node.executors.jobs.Purge;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
+import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
@@ -244,6 +245,38 @@ public class JobsManager extends DefaultService {
 		return new ArrayList<Job>(jobs.values(sql));
 	}
 
+	/**
+	 * Returns a job by its job id.
+	 * 
+	 * @param jobId
+	 *            job id to search
+	 * @return job, if found, otherwise null
+	 * @throws ServiceMessageException 
+	 *             if any exception occurs or a lock timeout on map occurs
+	 */
+	public Job getJobById(String jobId) throws ServiceMessageException {
+		// starts searching on output because usually is
+		// largest of others
+		Job job = getJobById(JobQueue.OUTPUT.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.RUNNING.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.INPUT.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.ROUTING.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * Returns a job by its job id.
 	 * 

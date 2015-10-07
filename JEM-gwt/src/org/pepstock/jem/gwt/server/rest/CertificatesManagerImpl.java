@@ -108,7 +108,7 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 					return ResponseBuilder.PLAIN.badRequest(CertificatesManagerPaths.ALIAS);
 				} else if (certificate == null || certificate.length == 0) {
 					// if certificate is null, bad request
-					return ResponseBuilder.PLAIN.badRequest("certificate");
+					return ResponseBuilder.PLAIN.noContent();
 				}
 				// return true if ended correctly otherwise false
 				return ResponseBuilder.PLAIN.ok(certificatesManager.addCertificate(certificate, alias).toString());

@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response.Status;
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.UpdateNode;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.rest.JsonUtil;
 import org.pepstock.jem.rest.RestClient;
@@ -384,30 +383,28 @@ public class NodesManager extends AbstractRestManager {
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile getAffinityPolicy(String key) throws RestException {
+	public String getAffinityPolicy(String key) throws RestException {
 		// creates a request builder with the APPLICATION/JSON media type as
 		// accept type (the default)
-		RequestBuilder builder = RequestBuilder.media(this);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN);
 		// replaces on the path the node key
 		String path = PathReplacer.path(NodesManagerPaths.GET_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
 		// performs REST call
 		ClientResponse response = builder.get(path);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
 		// if HTTP status code is ok, returns the configuration file
 		if (response.getStatus() == Status.OK.getStatusCode()){
-			return response.getEntity(ConfigurationFile.class);
+			return result;
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
 			// the node key passed as path parameters hasn't identified any node
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
 			// otherwise throws the exception using the
 			// body of response as message of exception
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			throw new RestException(response.getStatus(), getValue(response, String.class));
+			throw new RestException(response.getStatus(), result);
 		}
 	}
 	
@@ -453,30 +450,28 @@ public class NodesManager extends AbstractRestManager {
 	 * @return Configuration file container
 	 * @throws RestException if any exception occurs
 	 */
-	public ConfigurationFile putAffinityPolicy(String key, String content) throws RestException {
-		// creates a request builder with the APPLICATION/JSON media type as
+	public String putAffinityPolicy(String key, String content) throws RestException {
+		// creates a request builder with the TEXT/PLAIN media type as
 		// accept type and TEXT plain as content type
-		RequestBuilder builder = RequestBuilder.media(this, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN);
+		RequestBuilder builder = RequestBuilder.media(this, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN);
 		// replaces on the path the node key and 
 		String path = PathReplacer.path(NodesManagerPaths.PUT_AFFINITY_POLICY).replace(NodesManagerPaths.NODEKEY_PATH_PARAM, key).build();
 		// performs REST call
 		ClientResponse response = builder.post(path, content);
+		// because of the accept type is always TEXT/PLAIN
+		// it gets the string
+		String result = response.getEntity(String.class);
 		// if HTTP status code is ok, returns the configuration file
 		if (response.getStatus() == Status.OK.getStatusCode()){
-			return response.getEntity(ConfigurationFile.class);
+			return result;
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()){
 			// the node key passed as path parameters hasn't identified any node
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			String result = getValue(response, String.class);
 			LogAppl.getInstance().debug(result);
 			return null;
 		} else {
 			// otherwise throws the exception using the
 			// body of response as message of exception
-			// IT MUST CONSUME the response
-			// otherwise there is a HTTP error
-			throw new RestException(response.getStatus(), getValue(response, String.class));
+			throw new RestException(response.getStatus(), result);
 		}
 	}
 }
