@@ -31,17 +31,13 @@ public enum MessageCode {
 	 */
 	ANT("A"),
 	/**
-	 * ANT utilities (in the enterprise project) module
+	 * ANT utilities module
 	 */
 	ANT_UTIL("Z"),
 	/**
 	 * GDG management module
 	 */
 	GDG("D"),
-	/**
-	 * GRS node (in the enterprise project) module
-	 */
-	GRS("V"),
 	/**
 	 * IO utilities module
 	 */
@@ -50,10 +46,6 @@ public enum MessageCode {
 	 * JPPF module
 	 */
 	JPPF("J"),
-	/**
-	 * License utility (in the enterprise project) module
-	 */	
-	LICENSE("L"),
 	/**
 	 * Core JEM module
 	 */	

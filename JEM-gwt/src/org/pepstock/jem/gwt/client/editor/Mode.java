@@ -48,4 +48,17 @@ public enum Mode {
 	public String getName() {
 		return name;
 	}
+	
+	public static boolean isValid(String mode){
+		if (mode == null){
+			return false;
+		} else {
+			for (Mode myMode : values()){
+				if (myMode.getName().equalsIgnoreCase(mode)){
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }
