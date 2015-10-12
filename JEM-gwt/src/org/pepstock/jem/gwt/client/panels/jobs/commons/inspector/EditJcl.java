@@ -115,6 +115,10 @@ public class EditJcl extends XmlModifier{
 	    	selectAll.getItem().setEnabled(false);
 	    	submitMenuItem.setEnabled(false);
 	    }
+	    Jcl jcl = inspector.getJob().getJcl();
+    	if (jcl.getMode() == null || !jcl.getMode().equalsIgnoreCase(Mode.XML.getName())){
+    		indent.getItem().setEnabled(false);
+    	}
 	    menu.addSeparator();
 	    menu.addItem(discard.getItem());
 	    menu.addItem(submitMenuItem);
