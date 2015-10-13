@@ -484,7 +484,7 @@ public class NodesManagerImpl extends DefaultServerResource {
 				// if node is missing, not found, otherwise returns the
 				// configuration file
 				if (node ==null){
-					ResponseBuilder.PLAIN.notFound(key);
+					return ResponseBuilder.PLAIN.notFound(key);
 				}
 				ConfigurationFile file = manager.getNodeConfigFile(node.getNodeInfoBean(), ConfigKeys.AFFINITY);
 				return (file == null) ?  ResponseBuilder.PLAIN.notFound(key) : ResponseBuilder.PLAIN.ok(file.getContent());
