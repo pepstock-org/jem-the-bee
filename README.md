@@ -11,7 +11,7 @@ Download previous versions from [here](http://www.pepstock.org/download.htm)!
   * **[Multiple java runtimes](../../wiki/ConfiguringJEMNode)** which allows you to use the JRE you need for business logic
   * **[SpringBatch restartability](../../wiki/JCLReferenceUsingSpringBatch#restartability)** out of the box, provided by JEM
   * **[PowerShell](../../wiki/PS_as_JCL)** integration, as JCL
-  * **Generic Shell** JCL, which allows you to create your JCL based on a whatever shell script language
+  * **[Generic Shell](../../wiki/Generic_JCL_Script_Factory)** JCL, which allows you to create your JCL based on a whatever shell script language
   * **[REST](../../wiki/REST)** interface improvements 
   * JEM is distributed compiled by Java 7
  

@@ -37,7 +37,6 @@ public interface JobTaskFactory extends Serializable {
 	 */
 	String SWITCH_USER_KEY = "jem.switch.user"; 
 	
-
 	/**
 	 * Called to create a job task object, by a job object. It creates command
 	 * line and prepares the environment to execute the job
