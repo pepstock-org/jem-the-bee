@@ -18,6 +18,8 @@ package org.pepstock.jem.ant.tasks.utilities.nodes;
 
 import java.text.ParseException;
 
+import org.pepstock.jem.log.JemException;
+
 /**
  * Utility class to use to save command line during the syntax checking and execute the command
  * 
@@ -78,8 +80,8 @@ public abstract class Command {
 	/**
 	 * Execute the command
 	 * 
-	 * @throws Exception if an error occurs
+	 * @throws JemException if an error occurs
 	 */
-	public abstract void execute() throws Exception;
+	public abstract void execute() throws JemException;
 
 }

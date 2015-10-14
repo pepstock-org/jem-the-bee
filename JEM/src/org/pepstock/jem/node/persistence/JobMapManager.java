@@ -185,7 +185,7 @@ public class JobMapManager implements MapStore<String, Job> {
 	 */
 	@Override
 	public void store(String jobid, Job job) {
-		store(jobid, job, false);
+		store(job, false);
 	}
 
 	/* (non-Javadoc)
@@ -304,7 +304,7 @@ public class JobMapManager implements MapStore<String, Job> {
 	 * @param job job instance
 	 * @param exception if <code>true</code>, it will throw an exception if any errors occurs 
 	 */
-	void store(String jobid, Job job, boolean exception) {
+	void store(Job job, boolean exception) {
 		try {
 			// inserts the job in table
 			dbManager.insert(sqlContainer.getInsertStatement(), job);

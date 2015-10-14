@@ -31,6 +31,7 @@ import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.stats.Sample;
 import org.pepstock.jem.node.stats.TransformAndLoader;
+import org.pepstock.jem.node.stats.TransformAndLoaderException;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.DateFormatter;
 import org.pepstock.jem.util.Parser;
@@ -146,38 +147,43 @@ public class StatsCollectTask extends AntUtilTask {
 				int lineNumber = 0;
 				File file = files.next();
 				filesCount++;
+				Scanner sc = new Scanner(file, CharSet.DEFAULT_CHARSET_NAME);
+				sc.useDelimiter("\n");
 				try {
 					tl.fileStarted(file);
-					Scanner sc = new Scanner(file, CharSet.DEFAULT_CHARSET_NAME);
-					sc.useDelimiter("\n");
 					while (sc.hasNext()) {
 						String record = sc.next().toString();
 						lineNumber++;
-						try {
-							Object obj = STREAMER.fromXML(record);
-							if (obj instanceof Sample){
-								Sample sample = (Sample)obj;
-								try{
-									tl.loadSuccess(sample);
-								} catch (Exception ex){
-									System.out.println(AntUtilMessage.JEMZ030W.toMessage().getFormattedMessage(tl.getClass().getName(), lineNumber, ex.getMessage()));
-								}
-							}
-						} catch (Exception ex){
-							tl.loadFailed(record, lineNumber, ex);
-							System.out.println(AntUtilMessage.JEMZ031W.toMessage().getFormattedMessage(lineNumber, ex.getMessage()));
-						}
+						parseSingleRecord(record, tl, lineNumber);
 					}
-					sc.close();
 					tl.fileEnded(file);
 				} catch (Exception ex){
 					System.out.println(AntUtilMessage.JEMZ032W.toMessage().getFormattedMessage(tl.getClass().getName(), file.getAbsolutePath()));
+				} finally {
+					sc.close();
 				}
 			}
 		} else {
 			System.out.println(AntUtilMessage.JEMZ033E.toMessage().getFormattedMessage(statsFolder.getAbsolutePath()));
 		} 
 		System.out.println(AntUtilMessage.JEMZ034I.toMessage().getFormattedMessage(filesCount));
+	}
+	
+	private static void parseSingleRecord(String record, TransformAndLoader tl, int lineNumber) throws TransformAndLoaderException{
+		try {
+			Object obj = STREAMER.fromXML(record);
+			if (obj instanceof Sample){
+				Sample sample = (Sample)obj;
+				try{
+					tl.loadSuccess(sample);
+				} catch (Exception ex){
+					System.out.println(AntUtilMessage.JEMZ030W.toMessage().getFormattedMessage(tl.getClass().getName(), lineNumber, ex.getMessage()));
+				}
+			}
+		} catch (Exception ex){
+			tl.loadFailed(record, lineNumber, ex);
+			System.out.println(AntUtilMessage.JEMZ031W.toMessage().getFormattedMessage(lineNumber, ex.getMessage()));
+		}
 	}
 
 }

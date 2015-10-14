@@ -32,7 +32,7 @@ public class Resources implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private List<Resource> resources = new ArrayList<Resource>();
+	private List<Resource> resourcesList = new ArrayList<Resource>();
 
 	/**
 	 * Empty constructor
@@ -43,15 +43,15 @@ public class Resources implements Serializable{
 	/**
 	 * @return the resources
 	 */
-	public List<Resource> getResources() {
-		return resources;
+	public List<Resource> getResourcesList() {
+		return resourcesList;
 	}
 
 	/**
 	 * @param resources the resources to set
 	 */
-	public void setResources(List<Resource> resources) {
-		this.resources = resources;
+	public void setResourcesList(List<Resource> resources) {
+		this.resourcesList = resources;
 	}
 
 	/* (non-Javadoc)
@@ -59,7 +59,7 @@ public class Resources implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		return "Resources [resources=" + resources + "]";
+		return "Resources [resources=" + resourcesList + "]";
 	}
 	
 }

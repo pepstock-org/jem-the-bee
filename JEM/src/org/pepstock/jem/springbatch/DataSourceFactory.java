@@ -58,13 +58,31 @@ public final class DataSourceFactory {
 	 * @return <code>true</code> if properties contains all necessary keys, otherwise <code>false</code>
 	 */
 	public static boolean isJobRepositoryPersistent(Properties props){
-		return props.containsKey(JDBC_DRIVER_KEY) &&
-				props.containsKey(JDBC_URL_KEY) &&
-				props.containsKey(JDBC_TYPE_KEY) &&
-				props.containsKey(JDBC_USER_KEY) &&
-				props.containsKey(JDBC_PASSWORD_KEY);
+		return checkDriverAndUrl(props) &&
+				checkUserAndPassword(props) &&
+				props.containsKey(JDBC_TYPE_KEY);
 	}
 	
+	/**
+	 * Checks JDBC driver and URL
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return <code>true</code> if properties contains all necessary keys, otherwise <code>false</code>
+	 */
+	private static boolean checkDriverAndUrl(Properties props){
+		return props.containsKey(JDBC_DRIVER_KEY) &&
+				props.containsKey(JDBC_URL_KEY);
+	}
+
+	/**
+	 * Checks userid and password
+	 * @param props properties instance defined inside of SB JCL definition.
+	 * @return <code>true</code> if properties contains all necessary keys, otherwise <code>false</code>
+	 */
+	private static boolean checkUserAndPassword(Properties props){
+		return props.containsKey(JDBC_USER_KEY) &&
+				props.containsKey(JDBC_PASSWORD_KEY);
+	}
+
 	/**
 	 * Returns the URL of JDBC driver, defined in SB JCL configuration, using reflection.
 	 * 

@@ -117,7 +117,7 @@ public class RecoveryManager {
 					// of map store
 					// otherwise it calls the delete one
 					if (statement.getAction().equalsIgnoreCase(RedoStatement.STORE)) {
-						mapStore.store(statement.getJob().getId(), statement.getJob(), true);
+						mapStore.store(statement.getJob(), true);
 					} else if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
 						mapStore.delete(statement.getJobId(), true);
 					}

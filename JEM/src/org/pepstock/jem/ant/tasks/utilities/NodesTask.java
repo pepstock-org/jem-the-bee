@@ -19,6 +19,7 @@ package org.pepstock.jem.ant.tasks.utilities;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.naming.InitialContext;
 
@@ -61,9 +62,9 @@ public class NodesTask extends AntUtilTask {
 	@Override
 	public void execute() throws BuildException {
 		String port = System.getProperty(RmiKeys.JEM_RMI_PORT);
-		if (port == null)
+		if (port == null){
 			throw new BuildException(AntMessage.JEMA004E.toMessage().getFormattedMessage());
-		
+		}
 		super.setClassname(NodesTask.class.getName());
 		super.execute();
 	}
@@ -94,7 +95,7 @@ public class NodesTask extends AntUtilTask {
 		String records = recordsSB.toString().trim();
 		if (records.length() > 0) {
 			// list with all gdgs because it checks command syntax before starting creation
-			LinkedList<Command> list = new LinkedList<Command>();
+			List<Command> list = new LinkedList<Command>();
 
 			// splits with command separator ";"
 			String[] commands = records.toString().split(COMMAND_SEPARATOR);

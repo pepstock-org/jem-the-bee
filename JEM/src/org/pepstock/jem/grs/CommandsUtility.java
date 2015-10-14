@@ -34,7 +34,7 @@ import com.hazelcast.core.IMap;
  * @version 2.3
  * 
  */
-public class CommandsUtility {
+public final class CommandsUtility {
 
 	private static String TITLE = "GRS Status";
 
@@ -47,6 +47,12 @@ public class CommandsUtility {
 	private static String NO_LOCKS = "No locks";
 
 	/**
+	 * to avoid any instantiation
+	 */
+	private CommandsUtility() {
+	}
+
+	/**
 	 * Returns a string with locks for all resources and requestors
 	 * 
 	 * @return all locks info
@@ -54,10 +60,9 @@ public class CommandsUtility {
 	public static StringBuilder displayRequestors() {
 		// creates title
 		StringBuilder sb = new StringBuilder(TITLE).append('\n');
-		//StringBuilder sb = new StringBuilder();
 
 		// get latch info map reference
-		IMap<String, LatchInfo> counter_mutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
 		// gets all resources names (all keys)
 
 		boolean isLock=false;
@@ -65,12 +70,13 @@ public class CommandsUtility {
 		Collection<LatchInfo> values = null; 
 		try {
 			isLock=lock.tryLock(10, TimeUnit.SECONDS);
-			values = counter_mutex.values();
+			values = counterMutex.values();
 		} catch (Exception ex) {
 			values = new ArrayList<LatchInfo>();
 		} finally {
-			if(isLock)
+			if (isLock){
 				lock.unlock();
+			}
 		}
 		
 		if (!values.isEmpty()){
@@ -96,16 +102,16 @@ public class CommandsUtility {
 	public static StringBuilder displayRequestors(String resourceKey) {
 		// creates title
 		StringBuilder sb = new StringBuilder(TITLE).append('\n');
-		//StringBuilder sb = new StringBuilder();
 
 		// get latch info map reference
-		IMap<String, LatchInfo> counter_mutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
 		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(LockStructures.COUNTER_MUTEX_LOCK);
 		boolean isLock = false;
 		// gets latch info and print it
 		try {
-			if (isLock = lock.tryLock(10, TimeUnit.SECONDS)) {
-				return sb.append(buildDisplay(counter_mutex.get(resourceKey)));
+			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock) {
+				return sb.append(buildDisplay(counterMutex.get(resourceKey)));
 			} else {
 				throw new InterruptedException();
 			}
@@ -142,7 +148,7 @@ public class CommandsUtility {
 					// mode
 					sb.append(
 							MessageFormat.format(DATA, StringUtils.rightPad(rinfo.getNodeLabel(), 20), StringUtils.rightPad(rinfo.getId(), 39),
-									StringUtils.rightPad(((rinfo.getMode() == ResourceLock.READ_MODE) ? "READ" : "WRITE"), 10), rinfo.getName())).append('\n');
+									StringUtils.rightPad((rinfo.getMode() == ResourceLock.READ_MODE ? "READ" : "WRITE"), 10), rinfo.getName())).append('\n');
 				}
 			} else {
 				sb.append(NO_LOCKS).append('\n');

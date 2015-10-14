@@ -551,10 +551,10 @@ public class StepJava extends Java  implements DataDescriptionStep {
 		try {
 			// if has got a classpath, change the main class with a JEM one
 			if (super.getCommandLine().haveClasspath()){
-				Class<?> clazz = JavaMainClassLauncher.class;
+				Class<?> customClazz = JavaMainClassLauncher.class;
 				// gets where the class is located
 				// becuase it must be added to classpath
-				CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+				CodeSource codeSource = customClazz.getProtectionDomain().getCodeSource();
 				if ( codeSource != null) {
 					// gets URL
 					URL url = codeSource.getLocation();

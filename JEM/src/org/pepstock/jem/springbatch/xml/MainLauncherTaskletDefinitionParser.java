@@ -57,7 +57,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(MainLauncherTaskletFactoryBean.class);
 		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet(element));
 		// parses all arguments elements
-		parseArguments(element, factory, context);
+		parseArguments(element, factory);
 		// parses classPath elements
 		parseClassPath(element, factory, context);
 		// loads all data description, locks, data source
@@ -86,7 +86,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	 * @param factory parent bean builder to load
 	 * @param context parser context
 	 */
-	private void parseArguments(Element element, BeanDefinitionBuilder factory, ParserContext context) {
+	private void parseArguments(Element element, BeanDefinitionBuilder factory) {
 		// gets the ARGUMENTS element
 		Element arguments = DomUtils.getChildElementByTagName(element, ARGUMENTS_ELEMENT);
 		// if is missing, return

@@ -18,7 +18,6 @@ package org.pepstock.jem.node.events;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
@@ -51,18 +50,12 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 	private JobOutputArchive jobOutputArchive = null;
 
 	
-	/**
-	 * 
-	 */
-	public JobOutputArchiveListener() {
-	}
-
-
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.events.JobLifecycleListener#queued(org.pepstock.jem.Job)
 	 */
     @Override
     public void queued(Job job) {
+    	// do nothing
     }
 
 	/* (non-Javadoc)
@@ -70,6 +63,7 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 	 */
     @Override
     public void running(Job job) {
+    	// do nothing
     }
     
 	/**
@@ -82,19 +76,12 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 		if (isInizialized && jobOutputArchive != null){
 			File outputPath = Main.getOutputSystem().getOutputPath();
 			File folderToZip = new File(outputPath, job.getId());
-			//File zipFile = new File(outputPath, job.getId()+".zip");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			//FileUtils.copyInputStreamToFile(new ByteArrayInputStream(baos.toByteArray()), zipFile);
 			try {
 				ZipUtil.createZip(folderToZip, baos);
 				boolean delete = jobOutputArchive.archive(job, baos.toByteArray());
 				if (delete) {
-					try{
-						purge(job);
-						LogAppl.getInstance().emit(AntUtilMessage.JEMZ047I, job.toString());
-					} catch (RemoteException re){
-						LogAppl.getInstance().emit(AntUtilMessage.JEMZ044E, re, job.toString());
-					}
+					purge(job);
 				} else {
 					LogAppl.getInstance().emit(AntUtilMessage.JEMZ045W, job.toString());	
 				}
@@ -130,24 +117,29 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 	}
 
 	
-	private void purge(Job job) throws Exception {
-		IMap<String, Job> jobs = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
+	private void purge(Job job) {
 		try{
-			jobs.lock(job.getId());
-			if (jobs.containsKey(job.getId())) {
-				jobs.remove(job.getId());
+			IMap<String, Job> jobs = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
+			try{
+				jobs.lock(job.getId());
+				if (jobs.containsKey(job.getId())) {
+					jobs.remove(job.getId());
+				}
+			} finally {
+				jobs.unlock(job.getId());
 			}
-		} finally {
-			jobs.unlock(job.getId());
+
+			Cluster cluster = Main.getHazelcast().getCluster();
+			// creates the future task
+			DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Purge(job), cluster.getLocalMember());
+			// gets executor service and executes!
+			ExecutorService executorService = Main.getHazelcast().getExecutorService();
+			task.setExecutionCallback(new GenericCallBack());
+			executorService.execute(task);
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ047I, job.toString());
+		} catch (Exception re){
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ044E, re, job.toString());
 		}
-		
-		Cluster cluster = Main.getHazelcast().getCluster();
-		// creates the future task
-		DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Purge(job), cluster.getLocalMember());
-		// gets executor service and executes!
-		ExecutorService executorService = Main.getHazelcast().getExecutorService();
-		task.setExecutionCallback(new GenericCallBack());
-		executorService.execute(task);
 	}
 
 }

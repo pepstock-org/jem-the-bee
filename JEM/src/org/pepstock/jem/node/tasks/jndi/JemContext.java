@@ -86,7 +86,7 @@ public class JemContext extends InitialContext implements Context {
 	public void bind(Name name, Object obj) throws NamingException {
 		// name mustn't be empty
 		if (name.isEmpty()) {
-			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getMessage());
+			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getContent());
 		}
 
 		// Extract name of reference
@@ -97,7 +97,7 @@ public class JemContext extends InitialContext implements Context {
 		if (name.size() == 1) {
 			// Atomic name: Find object in internal data structure
 			if (inter != null) {
-				throw new NameAlreadyBoundException(NodeMessage.JEMC102E.toMessage().getMessage());
+				throw new NameAlreadyBoundException(NodeMessage.JEMC102E.toMessage().getContent());
 			}
 
 			// Call getStateToBind for using any state factories
@@ -127,7 +127,7 @@ public class JemContext extends InitialContext implements Context {
 	public Object lookup(Name name) throws NamingException {
 		// name mustn't be empty
 		if (name.isEmpty()) {
-			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getMessage());
+			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getContent());
 		} 
 		// Extract components that belong to this name space
 		String atom = name.get(0);
@@ -148,7 +148,7 @@ public class JemContext extends InitialContext implements Context {
 				// ignore
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				// creates an naming exception
-				NamingException ne = new NamingException(NodeMessage.JEMC140E.toMessage().getMessage());
+				NamingException ne = new NamingException(NodeMessage.JEMC140E.toMessage().getContent());
 				// setting the root cause
 				ne.setRootCause(e);
 				throw ne;
@@ -174,7 +174,7 @@ public class JemContext extends InitialContext implements Context {
 	public void rebind(Name name, Object obj) throws NamingException {
 		// name mustn't be empty
 		if (name.isEmpty()) {
-			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getMessage());
+			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getContent());
 		}
 		// Extract components that belong to this name space
 		String atom = name.get(0);
@@ -208,7 +208,7 @@ public class JemContext extends InitialContext implements Context {
 	public void unbind(Name name) throws NamingException {
 		// name mustn't be empty
 		if (name.isEmpty()) {
-			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getMessage());
+			throw new InvalidNameException(NodeMessage.JEMC139E.toMessage().getContent());
 		}
 		// Extract components that belong to this name space
 		String atom = name.get(0);

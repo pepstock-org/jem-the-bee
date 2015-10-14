@@ -65,10 +65,10 @@ public final class JPPFTasklet extends JemTasklet {
 	@Override
 	public RepeatStatus run(StepContribution stepContribution, ChunkContext chunkContext) throws TaskletException {
 		if (bean == null){
-			throw new TaskletException(JPPFMessage.JEMJ011E.toMessage().getMessage());
+			throw new TaskletException(JPPFMessage.JEMJ011E.toMessage().getContent());
 		}
 		if (bean.getRunnable() == null){
-			throw new TaskletException(JPPFMessage.JEMJ001E.toMessage().getMessage());
+			throw new TaskletException(JPPFMessage.JEMJ001E.toMessage().getContent());
 		}
 		LogAppl.getInstance();
 		try {
@@ -118,7 +118,7 @@ public final class JPPFTasklet extends JemTasklet {
 			String icXml = xstream.toXML(ic);
 			ExecuteManager.submit(icXml);
 		} catch (NamingException e) {
-			throw new TaskletException(JPPFMessage.JEMJ032E.toMessage().getMessage(), e);
+			throw new TaskletException(JPPFMessage.JEMJ032E.toMessage().getContent(), e);
 		} catch (JPPFMessageException e) {
 			throw new TaskletException(e.getMessage(), e);
 		}

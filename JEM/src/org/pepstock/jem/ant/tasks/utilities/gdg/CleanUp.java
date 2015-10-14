@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.pepstock.catalog.gdg.Root;
@@ -67,9 +68,9 @@ public class CleanUp extends Command {
 			setDDName(object[0].toString());
 
 			// gets versions
-			int versions = Parser.parseInt(object[1].toString(), NOVERSIONS);
+			int gdgVersions = Parser.parseInt(object[1].toString(), NOVERSIONS);
 			// versions could less than zero but minimum value must be 0
-			versions = Math.max(versions, NOVERSIONS);
+			versions = Math.max(gdgVersions, NOVERSIONS);
 			setVersions(versions);
 		} else {
 			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
@@ -121,7 +122,7 @@ public class CleanUp extends Command {
 			return;
 		}
 		@SuppressWarnings("unchecked")
-		ArrayList<String> keysList = (ArrayList<String>) Collections.list(properties.propertyNames());
+		List<String> keysList = (ArrayList<String>) Collections.list(properties.propertyNames());
 		Collections.sort(keysList);
 
 		// calculates the amount of files to remove (-1 because there is the key
@@ -131,21 +132,20 @@ public class CleanUp extends Command {
 		// scans all keys
 		for (String key : keysList) {
 			// ignores key for last generation
-			if (!key.equalsIgnoreCase(Root.LAST_GENERATION_PROPERTY)) {
-				// if has still some rows to delete
-				if (rowsCountToremove > 0) {
-					// gest filename and creates a file object for key
-					String fileName = properties.getProperty(key);
-					File genFile = new File(file, fileName);
-					// delete the file!
-					if (!genFile.delete()) {
-						System.out.println(AntUtilMessage.JEMZ002W.toMessage().getFormattedMessage(genFile));
-					} else {
-						System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(genFile));
-						root.getProperties().remove(key);
-					}
-					rowsCountToremove--;
+			if (!key.equalsIgnoreCase(Root.LAST_GENERATION_PROPERTY) &&
+					// if has still some rows to delete
+					rowsCountToremove > 0) {
+				// gest filename and creates a file object for key
+				String fileName = properties.getProperty(key);
+				File genFile = new File(file, fileName);
+				// delete the file!
+				if (!genFile.delete()) {
+					System.out.println(AntUtilMessage.JEMZ002W.toMessage().getFormattedMessage(genFile));
+				} else {
+					System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(genFile));
+					root.getProperties().remove(key);
 				}
+				rowsCountToremove--;
 			}
 		}
 		// stores the root properties

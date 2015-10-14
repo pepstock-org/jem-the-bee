@@ -157,13 +157,13 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 		// checks if someone add a security manager
 		if (perm instanceof RuntimePermission && "setSecurityManager".equalsIgnoreCase(perm.getName())){
 			LogAppl.getInstance().emit(NodeMessage.JEMC274E);
-			throw new SecurityException(NodeMessage.JEMC274E.toMessage().getMessage());
+			throw new SecurityException(NodeMessage.JEMC274E.toMessage().getContent());
 		}
 		// this check is necessary to avoid that someone
 		// set jem properties, accessing outside of GFS
 		if (perm instanceof PropertyPermission && "write".equalsIgnoreCase(perm.getActions()) && perm.getName().startsWith("jem")){
 			LogAppl.getInstance().emit(NodeMessage.JEMC127E);
-			throw new SecurityException(NodeMessage.JEMC127E.toMessage().getMessage());
+			throw new SecurityException(NodeMessage.JEMC127E.toMessage().getContent());
 		}
 		// checks is administrator. if true return.
 		if (isAdministrator() || isInternalAction()){
@@ -202,12 +202,12 @@ class SpringBatchSecurityManager extends BatchSecurityManager {
 					// EXCEPTION!!
 					if (resolved.equalsIgnoreCase(localhost) && !checkBatchPermission(Permissions.INTERNAL_SERVICES)){
 						LogAppl.getInstance().emit(NodeMessage.JEMC128E);
-						throw new SecurityException(NodeMessage.JEMC128E.toMessage().getMessage());
+						throw new SecurityException(NodeMessage.JEMC128E.toMessage().getContent());
 					}
 				} catch (UnknownHostException e) {
 					// if there is an error on resolving the hostname
 					LogAppl.getInstance().emit(NodeMessage.JEMC128E);
-					throw new SecurityException(NodeMessage.JEMC128E.toMessage().getMessage(), e);
+					throw new SecurityException(NodeMessage.JEMC128E.toMessage().getContent(), e);
 				}
 			}
 		}

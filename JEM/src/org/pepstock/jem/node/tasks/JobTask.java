@@ -329,10 +329,9 @@ public abstract class JobTask extends CommandLineTask {
 	 * @return true if it was able to cancel the job in execution otherwise
 	 *         false
 	 */
-	public final boolean cancel(String pid, boolean force) {
+	public final boolean cancel(boolean force) {
 		// PID is usually pass in the format [pid]@[hostname] by JMX
 		// implementation of JDK.
-
 		String id = StringUtils.substringBefore(getJob().getProcessId(), "@");
 		long intId = Parser.parseLong(id, -1L);
 		if (intId == -1L){

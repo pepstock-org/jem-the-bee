@@ -298,7 +298,7 @@ public class OutputSystem {
 	 * @throws IOException 
 	 */
 	public File getMessagesLogFile(Job job, boolean createDirectory) throws IOException {
-		File dirJob = createDirectoryForJob(job, true);
+		File dirJob = createDirectoryForJob(job, createDirectory);
 		return new File(dirJob, MESSAGESLOG_FILE);
 	}
 
@@ -411,7 +411,7 @@ public class OutputSystem {
 		
 		private static final long MB = 1024;
 		
-		private List<Space> list = new LinkedList<OutputSystem.Space>();
+		private List<SpaceSample> list = new LinkedList<OutputSystem.SpaceSample>();
 
 		/* (non-Javadoc)
 		 * @see java.util.TimerTask#run()
@@ -427,13 +427,13 @@ public class OutputSystem {
 				try {
 					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), 10 * TimeUtils.SECOND);
 					
-					Space space = new Space();
+					SpaceSample space = new SpaceSample();
 					space.setSpace(freeSpace);
 					space.setTime(System.currentTimeMillis() / 1000);
 					
-					((LinkedList<Space>)list).addLast(space);
+					((LinkedList<SpaceSample>)list).addLast(space);
 					if (list.size() >  SAMPLES_COUNT){
-						((LinkedList<Space>)list).removeFirst();
+						((LinkedList<SpaceSample>)list).removeFirst();
 					}
 					
 					if (isUnderThreshold()){
@@ -459,7 +459,7 @@ public class OutputSystem {
 
 			// if we have only 1 sample, checks directly the value
 	        if (list.size() == 1){
-	        	Space space = ((LinkedList<Space>)list).getFirst();
+	        	SpaceSample space = ((LinkedList<SpaceSample>)list).getFirst();
 	        	return space.getSpace() < (MB * 100);
 	        }
 	        
@@ -467,7 +467,7 @@ public class OutputSystem {
 	        double[][] times = new double[list.size()][];
 	        
 	        int index = 0;
-	        for (Space space : list){
+	        for (SpaceSample space : list){
 	        	values[index] = space.getSpace();
 	        	times[index] = new double[]{space.getTime()};
 	        	index++;
@@ -483,7 +483,7 @@ public class OutputSystem {
 	        double q = betaHat[0];
 	        
 	        // using the linear regression, try to estimate the space in 10 minutes
-	        Space last = ((LinkedList<Space>)list).getLast();
+	        SpaceSample last = ((LinkedList<SpaceSample>)list).getLast();
 	        double x = last.getTime() + (10 * MINUTE);
 	        
 	        double y = (m * x) + q;
@@ -492,13 +492,13 @@ public class OutputSystem {
 	}
 	
 	/**
-	 * This bean contains the samples needed to calculate the lineaer regression
+	 * This bean contains the samples needed to calculate the linear regression
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 1.0	
 	 *
 	 */
-	static class Space {
+	static class SpaceSample {
 		
 		private long space = 0;
 		

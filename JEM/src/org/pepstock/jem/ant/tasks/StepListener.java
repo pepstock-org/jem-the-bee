@@ -150,7 +150,7 @@ public class StepListener implements BuildListener {
 					if (System.getSecurityManager() == null) {
 						System.setSecurityManager(new AntBatchSecurityManager(myroles));
 					} else {
-						throw new BuildException(AntMessage.JEMA039E.toMessage().getMessage());
+						throw new BuildException(AntMessage.JEMA039E.toMessage().getContent());
 					}
 				} else {
 					throw new BuildException(AntMessage.JEMA038E.toMessage().getFormattedMessage(TasksDoor.NAME));

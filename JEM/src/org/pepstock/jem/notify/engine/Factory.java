@@ -131,12 +131,12 @@ public class Factory {
 			}
 			if (toEAddresses.isEmpty()) {
 				LogAppl.getInstance().emit(NotifyMessage.JEMN002E);
-				throw new FactoryException(NotifyMessage.JEMN002E.toMessage().getMessage());
+				throw new FactoryException(NotifyMessage.JEMN002E.toMessage().getContent());
 			}
 			return toEAddresses;
 		} else {
 			LogAppl.getInstance().emit(NotifyMessage.JEMN003E);
-			throw new FactoryException(NotifyMessage.JEMN003E.toMessage().getMessage());
+			throw new FactoryException(NotifyMessage.JEMN003E.toMessage().getContent());
 		}
 	}
 	

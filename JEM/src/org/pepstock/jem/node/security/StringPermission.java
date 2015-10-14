@@ -87,7 +87,7 @@ public class StringPermission extends WildcardPermission implements Permission, 
 	private void load() {
 		// if string permission if not valid, throw an exception
 		if (permission == null || permission.trim().length() == 0) {
-			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getMessage());			
+			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getContent());			
 		}
 
 		// removes blanks
@@ -122,14 +122,14 @@ public class StringPermission extends WildcardPermission implements Permission, 
 			// splits all parts in subpart using the divider
 			Set<String> subparts = CollectionUtils.asSet(part.split(RegExpPermission.SUBPART_DIVIDER_TOKEN));
 			if (subparts.isEmpty()) {
-				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getMessage());
+				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getContent());
 			}
 			// adds subpart
 			this.parts.add(subparts);
 		}
 		// if not parts, the permission string syntax is wrong
 		if (this.parts.isEmpty()) {
-			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getMessage());
+			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getContent());
 		}
 	}
 	

@@ -16,15 +16,21 @@
  */
 package org.pepstock.jem.ant.tasks.utilities.certificate;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.List;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -82,36 +88,42 @@ public class Import extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.resources.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public void execute() throws JemException {
 
-		// new initial context to access by INPUT to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
+		try {
+			// new initial context to access by INPUT to COMMAND DataDescription
+			InitialContext ic = ContextUtils.getContext();
 
-		// read certificate to a string
-		Object filein = (Object) ic.lookup(getFile());
-		if (filein instanceof InputStream) {
-			// read the certificate
-			InputStream in = (InputStream) filein;
-			//InputStreamReader is = new InputStreamReader(in, CharSet.DEFAULT);
+			// read certificate to a string
+			Object filein = (Object) ic.lookup(getFile());
+			if (filein instanceof InputStream) {
+				// read the certificate
+				InputStream in = (InputStream) filein;
 			
-			StringBuilder sb = new StringBuilder();
-			List<String> rows = IOUtils.readLines(in, CharSet.DEFAULT);
-			for (String row: rows){
-				String trimRow = row.trim();
-				if (!"".equals(trimRow)){
-					sb.append(trimRow).append(System.getProperty("line.separator"));
+				StringBuilder sb = new StringBuilder();
+				List<String> rows = IOUtils.readLines(in, CharSet.DEFAULT);
+				for (String row: rows){
+					String trimRow = row.trim();
+					if (!"".equals(trimRow)){
+						sb.append(trimRow).append(System.getProperty("line.separator"));
+					}
 				}
+				in.close();
+				String certificate = sb.toString();
+				System.out.println(certificate);
+				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
+				util.importCertificate(JobId.VALUE, certificate.getBytes(CharSet.DEFAULT),	getAlias());
+			} else {
+				throw new MessageException(AntUtilMessage.JEMZ011E,	getFile(), filein.getClass().getName());
 			}
-			in.close();
-			String certificate = sb.toString();
-			System.out.println(certificate);
-			InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
-			util.importCertificate(JobId.VALUE, certificate.getBytes(CharSet.DEFAULT),	getAlias());
-		} else {
-			throw new Exception(
-					AntUtilMessage.JEMZ011E.toMessage().getFormattedMessage(
-							getFile(), filein.getClass().getName()));
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
+		} catch (NamingException e) {
+			throw new JemException(e);
+		} catch (IOException e) {
+			throw new JemException(e);
 		}
-
 	}
 }

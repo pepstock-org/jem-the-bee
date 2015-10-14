@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -128,14 +129,14 @@ public class Rebuild extends Command {
 		// gets all properties of root, sorts keys by a list
 		Properties properties = root.getProperties();
 		@SuppressWarnings("unchecked")
-		ArrayList<String> keysList = (ArrayList<String>) Collections.list(properties.propertyNames());
+		List<String> keysList = (ArrayList<String>) Collections.list(properties.propertyNames());
 		Collections.sort(keysList);
 		
 		// scans all keys
 		for (String key : keysList){
 			// ignores key for last generation
 			if (!key.equalsIgnoreCase(Root.LAST_GENERATION_PROPERTY)){
-				// gest filename and creates a file object for key
+				// gets filename and creates a file object for key
 				String fileName = properties.getProperty(key);
 				File genFile = new File(file, fileName);
 				// if file doesn't exists
@@ -146,7 +147,6 @@ public class Rebuild extends Command {
 						boolean isCreated = genFile.createNewFile();
 						if (isCreated){
 							System.out.println(AntUtilMessage.JEMZ005I.toMessage().getFormattedMessage(genFile.getAbsolutePath()));
-							//root.getProperties().setProperty(key, fileName);
 						} else {
 							System.out.println(AntUtilMessage.JEMZ040E.toMessage().getFormattedMessage(genFile.getAbsolutePath()));
 							throw new IOException(AntUtilMessage.JEMZ040E.toMessage().getFormattedMessage(genFile.getAbsolutePath()));

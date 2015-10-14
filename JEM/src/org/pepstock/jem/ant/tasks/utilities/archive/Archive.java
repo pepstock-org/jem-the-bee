@@ -18,6 +18,8 @@ package org.pepstock.jem.ant.tasks.utilities.archive;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Collection;
@@ -25,6 +27,9 @@ import java.util.Collection;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
@@ -53,11 +58,11 @@ public class Archive extends Command {
 	 * @see org.pepstock.jem.ant.archive.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public void execute() throws JemException {
 		// gets output path for job. If null, exception
 		String jobOutputPath = System.getProperty(ConfigKeys.JEM_OUTPUT_PATH_NAME);
 		if (jobOutputPath == null){
-			throw new Exception(AntMessage.JEMA007E.toMessage().getFormattedMessage());
+			throw new MessageException(AntMessage.JEMA007E);
 		}
 		
 		// creates a file with job output path
@@ -66,9 +71,17 @@ public class Archive extends Command {
 		File outputPath = jobOutputFile.getParentFile();
 		
 		// gets internal RMI utilities
-		InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
+		InternalUtilities util;
 		// gets all jobs which match with command (Hazelcast SQL)
-		Collection<Job> jobs = util.getJobs(JobId.VALUE, getCommandLine());
+		Collection<Job> jobs;
+		try {
+			util = UtilsInitiatorManager.getInternalUtilities();
+			jobs = util.getJobs(JobId.VALUE, getCommandLine());
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
+		}
 		
 		int count = 0;
 		// scans all jobs
@@ -76,32 +89,28 @@ public class Archive extends Command {
 			// gets output folder of job
 			File folderToZip = new File(outputPath, job.getId());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			// zips all folder
-			ZipUtil.createZip(folderToZip, baos);
-
 			try {
+				// zips all folder
+				ZipUtil.createZip(folderToZip, baos);
 				// calls plugin heaving statement if job must delete or not
 				boolean delete = super.getJobOutputArchive().archive(job, baos.toByteArray());
 				if (delete) {
-					try{
-						// deletes job from queue, output folder and its content
-						// calling (remotely) a purge command
-						util.purge(JobId.VALUE, job);
-						count++;
-						System.out.println(AntUtilMessage.JEMZ047I.toMessage().getFormattedMessage(job.toString()));
-					} catch (RemoteException re){
-						System.out.println(AntUtilMessage.JEMZ044E.toMessage().getFormattedMessage(job.toString()));
-						re.printStackTrace();
-					}
+					// deletes job from queue, output folder and its content
+					// calling (remotely) a purge command
+					util.purge(JobId.VALUE, job);
+					count++;
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ047I, job.toString());
 				} else {
-					System.out.println(AntUtilMessage.JEMZ045W.toMessage().getFormattedMessage(job.toString()));	
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ045W, job.toString());
 				}
+			} catch (RemoteException re){
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ044E, re, job.toString());
+			} catch (IOException re){
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ046E, re, job.toString());
 			} catch (Exception re){
-				System.out.println(AntUtilMessage.JEMZ046E.toMessage().getFormattedMessage(job.toString()));
-				re.printStackTrace();
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ046E, re, job.toString());
 			}
 		}
-		System.out.println(AntUtilMessage.JEMZ048I.toMessage().getFormattedMessage(String.valueOf(count), String.valueOf(jobs.size())));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ048I, String.valueOf(count), String.valueOf(jobs.size()));
 	}
-
 }

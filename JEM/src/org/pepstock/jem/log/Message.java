@@ -42,7 +42,7 @@ public class Message implements Serializable{
 
 	private int code = 0;
 
-	private String message = null;
+	private String content = null;
 
 	private MessageLevel level = MessageLevel.INFO;
 
@@ -63,10 +63,10 @@ public class Message implements Serializable{
 		// formats the number to 5 digits
 		String codeString = DF.format(code);
 		// creates prefix to message "JEMnnnnn"
-		this.message = PREFIX + id + codeString + " " + msg;
+		this.content = PREFIX + id + codeString + " " + msg;
 
 		// creates format object
-		this.format = new MessageFormat(message);
+		this.format = new MessageFormat(content);
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class Message implements Serializable{
 	 * 
 	 * @return log message
 	 */
-	public String getMessage() {
-		return message;
+	public String getContent() {
+		return content;
 	}
 
 	/**

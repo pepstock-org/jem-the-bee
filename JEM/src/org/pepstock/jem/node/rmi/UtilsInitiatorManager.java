@@ -41,7 +41,8 @@ public class UtilsInitiatorManager {
 	/**
 	 * To avoid any instantiation
 	 */
-    private UtilsInitiatorManager() {}
+    private UtilsInitiatorManager() {
+    }
 
 	/**
 	 * Lookup for Internal utilities, necessary to use to start and drain nodes.<br>
@@ -56,9 +57,9 @@ public class UtilsInitiatorManager {
 		// get RMI port from system property
 		// job task did that
 		String port = System.getProperty(RmiKeys.JEM_RMI_PORT);
-		if (port == null)
+		if (port == null){
 			throw new RemoteException(NodeMessage.JEMC141E.toMessage().getFormattedMessage(RmiKeys.JEM_RMI_PORT));
-
+		}
 		// creates the RMI locator
 		RegistryLocator locator = new RegistryLocator(Parser.parseInt(port));
 		if (locator.hasRmiObject(InternalUtilities.NAME)) {

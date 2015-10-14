@@ -16,10 +16,13 @@
  */
 package org.pepstock.jem.ant.tasks.utilities.certificate;
 
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -70,14 +73,17 @@ public class Delete extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.nodes.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public void execute() throws JemException {
 		if (getAlias() != null) {
-			InternalUtilities util = UtilsInitiatorManager
-					.getInternalUtilities();
-			util.deleteCertificate(JobId.VALUE, getAlias());
-			System.out.println(AntUtilMessage.JEMZ056I.toMessage()
-					.getFormattedMessage(getAlias()));
+			try {
+				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
+				util.deleteCertificate(JobId.VALUE, getAlias());
+				System.out.println(AntUtilMessage.JEMZ056I.toMessage().getFormattedMessage(getAlias()));
+			} catch (RemoteException e) {
+				throw new JemException(e);
+			} catch (UnknownHostException e) {
+				throw new JemException(e);
+			}
 		}
-
 	}
 }

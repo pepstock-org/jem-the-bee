@@ -18,6 +18,7 @@ package org.pepstock.jem.ant.tasks.utilities.archive;
 
 import java.text.ParseException;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.archive.JobOutputArchive;
 
 /**
@@ -79,8 +80,8 @@ public abstract class Command {
 	/**
 	 * Execute the command
 	 * 
-	 * @throws Exception if an error occurs
+	 * @throws JemException if an error occurs
 	 */
-	public abstract void execute() throws Exception;
+	public abstract void execute() throws JemException;
 
 }

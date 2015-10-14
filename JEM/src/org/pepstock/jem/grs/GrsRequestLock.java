@@ -137,16 +137,16 @@ public class GrsRequestLock extends DefaultRequestLock {
 		int mode = resource.getMode();
 
 		// get map for counter of writers and readers
-		IMap<String, LatchInfo> counter_mutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
 		// locks the key by resource name (use Hazelcast feature)
-		counter_mutex.lock(resourceName);
+		counterMutex.lock(resourceName);
 
 		// prepares Latch info
 		LatchInfo latch = null;
 		// check if has already some requests for the same resource
-		if (counter_mutex.containsKey(resourceName)) {
+		if (counterMutex.containsKey(resourceName)) {
 			// has already some locks so gets latch info
-			latch = counter_mutex.get(resourceName);
+			latch = counterMutex.get(resourceName);
 			
 			// create a new requestor info to add into queue of requestors
 			RequestorInfo info = new RequestorInfo();
@@ -166,13 +166,13 @@ public class GrsRequestLock extends DefaultRequestLock {
 			latch.getRequestors().add(info);
 
 			// checks lock type and increment the counter of latch
-			if (mode == ResourceLock.WRITE_MODE)
+			if (mode == ResourceLock.WRITE_MODE){
 				latch.incrementWritersCount();
-			else
+			} else { 
 				latch.incrementReadersCount();
-
+			}
 			// lacth info exists so replaces it into hazelcast map
-			counter_mutex.replace(resourceName, latch);
+			counterMutex.replace(resourceName, latch);
 
 		} else {
 			// the resource has no currently lock so create a new latch info
@@ -199,16 +199,17 @@ public class GrsRequestLock extends DefaultRequestLock {
 			latch.getRequestors().add(info);
 
 			// checks lock type and increment the counter of latch
-			if (mode == ResourceLock.WRITE_MODE)
+			if (mode == ResourceLock.WRITE_MODE){
 				latch.incrementWritersCount();
-			else
+			} else {
 				latch.incrementReadersCount();
-
-			// lacth info doesn't exists so puts it into hazelcast map
-			counter_mutex.put(resourceName, latch);
+			}
+			
+			// latch info doesn't exists so puts it into hazelcast map
+			counterMutex.put(resourceName, latch);
 		}
 		// unlock the key of hazelcast map. remember the key is resource name
-		counter_mutex.unlock(resourceName);
+		counterMutex.unlock(resourceName);
 	}
 
 	/**
@@ -222,26 +223,26 @@ public class GrsRequestLock extends DefaultRequestLock {
 		int mode = resource.getMode();
 
 		// get map for counter of writers and readers
-		IMap<String, LatchInfo> counter_mutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
 		
-		if (!counter_mutex.containsKey(resourceName)){
+		if (!counterMutex.containsKey(resourceName)){
 			// could be a problem because
 			// if unlock is asked, should mean 
 			// that before a lock should be held
 			return;
 		}
 		// locks the key by resource name (use Hazelcast feature)
-		counter_mutex.lock(resourceName);
+		counterMutex.lock(resourceName);
 
 		// gets latch info by resource name. MUST be there!
-		LatchInfo latch = counter_mutex.get(resourceName);
+		LatchInfo latch = counterMutex.get(resourceName);
 
 		// checks lock type and decrement the counter of latch
-		if (mode == ResourceLock.WRITE_MODE)
+		if (mode == ResourceLock.WRITE_MODE){
 			latch.decrementWritersCount();
-		else
+		} else {
 			latch.decrementReadersCount();
-
+		}
 		// scan all requestor and when matches with this requestor id and member
 		// id, removes it from list
 		// it checks requestor id and member id because you could have the same
@@ -254,25 +255,25 @@ public class GrsRequestLock extends DefaultRequestLock {
 			// Requestor CHECK
 			// the id is the same of this one, ignoring case? if not, checks
 			// next requestor
-			if (info.getId().equalsIgnoreCase(getRequestorId())) {
-				// Node CHECK
-				// the id is the same of this one, ignoring case? if not, checks
-				// next requestor
-				if (info.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey()))
-					// if yes, remove it
-					iter.remove();
+			// Node CHECK
+			// the id is the same of this one, ignoring case? if not, checks
+			// next requestor
+			if (info.getId().equalsIgnoreCase(getRequestorId()) &&
+					info.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey())){
+				// if yes, remove it
+				iter.remove();
 			}
 		}
 		// if the requestors is empty (no more requestors) removes the request
 		if (latch.getRequestors().isEmpty()){
 			// remove latch info inside shared map
-			counter_mutex.remove(resourceName);
+			counterMutex.remove(resourceName);
 			
 		} else {
 			// replaces (because it must exist) latch info into hazelcast map
-			counter_mutex.replace(resourceName, latch);
+			counterMutex.replace(resourceName, latch);
 		}
 		// unlock the key of hazelcast map. remember the key is resource name
-		counter_mutex.unlock(resourceName);
+		counterMutex.unlock(resourceName);
 	}
 }

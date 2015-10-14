@@ -16,10 +16,13 @@
 */
 package org.pepstock.jem.ant.tasks.utilities.resources;
 
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.tasks.JobId;
 
 /**
@@ -56,12 +59,19 @@ public class Remove extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.resources.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
-		boolean isRemoved = getResourcer().remove(JobId.VALUE, getParameter());
-		if (isRemoved){
-			System.out.println(AntUtilMessage.JEMZ014I.toMessage().getFormattedMessage(getParameter()));
-		} else {
-			System.out.println(AntUtilMessage.JEMZ013E.toMessage().getFormattedMessage(getParameter()));
+	public void execute() throws JemException {
+		try {
+			boolean isRemoved = getResourcer().remove(JobId.VALUE, getParameter());
+			if (isRemoved){
+				System.out.println(AntUtilMessage.JEMZ014I.toMessage().getFormattedMessage(getParameter()));
+			} else {
+				System.out.println(AntUtilMessage.JEMZ013E.toMessage().getFormattedMessage(getParameter()));
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
 		}		
 
 	}

@@ -71,6 +71,7 @@ public abstract class AbstractRestManager {
 	 * @return object instance casted to the class passed as argument
 	 */
 	@SuppressWarnings("unchecked")
+	// FIXME
 	<T> T getValue(ClientResponse response, Class<T> clazz) {
 		// gets message
 		Message msg = response.getEntity(Message.class);

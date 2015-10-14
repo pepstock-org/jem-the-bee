@@ -108,7 +108,7 @@ public class DBMaint {
 			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 		
 		// parses the configuration object

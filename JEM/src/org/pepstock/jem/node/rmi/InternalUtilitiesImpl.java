@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -187,10 +188,11 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		// locks the whole map
 		// if is not able to lock it in 10 seconds
 		// throws an exception
-		boolean isLock=false;
+		boolean isLock = false;
 		Lock lock = Main.getHazelcast().getLock(Queues.NODES_MAP_LOCK);
 		try {
-			if (isLock=lock.tryLock(10, TimeUnit.SECONDS)){ 
+			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock){ 
 				allNodes = nodes.values(predicate);
 			} else {
 				throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.NODES_MAP));
@@ -222,7 +224,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks
 		 */
-		ArrayList<Role> all = new ArrayList<Role>();
+		List<Role> all = new ArrayList<Role>();
 		for (int i=0; i<rolesToUpdate.length; i++){
 			if (rolesToUpdate[i].equalsIgnoreCase(Roles.ADMINISTRATOR)){
 				throw new RemoteException(NodeMessage.JEMC123E.toMessage().getFormattedMessage(Roles.ADMINISTRATOR));
@@ -291,7 +293,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks
 		 */
-		ArrayList<Role> all = new ArrayList<Role>();
+		List<Role> all = new ArrayList<Role>();
 		for (int i=0; i<rolesToUpdate.length; i++){
 			if (rolesToUpdate[i].equalsIgnoreCase(Roles.ADMINISTRATOR)){
 				throw new RemoteException(NodeMessage.JEMC123E.toMessage().getFormattedMessage(Roles.ADMINISTRATOR));
@@ -360,7 +362,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks
 		 */
-		ArrayList<Role> all = new ArrayList<Role>();
+		List<Role> all = new ArrayList<Role>();
 		for (int i=0; i<rolesToUpdate.length; i++){
 			if (!roles.containsKey(rolesToUpdate[i])){
 				throw new RemoteException(NodeMessage.JEMC124E.toMessage().getFormattedMessage(rolesToUpdate[i]));
@@ -428,7 +430,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks
 		 */
-		ArrayList<Role> all = new ArrayList<Role>();
+		List<Role> all = new ArrayList<Role>();
 		for (int i=0; i<rolesToUpdate.length; i++){
 			if (!roles.containsKey(rolesToUpdate[i])){
 				throw new RemoteException(NodeMessage.JEMC124E.toMessage().getFormattedMessage(rolesToUpdate[i]));
@@ -548,7 +550,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks
 		 */
-		ArrayList<Role> all = new ArrayList<Role>();
+		List<Role> all = new ArrayList<Role>();
 		for (int i=0; i<newRoles.length; i++){
 			if (roles.containsKey(newRoles[i])){
 				throw new RemoteException(NodeMessage.JEMC126E.toMessage().getFormattedMessage(newRoles[i]));
@@ -720,7 +722,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		boolean isLock=false;
 		Lock lock = Main.getHazelcast().getLock(Queues.COMMON_RESOURCES_MAP_LOCK);
 		try {
-			if (isLock=lock.tryLock(10, TimeUnit.SECONDS)){ 
+			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			if (isLock){ 
 					result = map.values(predicate);
 			} else {
 				throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.COMMON_RESOURCES_MAP));

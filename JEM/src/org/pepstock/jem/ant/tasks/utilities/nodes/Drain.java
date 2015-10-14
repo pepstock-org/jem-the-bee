@@ -16,10 +16,13 @@
 */
 package org.pepstock.jem.ant.tasks.utilities.nodes;
 
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -57,11 +60,17 @@ public class Drain extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.nodes.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public void execute() throws JemException {
 		if (getNodesPattern() != null){
-			InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
-			int count = util.drain(JobId.VALUE, getNodesPattern());
-			System.out.println(AntUtilMessage.JEMZ053I.toMessage().getFormattedMessage(count));
+			try {
+				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
+				int count = util.drain(JobId.VALUE, getNodesPattern());
+				System.out.println(AntUtilMessage.JEMZ053I.toMessage().getFormattedMessage(count));
+			} catch (RemoteException e) {
+				throw new JemException(e);
+			} catch (UnknownHostException e) {
+				throw new JemException(e);
+			}
 		}
 	}
 

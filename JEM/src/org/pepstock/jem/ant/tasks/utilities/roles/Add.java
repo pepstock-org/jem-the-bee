@@ -62,7 +62,7 @@ public class Add extends Command {
 	@Override
 	public void execute() throws Exception {
 		if ((getRoles() != null) && (getUsers() != null)){
-			String[] users = split(getUsers());;
+			String[] users = split(getUsers());
 			String[] roles = split(getRoles());
 
 			InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();

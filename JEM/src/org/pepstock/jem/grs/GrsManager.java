@@ -18,6 +18,7 @@ package org.pepstock.jem.grs;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.pepstock.jem.node.RequestLock;
 import org.pepstock.jem.node.ResourceLock;
@@ -53,8 +54,8 @@ public class GrsManager {
 	 */
 	private GrsManager(HazelcastInstance hInstance) {
 		this.hazelcastInstance = hInstance;
-		IMap<String, LatchInfo> counter_mutex = this.hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
-		counter_mutex.addEntryListener(new CounterMutexListener(), true);
+		IMap<String, LatchInfo> counterMutex = this.hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+		counterMutex.addEntryListener(new CounterMutexListener(), true);
 	}
 
 	/**
@@ -121,21 +122,22 @@ public class GrsManager {
 	 * @param resourceName resource name to use for searching
 	 * @return list list of requestors
 	 */
-	public LinkedList<RequestorInfo> getRequestors(String resourceName) {
+	public List<RequestorInfo> getRequestors(String resourceName) {
 		// gets the map reference and lock by resource name
-		IMap<String, LatchInfo> counter_mutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
-		counter_mutex.lock(resourceName);
+		IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+		counterMutex.lock(resourceName);
 
 		// get Latch info by resource name and unlock the key
-		LatchInfo latch = counter_mutex.get(resourceName);
-		counter_mutex.unlock(resourceName);
+		LatchInfo latch = counterMutex.get(resourceName);
+		counterMutex.unlock(resourceName);
 
 		// if latch is null, none is requesting for passed resource name
 		// otherwise returns the list of latch object
-		if (latch != null)
+		if (latch != null){
 			return latch.getRequestors();
-		else
+		} else {
 			return new LinkedList<RequestorInfo>();
+		}
 	}
 
 	/**
@@ -149,21 +151,20 @@ public class GrsManager {
 	 */
 	public void removeRequestor(GrsNode node) {
 		// gets request of passed node
-		//GrsRequestLock request = node.getGrsRequest();
 		for (RequestLock request : node.getRequests().values()){
 
 			// scans all requested resources of node
 			for (ResourceLock resource : request.getResources().values()) {
 				// gets shared map reference and lock by resource name
-				IMap<String, LatchInfo> counter_mutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
-				counter_mutex.lock(resource.getName());
+				IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+				counterMutex.lock(resource.getName());
 
 				// checks if the map contains the resource name
 				// if not, no locks and so nothing to unlock!!
 				LatchInfo latch = null;
-				if (counter_mutex.containsKey(resource.getName())) {
+				if (counterMutex.containsKey(resource.getName())) {
 					// get latch info of resource
-					latch = counter_mutex.get(resource.getName());
+					latch = counterMutex.get(resource.getName());
 
 					// scans list of requestors to see if the node is still in the
 					// list
@@ -193,15 +194,15 @@ public class GrsManager {
 					// if the requestors is empty (no more requestors) removes the request
 					if (latch.getRequestors().isEmpty()){
 						// remove latch info inside shared map
-						counter_mutex.remove(resource.getName());
+						counterMutex.remove(resource.getName());
 
 					} else {
 						// update latch info inside shared map
-						counter_mutex.replace(resource.getName(), latch);
+						counterMutex.replace(resource.getName(), latch);
 					}
 				}
 				// unlock the reosurce by resource name (the key)
-				counter_mutex.unlock(resource.getName());
+				counterMutex.unlock(resource.getName());
 			}
 		}
 	}
@@ -235,6 +236,7 @@ public class GrsManager {
 		 */
 		@Override
 		public void entryEvicted(EntryEvent<String, LatchInfo> event) {
+			// do nothing
 		}
 
 		/**
@@ -268,11 +270,9 @@ public class GrsManager {
 		private synchronized void check(EntryEvent<String, LatchInfo> event) {
 			// if node is not registered yet, not notification because no locks
 			// for it of course
-			if (GrsManager.getInstance().getNode() == null)
+			if (GrsManager.getInstance().getNode() == null){
 				return;
-
-			// gets request for locking of node
-			//			GrsRequestLock request = GrsManager.getInstance().getNode().getGrsRequest();
+			}
 
 			// extracts latch info from Hazelcast event
 			LatchInfo latch = event.getValue();
@@ -291,7 +291,6 @@ public class GrsManager {
 			if (!request.isWaitingForLocks()){
 				return;
 			}
-
 
 			// checks if latch has requestors. If not, does nothing
 			if (!latch.getRequestors().isEmpty()) {
@@ -315,17 +314,17 @@ public class GrsManager {
 								// means that has to wait, because
 								// there is a requestor in WRITE in list, before
 								// the requestor of current node
-								if (info.getMode() == ResourceLock.WRITE_MODE)
+								if (info.getMode() == ResourceLock.WRITE_MODE){
 									return;
+								}
 								// Checks requestor id. If the same, checks if
 								// node is the same
-								if (info.getId().equalsIgnoreCase(request.getRequestorId())) {
-									if (info.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey())) {
-										// notifies current node that resource
-										// is available to use
-										request.locked(latch.getResourceName());
-										return;
-									}
+								if (info.getId().equalsIgnoreCase(request.getRequestorId()) &&
+										info.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey())) {
+									// notifies current node that resource
+									// is available to use
+									request.locked(latch.getResourceName());
+									return;
 								}
 							}
 						} else {
@@ -336,14 +335,13 @@ public class GrsManager {
 							// if YES, means it's time for current node to lock
 							// in WRITE the resource!!!
 							// is the first of the list
-							RequestorInfo rinfo = latch.getRequestors().getFirst();
-							if (rinfo.getId().equalsIgnoreCase(request.getRequestorId())) {
-								if (rinfo.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey())) {
-									// notifies current node that resource is
-									// available to use
-									request.locked(latch.getResourceName());
-									return;
-								}
+							RequestorInfo rinfo = ((LinkedList<RequestorInfo>)latch.getRequestors()).getFirst();
+							if (rinfo.getId().equalsIgnoreCase(request.getRequestorId()) && 
+									rinfo.getNodeKey().equalsIgnoreCase(GrsManager.getInstance().getNode().getKey())) {
+								// notifies current node that resource is
+								// available to use
+								request.locked(latch.getResourceName());
+								return;
 							}
 						}
 					} else {

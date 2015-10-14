@@ -135,7 +135,7 @@ public final class LogAppl {
 	 */
 	public void emit(MessageInterface message, Throwable exception, Object... objects) {
 		// if no parameters, do not format!
-		String outputMessage = (objects == null) ? message.toMessage().getMessage() : message.toMessage().getFormattedMessage(objects);
+		String outputMessage = (objects == null) ? message.toMessage().getContent() : message.toMessage().getFormattedMessage(objects);
 
 		// based on level and on exception, call Log4j logger to print the
 		// message
@@ -200,6 +200,7 @@ public final class LogAppl {
 	 * @param exception exception to ignore
 	 */
 	public void ignore(String context, Throwable exception){
-		// do nothing
+		// redirect to debug for SONAR issue
+		debug(context, exception);
 	}
 }

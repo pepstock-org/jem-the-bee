@@ -325,7 +325,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 			LogAppl.getInstance().emit(message, name);
 		} else {
 			// if warnings collection already has got the message, skip it	
-			String outputMessage = (name == null) ? message.toMessage().getMessage() : message.toMessage().getFormattedMessage(name);
+			String outputMessage = (name == null) ? message.toMessage().getContent() : message.toMessage().getFormattedMessage(name);
 			if (!warnings.contains(outputMessage)){
 				warnings.add(outputMessage);
 			}

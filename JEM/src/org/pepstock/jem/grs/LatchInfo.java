@@ -18,6 +18,7 @@ package org.pepstock.jem.grs;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents the unit for locking. There is a unique latch info for each
@@ -42,7 +43,7 @@ public class LatchInfo implements Serializable {
 
 	private int writersCount = 0;
 
-	private LinkedList<RequestorInfo> requestors = new LinkedList<RequestorInfo>();
+	private List<RequestorInfo> requestors = new LinkedList<RequestorInfo>();
 
 	/**
 	 * Empty constructor
@@ -120,7 +121,7 @@ public class LatchInfo implements Serializable {
 	 * 
 	 * @return list of current requestors
 	 */
-	public LinkedList<RequestorInfo> getRequestors() {
+	public List<RequestorInfo> getRequestors() {
 		return requestors;
 	}
 

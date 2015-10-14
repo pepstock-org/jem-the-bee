@@ -247,8 +247,9 @@ public class GfsManager extends AbstractRestManager {
 			// cycle to read all bytes
 			while ((nRead = ch.read(bb)) != -1) {
 				// if read 0 byte, is ended
-				if (nRead == 0)
+				if (nRead == 0){
 					continue;
+				}
 				// sets buffer attributes
 				bb.position(0);
 				bb.limit(nRead);

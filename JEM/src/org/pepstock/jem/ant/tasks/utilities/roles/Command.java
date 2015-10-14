@@ -116,8 +116,8 @@ public abstract class Command {
 	 * @throws BuildException 
 	 */
 	public String[] split(String entity){
-		entity = StringUtils.remove(entity, " ");
-		String[] perms = StringUtils.split(entity, ENTITIES_SEPARATOR);
+		String newEntity = StringUtils.remove(entity, " ");
+		String[] perms = StringUtils.split(newEntity, ENTITIES_SEPARATOR);
 		return perms;
 	}
 	

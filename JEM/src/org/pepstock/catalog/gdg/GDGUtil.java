@@ -151,7 +151,7 @@ public class GDGUtil {
 	public static Root createGDG(File parent, boolean createEmptyGeneration) throws IOException {
 		// checks if is null
 		if (parent == null) {
-			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getContent());
 		}
 		// checks if exists (MUST exists!)
 		if (parent.exists()) {
@@ -204,7 +204,7 @@ public class GDGUtil {
 	public static Root createGDGEmptyRoot(File parent) throws IOException {
 		// checks if is null
 		if (parent == null) {
-			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getContent());
 		}
 
 		Root root = new Root(parent, false);

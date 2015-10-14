@@ -106,8 +106,8 @@ public class CancelableTask extends FutureTask<Result> {
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
 		if (processId != null) {
-			if (jobTask.cancel(getProcessId(), force)){
-				// always to false, otherwsie it interrupts the current Thread
+			if (jobTask.cancel(force)){
+				// always to false, otherwise it interrupts the current Thread
 				// and we don't have CancelException but an InterrruptException
 				return super.cancel(false);
 			}

@@ -17,13 +17,18 @@
 package org.pepstock.jem.ant.tasks.utilities.resources;
 
 import java.io.InputStream;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.Resources;
 import org.pepstock.jem.node.tasks.JobId;
@@ -93,34 +98,44 @@ public class Set extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.resources.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
-		// new initial context to access by INPUT to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
-		// gets inputstream
-		Object filein = (Object) ic.lookup(getFile());
-		if (filein instanceof InputStream){
-			Object data = getxStream().fromXML((InputStream)filein);
-			if (data instanceof Resource){
-				Resource resource = (Resource) data;
-				addResource(resource);
-			} else if (data instanceof Resources){
-				Resources resources = (Resources)data;
-				for (Resource resource : resources.getResources()){
+	public void execute() throws JemException {
+		try {
+			// new initial context to access by INPUT to COMMAND DataDescription
+			InitialContext ic = ContextUtils.getContext();
+			// gets inputstream
+			Object filein = (Object) ic.lookup(getFile());
+			if (filein instanceof InputStream){
+				Object data = getxStream().fromXML((InputStream)filein);
+				if (data instanceof Resource){
+					Resource resource = (Resource) data;
 					addResource(resource);
+				} else if (data instanceof Resources){
+					Resources resources = (Resources)data;
+					for (Resource resource : resources.getResourcesList()){
+						addResource(resource);
+					}
+				} else {
+					throw new MessageException(AntUtilMessage.JEMZ017E, data.getClass().getName());
 				}
 			} else {
-				throw new Exception(AntUtilMessage.JEMZ017E.toMessage().getFormattedMessage(data.getClass().getName()));
+				throw new MessageException(AntUtilMessage.JEMZ011E, getFile(), filein.getClass().getName());
 			}
-		} else {
-			throw new Exception(AntUtilMessage.JEMZ011E.toMessage().getFormattedMessage(getFile(), filein.getClass().getName()));
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
+		} catch (NamingException e) {
+			throw new JemException(e);
 		}
 	}
 	
 	/**
 	 * 
 	 * @param resource
+	 * @throws UnknownHostException 
+	 * @throws RemoteException 
 	 */
-	private void addResource(Resource resource) throws Exception {
+	private void addResource(Resource resource) throws RemoteException, UnknownHostException {
 		if (!isNoEncryption()){
 			decrypt(resource);					
 		}

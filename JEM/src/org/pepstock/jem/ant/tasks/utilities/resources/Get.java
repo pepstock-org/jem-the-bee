@@ -17,13 +17,18 @@
 package org.pepstock.jem.ant.tasks.utilities.resources;
 
 import java.io.OutputStream;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
@@ -96,22 +101,30 @@ public class Get extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.resources.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
-		// new initial context to access by INPUT to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
+	public void execute() throws JemException {
+		try {
+			// new initial context to access by INPUT to COMMAND DataDescription
+			InitialContext ic = ContextUtils.getContext();
 
-		String dd = (getFile() != null) ? getFile() : CommonResourcesTask.OUTPUT_DATA_DESCRIPTION_NAME;
-		// gets inputstream
-		Object fileout = (Object) ic.lookup(dd);
-		if (fileout instanceof OutputStream){
-			Resource resource = getResourcer().lookup(JobId.VALUE, getParameter());
-			if (!isNoEncryption()){
-				encrypt(resource);
+			String dd = (getFile() != null) ? getFile() : CommonResourcesTask.OUTPUT_DATA_DESCRIPTION_NAME;
+			// gets inputstream
+			Object fileout = (Object) ic.lookup(dd);
+			if (fileout instanceof OutputStream){
+				Resource resource = getResourcer().lookup(JobId.VALUE, getParameter());
+				if (!isNoEncryption()){
+					encrypt(resource);
+				}
+				getxStream().toXML(resource, (OutputStream)fileout);
+				System.out.println(AntUtilMessage.JEMZ009I.toMessage().getFormattedMessage(resource));
+			} else {
+				throw new MessageException(AntUtilMessage.JEMZ010E, dd, fileout.getClass().getName());
 			}
-			getxStream().toXML(resource, (OutputStream)fileout);
-			System.out.println(AntUtilMessage.JEMZ009I.toMessage().getFormattedMessage(resource));
-		} else {
-			throw new Exception(AntUtilMessage.JEMZ010E.toMessage().getFormattedMessage(dd, fileout.getClass().getName()));
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
+		} catch (NamingException e) {
+			throw new JemException(e);
 		}
 	}
 

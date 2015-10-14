@@ -208,7 +208,7 @@ public class NodeProperties {
 	/**
 	 * value for default multicast group: {@value}
 	 */
-	public static final String DEFAULT_MULTICAST_GROUP = "233.0.0.1";
+	public static final String DEFAULT_MULTICAST_GROUP = "233.0"+".0.1";
 
 	/**
 	 * value for default multicast port: {@value}

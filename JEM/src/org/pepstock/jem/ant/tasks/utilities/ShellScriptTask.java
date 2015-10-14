@@ -78,6 +78,7 @@ public class ShellScriptTask extends StepExec {
 	 * 
 	 * @param commandLine command line
 	 */
+	@Override
 	public void setCommand(Commandline commandLine) {
 		// nop
 	}

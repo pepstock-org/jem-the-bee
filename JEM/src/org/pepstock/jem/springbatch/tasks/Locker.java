@@ -45,7 +45,7 @@ public class Locker {
 	private List<ResourceLock> resources = new ArrayList<ResourceLock>();
 	
 	// reference to locker
-	private	ResourceLocker locker = null;
+	private	ResourceLocker internalLocker = null;
 	
 	private boolean isExecutionStarted = false;
 	
@@ -57,7 +57,7 @@ public class Locker {
 	Locker() throws SpringBatchException {
 		try {
 			// gets the locker
-			locker = InitiatorManager.getResourceLocker();
+			internalLocker = InitiatorManager.getResourceLocker();
 			// get instance of data container, necessary to implement the referback
 			// feature
 			ImplementationsContainer.getInstance();
@@ -85,7 +85,7 @@ public class Locker {
 			if (!resources.isEmpty()){
 				// ask to JEM node by locker to lock them
 				// waiting if they are not available
-				locker.lock(JobId.VALUE, resources);
+				internalLocker.lock(JobId.VALUE, resources);
 			}
 		} catch (RemoteException e) {
 			throw new SpringBatchException(SpringBatchMessage.JEMS039E, e);
@@ -218,7 +218,7 @@ public class Locker {
 				// is not necessary to pass the container because JEM node
 				// saved the list
 				// when the this class asked
-				locker.unlock(JobId.VALUE);
+				internalLocker.unlock(JobId.VALUE);
 				resources.clear();
 				DefinitionsContainer.getInstance().getObjects().clear();
 			}

@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
@@ -206,9 +207,9 @@ public abstract class Command {
 	/**
 	 * Execute the command
 	 * 
-	 * @throws Exception
+	 * @throws JemException
 	 *             if an error occurs
 	 */
-	public abstract void execute() throws Exception;
+	public abstract void execute() throws JemException;
 
 }

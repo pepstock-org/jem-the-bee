@@ -42,7 +42,7 @@ public final class NodesManagerPaths {
 	/**
 	 * Key to define the path to bind get a node
 	 */
-	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;;
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + NODEKEY_PATH_PARAM;
 
 	/**
 	 * Key to define the path to bind get nodes list method

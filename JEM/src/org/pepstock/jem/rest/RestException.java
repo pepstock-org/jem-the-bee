@@ -26,7 +26,7 @@ public class RestException extends Exception {
 	
 	private static final long serialVersionUID = 1L;
 
-	private int statusCode = Status.SERVICE_UNAVAILABLE.getStatusCode();
+	private final int statusCode;
 
 	/**
 	 * @param statusCode 
@@ -42,6 +42,7 @@ public class RestException extends Exception {
 	 */
 	public RestException(Throwable cause) {
 		super(cause);
+		this.statusCode = Status.SERVICE_UNAVAILABLE.getStatusCode();
 	}
 
 	/**

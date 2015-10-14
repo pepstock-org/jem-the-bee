@@ -302,7 +302,7 @@ public class StartUpSystem {
 				NodeInfoUtility.loadNodeInfo(member, Main.getNode());
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC147E, e);
-				throw new ConfigurationException(NodeMessage.JEMC147E.toMessage().getMessage(), e);
+				throw new ConfigurationException(NodeMessage.JEMC147E.toMessage().getContent(), e);
 			}
 			NodeInfoUtility.storeNodeInfo(Main.getNode(), true);
 
@@ -553,7 +553,7 @@ public class StartUpSystem {
 			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 		PROPERTIES.setProperty(ConfigKeys.JEM_ENV_CONF_FOLDER, FilenameUtils.normalize(fileConfig.getParent(), true));
 		
@@ -599,7 +599,7 @@ public class StartUpSystem {
 			xmlConfig = FileUtils.readFileToString(new File(configFile), CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 
 		JEM_NODE_CONFIG = Configuration.unmarshall(xmlConfig);

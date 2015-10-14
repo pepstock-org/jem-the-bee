@@ -17,15 +17,21 @@
 package org.pepstock.jem.ant.tasks.utilities.resources;
 
 import java.io.OutputStream;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.Resources;
 import org.pepstock.jem.node.tasks.JobId;
@@ -99,32 +105,38 @@ public class GetList extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.resources.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
-		// new initial context to access by INPUT to COMMAND DataDescription
-		InitialContext ic = ContextUtils.getContext();
+	public void execute() throws JemException {
+		try {
+			// new initial context to access by INPUT to COMMAND DataDescription
+			InitialContext ic = ContextUtils.getContext();
 
-		String dd = (getFile() != null) ? getFile() : CommonResourcesTask.OUTPUT_DATA_DESCRIPTION_NAME;
-		// gets inputstream
-		Object fileout = (Object) ic.lookup(dd);
-		if (fileout instanceof OutputStream){
-			Collection<Resource> allResources = getResourcer().values(JobId.VALUE, getParameter());
-			Resources resources = new Resources();
-			ArrayList<Resource> list = new ArrayList<Resource>();
-			for (Resource resource : allResources){
-				if (!isNoEncryption()){
-					encrypt(resource);
+			String dd = (getFile() != null) ? getFile() : CommonResourcesTask.OUTPUT_DATA_DESCRIPTION_NAME;
+			// gets inputstream
+			Object fileout = (Object) ic.lookup(dd);
+			if (fileout instanceof OutputStream){
+				Collection<Resource> allResources = getResourcer().values(JobId.VALUE, getParameter());
+				Resources resources = new Resources();
+				List<Resource> list = new ArrayList<Resource>();
+				for (Resource resource : allResources){
+					if (!isNoEncryption()){
+						encrypt(resource);
+					}
+					list.add(resource);
 				}
-				list.add(resource);
+				resources.setResourcesList(list);
+			
+				getxStream().toXML(resources, (OutputStream)fileout);
+				System.out.println(AntUtilMessage.JEMZ012I.toMessage().getFormattedMessage(allResources.size()));
+			} else {
+				throw new MessageException(AntUtilMessage.JEMZ010E, dd, fileout.getClass().getName());
 			}
-			resources.setResources(list);
-		
-			getxStream().toXML(resources, (OutputStream)fileout);
-			System.out.println(AntUtilMessage.JEMZ012I.toMessage().getFormattedMessage(allResources.size()));
-		} else {
-			throw new Exception(AntUtilMessage.JEMZ010E.toMessage().getFormattedMessage(dd, fileout.getClass().getName()));
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
+		} catch (NamingException e) {
+			throw new JemException(e);
 		}
-		
-
 	}
 
 }
