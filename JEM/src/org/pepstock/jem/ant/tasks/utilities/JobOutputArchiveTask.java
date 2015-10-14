@@ -66,9 +66,9 @@ public class JobOutputArchiveTask extends AntUtilTask {
 	@Override
 	public void execute() throws BuildException {
 		String port = System.getProperty(RmiKeys.JEM_RMI_PORT);
-		if (port == null)
+		if (port == null){
 			throw new BuildException(AntMessage.JEMA004E.toMessage().getFormattedMessage());
-		
+		}
 		super.setClassname(JobOutputArchiveTask.class.getName());
 		super.execute();
 	}
@@ -78,9 +78,8 @@ public class JobOutputArchiveTask extends AntUtilTask {
 	 * @param args 
 	 * 
 	 * @throws Exception if COMMAND data description doesn't exists, if an
-	 *             error occurs dduring the command parsing, if data mount point
+	 *             error occurs during the command parsing, if data mount point
 	 *             is null.
-	 * @throws java.text.ParseException 
 	 */
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws Exception{
@@ -108,9 +107,9 @@ public class JobOutputArchiveTask extends AntUtilTask {
 		
 		// new initial context to access by JNDI to COMMAND DataDescription
 		InitialContext ic = ContextUtils.getContext();
-		// gets inputstream
+		// gets input-stream
 		Object filein = (Object) ic.lookup(DATA_DESCRIPTION_NAME);
-		// reads content of inout stream
+		// reads content of input stream
 		StringBuilder recordsSB = read((InputStream) filein);
 		// trims result to see if is empty
 		String records = recordsSB.toString().trim();

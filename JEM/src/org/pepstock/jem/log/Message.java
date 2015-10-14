@@ -58,7 +58,7 @@ public class Message implements Serializable{
 	 * @param level severity of log message
 	 */
 	public Message(int code, String id, String msg, MessageLevel level) {
-		this.code = 0;
+		this.code = code;
 		this.level = level;
 		// formats the number to 5 digits
 		String codeString = DF.format(code);

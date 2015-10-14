@@ -147,7 +147,7 @@ public interface InternalUtilities extends CommonResourcer {
 	public boolean put(String jobId, Resource resource) throws RemoteException;
 	
 	/**
-	 * Removes an existing reosurce by its name
+	 * Removes an existing resource by its name
 	 * @param jobId job id which is asking for service
 	 * @param resourceName name of resource to remove
 	 * @return <code>true</code> if the resource has been removed, otherwise it hasn't been

@@ -113,7 +113,7 @@ public class StatsCollectTask extends AntUtilTask {
 		String dateParam = properties.getProperty(DATE);
 		String daysParam = properties.getProperty(DAYS);
 		
-		if ((daysParam == null) && (dateParam == null)){
+		if (daysParam == null && dateParam == null){
 			throw new Exception(AntUtilMessage.JEMZ027E.toMessage().getFormattedMessage());
 		} else if (dateParam != null){
 			DateFormatter.getDate(dateParam);
@@ -178,7 +178,6 @@ public class StatsCollectTask extends AntUtilTask {
 			System.out.println(AntUtilMessage.JEMZ033E.toMessage().getFormattedMessage(statsFolder.getAbsolutePath()));
 		} 
 		System.out.println(AntUtilMessage.JEMZ034I.toMessage().getFormattedMessage(filesCount));
-		
 	}
 
 }

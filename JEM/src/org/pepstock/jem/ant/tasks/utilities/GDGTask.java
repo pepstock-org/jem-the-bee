@@ -83,24 +83,24 @@ public class GDGTask extends AntUtilTask {
 	 * Main program, called by StepJava class. It reads the InputStream defined
 	 * as :<br>
 	 * <ul>
-	 * <li> a INLINE data decription defined at runtime which contains all data description. Necessary to get GDG name by DDname. Done also to lock GDG</li>
+	 * <li> a INLINE data description defined at runtime which contains all data description. Necessary to get GDG name by DDname. Done also to lock GDG</li>
 	 * <li> COMMAND data description with all define GDG commands</li>
 	 * </ul>
 	 * <br>
 	 * Before to start creating GDG, checks all command syntax
 	 * 
-	 * @param args uuid of data description which contains all data descriptions so commands are able to get GDG name
+	 * @param args nothing
 	 * @throws Exception if COMMAND data description doesn't exists, if an
-	 *             error occurs dduring the command parsing, if data mount point
+	 *             error occurs during the command parsing, if data mount point
 	 *             is null.
 	 */
 	public static void main(String[] args) throws Exception {
 		// new initial context to access by JNDI to COMMAND DataDescription
 		InitialContext ic = ContextUtils.getContext();
 
-		// gets inputstream
+		// gets input stream
 		Object filein = (Object) ic.lookup(DATA_DESCRIPTION_NAME);
-		// reads content of inout stream
+		// reads content of input stream
 		StringBuilder recordsSB = read((InputStream) filein);
 		// trims result to see if is empty
 		String records = recordsSB.toString().trim();
@@ -135,12 +135,12 @@ public class GDGTask extends AntUtilTask {
 				NamingEnumeration<NameClassPair> lists = ic.list(command.getDDName());
 				if (lists.hasMore()){
 					NameClassPair pair = lists.next();
-					// checks if is datastream
-					// only datastreams are changed
+					// checks if is data-stream
+					// only data-streams are changed
 					if (pair instanceof DataStreamNameClassPair){
 						DataStreamNameClassPair dsPair = (DataStreamNameClassPair) pair;
 						DataStreamReference prevReference = (DataStreamReference)dsPair.getObject();
-						// gets data description XML defintion
+						// gets data description XML definition
 						// adding it to a new reference, for remote access
 						StringRefAddr sra = (StringRefAddr) prevReference.get(StringRefAddrKeys.DATASTREAMS_KEY);
 						// creates DataDescritpionImpl object using XStream (used to

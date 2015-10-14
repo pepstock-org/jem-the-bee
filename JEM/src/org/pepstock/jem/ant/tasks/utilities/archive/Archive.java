@@ -101,9 +101,7 @@ public class Archive extends Command {
 				re.printStackTrace();
 			}
 		}
-
 		System.out.println(AntUtilMessage.JEMZ048I.toMessage().getFormattedMessage(String.valueOf(count), String.valueOf(jobs.size())));
-
 	}
 
 }

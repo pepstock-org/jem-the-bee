@@ -97,7 +97,7 @@ public class Factory {
 	private static Jcl createJcl(String content, List<String> inputArguments, JclFactory factory) throws JclFactoryException {
 		try {
 			return factory.createJcl(content, inputArguments);
-		} catch (Error e) {
+		} catch (Exception e) {
 			// it catches here if
 			// there is any error related to reflection
 			throw new JclFactoryException(e.getMessage(), e);

@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
@@ -111,6 +112,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 		} catch (Exception ex){
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			// it wraps Exception to avoid serialization exception with
 			// missing classes on job side
 			throw new RemoteException(ex.getMessage());
@@ -154,6 +156,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 		} catch (Exception ex){
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			// it wraps Exception to avoid serialization exception with
 			// missing classes on job side
 			throw new RemoteException(ex.getMessage());
@@ -173,6 +176,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			filter = Filter.parse(nodesFilter);
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -192,10 +196,12 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.NODES_MAP));
 			}
 		} catch (InterruptedException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.NODES_MAP));
 		} finally {
-			if(isLock)
+			if (isLock){
 				lock.unlock();
+			}
 		}
 		return new ArrayList<NodeInfo>(allNodes);
 	}
@@ -205,8 +211,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void grant(String jobId, String[] permissions, String[] rolesToUpdate) throws RemoteException {
-		if ((rolesToUpdate == null) || (permissions == null))
+		if (rolesToUpdate == null || permissions == null){
 			return;
+		}
 
 		checkAuthorization(jobId, Permissions.ROLES_UPDATE);
 
@@ -229,6 +236,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				all.add(role);
 			} catch (Exception ex){
 				// ignore it
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			} finally {
 				roles.unlock(rolesToUpdate[i]);
 			}
@@ -261,9 +269,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
 	}
 
@@ -272,9 +281,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void revoke(String jobId, String[] permissions, String[] rolesToUpdate) throws RemoteException {
-		if ((rolesToUpdate == null) || (permissions == null))
+		if (rolesToUpdate == null || permissions == null){
 			return;
-
+		}
 		checkAuthorization(jobId, Permissions.ROLES_UPDATE);
 
 		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
@@ -296,6 +305,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				all.add(role);
 			} catch (Exception ex){
 				// ignore it
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			} finally {
 				roles.unlock(rolesToUpdate[i]);	
 			}
@@ -328,9 +338,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
 	}
 
@@ -339,9 +350,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void add(String jobId, String[] users, String[] rolesToUpdate) throws RemoteException {
-		if ((rolesToUpdate == null) || (users == null))
+		if (rolesToUpdate == null || users == null){
 			return;
-
+		}
 		checkAuthorization(jobId, Permissions.ROLES_UPDATE);
 
 		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
@@ -360,6 +371,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				all.add(role);
 			} catch (Exception ex){
 				// ignore it
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			} finally {
 				roles.unlock(rolesToUpdate[i]);
 			}
@@ -392,9 +404,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
 
 	}
@@ -404,8 +417,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void delete(String jobId, String[] users, String[] rolesToUpdate) throws RemoteException {
-		if ((rolesToUpdate == null) || (users == null))
+		if (rolesToUpdate == null || users == null){
 			return;
+		}
 
 		checkAuthorization(jobId, Permissions.ROLES_UPDATE);
 
@@ -425,6 +439,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				all.add(role);
 			} catch (Exception ex){
 				// ignore it
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			} finally {
 				roles.unlock(rolesToUpdate[i]);
 			}
@@ -436,7 +451,6 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		Transaction txn = Main.getHazelcast().getTransaction();
 		txn.begin();
 		try {
-
 			for (Role role: all){
 				boolean updated = false;
 				for (int i=0; i<users.length; i++){
@@ -458,9 +472,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
 
 	}
@@ -470,9 +485,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void remove(String jobId, String[] oldRoles) throws RemoteException {
-		if (oldRoles == null)
+		if (oldRoles == null){
 			return;
-
+		}
+		
 		checkAuthorization(jobId, Permissions.ROLES_DELETE);
 
 		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
@@ -493,6 +509,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			} catch (Exception ex){
 				// ignore it
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			} finally {
 				roles.unlock(oldRoles[i]);
 			}
@@ -504,17 +521,16 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		Transaction txn = Main.getHazelcast().getTransaction();
 		txn.begin();
 		try {
-
 			for (int i=0; i<oldRoles.length; i++){
 				roles.remove(oldRoles[i]);
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -522,9 +538,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 */
 	@Override
 	public void create(String jobId, String[] newRoles) throws RemoteException {
-		if (newRoles == null)
+		if (newRoles == null){
 			return;
-
+		}
+		
 		checkAuthorization(jobId, Permissions.ROLES_CREATE);
 		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
 
@@ -559,9 +576,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 			//do other things..
 			txn.commit();
-		}catch (Throwable t)  {
+		}catch (Exception ex)  {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			txn.rollback();
-			throw new RemoteException(t.getMessage());
+			throw new RemoteException(ex.getMessage());
 		}
 
 	}
@@ -590,6 +608,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				jobs.remove(job.getId());
 			}
 		} catch (Exception ex){	
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			throw new RemoteException(ex.getMessage());
 		} finally {
 			jobs.unlock(job.getId());
@@ -624,6 +643,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	        // adds additional properties
 	        definition.validateResource(resource);
         } catch (ResourceDefinitionException e) {
+        	LogAppl.getInstance().ignore(e.getMessage(), e);
         	throw new RemoteException(e.getMessage(), e);	
         }
 
@@ -634,6 +654,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				map.lock(resource.getName());
 				map.replace(resource.getName(), resource);
 			} catch (Exception ex) {
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 				throw new RemoteException(ex.getMessage(), ex);
 			} finally {
 				map.unlock(resource.getName());
@@ -648,6 +669,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				executorService.execute(addTask);
 				return addTask.get();
 			} catch (Exception ex) {
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 				throw new RemoteException(ex.getMessage(), ex);				
 			}
 		}
@@ -666,6 +688,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				map.lock(resourceName);
 				resource = map.remove(resourceName);
 			} catch (Exception ex) {
+				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 				throw new RemoteException(ex.getMessage(), ex);				
 			} finally {
 				map.unlock(resourceName);
@@ -688,6 +711,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			 predicate = new ResourcePredicate(Filter.parse(filter));
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -702,6 +726,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.COMMON_RESOURCES_MAP));
 			}
 		} catch (InterruptedException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.COMMON_RESOURCES_MAP));
 		} finally {
 			if(isLock)
@@ -719,6 +744,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			return ResourcesUtil.getInstance().decrypt(value);
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage(), e);
 		}
 	}
@@ -732,6 +758,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			return ResourcesUtil.getInstance().encrypt(value);
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage(), e);
 		}
 	}
@@ -743,6 +770,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			CertificatesUtil.addCertificate(certificate, alias);
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage(), e);
 		}		
 	}
@@ -753,6 +781,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			CertificatesUtil.removeCertificate(alias);
 		} catch (Exception e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage(), e);
 		}				
 	}
@@ -767,6 +796,4 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	    }
 	    return null;
     }
-
-
 }
