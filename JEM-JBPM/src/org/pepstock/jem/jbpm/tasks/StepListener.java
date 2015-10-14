@@ -300,7 +300,7 @@ public class StepListener extends DefaultProcessEventListener{
 					if (System.getSecurityManager() == null) {
 						System.setSecurityManager(new JBpmBatchSecurityManager(myroles));
 					} else {
-						throw new JemRuntimeException(JBpmMessage.JEMM039E.toMessage().getMessage());
+						throw new JemRuntimeException(JBpmMessage.JEMM039E.toMessage().getContent());
 					}
 				} else {
 					throw new JemRuntimeException(JBpmMessage.JEMM038E.toMessage().getFormattedMessage(TasksDoor.NAME));
