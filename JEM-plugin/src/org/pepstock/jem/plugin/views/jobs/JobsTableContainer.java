@@ -187,7 +187,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	 */
 	public Collection<Job> loadData(String filter) throws RestException{
     	return Client.getInstance().refreshJobs(getQueue(), filter);
-	};
+	}
 	
 	/**
 	 * Returns the name of queue name, readable
@@ -245,6 +245,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 		// add DC listener
 		// to inspect the selected job
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection selection = viewer.getSelection();
 				// gets job selected
@@ -296,7 +297,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 		 * @see org.pepstock.jem.plugin.util.Loading#execute()
 		 */
         @Override
-        protected void execute() throws Exception {
+        protected void execute() throws JemException {
 			try {
 				// if data is not provided, creates a empty collections
 				data = loadData(getFilter());

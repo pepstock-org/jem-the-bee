@@ -69,7 +69,7 @@ public class SubmitDropListener extends ViewerDropAdapter implements ShellContai
 		// it can drop only if is connected
 		if (Client.getInstance().isLogged()){
 			// and only it has got the authorization to submit jobs
-			return Client.getInstance().isAuthorized(Permissions.JOBS, Permissions.JOBS_SUBMIT);
+			return Client.getInstance().isAuthorized(Permissions.JOBS_SUBMIT);
 		}
 		return false;
 	}

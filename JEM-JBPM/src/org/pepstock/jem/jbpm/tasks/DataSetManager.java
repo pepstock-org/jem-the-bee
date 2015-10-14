@@ -30,7 +30,6 @@ import org.pepstock.catalog.DataSetType;
 import org.pepstock.catalog.Disposition;
 import org.pepstock.jem.jbpm.JBpmException;
 import org.pepstock.jem.jbpm.JBpmMessage;
-import org.pepstock.jem.jbpm.Task;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.NodeMessage;
@@ -131,7 +130,7 @@ public class DataSetManager {
 	 * @throws JBpmException configuration not compliant (disposition wrongs or
 	 *             invalid call)
 	 */
-	static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds, Task item) throws IOException, JBpmException {
+	static void createDataSetImpl(DataDescriptionImpl ddImpl, DataSet ds) throws IOException, JBpmException {
 		// creates a new instance of dataset implemetation
 		DataSetImpl dataset = new DataSetImpl();
 

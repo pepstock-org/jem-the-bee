@@ -17,7 +17,6 @@
 package org.pepstock.jem.log;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
 /**
@@ -36,11 +35,9 @@ public class Message implements Serializable{
 	 */
 	public static final String PREFIX = "JEM";
 
-	private static final DecimalFormat DF = new DecimalFormat("0000");
-
 	private MessageFormat format = null;
 
-	private int code = 0;
+	private String code = null;
 
 	private String content = null;
 
@@ -57,13 +54,11 @@ public class Message implements Serializable{
 	 *            runtime
 	 * @param level severity of log message
 	 */
-	public Message(int code, String id, String msg, MessageLevel level) {
+	public Message(String code, String id, String msg, MessageLevel level) {
 		this.code = code;
 		this.level = level;
-		// formats the number to 5 digits
-		String codeString = DF.format(code);
-		// creates prefix to message "JEMnnnnn"
-		this.content = PREFIX + id + codeString + " " + msg;
+		// creates prefix to message "JEMnnnn"
+		this.content = PREFIX + id + code + " " + msg;
 
 		// creates format object
 		this.format = new MessageFormat(content);
@@ -74,7 +69,7 @@ public class Message implements Serializable{
 	 * 
 	 * @return identifier ID
 	 */
-	public int getCode() {
+	public String getCode() {
 		return code;
 	}
 

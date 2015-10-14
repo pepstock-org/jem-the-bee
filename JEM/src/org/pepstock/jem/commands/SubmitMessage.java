@@ -36,59 +36,59 @@ public enum SubmitMessage implements MessageInterface{
 	/**
 	 * "Unable to get the members of JEM cluter", MessageLevel.ERROR
 	 */
-	JEMW001E(1, "Unable to get the members of JEM cluter", MessageLevel.ERROR),
+	JEMW001E("0001", "Unable to get the members of JEM cluter", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get the name of JEM cluter", MessageLevel.ERROR
 	 */
-	JEMW002E(2, "Unable to get the name of JEM cluter", MessageLevel.ERROR),
+	JEMW002E("0002", "Unable to get the name of JEM cluter", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to submit into JEM", MessageLevel.ERROR
 	 */
-	JEMW003E(3, "Unable to submit into JEM", MessageLevel.ERROR),
+	JEMW003E("0003", "Unable to submit into JEM", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get job from output queue", MessageLevel.ERROR
 	 */
-	JEMW004E(4, "Unable to get job from output queue", MessageLevel.ERROR),
+	JEMW004E("0004", "Unable to get job from output queue", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to create a Hazelcast client", MessageLevel.ERROR
 	 */
-	JEMW005E(5, "Unable to create a Hazelcast client", MessageLevel.ERROR),
+	JEMW005E("0005", "Unable to create a Hazelcast client", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to read JCL because URL {0} is malformed", MessageLevel.ERROR
 	 */
-	JEMW006E(6, "Unable to read JCL because URL {0} is malformed", MessageLevel.ERROR),
+	JEMW006E("0006", "Unable to read JCL because URL {0} is malformed", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to create a JOB from JCL {0}", MessageLevel.ERROR
 	 */
-	JEMW007E(7, "Unable to create a JOB from JCL {0}", MessageLevel.ERROR),
+	JEMW007E("0007", "Unable to create a JOB from JCL {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get the necessary password by console", MessageLevel.ERROR
 	 */
-	JEMW008E(8, "Unable to get the necessary password by console", MessageLevel.ERROR),
+	JEMW008E("0008", "Unable to get the necessary password by console", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get output of job {0}", MessageLevel.ERROR
 	 */
-	JEMW009E(9, "Unable to get output of job {0}", MessageLevel.ERROR),
+	JEMW009E("0009", "Unable to get output of job {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Memory used by submit: {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "Display the amout of memory used by submit")
-	JEMW010I(10, "Memory used by submit: {0}", MessageLevel.INFO),
+	JEMW010I("0010", "Memory used by submit: {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Duration: {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "Display the amout of milliseconds to submit the job and to end.")
-	JEMW011I(11, "Duration: {0}", MessageLevel.INFO),
+	JEMW011I("0011", "Duration: {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Argument {0} is unknown", MessageLevel.ERROR)
@@ -97,7 +97,7 @@ public enum SubmitMessage implements MessageInterface{
 	 * This message is not used in JAVA code but in Javascript one (see NodeJS submit)
 	 */
 	@Description(explanation = "It occurs when submitting a job with NodeJS, there is an unplanned argument. <br> PLease check the command line used to submit the job.")
-	JEMW012E(12, "Argument {0} is unknown", MessageLevel.ERROR),
+	JEMW012E("0012", "Argument {0} is unknown", MessageLevel.ERROR),
 
 	/**
 	 * "Connecting to JEM node {0}:{1}", MessageLevel.INFO
@@ -106,13 +106,13 @@ public enum SubmitMessage implements MessageInterface{
 	 * This message is not used in JAVA code but in Javascript one (see NodeJS submit)
 	 */
 	@Description(explanation = "It occurs when submitting a job with NodeJS, it shows which JEM nod eis used to submit.")
-	JEMW013I(13, "Connecting to JEM node {0}:{1}", MessageLevel.INFO),
+	JEMW013I("0013", "Connecting to JEM node {0}:{1}", MessageLevel.INFO),
 	
 	/**
 	 * "{0} is not a valid GFS file type", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when submitting a job using a jem URL and the URL is not well formed.<br> Please have a look about JEM URL.")
-	JEMW014E(14, "{0} is not a valid GFS file type", MessageLevel.ERROR);
+	JEMW014E("0014", "{0} is not a valid GFS file type", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>IoMessage</code>. 
@@ -130,7 +130,7 @@ public enum SubmitMessage implements MessageInterface{
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private SubmitMessage(int code, String messageContent, MessageLevel level){
+	private SubmitMessage(String code, String messageContent, MessageLevel level){
 		this.message = new Message(code, MessageCode.SUBMIT.getCode(), messageContent, level);
 	}
 	

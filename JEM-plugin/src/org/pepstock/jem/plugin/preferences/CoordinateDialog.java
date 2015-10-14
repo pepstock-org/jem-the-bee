@@ -156,6 +156,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		}
 		// adds listener to update buttons status
 		host.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}
@@ -175,6 +176,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		}
 		// adds listener to update buttons status
 		restContext.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}
@@ -204,6 +206,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		// text field because you can't insert a password
 		// without a user
 		userid.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				if (userid.getText().length() > 0){
 					password.setEnabled(true);

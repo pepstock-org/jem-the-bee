@@ -92,10 +92,10 @@ public class LoggedUser extends Subject {
 	}	
 
 	/**
-	 * Returns <code>true</code> if the user is authotized, otherwise <code>false</code>;
+	 * Returns <code>true</code> if the user is authorized, otherwise <code>false</code>;
 	 * 
 	 * @param key permission to check
-	 * @return <code>true</code> if the user is authotized, otherwise <code>false</code>;
+	 * @return <code>true</code> if the user is authorized, otherwise <code>false</code>;
 	 */
 	public Boolean isAuthorized(String key) {
 		Boolean result = authorized.get(key);

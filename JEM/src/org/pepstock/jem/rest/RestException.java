@@ -18,11 +18,13 @@ package org.pepstock.jem.rest;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.pepstock.jem.log.JemException;
+
 /**
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public class RestException extends Exception {
+public class RestException extends JemException {
 	
 	private static final long serialVersionUID = 1L;
 

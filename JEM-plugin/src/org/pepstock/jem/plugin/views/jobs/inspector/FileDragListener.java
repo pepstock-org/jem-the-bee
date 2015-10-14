@@ -197,7 +197,7 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
         }
 
 		@Override
-		public void execute() throws Exception {
+		public void execute() throws JemException {
 			try {
 				if (job.getJcl().getContent() == null){
 					// REST call to download JCL

@@ -121,6 +121,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		// then password field will be enable
 		// otherwise reset also the password field
 		userid.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 				if (userid.getText().length() > 0){
@@ -142,6 +143,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		password.setText(coordinate.getPassword());
 		// every password updates will change the button status
 		password.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}

@@ -231,6 +231,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		
 		// add Double Click listener
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				// gets GFS file
 				ISelection selection = viewer.getSelection();

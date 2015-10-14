@@ -78,11 +78,9 @@ public class CategoryFactory {
 			}
 			// scans second level
 			
-			//FIXME
 			for (List<OutputListItem> items : outputTree.getSecondLevelItems()){
 				if (!items.isEmpty()){
 					String key = items.get(0).getParent();
-//					content.getSecondLevelItems().put(key, items);
 					Category subCategory = new Category(key);
 					subCategory.setImage(Images.DIRECTORY);
 					for (OutputListItem item : items) {
@@ -94,18 +92,6 @@ public class CategoryFactory {
 					category.getSubCategories().add(subCategory);
 				}
 			}
-//			
-//			for (String key : outputTree.getSecondLevelItems().keySet()) {
-//				Category subCategory = new Category(key);
-//				subCategory.setImage(Images.DIRECTORY);
-//				for (OutputListItem item : outputTree.getSecondLevelItems().get(key)) {
-//					ProducedOutput out = new ProducedOutput(item.getLabel(), item.getFileRelativePath());
-//					out.setOutItem(item);
-//					out.setImage(Images.FILE);
-//					subCategory.getProducedOutputs().add(out);
-//				}
-//				category.getSubCategories().add(subCategory);
-//			}
 		}
 		return categories;
 	}

@@ -72,7 +72,7 @@ public class JobsViewPart extends LoginViewPart {
     private void createTabItem(JobsTableContainer container, String permission){
     	// checks permission ONLY if is logged.
     	// permissions are stored in LoggedUser
-    	if (Client.getInstance().isLogged() && Client.getInstance().isAuthorized(Permissions.VIEW, permission)){
+    	if (Client.getInstance().isLogged() && Client.getInstance().isAuthorized(permission)){
     		// creates columns for viewer
     		container.createViewer();
     		getSite().setSelectionProvider(container.getViewer());

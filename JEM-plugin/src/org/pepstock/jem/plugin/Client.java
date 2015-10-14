@@ -202,6 +202,7 @@ public class Client {
 			// submits job and returns JOB ID
 			return jobsManager.submit(FileUtils.readFileToString(jcl));
 		} catch (IOException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RestException(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
 		}
 	}
@@ -348,13 +349,11 @@ public class Client {
 	 * Returns <code>true</code> if you are authorized to permission, by the
 	 * domain.
 	 * 
-	 * @param domain
-	 *            container of subsets of permission, by category
 	 * @param permission
 	 *            simple permission
 	 * @return <code>true</code> if authorized, otherwise <code>false</code>
 	 */
-	public boolean isAuthorized(String domain, String permission) {
+	public boolean isAuthorized(String permission) {
 		Boolean authorized = user.isAuthorized(permission);
 		return authorized.booleanValue();
 	}

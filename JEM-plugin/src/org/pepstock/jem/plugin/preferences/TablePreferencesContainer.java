@@ -451,7 +451,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
      * @version 2.0
      */
     private class TableChanged implements ISelectionChangedListener{
-    	
+    	@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			// if no select, no Remove, no Edit
 			if (tableViewer.getTable().getSelectionCount() == 0) {

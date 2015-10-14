@@ -37,191 +37,191 @@ public enum AntMessage implements MessageInterface{
 	 */
 	@Deprecated
 	@Description(explanation = "It occurs when the system property <code>jem.data</code> is null.<br>Check node log because some exception should be occurred.")
-	JEMA001E(1, "Data path is null", MessageLevel.ERROR),
+	JEMA001E("0001", "Data path is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\" not found", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a data description is not defined in JCL but the program needs for it.<br> Please check JCL data description definition.")
-	JEMA002E(2, "Data description \"{0}\" not found", MessageLevel.ERROR),
+	JEMA002E("0002", "Data description \"{0}\" not found", MessageLevel.ERROR),
 
 	/**
 	 * "Unable to create a data description implementation", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a data description implementation method throw an exception.<br> Please check JCL data description definition.")
-	JEMA003E(3, "Unable to create a data description implementation", MessageLevel.ERROR),
+	JEMA003E("0003", "Unable to create a data description implementation", MessageLevel.ERROR),
 	
 	/**
 	 * "RMI port is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the system property <code>jem.rmi.port</code> is null.<br>Check node log because some exception should be occurred.")
-	JEMA004E(4, "RMI port is null", MessageLevel.ERROR),
+	JEMA004E("0004", "RMI port is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description doesn't have 'name' attribute", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a data description in JCL does't have <code>name</code> attribute.<br>Check data description definition.")
-	JEMA005E(5, "Data description doesn't have 'name' attribute", MessageLevel.ERROR),
+	JEMA005E("0005", "Data description doesn't have 'name' attribute", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : MultiDataset is not allowed in STEP-EXEC", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a data description with many datasets and this is possibile because the datasets are cahnged in environment variables and not in a list."+
 	 "<br>Check data description definition.")
-	JEMA006E(6, "Data description \"{0}\", disposition \"{1}\" : MultiDataset is not allowed in STEP-EXEC", MessageLevel.ERROR),
+	JEMA006E("0006", "Data description \"{0}\", disposition \"{1}\" : MultiDataset is not allowed in STEP-EXEC", MessageLevel.ERROR),
 	
 	/**
 	 * "Output path is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the system property <code>jem.output</code> is null.<br>Check node log because some exception should be occurred.")
-	JEMA007E(7, "Output path is null", MessageLevel.ERROR),
+	JEMA007E("0007", "Output path is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi: only SHR is allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to data description with many datasets without using SHR disposition."+
 	 "<br>Check data description definition.")
-	JEMA008E(8, "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi: only SHR is allowed", MessageLevel.ERROR),	
+	JEMA008E("0008", "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi: only SHR is allowed", MessageLevel.ERROR),	
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi: only SHR is allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to data description reference without using SHR disposition which is mandatory."+
 	 "<br>Check data description definition.")
-	JEMA009E(9, "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Disposition wrong with a reference: only SHR is allowed", MessageLevel.ERROR),	
+	JEMA009E("0009", "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Disposition wrong with a reference: only SHR is allowed", MessageLevel.ERROR),	
 	
 	/**
 	 * "Data description \"{0}\", \"{1}\" : Dataset doesn't exist", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to a dataset which doesn't exist."+
 	 "<br>Check data description definition or file system.")
-	JEMA010E(10, "Data description \"{0}\", \"{1}\" : Dataset doesn't exist", MessageLevel.ERROR),
+	JEMA010E("0010", "Data description \"{0}\", \"{1}\" : Dataset doesn't exist", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\", \"{2}\" : File not found
 	 */
 	@Description(explanation = "It occurs when you try to access to file which is not found."+
 	 "<br>Check data description definition or file system.")
-	JEMA011E(11, "Data description \"{0}\", disposition \"{1}\", \"{2}\" : File not found", MessageLevel.ERROR),	
+	JEMA011E("0011", "Data description \"{0}\", disposition \"{1}\", \"{2}\" : File not found", MessageLevel.ERROR),	
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Dataset is not a reference
 	 */
 	@Description(explanation = "It occurs when you try to access to a reference but dataset is not a reference."+
 	 "<br>Check data description definition.")
-	JEMA012E(12, "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Dataset is not a reference", MessageLevel.ERROR),
+	JEMA012E("0012", "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Dataset is not a reference", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi dataset: only SHR is allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to temporary dataset without using NEW disposition which is mandatory."+
 	 "<br>Check data description definition.")
-	JEMA013E(13, "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Disposition wrong with a temporary file: only NEW is allowed", MessageLevel.ERROR),	
+	JEMA013E("0013", "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Disposition wrong with a temporary file: only NEW is allowed", MessageLevel.ERROR),	
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : Dataset doesn't have 'name' attribute", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a data set without <code>name</code> attribute."+
 	 "<br>Check data description definition.")
-	JEMA014E(14, "Data description \"{0}\", disposition \"{1}\" : Dataset doesn't have 'name' attribute", MessageLevel.ERROR),
+	JEMA014E("0014", "Data description \"{0}\", disposition \"{1}\" : Dataset doesn't have 'name' attribute", MessageLevel.ERROR),
 	
 	/**
 	 * "Data description \"{0}\", disposition \"{1}\" : Disposition wrong with a multi dataset: only SHR is allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to dataset using NEW disposition but the data set already exists."+
 	 "<br>Check data description definition and file system.")
-	JEMA015E(15, "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Dataset already exists", MessageLevel.ERROR),	
+	JEMA015E("0015", "Data description \"{0}\", disposition \"{1}\", \"{2}\" : Dataset already exists", MessageLevel.ERROR),	
 	
 	/**
 	 *"Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
 	@Deprecated
 	@Description(explanation = "It occurs when data description is not a output stream, as expect<br>Check JCL definition.")
-	JEMA016E(16, "Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR),
+	JEMA016E("0016", "Data description name \"{0}\" is not a OutputStream instance but \"{1}\"", MessageLevel.ERROR),
 
 	/**
 	 *"Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR
 	 */
 	@Deprecated
 	@Description(explanation = "It occurs when data description is not a input stream, as expect<br>Check JCL definition.")
-	JEMA017E(17, "Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR),
+	JEMA017E("0017", "Data description name \"{0}\" is not a InputStream instance but \"{1}\"", MessageLevel.ERROR),
 	
 	/**
 	 *  "Data description \"{0}\" is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a mandatory data description is not defined in JCL."+
 	 "<br>Check data description definition.")
-	JEMA018E(18, "Data description \"{0}\" is missing", MessageLevel.ERROR),
+	JEMA018E("0018", "Data description \"{0}\" is missing", MessageLevel.ERROR),
 	
 	/**
 	 *   "Shell is not defined", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a shell script task is defined but the shell to use is missing."+
 	 "<br>Check JCL task definition.")
-	JEMA019E(19, "Shell is not defined", MessageLevel.ERROR),
+	JEMA019E("0019", "Shell is not defined", MessageLevel.ERROR),
 	
 	/**
 	 * "Data source value is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a data set using data source attribute which is empty even if defined."+
 	 "<br>Check data description definition.")
-	JEMA020E(20, "Data source value is empty", MessageLevel.ERROR),
+	JEMA020E("0020", "Data source value is empty", MessageLevel.ERROR),
 	
 	/**
 	 * "Data source value is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a data source but the name attribute is empty even if defined."+
 	 "<br>Check data source definition.")
-	JEMA021E(21, "Data source name attribute is empty", MessageLevel.ERROR),
+	JEMA021E("0021", "Data source name attribute is empty", MessageLevel.ERROR),
 	
 	/**
 	 * "Data source value is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a data source but the resource attribute is empty even if defined."+
 	 "<br>Check data source definition.")
-	JEMA022E(22, "Data source resource attribute is empty", MessageLevel.ERROR),
+	JEMA022E("0022", "Data source resource attribute is empty", MessageLevel.ERROR),
 	
 	/**
 	 * "Lock name attribute is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a lock but the name attribute is empty even if defined."+
 	 "<br>Check lock definition.")
-	JEMA023E(23, "Lock name attribute is empty", MessageLevel.ERROR),
+	JEMA023E("0023", "Lock name attribute is empty", MessageLevel.ERROR),
 	
 	/**
 	 * Task \"{0}\" is not present in the procedure \"{0}\": overriding is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to override a task inside a procedure but the task is not defined in procedure definition."+
 	 "<br>Check procedure definition.")
-	JEMA024E(24, "Task \"{0}\" is not present in the procedure \"{0}\": overriding is not allowed", MessageLevel.ERROR),
+	JEMA024E("0024", "Task \"{0}\" is not present in the procedure \"{0}\": overriding is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "Only one nested element allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define more than one task inside of procedure definition."+
 	 "<br>use <code>SEQUENTIAL</code> tasks of ANT if more than one task is needed.")
-	JEMA025E(25, "Only one nested element allowed", MessageLevel.ERROR),
+	JEMA025E("0025", "Only one nested element allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "'addTask' method is called with a task that is not an unknown element but is a \"{0}\" ", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a task inside a procedure but the task is not a UnknownElement."+
 	 "<br>Check ANT log because this is ANT internal error.")
-	JEMA026E(26, "'addTask' method is called with a task that is not an unknown element but is a \"{0}\" ", MessageLevel.ERROR),
+	JEMA026E("0026", "'addTask' method is called with a task that is not an unknown element but is a \"{0}\" ", MessageLevel.ERROR),
 	
 	/**
 	 * "Data source is not well defined: 'name' or 'resource' is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when data source element doesn't contain <code>resource</code>."+
 	 "<br>Check JCL data source definition.")
-	JEMA027E(27, "Data source is not well defined: 'resource' is null", MessageLevel.ERROR),
+	JEMA027E("0027", "Data source is not well defined: 'resource' is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Datasource is not well defined: 'name' or 'resource' is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to access to a resource but you're not authorized."+
 	 "<br>Check permissions on resources that job user has got.")
-	JEMA028E(28, "Access to \"{0}\" is not allowed", MessageLevel.ERROR),
+	JEMA028E("0028", "Access to \"{0}\" is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "Key  \"{0}\" for resource  \"{1}\" can not be overrided", MessageLevel.ERROR
@@ -229,304 +229,304 @@ public enum AntMessage implements MessageInterface{
 	@Deprecated
 	@Description(explanation = "It occurs when you try to override a property which is defined as not overridable."+
 	 "<br>Check resource definition.")
-	JEMA029E(29, "Key  \"{0}\" for resource  \"{1}\" can not be overrided", MessageLevel.ERROR),
+	JEMA029E("0029", "Key  \"{0}\" for resource  \"{1}\" can not be overrided", MessageLevel.ERROR),
 	
 	/**
 	 * "Resorce \"{0}\" with type \"{1}\" is not supported", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to use a resource which has go a type not supported."+
 	 "<br>Check with JEM administrator which types of resources are available.")
-	JEMA030E(30, "Resorce \"{0}\" with type \"{1}\" is not supported", MessageLevel.ERROR),
+	JEMA030E("0030", "Resorce \"{0}\" with type \"{1}\" is not supported", MessageLevel.ERROR),
 	
 	/**
 	 * "Job name is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the job name is missing.<br>Check JCL and fill name attribute project element or use <code>jem.job.name</code> property.")
-	JEMA031E(31, "Job name is null", MessageLevel.ERROR),
+	JEMA031E("0031", "Job name is null", MessageLevel.ERROR),
 	
 	/**
 	 * "Job name is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the <code>jem.job.lockingScope</code> property is wrong.<br>Check JCL using the right locking scope.")
-	JEMA032E(32, "Property \"{0}\" must be "+AntKeys.ANT_JOB_SCOPE+", "+AntKeys.ANT_STEP_SCOPE+" or "+AntKeys.ANT_TASK_SCOPE+", instead of \"{1}\"", MessageLevel.ERROR),
+	JEMA032E("0032", "Property \"{0}\" must be "+AntKeys.ANT_JOB_SCOPE+", "+AntKeys.ANT_STEP_SCOPE+" or "+AntKeys.ANT_TASK_SCOPE+", instead of \"{1}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Job name is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It informs what kind of locking scope the job is using.")
-	JEMA033I(33, "Job is using \"{0}\" locking scope.", MessageLevel.INFO),
+	JEMA033I("0033", "Job is using \"{0}\" locking scope.", MessageLevel.INFO),
 	
 	/**
 	 * "Data description reference: \"{0}\"", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs what data description is currently used.")
-	JEMA034I(34, "Data description instance: \"{0}\"", MessageLevel.INFO),
+	JEMA034I("0034", "Data description instance: \"{0}\"", MessageLevel.INFO),
 	
 	/**
 	 * "Data source reference: \"{0}\"", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs what data source is currently used.")
-	JEMA035I(35, "Data source instance: \"{0}\"", MessageLevel.INFO),
+	JEMA035I("0035", "Data source instance: \"{0}\"", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to store GDG", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an exception is thrown during the commit phase on GDG.<br>Check with JEM adnimistrator.")
-	JEMA036E(36, "Unable to complete storing GDG : {0}", MessageLevel.ERROR),
+	JEMA036E("0036", "Unable to complete storing GDG : {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Job name is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an exception is thrown during the unbind phase of JNDI resources.<br>Check with JEM adnimistrator.")
-	JEMA037E(37, "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR),
+	JEMA037E("0037", "Unable to unbind resources from JNDI: {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "RMI object {0} is not binded", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it tries to get object by RMI but is not binded.<br>Check with JEM adnimistrator.")
-	JEMA038E(38, "RMI object {0} is not binded", MessageLevel.ERROR),
+	JEMA038E("0038", "RMI object {0} is not binded", MessageLevel.ERROR),
 	
 	/**
 	 * "Security Manager already instantiated.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it tries to get a new batch security manager but is already instantiated.<br>Check with JEM adnimistrator.")
-	JEMA039E(39, "Security Manager already instantiated.", MessageLevel.ERROR),
+	JEMA039E("0039", "Security Manager already instantiated.", MessageLevel.ERROR),
 	
 	/**
 	 * "Error while starting job {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when for any exception, ANT is stopped during the initialization phase.<br>Check with JEM adnimistrator.")
-	JEMA040E(40, "Error while starting job {0}", MessageLevel.ERROR),
+	JEMA040E("0040", "Error while starting job {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Dataset name attribute is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you try to define a dataset but the name attribute is empty even if defined."+
 	 "<br>Check lock definition.")
-	JEMA041E(41, "Dataset name attribute is empty", MessageLevel.ERROR),
+	JEMA041E("0041", "Dataset name attribute is empty", MessageLevel.ERROR),
 	
 	/**
 	 * "Sort is using the following comparator class: {0}",  MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility. It show which comparator class is used.")
-	JEMA042I(42, "Sort is using the following comparator class: {0}", MessageLevel.INFO),
+	JEMA042I("0042", "Sort is using the following comparator class: {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Sort is using default comparator class",  MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility without any comparator. It uses the default comparator.")
-	JEMA043I(43, "Sort is using default comparator class", MessageLevel.INFO),
+	JEMA043I("0043", "Sort is using default comparator class", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to load sort statements from COMMAND data description : {0}", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility but you don't put any command. It uses the default comparator.")
-	JEMA044W(44, "Unable to load sort statements from COMMAND data description: {0}", MessageLevel.WARNING),
+	JEMA044W("0044", "Unable to load sort statements from COMMAND data description: {0}", MessageLevel.WARNING),
 	
 	/**
 	 * "Sort statements from COMMAND data description: {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility. It shows the commands to use to sort.")
-	JEMA045I(45, "Sort statements from COMMAND data description: {0}", MessageLevel.INFO),
+	JEMA045I("0045", "Sort statements from COMMAND data description: {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility and commands contain some mistakes.<br> Please check the syntax of your command.")
-	JEMA046W(46, "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING),
+	JEMA046W("0046", "Syntax error parsing sort statement \"{0}\": {1}", MessageLevel.WARNING),
 	
 	/**
 	 * "JCL Validation error, look:\"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JCL validation fails. <br>Check JCL definition.")
-	JEMA047E(47, "JCL Validation error, look:\"{0}\"", MessageLevel.ERROR),
+	JEMA047E("0047", "JCL Validation error, look:\"{0}\"", MessageLevel.ERROR),
 
 	/**
 	 * "File not found, look:\"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the file is not found<br>Check definition.")
-	JEMA048E(48, "JCL validator file not found, look:\"{0}\"", MessageLevel.ERROR),
+	JEMA048E("0048", "JCL validator file not found, look:\"{0}\"", MessageLevel.ERROR),
 
 	/**
 	 * "Invalid file name, look:\"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the file name has an invalid value<br>Check definition.")
-	JEMA049E(49, "JCL validator file has an invalid value, look:\"{0}\"", MessageLevel.ERROR),
+	JEMA049E("0049", "JCL validator file has an invalid value, look:\"{0}\"", MessageLevel.ERROR),
 
 	/**
 	 * "Invalid SAX-compatible TransformerFactory", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when there isn't a SAX-compatible TransformerFactory<br>Check xalan library.")
-	JEMA050E(50, "JCL validator did not find a SAX-compatible TransformerFactory", MessageLevel.ERROR),
+	JEMA050E("0050", "JCL validator did not find a SAX-compatible TransformerFactory", MessageLevel.ERROR),
 
 	/**
 	 * "Annunce to have successfully loaded the xslt validator with \"{0}\"", MessageLevel.INFO
 	 */
 	@Description(explanation = "Annunce to have successfully loaded the xslt validator.")
-	JEMA051I(51, "JCL validator successfully loaded with \"{0}\"", MessageLevel.INFO),
+	JEMA051I("0051", "JCL validator successfully loaded with \"{0}\"", MessageLevel.INFO),
 	
 	/**
 	 * "WrapperTask accepts ONLY a ANT task", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you added more than a ANT task to a wrapper task.<br>Please check JCL defintion.")
-	JEMA052E(52, "WrapperTask accepts ONLY a ANT task", MessageLevel.ERROR),
+	JEMA052E("0052", "WrapperTask accepts ONLY a ANT task", MessageLevel.ERROR),
 	
 	/**
 	 * "Binary path is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the system property <code>jem.bianry</code> is null.<br>Check node log because some exception should be occurred.")
-	JEMA053E(53, "Binary path is null", MessageLevel.ERROR),
+	JEMA053E("0053", "Binary path is null", MessageLevel.ERROR),
 
 	/**
 	 * "COMMAND attribute is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the ExecBinaryTask is used but COMMAND is not allowed.<br> Please use EXECUTABLE.")
-	JEMA054E(54, "COMMAND attribute is not allowed", MessageLevel.ERROR),
+	JEMA054E("0054", "COMMAND attribute is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "EXECUTABLE attribute is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the ExecBinaryTask is used but EXECUTABKE is missing.<br> Please use EXECUTABLE.")
-	JEMA055E(55, "EXECUTABLE attribute is missing", MessageLevel.ERROR),
+	JEMA055E("0055", "EXECUTABLE attribute is missing", MessageLevel.ERROR),
 	
 	/**
 	 * "{0} is not supported", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the ExecBinaryTask is used but operating system is not supported.")
-	JEMA056E(56, "{0} is not supported", MessageLevel.ERROR),
+	JEMA056E("0056", "{0} is not supported", MessageLevel.ERROR),
 	
 	/**
 	 * "JCL validator is not successfully loaded from \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the validator engine is not able to load validator file.<br>Please check validator file defintion.")
-	JEMA057E(57, "Unable to load JCL validator from \"{0}\"", MessageLevel.ERROR),
+	JEMA057E("0057", "Unable to load JCL validator from \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to parse sort statements from COMMAND data description.", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when you are using SORT utility but you had got an error parsng or reading statement. It uses the default comparator.")
-	JEMA058W(58, "Unable to parse sort statements from COMMAND data description.", MessageLevel.WARNING),
+	JEMA058W("0058", "Unable to parse sort statements from COMMAND data description.", MessageLevel.WARNING),
 	
 	/**
 	 * "Unable to create internal lock manager.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you are not able to create a locker which should lock resourcess.<br>Please contact your JEM administrators.")
-	JEMA059E(59, "Unable to create internal lock manager.", MessageLevel.ERROR),
+	JEMA059E("0059", "Unable to create internal lock manager.", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get lock for resources.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you are not able to get lock for requested resources.<br>Please contact your JEM administrators.")
-	JEMA060E(60, "Unable to get lock for resources.", MessageLevel.ERROR),
+	JEMA060E("0060", "Unable to get lock for resources.", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to unlock resources.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you are not able to unlock resources.<br>Please contact your JEM administrators.")
-	JEMA061E(61, "Unable to unlock resources.", MessageLevel.ERROR),
+	JEMA061E("0061", "Unable to unlock resources.", MessageLevel.ERROR),
 	
 	/**
 	 *"\"{0}\" bytes have been written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the copy task is ended, showing how many bytes have been written.")
-	JEMA062I(62, "\"{0}\" bytes have been written", MessageLevel.INFO),
+	JEMA062I("0062", "\"{0}\" bytes have been written", MessageLevel.INFO),
 	
 	/**
 	 * "{0} parameter missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an attribute is missing but mandatory.<br>Please check your ANT task.")
-	JEMA063E(63, "{0} parameter missing", MessageLevel.ERROR),
+	JEMA063E("0063", "{0} parameter missing", MessageLevel.ERROR),
 	
 	/**
 	 * "GfsManager instance is null", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when GFS manager is null. If happems, there is an internal error.<br>Please contact your JEM administrators.")
-	JEMA064E(64, "GfsManager instance is null", MessageLevel.ERROR),
+	JEMA064E("0064", "GfsManager instance is null", MessageLevel.ERROR),
 	
 	/**
 	 * "\"{0}\" files have been uploaded", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the upload task is ended, showing how many files have been uploaded.")
-	JEMA065I(65, "{0} files have been uploaded", MessageLevel.INFO),
+	JEMA065I("0065", "{0} files have been uploaded", MessageLevel.INFO),
 	
 	/**
 	 * "\"{0}\" files haven't been uploaded due to an error", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when the upload task is ended, showing how many files haven't been uploaded.<br>Please see ANT task log.")
-	JEMA066W(66, "{0} files haven't been uploaded due to an error", MessageLevel.WARNING),
+	JEMA066W("0066", "{0} files haven't been uploaded due to an error", MessageLevel.WARNING),
 	
 	/**
 	 * "Destination GFS type:  \"{0}\" ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the upload task is started, showing the GFS type where the files will be uploaded.")
-	JEMA067I(67, "Destination GFS type:  \"{0}\" ", MessageLevel.INFO),
+	JEMA067I("0067", "Destination GFS type:  \"{0}\" ", MessageLevel.INFO),
 	
 	/**
 	 * "Local source folder:  \"{0}\" ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the upload task is started, showing the folder where the files are.")
-	JEMA068I(68, "Local source folder:  \"{0}\" with {1} files to upload", MessageLevel.INFO),
+	JEMA068I("0068", "Local source folder:  \"{0}\" with {1} files to upload", MessageLevel.INFO),
 	
 	/**
 	 * "Copying file \"{0}\" to JEM", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the upload task starts uploading a file to JEM.")
-	JEMA069I(69, "Copying file \"{0}\" to JEM", MessageLevel.INFO),
+	JEMA069I("0069", "Copying file \"{0}\" to JEM", MessageLevel.INFO),
 	
 	/**
 	 * "Invalid meta data area: duplicated tag \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the comments on the script to submit have got the begin element twice.<br/>Please have a look to the script and metadata part.")
-	JEMA070E(70, "Invalid meta data area: duplicated tag \"{0}\"", MessageLevel.ERROR),
+	JEMA070E("0070", "Invalid meta data area: duplicated tag \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the comments on the script to submit doesn't have some elements.<br/>Please have a look to the script and metadata part.")
-	JEMA071E(71, "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR),
+	JEMA071E("0071", "Invalid meta data area: missing tag \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Disposition is missing for data description \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the dispostion of data description is missing.<br>Please have a look to JCL.")
-	JEMA072E(72, "Disposition is missing for data description \"{0}\"", MessageLevel.ERROR),
+	JEMA072E("0072", "Disposition is missing for data description \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "SYSOUT has been specified with a dataset for data description \"{0}\". Not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you put both SYSOUT and a DSN parameters for a data description.<br>Please have a look to JCL.")
-	JEMA073E(73, "SYSOUT has been specified with a dataset for data description \"{0}\". Not allowed", MessageLevel.ERROR),
+	JEMA073E("0073", "SYSOUT has been specified with a dataset for data description \"{0}\". Not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "More than 1 dataset has been specified with DATASOURCE key word for data description \"{0}\". Not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you put both DATASOURE and more than 1 dataset for a data description.<br>Please have a look to JCL.")
-	JEMA074E(74, "More than 1 dataset has been specified with DATASOURCE key word for data description \"{0}\". Not allowed", MessageLevel.ERROR),
+	JEMA074E("0074", "More than 1 dataset has been specified with DATASOURCE key word for data description \"{0}\". Not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "Dataset name and content are null for data description \"{0}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you put nothing for a data description.<br>Please have a look to JCL.")
-	JEMA075E(75, "Dataset name and content are null for data description \"{0}\"", MessageLevel.ERROR),
+	JEMA075E("0075", "Dataset name and content are null for data description \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR
 	 */
 	@Deprecated
 	@Description(explanation = "It occurs when you put a wrong syntax for properteis for a data source.<br>Please have a look to JCL.")
-	JEMA076E(76, "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR),
+	JEMA076E("0076", "PROPERTIES syntax error for data source \"{0}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when you have a JAVA ANT task in your JCL defined with attribute fork=true. This is not allowed for security reason.<br>JEM overrides your configuration, setting the fork attribute to false.")
-	JEMA077W(77, "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING),
+	JEMA077W("0077", "Java Task \"{0}\" has been changed setting attribute fork=false. ", MessageLevel.WARNING),
 	
 	/**
 	 * "Field \"{0}\" must be defined static or is not an integer" , MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you define a wrong field to set you return code byannotation.<br>Please have a look to your code. The filed must be static and an int instance.")
-	JEMA078E(78, "Field \"{0}\" must be defined static or is not an integer" , MessageLevel.ERROR);
+	JEMA078E("0078", "Field \"{0}\" must be defined static or is not an integer" , MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to instances of ANT utilities. 
@@ -543,7 +543,7 @@ public enum AntMessage implements MessageInterface{
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private AntMessage(int code, String messageContent, MessageLevel level){
+	private AntMessage(String code, String messageContent, MessageLevel level){
 		this.message = new Message(code, MessageCode.ANT.getCode(), messageContent, level);
 	}
 	

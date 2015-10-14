@@ -160,7 +160,7 @@ public class DataDescriptionManager {
 			DataSetManager.loadReferences(ddImpl, ds);
 		} else {
 			// creates a dataset
-			DataSetManager.createDataSetImpl(ddImpl, ds, item);
+			DataSetManager.createDataSetImpl(ddImpl, ds);
 		}
 
 		// add dataset description to container for further referback
@@ -193,7 +193,7 @@ public class DataDescriptionManager {
 				DataSetManager.loadReferences(ddImpl, ds);
 			} else {
 				// creates a dataset
-				DataSetManager.createDataSetImpl(ddImpl, ds, item);
+				DataSetManager.createDataSetImpl(ddImpl, ds);
 			}
 		}
 		// add dataset description to container for further referback
