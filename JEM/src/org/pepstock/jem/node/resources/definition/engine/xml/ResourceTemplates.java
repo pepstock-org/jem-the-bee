@@ -40,7 +40,7 @@ public class ResourceTemplates {
 	 * Name of the resourceTemplates field. 
 	 * @see XStream
 	 */
-	public static final String RESOURCE_TEMPLATES_FIELD = "resourceTemplates";
+	public static final String RESOURCE_TEMPLATES_FIELD = "resourceTemplatesSet";
 	
 	/**
 	 * The list of the resource templates. <br>

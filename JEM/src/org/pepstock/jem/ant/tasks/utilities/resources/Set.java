@@ -30,7 +30,7 @@ import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.Resources;
+import org.pepstock.jem.node.resources.ResourcesList;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
@@ -109,9 +109,9 @@ public class Set extends Command {
 				if (data instanceof Resource){
 					Resource resource = (Resource) data;
 					addResource(resource);
-				} else if (data instanceof Resources){
-					Resources resources = (Resources)data;
-					for (Resource resource : resources.getResourcesList()){
+				} else if (data instanceof ResourcesList){
+					ResourcesList resources = (ResourcesList)data;
+					for (Resource resource : resources.getResources()){
 						addResource(resource);
 					}
 				} else {

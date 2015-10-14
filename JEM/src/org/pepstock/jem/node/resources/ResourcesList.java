@@ -28,30 +28,30 @@ import java.util.List;
  * @version 1.0	
  *
  */
-public class Resources implements Serializable{
+public class ResourcesList implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private List<Resource> resourcesList = new ArrayList<Resource>();
+	private List<Resource> resources = new ArrayList<Resource>();
 
 	/**
 	 * Empty constructor
 	 */
-	public Resources() {
+	public ResourcesList() {
 	}
 
 	/**
 	 * @return the resources
 	 */
-	public List<Resource> getResourcesList() {
-		return resourcesList;
+	public List<Resource> getResources() {
+		return resources;
 	}
 
 	/**
 	 * @param resources the resources to set
 	 */
-	public void setResourcesList(List<Resource> resources) {
-		this.resourcesList = resources;
+	public void setResources(List<Resource> resources) {
+		this.resources = resources;
 	}
 
 	/* (non-Javadoc)
@@ -59,7 +59,7 @@ public class Resources implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		return "Resources [resources=" + resourcesList + "]";
+		return "Resources [resources=" + resources + "]";
 	}
 	
 }

@@ -33,7 +33,7 @@ import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.Resources;
+import org.pepstock.jem.node.resources.ResourcesList;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
@@ -115,7 +115,7 @@ public class GetList extends Command {
 			Object fileout = (Object) ic.lookup(dd);
 			if (fileout instanceof OutputStream){
 				Collection<Resource> allResources = getResourcer().values(JobId.VALUE, getParameter());
-				Resources resources = new Resources();
+				ResourcesList resources = new ResourcesList();
 				List<Resource> list = new ArrayList<Resource>();
 				for (Resource resource : allResources){
 					if (!isNoEncryption()){
@@ -123,7 +123,7 @@ public class GetList extends Command {
 					}
 					list.add(resource);
 				}
-				resources.setResourcesList(list);
+				resources.setResources(list);
 			
 				getxStream().toXML(resources, (OutputStream)fileout);
 				System.out.println(AntUtilMessage.JEMZ012I.toMessage().getFormattedMessage(allResources.size()));

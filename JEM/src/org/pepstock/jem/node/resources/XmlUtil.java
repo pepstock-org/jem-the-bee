@@ -49,8 +49,8 @@ public final class XmlUtil {
 			// if not, creates a new instance
 			xs = new XStream();
 			// creates alias for resources
-			xs.alias(ConfigKeys.RESOURCES_ALIAS, Resources.class);
-			xs.addImplicitCollection(Resources.class, ConfigKeys.RESOURCES_ALIAS);
+			xs.alias(ConfigKeys.RESOURCES_ALIAS, ResourcesList.class);
+			xs.addImplicitCollection(ResourcesList.class, ConfigKeys.RESOURCES_ALIAS);
 			// creates alias for resource
 			xs.alias(ConfigKeys.RESOURCE_ALIAS, Resource.class);
 			// defines all attributes of resource
