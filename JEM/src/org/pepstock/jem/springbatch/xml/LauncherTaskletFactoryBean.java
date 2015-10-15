@@ -32,7 +32,6 @@ public class LauncherTaskletFactoryBean extends TaskletFactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		// cast the tasklet and return it.
-		LauncherTasklet tasklet = (LauncherTasklet)super.getObject();
-		return tasklet;
+		return (LauncherTasklet)super.getObject();
 	}
 }

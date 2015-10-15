@@ -84,8 +84,7 @@ public final class RequestBuilder {
 	 * @return the builder for further calls
 	 */
 	static RequestBuilder media(AbstractRestManager manager, String acceptType, String contentType){
-		RequestBuilder replacer = new RequestBuilder(manager, contentType, acceptType);
-		return replacer;
+		return new RequestBuilder(manager, contentType, acceptType);
 	}
 
 	/**

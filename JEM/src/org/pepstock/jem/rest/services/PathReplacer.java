@@ -41,8 +41,7 @@ public final class PathReplacer {
 	 * @return  the replacer for additional calls
 	 */
 	static PathReplacer path(String path){
-		PathReplacer replacer = new PathReplacer(path);
-		return replacer;
+		return new PathReplacer(path);
 	}
 	
 	/**

@@ -451,9 +451,7 @@ public class StartUpSystem {
 			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / 1000);
 
-			long totlaSize = inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
-
-			return totlaSize;
+			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}

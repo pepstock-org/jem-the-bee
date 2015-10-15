@@ -19,7 +19,7 @@ package org.pepstock.jem.log;
 import java.io.Serializable;
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents the informations that all JEM components are logging. This is the

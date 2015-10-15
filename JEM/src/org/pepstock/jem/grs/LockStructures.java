@@ -24,7 +24,7 @@ package org.pepstock.jem.grs;
  * @version 2.3
  * 
  */
-public interface LockStructures {
+public final class LockStructures {
 
 	/**
 	 * Key for the collection used to collect all latch information. The
@@ -47,4 +47,9 @@ public interface LockStructures {
 	 */
 	public static final String LOCK_REQUEST = "org.pepstock.jem.grs.lock_request";
 
+	/**
+	 * To avoid any instantiation
+	 */
+	private LockStructures() {
+	}
 }

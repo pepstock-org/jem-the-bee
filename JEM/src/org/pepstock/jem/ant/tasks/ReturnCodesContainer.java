@@ -191,10 +191,9 @@ public final class ReturnCodesContainer {
 			if (levels.length == LEVEL_WITH_ID){
 				return reference;
 			} else if (levels.length == LEVEL_WITHOUT_ID){
-				String referenceNew = levels[0] + LEVEL_SEPARATOR + // target
+				return levels[0] + LEVEL_SEPARATOR + // target
 						levels[1] + LEVEL_SEPARATOR + // task
 						DataDescriptionStep.DEFAULT_ID; // id
-				return referenceNew;		
 			}
 		}
 		return null;

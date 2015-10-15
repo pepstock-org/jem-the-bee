@@ -118,8 +118,7 @@ public abstract class Command implements SubCommand{
 	 */
 	public String[] split(String entity){
 		String newEntity = StringUtils.remove(entity, " ");
-		String[] perms = StringUtils.split(newEntity, ENTITIES_SEPARATOR);
-		return perms;
+		return StringUtils.split(newEntity, ENTITIES_SEPARATOR);
 	}
 	
 	/**

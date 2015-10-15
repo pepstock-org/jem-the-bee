@@ -111,11 +111,10 @@ public final class JsonUtil {
 	 * @throws JsonMappingException if any JSON error occurs
 	 * @throws IOException if any JSON error occurs
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> List<T> deserializeList(String json, Class<T> cls) throws JsonParseException, JsonMappingException, IOException {
 		JavaType typeInfo = mapper.getTypeFactory().constructCollectionType(List.class, cls);
-		@SuppressWarnings("unchecked")
-		List<T> response = (List<T>) mapper.readValue(json, typeInfo);
-		return response;
+		return (List<T>) mapper.readValue(json, typeInfo);
 	}
 
 	/**

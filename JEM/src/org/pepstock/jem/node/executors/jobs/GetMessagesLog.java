@@ -65,8 +65,7 @@ public class GetMessagesLog extends DefaultExecutor<String> {
 			// if routed it can't get the log
 			LogAppl.getInstance().emit(NodeMessage.JEMC197I, job, job.getJcl().getEnvironment());
 			// returns the message of error as content
-			 String content = NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
-			return content;
+			 return NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
 		} else {
 			try {
 				// gets the jcl file to extract the directory

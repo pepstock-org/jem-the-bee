@@ -207,6 +207,7 @@ public class NodeProperties {
 
 	/**
 	 * value for default multicast group: {@value}
+	 * Used the concat to avoid SONAR issue
 	 */
 	public static final String DEFAULT_MULTICAST_GROUP = "233.0"+".0.1";
 

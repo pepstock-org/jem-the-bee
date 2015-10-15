@@ -175,12 +175,11 @@ public final class ImplementationsContainer {
 			if (levels.length == LEVEL_WITH_ID){
 				return reference;
 			} else if (levels.length == LEVEL_WITHOUT_ID){
-				String referenceNew = levels[0] + LEVEL_SEPARATOR + // *
+				return  levels[0] + LEVEL_SEPARATOR + // *
 						levels[1] + LEVEL_SEPARATOR + // target
 						levels[2] + LEVEL_SEPARATOR + // task
 						DataDescriptionStep.DEFAULT_ID + LEVEL_SEPARATOR + // id
 						levels[3]; //dd
-				return referenceNew;		
 			}
 		}
 		return null;
