@@ -115,7 +115,7 @@ public class TreeOptions extends ScrollPanel {
 		List<CellPanel> panels = new LinkedList<CellPanel>();
 		List<DisclosurePanel> dPanels = new LinkedList<DisclosurePanel>();
 
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_CLUSTER_FOLDER)) {
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_CLUSTER_FOLDER)) {
 			if (cconfig != null) {
 				panels.add(cconfig);
 			}
@@ -136,7 +136,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_NODES_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_NODES_FOLDER)){
 			if (nconfig !=null) {
 				panels.add(nconfig);
 			}
@@ -154,7 +154,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_QUEUES_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_QUEUES_FOLDER)){
 			if (cqueues !=null) {
 				panels.add(cqueues);
 			}
@@ -169,7 +169,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_SECURITY_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_SECURITY_FOLDER)){
 			if (certificate !=null) {
 				panels.add(certificate);
 			}
@@ -218,7 +218,7 @@ public class TreeOptions extends ScrollPanel {
 	 * @return
 	 */
 	private final CellPanel createItem(String description, final String option, ImageResource icon, String permission){
-		if (!ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, permission)) {
+		if (!ClientPermissions.isAuthorized(permission)) {
 			return null;
 		}
 	

@@ -52,6 +52,8 @@ import org.xml.sax.SAXException;
  * @version 2.2
  */
 public class JBpmLauncher {
+	
+	private static final int MANDATORY_ARGUMENTS = 2;
 
 	/**
 	 * To avoid any instantiation
@@ -72,7 +74,7 @@ public class JBpmLauncher {
 		// initialize LOG
 		LogAppl.getInstance();
 		// checks if there is the right amount of arguments
-		if (args != null && args.length == 2){
+		if (args != null && args.length == MANDATORY_ARGUMENTS){
 			
 			// args[0] is process ID
 			// args[1] is jcl file

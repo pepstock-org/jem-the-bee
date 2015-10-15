@@ -19,6 +19,8 @@ package org.pepstock.jem.log;
 import java.io.Serializable;
 import java.text.MessageFormat;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Represents the informations that all JEM components are logging. This is the
  * unit of log, mandatory if you want to log.
@@ -34,7 +36,17 @@ public class Message implements Serializable{
 	 * Prefix of all messages
 	 */
 	public static final String PREFIX = "JEM";
-
+	
+	/**
+	 * Length to center the message
+	 */
+	public static final int ATTENTION_STRING_LEGTH = 40;
+	
+	/**
+	 * Common attention message
+	 */
+	public static final String ATTENTION_STRING = StringUtils.center("ATTENTION", ATTENTION_STRING_LEGTH, "-");
+	
 	private MessageFormat format = null;
 
 	private String code = null;

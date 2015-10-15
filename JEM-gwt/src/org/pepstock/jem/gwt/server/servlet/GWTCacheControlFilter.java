@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class GWTCacheControlFilter implements Filter {
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String requestURI = httpRequest.getRequestURI();
@@ -50,11 +51,11 @@ public class GWTCacheControlFilter implements Filter {
 
 		filterChain.doFilter(request, response);
 	}
-	
+	@Override
 	public void destroy() {
 		// do nothing
 	}
-
+	@Override
 	public void init(FilterConfig config) throws ServletException {
 		// do nothing
 	}

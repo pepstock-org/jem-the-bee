@@ -45,6 +45,11 @@ public class DataSet extends AbstractResource implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Prefix to use to indicate a TEMPORARY file
+	 */
+	public static final String TEMPORARY_PREFIX = "@@";
+	
 	private DataSetImpl dataSetImpl = new DataSetImpl();
 
 	private String name = null;
@@ -127,7 +132,7 @@ public class DataSet extends AbstractResource implements Serializable{
 	 */
 	public boolean isTemporary() {
 		if (name != null){
-			return name.startsWith("@@") && !isInline();
+			return name.startsWith(TEMPORARY_PREFIX) && !isInline();
 		} else {
 			return false;
 		}

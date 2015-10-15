@@ -48,6 +48,11 @@ public class DataSet implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Prefix to use to indicate a TEMPORARY file
+	 */
+	public static final String TEMPORARY_PREFIX = "@@";
+	
 	private String name = null;
 
 	private int offset = Integer.MIN_VALUE;
@@ -130,7 +135,7 @@ public class DataSet implements Serializable {
 			// returns true if the first 2 chars are @@ and if is not Inline
 			// then
 			// none data text is included in data set
-			return name.startsWith("@@") && !isInline();
+			return name.startsWith(TEMPORARY_PREFIX) && !isInline();
 		} else {
 			return false;
 		}

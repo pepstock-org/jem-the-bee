@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.taskdefs.ExecTask;
@@ -34,6 +33,7 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.Message;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -294,7 +294,7 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 					}
 				}
 				if (exceptions.length() > 0) {
-					log(StringUtils.center("ATTENTION", 40, "-"));
+					log(Message.ATTENTION_STRING);
 					log(exceptions.toString());
 				}
 			}

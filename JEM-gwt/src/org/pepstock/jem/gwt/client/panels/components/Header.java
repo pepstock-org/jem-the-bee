@@ -87,7 +87,7 @@ public abstract class Header extends FlexTable {
 		closeImage.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				onClose(event);
+				onClose();
 			}
 		});
 		cf.setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_TOP);
@@ -98,7 +98,7 @@ public abstract class Header extends FlexTable {
 	/**
 	 * @param event
 	 */
-	public void onClose(ClickEvent event) {
+	public void onClose() {
 		parent.hide();
 	}
 	

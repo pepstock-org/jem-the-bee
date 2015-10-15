@@ -152,7 +152,7 @@ public class DataSetManager {
 			dataset.setName(ds.getName());
 			// create temporary file using part of dataset name and suffix tmp,
 			// sets delete on exit of JVM
-			File file = File.createTempFile(ds.getName().substring(2), ".tmp");
+			File file = File.createTempFile(ds.getName().substring(DataSet.TEMPORARY_PREFIX.length()), ".tmp");
 			file.deleteOnExit();
 			// set file and type into dataset
 			dataset.setFile(file);

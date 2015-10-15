@@ -67,7 +67,7 @@ public class Roles extends BasePanel<Role> implements SearchListener, InspectLis
 	 */
 	@Override
 	public void search(final String filter) {
-		if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_READ)) {
+		if (ClientPermissions.isAuthorized(Permissions.ROLES_READ)) {
 			getCommandPanel().getSearcher().setEnabled(false);
 			Loading.startProcessing();
 		    Scheduler scheduler = Scheduler.get();
@@ -108,7 +108,7 @@ public class Roles extends BasePanel<Role> implements SearchListener, InspectLis
 	 */
     @Override
     public void inspect(Role role) {
-    	if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_UPDATE)) {
+    	if (ClientPermissions.isAuthorized(Permissions.ROLES_UPDATE)) {
     		// goes inspect in the role
     		RoleInspector inspector = new RoleInspector(role);
     		inspector.setTitle(role.getName());

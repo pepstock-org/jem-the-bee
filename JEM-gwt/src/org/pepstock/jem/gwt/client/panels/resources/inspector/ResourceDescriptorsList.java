@@ -90,6 +90,7 @@ public class ResourceDescriptorsList extends VerticalPanel implements ResizeCapa
 		// Add a selection model to handle user selection.
 		cellList.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				ResourceDescriptor selected = selectionModel.getSelectedObject();
 				if (selected != null) {

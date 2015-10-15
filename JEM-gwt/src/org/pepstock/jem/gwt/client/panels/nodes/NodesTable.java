@@ -152,7 +152,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		 | DOMAIN                  |
 		 +-------------------------*/
 		
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> domain = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -177,7 +177,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | STATIC AFFINITIES       |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> affinity = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -251,7 +251,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | Memory                  |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> memory = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -276,7 +276,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | Parallel jobs           |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> parallelJobs = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override

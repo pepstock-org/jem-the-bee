@@ -35,6 +35,8 @@ public class TimeDisplayUtils {
 	 * Timestamp format
 	 */
 	public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	private static final int TENS = 10;
 
 	/**
 	 * Private constructor to avoid new instantiations 
@@ -162,21 +164,20 @@ public class TimeDisplayUtils {
 		} else {
 			if (days != 0) {
 				sb.append(days).append(".");
-				sb.append((hours < 10) ? "0" + hours : hours).append(":");
-				sb.append((minutes < 10) ? "0" + minutes : minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((hours < TENS) ? "0" + hours : hours).append(":");
+				sb.append((minutes < TENS) ? "0" + minutes : minutes).append(":");
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else if (hours != 0) {
 				sb.append(hours).append(":");
-				sb.append((minutes < 10) ? "0" + minutes : minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((minutes < TENS) ? "0" + minutes : minutes).append(":");
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else if (minutes != 0) {
 				sb.append(minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else {
 				sb.append(seconds).append(" s");
 			}
 		}
-
 		return sb.toString();
 	}
 }

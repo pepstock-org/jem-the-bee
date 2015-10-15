@@ -13,6 +13,7 @@ package org.pepstock.jem.plugin.views.jobs.running;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.plugin.views.jobs.JobColumnSorter;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * It provides column sorter for a table viewer for RUNNING job queue.
@@ -30,38 +31,38 @@ public class RunningColumnSorter extends JobColumnSorter {
 	public int compare(Job o1, Job o2) {
 		int diff = 0;
 		switch(getIndex()){
-		case 0: 
+		case ColumnIndex.COLUMN_1: 
 			// sorts by jobname
 			diff = o1.getName().compareTo(o2.getName());
 			break;
-		case 1: 
+		case ColumnIndex.COLUMN_2: 
 			// sort jcl type
 			diff = getComparedType(o1, o2);
 			break;
-		case 2:
+		case ColumnIndex.COLUMN_3:
 			// sorts by user
 			diff = getComparedUser(o1, o2);
 			break;
-		case 3:
+		case ColumnIndex.COLUMN_4:
 			// step
 			break;
-		case 4: 
+		case ColumnIndex.COLUMN_5: 
 			// sorts by domain
 			diff = o1.getJcl().getDomain().compareTo(o2.getJcl().getDomain());
 			break;
-		case 5: 
+		case ColumnIndex.COLUMN_6: 
 			// sorts by affinity
 			diff = o1.getJcl().getAffinity().compareTo(o2.getJcl().getAffinity());
 			break;
-		case 6: 
+		case ColumnIndex.COLUMN_7: 
 			// sorts by started time (inverted because running time is displayed instead of start time)
 			diff = o2.getStartedTime().compareTo(o1.getStartedTime());
 			break;
-		case 7: 
+		case ColumnIndex.COLUMN_8: 
 			// sorts by node 
 			diff = o1.getJcl().getMemory() - o2.getJcl().getMemory();
 			break;
-		case 8: 
+		case ColumnIndex.COLUMN_9: 
 			// sorts by node 
 			diff = o1.getMemberLabel().compareTo(o2.getMemberLabel());
 			break;

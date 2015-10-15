@@ -83,7 +83,7 @@ public final class JobInspector extends AbstractTabPanelInspector {
 
 		main.add(new General(job), "General");
 		// checks id user is authorized to submit job
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_SUBMIT)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_SUBMIT)){
 			// if yes, adds a editor to change the JCL
 			jcl = new EditJcl(this, job.getJcl().getType());
 		} else {

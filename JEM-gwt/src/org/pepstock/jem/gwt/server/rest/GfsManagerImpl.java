@@ -35,6 +35,7 @@ import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsChunkFile;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.GfsManager;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.rest.paths.GfsManagerPaths;
@@ -279,10 +280,14 @@ public class GfsManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (gfsManager == null) {
-			gfsManager = new GfsManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (gfsManager == null) {
+	        	gfsManager = new GfsManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

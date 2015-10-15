@@ -42,6 +42,7 @@ import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.services.JobsManager;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Queues;
@@ -785,10 +786,14 @@ public class JobsManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (jobsManager == null) {
-			jobsManager = new JobsManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (jobsManager == null) {
+	        	jobsManager = new JobsManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

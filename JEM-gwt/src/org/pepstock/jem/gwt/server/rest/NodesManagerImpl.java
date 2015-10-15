@@ -34,6 +34,7 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.UpdateNode;
 import org.pepstock.jem.gwt.server.services.NodesManager;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.ExecutionEnvironment;
@@ -638,10 +639,14 @@ public class NodesManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (manager == null) {
-			manager = new NodesManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (manager == null) {
+	        	manager = new NodesManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

@@ -71,16 +71,14 @@ public abstract class FileUploadManager extends DefaultManager {
 					// reads HTTP request
 					@SuppressWarnings("unchecked")
 					List<FileItem> items = upload.parseRequest(request);
-					try {
-	                    String result = loaded(items);
-	                    message = getMessage(MessageLevel.INFO.getIntLevel(), result);
-                    } catch (Exception e) {
-                    	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG049E, e, e.getMessage());
-                    	message = getMessage(MessageLevel.ERROR.getIntLevel(), e.getMessage());
-                    }
+					String result = loaded(items);
+					message = getMessage(MessageLevel.INFO.getIntLevel(), result);
 				} catch (FileUploadException e) {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG049E, e, e.getMessage());
 					message = getMessage(MessageLevel.ERROR.getIntLevel(), UserInterfaceMessage.JEMG049E.toMessage().getFormattedMessage(e.getMessage()));
+                } catch (Exception e) {
+                	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG049E, e, e.getMessage());
+                	message = getMessage(MessageLevel.ERROR.getIntLevel(), e.getMessage());
 				}
 			} else {
 				// if is not multipart, call super http service

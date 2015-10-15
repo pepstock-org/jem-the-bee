@@ -275,27 +275,19 @@ public class GfsManager extends DefaultService {
 		switch (type) {
 		case GfsFileType.LIBRARY:
 			gfsPermission = Permissions.GFS_LIBRARY;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.SOURCE:
 			gfsPermission = Permissions.GFS_SOURCES;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.CLASS:
 			gfsPermission = Permissions.GFS_CLASS;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.BINARY:
 			gfsPermission = Permissions.GFS_BINARY;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		default:
 			throw new ServiceMessageException(NodeMessage.JEMC264E);
@@ -314,4 +306,5 @@ public class GfsManager extends DefaultService {
 					userid, gfsPermission);
 		}
 	}
+
 }

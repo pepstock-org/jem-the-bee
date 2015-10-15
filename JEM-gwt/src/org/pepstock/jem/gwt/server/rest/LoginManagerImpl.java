@@ -187,10 +187,14 @@ public class LoginManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (loginManager == null) {
-			loginManager = new LoginManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (loginManager == null) {
+	        	loginManager = new LoginManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

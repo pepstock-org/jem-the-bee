@@ -113,12 +113,10 @@ public final class ResponseBuilder {
 	 */
 	Response ok(Object obj) {
 		// if object not null
-		if (obj != null) {
-			// checks if is a String or Boolean
-			// if yes, checks if it must be enveloped or not
-			if (obj instanceof String || obj instanceof Boolean) {
+		// checks if is a String or Boolean
+		// if yes, checks if it must be enveloped or not
+		if (obj != null && (obj instanceof String || obj instanceof Boolean)) {
 				return Response.ok().entity(envelop(obj)).build();
-			}
 		}
 		// returns the object
 		return Response.ok().entity(obj).build();

@@ -35,14 +35,6 @@ import com.google.gwt.user.client.ui.FlexTable;
  */
 public class ExistingResourceInspector extends AbstractResourceInspector {
 
-//	/**
-//	 * Builds a {@link ExistingResourceInspector}
-//	 * @param resource the underlying {@link Resource}
-//	 */
-//	public ExistingResourceInspector(Resource resource) {
-//		this(resource, null);
-//	}
-//	
 	/**
 	 * Builds a {@link ExistingResourceInspector}
 	 * @param resource the underlying {@link Resource}

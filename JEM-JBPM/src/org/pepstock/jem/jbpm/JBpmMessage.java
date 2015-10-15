@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.jbpm;
 
-import org.apache.commons.lang.StringUtils;
 import org.pepstock.jem.log.Description;
 import org.pepstock.jem.log.Message;
 import org.pepstock.jem.log.MessageInterface;
@@ -377,7 +376,7 @@ public enum JBpmMessage implements MessageInterface{
 	 * "ATTENTION", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM is not able to finalize the operations after work item execution.<br> Please see the exception.")
-	JEMM055E("0055", StringUtils.center("ATTENTION", 40, "-").concat("\n").concat("{0}"), MessageLevel.ERROR),
+	JEMM055E("0055", Message.ATTENTION_STRING.concat("\n").concat("{0}"), MessageLevel.ERROR),
 	
 	/**
 	 * "Invalid class name: {0} ", MessageLevel.ERROR

@@ -55,7 +55,11 @@ import org.pepstock.jem.util.CharSet;
 public class DefaultComparator implements Comparator<String>, Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final int COMMAND_WITH_LENGTH = 2;
 
+	private static final int COMMAND_WITH_LENGTH_AND_MODE = 3;
+	
 	private static final String DATA_DESCRIPTION_NAME = "COMMAND";
 	
 	private static final MessageFormat MESSAGE_FORMAT_1 = new MessageFormat("({0,number,integer})");
@@ -238,7 +242,7 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 		
 		// if result has 2 elements
 		// means could have a second element both a number or a label.
-		if (result.length == 2){
+		if (result.length == COMMAND_WITH_LENGTH){
 			// if Number, is the length of string to compare
 			if (result[1] instanceof Number){
 				Number n = (Number) result[1];
@@ -252,7 +256,7 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 				}
 				c.setMode(value);
 			}
-		} else if (result.length == 3){
+		} else if (result.length == COMMAND_WITH_LENGTH_AND_MODE){
 			// if result has 3 elements
 			// it has element 2 as number (length)
 			if (result[1] instanceof Number){

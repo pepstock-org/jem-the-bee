@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.server.rest;
 import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 
 /**
@@ -36,7 +37,7 @@ public abstract class DefaultServerResource {
 	private boolean managerLoaded = false;
 
 	// sync object
-	private final Object SYNC = new Object();
+	private static final Object SYNC = new Object();
 
 	/**
 	 * Performs the same checks for all services
@@ -78,7 +79,7 @@ public abstract class DefaultServerResource {
 	 * @throws Exception
 	 *             if any error occurs
 	 */
-	abstract boolean init() throws Exception;
+	abstract boolean init() throws JemException;
 
 	/**
 	 * Returns <code>true</code> if JEM group is available (at least one member

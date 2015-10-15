@@ -28,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.StatisticsManager;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.StatisticsManagerPaths;
@@ -231,10 +232,14 @@ public class StatisticsManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (statisticsManager == null) {
-			statisticsManager = new StatisticsManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (statisticsManager == null) {
+	        	statisticsManager = new StatisticsManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

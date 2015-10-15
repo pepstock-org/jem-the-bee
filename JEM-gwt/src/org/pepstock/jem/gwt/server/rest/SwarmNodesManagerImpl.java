@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 
 import org.pepstock.jem.gwt.server.services.RoutingConfigManager;
 import org.pepstock.jem.gwt.server.services.SwarmNodesManager;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.rest.paths.CommonPaths;
@@ -236,13 +237,17 @@ public class SwarmNodesManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#init()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (swarmNodesManager == null) {
-			swarmNodesManager = new SwarmNodesManager();
-		}
-		if (routingConfManager == null) {
-			routingConfManager = new RoutingConfigManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (swarmNodesManager == null) {
+	        	swarmNodesManager = new SwarmNodesManager();
+	        }
+	        if (routingConfManager == null) {
+	        	routingConfManager = new RoutingConfigManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+        	throw new JemException(e.getMessage(), e);
+        }
 	}
 }

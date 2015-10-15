@@ -28,7 +28,7 @@ import org.pepstock.jem.node.security.Permissions;
  * Utility class to use to save command line during the syntax checking and execute the command
  * 
  * @author Andrea "Stock" Stocchero
- * @@version 2.3
+ * @version 2.3
  * 
  */
 public abstract class Command implements SubCommand{

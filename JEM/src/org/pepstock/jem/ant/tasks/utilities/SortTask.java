@@ -49,6 +49,12 @@ import org.pepstock.jem.log.LogAppl;
  * Is a utility (both a task ANT and a main program) that sort data.<br>
  */
 public class SortTask extends AbstractIOTask {
+	/**
+	 * We multiply by two because later on someone insisted on counting the
+	 * memory usage as 2 bytes per character. By this model, loading a file
+	 * with 1 character will use 2 bytes.
+	 */
+	private static final int BYTES_X_CHAR = 2;
 	
 	private static int DEFAULTMAXTEMPFILES = 1024;
 
@@ -80,7 +86,7 @@ public class SortTask extends AbstractIOTask {
 	 * @throws IOException 
 	 */
 	public static long estimateBestSizeOfBlocks(FileInputStream filetobesorted, int maxtmpfiles) throws IOException {
-		long sizeoffile = filetobesorted.getChannel().size() * 2;
+		long sizeoffile = filetobesorted.getChannel().size() * BYTES_X_CHAR;
 		/**
 		 * We multiply by two because later on someone insisted on counting the
 		 * memory usage as 2 bytes per character. By this model, loading a file
@@ -95,8 +101,8 @@ public class SortTask extends AbstractIOTask {
 		// for naught. If blocksize is smaller than half the free memory, grow
 		// it.
 		long freemem = Runtime.getRuntime().freeMemory();
-		if (blocksize < freemem / 2) {
-			blocksize = freemem / 2;
+		if (blocksize < freemem / BYTES_X_CHAR) {
+			blocksize = freemem / BYTES_X_CHAR;
 		}
 		return blocksize;
 	}
@@ -148,7 +154,7 @@ public class SortTask extends AbstractIOTask {
 					while ((currentblocksize < blocksize) && ((line = fbr.readLine()) != null)) { 
 						tmplist.add(line);
 						// java uses 16 bits per character?
-						currentblocksize += line.length() * 2; 
+						currentblocksize += line.length() * BYTES_X_CHAR; 
 					}
 					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory));
 					tmplist.clear();

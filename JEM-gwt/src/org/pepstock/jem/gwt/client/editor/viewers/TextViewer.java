@@ -65,4 +65,12 @@ public class TextViewer extends AbstractSyntaxHighlighter {
     	// no additional menu items
     }
 
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.client.editor.AbstractSyntaxHighlighter#onChange(boolean)
+	 */
+    @Override
+    public void onChange(boolean changed) {
+	    // NOP
+    }
+
 }

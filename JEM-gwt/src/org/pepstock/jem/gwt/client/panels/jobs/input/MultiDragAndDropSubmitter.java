@@ -232,6 +232,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	 */
 	
 	private class MyUploadErrorHandler implements UploadErrorHandler {
+		@Override
         public boolean onUploadError(UploadErrorEvent uploadErrorEvent) {
         	if (allowCancel) {
         		cancelButtons.get(uploadErrorEvent.getFile().getId()).setEnabled(false);
@@ -246,6 +247,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyFileQueueErrorHandler implements FileQueueErrorHandler {
+		@Override
         public boolean onFileQueueError(FileQueueErrorEvent fileQueueErrorEvent) {  
             new Toast(MessageLevel.ERROR, 
            		"Upload of file " + fileQueueErrorEvent.getFile().getName() + " failed due to " + fileQueueErrorEvent.getErrorCode().toString() + ": " + fileQueueErrorEvent.getMessage(), 
@@ -257,6 +259,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyFileDialogCompleteHandler implements FileDialogCompleteHandler {
+		@Override
         public boolean onFileDialogComplete(FileDialogCompleteEvent fileDialogCompleteEvent) {
         	int totalFilesInQueue = fileDialogCompleteEvent.getTotalFilesInQueue();
         	// reset the overall progress bar values
@@ -272,6 +275,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyFileDialogStartHandler implements FileDialogStartHandler {
+		@Override
         public boolean onFileDialogStartEvent(FileDialogStartEvent fileDialogStartEvent) {
             // Clear the uploads that have completed, if none are in process  
             if (uploader.getStats().getUploadsInProgress() <= 0) {  
@@ -286,6 +290,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyUploadCompleteHanlder implements UploadCompleteHandler {
+		@Override
         public boolean onUploadComplete(UploadCompleteEvent uploadCompleteEvent) {
         	if (allowCancel) {
         		cancelButtons.get(uploadCompleteEvent.getFile().getId()).setEnabled(false);
@@ -314,6 +319,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyUploadProgressHandler implements UploadProgressHandler {
+		@Override
 		public boolean onUploadProgress(UploadProgressEvent uploadProgressEvent) {
 			File file = uploadProgressEvent.getFile();
 			UploadFileItem uploadFileItem;
@@ -399,6 +405,7 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	 */
 	
 	private class MyDragOverHandler implements DragOverHandler {
+		@Override
         public void onDragOver(DragOverEvent event) {  
             if (!uploader.getButtonDisabled()) {
             	setUploaderAreaDropping();
@@ -407,12 +414,14 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	}
 	
 	private class MyDragLeaveHandler implements DragLeaveHandler {
+		@Override
         public void onDragLeave(DragLeaveEvent event) {  
         	setUploaderAreaBeforeDrop();
         }  
 	}
 	
 	private class MyDropHandler implements DropHandler {
+		@Override
 		public void onDrop(DropEvent event) {
         	setUploaderAreaAfterDrop();
             if (uploader.getStats().getUploadsInProgress() <= 0) {  

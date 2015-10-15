@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.plugin.util.Images;
 import org.pepstock.jem.plugin.util.TimeDisplayUtils;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Provides the labels to use inside the explorer table for each file.
@@ -63,16 +64,16 @@ public class GfsLabelProvider extends LabelProvider implements ITableLabelProvid
     public String getColumnText(Object element, int index) {
 		GfsFile file = (GfsFile) element;
 		switch (index) {
-		case 0:
+		case ColumnIndex.COLUMN_1:
 			// file name
 			return file.getName();
-		case 1:
+		case ColumnIndex.COLUMN_2:
 			// no size for directory
 			return getTextForSize(file);
-		case 2:
+		case ColumnIndex.COLUMN_3:
 			// no modified for directory
 			return getTextForLastModified(file);
-		case 3:
+		case ColumnIndex.COLUMN_4:
 			// no modified for directory
 			return file.getDataPathName();			
 		default:

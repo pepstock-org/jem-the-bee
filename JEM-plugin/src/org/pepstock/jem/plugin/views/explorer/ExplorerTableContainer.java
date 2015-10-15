@@ -230,27 +230,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		table.setLinesVisible(true);
 		
 		// add Double Click listener
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				// gets GFS file
-				ISelection selection = viewer.getSelection();
-				GfsFile file = (GfsFile)((IStructuredSelection) selection).getFirstElement();
-				if (file != null){
-					// DRILL down only for directory
-					if (file.isDirectory()){
-						refresh(file.getLongName(), file.getDataPathName());
-					} else {
-						//only DATA and SOURCE can be downloaded
-						if ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE)){
-							// load file 
-							FileLoading loading = new GFSLoading(ExplorerTableContainer.this, type, file);
-							loading.run();
-						}
-					}
-				}
-			}
-		});
+		viewer.addDoubleClickListener(new ViewerDoubleClick());
 	}
 	
 	/* (non-Javadoc)
@@ -304,6 +284,33 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 			// adds sorter using the COUNT
 			tblColumn.addSelectionListener(new JemColumnSortListener(count, viewer));
 			count++;
+		}
+	}
+	
+	/**
+	 * Class to manage the double click on viewer
+	 * @author Andrea "Stock" Stocchero
+	 * @version 2.3
+	 */
+	private class ViewerDoubleClick implements IDoubleClickListener{
+		@Override
+		public void doubleClick(DoubleClickEvent event) {
+			// gets GFS file
+			ISelection selection = viewer.getSelection();
+			GfsFile file = (GfsFile)((IStructuredSelection) selection).getFirstElement();
+			if (file != null){
+				// DRILL down only for directory
+				if (file.isDirectory()){
+					refresh(file.getLongName(), file.getDataPathName());
+				} else {
+					//only DATA and SOURCE can be downloaded
+					if ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE)){
+						// load file 
+						FileLoading loading = new GFSLoading(ExplorerTableContainer.this, type, file);
+						loading.run();
+					}
+				}
+			}
 		}
 	}
 	

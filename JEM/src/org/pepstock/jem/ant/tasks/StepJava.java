@@ -45,6 +45,7 @@ import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.Message;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
@@ -498,7 +499,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				// used to collect exception string. 
 				// Stringbuffer is not empty, throws an exception
 				if (exceptions.length() > 0){
-					log(StringUtils.center("ATTENTION", 40, "-"));
+					log(Message.ATTENTION_STRING);
 					log(exceptions.toString());
 				}
 				batchSM.setInternalAction(false);

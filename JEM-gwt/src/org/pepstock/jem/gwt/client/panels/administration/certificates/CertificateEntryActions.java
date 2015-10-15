@@ -70,7 +70,7 @@ public class CertificateEntryActions extends AbstractActionsButtonPanel<Certific
 	 */
 	private void addAddButton() {
 		// checks if there is the authorization for that
-		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES, Permissions.CERTIFICATES_CREATE)){
+		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES_CREATE)){
 			Button addButton = new Button("Add", new AddButtonClickHandler());
 			add(addButton);
 			addButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -115,7 +115,7 @@ public class CertificateEntryActions extends AbstractActionsButtonPanel<Certific
 	 */
 	private void addRemoveButton() {
 		// checks if there is the authorization for that
-		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES, Permissions.CERTIFICATES_DELETE)) {
+		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES_DELETE)) {
 			Button removeButton = new Button("Remove", new RemoveButtonClickHandler());
 			add(removeButton);
 			removeButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());

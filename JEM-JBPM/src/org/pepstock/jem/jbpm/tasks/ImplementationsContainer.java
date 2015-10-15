@@ -40,6 +40,8 @@ import org.pepstock.jem.jbpm.Task;
  */
 public final class ImplementationsContainer {
 
+	private static final int LEVELS = 3;
+	
 	private static final String LEVEL_SEPARATOR = ".";
 	
 	// format to check the reference: target, task, id and data description
@@ -170,7 +172,7 @@ public final class ImplementationsContainer {
 	 */
 	private String normalizeReference(String reference){
 		String[] levels = StringUtils.split(reference, LEVEL_SEPARATOR);
-		if (levels != null && levels.length == 3){
+		if (levels != null && levels.length == LEVELS){
 			return reference;		
 		}
 		return null;

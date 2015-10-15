@@ -165,10 +165,14 @@ public class CertificatesManagerImpl extends DefaultServerResource {
 	 * @see org.pepstock.jem.gwt.server.rest.DefaultServerResource#initManager()
 	 */
 	@Override
-	boolean init() throws Exception {
-		if (certificatesManager == null) {
-			certificatesManager = new CertificatesManager();
-		}
-		return true;
+	boolean init() throws JemException {
+		try {
+	        if (certificatesManager == null) {
+	        	certificatesManager = new CertificatesManager();
+	        }
+	        return true;
+        } catch (Exception e) {
+	        throw new JemException(e.getMessage(), e);
+        }
 	}
 }

@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.resources.inspector.widgets;
 import org.pepstock.jem.gwt.client.panels.resources.inspector.ResourceUIComponent;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.ResourcePartDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.AbstractFieldDescriptor;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W extends Widget, V> implements ResourceUIComponent {
 
 	private T descriptor = null;
-	private CommonResourcePropertiesPanel<?> panel = null;
+	private CommonResourcePropertiesPanel<? extends ResourcePartDescriptor> panel = null;
 	
 	protected String label = null;
 	protected W inputObject = null;
@@ -72,7 +73,7 @@ public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W ex
 	/**
 	 * @return the parent panel in which this field panel is
 	 */
-	public CommonResourcePropertiesPanel<?> getPanel() {
+	public CommonResourcePropertiesPanel<? extends ResourcePartDescriptor> getPanel() {
 		return panel;
 	}
 	

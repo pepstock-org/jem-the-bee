@@ -48,6 +48,13 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 public class Sort implements JemWorkItem {
 	
 	/**
+	 * We multiply by two because later on someone insisted on counting the
+	 * memory usage as 2 bytes per character. By this model, loading a file
+	 * with 1 character will use 2 bytes.
+	 */
+	private static final int BYTES_X_CHAR = 2;
+	
+	/**
 	 * Data description name for files in INPUT
 	 */
 	private static final String INPUT_DATA_DESCRIPTION_NAME = "INPUT";
@@ -81,7 +88,7 @@ public class Sort implements JemWorkItem {
 	 * @throws IOException 
 	 */
 	private long estimateBestSizeOfBlocks(FileInputStream filetobesorted, int maxtmpfiles) throws IOException {
-		long sizeoffile = filetobesorted.getChannel().size() * 2;
+		long sizeoffile = filetobesorted.getChannel().size() * BYTES_X_CHAR;
 		/**
 		 * We multiply by two because later on someone insisted on counting the
 		 * memory usage as 2 bytes per character. By this model, loading a file
@@ -96,8 +103,8 @@ public class Sort implements JemWorkItem {
 		// for naught. If blocksize is smaller than half the free memory, grow
 		// it.
 		long freemem = Runtime.getRuntime().freeMemory();
-		if (blocksize < freemem / 2) {
-			blocksize = freemem / 2;
+		if (blocksize < freemem / BYTES_X_CHAR) {
+			blocksize = freemem / BYTES_X_CHAR;
 		}
 		return blocksize;
 	}
@@ -135,7 +142,7 @@ public class Sort implements JemWorkItem {
 					while ((currentblocksize < blocksize) && ((line = fbr.readLine()) != null)) { 
 						tmplist.add(line);
 						// java uses 16 bits per character?
-						currentblocksize += line.length() * 2; 
+						currentblocksize += line.length() * BYTES_X_CHAR; 
 					}
 					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory));
 					tmplist.clear();

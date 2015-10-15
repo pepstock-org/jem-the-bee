@@ -44,7 +44,7 @@ public class GetHttpMember extends JemDefaultServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final AtomicInteger counter = new AtomicInteger(0);
+	private static final AtomicInteger COUNTER = new AtomicInteger(0);
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.gwt.server.servlet.DefaultServlet#execute(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -62,7 +62,7 @@ public class GetHttpMember extends JemDefaultServlet {
 		for (Member member : members) {
 			list.add(member);
 		}		
-		int index = counter.incrementAndGet();
+		int index = COUNTER.incrementAndGet();
 		
 		int pos = index % list.size();
 		Member member = list.get(pos);

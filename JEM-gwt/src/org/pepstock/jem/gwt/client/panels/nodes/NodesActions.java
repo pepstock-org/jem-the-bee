@@ -65,7 +65,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 
 	private void addStartButton() {
 		// checks if user has the permission to START job
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_START)) {
+		if (ClientPermissions.isAuthorized(Permissions.NODES_START)) {
 			Button startButton = new Button("Start", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -89,7 +89,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 
 	private void addDrainButton() {
 		// checks if user has the permission to DRAIN job
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_DRAIN)) {
+		if (ClientPermissions.isAuthorized(Permissions.NODES_DRAIN)) {
 			Button drainButton = new Button("Drain", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

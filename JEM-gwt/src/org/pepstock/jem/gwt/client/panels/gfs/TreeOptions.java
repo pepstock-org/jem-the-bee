@@ -145,7 +145,7 @@ public class TreeOptions extends VerticalPanel {
 	 * @return
 	 */
 	private final CellPanel createItem(String description, final String option, ImageResource icon, String permission){
-		if (!ClientPermissions.isAuthorized(Permissions.GFS, permission)) {
+		if (!ClientPermissions.isAuthorized(permission)) {
 			return null;
 		}
 	

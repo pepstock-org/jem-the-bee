@@ -69,7 +69,7 @@ public class CommonResources extends BasePanel<Resource> implements SearchListen
 	 */
 	@Override
 	public void search(final String filter) {
-		if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_READ)) {
+		if (ClientPermissions.isAuthorized(Permissions.RESOURCES_READ)) {
 			Loading.startProcessing();
 		    Scheduler scheduler = Scheduler.get();
 		    scheduler.scheduleDeferred(new ScheduledCommand() {
@@ -109,7 +109,7 @@ public class CommonResources extends BasePanel<Resource> implements SearchListen
 	 */
     @Override
     public void inspect(final Resource resource) {
-    	if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_UPDATE)) {
+    	if (ClientPermissions.isAuthorized(Permissions.RESOURCES_UPDATE)) {
     		// obtain the ootb specific panel, if the resource is a type, it will be null 
     		// it's a resource, need to load the descriptor and render the corrisponding panel
     		Services.RESOURCE_DEFINITIONS_MANAGER.getDescriptorOf(resource.getType(), new ServiceAsyncCallback<ResourceDescriptor>() {

@@ -135,14 +135,12 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 	 */
 	private void startHazelcastClient(ServletContext context, String hazelcastFile) throws ConfigurationException {
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG006I);
-		//String filename = contextPath + hazelcastFile;
 		InputStream input = context.getResourceAsStream(hazelcastFile);
 		StringWriter sw = new StringWriter();
 		// loads configuration file from XML file
 		InMemoryXmlConfig config;
 		try {
 			IOUtils.copy(input, sw, CharSet.DEFAULT);
-			//config = new FileSystemXmlConfig(filename);
 			config = new InMemoryXmlConfig(sw.toString());
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
@@ -150,23 +148,21 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		// start connector service
 		try {
 			SharedObjects.getInstance().setHazelcastConfig(config);
-			try {
-				SharedObjects.getInstance().setNetworkInterface(InterfacesUtils.getInterface(config));
-				// Overrides the 
-				NetworkConfig network = config.getNetworkConfig();
-				Interfaces interfaces = network.getInterfaces();
-				// overrides network only if is not set
-				if (interfaces == null){
-					network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());
-				}
-				
-		        LogAppl.getInstance().emit(NodeMessage.JEMC273I, SharedObjects.getInstance().getNetworkInterface());
-	        } catch (MessageException e) {
-	        	throw new ConfigurationException(e);
-	        }
+			SharedObjects.getInstance().setNetworkInterface(InterfacesUtils.getInterface(config));
+			// Overrides the 
+			NetworkConfig network = config.getNetworkConfig();
+			Interfaces interfaces = network.getInterfaces();
+			// overrides network only if is not set
+			if (interfaces == null){
+				network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());
+			}
+
+			LogAppl.getInstance().emit(NodeMessage.JEMC273I, SharedObjects.getInstance().getNetworkInterface());
 			Service connectorService = ConnectorServiceFactory.getConnectorService();
 			SharedObjects.getInstance().setConnectorService(connectorService);
 			SharedObjects.getInstance().getConnectorService().start();
+        } catch (MessageException e) {
+        	throw new ConfigurationException(e);
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}
