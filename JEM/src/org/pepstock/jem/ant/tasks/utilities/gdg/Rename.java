@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -92,7 +93,7 @@ public class Rename extends Command {
 			if (generationFile.renameTo(generationFileTo)){
 				root.getProperties().put(generation, fileTo);
 				root.commit();
-				System.out.println(AntUtilMessage.JEMZ051I.toMessage().getFormattedMessage(generationFile.getAbsolutePath(), generationFileTo.getAbsolutePath()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ051I, generationFile.getAbsolutePath(), generationFileTo.getAbsolutePath());
 			} else {
 				throw new IOException(AntUtilMessage.JEMZ052E.toMessage().getFormattedMessage(generationFile.getAbsolutePath()));	
 			}
@@ -100,6 +101,6 @@ public class Rename extends Command {
 			throw new IOException(AntUtilMessage.JEMZ050E.toMessage().getFormattedMessage(generation));		
 		}
 		// logs for creation
-		System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, generationFileTo.getAbsolutePath()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, generationFileTo.getAbsolutePath());
 	}
 }

@@ -18,6 +18,7 @@ package org.pepstock.jem.ant;
 
 import java.util.Properties;
 
+import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.ant.tasks.utilities.scripts.GenericShellScriptTask;
 import org.pepstock.jem.log.JemException;
 
@@ -189,7 +190,7 @@ public class GenericScriptFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<?> getAntTask() {
+	public Class<? extends ShellScriptTask> getAntTask() {
 		return GenericShellScriptTask.class;
 	}
 

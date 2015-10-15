@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.tasks.JobId;
@@ -115,7 +116,7 @@ public class Get extends Command {
 					encrypt(resource);
 				}
 				getxStream().toXML(resource, (OutputStream)fileout);
-				System.out.println(AntUtilMessage.JEMZ009I.toMessage().getFormattedMessage(resource));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ009I, resource);
 			} else {
 				throw new MessageException(AntUtilMessage.JEMZ010E, dd, fileout.getClass().getName());
 			}

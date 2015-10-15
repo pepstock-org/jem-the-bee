@@ -21,6 +21,7 @@ import java.text.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.ant.tasks.utilities.SubCommand;
 import org.pepstock.jem.node.security.Permissions;
 
 /**
@@ -30,7 +31,7 @@ import org.pepstock.jem.node.security.Permissions;
  * @@version 2.3
  * 
  */
-public abstract class Command {
+public abstract class Command implements SubCommand{
 	
 	private final static String ENTITIES_SEPARATOR = ",";
 	
@@ -137,13 +138,4 @@ public abstract class Command {
 		}
 		return perms;
 	}
-
-	
-	/**
-	 * Execute the command
-	 * 
-	 * @throws Exception if an error occurs
-	 */
-	public abstract void execute() throws Exception;
-
 }

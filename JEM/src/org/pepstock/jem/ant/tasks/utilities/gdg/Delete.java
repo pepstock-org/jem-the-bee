@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -86,16 +87,16 @@ public class Delete extends Command {
 			if (generationFile.delete()){
 				root.getProperties().remove(generation);
 				root.commit();
-				System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(generationFile.getAbsolutePath()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ003I, generationFile.getAbsolutePath());
 			} else {
-				System.out.println(AntUtilMessage.JEMZ002W.toMessage().getFormattedMessage(generationFile.getAbsolutePath()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ002W, generationFile.getAbsolutePath());
 			}
 		} else {
 			root.getProperties().remove(generation);
 			root.commit();
-			System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(generationFile.getAbsolutePath()));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ003I, generationFile.getAbsolutePath());
 		}
 		// logs for creation
-		System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, generationFile.getAbsolutePath()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, generationFile.getAbsolutePath());
 	}
 }

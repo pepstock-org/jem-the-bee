@@ -16,12 +16,15 @@
 */
 package org.pepstock.jem.ant.tasks.utilities;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
@@ -32,6 +35,8 @@ import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.tasks.utilities.archive.Archive;
 import org.pepstock.jem.ant.tasks.utilities.archive.Command;
 import org.pepstock.jem.commands.util.ArgumentsParser;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.archive.JobOutputArchive;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.rmi.RmiKeys;
@@ -77,13 +82,21 @@ public class JobOutputArchiveTask extends AntUtilTask {
 	/**
 	 * Main program, called by StepJava class.
 	 * @param args 
+	 * @throws ParseException 
+	 * @throws org.apache.commons.cli.ParseException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws JemException 
+	 * @throws NamingException 
+	 * @throws IOException 
 	 * 
 	 * @throws Exception if COMMAND data description doesn't exists, if an
 	 *             error occurs during the command parsing, if data mount point
 	 *             is null.
 	 */
 	@SuppressWarnings("static-access")
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws ParseException, org.apache.commons.cli.ParseException, InstantiationException, IllegalAccessException, ClassNotFoundException, JemException, NamingException, IOException {
 		// -class mandatory arg
 		Option classArg = OptionBuilder.withArgName(CLASS).hasArg().withDescription("class of JobOutputArchive to invoke reading the objects").create(CLASS);
 		classArg.setRequired(true);
@@ -103,7 +116,7 @@ public class JobOutputArchiveTask extends AntUtilTask {
 		}
 		JobOutputArchive jobOutputArchive = (JobOutputArchive)objectTL;
 		
-		System.out.println(AntUtilMessage.JEMZ043I.toMessage().getFormattedMessage(jobOutputArchive.getClass().getName()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ043I, jobOutputArchive.getClass().getName());
 		
 		
 		// new initial context to access by JNDI to COMMAND DataDescription
@@ -116,7 +129,7 @@ public class JobOutputArchiveTask extends AntUtilTask {
 		String records = recordsSB.toString().trim();
 		if (records.length() > 0) {
 			// list with all gdgs because it checks command syntax before starting creation
-			List<Command> list = new LinkedList<Command>();
+			List<SubCommand> list = new LinkedList<SubCommand>();
 			
 			// splits with command separator ";"
 			String[] commands = records.toString().split(COMMAND_SEPARATOR);
@@ -125,7 +138,7 @@ public class JobOutputArchiveTask extends AntUtilTask {
 				String[] s = StringUtils.split(commands[i], " ");
 				String commandLine = StringUtils.join(s, ' ');
 				// logs which command is parsing
-				System.out.println(AntUtilMessage.JEMZ025I.toMessage().getFormattedMessage(commandLine));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ025I, commandLine);
 
 				Command command = new Archive(commandLine);
 				command.setJobOutputArchive(jobOutputArchive);
@@ -135,7 +148,7 @@ public class JobOutputArchiveTask extends AntUtilTask {
 			}
 
 			// compute all valid commands
-			for (Command cmd : list) {
+			for (SubCommand cmd : list) {
 				cmd.execute();
 			}
 		}

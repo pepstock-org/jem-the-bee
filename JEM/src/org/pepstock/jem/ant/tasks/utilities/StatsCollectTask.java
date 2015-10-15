@@ -17,6 +17,9 @@
 package org.pepstock.jem.ant.tasks.utilities;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Properties;
@@ -24,9 +27,12 @@ import java.util.Scanner;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.commands.util.ArgumentsParser;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.stats.Sample;
@@ -88,12 +94,21 @@ public class StatsCollectTask extends AntUtilTask {
 	 * Main program, called by StepJava class.
 	 * 
 	 * @param args uuid of data description which contains all data descriptions so commands are able to get GDG name
+	 * @throws ParseException 
+	 * @throws MessageException 
+	 * @throws UnknownHostException 
+	 * @throws RemoteException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws FileNotFoundException 
+	 * @throws  
 	 * @throws Exception if COMMAND data description doesn't exists, if an
 	 *             error occurs dduring the command parsing, if data mount point
 	 *             is null.
 	 */
 	@SuppressWarnings("static-access")
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws ParseException, MessageException, RemoteException, UnknownHostException, InstantiationException, IllegalAccessException, ClassNotFoundException, FileNotFoundException {
 		// parses args
 		// -jcl optional arg
 		Option dateArg = OptionBuilder.withArgName(DATE).hasArg().withDescription("date of stats file").create(DATE);
@@ -115,9 +130,7 @@ public class StatsCollectTask extends AntUtilTask {
 		String daysParam = properties.getProperty(DAYS);
 		
 		if (daysParam == null && dateParam == null){
-			throw new Exception(AntUtilMessage.JEMZ027E.toMessage().getFormattedMessage());
-		} else if (dateParam != null){
-			DateFormatter.getDate(dateParam);
+			throw new MessageException(AntUtilMessage.JEMZ027E);
 		} else if (daysParam != null){
 			int days = Parser.parseInt(daysParam, -1);
 			Calendar calendar = Calendar.getInstance();
@@ -129,17 +142,17 @@ public class StatsCollectTask extends AntUtilTask {
 		
 		Object objectTL = Class.forName(classParam).newInstance();
 		if (!(objectTL instanceof TransformAndLoader)) {
-			throw new Exception(AntUtilMessage.JEMZ028E.toMessage().getFormattedMessage(classParam, TransformAndLoader.class.getName(), objectTL.getClass().getName()));
+			throw new MessageException(AntUtilMessage.JEMZ028E, classParam, TransformAndLoader.class.getName(), objectTL.getClass().getName());
 		}
 		TransformAndLoader tl = (TransformAndLoader)objectTL;
 		
-		System.out.println(AntUtilMessage.JEMZ029I.toMessage().getFormattedMessage(dateParam, tl.getClass().getName()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ029I, dateParam, tl.getClass().getName());
 		
 		InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
 		File statsFolder = util.getStatisticsFolder();
 		int filesCount = 0;
 		if (statsFolder == null){
-			System.out.println(AntUtilMessage.JEMZ057W.toMessage().getFormattedMessage());
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ057W);
 		} else if (statsFolder.exists()){
 			Iterator<File> files = FileUtils.iterateFiles(statsFolder, new String[]{dateParam}, false);
 
@@ -158,15 +171,16 @@ public class StatsCollectTask extends AntUtilTask {
 					}
 					tl.fileEnded(file);
 				} catch (Exception ex){
-					System.out.println(AntUtilMessage.JEMZ032W.toMessage().getFormattedMessage(tl.getClass().getName(), file.getAbsolutePath()));
+					LogAppl.getInstance().ignore(ex.getMessage(), ex);
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ032W, ex, tl.getClass().getName(), file.getAbsolutePath());
 				} finally {
 					sc.close();
 				}
 			}
 		} else {
-			System.out.println(AntUtilMessage.JEMZ033E.toMessage().getFormattedMessage(statsFolder.getAbsolutePath()));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ033E, statsFolder.getAbsolutePath());
 		} 
-		System.out.println(AntUtilMessage.JEMZ034I.toMessage().getFormattedMessage(filesCount));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ034I, filesCount);
 	}
 	
 	private static void parseSingleRecord(String record, TransformAndLoader tl, int lineNumber) throws TransformAndLoaderException{
@@ -174,16 +188,21 @@ public class StatsCollectTask extends AntUtilTask {
 			Object obj = STREAMER.fromXML(record);
 			if (obj instanceof Sample){
 				Sample sample = (Sample)obj;
-				try{
-					tl.loadSuccess(sample);
-				} catch (Exception ex){
-					System.out.println(AntUtilMessage.JEMZ030W.toMessage().getFormattedMessage(tl.getClass().getName(), lineNumber, ex.getMessage()));
-				}
+				loadSample(tl, sample, lineNumber);
 			}
 		} catch (Exception ex){
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			tl.loadFailed(record, lineNumber, ex);
-			System.out.println(AntUtilMessage.JEMZ031W.toMessage().getFormattedMessage(lineNumber, ex.getMessage()));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ031W, ex, lineNumber, ex.getMessage());
 		}
 	}
 
+	private static void loadSample(TransformAndLoader tl, Sample sample, int lineNumber){
+		try{
+			tl.loadSuccess(sample);
+		} catch (Exception ex){
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ030W, tl.getClass().getName(), lineNumber, ex.getMessage());
+		}
+	}
+	
 }

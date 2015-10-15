@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesList;
@@ -141,9 +142,9 @@ public class Set extends Command {
 		}
 		boolean isAdded = getResourcer().put(JobId.VALUE, resource);
 		if (isAdded){
-			System.out.println(AntUtilMessage.JEMZ015I.toMessage().getFormattedMessage(resource));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ015I, resource);
 		} else {
-			System.out.println(AntUtilMessage.JEMZ016I.toMessage().getFormattedMessage(resource));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ016I, resource);
 		}
 	}
 

@@ -59,7 +59,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 		// parses all arguments elements
 		parseArguments(element, factory);
 		// parses classPath elements
-		parseClassPath(element, factory, context);
+		parseClassPath(element, factory);
 		// loads all data description, locks, data source
 		loadChildren(element, factory, context);
 		return factory.getBeanDefinition();
@@ -108,7 +108,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	 * @param factory parent bean builder to load
 	 * @param context parser context
 	 */
-	private void parseClassPath(Element element, BeanDefinitionBuilder factory, ParserContext context) {
+	private void parseClassPath(Element element, BeanDefinitionBuilder factory) {
 		// gets the CLASSPATH element
 		Element classpath = DomUtils.getChildElementByTagName(element,CLASSPATH_ELEMENT);
 		// if is missing, return

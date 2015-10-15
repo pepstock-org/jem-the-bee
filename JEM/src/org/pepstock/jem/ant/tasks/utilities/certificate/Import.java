@@ -110,7 +110,6 @@ public class Import extends Command {
 				}
 				in.close();
 				String certificate = sb.toString();
-				System.out.println(certificate);
 				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
 				util.importCertificate(JobId.VALUE, certificate.getBytes(CharSet.DEFAULT),	getAlias());
 			} else {

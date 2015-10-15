@@ -16,10 +16,14 @@
 */
 package org.pepstock.jem.ant.tasks.utilities.roles;
 
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -60,22 +64,25 @@ public class Add extends Command {
 	 * @see org.pepstock.jem.ant.tasks.utilities.nodes.Command#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
-		if ((getRoles() != null) && (getUsers() != null)){
-			String[] users = split(getUsers());
-			String[] roles = split(getRoles());
+	public void execute() throws JemException {
+		try {
+			if ((getRoles() != null) && (getUsers() != null)){
+				String[] users = split(getUsers());
+				String[] roles = split(getRoles());
 
-			InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
-			util.add(JobId.VALUE, users, roles);
-			
-			for (int k=0; k<roles.length; k++){
-				for (int i=0; i<users.length; i++){
-					System.out.println(AntUtilMessage.JEMZ018I.toMessage().getFormattedMessage(users[i], roles[k]));
+				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
+				util.add(JobId.VALUE, users, roles);
+				
+				for (int k=0; k<roles.length; k++){
+					for (int i=0; i<users.length; i++){
+						LogAppl.getInstance().emit(AntUtilMessage.JEMZ018I, users[i], roles[k]);
+					}
 				}
 			}
+		} catch (RemoteException e) {
+			throw new JemException(e);
+		} catch (UnknownHostException e) {
+			throw new JemException(e);
 		}
-
-
 	}
-
 }

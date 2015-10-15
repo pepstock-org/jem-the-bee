@@ -18,7 +18,7 @@ package org.pepstock.jem.ant.tasks.utilities.certificate;
 
 import java.text.ParseException;
 
-import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.ant.tasks.utilities.SubCommand;
 
 /**
  * Utility class to use to save command line during the syntax checking and
@@ -28,7 +28,7 @@ import org.pepstock.jem.log.JemException;
  * @version 2.3
  * 
  */
-public abstract class Command {
+public abstract class Command implements SubCommand{
 
 	private String commandLine = null;
 
@@ -107,13 +107,4 @@ public abstract class Command {
 	public void setFile(String file) {
 		this.file = file;
 	}
-
-	/**
-	 * Execute the command
-	 * 
-	 * @throws JemException
-	 *             if an error occurs
-	 */
-	public abstract void execute() throws JemException;
-
 }

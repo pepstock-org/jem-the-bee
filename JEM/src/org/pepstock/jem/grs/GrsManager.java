@@ -181,10 +181,11 @@ public class GrsManager {
 							// Checks lock mode to update the amount of readers or
 							// writes correctly
 							// uses requester info lock mode
-							if (info.getMode() == ResourceLock.READ_MODE)
+							if (info.getMode() == ResourceLock.READ_MODE){
 								latch.decrementReadersCount();
-							else
+							} else {
 								latch.decrementWritersCount();
+							}
 							// remove the requestor from list because
 							// the node is parent of requestor so if node left,
 							// requestors as well

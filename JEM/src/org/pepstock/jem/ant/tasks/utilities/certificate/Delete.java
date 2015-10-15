@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -78,7 +79,7 @@ public class Delete extends Command {
 			try {
 				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
 				util.deleteCertificate(JobId.VALUE, getAlias());
-				System.out.println(AntUtilMessage.JEMZ056I.toMessage().getFormattedMessage(getAlias()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ056I, getAlias());
 			} catch (RemoteException e) {
 				throw new JemException(e);
 			} catch (UnknownHostException e) {

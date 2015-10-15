@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.ant;
 
+import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.ant.tasks.utilities.scripts.BashScriptTask;
 
 /**
@@ -55,7 +56,7 @@ public class BashFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<?> getAntTask() {
+	public Class<? extends ShellScriptTask> getAntTask() {
 		return BashScriptTask.class;
 	}
 

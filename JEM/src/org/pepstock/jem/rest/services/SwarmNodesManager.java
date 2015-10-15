@@ -18,7 +18,6 @@ package org.pepstock.jem.rest.services;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -58,7 +57,6 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @return collection of nodes
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodes(String filter) throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -68,7 +66,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST);
 			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+				return JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception
@@ -91,7 +89,6 @@ public class SwarmNodesManager extends AbstractRestManager {
 	 * @return collection of nodes
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<NodeInfoBean> getNodesByFilter(String filter) throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -101,7 +98,7 @@ public class SwarmNodesManager extends AbstractRestManager {
 			ClientResponse response = builder.filter(filter).get(SwarmNodesManagerPaths.LIST_BY_FILTER);
 			// if HTTP status code is OK,parses the result to list of nodes
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<NodeInfoBean>) JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
+				return JsonUtil.getInstance().deserializeList(response, NodeInfoBean.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception

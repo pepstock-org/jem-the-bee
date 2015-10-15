@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.JobId;
 
 /**
@@ -63,17 +64,14 @@ public class Remove extends Command {
 		try {
 			boolean isRemoved = getResourcer().remove(JobId.VALUE, getParameter());
 			if (isRemoved){
-				System.out.println(AntUtilMessage.JEMZ014I.toMessage().getFormattedMessage(getParameter()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ014I, getParameter());
 			} else {
-				System.out.println(AntUtilMessage.JEMZ013E.toMessage().getFormattedMessage(getParameter()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ013E, getParameter());
 			}
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JemException(e);
 		} catch (UnknownHostException e) {
 			throw new JemException(e);
 		}		
-
 	}
-
 }

@@ -19,7 +19,6 @@ package org.pepstock.jem.rest.services;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -68,7 +67,6 @@ public class JobsManager extends AbstractRestManager {
 	 * @return collection of jobs
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<Job> getJobs(JobQueue queue, String filter) throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -80,7 +78,7 @@ public class JobsManager extends AbstractRestManager {
 			ClientResponse response = builder.filter(filter).get(path);
 			// if HTTP status code is OK,parses the result to list of jobs
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<Job>) JsonUtil.getInstance().deserializeList(response, Job.class);
+				return JsonUtil.getInstance().deserializeList(response, Job.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception
@@ -104,7 +102,6 @@ public class JobsManager extends AbstractRestManager {
 	 * @return collection of jobs
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<String> getJclTypes() throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -114,7 +111,7 @@ public class JobsManager extends AbstractRestManager {
 			ClientResponse response = builder.get(JobsManagerPaths.GET_JCL_TYPES);
 			// if HTTP status code is OK,parses the result to map of jcl type
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<String>) JsonUtil.getInstance().deserializeList(response, String.class);
+				return JsonUtil.getInstance().deserializeList(response, String.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception

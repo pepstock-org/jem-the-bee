@@ -22,7 +22,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.Job;
-//FIXME to be removed
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;

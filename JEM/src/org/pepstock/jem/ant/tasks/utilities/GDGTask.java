@@ -25,6 +25,7 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,8 @@ import org.pepstock.jem.ant.tasks.utilities.gdg.Delete;
 import org.pepstock.jem.ant.tasks.utilities.gdg.Rebuild;
 import org.pepstock.jem.ant.tasks.utilities.gdg.Rename;
 import org.pepstock.jem.jppf.DataStreamNameClassPair;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
@@ -91,11 +94,15 @@ public class GDGTask extends AntUtilTask {
 	 * Before to start creating GDG, checks all command syntax
 	 * 
 	 * @param args nothing
+	 * @throws ParseException 
+	 * @throws NamingException 
+	 * @throws IOException 
+	 * @throws JemException 
 	 * @throws Exception if COMMAND data description doesn't exists, if an
 	 *             error occurs during the command parsing, if data mount point
 	 *             is null.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws ParseException, NamingException, IOException, JemException {
 		// new initial context to access by JNDI to COMMAND DataDescription
 		InitialContext ic = ContextUtils.getContext();
 
@@ -107,7 +114,7 @@ public class GDGTask extends AntUtilTask {
 		String records = recordsSB.toString().trim();
 		if (records.length() > 0) {
 			// list with all gdgs because it checks command syntax before starting creation
-			List<Command> list = new LinkedList<Command>();
+			List<SubCommand> list = new LinkedList<SubCommand>();
 
 			// splits with command separator ";"
 			String[] commands = records.toString().split(COMMAND_SEPARATOR);
@@ -116,9 +123,9 @@ public class GDGTask extends AntUtilTask {
 				String[] s = StringUtils.split(commands[i], " ");
 				String commandLine = StringUtils.join(s, ' ');
 				// logs which command is parsing
-				System.out.println(AntUtilMessage.JEMZ025I.toMessage().getFormattedMessage(commandLine));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ025I, commandLine);
 
-				Command command = null;
+				SubCommand command = null;
 				if (StringUtils.startsWith(commandLine, Define.COMMAND_KEYWORD)){
 					command = new Define(commandLine);
 				} else if (StringUtils.startsWith(commandLine, Rebuild.COMMAND_KEYWORD)){
@@ -133,7 +140,7 @@ public class GDGTask extends AntUtilTask {
 					throw new ParseException(AntUtilMessage.JEMZ026E.toMessage().getFormattedMessage("GDG", commandLine), 0);
 				}
 				// load DD datasets
-				NamingEnumeration<NameClassPair> lists = ic.list(command.getDDName());
+				NamingEnumeration<NameClassPair> lists = ic.list(((Command)command).getDDName());
 				if (lists.hasMore()){
 					NameClassPair pair = lists.next();
 					// checks if is data-stream
@@ -147,19 +154,19 @@ public class GDGTask extends AntUtilTask {
 						// creates DataDescritpionImpl object using XStream (used to
 						// serialize)
 						DataDescriptionImpl ddImpl = (DataDescriptionImpl) STREAMER.fromXML((String) sra.getContent());
-						command.setDataDescriptionImpl(ddImpl);
+						((Command)command).setDataDescriptionImpl(ddImpl);
 					} else {
-						throw new IOException(AntMessage.JEMA002E.toMessage().getFormattedMessage(command.getDDName()));
+						throw new IOException(AntMessage.JEMA002E.toMessage().getFormattedMessage(((Command)command).getDDName()));
 					}
 				} else {
-					throw new IOException(AntMessage.JEMA002E.toMessage().getFormattedMessage(command.getDDName()));
+					throw new IOException(AntMessage.JEMA002E.toMessage().getFormattedMessage(((Command)command).getDDName()));
 				}
 				// adds to list
 				list.add(command);
 			}
 
 			// compute all valid commands
-			for (Command cmd : list) {
+			for (SubCommand cmd : list) {
 				cmd.execute();
 			}
 		}

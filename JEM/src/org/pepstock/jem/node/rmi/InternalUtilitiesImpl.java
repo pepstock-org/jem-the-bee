@@ -732,8 +732,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(NodeMessage.JEMC119E.toMessage().getFormattedMessage(Queues.COMMON_RESOURCES_MAP));
 		} finally {
-			if(isLock)
+			if(isLock){
 				lock.unlock();
+			}
 		}
 		return new ArrayList<Resource>(result);
 	}

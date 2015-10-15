@@ -90,6 +90,7 @@ public final class JsonUtil {
 
 	/**
 	 * Transforms a REST response entity to a LIST of objects.
+	 * @param <T>
 	 * @param response REST response
 	 * @param cls Java type of list to return
 	 * @return list of objects of class instance
@@ -97,7 +98,7 @@ public final class JsonUtil {
 	 * @throws JsonMappingException if any JSON error occurs
 	 * @throws IOException if any JSON error occurs
 	 */
-	public List<?> deserializeList(ClientResponse response, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
+	public <T> List<T> deserializeList(ClientResponse response, Class<T> cls) throws JsonParseException, JsonMappingException, IOException {
 		return deserializeList(responseToString(response), cls);
 	}
 	
@@ -110,9 +111,10 @@ public final class JsonUtil {
 	 * @throws JsonMappingException if any JSON error occurs
 	 * @throws IOException if any JSON error occurs
 	 */
-	public List<?> deserializeList(String json, Class<?> cls) throws JsonParseException, JsonMappingException, IOException {
+	public <T> List<T> deserializeList(String json, Class<T> cls) throws JsonParseException, JsonMappingException, IOException {
 		JavaType typeInfo = mapper.getTypeFactory().constructCollectionType(List.class, cls);
-		List<?> response = (List<?>) mapper.readValue(json, typeInfo);
+		@SuppressWarnings("unchecked")
+		List<T> response = (List<T>) mapper.readValue(json, typeInfo);
 		return response;
 	}
 

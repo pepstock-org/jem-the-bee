@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.ant;
 
+import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.ant.tasks.utilities.scripts.PowerShellScriptTask;
 
 /**
@@ -55,7 +56,7 @@ public class PowerShellFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<?> getAntTask() {
+	public Class<? extends ShellScriptTask> getAntTask() {
 		return PowerShellScriptTask.class;
 	}
 

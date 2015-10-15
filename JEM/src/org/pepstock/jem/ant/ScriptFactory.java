@@ -30,6 +30,7 @@ import org.pepstock.jem.ant.tasks.DataDescription;
 import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.ant.tasks.ValueParser;
+import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.util.CharSet;
 
@@ -80,7 +81,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 * Returns the ANT task to use to execute the script.
 	 * @return the ANT task to use to execute the script
 	 */
-	public abstract Class<?> getAntTask();
+	public abstract Class<? extends ShellScriptTask> getAntTask();
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.AntFactory#createJcl(java.lang.String)

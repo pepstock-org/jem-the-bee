@@ -24,6 +24,7 @@ import java.text.ParseException;
 import org.pepstock.catalog.gdg.GDGUtil;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.LogAppl;
 
 /**
  * GDG command to define a new GDG. Creates a new directory for GDG (passed by command) and creates a empty generation 0 if asked.
@@ -103,9 +104,9 @@ public class Define extends Command {
 		// creates root checking if to create generation 0
 		Root root = GDGUtil.createGDG(file, isNoEmpty());
 		// logs for creation
-		System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, file.getAbsolutePath()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, file.getAbsolutePath());
 		if (isNoEmpty()){
-			System.out.println(AntUtilMessage.JEMZ005I.toMessage().getFormattedMessage(GDGUtil.getGenerationIndex(root, 0)));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ005I, GDGUtil.getGenerationIndex(root, 0));
 		}
 	}
 

@@ -23,6 +23,7 @@ import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
@@ -65,7 +66,7 @@ public class Drain extends Command {
 			try {
 				InternalUtilities util = UtilsInitiatorManager.getInternalUtilities();
 				int count = util.drain(JobId.VALUE, getNodesPattern());
-				System.out.println(AntUtilMessage.JEMZ053I.toMessage().getFormattedMessage(count));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ053I, count);
 			} catch (RemoteException e) {
 				throw new JemException(e);
 			} catch (UnknownHostException e) {

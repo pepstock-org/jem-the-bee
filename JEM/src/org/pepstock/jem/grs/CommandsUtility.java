@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ResourceLock;
 
 import com.hazelcast.core.IMap;
@@ -72,6 +73,7 @@ public final class CommandsUtility {
 			isLock=lock.tryLock(10, TimeUnit.SECONDS);
 			values = counterMutex.values();
 		} catch (Exception ex) {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			values = new ArrayList<LatchInfo>();
 		} finally {
 			if (isLock){
@@ -116,6 +118,7 @@ public final class CommandsUtility {
 				throw new InterruptedException();
 			}
 		} catch (Exception ex) {
+			LogAppl.getInstance().ignore(ex.getMessage(), ex);
 			return sb;
 		} finally {
 			if (isLock){
@@ -144,11 +147,12 @@ public final class CommandsUtility {
 			if ((info.getReadersCount() + info.getWritersCount()) > 0) {
 				// scans all requestors to print thier info
 				for (RequestorInfo rinfo : info.getRequestors()) {
+					String node = StringUtils.rightPad(rinfo.getNodeLabel(), 20);
+					String id = StringUtils.rightPad(rinfo.getId(), 39);
+					String lockMode = rinfo.getMode() == ResourceLock.READ_MODE ? "READ" : "WRITE";
 					// prints Node label, requestor name, requestor id and lock
 					// mode
-					sb.append(
-							MessageFormat.format(DATA, StringUtils.rightPad(rinfo.getNodeLabel(), 20), StringUtils.rightPad(rinfo.getId(), 39),
-									StringUtils.rightPad((rinfo.getMode() == ResourceLock.READ_MODE ? "READ" : "WRITE"), 10), rinfo.getName())).append('\n');
+					sb.append(MessageFormat.format(DATA, node, id, StringUtils.rightPad(lockMode, 10), rinfo.getName())).append('\n');
 				}
 			} else {
 				sb.append(NO_LOCKS).append('\n');

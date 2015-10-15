@@ -18,7 +18,6 @@ package org.pepstock.jem.rest.services;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -58,7 +57,6 @@ public class StatisticsManager extends AbstractRestManager {
      * @return collection of samples
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<LightSample> getSamples() throws RestException {
 		try{
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -68,7 +66,7 @@ public class StatisticsManager extends AbstractRestManager {
 			ClientResponse response = builder.get(StatisticsManagerPaths.SAMPLES);
 			// if HTTP status code is OK,parses the result to list of samples
 			if (response.getStatus() == Status.OK.getStatusCode()){
-				return (List<LightSample>)JsonUtil.getInstance().deserializeList(response, LightSample.class);
+				return JsonUtil.getInstance().deserializeList(response, LightSample.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception
@@ -141,7 +139,6 @@ public class StatisticsManager extends AbstractRestManager {
      * @return collection of REDO statements
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<RedoStatement> getAllRedoStatements() throws RestException {
 	    try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -151,7 +148,7 @@ public class StatisticsManager extends AbstractRestManager {
 			ClientResponse response = builder.get(StatisticsManagerPaths.REDO_STATEMENTS);
 			// if HTTP status code is ok, returns the list of redo statements
 			if (response.getStatus() == Status.OK.getStatusCode()){
-				return (List<RedoStatement>)JsonUtil.getInstance().deserializeList(response, RedoStatement.class);
+				return JsonUtil.getInstance().deserializeList(response, RedoStatement.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception
@@ -194,7 +191,6 @@ public class StatisticsManager extends AbstractRestManager {
      * @return an array of system information
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<String> getEnvironmentInformation()throws RestException {
 	    try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -204,7 +200,7 @@ public class StatisticsManager extends AbstractRestManager {
 			ClientResponse response = builder.get(StatisticsManagerPaths.INFOS);
 			// if HTTP status code is ok, returns the arrays of info
 			if (response.getStatus() == Status.OK.getStatusCode()){
-				return (List<String>)JsonUtil.getInstance().deserializeList(response, String.class);
+				return JsonUtil.getInstance().deserializeList(response, String.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception

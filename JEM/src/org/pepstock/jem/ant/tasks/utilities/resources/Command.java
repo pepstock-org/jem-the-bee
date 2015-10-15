@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
-import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.ant.tasks.utilities.SubCommand;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourceProperty;
@@ -40,7 +40,7 @@ import com.thoughtworks.xstream.XStream;
  * @version 2.3
  * 
  */
-public abstract class Command {
+public abstract class Command implements SubCommand{
 
 	private String commandLine = null;
 
@@ -203,13 +203,4 @@ public abstract class Command {
 			}
 		}
 	}
-
-	/**
-	 * Execute the command
-	 * 
-	 * @throws JemException
-	 *             if an error occurs
-	 */
-	public abstract void execute() throws JemException;
-
 }

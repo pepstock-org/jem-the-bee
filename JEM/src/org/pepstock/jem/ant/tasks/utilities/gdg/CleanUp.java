@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -105,7 +106,7 @@ public class CleanUp extends Command {
 	public void perform(File file) throws IOException {
 		// if NOVERSIONS, do not anything
 		if (getVersions() == 0) {
-			System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, file.getAbsolutePath()));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, file.getAbsolutePath());
 			return;
 		}
 		// logs for creation
@@ -117,7 +118,7 @@ public class CleanUp extends Command {
 		// generation to ignore)
 		// is less than versions return, nothing to clean
 		if ((properties.size() - 1) <= getVersions()) {
-			System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, file.getAbsolutePath()));
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, file.getAbsolutePath());
 			dumpRoot(file);
 			return;
 		}
@@ -140,9 +141,9 @@ public class CleanUp extends Command {
 				File genFile = new File(file, fileName);
 				// delete the file!
 				if (!genFile.delete()) {
-					System.out.println(AntUtilMessage.JEMZ002W.toMessage().getFormattedMessage(genFile));
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ002W, genFile);
 				} else {
-					System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(genFile));
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ003I, genFile);
 					root.getProperties().remove(key);
 				}
 				rowsCountToremove--;
@@ -153,13 +154,13 @@ public class CleanUp extends Command {
 		
 		dumpRoot(file);
 		// logs for creation
-		System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, file.getAbsolutePath()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, file.getAbsolutePath());
 	}
 	
 	private void dumpRoot(File file) throws IOException{
 		// Because of some errors reading GDG in a NAS, read again the root
 		Root reroot = new Root(file);
-		System.out.println(AntUtilMessage.JEMZ041I.toMessage().getFormattedMessage(reroot.getProperties()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ041I, reroot.getProperties());
 	}
 
 }

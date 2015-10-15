@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask;
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesList;
@@ -126,7 +127,7 @@ public class GetList extends Command {
 				resources.setResources(list);
 			
 				getxStream().toXML(resources, (OutputStream)fileout);
-				System.out.println(AntUtilMessage.JEMZ012I.toMessage().getFormattedMessage(allResources.size()));
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ012I, allResources.size());
 			} else {
 				throw new MessageException(AntUtilMessage.JEMZ010E, dd, fileout.getClass().getName());
 			}

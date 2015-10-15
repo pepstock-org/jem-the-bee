@@ -16,18 +16,22 @@
  */
 package org.pepstock.jem.ant.tasks.utilities;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
-import org.pepstock.jem.ant.tasks.utilities.certificate.Command;
 import org.pepstock.jem.ant.tasks.utilities.certificate.Delete;
 import org.pepstock.jem.ant.tasks.utilities.certificate.Import;
+import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 
 /**
@@ -76,12 +80,15 @@ public class CertificateTask extends AntUtilTask {
 	 * 
 	 * @param args
 	 *            RMI port necessary to execute command in the cluster
-	 * 
+	 * @throws ParseException 
+	 * @throws NamingException 
+	 * @throws IOException 
+	 * @throws JemException 
 	 * @throws Exception
 	 *             if COMMAND data description doesn't exists, if an error
 	 *             occurs during the command parsing
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws ParseException, NamingException, IOException, JemException {
 		// new initial context to access by JNDI to COMMAND DataDescription
 		InitialContext ic = ContextUtils.getContext();
 
@@ -95,7 +102,7 @@ public class CertificateTask extends AntUtilTask {
 		if (records.length() > 0) {
 			// list with all gdgs because it checks command syntax before
 			// starting creation
-			List<Command> list = new LinkedList<Command>();
+			List<SubCommand> list = new LinkedList<SubCommand>();
 
 			// splits with command separator ";"
 			String[] commands = records.toString().split(COMMAND_SEPARATOR);
@@ -104,24 +111,21 @@ public class CertificateTask extends AntUtilTask {
 				String[] s = StringUtils.split(commands[i], " ");
 				String commandLine = StringUtils.join(s, ' ');
 				// logs which command is parsing
-				System.out.println(AntUtilMessage.JEMZ025I.toMessage()
-						.getFormattedMessage(commandLine));
-				Command command = null;
+				LogAppl.getInstance().emit(AntUtilMessage.JEMZ025I, commandLine);
+				SubCommand command = null;
 				if (StringUtils.startsWith(commandLine, Import.COMMAND_KEYWORD)) {
 					command = new Import(commandLine);
 				} else if (StringUtils.startsWith(commandLine,
 						Delete.COMMAND_KEYWORD)) {
 					command = new Delete(commandLine);
 				} else {
-					throw new ParseException(AntUtilMessage.JEMZ026E
-							.toMessage().getFormattedMessage("CERTIFICATE",
-									commandLine), 0);
+					throw new MessageException(AntUtilMessage.JEMZ026E, "CERTIFICATE",	commandLine);
 				}
 				// adds to list
 				list.add(command);
 			}
 			// compute all valid commands
-			for (Command cmd : list) {
+			for (SubCommand cmd : list) {
 				cmd.execute();
 			}
 		}

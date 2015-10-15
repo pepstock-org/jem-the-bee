@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pepstock.catalog.gdg.GDGUtil;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -146,16 +147,16 @@ public class Rebuild extends Command {
 					if (isByRoot()){
 						boolean isCreated = genFile.createNewFile();
 						if (isCreated){
-							System.out.println(AntUtilMessage.JEMZ005I.toMessage().getFormattedMessage(genFile.getAbsolutePath()));
+							LogAppl.getInstance().emit(AntUtilMessage.JEMZ005I, genFile.getAbsolutePath());
 						} else {
-							System.out.println(AntUtilMessage.JEMZ040E.toMessage().getFormattedMessage(genFile.getAbsolutePath()));
+							LogAppl.getInstance().emit(AntUtilMessage.JEMZ040E, genFile.getAbsolutePath());
 							throw new IOException(AntUtilMessage.JEMZ040E.toMessage().getFormattedMessage(genFile.getAbsolutePath()));
 						}
 					} else {
 						// if master are generations, remove the key (and value) from properties
 						// because the file doesn't exist
 						root.getProperties().remove(key);
-						System.out.println(AntUtilMessage.JEMZ006I.toMessage().getFormattedMessage(key));
+						LogAppl.getInstance().emit(AntUtilMessage.JEMZ006I, key);
 					}
 				}
 			}
@@ -175,20 +176,20 @@ public class Rebuild extends Command {
 						// and key is inside of properties
 						// it could do nothing but it replaces the key with filename (probably is the same)
 						root.getProperties().setProperty(key, fileName);
-						System.out.println(AntUtilMessage.JEMZ007I.toMessage().getFormattedMessage(fileName, key));
+						LogAppl.getInstance().emit(AntUtilMessage.JEMZ007I, fileName, key);
 					} else {
 						// and key is not in properties
 						// means that file system is wrong and than delete it
 						if (!files[i].delete()){
-							System.out.println(AntUtilMessage.JEMZ002W.toMessage().getFormattedMessage(fileName));
+							LogAppl.getInstance().emit(AntUtilMessage.JEMZ002W, fileName);
 						} else {
-							System.out.println(AntUtilMessage.JEMZ003I.toMessage().getFormattedMessage(fileName));
+							LogAppl.getInstance().emit(AntUtilMessage.JEMZ003I, fileName);
 						}
 					}
 				} else {
 					// if master is file system, set properties, overriding possible key and value already in properties
 					root.getProperties().setProperty(key, fileName);
-					System.out.println(AntUtilMessage.JEMZ007I.toMessage().getFormattedMessage(fileName, key));
+					LogAppl.getInstance().emit(AntUtilMessage.JEMZ007I, fileName, key);
 				}
 			}
 		}
@@ -207,11 +208,11 @@ public class Rebuild extends Command {
 		}
 		// sets the last generation
 		root.getProperties().setProperty(Root.LAST_GENERATION_PROPERTY, String.valueOf(generation0));
-		System.out.println(AntUtilMessage.JEMZ008I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, generation0));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ008I, COMMAND_KEYWORD, file, generation0);
 		// stores root properties
 		root.commit();
 		// logs for creation
-		System.out.println(AntUtilMessage.JEMZ001I.toMessage().getFormattedMessage(COMMAND_KEYWORD, file, file.getAbsolutePath()));
+		LogAppl.getInstance().emit(AntUtilMessage.JEMZ001I, COMMAND_KEYWORD, file, file.getAbsolutePath());
 	}
 
 

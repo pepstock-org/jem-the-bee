@@ -18,7 +18,6 @@ package org.pepstock.jem.rest.services;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -56,7 +55,6 @@ public class CertificatesManager extends AbstractRestManager {
 	 * @return a list of certificates
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<CertificateEntry> getCertificates(String filterParm) throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
@@ -66,7 +64,7 @@ public class CertificatesManager extends AbstractRestManager {
 			ClientResponse response = builder.filter(filterParm).get(CertificatesManagerPaths.GET);
 			// if status code is OK, parse the result within a list of objects
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<CertificateEntry>) JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
+				return JsonUtil.getInstance().deserializeList(response, CertificateEntry.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception

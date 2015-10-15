@@ -22,6 +22,8 @@ import java.text.ParseException;
 
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.DataSetImpl;
+import org.pepstock.jem.ant.tasks.utilities.SubCommand;
+import org.pepstock.jem.log.JemException;
 
 /**
  * Utility class to use to save command line during the syntax checking and execute the command
@@ -30,7 +32,7 @@ import org.pepstock.catalog.DataSetImpl;
  * @version 2.3
  * 
  */
-public abstract class Command {
+public abstract class Command implements SubCommand{
 	
 	private String commandLine = null;
 	
@@ -101,9 +103,14 @@ public abstract class Command {
 	 * 
 	 * @throws IOException if an error occurs
 	 */
-	public void execute() throws IOException{
-		for (DataSetImpl ds : dataDescriptionImpl.getDatasets()){
-			perform(ds.getRealFile());
+	@Override
+	public void execute() throws JemException{
+		try {
+			for (DataSetImpl ds : dataDescriptionImpl.getDatasets()){
+				perform(ds.getRealFile());
+			}
+		} catch (IOException e) {
+			throw new JemException(e);
 		}
 	}
 	

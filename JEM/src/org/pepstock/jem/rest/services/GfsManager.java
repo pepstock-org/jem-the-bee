@@ -136,7 +136,6 @@ public class GfsManager extends AbstractRestManager {
 	 * @return list of files
 	 * @throws RestException if any exception occurs
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<GfsFile> getFilesList(String type, String item, String pathName) throws RestException {
 		// creates a request builder with the APPLICATION/JSON media type as
 		// accept type (the default)
@@ -155,7 +154,7 @@ public class GfsManager extends AbstractRestManager {
 			ClientResponse response = builder.query(queryParams).get(path);
 			// if HTTP status code is OK, return list of files
 			if (response.getStatus() == Status.OK.getStatusCode()) {
-				return (List<GfsFile>) JsonUtil.getInstance().deserializeList(response, GfsFile.class);
+				return JsonUtil.getInstance().deserializeList(response, GfsFile.class);
 			} else {
 				// otherwise throws the exception using the
 				// body of response as message of exception
