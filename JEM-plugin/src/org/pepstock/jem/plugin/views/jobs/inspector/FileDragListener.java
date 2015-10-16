@@ -45,6 +45,10 @@ import org.pepstock.jem.rest.entities.JobQueue;
  */
 public class FileDragListener implements DragSourceListener, ShellContainer {
 	
+	private static final String MSG = "Error while getting output file: ";
+	
+	private static final String TITLE = "Unable to get Output!";
+	
 	private Job job = null;
 	
 	private JobQueue queueName = null;
@@ -243,10 +247,10 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
             		listFiles.add(file.getAbsolutePath());
                 } catch (IOException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
-					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+					Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
                 } catch (RestException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
-					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+					Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
                 }
             }
             // if it's created files
@@ -282,10 +286,10 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 				getEvent().data = new String[] { file.getAbsolutePath() };
 			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
 			} catch (IOException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
             }
 		}    	
     }

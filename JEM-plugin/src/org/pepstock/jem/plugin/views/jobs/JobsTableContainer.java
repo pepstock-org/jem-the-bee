@@ -52,6 +52,7 @@ import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.inspector.InspectorViewPart;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.JobQueue;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Table container of jobs of JEM. It contains a table for each type of jobs queue of JEM.
@@ -87,7 +88,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 	public JobsTableContainer(TabFolder parent, int style, JobQueue queue) {
 		this.queue = queue;
 		composite = new Composite(parent, style); // style
-		composite.setLayout(new GridLayout(1, false));
+		composite.setLayout(new GridLayout(Numbers.N_1, false));
 		
 		// adds searcher
 		searcher = new Searcher(this);
@@ -106,7 +107,7 @@ public abstract class JobsTableContainer implements ShellContainer, Refresher {
 
 		// total amount of items
 		Composite compositeTot = new Composite(this.composite, SWT.NONE);
-		compositeTot.setLayout(new GridLayout(2, false));
+		compositeTot.setLayout(new GridLayout(Numbers.N_2, false));
 		compositeTot.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 1, 1));
 		// adds label with total items
 		Label numberLabel = new Label(compositeTot, SWT.NONE);

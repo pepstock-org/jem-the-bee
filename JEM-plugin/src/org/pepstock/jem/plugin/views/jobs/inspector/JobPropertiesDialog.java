@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.plugin.util.TimeDisplayUtils;
 import org.pepstock.jem.util.DateFormatter;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Dialog which shows the job execution details, both job itself and JCL ones.
@@ -66,7 +67,7 @@ public class JobPropertiesDialog extends Dialog {
 
 		// main composite
 		Composite main = new Composite(parent, SWT.LEFT);
-		GridLayout mainLayout = new GridLayout(1, false);
+		GridLayout mainLayout = new GridLayout(Numbers.N_1, false);
 		// sets fixed size
 		mainLayout.marginTop = 0;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;
@@ -99,7 +100,7 @@ public class JobPropertiesDialog extends Dialog {
 		// Creates composite to display job info
 		Composite jobComposite = new Composite(folder, SWT.NONE);
 		Composite jclComposite = new Composite(folder, SWT.NONE);
-		GridLayout compLayout = new GridLayout(2, false);
+		GridLayout compLayout = new GridLayout(Numbers.N_2, false);
 		// job with FILL both, horizontally and vertically
 		jobComposite.setLayout(compLayout);
 		jobComposite.setLayoutData(new GridData(GridData.FILL_BOTH));

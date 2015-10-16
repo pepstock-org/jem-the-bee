@@ -23,6 +23,7 @@ import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.event.EnvironmentEvent;
 import org.pepstock.jem.plugin.event.EnvironmentEventListener;
 import org.pepstock.jem.plugin.util.Images;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Header to display job name and JEM environment, when both are available.
@@ -48,7 +49,7 @@ public final class JobHeader extends Composite implements EnvironmentEventListen
 	 */
     public JobHeader(Composite parent) {
 	    super(parent, SWT.NONE);
-	    setLayout(new GridLayout(5, false));
+	    setLayout(new GridLayout(Numbers.N_5, false));
 	    setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true, false, 0, 0));
 
 	    // sets JOB icons

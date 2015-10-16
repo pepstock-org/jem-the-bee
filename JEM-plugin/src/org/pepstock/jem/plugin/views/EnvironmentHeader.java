@@ -42,6 +42,7 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.util.ShellLoading;
 import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * The header of view part with environment connection information and 
@@ -74,12 +75,12 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
     public EnvironmentHeader(Composite parent) {
 	    super(parent, SWT.NONE);
 	    // sets layout and data
-	    setLayout(new GridLayout(2, false));
+	    setLayout(new GridLayout(Numbers.N_2, false));
 	    setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 0, 0));
 
 	    // creates a container with 5 columns
 	    Composite left = new Composite(this, SWT.NONE);
-	    left.setLayout(new GridLayout(5, false));
+	    left.setLayout(new GridLayout(Numbers.N_5, false));
 	    left.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true, false, 0, 0));
 
 	    // adds ICON
@@ -115,7 +116,7 @@ public class EnvironmentHeader extends Composite implements ShellContainer, Envi
 		// RIGHT component
 		// with 3 columns
 	    Composite right = new Composite(this, SWT.NONE);
-	    right.setLayout(new GridLayout(3, false));
+	    right.setLayout(new GridLayout(Numbers.N_3, false));
 	    right.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, true, false, 0, 0));
 	    
 	    // ADDS label for combo

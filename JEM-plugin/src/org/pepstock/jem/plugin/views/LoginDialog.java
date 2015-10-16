@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.pepstock.jem.plugin.preferences.Coordinate;
 import org.pepstock.jem.plugin.util.Images;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * The dialog to insert userid and password, to connect to JEM 
@@ -86,7 +87,7 @@ public class LoginDialog extends Dialog implements ShellContainer {
 		// main composite
 		Composite main = new Composite(parent, SWT.LEFT);
 		// creates a grid layout
-		GridLayout mainLayout = new GridLayout(2, false);
+		GridLayout mainLayout = new GridLayout(Numbers.N_2, false);
 		// sets default margin
 		mainLayout.marginTop = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;

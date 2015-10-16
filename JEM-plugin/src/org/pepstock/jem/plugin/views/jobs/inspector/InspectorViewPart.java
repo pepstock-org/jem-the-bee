@@ -48,6 +48,7 @@ import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.JobQueue;
+import org.pepstock.jem.util.Numbers;
 
 /**
  *  Is a viewPart, activated to show the details of a job. It has got the job header to provide short info about job anme and JEM environment.
@@ -149,9 +150,9 @@ public class InspectorViewPart extends JemViewPart {
 	 */
     @Override
     public void createPartControl(Composite parent) {
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = 2;
-		layout.marginWidth = 2;
+		GridLayout layout = new GridLayout(Numbers.N_1, false);
+		layout.marginHeight = Numbers.N_2;
+		layout.marginWidth = Numbers.N_2;
 		parent.setLayout(layout);
 		
 		// job header
@@ -160,7 +161,7 @@ public class InspectorViewPart extends JemViewPart {
 		//Instantiate TableViewer
 		//Create the composite
 		Composite compositeTree = new Composite(parent, SWT.NONE);
-		compositeTree.setLayout(new GridLayout(1, true));
+		compositeTree.setLayout(new GridLayout(Numbers.N_1, true));
 		compositeTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0));
 		// Creates tree
 		treeViewer = new TreeViewer(compositeTree, SWT.NONE);
@@ -168,7 +169,7 @@ public class InspectorViewPart extends JemViewPart {
 		treeViewer.setLabelProvider(LABEL_PROVIDER);
 		treeViewer.setInput(data);
 		// expands all to solve the pack view
-		treeViewer.setAutoExpandLevel(10);
+		treeViewer.setAutoExpandLevel(Numbers.N_10);
 		treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0));
 		
 		// DND

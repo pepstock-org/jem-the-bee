@@ -55,6 +55,7 @@ import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
 import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
@@ -83,12 +84,13 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	
 	private int type = -1;
 	
+	
 	// list all all columns (name and dimension) of the table
 	private final Collection<JemTableColumn> columns = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
-			new JemTableColumn("Name", 50),
-			new JemTableColumn("Size (bytes)", 15),
-			new JemTableColumn("Last modified", 20),
-			new JemTableColumn("Path name", 15),
+			new JemTableColumn("Name", Numbers.N_50),
+			new JemTableColumn("Size (bytes)", Numbers.N_15),
+			new JemTableColumn("Last modified", Numbers.N_20),
+			new JemTableColumn("Path name", Numbers.N_15),
 	}));
 
 	/**
@@ -100,7 +102,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	public ExplorerTableContainer(TabFolder parent, int style, int type) {
 		this.type = type;
 		composite = new Composite(parent, style); // style
-		composite.setLayout(new GridLayout(1, false));
+		composite.setLayout(new GridLayout(Numbers.N_1, false));
 		
 		// adds searcher
 		searcher = new Searcher(this);
@@ -125,7 +127,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 
 		// total amount of items
 		Composite compositeTot = new Composite(this.composite, SWT.NONE);
-		compositeTot.setLayout(new GridLayout(2, false));
+		compositeTot.setLayout(new GridLayout(Numbers.N_2, false));
 		compositeTot.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 1, 1));
 		// adds label with total items
 		Label numberLabel = new Label(compositeTot, SWT.NONE);
