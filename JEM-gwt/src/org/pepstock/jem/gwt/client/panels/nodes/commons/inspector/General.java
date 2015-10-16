@@ -25,6 +25,8 @@ import org.pepstock.jem.gwt.client.commons.TimeDisplayUtils;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.node.ExecutionEnvironment;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.google.gwt.user.client.Timer;
@@ -87,24 +89,24 @@ public final class General extends DefaultInspectorItem{
 	    layoutNode.setCellPadding(10);
 	    layoutNode.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layoutNode.setHTML(0, 0, "Label");
-	    layoutNode.setWidget(0, 1, new HTML(node.getLabel()));
-	    layoutNode.setHTML(1, 0, "Status");
-	    layoutNode.setWidget(1, 1, new HTML(node.getStatus()));
+	    layoutNode.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Label");
+	    layoutNode.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, new HTML(node.getLabel()));
+	    layoutNode.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Status");
+	    layoutNode.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_2, new HTML(node.getStatus()));
 	    
-	    layoutNode.setHTML(2, 0, "Host");
-	    layoutNode.setWidget(2, 1, new HTML(node.getHostname()));
-	    layoutNode.setHTML(3, 0, "IP:Port");
-	    layoutNode.setWidget(3, 1, new HTML(node.getIpaddress() + ":" + node.getPort()));
+	    layoutNode.setHTML(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "Host");
+	    layoutNode.setWidget(RowIndex.ROW_3, ColumnIndex.COLUMN_2, new HTML(node.getHostname()));
+	    layoutNode.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_1, "IP:Port");
+	    layoutNode.setWidget(RowIndex.ROW_4, ColumnIndex.COLUMN_2, new HTML(node.getIpaddress() + ":" + node.getPort()));
 	    
 	    // running time
 	    
-	    layoutNode.setHTML(4, 0, "Running time");
-	    layoutNode.setWidget(4, 1, new HTML(JemConstants.UPDATING_BRACKETS));
+	    layoutNode.setHTML(RowIndex.ROW_5, ColumnIndex.COLUMN_1, "Running time");
+	    layoutNode.setWidget(RowIndex.ROW_5, ColumnIndex.COLUMN_2, new HTML(JemConstants.UPDATING_BRACKETS));
 	    elapsedTimer = new Timer() {
 			@Override
 			public void run() {
-				layoutNode.setWidget(4, 1, new HTML(JemConstants.UPDATING_BRACKETS));
+				layoutNode.setWidget(RowIndex.ROW_5, ColumnIndex.COLUMN_2, new HTML(JemConstants.UPDATING_BRACKETS));
 				String displayed;
 				try {
 					displayed = TimeDisplayUtils.getReadableTimeDiff(node.getStartedTime(), TimeDisplayUtils.VERBOSE); 
@@ -112,20 +114,20 @@ public final class General extends DefaultInspectorItem{
 					LogClient.getInstance().warning(e.getMessage(), e);
 					displayed = JemConstants.UNAVAILABLE_BRACKETS;
 				}
-				layoutNode.setWidget(4, 1, new HTML(displayed));
+				layoutNode.setWidget(RowIndex.ROW_5, ColumnIndex.COLUMN_2, new HTML(displayed));
 			}
 		};
 		elapsedTimer.run();
 		elapsedTimer.scheduleRepeating(RUNNING_TIME_REFRESH_INTERVAL);
 		
-	    layoutNode.setHTML(5, 0, "Key");
-	    layoutNode.setWidget(5, 1, new HTML(node.getKey()));
+	    layoutNode.setHTML(RowIndex.ROW_6, ColumnIndex.COLUMN_1, "Key");
+	    layoutNode.setWidget(RowIndex.ROW_6, ColumnIndex.COLUMN_2, new HTML(node.getKey()));
 	    
-	    layoutNode.setHTML(6, 0, "RMI Port");
-	    layoutNode.setWidget(6, 1, new HTML(String.valueOf(node.getRmiPort())));
+	    layoutNode.setHTML(RowIndex.ROW_7, ColumnIndex.COLUMN_1, "RMI Port");
+	    layoutNode.setWidget(RowIndex.ROW_7, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getRmiPort())));
 	    
-	    layoutNode.setHTML(7, 0, "Jem Version");
-	    layoutNode.setWidget(7, 1, new HTML(node.getJemVersion()));
+	    layoutNode.setHTML(RowIndex.ROW_8, ColumnIndex.COLUMN_1, "Jem Version");
+	    layoutNode.setWidget(RowIndex.ROW_8, ColumnIndex.COLUMN_2, new HTML(node.getJemVersion()));
 	    
 	    UITools.setFlexTableStyles(layoutNode, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
@@ -152,18 +154,18 @@ public final class General extends DefaultInspectorItem{
 	    layoutEnvironment.setWidth(Sizes.HUNDRED_PERCENT);
 	    ExecutionEnvironment env = node.getExecutionEnvironment();
 
-	    layoutEnvironment.setHTML(0, 0, "Name");
-	    layoutEnvironment.setWidget(0, 1, new HTML(env.getEnvironment()));
-	    layoutEnvironment.setHTML(1, 0, "Domain");
-	    layoutEnvironment.setWidget(1, 1, new HTML(env.getDomain()));
-	    layoutEnvironment.setHTML(2, 0, "Static Affinities");
-	    layoutEnvironment.setWidget(2, 1, new HTML(env.getStaticAffinities().toString()));
-	    layoutEnvironment.setHTML(3, 0, "Dynamic Affinities");
-	    layoutEnvironment.setWidget(3, 1, new HTML(env.getDynamicAffinities().toString()));
-	    layoutEnvironment.setHTML(4, 0, "Parallel jobs");
-	    layoutEnvironment.setWidget(4, 1, new HTML(String.valueOf(env.getParallelJobs())));
-	    layoutEnvironment.setHTML(5, 0, "Node type");
-	    layoutEnvironment.setWidget(5, 1, new HTML(String.valueOf(node.getType())));
+	    layoutEnvironment.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Name");
+	    layoutEnvironment.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, new HTML(env.getEnvironment()));
+	    layoutEnvironment.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Domain");
+	    layoutEnvironment.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_2, new HTML(env.getDomain()));
+	    layoutEnvironment.setHTML(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "Static Affinities");
+	    layoutEnvironment.setWidget(RowIndex.ROW_3, ColumnIndex.COLUMN_2, new HTML(env.getStaticAffinities().toString()));
+	    layoutEnvironment.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_1, "Dynamic Affinities");
+	    layoutEnvironment.setWidget(RowIndex.ROW_4, ColumnIndex.COLUMN_2, new HTML(env.getDynamicAffinities().toString()));
+	    layoutEnvironment.setHTML(RowIndex.ROW_5, ColumnIndex.COLUMN_1, "Parallel jobs");
+	    layoutEnvironment.setWidget(RowIndex.ROW_5, ColumnIndex.COLUMN_2, new HTML(String.valueOf(env.getParallelJobs())));
+	    layoutEnvironment.setHTML(RowIndex.ROW_6, ColumnIndex.COLUMN_1, "Node type");
+	    layoutEnvironment.setWidget(RowIndex.ROW_6, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getType())));
 
 	    
 	    UITools.setFlexTableStyles(layoutEnvironment, 

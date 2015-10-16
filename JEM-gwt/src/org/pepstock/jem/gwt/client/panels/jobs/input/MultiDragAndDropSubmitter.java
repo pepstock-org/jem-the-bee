@@ -41,6 +41,9 @@ import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.events.EventBus;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.inspector.JobHeader;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.Numbers;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -158,11 +161,11 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 		dropLabel.setStyleName(Styles.INSTANCE.inspector().title());
 		dropLabel.addStyleName(Styles.INSTANCE.common().bold());
 
-		uploaderArea.setWidget(0, 0, dropLabel);
-		uploaderArea.setWidget(0, 1, uploader);
-		uploaderArea.setWidget(1, 0, dropFilesLabel);
-		uploaderArea.getFlexCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
-		uploaderArea.getFlexCellFormatter().setColSpan(1, 0, 2);
+		uploaderArea.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, dropLabel);
+		uploaderArea.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, uploader);
+		uploaderArea.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_1, dropFilesLabel);
+		uploaderArea.getFlexCellFormatter().setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_2, HasHorizontalAlignment.ALIGN_RIGHT);
+		uploaderArea.getFlexCellFormatter().setColSpan(RowIndex.ROW_2,ColumnIndex.COLUMN_1, 2);
 		uploaderArea.getFlexCellFormatter().setHeight(1, 0, Sizes.HUNDRED_PERCENT);
 		uploaderArea.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 		
@@ -377,17 +380,17 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	        setCellSpacing(3);
 	        Label fileName = new Label(file.getName()); 
 	        setWidget(0, 0, fileName);
-	        getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+	        getFlexCellFormatter().setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 	        if (allowCancel) {
 	        	setWidget(0, 1, cancelButton);
-	            getFlexCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+	            getFlexCellFormatter().setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_2, HasHorizontalAlignment.ALIGN_RIGHT);
 	        }
 	        
 	        // second row
 	        setWidget(1, 0, progressBar);
 	        
-	        getFlexCellFormatter().setColSpan(1, 0, 2);
-	        getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+	        getFlexCellFormatter().setColSpan(RowIndex.ROW_2,ColumnIndex.COLUMN_1, Numbers.N_2);
+	        getFlexCellFormatter().setHorizontalAlignment(RowIndex.ROW_2,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_CENTER);
 		}
 
 		@SuppressWarnings("unused")

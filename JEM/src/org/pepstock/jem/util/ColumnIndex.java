@@ -23,102 +23,102 @@ package org.pepstock.jem.util;
 public final class ColumnIndex {
 	
 	/**
-	 * Represents teh COLUMN 1 index
+	 * Represents the COLUMN 1 index
 	 */
 	public static final int COLUMN_1 = 0;
 
 	/**
-	 * Represents teh COLUMN 2 index
+	 * Represents the COLUMN 2 index
 	 */
 	public static final int COLUMN_2 = 1;
 
 	/**
-	 * Represents teh COLUMN 3 index
+	 * Represents the COLUMN 3 index
 	 */
 	public static final int COLUMN_3 = 2;
 
 	/**
-	 * Represents teh COLUMN 4 index
+	 * Represents the COLUMN 4 index
 	 */
 	public static final int COLUMN_4 = 3;
 
 	/**
-	 * Represents teh COLUMN 5 index
+	 * Represents the COLUMN 5 index
 	 */
 	public static final int COLUMN_5 = 4;
 
 	/**
-	 * Represents teh COLUMN 6 index
+	 * Represents the COLUMN 6 index
 	 */
 	public static final int COLUMN_6 = 5;
 
 	/**
-	 * Represents teh COLUMN 7 index
+	 * Represents the COLUMN 7 index
 	 */
 	public static final int COLUMN_7 = 6;
 
 	/**
-	 * Represents teh COLUMN 8 index
+	 * Represents the COLUMN 8 index
 	 */
 	public static final int COLUMN_8 = 7;
 
 	/**
-	 * Represents teh COLUMN 9 index
+	 * Represents the COLUMN 9 index
 	 */
 	public static final int COLUMN_9 = 8;
 
 	/**
-	 * Represents teh COLUMN 10 index
+	 * Represents the COLUMN 10 index
 	 */
 	public static final int COLUMN_10 = 9;
 
 	/**
-	 * Represents teh COLUMN 11 index
+	 * Represents the COLUMN 11 index
 	 */
 	public static final int COLUMN_11 = 10;
 
 	/**
-	 * Represents teh COLUMN 12 index
+	 * Represents the COLUMN 12 index
 	 */
 	public static final int COLUMN_12 = 11;
 
 	/**
-	 * Represents teh COLUMN 13 index
+	 * Represents the COLUMN 13 index
 	 */
 	public static final int COLUMN_13 = 12;
 
 	/**
-	 * Represents teh COLUMN 14 index
+	 * Represents the COLUMN 14 index
 	 */
 	public static final int COLUMN_14 = 13;
 
 	/**
-	 * Represents teh COLUMN 15 index
+	 * Represents the COLUMN 15 index
 	 */
 	public static final int COLUMN_15 = 14;
 
 	/**
-	 * Represents teh COLUMN 16 index
+	 * Represents the COLUMN 16 index
 	 */
 	public static final int COLUMN_16 = 15;
 
 	/**
-	 * Represents teh COLUMN 17 index
+	 * Represents the COLUMN 17 index
 	 */
 	public static final int COLUMN_17 = 16;
 
 	/**
-	 * Represents teh COLUMN 18 index
+	 * Represents the COLUMN 18 index
 	 */
 	public static final int COLUMN_18 = 17;
 
 	/**
-	 * Represents teh COLUMN 19 index
+	 * Represents the COLUMN 19 index
 	 */
 	public static final int COLUMN_19 = 18;
 
 	/**
-	 * Represents teh COLUMN 20 index
+	 * Represents the COLUMN 20 index
 	 */
 	public static final int COLUMN_20 = 19;
 

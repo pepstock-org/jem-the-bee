@@ -17,11 +17,13 @@
 package org.pepstock.jem.gwt.client.panels.swarm.commons.inspector.config;
 
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -76,23 +78,23 @@ public final class GeneralViewConfig extends DefaultInspectorItem  {
 	    layout.setCellPadding(10);
 	    layout.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layout.setHTML(0, 0, "Enabled");
-	    layout.setWidget(0, 1,isConfigurationEnabled);
+	    layout.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Enabled");
+	    layout.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2,isConfigurationEnabled);
 	    
-	    layout.setHTML(1, 0, "Group name");
-	    layout.setWidget(1, 1, groupName);
+	    layout.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Group name");
+	    layout.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, groupName);
 
-	    layout.setHTML(2, 0, "Port");
-	    layout.setWidget(2, 1,  port);
+	    layout.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Port");
+	    layout.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2,  port);
 	    
-	    layout.setHTML(3, 0, "Network interface");
-		layout.setWidget(3, 1, netInterface);
+	    layout.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_1, "Network interface");
+		layout.setWidget(RowIndex.ROW_4,ColumnIndex.COLUMN_2, netInterface);
 	    
-		layout.setHTML(4, 0, "User");
-		layout.setWidget(4, 1, user);
+		layout.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_1, "User");
+		layout.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, user);
 		
-		layout.setHTML(5, 0, "Last update");
-		layout.setWidget(5, 1, lastModified);
+		layout.setHTML(RowIndex.ROW_6,ColumnIndex.COLUMN_1, "Last update");
+		layout.setWidget(RowIndex.ROW_6,ColumnIndex.COLUMN_2, lastModified);
 
 	    UITools.setFlexTableStyles(layout, 
 	    		Styles.INSTANCE.inspector().rowDark(), 

@@ -21,6 +21,8 @@ import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.XmlResultViewer;
 import org.pepstock.jem.gwt.client.panels.administration.certificates.adder.Actions;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -95,11 +97,11 @@ public class CertificateAdder extends PopupPanel {
 	    layout.setCellPadding(5);
 	    layout.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layout.setHTML(0, 0, "Type user ID:");
-	    layout.setWidget(0, 1, user);
+	    layout.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Type user ID:");
+	    layout.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, user);
 	    
-	    layout.setHTML(1, 0, "Select certificate file for user:");
-	    layout.setWidget(1, 1, fileUpload);
+	    layout.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Select certificate file for user:");
+	    layout.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, fileUpload);
 	    
 		
 		//add a label

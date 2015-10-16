@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.gwt.client.commons;
 
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
+
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -49,8 +52,8 @@ public final class Loading {
 		// animated image
 		final Image ajaxImage = new Image(Images.INSTANCE.loading());
 		final Grid grid = new Grid(1, 2);
-		grid.setWidget(0, 0, ajaxImage);
-		grid.setText(0, 1, "Loading...");
+		grid.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, ajaxImage);
+		grid.setText(RowIndex.ROW_1,ColumnIndex.COLUMN_2, "Loading...");
 		final FlowPanel container = new FlowPanel();
 		container.add(grid);
 		POPUP.add(container);

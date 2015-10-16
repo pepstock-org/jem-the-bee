@@ -17,8 +17,8 @@
 package org.pepstock.jem.gwt.client.panels.administration.certificates;
 
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.node.security.CertificateEntry;
 
 import com.google.gwt.cell.client.CheckboxCell;

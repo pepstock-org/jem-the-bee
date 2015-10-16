@@ -20,6 +20,8 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.ImageAndTextAnchor;
 import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -65,17 +67,17 @@ public class InspectorHeader extends FlexTable  {
 		rf.setVerticalAlign(0, HasVerticalAlignment.ALIGN_MIDDLE);
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
-		cf.setWidth(0, 0, "45px");
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setWidth(ColumnIndex.COLUMN_1, 0, "45px");
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 		setHTML(0, 0, label);
 		
 		
-		cf.setWidth(0, 1, Sizes.HUNDRED_PERCENT);
-		cf.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setWidth(ColumnIndex.COLUMN_1, 1, Sizes.HUNDRED_PERCENT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_2, HasHorizontalAlignment.ALIGN_LEFT);
 		cf.addStyleName(0, 1, Styles.INSTANCE.inspector().adminTitle());
 		
 		// 0-1 > back
-		cf.setWidth(0, 2, "20%");
+		cf.setWidth(ColumnIndex.COLUMN_1, 2, "20%");
 		
 		// logoff button (and handler)
 		final ImageAndTextAnchor button = new ImageAndTextAnchor(Images.INSTANCE.back(), "Back");
@@ -90,7 +92,7 @@ public class InspectorHeader extends FlexTable  {
 		});
 		cf.setWordWrap(0, 2, false);
 		cf.setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_MIDDLE);
-		cf.setHorizontalAlignment(0, 2, HasHorizontalAlignment.ALIGN_RIGHT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_3, HasHorizontalAlignment.ALIGN_RIGHT);
 		setWidget(0, 2, button);
 	}
 

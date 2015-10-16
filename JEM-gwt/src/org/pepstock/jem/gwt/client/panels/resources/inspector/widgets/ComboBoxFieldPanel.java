@@ -26,6 +26,8 @@ import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
 import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.SingleSelectableListFieldDescriptor;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -74,7 +76,7 @@ public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectabl
 			setSelectedValue(defaultValue);
 			saveProperty(defaultValue);
 		}
-		inputObject.setWidget(0, 0, list);
+		inputObject.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, list);
 	}
 
 	@Override

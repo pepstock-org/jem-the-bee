@@ -20,6 +20,8 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.resources.definition.SectionDescriptor;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.Label;
 
@@ -58,8 +60,8 @@ public class ListFieldPagePanel extends PagePropertiesPanel {
 			ListFieldPanel listFieldPanel = (ListFieldPanel)fieldPanel;
 			fields.add(listFieldPanel);
 			getTable().setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-			getTable().setWidget(0, 0, new Label(listFieldPanel.getDescription()));
-			getTable().setWidget(1, 0, fieldPanel.getInputObject());
+			getTable().setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, new Label(listFieldPanel.getDescription()));
+			getTable().setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_1, fieldPanel.getInputObject());
 			stylized = true;
 		} else {
 			throw new IllegalArgumentException("You can only add one ListFieldPanel!");

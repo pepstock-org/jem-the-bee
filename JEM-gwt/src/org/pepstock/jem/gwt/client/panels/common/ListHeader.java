@@ -18,6 +18,8 @@ package org.pepstock.jem.gwt.client.panels.common;
 
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -53,7 +55,7 @@ public class ListHeader extends FlexTable  {
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
 		cf.setWordWrap(0, 0, false);
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 		cf.addStyleName(0, 0, Styles.INSTANCE.common().bold());
 		setHTML(0, 0, header);
 	}

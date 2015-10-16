@@ -25,6 +25,7 @@ import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.node.security.Permissions;
+import org.pepstock.jem.util.ColumnIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -184,7 +185,7 @@ public class TreeOptions extends ScrollPanel {
 		Grid grid = new Grid(dPanels.size(), 1);
 		int index = 0;
 		for (DisclosurePanel panel : dPanels){
-			grid.setWidget(index, 0, panel);
+			grid.setWidget(index,ColumnIndex.COLUMN_1, panel);
 			index++;
 		}
 		add(grid);

@@ -46,6 +46,7 @@ import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.stats.LightSample;
 import org.pepstock.jem.node.stats.SampleComparator;
+import org.pepstock.jem.util.Numbers;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -60,6 +61,10 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class Administration extends SplitLayoutPanel implements InspectListener<String>, ResizeCapable {
+	
+	private static final String MSG = "The result of samples is empty!<br>Probably JEM nodes started but they haven't create any statistics sample.";
+	
+	private static final String TITLE = "Samples empty!";
 	
 	private ViewStackPanel viewStack = new ViewStackPanel();
 	
@@ -151,44 +156,44 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
      */
 	public void onResultLoaded(String option) {
 		if (option.equalsIgnoreCase(TreeOptions.WORKLOAD_JOBS_OPTION)) {
-			viewStack.showStack(1);
+			viewStack.showStack(Numbers.N_1);
 			workload.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.NODES_SYSTEM_STATUS_OPTION)) {
-			viewStack.showStack(2);
+			viewStack.showStack(Numbers.N_2);
 			nodesSystem.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.NODES_QUEUES_STATUS_OPTION)) {
-			viewStack.showStack(3);
+			viewStack.showStack(Numbers.N_3);
 			nodesQueues.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.QUEUES_STATUS_OPTION)) {
-			viewStack.showStack(4);
+			viewStack.showStack(Numbers.N_4);
 			queues.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.GRS_CONTENTIONS_OPTION)) {
-			viewStack.showStack(5);
+			viewStack.showStack(Numbers.N_5);
 			grs.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.NODES_CONFIG_OPTION)) {
-			viewStack.showStack(6);
+			viewStack.showStack(Numbers.N_6);
 			nodesConfig.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.NODES_COMMANDS_OPTION)) {
-			viewStack.showStack(7);
+			viewStack.showStack(Numbers.N_7);
 			nodesCmd.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CURRENT_QUEUES_STATUS_OPTION)) {
-			viewStack.showStack(8);
+			viewStack.showStack(Numbers.N_8);
 			currentQueues.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.SECRET_UTILITY_OPTION)) {
-			viewStack.showStack(9);
+			viewStack.showStack(Numbers.N_9);
 		} else if (option.equalsIgnoreCase(TreeOptions.REDO_PANEL_OPTION)) {
-			viewStack.showStack(10);
+			viewStack.showStack(Numbers.N_10);
 			redos.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.GFS_PANEL_OPTION)) {
-			viewStack.showStack(11);
+			viewStack.showStack(Numbers.N_11);
 			gfs.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CERTIFICATES_PANEL_OPTION)) {
-			viewStack.showStack(12);
+			viewStack.showStack(Numbers.N_12);
 		} else if (option.equalsIgnoreCase(TreeOptions.INTERNAL_MAPS_OPTION)) {
-			viewStack.showStack(13);
+			viewStack.showStack(Numbers.N_13);
 			internals.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CLUSTER_CONFIG_OPTION)) {
-			viewStack.showStack(14);
+			viewStack.showStack(Numbers.N_14);
 			clusterConfig.load();
 		}
 	}
@@ -225,10 +230,10 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
 					Instances.setLastSample(Collections.max(result, new SampleComparator()));
 					onResultLoaded(what);
 				} else {
-					new Toast(MessageLevel.WARNING, "The result of samples is empty!<br>Probably JEM nodes started but they haven't create any statistics sample.", "Samples empty!").show();
+					new Toast(MessageLevel.WARNING, MSG, TITLE).show();
 				}
 			} else {
-				new Toast(MessageLevel.WARNING, "The result of samples is empty!<br>Probably JEM nodes started but they haven't create any statistics sample.", "Samples empty!").show();
+				new Toast(MessageLevel.WARNING, MSG, TITLE).show();
 			}
 			
         }
@@ -276,7 +281,7 @@ public class Administration extends SplitLayoutPanel implements InspectListener<
 				Instances.setCurrentSample(result);
 				onResultLoaded(what);
 			} else {
-				new Toast(MessageLevel.WARNING, "The result of samples is empty!<br>Probably JEM nodes started but they haven't create any statistics sample.", "Sample empty!").show();
+				new Toast(MessageLevel.WARNING, MSG, TITLE).show();
 			}
         }
 		

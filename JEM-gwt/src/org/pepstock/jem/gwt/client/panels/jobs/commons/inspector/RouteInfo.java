@@ -19,10 +19,12 @@ package org.pepstock.jem.gwt.client.panels.jobs.commons.inspector;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.RoutingInfo;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -72,27 +74,27 @@ public class RouteInfo extends DefaultInspectorItem {
 	    routeVp.add(routeLabel);
 	    
 	    FlexTable layoutRouteInfo = new FlexTable();
-	    layoutRouteInfo.getColumnFormatter().setWidth(0, "50%");
-	    layoutRouteInfo.getColumnFormatter().setWidth(1, "50%");
+	    layoutRouteInfo.getColumnFormatter().setWidth(ColumnIndex.COLUMN_1, "50%");
+	    layoutRouteInfo.getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "50%");
 	    layoutRouteInfo.setCellPadding(10);
 	    layoutRouteInfo.setWidth(Sizes.HUNDRED_PERCENT);
 	    RoutingInfo routingInfo = job.getRoutingInfo();
 	    
-	    layoutRouteInfo.setHTML(0, 0, "Route ID");
-	    layoutRouteInfo.setWidget(0, 1, new HTML(routingInfo.getId()));
+	    layoutRouteInfo.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Route ID");
+	    layoutRouteInfo.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, new HTML(routingInfo.getId()));
 	    
-	    layoutRouteInfo.setHTML(1, 0, "Routed time");
-	    layoutRouteInfo.setWidget(1, 1, new HTML(JemConstants.DATE_TIME_FULL.format(routingInfo.getRoutedTime())));
+	    layoutRouteInfo.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Routed time");
+	    layoutRouteInfo.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, new HTML(JemConstants.DATE_TIME_FULL.format(routingInfo.getRoutedTime())));
 	    
-	    layoutRouteInfo.setHTML(2, 0, "Submitted time");
-	    layoutRouteInfo.setWidget(2, 1, new HTML(JemConstants.DATE_TIME_FULL.format(routingInfo.getSubmittedTime())));
+	    layoutRouteInfo.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Submitted time");
+	    layoutRouteInfo.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2, new HTML(JemConstants.DATE_TIME_FULL.format(routingInfo.getSubmittedTime())));
 
-	    layoutRouteInfo.setHTML(3, 0, "Submission environment");
-	    layoutRouteInfo.setWidget(3, 1, new HTML(routingInfo.getEnvironment()));
+	    layoutRouteInfo.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_1, "Submission environment");
+	    layoutRouteInfo.setWidget(RowIndex.ROW_4,ColumnIndex.COLUMN_2, new HTML(routingInfo.getEnvironment()));
 	    
-	    layoutRouteInfo.setHTML(4, 0, "Committed output");
+	    layoutRouteInfo.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_1, "Committed output");
 	    Boolean isOutputCommitted = job.getRoutingInfo().isOutputCommitted();
-	    layoutRouteInfo.setWidget(4, 1, new HTML(isOutputCommitted != null && isOutputCommitted ? JemConstants.YES : JemConstants.NO));
+	    layoutRouteInfo.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, new HTML(isOutputCommitted != null && isOutputCommitted ? JemConstants.YES : JemConstants.NO));
 	    
 	    UITools.setFlexTableStyles(layoutRouteInfo, 
 	    		Styles.INSTANCE.inspector().rowDark(), 

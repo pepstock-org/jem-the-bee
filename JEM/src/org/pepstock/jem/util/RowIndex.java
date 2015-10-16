@@ -23,102 +23,102 @@ package org.pepstock.jem.util;
 public final class RowIndex {
 	
 	/**
-	 * Represents teh COLUMN 1 index
+	 * Represents the ROW 1 index
 	 */
 	public static final int ROW_1 = 0;
 
 	/**
-	 * Represents teh COLUMN 2 index
+	 * Represents the ROW 2 index
 	 */
 	public static final int ROW_2 = 1;
 
 	/**
-	 * Represents teh COLUMN 3 index
+	 * Represents the ROW 3 index
 	 */
 	public static final int ROW_3 = 2;
 
 	/**
-	 * Represents teh COLUMN 4 index
+	 * Represents the ROW 4 index
 	 */
 	public static final int ROW_4 = 3;
 
 	/**
-	 * Represents teh COLUMN 5 index
+	 * Represents the ROW 5 index
 	 */
 	public static final int ROW_5 = 4;
 
 	/**
-	 * Represents teh COLUMN 6 index
+	 * Represents the ROW 6 index
 	 */
 	public static final int ROW_6 = 5;
 
 	/**
-	 * Represents teh COLUMN 7 index
+	 * Represents the ROW 7 index
 	 */
 	public static final int ROW_7 = 6;
 
 	/**
-	 * Represents teh COLUMN 8 index
+	 * Represents the ROW 8 index
 	 */
 	public static final int ROW_8 = 7;
 
 	/**
-	 * Represents teh COLUMN 9 index
+	 * Represents the ROW 9 index
 	 */
 	public static final int ROW_9 = 8;
 
 	/**
-	 * Represents teh COLUMN 10 index
+	 * Represents the ROW 10 index
 	 */
 	public static final int ROW_10 = 9;
 
 	/**
-	 * Represents teh COLUMN 11 index
+	 * Represents the ROW 11 index
 	 */
 	public static final int ROW_11 = 10;
 
 	/**
-	 * Represents teh COLUMN 12 index
+	 * Represents the ROW 12 index
 	 */
 	public static final int ROW_12 = 11;
 
 	/**
-	 * Represents teh COLUMN 13 index
+	 * Represents the ROW 13 index
 	 */
 	public static final int ROW_13 = 12;
 
 	/**
-	 * Represents teh COLUMN 14 index
+	 * Represents the ROW 14 index
 	 */
 	public static final int ROW_14 = 13;
 
 	/**
-	 * Represents teh COLUMN 15 index
+	 * Represents the ROW 15 index
 	 */
 	public static final int ROW_15 = 14;
 
 	/**
-	 * Represents teh COLUMN 16 index
+	 * Represents the ROW 16 index
 	 */
 	public static final int ROW_16 = 15;
 
 	/**
-	 * Represents teh COLUMN 17 index
+	 * Represents the ROW 17 index
 	 */
 	public static final int ROW_17 = 16;
 
 	/**
-	 * Represents teh COLUMN 18 index
+	 * Represents the ROW 18 index
 	 */
 	public static final int ROW_18 = 17;
 
 	/**
-	 * Represents teh COLUMN 19 index
+	 * Represents the ROW 19 index
 	 */
 	public static final int ROW_19 = 18;
 
 	/**
-	 * Represents teh COLUMN 20 index
+	 * Represents the ROW 20 index
 	 */
 	public static final int ROW_20 = 19;
 

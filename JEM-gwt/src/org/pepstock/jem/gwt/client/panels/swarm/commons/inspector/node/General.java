@@ -18,13 +18,15 @@ package org.pepstock.jem.gwt.client.panels.swarm.commons.inspector.node;
 
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.gwt.client.Sizes;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.TimeDisplayUtils;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.node.ExecutionEnvironment;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.google.gwt.user.client.Timer;
@@ -87,24 +89,24 @@ public final class General extends DefaultInspectorItem {
 	    layoutNode.setCellPadding(10);
 	    layoutNode.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layoutNode.setHTML(0, 0, "Label");
-	    layoutNode.setWidget(0, 1, new HTML(node.getLabel()));
-	    layoutNode.setHTML(1, 0, "Status");
-	    layoutNode.setWidget(1, 1, new HTML(node.getStatus()));
+	    layoutNode.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Label");
+	    layoutNode.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, new HTML(node.getLabel()));
+	    layoutNode.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Status");
+	    layoutNode.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, new HTML(node.getStatus()));
 	    
-	    layoutNode.setHTML(2, 0, "Host");
-	    layoutNode.setWidget(2, 1, new HTML(node.getHostname()));
-	    layoutNode.setHTML(3, 0, "Address");
-	    layoutNode.setWidget(3, 1, new HTML(node.getIpaddress() + ":" + node.getPort()));
+	    layoutNode.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Host");
+	    layoutNode.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2, new HTML(node.getHostname()));
+	    layoutNode.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_1, "Address");
+	    layoutNode.setWidget(RowIndex.ROW_4,ColumnIndex.COLUMN_2, new HTML(node.getIpaddress() + ":" + node.getPort()));
 	    
 	    // running time JODA
 	    
-	    layoutNode.setHTML(4, 0, "Running time");
-	    layoutNode.setWidget(4, 1, new HTML(JemConstants.UPDATING_BRACKETS));
+	    layoutNode.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_1, "Running time");
+	    layoutNode.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, new HTML(JemConstants.UPDATING_BRACKETS));
 	    elapsedTimer = new Timer() {
 			@Override
 			public void run() {
-				layoutNode.setWidget(4, 1, new HTML(JemConstants.UPDATING_BRACKETS));
+				layoutNode.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, new HTML(JemConstants.UPDATING_BRACKETS));
 				String displayed;
 				try {
 					displayed = TimeDisplayUtils.getReadableTimeDiff(node.getStartedTime()); 
@@ -112,17 +114,17 @@ public final class General extends DefaultInspectorItem {
 					LogClient.getInstance().warning(e.getMessage(), e);
 					displayed = JemConstants.UNAVAILABLE_BRACKETS;
 				}
-				layoutNode.setWidget(4, 1, new HTML(displayed));
+				layoutNode.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, new HTML(displayed));
 			}
 		};
 		elapsedTimer.run();
 		elapsedTimer.scheduleRepeating(RUNNING_TIME_REFRESH_INTERVAL);
 		
-	    layoutNode.setHTML(5, 0, "Key");
-	    layoutNode.setWidget(5, 1, new HTML(node.getKey()));
+	    layoutNode.setHTML(RowIndex.ROW_6, ColumnIndex.COLUMN_1, "Key");
+	    layoutNode.setWidget(RowIndex.ROW_6, ColumnIndex.COLUMN_2, new HTML(node.getKey()));
 	    
-	    layoutNode.setHTML(6, 0, "Jem release version");
-	    layoutNode.setWidget(6, 1, new HTML(node.getJemVersion()));
+	    layoutNode.setHTML(RowIndex.ROW_7, ColumnIndex.COLUMN_1, "Jem release version");
+	    layoutNode.setWidget(RowIndex.ROW_7, ColumnIndex.COLUMN_2, new HTML(node.getJemVersion()));
 	    
 	    UITools.setFlexTableStyles(layoutNode, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
@@ -149,8 +151,8 @@ public final class General extends DefaultInspectorItem {
 	    layoutEnvironment.setWidth(Sizes.HUNDRED_PERCENT);
 	    ExecutionEnvironment env = node.getExecutionEnvironment();
 
-	    layoutEnvironment.setHTML(0, 0, "Name");
-	    layoutEnvironment.setWidget(0, 1, new HTML(env.getEnvironment()));
+	    layoutEnvironment.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Name");
+	    layoutEnvironment.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, new HTML(env.getEnvironment()));
 
 	    UITools.setFlexTableStyles(layoutEnvironment, 
 	    		Styles.INSTANCE.inspector().rowDark(), 

@@ -22,6 +22,8 @@ import org.pepstock.jem.gwt.client.commons.HideHandler;
 import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.PreferredButton;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -94,13 +96,13 @@ public abstract class NewObjectHeader extends FlexTable {
 		FlexCellFormatter cf = getFlexCellFormatter();
 		// 0-0 > icona
 		cf.addStyleName(0, 0, Styles.INSTANCE.inspector().headerDefaultPadding());
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 		setWidget(0, 0, new Image(icon));
 
 		// 0-1 > title
 		cf.addStyleName(0, 1, Styles.INSTANCE.inspector().headerDefaultPadding());
-		cf.setWidth(0, 1, Sizes.HUNDRED_PERCENT);
-		cf.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setWidth(ColumnIndex.COLUMN_1, 1, Sizes.HUNDRED_PERCENT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_2, HasHorizontalAlignment.ALIGN_LEFT);
 		name.setStylePrimaryName(Styles.INSTANCE.inspector().inputMain());
 		setWidget(0, 1, name);
 		
@@ -115,7 +117,7 @@ public abstract class NewObjectHeader extends FlexTable {
 			}
 		});
 		cf.setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_TOP);
-		cf.setHorizontalAlignment(0, 2, HasHorizontalAlignment.ALIGN_RIGHT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_3, HasHorizontalAlignment.ALIGN_RIGHT);
 		setWidget(0, 2, closeImage);
 	}
 

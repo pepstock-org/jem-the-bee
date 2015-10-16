@@ -28,6 +28,8 @@ import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -107,11 +109,11 @@ public final class SystemActivity extends DefaultInspectorItem{
 	    layoutCpu.setCellPadding(10);
 	    layoutCpu.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layoutCpu.setHTML(0, 0, "Total CPU");
-	    layoutCpu.setHTML(0, 1, "");
+	    layoutCpu.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Total CPU");
+	    layoutCpu.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, "");
 	    
-	    layoutCpu.setHTML(1, 0, "Current CPU");
-	    layoutCpu.setHTML(1, 1, "");
+	    layoutCpu.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Current CPU");
+	    layoutCpu.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_2, "");
 
 	    UITools.setFlexTableStyles(layoutCpu, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
@@ -137,8 +139,8 @@ public final class SystemActivity extends DefaultInspectorItem{
 	    layoutMem.setWidth(Sizes.HUNDRED_PERCENT);
 	    
 	    // Add some standard form options
-	    layoutMem.setHTML(0, 0, "Current memory utilization");
-	    layoutMem.setHTML(0, 1, "");
+	    layoutMem.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Current memory utilization");
+	    layoutMem.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, "");
 
 	    UITools.setFlexTableStyles(layoutMem, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
@@ -240,19 +242,19 @@ public final class SystemActivity extends DefaultInspectorItem{
 			if (result.isActive()){
 				
 				String display = NumberFormat.getFormat("###,###,##0 ms").format(result.getCpu());
-				layoutCpu.setHTML(0, 1, display);
+				layoutCpu.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, display);
 
 				display = NumberFormat.getFormat("##0.00").format(result.getCpuPerc()*100) + " %";
-				layoutCpu.setHTML(1, 1, display);
+				layoutCpu.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_2, display);
 				
 				display = NumberFormat.getFormat("###,##0 MB").format((double)result.getMemory()/1024D/1024D);
-				layoutMem.setHTML(0, 1, display);
+				layoutMem.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, display);
 
 				layoutProc.removeAllRows();
-			    layoutProc.setHTML(0, 0, "Command");
-			    layoutProc.setHTML(0, 1, "PID");
-			    layoutProc.setHTML(0, 2, "Cpu");
-			    layoutProc.setHTML(0, 3, "Memory");
+			    layoutProc.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Command");
+			    layoutProc.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, "PID");
+			    layoutProc.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_3, "Cpu");
+			    layoutProc.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_4, "Memory");
 				
 				createProcessesList(result.getProcess(), 0);
 			    UITools.setFlexTableRowStyles(layoutProc, 
@@ -287,10 +289,10 @@ public final class SystemActivity extends DefaultInspectorItem{
 			indent.append("&nbsp;&nbsp;&nbsp;");
 		}
 		
-	    layoutProc.setHTML(row, 0, indent.toString()+process.getCommand());
-	    layoutProc.setHTML(row, 1, String.valueOf(process.getPid()));
-	    layoutProc.setHTML(row, 2, NumberFormat.getFormat("###,###,##0 ms").format(process.getCpu()));
-	    layoutProc.setHTML(row, 3, NumberFormat.getFormat("###,##0 MB").format((double)process.getMemory()/1024D/1024D));
+	    layoutProc.setHTML(row, ColumnIndex.COLUMN_1, indent.toString()+process.getCommand());
+	    layoutProc.setHTML(row, ColumnIndex.COLUMN_2, String.valueOf(process.getPid()));
+	    layoutProc.setHTML(row, ColumnIndex.COLUMN_3, NumberFormat.getFormat("###,###,##0 ms").format(process.getCpu()));
+	    layoutProc.setHTML(row, ColumnIndex.COLUMN_4, NumberFormat.getFormat("###,##0 MB").format((double)process.getMemory()/1024D/1024D));
 	    
 	    for (OSProcess p : process.getChildren()){
 	    	createProcessesList(p, level+1);

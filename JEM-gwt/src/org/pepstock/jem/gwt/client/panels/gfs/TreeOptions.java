@@ -22,6 +22,8 @@ import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.node.security.Permissions;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -112,7 +114,7 @@ public class TreeOptions extends VerticalPanel {
 		if (statusPanel.getElement().getChildCount() > 0){
 			admin.setContent(statusPanel);
 			Grid grid = new Grid(1, 1);
-			grid.setWidget(0, 0, admin);
+			grid.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, admin);
 			add(grid);
 		}
 	}

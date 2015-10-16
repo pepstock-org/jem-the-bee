@@ -23,6 +23,8 @@ import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -64,7 +66,7 @@ public class NetworkViewConfig extends DefaultInspectorItem {
 	    layoutNetwork.setCellPadding(10);
 	    layoutNetwork.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layoutNetwork.setHTML(0, 0, "Nodes");
+	    layoutNetwork.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Nodes");
 
 	    envVp.add(layoutNetwork);
 	    
@@ -97,7 +99,7 @@ public class NetworkViewConfig extends DefaultInspectorItem {
 	private final void loadConfiguration() {
 		List<String> nodes = swarmConfiguration.getNetworks();
 	    for(int i=0; i<nodes.size(); i++){
-	    	layoutNetwork.setHTML(i, 1, nodes.get(i));
+	    	layoutNetwork.setHTML(i,ColumnIndex.COLUMN_2, nodes.get(i));
 	    }
 	    UITools.setFlexTableStyles(layoutNetwork, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
