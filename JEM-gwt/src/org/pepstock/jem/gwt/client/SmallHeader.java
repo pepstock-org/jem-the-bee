@@ -33,6 +33,8 @@ import org.pepstock.jem.gwt.client.services.InfoService;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.security.LoggedUser;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -63,6 +65,10 @@ public class SmallHeader extends Grid {
 	 */
 	protected static final int ENV_BOX_UPDATE_INTERVAL = (int) (1 * TimeUtils.MINUTE);
 	
+	private static final int COLSPAN = 4;
+	private static final int ROWS = 1;
+	private static final int COLUMNS = 3;
+	
 	private final FlexTable environmentInfoBox = new FlexTable();
 	private final Image logoImage = new Image(Images.INSTANCE.logoSmall());
 	private final EnvironmentBoxUpdateTimer envBoxUpdateTimer = new EnvironmentBoxUpdateTimer();
@@ -78,25 +84,25 @@ public class SmallHeader extends Grid {
 		 *  ------------------------------------- 
 		 */
 		//1 row, 3 column
-		super(1, 3);	
+		super(ROWS, COLUMNS);	
 		setWidth(Sizes.HUNDRED_PERCENT);
 		addStyleName(Styles.INSTANCE.common().noWrap());
-		getColumnFormatter().setWidth(1, "50%");
-		getColumnFormatter().setWidth(2, "50%");
-		getRowFormatter().setVerticalAlign(0, HasVerticalAlignment.ALIGN_MIDDLE);
+		getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "50%");
+		getColumnFormatter().setWidth(ColumnIndex.COLUMN_3, "50%");
+		getRowFormatter().setVerticalAlign(RowIndex.ROW_1, HasVerticalAlignment.ALIGN_MIDDLE);
 		
 		
 		// load images. see Resources Bundle
-		setWidget(0, 0, logoImage);
+		setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_1, logoImage);
 
 		// environment box
 		environmentInfoBox.addStyleName(Styles.INSTANCE.header().infoBox());
 		
 		ColumnFormatter eibColumnFormatter = environmentInfoBox.getColumnFormatter();
-		eibColumnFormatter.setWidth(0, "25%");
-		eibColumnFormatter.setWidth(1, "25%");
-		eibColumnFormatter.setWidth(2, "25%");
-		eibColumnFormatter.setWidth(3, "25%");
+		eibColumnFormatter.setWidth(ColumnIndex.COLUMN_1, "25%");
+		eibColumnFormatter.setWidth(ColumnIndex.COLUMN_2, "25%");
+		eibColumnFormatter.setWidth(ColumnIndex.COLUMN_3, "25%");
+		eibColumnFormatter.setWidth(ColumnIndex.COLUMN_4, "25%");
 		
 		FlexCellFormatter eibCellFormatter = environmentInfoBox.getFlexCellFormatter();
 		/*
@@ -106,26 +112,26 @@ public class SmallHeader extends Grid {
 		 * | Key2 	Value2		Key3	Value3	|
 		 * --------------------------------------	
 		 */
-		eibCellFormatter.setColSpan(0, 0, 4);
+		eibCellFormatter.setColSpan(RowIndex.ROW_1, ColumnIndex.COLUMN_1, COLSPAN);
 
-		environmentInfoBox.setText(0, 0, "JEM environment overview: ");
-		eibCellFormatter.addStyleName(0, 0, Styles.INSTANCE.header().infoBoxHeader());
-		environmentInfoBox.setText(1, 0, "Name");
-		environmentInfoBox.setText(1, 2, "Nodes");
-		environmentInfoBox.setText(2, 0, "Jobs in execution");
-		environmentInfoBox.setText(2, 2, "Uptime");
+		environmentInfoBox.setText(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "JEM environment overview: ");
+		eibCellFormatter.addStyleName(RowIndex.ROW_1, ColumnIndex.COLUMN_1, Styles.INSTANCE.header().infoBoxHeader());
+		environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Name");
+		environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_3, "Nodes");
+		environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "Jobs in execution");
+		environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_3, "Uptime");
 		UITools.setColumnKeyValueStyle(environmentInfoBox, Styles.INSTANCE.common().bold(), true);
-		setWidget(0, 1, environmentInfoBox);
+		setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, environmentInfoBox);
 
 		// initial state
 		//env name
-		environmentInfoBox.setText(1, 1, JemConstants.UPDATING_BRACKETS);	
+		environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_2, JemConstants.UPDATING_BRACKETS);	
 		//node number (web)
-		environmentInfoBox.setText(1, 3, JemConstants.UPDATING_BRACKETS);
+		environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_4, JemConstants.UPDATING_BRACKETS);
 		//job in execution
-		environmentInfoBox.setText(2, 1, JemConstants.UPDATING_BRACKETS);	
+		environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_2, JemConstants.UPDATING_BRACKETS);	
 		//uptime
-		environmentInfoBox.setText(2, 3, JemConstants.UPDATING_BRACKETS);		
+		environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, JemConstants.UPDATING_BRACKETS);		
 		
 		// schedule the update timer
 		envBoxUpdateTimer.run();
@@ -143,30 +149,30 @@ public class SmallHeader extends Grid {
 		userInfoBox.addStyleName(Styles.INSTANCE.header().infoBox());
 		
 		ColumnFormatter uibColumnFormatter = userInfoBox.getColumnFormatter();
-		uibColumnFormatter.setWidth(0, "25%");
-		uibColumnFormatter.setWidth(1, "25%");
-		uibColumnFormatter.setWidth(2, "25%");
-		uibColumnFormatter.setWidth(3, "25%");
+		uibColumnFormatter.setWidth(ColumnIndex.COLUMN_1, "25%");
+		uibColumnFormatter.setWidth(ColumnIndex.COLUMN_2, "25%");
+		uibColumnFormatter.setWidth(ColumnIndex.COLUMN_3, "25%");
+		uibColumnFormatter.setWidth(ColumnIndex.COLUMN_4, "25%");
 		
 		FlexCellFormatter uibCellFormatter = userInfoBox.getFlexCellFormatter();
-		uibCellFormatter.setColSpan(0, 0, 5);
-		uibCellFormatter.setRowSpan(0, 4, 3);
-		uibCellFormatter.setAlignment(0, 4, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-		userInfoBox.setText(0, 0, "User information: ");
-		uibCellFormatter.addStyleName(0, 0, Styles.INSTANCE.header().infoBoxHeader());
+		uibCellFormatter.setColSpan(RowIndex.ROW_1, ColumnIndex.COLUMN_1, 5);
+		uibCellFormatter.setRowSpan(RowIndex.ROW_1, ColumnIndex.COLUMN_5, 3);
+		uibCellFormatter.setAlignment(RowIndex.ROW_1, ColumnIndex.COLUMN_5, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+		userInfoBox.setText(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "User information: ");
+		uibCellFormatter.addStyleName(RowIndex.ROW_1, ColumnIndex.COLUMN_1, Styles.INSTANCE.header().infoBoxHeader());
 		LoggedUser user = CurrentUser.getInstance().getUser();
-		userInfoBox.setText(1, 0, "ID");
-		uibCellFormatter.addStyleName(1, 0, Styles.INSTANCE.common().bold());
-		userInfoBox.setText(1, 1, user.getId());
+		userInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "ID");
+		uibCellFormatter.addStyleName(RowIndex.ROW_2, ColumnIndex.COLUMN_1, Styles.INSTANCE.common().bold());
+		userInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_2, user.getId());
 
-		userInfoBox.setText(1, 2, "Org. Unit ID");
-		uibCellFormatter.addStyleName(1, 2, Styles.INSTANCE.common().bold());
-		userInfoBox.setText(2, 2, "Org. Unit Name");
-		uibCellFormatter.addStyleName(2, 2, Styles.INSTANCE.common().bold());
+		userInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_3, "Org. Unit ID");
+		uibCellFormatter.addStyleName(RowIndex.ROW_2, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().bold());
+		userInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_3, "Org. Unit Name");
+		uibCellFormatter.addStyleName(RowIndex.ROW_3, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().bold());
 		
-		userInfoBox.setText(2, 0, "Name");
-		uibCellFormatter.addStyleName(2, 0, Styles.INSTANCE.common().bold());
-		userInfoBox.setText(2, 1, user.getName());
+		userInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "Name");
+		uibCellFormatter.addStyleName(RowIndex.ROW_3, ColumnIndex.COLUMN_1, Styles.INSTANCE.common().bold());
+		userInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_2, user.getName());
 		
 		String orgUnitId = JemConstants.NONE_BRACKETS;
 		String orgUnitName = JemConstants.NONE_BRACKETS;
@@ -178,13 +184,13 @@ public class SmallHeader extends Grid {
 				orgUnitName = user.getOrganizationalUnit().getName();
 			}
 		}
-		userInfoBox.setText(1, 3, orgUnitId);
-		userInfoBox.setText(2, 3, orgUnitName);
+		userInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_4, orgUnitId);
+		userInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, orgUnitName);
 		
 		// logoff button (and handler)
 		btnLogout.addClickHandler(new LogoutClickHandler());
-		userInfoBox.setWidget(0, 4, btnLogout);
-		setWidget(0, 2, userInfoBox);
+		userInfoBox.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_5, btnLogout);
+		setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_3, userInfoBox);
 	}
 	
 	private class LogoutClickHandler implements ClickHandler {
@@ -225,10 +231,10 @@ public class SmallHeader extends Grid {
 		
 		@Override
 		public void run() {
-			environmentInfoBox.setText(1, 1, JemConstants.UPDATING_BRACKETS);
-			environmentInfoBox.setText(1, 3, JemConstants.UPDATING_BRACKETS);
-			environmentInfoBox.setText(2, 1, JemConstants.UPDATING_BRACKETS);
-			environmentInfoBox.setText(2, 3, JemConstants.UPDATING_BRACKETS);
+			environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_2, JemConstants.UPDATING_BRACKETS);
+			environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_4, JemConstants.UPDATING_BRACKETS);
+			environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_2, JemConstants.UPDATING_BRACKETS);
+			environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, JemConstants.UPDATING_BRACKETS);
 			
 			Services.INFO_SERVICE.getEnvironmentInformation(new GetEnvironmentInformationAsyncCallback(System.currentTimeMillis()));
 		}
@@ -243,9 +249,9 @@ public class SmallHeader extends Grid {
 			
 			@Override
 			public void onJemSuccess(String[] result) {
-				environmentInfoBox.setText(1, 1, result[InfoService.Indexes.NAME.getIndex()]);
-				environmentInfoBox.setText(1, 3, result[InfoService.Indexes.NODES_COUNT.getIndex()]);
-				environmentInfoBox.setText(2, 1, result[InfoService.Indexes.EXECUTION_JOB_COUNT.getIndex()]);
+				environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_2, result[InfoService.Indexes.NAME.getIndex()]);
+				environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_4, result[InfoService.Indexes.NODES_COUNT.getIndex()]);
+				environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_2, result[InfoService.Indexes.EXECUTION_JOB_COUNT.getIndex()]);
 				try {
 					long elapsed = System.currentTimeMillis() - start;
 					SharedObjects.setClusterDifferenceTime(System.currentTimeMillis()-Long.parseLong(result[InfoService.Indexes.CURRENT_TIME.getIndex()]) - elapsed);
@@ -253,20 +259,20 @@ public class SmallHeader extends Grid {
 					
 					Long uptime = Long.parseLong(result[InfoService.Indexes.STARTED_TIME.getIndex()]);
 					String readableUptime = TimeDisplayUtils.getReadableTimeDiff(uptime, TimeDisplayUtils.VERBOSE);
-					environmentInfoBox.setText(2, 3, readableUptime);
+					environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, readableUptime);
 				} catch (Exception e) {
 					LogClient.getInstance().warning(e.getMessage(), e);
-					environmentInfoBox.setText(2, 3, JemConstants.UNAVAILABLE_BRACKETS);
+					environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, JemConstants.UNAVAILABLE_BRACKETS);
 				}
 				
 			}
 			
 			@Override
 			public void onJemFailure(Throwable caught) {
-				environmentInfoBox.setText(1, 1, JemConstants.UNAVAILABLE_BRACKETS);
-				environmentInfoBox.setText(1, 3, JemConstants.UNAVAILABLE_BRACKETS);
-				environmentInfoBox.setText(2, 1, JemConstants.UNAVAILABLE_BRACKETS);
-				environmentInfoBox.setText(2, 3, JemConstants.UNAVAILABLE_BRACKETS);
+				environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_2, JemConstants.UNAVAILABLE_BRACKETS);
+				environmentInfoBox.setText(RowIndex.ROW_2, ColumnIndex.COLUMN_4, JemConstants.UNAVAILABLE_BRACKETS);
+				environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_2, JemConstants.UNAVAILABLE_BRACKETS);
+				environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, JemConstants.UNAVAILABLE_BRACKETS);
 			}
 
 			@Override

@@ -82,7 +82,7 @@ public class CustomPropertiesEditor extends PagePropertiesPanel implements Updat
 	 * @throws wrap a {@link #addListFieldPanel(ListFieldPanel)} call
 	 */
 	@Override
-	public void addFieldPanel(AbstractFieldPanel<?, ?, ?> fieldPanel) {
+	public void addFieldPanel(AbstractFieldPanel<?, ?, ?, ?> fieldPanel) {
 		scrollable.setWidth(Sizes.HUNDRED_PERCENT);
 		scrollable.add(table.getTable());
 		AbstractPager pager = new DefaultTablePager(table.getPager());

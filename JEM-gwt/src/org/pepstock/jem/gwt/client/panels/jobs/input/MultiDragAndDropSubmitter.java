@@ -353,7 +353,8 @@ public class MultiDragAndDropSubmitter extends AbstractInspector implements Subm
 	        Button cancelButton = null;
 	        if (allowCancel) {
 		        final Button button = new Button("Cancel");  
-		        button.addClickHandler(new ClickHandler() {  
+		        button.addClickHandler(new ClickHandler() {
+		        	@Override
 		            public void onClick(ClickEvent event) {  
 		                uploader.cancelUpload(file.getId(), false);  
 		                progressBars.get(file.getId()).getProgressBar().setProgress(-1.0d);  

@@ -64,7 +64,9 @@ public class Sort implements JemWorkItem {
 	 */
 	private static final String OUTPUT_DATA_DESCRIPTION_NAME = "OUTPUT";
 	
-	private static int DEFAULTMAXTEMPFILES = 1024;
+	private static final int DEFAULTMAXTEMPFILES = 1024;
+	
+	private static final int INITIAL_CAPACITY = 11;
 
 	/**
 	 * Key for the class to load to transform and load data  
@@ -203,7 +205,7 @@ public class Sort implements JemWorkItem {
 	 * @throws IOException 
 	 */
 	private int mergeSortedFiles(List<File> files, FileOutputStream fileOutput, final Comparator<String> cmp, Charset cs) throws IOException {
-		PriorityQueue<JBpmBinaryFileBuffer> pq = new PriorityQueue<JBpmBinaryFileBuffer>(11, new Comparator<JBpmBinaryFileBuffer>() {
+		PriorityQueue<JBpmBinaryFileBuffer> pq = new PriorityQueue<JBpmBinaryFileBuffer>(INITIAL_CAPACITY, new Comparator<JBpmBinaryFileBuffer>() {
 			public int compare(JBpmBinaryFileBuffer i, JBpmBinaryFileBuffer j) {
 				return cmp.compare(i.peek(), j.peek());
 			}

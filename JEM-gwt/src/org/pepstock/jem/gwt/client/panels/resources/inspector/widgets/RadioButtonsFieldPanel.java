@@ -24,6 +24,7 @@ import java.util.Map;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.SingleSelectableListFieldDescriptor;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -35,7 +36,7 @@ import com.google.gwt.user.client.ui.RadioButton;
  * Build a list-based property field, with only one value can be selected.
  * @author Marco "Fuzzo" Cuccato
  */
-public final class RadioButtonsFieldPanel extends AbstractFieldPanel<SingleSelectableListFieldDescriptor, Grid, String> {
+public final class RadioButtonsFieldPanel extends AbstractFieldPanel<SingleSelectableListFieldDescriptor, Grid, String, SectionDescriptor> {
 
 	/**
 	 * Used internally. Needed to create always different button groups automatically
@@ -48,7 +49,7 @@ public final class RadioButtonsFieldPanel extends AbstractFieldPanel<SingleSelec
 	 * @param descriptor the descriptor who knows how to render the panel
 	 * @param panel the parent panel
 	 */
-	public RadioButtonsFieldPanel(SingleSelectableListFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public RadioButtonsFieldPanel(SingleSelectableListFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}

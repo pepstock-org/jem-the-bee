@@ -21,6 +21,7 @@ import java.util.Map;
 import org.pepstock.jem.gwt.client.commons.MandatoryPasswordTextBox;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.PasswordFieldDescriptor;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -34,14 +35,14 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public final class PasswordFieldPanel extends AbstractFieldPanel<PasswordFieldDescriptor, PasswordTextBox, String> {
+public final class PasswordFieldPanel extends AbstractFieldPanel<PasswordFieldDescriptor, PasswordTextBox, String, SectionDescriptor> {
 
 	/**
 	 * Builds the text based property panel
 	 * @param descriptor the descriptor who know how to render the panel
 	 * @param panel the parent panel
 	 */
-	public PasswordFieldPanel(PasswordFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public PasswordFieldPanel(PasswordFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}

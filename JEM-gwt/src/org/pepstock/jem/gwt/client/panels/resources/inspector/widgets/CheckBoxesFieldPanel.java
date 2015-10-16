@@ -28,6 +28,7 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.CSVUtil;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.MultiSelectableListFieldDescriptor;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.Grid;
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public final class CheckBoxesFieldPanel extends AbstractFieldPanel<MultiSelectableListFieldDescriptor, Grid, String[]> {
+public final class CheckBoxesFieldPanel extends AbstractFieldPanel<MultiSelectableListFieldDescriptor, Grid, String[], SectionDescriptor> {
 
 	protected CheckBox[] checkBoxes = null;
 	
@@ -50,7 +51,7 @@ public final class CheckBoxesFieldPanel extends AbstractFieldPanel<MultiSelectab
 	 * @param descriptor the descriptor who knows hoe to render the panel 
 	 * @param panel the parent panel
 	 */
-	public CheckBoxesFieldPanel(MultiSelectableListFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public CheckBoxesFieldPanel(MultiSelectableListFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}

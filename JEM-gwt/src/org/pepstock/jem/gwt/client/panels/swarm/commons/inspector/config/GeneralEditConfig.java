@@ -24,6 +24,8 @@ import org.pepstock.jem.gwt.client.commons.MandatoryPasswordTextBox;
 import org.pepstock.jem.gwt.client.commons.MandatoryTextBox;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -48,7 +50,8 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 					"([01]?\\d\\d?|2[0-4]\\d|25[0-5])" +
 					"$";
 
-
+	private static final int COLUMN_WIDTH = 200;
+	
 	private SwarmConfiguration swarmConfiguration = null;
 
 	private MandatoryTextBox groupName = new MandatoryTextBox();
@@ -80,54 +83,54 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 		table.setWidth(Sizes.HUNDRED_PERCENT);
 		table.setCellPadding(5);
 
-		table.setHTML(0, 0, "Enabled:");
-		table.setWidget(0, 1, isConfigurationEnabled);
+		table.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Enabled:");
+		table.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, isConfigurationEnabled);
 
-		table.setHTML(1, 0, "Group name: <font color=\"red\"><b>*</b></font>");
-		table.setWidget(1, 1, groupName);
+		table.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Group name: <font color=\"red\"><b>*</b></font>");
+		table.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_2, groupName);
 
-		table.setHTML(2, 0, "Group password: <font color=\"red\"><b>*</b></font>");
-		table.setWidget(2, 1, groupPassword);
+		table.setHTML(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "Group password: <font color=\"red\"><b>*</b></font>");
+		table.setWidget(RowIndex.ROW_3, ColumnIndex.COLUMN_2, groupPassword);
 
-		table.setHTML(3, 0, "Confirmed Group password: <font color=\"red\"><b>*</b></font>");
-		table.setWidget(3, 1, confirmedGroupPassword);
-		table.setHTML(3, 2, "");
+		table.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_1, "Confirmed Group password: <font color=\"red\"><b>*</b></font>");
+		table.setWidget(RowIndex.ROW_4, ColumnIndex.COLUMN_2, confirmedGroupPassword);
+		table.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_3, "");
 
-		table.setHTML(0, 3, "Port: <font color=\"red\"><b>*</b></font>");
-		table.setWidget(0, 4, port);
-		table.setHTML(0, 5, "");
+		table.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_4, "Port: <font color=\"red\"><b>*</b></font>");
+		table.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_5, port);
+		table.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_6, "");
 		
-		table.setHTML(1, 3, "User:");
-		table.setWidget(1, 4, user);
+		table.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_4, "User:");
+		table.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_5, user);
 		
-		table.setHTML(2, 3, "Last update:");
-		table.setWidget(2, 4, lastModified);
+		table.setHTML(RowIndex.ROW_3, ColumnIndex.COLUMN_4, "Last update:");
+		table.setWidget(RowIndex.ROW_3, ColumnIndex.COLUMN_5, lastModified);
 		
-		table.setHTML(4, 0, "<font color=\"red\"><b>*</b></font> Mandatory.");
+		table.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_1, "<font color=\"red\"><b>*</b></font> Mandatory.");
 
 		FlexCellFormatter cf = table.getFlexCellFormatter();
-		cf.setWordWrap(0, 0, false);
-		cf.setWordWrap(1, 0, false);
-		cf.setWordWrap(2, 0, false);
-		cf.setWordWrap(3, 0, false);
-		cf.setWordWrap(4, 0, false);
-		cf.setWordWrap(5, 0, false);
-		cf.setWordWrap(0, 3, false);
-		cf.setWordWrap(1, 3, false);
-		cf.setWordWrap(2, 3, false);
-		cf.setWordWrap(3, 3, false);
+		cf.setWordWrap(RowIndex.ROW_1, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_2, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_3, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_4, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_5, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_6, ColumnIndex.COLUMN_1, false);
+		cf.setWordWrap(RowIndex.ROW_1, ColumnIndex.COLUMN_4, false);
+		cf.setWordWrap(RowIndex.ROW_2, ColumnIndex.COLUMN_4, false);
+		cf.setWordWrap(RowIndex.ROW_3, ColumnIndex.COLUMN_4, false);
+		cf.setWordWrap(RowIndex.ROW_4, ColumnIndex.COLUMN_4, false);
 
-		cf.addStyleName(0, 2, Styles.INSTANCE.common().textRed());
-		cf.addStyleName(1, 2, Styles.INSTANCE.common().textRed());
-		cf.addStyleName(2, 2, Styles.INSTANCE.common().textRed());
-		cf.addStyleName(3, 2, Styles.INSTANCE.common().textRed());
-		cf.addStyleName(0, 5, Styles.INSTANCE.common().textRed());
-		cf.addStyleName(1, 5, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_1, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_2, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_3, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_4, ColumnIndex.COLUMN_3, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_1, ColumnIndex.COLUMN_6, Styles.INSTANCE.common().textRed());
+		cf.addStyleName(RowIndex.ROW_2, ColumnIndex.COLUMN_6, Styles.INSTANCE.common().textRed());
 		
-		cf.setWidth(0, 0, Sizes.toString(200));
-		cf.setWidth(0, 1, Sizes.toString(200));
-		cf.setWidth(0, 3, Sizes.toString(200));
-		cf.setWidth(0, 4, Sizes.toString(200));
+		cf.setWidth(RowIndex.ROW_1, ColumnIndex.COLUMN_1, Sizes.toString(COLUMN_WIDTH));
+		cf.setWidth(RowIndex.ROW_1, ColumnIndex.COLUMN_2, Sizes.toString(COLUMN_WIDTH));
+		cf.setWidth(RowIndex.ROW_1, ColumnIndex.COLUMN_4, Sizes.toString(COLUMN_WIDTH));
+		cf.setWidth(RowIndex.ROW_1, ColumnIndex.COLUMN_5, Sizes.toString(COLUMN_WIDTH));
 
 		add(table);
 	}
@@ -164,10 +167,10 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 	}
 
 	private void clearErrors() {
-		clearError(1, 2, groupName);
-		clearError(2, 2,  groupPassword);
-		clearError(3, 2, confirmedGroupPassword);
-		clearError(0, 5, port);
+		clearError(RowIndex.ROW_2, ColumnIndex.COLUMN_3, groupName);
+		clearError(RowIndex.ROW_3, ColumnIndex.COLUMN_3,  groupPassword);
+		clearError(RowIndex.ROW_4, ColumnIndex.COLUMN_3, confirmedGroupPassword);
+		clearError(RowIndex.ROW_1, ColumnIndex.COLUMN_6, port);
 	}
 
 	/**
@@ -178,7 +181,7 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 		boolean ok = true;
 
 		if ((groupName.getText() == null) || groupName.getText().length() == 0) {
-			setError(1, 2, groupName, "Group name can not be empty");
+			setError(RowIndex.ROW_2, ColumnIndex.COLUMN_3, groupName, "Group name can not be empty");
 			ok = false;
 		} else {
 			swarmConfiguration.setGroupName(groupName.getText());
@@ -186,7 +189,7 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 
 		if ((groupPassword.getText() == null)
 				|| groupPassword.getText().length() == 0) {
-			setError(2, 2, groupPassword, "Group password can not be empty");
+			setError(RowIndex.ROW_3, ColumnIndex.COLUMN_3, groupPassword, "Group password can not be empty");
 			ok = false;
 		} else {
 			swarmConfiguration.setGroupPassword(groupPassword.getText());
@@ -195,13 +198,13 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 		if ((confirmedGroupPassword.getText() == null)
 				|| !groupPassword.getText().equals(
 						confirmedGroupPassword.getText())) {
-			setError(3, 2, confirmedGroupPassword,
+			setError(RowIndex.ROW_4, ColumnIndex.COLUMN_3, confirmedGroupPassword,
 					"Group password is not confirmed");
 			ok = false;
 		}
 
 		if ((port.getText() == null) || port.getText().length() == 0) {
-			setError(0, 5, port, "Port can not be empty");
+			setError(RowIndex.ROW_1, ColumnIndex.COLUMN_6, port, "Port can not be empty");
 			ok = false;
 		} else {
 			try {
@@ -211,14 +214,14 @@ public final class GeneralEditConfig extends DefaultInspectorItem {
 				}
 				swarmConfiguration.setPort(p);
 			} catch (NumberFormatException nfe) {
-				setError(0, 5, port, "Port must be a positive integer");
+				setError(RowIndex.ROW_1, ColumnIndex.COLUMN_6, port, "Port must be a positive integer");
 				ok = false;
 			}
 		}
 		
 		if (netInterface.getText() != null && netInterface.getText().length() > 0) {
 			if (!netInterface.getText().matches(ADDRESS_PATTERN)){
-				setError(1, 5, netInterface, "Network interface must a valid ip-address");
+				setError(RowIndex.ROW_2, ColumnIndex.COLUMN_6, netInterface, "Network interface must a valid ip-address");
 				ok = false;
 			} else {
 				swarmConfiguration.setNetworkInterface(netInterface.getText());

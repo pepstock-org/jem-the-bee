@@ -32,7 +32,7 @@ import org.pepstock.jem.node.resources.definition.SectionDescriptor;
  */
 public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDescriptor> {
 
-	protected List<AbstractFieldPanel<?,?,?>> fields = new LinkedList<AbstractFieldPanel<?,?,?>>(); 
+	protected List<AbstractFieldPanel<?,?,?,?>> fields = new LinkedList<AbstractFieldPanel<?,?,?,?>>(); 
 	protected boolean stylized = false;
 	protected String resourceType = null;
 	
@@ -75,7 +75,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	public boolean checkMandatory() {
 		boolean result = true;
 		for (int i=0; i<fields.size() && result; i++) {
-			result &= ((AbstractFieldPanel<?,?,?>)fields.get(i)).checkMandatory();
+			result &= ((AbstractFieldPanel<?,?,?,?>)fields.get(i)).checkMandatory();
 		}
 		return result;
 	}
@@ -84,7 +84,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	public boolean validate() {
 		boolean result = true;
 		for (int i=0; i<fields.size() && result; i++) {
-			result &= ((AbstractFieldPanel<?,?,?>)fields.get(i)).validate();
+			result &= ((AbstractFieldPanel<?,?,?,?>)fields.get(i)).validate();
 		}
 		return result;
 	}
@@ -92,7 +92,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	@Override
 	public void loadProperties() {
 		for (int i=0; i<fields.size(); i++) {
-			((AbstractFieldPanel<?,?,?>)fields.get(i)).loadProperties();
+			((AbstractFieldPanel<?,?,?,?>)fields.get(i)).loadProperties();
 		}
 	}
 
@@ -100,7 +100,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	 * Adds a {@link AbstractFieldPanel} to this container 
 	 * @param fieldPanel
 	 */
-	public void addFieldPanel(AbstractFieldPanel<?,?,?> fieldPanel) {
+	public void addFieldPanel(AbstractFieldPanel<?,?,?,?> fieldPanel) {
 		fields.add(fieldPanel);
 		int row = getTable().getRowCount();
 		getTable().setHTML(row, 0, fieldPanel.getLabel());

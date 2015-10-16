@@ -23,6 +23,7 @@ import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.TextFieldDescriptor;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -36,14 +37,14 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public final class TextFieldPanel extends AbstractFieldPanel<TextFieldDescriptor, TextBox, String> {
+public final class TextFieldPanel extends AbstractFieldPanel<TextFieldDescriptor, TextBox, String, SectionDescriptor> {
 
 	/**
 	 * Builds the text based property panel
 	 * @param descriptor the descriptor who know how to render the panel
 	 * @param panel the parent panel
 	 */
-	public TextFieldPanel(TextFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public TextFieldPanel(TextFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}

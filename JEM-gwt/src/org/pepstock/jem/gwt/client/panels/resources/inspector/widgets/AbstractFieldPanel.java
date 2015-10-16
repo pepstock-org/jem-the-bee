@@ -33,12 +33,13 @@ import com.google.gwt.user.client.ui.Widget;
  * @param <T> 
  * @param <W> 
  * @param <V> 
+ * @param <D> 
  *
  */
-public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W extends Widget, V> implements ResourceUIComponent {
+public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W extends Widget, V, D extends ResourcePartDescriptor> implements ResourceUIComponent {
 
 	private T descriptor = null;
-	private CommonResourcePropertiesPanel<? extends ResourcePartDescriptor> panel = null;
+	private CommonResourcePropertiesPanel<D> panel = null;
 	
 	protected String label = null;
 	protected W inputObject = null;
@@ -51,7 +52,7 @@ public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W ex
 	 * @param descriptor the field descriptor
 	 * @param panel 
 	 */
-	public AbstractFieldPanel(T descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public AbstractFieldPanel(T descriptor, CommonResourcePropertiesPanel<D> panel) {
 		this.descriptor = descriptor;
 		this.panel = panel;
 		label = renderLabel();

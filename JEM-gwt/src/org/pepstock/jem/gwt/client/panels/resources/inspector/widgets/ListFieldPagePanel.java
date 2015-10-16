@@ -53,7 +53,7 @@ public class ListFieldPagePanel extends PagePropertiesPanel {
 	 * @throws wrap a {@link #addListFieldPanel(ListFieldPanel)} call
 	 */
 	@Override
-	public void addFieldPanel(AbstractFieldPanel<?, ?, ?> fieldPanel) {
+	public void addFieldPanel(AbstractFieldPanel<?, ?, ?, ?> fieldPanel) {
 		if (fieldPanel instanceof ListFieldPanel && fields.isEmpty()) {
 			ListFieldPanel listFieldPanel = (ListFieldPanel)fieldPanel;
 			fields.add(listFieldPanel);
