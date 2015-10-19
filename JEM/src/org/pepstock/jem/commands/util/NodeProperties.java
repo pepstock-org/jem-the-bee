@@ -194,6 +194,11 @@ public class NodeProperties {
 	 * persisted {@value}
 	 */
 	public static final String JEM_DB_USER = "jem.db.user";
+	
+	/**
+	 * property that indicates the default multicast ip address {@value}. 
+	 */
+	public static final byte[] DEFAULT_MUTLICAST_ADDRESS = new byte[]{(byte) 233, 0, 0, 1};
 
 	/**
 	 * property that indicates the default user for the db where the hazelcast
@@ -457,7 +462,7 @@ public class NodeProperties {
 		if (propValue != null && !"".equals(propValue.trim())) {
 			return propValue;
 		} else {
-			InetAddress aa = InetAddress.getByAddress(new byte[]{(byte) 233, 0, 0, 1});
+			InetAddress aa = InetAddress.getByAddress(DEFAULT_MUTLICAST_ADDRESS);
 			return aa.getHostAddress();
 		}
 	}
