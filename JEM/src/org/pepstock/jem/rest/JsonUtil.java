@@ -172,14 +172,15 @@ public final class JsonUtil {
 	}
 	
 	/**
-	 * Prints on standard output the JSON string, in pretty format
+	 * Returns the JSON string, in pretty format
 	 * @param json JSON string to print
+	 * @return return the object in JSON
 	 * @throws JsonGenerationException if any JSON error occurs
 	 * @throws JsonMappingException if any JSON error occurs
 	 * @throws IOException if any JSON error occurs
 	 */
-	public void prettyPrint(Object json) throws JsonGenerationException, JsonMappingException, IOException{
-		System.out.println(mapperPrettyPrint.writeValueAsString(json));
+	public String getPrettyPrint(Object json) throws JsonGenerationException, JsonMappingException, IOException{
+		return mapperPrettyPrint.writeValueAsString(json);
 	}
 }
 

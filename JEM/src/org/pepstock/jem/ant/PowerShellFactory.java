@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.ant;
 
-import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.ant.tasks.utilities.scripts.PowerShellScriptTask;
 
 /**
@@ -25,7 +24,7 @@ import org.pepstock.jem.ant.tasks.utilities.scripts.PowerShellScriptTask;
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
-public class PowerShellFactory extends ScriptFactory {
+public class PowerShellFactory extends ScriptFactory<PowerShellScriptTask> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -56,7 +55,7 @@ public class PowerShellFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<? extends ShellScriptTask> getAntTask() {
+	public Class<PowerShellScriptTask> getAntTask() {
 		return PowerShellScriptTask.class;
 	}
 

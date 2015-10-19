@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.rest;
 
+import java.io.PrintStream;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -52,7 +53,7 @@ public abstract class RestClient {
 
 	private URI baseURI = null;
 	
-	private boolean debug = false;
+	private PrintStream debugStream = null;
 	
 	/**
 	 * Creates the object using the base URL of rest
@@ -60,18 +61,18 @@ public abstract class RestClient {
 	 * @throws Exception if any SSL errors occurs
 	 */
 	public RestClient(String uriString){
-		this(uriString, false);
+		this(uriString, null);
 	}
 	
 	/**
 	 * Creates the object using the base URL of rest, setting the debug
 	 * @param uriString URL to access to JEM by HTTP
-	 * @param debug <code>true</code> sets the debug or not.
+	 * @param debugStream stream to use for debugging.
 	 * @throws Exception if any SSL errors occurs
 	 */
-	public RestClient(String uriString, boolean debug){
+	public RestClient(String uriString, PrintStream debugStream){
 		baseURI = UriBuilder.fromUri(uriString).build();
-		this.debug = debug;
+		this.debugStream = debugStream;
 	}
 	
 	/**
@@ -85,14 +86,6 @@ public abstract class RestClient {
 	 */
 	public URI getBaseURI() {
 		return baseURI;
-	}
-	
-	/**
-	 * Returns <code>true</code> if debug is set
-	 * @return <code>true</code> if debug is set
-	 */
-	public boolean isDebug() {
-		return debug;
 	}
 
 	/**
@@ -127,8 +120,8 @@ public abstract class RestClient {
 	    	client = ApacheHttpClient4.create(config);
 	    }
 	    // to add log, use addFilter method with LoggingFilter to std output
-	    if (client != null && debug){
-	    	client.addFilter(new LoggingFilter(System.out));
+	    if (client != null && debugStream != null){
+	    	client.addFilter(new LoggingFilter(debugStream));
 	    }
 	    return client;
 	}

@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.ant;
 
-import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask;
 
 /**
@@ -25,7 +24,7 @@ import org.pepstock.jem.ant.tasks.utilities.scripts.WindowsScriptTask;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class WindowsCmdFactory extends ScriptFactory {
+public class WindowsCmdFactory extends ScriptFactory<WindowsScriptTask> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -56,7 +55,7 @@ public class WindowsCmdFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<? extends ShellScriptTask> getAntTask() {
+	public Class<WindowsScriptTask> getAntTask() {
 		return WindowsScriptTask.class;
 	}
 

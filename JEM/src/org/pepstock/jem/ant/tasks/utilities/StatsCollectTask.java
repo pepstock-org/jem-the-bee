@@ -201,7 +201,7 @@ public class StatsCollectTask extends AntUtilTask {
 		try{
 			tl.loadSuccess(sample);
 		} catch (Exception ex){
-			LogAppl.getInstance().emit(AntUtilMessage.JEMZ030W, tl.getClass().getName(), lineNumber, ex.getMessage());
+			LogAppl.getInstance().emit(AntUtilMessage.JEMZ030W, ex, tl.getClass().getName(), lineNumber, ex.getMessage());
 		}
 	}
 	

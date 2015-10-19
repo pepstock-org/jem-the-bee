@@ -30,7 +30,6 @@ import org.pepstock.jem.ant.tasks.DataDescription;
 import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.ant.tasks.ValueParser;
-import org.pepstock.jem.ant.tasks.utilities.ShellScriptTask;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.util.CharSet;
 
@@ -48,8 +47,9 @@ import org.pepstock.jem.util.CharSet;
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
+ * @param <T> Ant task to use for execution
  */
-public abstract class ScriptFactory extends AntFactory {
+public abstract class ScriptFactory<T> extends AntFactory {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -81,7 +81,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 * Returns the ANT task to use to execute the script.
 	 * @return the ANT task to use to execute the script
 	 */
-	public abstract Class<? extends ShellScriptTask> getAntTask();
+	public abstract Class<T> getAntTask();
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.AntFactory#createJcl(java.lang.String)

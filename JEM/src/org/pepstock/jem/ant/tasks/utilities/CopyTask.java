@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.annotations.AssignDataDescription;
 import org.pepstock.jem.ant.AntException;
 import org.pepstock.jem.ant.AntMessage;
+import org.pepstock.jem.log.LogAppl;
 
 /**
  * Is a utility (both a task ANT and a main program) that copy data from and to a data description.<br>
@@ -63,6 +64,6 @@ public class CopyTask extends AbstractIOTask {
 		int bytes = IOUtils.copy(istream, ostream);
 		IOUtils.closeQuietly(istream);
 		IOUtils.closeQuietly(ostream);
-		System.err.println(AntMessage.JEMA062I.toMessage().getFormattedMessage(bytes));
+		LogAppl.getInstance().emit(AntMessage.JEMA062I, bytes);
 	}
 }
