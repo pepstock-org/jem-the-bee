@@ -47,6 +47,14 @@ import org.springframework.batch.core.ExitStatus;
  */
 public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	
+	private static final int FIELD_1 = 1;
+	
+	private static final int FILED_2 = 2;
+	
+	private static final int FIELD_3 = 3;
+	
+	private static final int FIELD_4 = 4;
+	
 	/**
 	 * Internal property to save the job instance ID of Springbatch
 	 */
@@ -301,11 +309,11 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 		try {
 			selectStmt = connection.prepareStatement(sql);
 			// set resource name in prepared statement
-			selectStmt.setLong(1, id);
+			selectStmt.setLong(FIELD_1, id);
 			// executes the statement
 			rs = selectStmt.executeQuery();
 			while(rs.next()){
-				result.add(rs.getLong(1));
+				result.add(rs.getLong(FIELD_1));
 			}
 		} finally{
 			// closes statement
@@ -342,7 +350,7 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 		try {
 			updateStmt = connection.prepareStatement(sql);
 			// set resource name in prepared statement
-			updateStmt.setLong(1, id);
+			updateStmt.setLong(FIELD_1, id);
 			// executes the statement
 			updateStmt.executeUpdate();
 		} finally{
@@ -372,14 +380,14 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 			// set resource name in prepared statement
 			Timestamp endedTime = new Timestamp(System.currentTimeMillis());
 			String status = ExitStatus.FAILED.getExitCode();
-			updateStmt.setTimestamp(1, endedTime);
-			updateStmt.setString(2, status);
+			updateStmt.setTimestamp(FIELD_1, endedTime);
+			updateStmt.setString(FILED_2, status);
 			if (stepName != null){
-				updateStmt.setString(3, stepName);
+				updateStmt.setString(FIELD_3, stepName);
 			} else {
-				updateStmt.setString(3, status);
+				updateStmt.setString(FIELD_3, status);
 			}
-			updateStmt.setLong(4, id);
+			updateStmt.setLong(FIELD_4, id);
 			// executes the statement
 			updateStmt.executeUpdate();
 		} finally{

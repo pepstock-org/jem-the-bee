@@ -17,6 +17,8 @@
 package org.pepstock.jem.commands.util;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.pepstock.jem.Jcl;
@@ -204,12 +206,6 @@ public class NodeProperties {
 	 * persisted {@value}
 	 */
 	public static final String JEM_DB_PASSWORD = "jem.db.password";
-
-	/**
-	 * value for default multicast group: {@value}
-	 * Used the concat to avoid SONAR issue
-	 */
-	public static final String DEFAULT_MULTICAST_GROUP = "233.0"+".0.1";
 
 	/**
 	 * value for default multicast port: {@value}
@@ -452,16 +448,17 @@ public class NodeProperties {
 	 * @return the multicast group set in property
 	 *         {@value #JEM_MULTICAST_GROUP_PROP}
 	 *         <p>
-	 *         if the property is not set, return the default value
-	 *         {@value #DEFAULT_MULTICAST_GROUP}
+	 *         if the property is not set, return the default value 233.0.0.1
+	 * @throws UnknownHostException if any error occurs to have the multicast IP address
 	 * 
 	 */
-	public String getMulticastGroup() {
+	public String getMulticastGroup() throws UnknownHostException {
 		String propValue = properties.getProperty(JEM_MULTICAST_GROUP_PROP);
 		if (propValue != null && !"".equals(propValue.trim())) {
 			return propValue;
 		} else {
-			return DEFAULT_MULTICAST_GROUP;
+			InetAddress aa = InetAddress.getByAddress(new byte[]{(byte) 233, 0, 0, 1});
+			return aa.getHostAddress();
 		}
 	}
 

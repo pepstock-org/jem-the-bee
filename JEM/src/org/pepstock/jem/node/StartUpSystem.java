@@ -137,6 +137,12 @@ import com.hazelcast.partition.PartitionService;
  * 
  */
 public class StartUpSystem {
+	
+	private static final int KB = 1000;
+	
+	private static final int DOUBLE = 2;
+	
+	private static final int ONETEN = 10;
 
 	private static final Properties PROPERTIES = new Properties();
 
@@ -202,7 +208,7 @@ public class StartUpSystem {
 	private static void startMulticastService() {
 		if (Main.getHazelcast().getConfig().getNetworkConfig().getJoin().getMulticastConfig().isEnabled()) {
 			MulticastConfig hMulticastConfig = Main.getHazelcast().getConfig().getNetworkConfig().getJoin().getMulticastConfig();
-			int multicastPorth = hMulticastConfig.getMulticastPort() + 100;
+			int multicastPorth = hMulticastConfig.getMulticastPort() + Main.INCREMENT_RMI_PORT;
 			MulticastConfig multicastConfig = new MulticastConfig();
 			multicastConfig.setEnabled(true);
 			multicastConfig.setMulticastGroup(hMulticastConfig.getMulticastGroup());
@@ -399,7 +405,7 @@ public class StartUpSystem {
 		}
 
 		// times 2 because in memory there will be a replication copy
-		long queueSize = calculateQueueSize() * 2;
+		long queueSize = calculateQueueSize() * DOUBLE;
 		// calculate the number of nodes (exclude light member)
 		Cluster cluster = Main.getHazelcast().getCluster();
 		int membersNumber = cluster.getMembers().size();
@@ -410,12 +416,12 @@ public class StartUpSystem {
 		long clusterFreMemory = freeMemoryForNode * membersNumber;
 		// we consider clusterFreMemory enough if is grather than the queueSize
 		// + 20%
-		long neededMemory = queueSize + (queueSize / 10) * 2;
+		long neededMemory = queueSize + (queueSize / ONETEN) * DOUBLE;
 		if (clusterFreMemory > neededMemory) {
 			semaphore.release(membersNumber - 1);
 			return;
 		} else {
-			LogAppl.getInstance().emit(NodeMessage.JEMC086W, clusterFreMemory / 1000, neededMemory / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC086W, clusterFreMemory / KB, neededMemory / KB);
 			try {
 				semaphore.acquire();
 			} catch (Exception e) {
@@ -432,24 +438,24 @@ public class StartUpSystem {
 	private static long calculateQueueSize() throws ConfigurationException {
 		try {
 			long inputQueueSize = InputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / KB);
 			long runningQueueSize = RunningDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / KB);
 
 			long outputQueueSize = OutputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / KB);
 			long routingQueueSize = RoutingDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / KB);
 			long rolesSize = RolesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / KB);
 			long resourcesSize = CommonResourcesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / KB);
 			long checkingQueueSize = PreJobDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / KB);
 			long routingConfSize = RoutingConfigDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / KB);
 			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / KB);
 
 			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
 		} catch (Exception e) {
@@ -482,7 +488,7 @@ public class StartUpSystem {
 			Lock lock = Main.getHazelcast().getLock(Queues.RUNNING_QUEUE_LOCK);
 			boolean isLock = false;
 			try {
-				isLock = lock.tryLock(10, TimeUnit.SECONDS);
+				isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 				if (!runningQueue.isEmpty()) {
 					for (Job job : runningQueue.values()) {
 						org.pepstock.jem.Result result = new org.pepstock.jem.Result();

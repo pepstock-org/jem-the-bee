@@ -82,7 +82,7 @@ public class RolesManager extends DefaultService{
 		boolean isLock = false;
 		Lock lock = getInstance().getLock(Queues.ROLES_MAP_LOCK);
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// applies predicate
 				list = new ArrayList<Role>(roles.values(predicate));

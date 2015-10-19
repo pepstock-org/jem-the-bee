@@ -199,7 +199,7 @@ public class DefaultService {
 		boolean isLock = false;
 		Lock lock = getInstance().getLock(Queues.NODES_MAP_LOCK);
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// gets nodes by predicate
 				nodes = map.values(predicate);

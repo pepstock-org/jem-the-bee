@@ -81,7 +81,7 @@ public class RecoveryManager {
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// if map of redo statements is empty
 				// means nothing to apply

@@ -58,6 +58,10 @@ import com.hazelcast.core.Transaction;
  * 
  */
 public class JclCheckingQueueManager extends Thread implements ShutDownInterface {
+	
+	private static final long INTERVAL_IF_QUEUE_IS_EMPTY = 2 * TimeUtils.SECOND;
+			
+	private static final long INTERVAL_IF_NODE_IS_NOT_OPERATIONAL =	15 * TimeUtils.SECOND;	
 
 	private boolean isDown = false;
 
@@ -103,11 +107,11 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 						// commit always! Rollback is never necessary
 						// Rollback is called automatically when node crashed
 						tran.commit();
-						Thread.sleep(2 * TimeUtils.SECOND);
+						Thread.sleep(INTERVAL_IF_QUEUE_IS_EMPTY);
 					}
 				} else {
 					// sleeps 15 second before checks if there is a new job on queue
-					Thread.sleep(15 * TimeUtils.SECOND);
+					Thread.sleep(INTERVAL_IF_NODE_IS_NOT_OPERATIONAL);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -129,7 +133,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		try {
 			// poll on queue for 10
 			// seconds and then leaves
-			prejob = jclCheckingQueue.poll(10L, TimeUnit.SECONDS);
+			prejob = jclCheckingQueue.poll(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC163E);
 		}
@@ -274,7 +278,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		boolean isLock = false;
 		try {
 			// locks the map, if not EXCEPTION!!
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// reads the roles of the job user
 				myroles = new ArrayList<Role>(roles.values(predicate));

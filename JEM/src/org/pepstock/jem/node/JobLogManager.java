@@ -39,6 +39,21 @@ import org.pepstock.jem.util.DateFormatter;
  * 
  */
 public class JobLogManager {
+	
+	private static final int KB = 1024; 
+	
+	private static final int STEP_NAME_LENGTH_IF_MORE_THAN_24 = 21;
+	
+	private static final int STEP_LENGTH = 24;
+	
+	private static final int RETURN_CODE_LENGTH = 4;
+	
+	private static final int CPU_LENGTH = 10;
+	
+	private static final int MEMORY_LENGTH = 10;
+	
+	private static final int MINIMUM_CPU_USAGE = 100;
+	
 	// used to save the previous cpu extracted. this is a workaround
 	private static final Map<String, Long> PREVIOUS_CPU = new ConcurrentHashMap<String, Long>();
 
@@ -120,17 +135,17 @@ public class JobLogManager {
 		
 		StringBuilder sb = new StringBuilder();
 		if (step == null){
-			sb.append(StringUtils.rightPad("[init]", 24));
-			sb.append(' ').append(StringUtils.rightPad("-", 4));
+			sb.append(StringUtils.rightPad("[init]", STEP_LENGTH));
+			sb.append(' ').append(StringUtils.rightPad("-", RETURN_CODE_LENGTH));
 		} else {
 			// if name of step more than 24 chars
 			// cut the name adding "..." as to be continued
-			if (step.getName().length() > 24){
-				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), 21), 24, "."));
+			if (step.getName().length() > STEP_LENGTH){
+				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), STEP_NAME_LENGTH_IF_MORE_THAN_24), STEP_LENGTH, "."));
 			} else {
-				sb.append(StringUtils.rightPad(step.getName(), 24));
+				sb.append(StringUtils.rightPad(step.getName(), STEP_LENGTH));
 			}
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(step.getReturnCode()), 4));
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(step.getReturnCode()), RETURN_CODE_LENGTH));
 		}
 		
 
@@ -143,8 +158,8 @@ public class JobLogManager {
 			// calculate cpu used on the step.
 			// Sigar gives total amount of cpu of process so a difference with
 			// previous one is mandatory
-			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU.get(job.getId()), 100);
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), 10));
+			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU.get(job.getId()), MINIMUM_CPU_USAGE);
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), CPU_LENGTH));
 
 			// saved for next step
 			PREVIOUS_CPU.put(job.getId(), cpu);
@@ -152,17 +167,17 @@ public class JobLogManager {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			
-			sb.append(' ').append(StringUtils.rightPad("N/A", 10));
+			sb.append(' ').append(StringUtils.rightPad("N/A", CPU_LENGTH));
 		}
 
 		// extract, using SIGAR, memory currently used by step, N/A otherwise
 		try {
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / 1024), 10));
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / KB), MEMORY_LENGTH));
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			
-			sb.append(' ').append(StringUtils.rightPad("N/A", 10));
+			sb.append(' ').append(StringUtils.rightPad("N/A", MEMORY_LENGTH));
 		}
 
 		Main.getOutputSystem().writeJobLog(job, sb.toString());

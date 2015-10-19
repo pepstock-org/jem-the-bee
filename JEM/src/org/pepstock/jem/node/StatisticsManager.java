@@ -355,7 +355,7 @@ public class StatisticsManager {
 							boolean isLock = false;
 							try {
 								// locks the map
-								isLock = lock.tryLock(10, TimeUnit.SECONDS);
+								isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 								// adds the new sample
 								samples.put(lightEnvironmentSample.getKey(), lightEnvironmentSample);
 								// here checks if the map has got more than

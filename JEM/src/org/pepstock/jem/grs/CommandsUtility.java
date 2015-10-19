@@ -24,6 +24,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.ResourceLock;
 
 import com.hazelcast.core.IMap;
@@ -36,6 +37,12 @@ import com.hazelcast.core.IMap;
  * 
  */
 public final class CommandsUtility {
+	
+	private static final int NODE_LENGTH = 20;
+
+	private static final int JOB_ID_LENGTH = 39;
+
+	private static final int MODE_LENGTH = 10;
 
 	private static String TITLE = "GRS Status";
 
@@ -70,7 +77,7 @@ public final class CommandsUtility {
 		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(LockStructures.COUNTER_MUTEX_LOCK);
 		Collection<LatchInfo> values = null; 
 		try {
-			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			values = counterMutex.values();
 		} catch (Exception ex) {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
@@ -111,7 +118,7 @@ public final class CommandsUtility {
 		boolean isLock = false;
 		// gets latch info and print it
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				return sb.append(buildDisplay(counterMutex.get(resourceKey)));
 			} else {
@@ -147,12 +154,12 @@ public final class CommandsUtility {
 			if ((info.getReadersCount() + info.getWritersCount()) > 0) {
 				// scans all requestors to print thier info
 				for (RequestorInfo rinfo : info.getRequestors()) {
-					String node = StringUtils.rightPad(rinfo.getNodeLabel(), 20);
-					String id = StringUtils.rightPad(rinfo.getId(), 39);
+					String node = StringUtils.rightPad(rinfo.getNodeLabel(), NODE_LENGTH);
+					String id = StringUtils.rightPad(rinfo.getId(), JOB_ID_LENGTH);
 					String lockMode = rinfo.getMode() == ResourceLock.READ_MODE ? "READ" : "WRITE";
 					// prints Node label, requestor name, requestor id and lock
 					// mode
-					sb.append(MessageFormat.format(DATA, node, id, StringUtils.rightPad(lockMode, 10), rinfo.getName())).append('\n');
+					sb.append(MessageFormat.format(DATA, node, id, StringUtils.rightPad(lockMode, MODE_LENGTH), rinfo.getName())).append('\n');
 				}
 			} else {
 				sb.append(NO_LOCKS).append('\n');

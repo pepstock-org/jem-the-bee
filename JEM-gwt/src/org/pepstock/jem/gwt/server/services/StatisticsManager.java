@@ -84,7 +84,7 @@ public class StatisticsManager extends InternalsManager{
 			// locks all map to have a consistent collection
 			// only for 10 seconds otherwise
 			// throws an exception
-			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
 			// gets data...
 			list = new ArrayList<LightSample>(samples.values());

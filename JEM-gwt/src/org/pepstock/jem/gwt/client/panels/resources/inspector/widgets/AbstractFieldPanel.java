@@ -74,7 +74,7 @@ public abstract class AbstractFieldPanel<T extends AbstractFieldDescriptor, W ex
 	/**
 	 * @return the parent panel in which this field panel is
 	 */
-	public CommonResourcePropertiesPanel<? extends ResourcePartDescriptor> getPanel() {
+	public CommonResourcePropertiesPanel<D> getPanel() {
 		return panel;
 	}
 	

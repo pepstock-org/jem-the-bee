@@ -86,7 +86,7 @@ public class RedoManager {
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// creates a redo statement using a counter as ID
 				Long id = Long.valueOf(redoMap.size() + 1);

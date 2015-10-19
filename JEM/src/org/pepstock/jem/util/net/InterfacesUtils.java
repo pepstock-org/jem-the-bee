@@ -39,6 +39,14 @@ import com.hazelcast.config.Interfaces;
  * 
  */
 public final class InterfacesUtils {
+	
+	private static final int ELEMENT_1 = 0;
+	
+	private static final int ELEMENT_2 = 1;
+	
+	private static final int ELEMENT_3 = 2;
+	
+	private static final int ELEMENT_4 = 3;
 
 	/**
 	 * To avoid any instantiation 
@@ -170,21 +178,21 @@ public final class InterfacesUtils {
 			String[] octectsIA = hostAddres.split("\\.");
 			// composes again strings which represent
 			// the two ip addresses
-			String first3 = octects[0] + "." + octects[1] + "." + octects[2];
-			String firstIA = octectsIA[0] + "." + octectsIA[1] + "." + octectsIA[2];
+			String first3 = octects[ELEMENT_1] + "." + octects[ELEMENT_2] + "." + octects[ELEMENT_3];
+			String firstIA = octectsIA[ELEMENT_1] + "." + octectsIA[ELEMENT_2] + "." + octectsIA[ELEMENT_3];
 			// compares the ip addresses
 			if (!first3.equals(firstIA)) {
 				return false;
 			}
 			// gets last octect
-			String lastOctect = octects[3];
+			String lastOctect = octects[ELEMENT_4];
 			// gets the range of IP address
 			String[] ranges = lastOctect.split("-");
 			// min and max of ip address
-			int min = Integer.parseInt(ranges[0]);
-			int max = Integer.parseInt(ranges[1]);
+			int min = Integer.parseInt(ranges[ELEMENT_1]);
+			int max = Integer.parseInt(ranges[ELEMENT_2]);
 			// parses the last octect as integer
-			int inetAddressLastOctect = Integer.parseInt(octectsIA[3]);
+			int inetAddressLastOctect = Integer.parseInt(octectsIA[ELEMENT_4]);
 			// checks if the last octect is inside
 			// of the range of HC config
 			return inetAddressLastOctect >= min && inetAddressLastOctect <= max;

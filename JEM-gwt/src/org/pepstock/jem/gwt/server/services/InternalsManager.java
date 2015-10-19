@@ -101,7 +101,7 @@ public class InternalsManager extends DefaultService{
 			// locks all map to have a consistent collection
 			// only for 10 seconds otherwise
 			// throws an exception
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
 			list = new ArrayList<RedoStatement>(redos.values());
 			// sorts the result to have a right table

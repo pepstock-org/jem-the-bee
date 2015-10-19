@@ -230,7 +230,7 @@ public abstract class JobTask extends CommandLineTask {
 		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
 		boolean isLock = false;
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				myroles = new ArrayList<Role>(rolesMap.values(predicate));
 			} else {

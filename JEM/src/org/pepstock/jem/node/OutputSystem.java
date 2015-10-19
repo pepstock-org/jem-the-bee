@@ -111,6 +111,10 @@ public class OutputSystem {
 	 * execution.
 	 */
 	public static final String MESSAGESLOG_FILE = "messages.log";
+	
+	private static final long SCHEDULE_INITIAL_INTERVAL = 20 * TimeUtils.SECOND;
+	
+	private static final long SCHEDULE_INTERVAL = 1 * TimeUtils.MINUTE;
 
 	private File currentPath = null;
 
@@ -160,7 +164,7 @@ public class OutputSystem {
 		
 		String className = FilenameUtils.getExtension(this.getClass().getName());
         Timer timer = new Timer(className, false);
-        timer.schedule(new GlobalFileSystemHealthCheck(), 20 * TimeUtils.SECOND, 1 * TimeUtils.MINUTE);
+        timer.schedule(new GlobalFileSystemHealthCheck(), SCHEDULE_INITIAL_INTERVAL, SCHEDULE_INTERVAL);
 	}
 
 	/**
@@ -404,12 +408,16 @@ public class OutputSystem {
 	 *
 	 */
 	class GlobalFileSystemHealthCheck extends TimerTask{
-
-		private static final long MINUTE = 60;
 		
 		private static final int SAMPLES_COUNT = 10;
 		
 		private static final long MB = 1024;
+		
+		private static final long ONE_HUNDRED_MB = 100 * MB;
+		
+		private static final long TIMEOUT = 10 * TimeUtils.SECOND;
+		
+		private static final long TEN_MINUTES = 10 * TimeUtils.MINUTES_FOR_HOUR;
 		
 		private List<SpaceSample> list = new LinkedList<OutputSystem.SpaceSample>();
 
@@ -425,11 +433,11 @@ public class OutputSystem {
 			if (Main.getNode() != null) {
 				Main.getNode().getLock().lock();
 				try {
-					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), 10 * TimeUtils.SECOND);
+					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), TIMEOUT);
 					
 					SpaceSample space = new SpaceSample();
 					space.setSpace(freeSpace);
-					space.setTime(System.currentTimeMillis() / 1000);
+					space.setTime(System.currentTimeMillis() / TimeUtils.SECOND);
 					
 					((LinkedList<SpaceSample>)list).addLast(space);
 					if (list.size() >  SAMPLES_COUNT){
@@ -460,7 +468,7 @@ public class OutputSystem {
 			// if we have only 1 sample, checks directly the value
 	        if (list.size() == 1){
 	        	SpaceSample space = ((LinkedList<SpaceSample>)list).getFirst();
-	        	return space.getSpace() < (MB * 100);
+	        	return space.getSpace() < ONE_HUNDRED_MB;
 	        }
 	        
 	        double[] values = new double[list.size()];
@@ -484,10 +492,10 @@ public class OutputSystem {
 	        
 	        // using the linear regression, try to estimate the space in 10 minutes
 	        SpaceSample last = ((LinkedList<SpaceSample>)list).getLast();
-	        double x = last.getTime() + (10 * MINUTE);
+	        double x = last.getTime() + TEN_MINUTES;
 	        
 	        double y = (m * x) + q;
-			return y < (MB * 100);
+			return y < ONE_HUNDRED_MB;
 		}
 	}
 	

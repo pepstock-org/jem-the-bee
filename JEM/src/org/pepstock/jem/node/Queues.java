@@ -330,6 +330,11 @@ public final class Queues {
 	 * 
 	 */
 	public static final String DATASETS_RULES_LOCK = "org.pepstock.jem.datasets.rules";
+	
+	/**
+	 * Amount of secods to wait during a try lock request
+	 */
+	public static final int LOCK_TIMEOUT = 10;
 
 	/**
 	 * To avoid any instantiation

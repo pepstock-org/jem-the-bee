@@ -191,7 +191,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		boolean isLock = false;
 		Lock lock = Main.getHazelcast().getLock(Queues.NODES_MAP_LOCK);
 		try {
-			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){ 
 				allNodes = nodes.values(predicate);
 			} else {
@@ -722,7 +722,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		boolean isLock=false;
 		Lock lock = Main.getHazelcast().getLock(Queues.COMMON_RESOURCES_MAP_LOCK);
 		try {
-			isLock=lock.tryLock(10, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){ 
 					result = map.values(predicate);
 			} else {
