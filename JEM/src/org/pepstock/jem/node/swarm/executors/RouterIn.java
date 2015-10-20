@@ -22,14 +22,16 @@ import java.util.concurrent.Callable;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.util.Factory;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.swarm.SwarmException;
 import org.pepstock.jem.node.swarm.SwarmNodeMessage;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.IdGenerator;
 
 /**
@@ -98,11 +100,10 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 		// sets job
 		preJob.setJob(job);
 		// gets JCL queue
-		IQueue<PreJob> jclCheckingQueue = hazelcastInstance.getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
-			// put job on jcl queue
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
+			SubmitPreJob.submit(hazelcastInstance, preJob);
+		} catch (SubmitException e) {
+			LogAppl.getInstance().debug(e.getMessage(), e);
 			throw new SwarmException(SwarmNodeMessage.JEMO015E, e);
 		}
 		return true;

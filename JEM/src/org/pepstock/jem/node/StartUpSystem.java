@@ -72,22 +72,22 @@ import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
-import org.pepstock.jem.node.persistence.AbstractDBManager;
-import org.pepstock.jem.node.persistence.CommonResourcesDBManager;
-import org.pepstock.jem.node.persistence.DBPoolManager;
-import org.pepstock.jem.node.persistence.InputDBManager;
-import org.pepstock.jem.node.persistence.JobDBManager;
-import org.pepstock.jem.node.persistence.NodesDBManager;
-import org.pepstock.jem.node.persistence.OutputDBManager;
-import org.pepstock.jem.node.persistence.PreJobDBManager;
 import org.pepstock.jem.node.persistence.RecoveryManager;
-import org.pepstock.jem.node.persistence.RolesDBManager;
-import org.pepstock.jem.node.persistence.RoutingConfigDBManager;
-import org.pepstock.jem.node.persistence.RoutingDBManager;
-import org.pepstock.jem.node.persistence.RunningDBManager;
 import org.pepstock.jem.node.persistence.SQLContainer;
 import org.pepstock.jem.node.persistence.SQLContainerFactory;
-import org.pepstock.jem.node.persistence.UserPreferencesDBManager;
+import org.pepstock.jem.node.persistence.database.AbstractDBManager;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.database.DBPoolManager;
+import org.pepstock.jem.node.persistence.database.InputDBManager;
+import org.pepstock.jem.node.persistence.database.JobDBManager;
+import org.pepstock.jem.node.persistence.database.NodesDBManager;
+import org.pepstock.jem.node.persistence.database.OutputDBManager;
+import org.pepstock.jem.node.persistence.database.PreJobDBManager;
+import org.pepstock.jem.node.persistence.database.RolesDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingDBManager;
+import org.pepstock.jem.node.persistence.database.RunningDBManager;
+import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
 import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
@@ -534,6 +534,13 @@ public class StartUpSystem {
 
 		IMap<String, Map<String, UserPreference>> userPreferencesMap = Main.getHazelcast().getMap(Queues.USER_PREFERENCES_MAP);
 		userPreferencesMap.size();
+		
+		// loads all jobs in check queue
+		try {
+			PreJobDBManager.getInstance().loadAll();
+		} catch (MessageException e) {
+			throw new ConfigurationException(e);
+		}
 
 	}
 
@@ -1025,7 +1032,7 @@ public class StartUpSystem {
 	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
 	 * @throws SQLException if any error occurs cheching the existence of tables
 	 */
-	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?, ?> manager) throws SQLException {
+	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?> manager) throws SQLException {
 		ResultSet rs = null;
 		try {
 			// gets SQL container

@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
 import org.pepstock.jem.Job;
 
@@ -27,7 +27,7 @@ import org.pepstock.jem.Job;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class JobDBManager extends AbstractDBManager<String, Job>{
+public class JobDBManager extends AbstractDBManager<Job>{
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

@@ -1391,7 +1391,7 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to stop Multicast service gracefully.", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when the Multicast service can't be stopped gracefully.")
-	JEMG228W("0228", "Unable to stop Multicast service gracefullt.", MessageLevel.WARNING),
+	JEMG228W("0228", "Unable to stop Multicast service gracefully.", MessageLevel.WARNING),
 	
 	/**
 	 * " "Unable to clean up information in modes memory data map", MessageLevel.ERROR

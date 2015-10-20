@@ -34,7 +34,7 @@ package org.pepstock.jem.node.persistence;
  * 
  *      Table CHECKING_QUEUE has the following structure:<br>
  * <br>
- *      <code>PRE_JOB_ID bigint primary key</code>: used to store the pre job
+ *      <code>JOB_ID bigint primary key</code>: used to store the pre job
  *      id.<br>
  *      <code>PRE_JOB clob(1000000)</code>: used to store the pre job,
  *      serializing the PreJob object in XML format. XML must be less than 1M.<br>

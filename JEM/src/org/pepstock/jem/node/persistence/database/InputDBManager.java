@@ -14,10 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
-import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.XmlUtil;
 
 /**
  * Manages all SQL statements towards the database to persist the commons
@@ -27,15 +25,15 @@ import org.pepstock.jem.node.resources.XmlUtil;
  * @version 1.0
  * 
  */
-public class CommonResourcesDBManager extends AbstractDBManager<String, Resource>{
+public class InputDBManager extends JobDBManager{
 
-	private static final CommonResourcesDBManager INSTANCE = new CommonResourcesDBManager();
+	private static final InputDBManager INSTANCE = new InputDBManager();
 	
 	/**
 	 * To avoid any instantiation
 	 */
-	private CommonResourcesDBManager() {
-		super(XmlUtil.getXStream());
+	private InputDBManager() {
+		
 	}
 
 	/**
@@ -46,7 +44,7 @@ public class CommonResourcesDBManager extends AbstractDBManager<String, Resource
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized CommonResourcesDBManager getInstance(){
+	public static synchronized InputDBManager getInstance(){
 		return INSTANCE;
 	}
 
@@ -55,13 +53,5 @@ public class CommonResourcesDBManager extends AbstractDBManager<String, Resource
 	 */
 	public static boolean isInstanciated(){
 		return INSTANCE != null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
-	 */
-	@Override
-	public String getKey(Resource item) {
-		return item.getName();
 	}
 }

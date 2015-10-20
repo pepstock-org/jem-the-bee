@@ -28,10 +28,15 @@ import java.util.concurrent.locks.Lock;
 import org.apache.commons.io.FilenameUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
+import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.InputDBManager;
+import org.pepstock.jem.node.persistence.database.OutputDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingDBManager;
+import org.pepstock.jem.node.persistence.database.RunningDBManager;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.IMap;
@@ -103,24 +108,8 @@ public class RecoveryManager {
 				for (RedoStatement statement : values) {
 					// extracts the map store of HC
 					// using the queue information of redo statement
-					JobMapManager mapStore = null;
-					if (statement.getQueueName().equalsIgnoreCase(Queues.INPUT_QUEUE)) {
-						mapStore = InputMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.RUNNING_QUEUE)) {
-						mapStore = RunningMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.OUTPUT_QUEUE)) {
-						mapStore = OutputMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.ROUTING_QUEUE)) {
-						mapStore = RoutingMapManager.getInstance();
-					}
-					// if action is store, it calls the store method
-					// of map store
-					// otherwise it calls the delete one
-					if (statement.getAction().equalsIgnoreCase(RedoStatement.STORE)) {
-						mapStore.store(statement.getJob(), true);
-					} else if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
-						mapStore.delete(statement.getJobId(), true);
-					}
+					RecoverableManager.recover(statement);
+
 					// remove the redo statement from HC map
 					redoMap.remove(statement.getId());
 					// shows the redo has been ended correctly
@@ -132,6 +121,8 @@ public class RecoveryManager {
 			} else {
 				throw new MessageException(NodeMessage.JEMC119E, Queues.REDO_STATEMENT_MAP);
 			}
+		}  catch (MessageRuntimeException e) {
+			throw new MessageException(e.getMessageInterface());
 		} catch (Exception e) {
 			throw new MessageException(NodeMessage.JEMC119E, e, Queues.REDO_STATEMENT_MAP);
 		} finally {
@@ -195,6 +186,7 @@ public class RecoveryManager {
 					// checking if the database is working well
 					// checks all tables because we could have a issue
 					// on a specific table
+					// FIXME
 					InputDBManager.getInstance().getSize();
 					RunningDBManager.getInstance().getSize();
 					OutputDBManager.getInstance().getSize();

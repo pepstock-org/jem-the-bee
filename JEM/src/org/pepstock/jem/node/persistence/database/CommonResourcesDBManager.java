@@ -14,36 +14,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
-import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.node.resources.XmlUtil;
 
 /**
- * Manages all SQL statements towards the database to persist the nodes.<br>
+ * Manages all SQL statements towards the database to persist the commons
+ * resources.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.5	
- *
+ * @version 1.0
+ * 
  */
-public class NodesDBManager extends AbstractDBManager<String, NodeInfo>{
+public class CommonResourcesDBManager extends AbstractDBManager<Resource>{
 
-	private static final NodesDBManager INSTANCE = new NodesDBManager();
-
-	/**
-	 * Empty constructor
-	 */
-	private NodesDBManager(){
-	}
+	private static final CommonResourcesDBManager INSTANCE = new CommonResourcesDBManager();
 	
 	/**
+	 * To avoid any instantiation
+	 */
+	private CommonResourcesDBManager() {
+		super(XmlUtil.getXStream());
+	}
+
+	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
+	 * instance of CommonResourcesDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized NodesDBManager getInstance(){
+	public static synchronized CommonResourcesDBManager getInstance(){
 		return INSTANCE;
 	}
 
@@ -58,9 +61,7 @@ public class NodesDBManager extends AbstractDBManager<String, NodeInfo>{
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */
 	@Override
-	public String getKey(NodeInfo item) {
-		return item.getKey();
+	public String getKey(Resource item) {
+		return item.getName();
 	}
-	
-	
 }

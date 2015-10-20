@@ -14,38 +14,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
-import java.util.Map;
-
-import org.pepstock.jem.node.security.UserPreference;
 
 /**
- * Manages all SQL statements towards the database to persist the user preferences.<br>
+ * Manages all SQL statements towards the database to persist the commons
+ * resources.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4	
- *
+ * @version 1.0
+ * 
  */
-public class UserPreferencesDBManager extends AbstractDBManager<String, Map<String, UserPreference>>{
+public class RoutingDBManager extends JobDBManager{
 
-	private static final UserPreferencesDBManager INSTANCE = new UserPreferencesDBManager();
-
+	private static final RoutingDBManager INSTANCE = new RoutingDBManager();
+	
 	/**
-	 * Empty Constructor
+	 * To avoid any instantiation
 	 */
-	private UserPreferencesDBManager(){
+	private RoutingDBManager() {
+		
 	}
 
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
+	 * instance of CommonResourcesDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized UserPreferencesDBManager getInstance(){
+	public static synchronized RoutingDBManager getInstance(){
 		return INSTANCE;
 	}
 
@@ -55,13 +54,4 @@ public class UserPreferencesDBManager extends AbstractDBManager<String, Map<Stri
 	public static boolean isInstanciated(){
 		return INSTANCE != null;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
-	 */
-	@Override
-	public String getKey(Map<String, UserPreference> item) {
-		return null;
-	}
-	
 }

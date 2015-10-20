@@ -48,6 +48,7 @@ import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.commands.SubmitParameters;
 import org.pepstock.jem.commands.util.Factory;
@@ -56,13 +57,13 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.security.keystore.KeyStoreUtil;
 import org.pepstock.jem.node.security.keystore.KeyStoresInfo;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.Parser;
 
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.IdGenerator;
 
 /**
@@ -278,10 +279,9 @@ public class SubmitHandler implements HttpRequestHandler {
 
 		// puts the pre job in a queue for validating and moving to right QUEUE
 		// (input if is correct, output if is wrong)
-		IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
+			SubmitPreJob.submit(Main.getHazelcast(), preJob);
+		} catch (SubmitException e) {
 			throw new HttpException(SubmitMessage.JEMW003E.toMessage().getFormattedMessage(), e);
 		}
 		// returns job id

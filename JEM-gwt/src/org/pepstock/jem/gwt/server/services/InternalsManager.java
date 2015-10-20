@@ -103,27 +103,27 @@ public class InternalsManager extends DefaultService{
 			// throws an exception
 			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
-			list = new ArrayList<RedoStatement>(redos.values());
-			// sorts the result to have a right table
-			Collections.sort(list, new Comparator<RedoStatement>() {
-				/**
-				 * Compares REDO statement IDs to sort the collection
-				 * 
-				 * @param r1
-				 *            first redo statement to compare
-				 * @param r2
-				 *            other redo statement to compare
-				 * @return the value 0 if the redo statement ids are equals; a
-				 *         value less than 0 if redo statement id is
-				 *         lexicographically less than the other; and a value
-				 *         greater than 0 if edo statement id is
-				 *         lexicographically greater than the other.
-				 */
-				@Override
-				public int compare(RedoStatement r1, RedoStatement r2) {
-					return r1.getId().compareTo(r2.getId());
-				}
-			});
+				list = new ArrayList<RedoStatement>(redos.values());
+				// sorts the result to have a right table
+				Collections.sort(list, new Comparator<RedoStatement>() {
+					/**
+					 * Compares REDO statement IDs to sort the collection
+					 * 
+					 * @param r1
+					 *            first redo statement to compare
+					 * @param r2
+					 *            other redo statement to compare
+					 * @return the value 0 if the redo statement ids are equals; a
+					 *         value less than 0 if redo statement id is
+					 *         lexicographically less than the other; and a value
+					 *         greater than 0 if edo statement id is
+					 *         lexicographically greater than the other.
+					 */
+					@Override
+					public int compare(RedoStatement r1, RedoStatement r2) {
+						return r1.getId().compareTo(r2.getId());
+					}
+				});
 			} else {
 				// timeout exception
 				throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, Queues.COMMON_RESOURCES_MAP);

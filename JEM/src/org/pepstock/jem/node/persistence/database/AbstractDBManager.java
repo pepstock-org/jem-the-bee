@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
 import java.io.StringReader;
 import java.sql.Connection;
@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.persistence.SQLContainer;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -36,11 +37,11 @@ import com.thoughtworks.xstream.XStream;
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
- * @param <K> Key of table
+ * @param <String> Key of table
  * @param <T> object stored in Hazelcast map 
  * 
  */
-public abstract class AbstractDBManager<K, T>{
+public abstract class AbstractDBManager<T>{
 
 	private XStream xStream = null;
 	
@@ -80,7 +81,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @param item instance used to get key
 	 * @return key to use on database table
 	 */
-	public abstract K getKey(T item);
+	public abstract String getKey(T item);
 
 	/**
 	 * Deletes an instance from queue by the key of table
@@ -89,7 +90,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @param key instance key
 	 * @throws SQLException if occurs
 	 */
-	public void delete(String delete, K key) throws SQLException {
+	public void delete(String delete, String key) throws SQLException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
@@ -98,11 +99,7 @@ public abstract class AbstractDBManager<K, T>{
 			updateStmt = connection.prepareStatement(delete);
 			// set resource name in prepared statement
 			// checks if is a string or long (long used only for queue of HC)
-			if (key instanceof String){
-				updateStmt.setString(1, (String)key);
-			} else {
-				updateStmt.setLong(1, (Long)key);
-			}
+			updateStmt.setString(1, key);
 			// executes the statement
 			updateStmt.executeUpdate();
 			// commit
@@ -142,7 +139,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @param item instance to add
 	 * @throws SQLException if occurs
 	 */
-	public void insert(String insert, K key, T item) throws SQLException {
+	public void insert(String insert, String key, T item) throws SQLException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
@@ -154,13 +151,8 @@ public abstract class AbstractDBManager<K, T>{
 			updateStmt = connection.prepareStatement(insert);
 			// set resource name to key
 			// gets the key if null 
-			K myKey = (key == null) ? getKey(item) : key;
-			// checks if is a string or long (long used only for queue of HC)
-			if (myKey instanceof String){
-				updateStmt.setString(1, (String)myKey);
-			} else {
-				updateStmt.setLong(1, (Long)myKey);
-			}
+			String myKey = (key == null) ? getKey(item) : key;
+			updateStmt.setString(1, myKey);
 			// set XML to clob
 			updateStmt.setCharacterStream(2, reader);
 			// executes SQL
@@ -203,7 +195,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @param item resource instance to serialize
 	 * @throws SQLException if occurs
 	 */
-	public void update(String update, K key, T item) throws SQLException {
+	public void update(String update, String key, T item) throws SQLException {
 		int updatedRows = 0;
 		// open connection
 		// getting a connection from pool
@@ -218,13 +210,8 @@ public abstract class AbstractDBManager<K, T>{
 			updateStmt.setCharacterStream(1, reader);
 			// set resource name to key
 			// gets the key if null 
-			K myKey = (key == null) ? getKey(item) : key;
-			// checks if is a string or long (long used only for queue of HC)
-			if (myKey instanceof String){
-				updateStmt.setString(2, (String)myKey);
-			} else {
-				updateStmt.setLong(2, (Long)myKey);
-			}
+			String myKey = (key == null) ? getKey(item) : key;
+			updateStmt.setString(2, myKey);
 			// updates 
 			updateStmt.executeUpdate();
 			// gets updates rows
@@ -259,8 +246,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @return set with all keys in the table
 	 * @throws SQLException if occurs
 	 */
-	@SuppressWarnings("unchecked")
-	public Set<K> getAllKeys(String query) throws SQLException {
+	public Set<String> getAllKeys(String query) throws SQLException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
@@ -273,10 +259,10 @@ public abstract class AbstractDBManager<K, T>{
 			rs = stmt.executeQuery(query);
 
 			// creates the set
-			Set<K> allIds = new HashSet<K>();
+			Set<String> allIds = new HashSet<String>();
 			while (rs.next()) {
 				Object o = rs.getObject(1);
-				allIds.add((K) o);
+				allIds.add((String) o);
 				// loads all keys in a set
 			}
 			return allIds;
@@ -307,7 +293,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @throws SQLException if occurs
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<K, T> getAllItems(String query) throws SQLException {
+	public Map<String, T> getAllItems(String query) throws SQLException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
@@ -320,7 +306,7 @@ public abstract class AbstractDBManager<K, T>{
 			rs = stmt.executeQuery(query);
 
 			// creates the set
-			Map<K, T> allItems = new HashMap<K, T>();
+			Map<String, T> allItems = new HashMap<String, T>();
 			while (rs.next()) {
 				// get CLOB field which contains resource XML serialization
 				T item = (T) xStream.fromXML(rs.getCharacterStream(1));
@@ -328,7 +314,7 @@ public abstract class AbstractDBManager<K, T>{
 				// uses 1 column has object. The key is the second one, if exists
 				if (rs.getMetaData().getColumnCount() > 1){
 					Object o = rs.getObject(2);
-					allItems.put((K) o, item);
+					allItems.put((String) o, item);
 				} else {
 					allItems.put(getKey(item), item);
 				}
@@ -362,7 +348,7 @@ public abstract class AbstractDBManager<K, T>{
 	 * @throws SQLException if any exception occurs
 	 */
 	@SuppressWarnings("unchecked")
-	public T getItem(String query, K key) throws SQLException {
+	public T getItem(String query, String key) throws SQLException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = DBPoolManager.getInstance().getConnection();
@@ -373,11 +359,7 @@ public abstract class AbstractDBManager<K, T>{
 			stmt = connection.prepareStatement(query);
 			// sets resource names where condition
 			// checks if is a string or long (long used only for queue of HC)
-			if (key instanceof String){
-				stmt.setString(1, (String)key);
-			} else {
-				stmt.setLong(1, (Long)key);
-			}
+			stmt.setString(1, key);
 			// executes query
 			rs = stmt.executeQuery();
 			T item = null;

@@ -34,7 +34,7 @@ public class MySqlSQLContainerFactory extends DefaultSQLContainerFactory {
 	/**
 	 * the sql for the creation of the CHECKING_QUEUE
 	 */
-	public static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (PRE_JOB_ID BIGINT primary key,	PRE_JOB LONGTEXT not null)";
+	public static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (JOB_ID char(39) primary key,	PRE_JOB LONGTEXT not null)";
 
 	/**
 	 * the sql for the creation of the INPUT_QUEUE

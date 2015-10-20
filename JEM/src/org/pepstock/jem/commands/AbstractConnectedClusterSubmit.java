@@ -34,6 +34,7 @@ import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
@@ -42,7 +43,6 @@ import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
 import com.hazelcast.core.Member;
@@ -275,16 +275,8 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			topic.addMessageListener(this);
 		}
 
-		// puts the pre job in a queue for validating and miving to right QUEUE
-		// (input if is correct, output if is wrong)
-		IQueue<PreJob> jclCheckingQueue = client.getQueue(Queues.JCL_CHECKING_QUEUE);
-		try {
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
-			throw new SubmitException(SubmitMessage.JEMW003E, e);
-		}
+		SubmitPreJob.submit(client, preJob);
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.SubmitCommandLine#execute(java.lang.String[])

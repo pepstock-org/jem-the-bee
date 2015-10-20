@@ -14,25 +14,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
-import org.pepstock.jem.node.security.Role;
+import java.util.Map;
+
+import org.pepstock.jem.node.security.UserPreference;
 
 /**
- * Manages all SQL statements towards the database to persist the roles.<br>
+ * Manages all SQL statements towards the database to persist the user preferences.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0	
+ * @version 1.4	
  *
  */
-public class RolesDBManager extends AbstractDBManager<String, Role> {
+public class UserPreferencesDBManager extends AbstractDBManager<Map<String, UserPreference>>{
 
-	private static final RolesDBManager INSTANCE = new RolesDBManager();
+	private static final UserPreferencesDBManager INSTANCE = new UserPreferencesDBManager();
 
 	/**
-	 * Empty constructor
+	 * Empty Constructor
 	 */
-	private RolesDBManager(){
+	private UserPreferencesDBManager(){
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class RolesDBManager extends AbstractDBManager<String, Role> {
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized RolesDBManager getInstance(){
+	public static synchronized UserPreferencesDBManager getInstance(){
 		return INSTANCE;
 	}
 
@@ -58,8 +60,8 @@ public class RolesDBManager extends AbstractDBManager<String, Role> {
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */
 	@Override
-	public String getKey(Role item) {
-		return item.getName();
+	public String getKey(Map<String, UserPreference> item) {
+		return null;
 	}
-
+	
 }

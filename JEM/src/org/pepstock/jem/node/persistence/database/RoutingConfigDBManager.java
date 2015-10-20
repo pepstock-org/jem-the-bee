@@ -14,37 +14,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence;
+package org.pepstock.jem.node.persistence.database;
 
+import org.pepstock.jem.node.configuration.SwarmConfiguration;
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the routingConfs.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
- * 
+ * @version 1.0	
+ *
  */
-public class InputDBManager extends JobDBManager{
+public class RoutingConfigDBManager extends AbstractDBManager<SwarmConfiguration>{
 
-	private static final InputDBManager INSTANCE = new InputDBManager();
-	
+	private static final RoutingConfigDBManager INSTANCE = new RoutingConfigDBManager();
+
 	/**
-	 * To avoid any instantiation
+	 * 
 	 */
-	private InputDBManager() {
-		
+	private RoutingConfigDBManager(){
 	}
 
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
+	 * instance of JobDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized InputDBManager getInstance(){
+	public static synchronized RoutingConfigDBManager getInstance(){
 		return INSTANCE;
 	}
 
@@ -53,5 +52,13 @@ public class InputDBManager extends JobDBManager{
 	 */
 	public static boolean isInstanciated(){
 		return INSTANCE != null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
+	 */
+	@Override
+	public String getKey(SwarmConfiguration item) {
+		return SwarmConfiguration.DEFAULT_NAME;
 	}
 }

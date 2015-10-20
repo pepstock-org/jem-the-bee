@@ -45,12 +45,14 @@ import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.UpdateJob;
+import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.Cancel;
 import org.pepstock.jem.node.executors.jobs.GetJclTypes;
 import org.pepstock.jem.node.executors.jobs.GetJobSystemActivity;
@@ -69,7 +71,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
 import com.hazelcast.query.SqlPredicate;
@@ -824,16 +825,11 @@ public class JobsManager extends DefaultService {
 		// via HTTP is not possible to wait the end of job
 		job.setNowait(true);
 
-		// puts the pre job in a queue for validating
-		IQueue<PreJob> jclCheckingQueue = getInstance().getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
+			SubmitPreJob.submit(getInstance(), preJob);
+		} catch (SubmitException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.JCL_CHECKING_QUEUE);
-		} catch (Exception e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.JCL_CHECKING_QUEUE);
+			throw new ServiceMessageException(e.getMessageInterface(), e, Queues.JCL_CHECKING_QUEUE);
 		}
 		return jobId;
 	}

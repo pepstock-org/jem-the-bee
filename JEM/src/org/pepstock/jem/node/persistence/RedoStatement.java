@@ -17,8 +17,11 @@
 package org.pepstock.jem.node.persistence;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import org.pepstock.jem.Job;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.google.gwt.user.client.rpc.GwtTransient;
 
 
 /**
@@ -45,13 +48,18 @@ public class RedoStatement implements Serializable {
 	
 	private Long id = null;
 	
+	private Date creation = new Date();
+	
 	private String queueName = null;
 
 	private String action = null;
 	
-	private String jobId = null;
+	private String entityId = null;
 	
-	private Job job = null;
+	@GwtTransient
+	private Object entity = null;
+
+	private String entityToString = null;
 	
 	/**
 	 * @return the id
@@ -96,31 +104,60 @@ public class RedoStatement implements Serializable {
 	}
 
 	/**
-	 * @return the jobId
+	 * @return the entityId
 	 */
-	public String getJobId() {
-		return jobId;
+	public String getEntityId() {
+		return entityId;
 	}
 
 	/**
-	 * @param jobId the jobId to set
+	 * @param entityId the entityId to set
 	 */
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
+	public void setEntityId(String entityId) {
+		this.entityId = entityId;
 	}
 
 	/**
-	 * @return the job
+	 * @return the entity
 	 */
-	public Job getJob() {
-		return job;
+	@XmlTransient
+	public Object getEntity() {
+		return entity;
 	}
 
 	/**
-	 * @param job the job to set
+	 * @param entity the entity to set
 	 */
-	public void setJob(Job job) {
-		this.job = job;
+	public void setEntity(Object entity) {
+		this.entity = entity;
+	}
+
+	/**
+	 * @return the creation
+	 */
+	public Date getCreation() {
+		return creation;
+	}
+
+	/**
+	 * @param creation the creation to set
+	 */
+	public void setCreation(Date creation) {
+		this.creation = creation;
+	}
+	
+	/**
+	 * @return the entityToString
+	 */
+	public String getEntityToString() {
+		return entityToString;
+	}
+
+	/**
+	 * @param entityToString the entityToString to set
+	 */
+	public void setEntityToString(String entityToString) {
+		this.entityToString = entityToString;
 	}
 
 	/* (non-Javadoc)
@@ -128,6 +165,7 @@ public class RedoStatement implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "RedoStatement [queueName=" + queueName + ", action=" + action + ", id=" + id + ", job=" + job + "]";
+		return "RedoStatement [id=" + id + ", creation=" + creation + ", queueName=" + queueName + ", action=" + action + ", entityId=" + entityId + "]";
 	}
+
 }

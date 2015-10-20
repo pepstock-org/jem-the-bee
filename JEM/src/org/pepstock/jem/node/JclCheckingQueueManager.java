@@ -36,6 +36,7 @@ import org.pepstock.jem.commands.SetURLFactory;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
+import org.pepstock.jem.node.persistence.database.PreJobDBManager;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.RegExpPermission;
 import org.pepstock.jem.node.security.Role;
@@ -134,7 +135,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			// poll on queue for 10
 			// seconds and then leaves
 			prejob = jclCheckingQueue.poll(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC163E);
 		}
 		return prejob;
@@ -153,6 +154,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// extract JOB from prejob
 		Job job = prejob.getJob();
 		try {
+			// removes from queue
+			PreJobDBManager.getInstance().delete(prejob);
 			// using the factory, validates, checks and loads JCL into JOB
 			Factory.loadJob(prejob);
 			// check if user is grant for job submitting

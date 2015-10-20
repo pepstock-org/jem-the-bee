@@ -29,7 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.persistence.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.XmlUtil;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
