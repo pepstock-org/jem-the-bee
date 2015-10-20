@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.GwtTransient;
 
 
 /**
- * Entity of JEM which conatins all information about statement to be committed on database.<br>
+ * Entity of JEM which contains all information about statement to be committed on database.<br>
  * This object is created when the persistent engine is not able to save information on database.
  * 
  * @author Andrea "Stock" Stocchero

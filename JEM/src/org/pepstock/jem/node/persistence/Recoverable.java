@@ -16,12 +16,28 @@
 */
 package org.pepstock.jem.node.persistence;
 
+import org.pepstock.jem.log.JemException;
+
 /**
+ * Interface to recover the red statements
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
 public interface Recoverable {
 	
-	void recover(RedoStatement statement) throws Exception;
+	/**
+	 * Performs the recover of redo statement previously store in HZ map, waiting form
+	 * the DB availability
+	 * @param statement redo statement to apply
+	 * @throws JemException if any error occurs on DB
+	 */
+	void recover(RedoStatement statement) throws JemException;
+	
+	/**
+	 * Checks if the database is available
+	 * @throws JemException if DB is not available
+	 */
+	void check() throws JemException;
 
 }

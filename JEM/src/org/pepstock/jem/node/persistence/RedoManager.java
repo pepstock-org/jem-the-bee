@@ -32,7 +32,7 @@ import com.hazelcast.core.IMap;
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
- * @param <T> Typ of object to save for REDO
+ * @param <T> Type of object to save for REDO
  * 
  */
 public class RedoManager<T> {
@@ -73,8 +73,8 @@ public class RedoManager<T> {
 
 	/**
 	 * Stores the redo statements in HC map
-	 * @param jobId job id used only if is a DELETE
-	 * @param job job instance used only if STORE
+	 * @param id id used only if is a DELETE
+	 * @param entity instance used only if STORE
 	 * @param what type of operation, or STORE or DELETE
 	 */
 	private void storeRedoStatement(String id, T entity, String what){
@@ -95,8 +95,8 @@ public class RedoManager<T> {
 				// the database will be up and running
 				statement.setId(redoid);
 				statement.setQueueName(queueName);
-				// for delete saved the JOB ID
-				// otherwise the job itself
+				// for delete saved the ID
+				// otherwise the entity itself
 				if (RedoStatement.DELETE.equalsIgnoreCase(what)){
 					statement.setEntityId(id);	
 				} else if (RedoStatement.STORE.equalsIgnoreCase(what)){

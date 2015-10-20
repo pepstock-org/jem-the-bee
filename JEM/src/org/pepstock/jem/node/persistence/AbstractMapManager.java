@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
@@ -179,18 +180,6 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	@Override
 	public void delete(String key) {
 		delete(key, false);
-//		// check if I have the database manager, otherwise log error and
-//		// exception
-//		if (dbManager == null) {
-//			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
-//		} else {
-//			try {
-//				// deletes the object in table
-//				dbManager.delete(sql.getDeleteStatement(), key);
-//			} catch (SQLException e) {
-//				LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
-//			}
-//		}
 	}
 	
 	/**
@@ -200,25 +189,11 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 */
 	@Override
 	public void deleteAll(Collection<String> ids) {
-		// scans all job ids and
-		// deletes the jobs
+		// scans all ids and
+		// deletes the entities by ids
 		for (String id : ids){
 			delete(id);
 		}
-//		// check if I have the database manager, otherwise log error and
-//		// exception
-//		if (dbManager == null) {
-//			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
-//		} else {
-//			for (String id : ids){
-//				try {
-//					// deletes the object in table
-//					dbManager.delete(sql.getDeleteStatement(), id);
-//				} catch (SQLException e) {
-//					LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
-//				}
-//			}
-//		}
 	}
 
 
@@ -231,28 +206,6 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	@Override
 	public void store(String key, T object) {
 		store(object, false);
-//		// check if I have the database manager, otherwise log error and
-//		// exception
-//		if (dbManager == null) {
-//			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
-//		} else {
-//			try {
-//				// inserts the object in table
-//				dbManager.insert(sql.getInsertStatement(), key, object);
-//			} catch (SQLException e) {
-//				// ignore
-//				LogAppl.getInstance().ignore(e.getMessage(), e);
-//
-//				// I have an exception (it happens if the key already exists, so
-//				// update anyway
-//				try {
-//					// updates the object in table
-//					dbManager.update(sql.getUpdateStatement(), key, object);
-//				} catch (SQLException e1) {
-//					LogAppl.getInstance().emit(NodeMessage.JEMC043E, e1);
-//				}
-//			}
-//		}
 	}
 
 	/**
@@ -266,55 +219,46 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			store(entry.getKey(), entry.getValue());
 		}
 	}
-
-
-//		if (dbManager == null) {
-//			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
-//		} else {
-//			for (Entry<String, T> entry : objects.entrySet()){
-//				try {
-//					// inserts the object in table
-//					dbManager.insert(sql.getInsertStatement(), entry.getKey(), entry.getValue());
-//				} catch (SQLException e) {
-//					// ignore
-//					LogAppl.getInstance().ignore(e.getMessage(), e);
-//
-//					// I have an exception (it happens if the key already exists, so
-//					// update anyway
-//					try {
-//						// updates the object in table
-//						dbManager.update(sql.getUpdateStatement(), entry.getKey(), entry.getValue());
-//					} catch (SQLException e1) {
-//						LogAppl.getInstance().emit(NodeMessage.JEMC043E, e1);
-//					}
-//				}
-//			}
-//		}
-//	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void recover(RedoStatement statement) throws Exception{
-		// if action is store, it calls the store method
-		// of map store
-		// otherwise it calls the delete one
-		if (statement.getAction().equalsIgnoreCase(RedoStatement.STORE)) {
-			store((T)statement.getEntity(), true);
-		} else if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
-			delete(statement.getEntityId(), true);
+	public void recover(RedoStatement statement) throws JemException{
+		try {
+			// if action is store, it calls the store method
+			// of map store
+			// otherwise it calls the delete one
+			if (statement.getAction().equalsIgnoreCase(RedoStatement.STORE)) {
+				store((T)statement.getEntity(), true);
+			} else if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
+				delete(statement.getEntityId(), true);
+			}
+		} catch (Exception e) {
+			throw new JemException(e);
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.Recoverable#check()
+	 */
+	@Override
+	public void check() throws JemException {
+		try {
+			dbManager.getSize();
+		} catch (SQLException e) {
+			throw new JemException(e);
 		}
 	}
 
 	/**
-	 * Deletes the jobs by jobs ID. Accepts also if an exception must be thrown or not.
+	 * Deletes the entities by  ID. Accepts also if an exception must be thrown or not.
 	 * This is done because the same method is called both from normal persistence and
 	 * from recovery manager to apply the redo statements.
-	 * @param id job id to be deleted
+	 * @param id id to be deleted
 	 * @param exception if <code>true</code>, it will throw an exception if any errors occurs
 	 */
 	private void delete(String id, boolean exception) {
 		try {
-			// deletes the job in table
+			// deletes the entity in table
 			dbManager.delete(sql.getDeleteStatement(), id);
 			// if you don't want the exception
 			// means it has been called by recovery manager
@@ -352,7 +296,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			if (!Main.getNode().isOperational()){
 				// tries to apply the redo statements however
 				RecoveryManager.getInstance().applyRedoStatements();
-				// if here, it was able to delete jobs
+				// if here, it was able to delete entities
 				Main.getNode().setOperational(true);
 				NodeInfoUtility.storeNodeInfo(Main.getNode());
 				NodeInfoUtility.start();
@@ -374,7 +318,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * <br>
 	 * For this reason, changes the status of the node.
 	 * 
-	 * @param id job id to delete
+	 * @param id id to delete
 	 * @param e exception occurred
 	 */
 	private void recoverDeleteStatement(String id, Exception e){
@@ -406,16 +350,15 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	}
 	
 	/**
-	 * Stores the job by jobs ID. Accepts also if an exception must be thrown or not.
+	 * Stores the entities. Accepts also if an exception must be thrown or not.
 	 * This is done because the same method is called both from normal persistence and
 	 * from recovery manager to apply the redo statements.
-	 * @param jobid job id of job instance
-	 * @param entity job instance
+	 * @param entity entity instance
 	 * @param exception if <code>true</code>, it will throw an exception if any errors occurs 
 	 */
 	private void store(T entity, boolean exception) {
 		try {
-			// inserts the job in table
+			// inserts the entity in table
 			dbManager.insert(sql.getInsertStatement(), entity);
 			// if you don't want the exception
 			// means it has been called by recovery manager
@@ -435,17 +378,17 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	/**
 	 * This method is called when an INSERT statement went wrong (because the key is already on database).
 	 * <br>
-	 * Here it tries to update the job object. If it doesn't work, it will recover the statement
+	 * Here it tries to update the object. If it doesn't work, it will recover the statement
 	 * moving it on the REDO ones.
 	 * 
-	 * @param entity job instance to be updated
+	 * @param entity instance to be updated
 	 * @param exception if the exception must be thrown or not.
 	 */
 	private void tryToUpdate(T entity,  boolean exception){
 		// I have an exception (it happens if the key already exists, so
 		// update anyway
 		try {
-			// updates the job in table
+			// updates the in table
 			dbManager.update(sql.getUpdateStatement(), entity);
 			// if exception and you want to redo statement, it throws the exception
 			if (!exception){
@@ -469,7 +412,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * <br>
 	 * For this reason, changes the status of the node.
 	 * 
-	 * @param entity job instance to store
+	 * @param entity instance to store
 	 * @param e exception occurred
 	 */
 	private void recoverStoreStatement(T entity, Exception e){

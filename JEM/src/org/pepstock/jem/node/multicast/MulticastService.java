@@ -133,7 +133,7 @@ public class MulticastService extends Service {
 		executorService.shutdownNow();
 		MulticastSender.sendShutDownMessage();
 		try {
-			if (!executorService.awaitTermination(100, TimeUnit.SECONDS)) {
+			if (!executorService.isShutdown() && !executorService.awaitTermination(100, TimeUnit.SECONDS)) {
 				LogAppl.getInstance().emit(NodeMessage.JEMG228W);
 			}
 		} catch (InterruptedException e) {

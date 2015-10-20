@@ -26,17 +26,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.io.FilenameUtils;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
-import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.InputDBManager;
-import org.pepstock.jem.node.persistence.database.OutputDBManager;
-import org.pepstock.jem.node.persistence.database.RoutingDBManager;
-import org.pepstock.jem.node.persistence.database.RunningDBManager;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.IMap;
@@ -81,7 +77,7 @@ public class RecoveryManager {
 	public boolean applyRedoStatements() throws MessageException {
 		// gets the HC map
 		IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
-		// locks inetrnally of JEM cluster
+		// locks internally of JEM cluster
 		Lock lock = Main.getHazelcast().getLock(Queues.REDO_STATEMENT_MAP_LOCK);
 		boolean isLock = false;
 		try {
@@ -121,8 +117,8 @@ public class RecoveryManager {
 			} else {
 				throw new MessageException(NodeMessage.JEMC119E, Queues.REDO_STATEMENT_MAP);
 			}
-		}  catch (MessageRuntimeException e) {
-			throw new MessageException(e.getMessageInterface());
+		}  catch (JemException e) {
+			throw new MessageException(NodeMessage.JEMC043E, e);
 		} catch (Exception e) {
 			throw new MessageException(NodeMessage.JEMC119E, e, Queues.REDO_STATEMENT_MAP);
 		} finally {
@@ -182,15 +178,13 @@ public class RecoveryManager {
 					LogAppl.getInstance().emit(NodeMessage.JEMC172I);
 				} else {
 					// if not able to apply the redo statements
-					// gets all size of HC maps for jobs
+					// gets all size of HC maps 
 					// checking if the database is working well
 					// checks all tables because we could have a issue
 					// on a specific table
-					// FIXME
-					InputDBManager.getInstance().getSize();
-					RunningDBManager.getInstance().getSize();
-					OutputDBManager.getInstance().getSize();
-					RoutingDBManager.getInstance().getSize();
+					for (RecoverableManager manager : RecoverableManager.values()){
+						manager.getRecoverable().check();
+					}
 					
 					// if here, all queries went well
 					// then the node is operational

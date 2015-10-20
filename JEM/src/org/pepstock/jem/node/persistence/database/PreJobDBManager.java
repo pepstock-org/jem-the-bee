@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitMessage;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.log.MessageRuntimeException;
@@ -138,13 +139,29 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 * @see org.pepstock.jem.node.persistence.Recoverable#recover(org.pepstock.jem.node.persistence.RedoStatement)
 	 */
 	@Override
-	public void recover(RedoStatement statement) throws Exception {
-		// if action is delete, it calls the delete method
-		if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
-			delete(statement.getEntityId(), true);
+	public void recover(RedoStatement statement) throws JemException {
+		try {
+			// if action is delete, it calls the delete method
+			if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
+				delete(statement.getEntityId(), true);
+			}
+		} catch (Exception e) {
+			throw new JemException(e);
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.Recoverable#check()
+	 */
+	@Override
+	public void check() throws JemException {
+		try {
+			getSize();
+		} catch (SQLException e) {
+			throw new JemException(e);
+		}
+	}
+
 	/**
 	 * Deletes the jobs by jobs ID. Accepts also if an exception must be thrown or not.
 	 * This is done because the same method is called both from normal persistence and

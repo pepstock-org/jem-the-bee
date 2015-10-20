@@ -28,7 +28,7 @@ import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
- * utility class to call a deistributed task to add a per job in a queue
+ * Utility class to call a deistributed task to add a per job in a queue
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
@@ -47,6 +47,7 @@ public final class SubmitPreJob {
 	 * @throws SubmitException if any errors occurs
 	 */
 	public static void submit(HazelcastInstance instance, PreJob preJob) throws SubmitException{
+		//creates the task
 		DistributedTask<Boolean> task = new DistributedTask<Boolean>(new PutJobInQueue(preJob));
 		ExecutorService executorService = instance.getExecutorService();
 		// executes it

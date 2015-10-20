@@ -29,7 +29,7 @@ import com.hazelcast.core.IQueue;
  * Submits PreJob into queue
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.3
+ * @version 2.3
  * 
  */
 public class PutJobInQueue extends DefaultExecutor<Boolean>{
@@ -39,7 +39,8 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 	private PreJob preJob = null;
 	
 	/**
-	 * @param preJob
+	 * Creates the object using a prejob
+	 * @param preJob instance to submit
 	 */
 	public PutJobInQueue(PreJob preJob) {
 		super();
@@ -47,30 +48,35 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 	}
 
 	/**
-	 * Calls an executor to extract all information
-	 * @return bean with all info to show on UI
-	 * @throws ExecutorException 
-	 * @throws Exception occurs if errors
+	 * Calls an executor to put the pre job in queue
+	 * @return true if ok, otherwise false
+	 * @throws ExecutorException occurs if errors
 	 */
 	@Override
 	public Boolean execute() throws ExecutorException {
 		if (preJob != null){
 			try {
+				// before puts on DB
 				PreJobDBManager.getInstance().store(preJob);
+				// if OK, 
 				// puts the pre job in a queue for validating and moving to right QUEUE
-				// (input if is correct, output if is wrong)
 				IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
 				try {
 					jclCheckingQueue.put(preJob);
 				} catch (Exception e) {
+					// if the "put" wnet wrong,
+					// remove from db
 					PreJobDBManager.getInstance().delete(preJob);
+					// says to the client that is not able to submit the job
 					throw new ExecutorException(SubmitMessage.JEMW003E, e);
 				}
 				return Boolean.TRUE;
 			} catch (MessageException e) {
+				// says to the client that is not able to submit the job
 				throw new ExecutorException(e.getMessageInterface(), e);
 			}
 		}
+		// says to the client that is not able to submit the job
 		return Boolean.FALSE;
 	}
 }
