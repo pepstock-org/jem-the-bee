@@ -17,8 +17,10 @@
 package org.pepstock.jem.commands.util;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.pepstock.jem.Jcl;
@@ -198,7 +200,7 @@ public class NodeProperties {
 	/**
 	 * property that indicates the default multicast ip address {@value}. 
 	 */
-	public static final byte[] DEFAULT_MUTLICAST_ADDRESS = new byte[]{(byte) 233, 0, 0, 1};
+	public static final List<Integer> DEFAULT_MULTICAST_ADDRESS = Collections.unmodifiableList(Arrays.asList(233, 0, 0, 1));
 
 	/**
 	 * property that indicates the default user for the db where the hazelcast
@@ -462,8 +464,14 @@ public class NodeProperties {
 		if (propValue != null && !"".equals(propValue.trim())) {
 			return propValue;
 		} else {
-			InetAddress aa = InetAddress.getByAddress(DEFAULT_MUTLICAST_ADDRESS);
-			return aa.getHostAddress();
+			StringBuffer sb = new StringBuffer();
+			for (Integer byteA : DEFAULT_MULTICAST_ADDRESS){
+				if (sb.length() > 0){
+					sb.append(".");
+				}
+				sb.append(byteA);
+			}
+			return sb.toString();
 		}
 	}
 
