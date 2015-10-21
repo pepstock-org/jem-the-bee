@@ -124,14 +124,12 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 			Map<String, PreJob> prejobs = getAllItems(sql.getGetAllStatement());
 			LogAppl.getInstance().emit(NodeMessage.JEMC048I, String.valueOf(prejobs.size()), Queues.JCL_CHECKING_QUEUE);
 			for (PreJob prejob : prejobs.values()){
-				try {
 					jclCheckingQueue.put(prejob);
-				} catch (Exception e) {
-					throw new MessageException(SubmitMessage.JEMW003E, e);
-				}
 			}
 		} catch (SQLException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);
+		} catch (Exception e) {
+			throw new MessageException(SubmitMessage.JEMW003E, e);
 		}
 	}
 

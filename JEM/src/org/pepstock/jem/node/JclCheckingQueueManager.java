@@ -136,7 +136,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			// seconds and then leaves
 			prejob = jclCheckingQueue.poll(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC163E);
+			LogAppl.getInstance().emit(NodeMessage.JEMC163E, e);
 		}
 		return prejob;
 	}

@@ -35,7 +35,7 @@ public final class SetURLFactory {
 	/**
 	 * Installs the JEM URL factory, checking if is already done
 	 */
-	public synchronized static void install(){
+	public static synchronized void install(){
 		if (!installed){
 			// add JEM url handler factory if the user will use
 			// JEM url to add JCL content from GFS of JEM

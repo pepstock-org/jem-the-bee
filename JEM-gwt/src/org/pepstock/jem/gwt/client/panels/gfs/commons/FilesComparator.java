@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.gfs.commons;
 
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -45,13 +46,13 @@ public class FilesComparator extends IndexedColumnComparator<GfsFile> {
 	public int compare(GfsFile o1, GfsFile o2) {
 		int diff = 0;
 		switch(getIndex()) {
-			case 1:
+			case ColumnIndex.COLUMN_2:
 				diff = sortByLength(o1, o2);
 				break;
-			case 2:
+			case ColumnIndex.COLUMN_3:
 				diff = sortByLastModified(o1, o2);
 				break;
-			case 3:
+			case ColumnIndex.COLUMN_4:
 				diff = sortByPath(o1, o2);
 				break;				
 			default:

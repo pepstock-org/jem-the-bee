@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.administration.workload.inspector;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -47,28 +48,28 @@ public class NodesComparator extends IndexedColumnComparator<LightMemberSample> 
 	public int compare(LightMemberSample o1, LightMemberSample o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of node
 				diff = o1.getMemberLabel().compareTo(o2.getMemberLabel());
 				break;
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by label of node
 				diff = o1.getKey().compareTo(o2.getKey());
 				break;
 				
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by host name
 				diff = (int)(o1.getNumberOfJCLCheck() - o2.getNumberOfJCLCheck());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by host name
 				diff = (int)(o1.getTotalNumberOfJCLCheck() - o2.getTotalNumberOfJCLCheck());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by host name
 				diff = (int)(o1.getNumberOfJOBSubmitted() - o2.getNumberOfJOBSubmitted());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by host name
 				diff = (int)(o1.getTotalNumberOfJOBSubmitted() - o2.getTotalNumberOfJOBSubmitted());
 				break;

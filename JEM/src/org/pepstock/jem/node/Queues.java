@@ -42,16 +42,6 @@ public final class Queues {
 	public static final String JCL_CHECKING_QUEUE_LOCK = "org.pepstock.jem.jcl.checking.lock";
 
 	/**
-	 * Key for the backup map used inside of Hazelcast for JclChecking queue
-	 */
-	public static final String JCL_CHECKING_MAP = "org.pepstock.jem.jcl.checking-map";
-//	
-//	/**
-//	 * Lock to use to lock the JCL_CHECKING_MAP
-//	 */
-//	public static final String JCL_CHECKING_MAP_LOCK = "org.pepstock.jem.jcl.checking-map.lock";
-
-	/**
 	 * Key for the collection used to collect all jobs which are waiting for
 	 * execution. This is standard input queue. The collection is a Map with
 	 * following structure:<br>

@@ -16,11 +16,12 @@
 */
 package org.pepstock.jem.node.persistence;
 
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.persistence.database.PreJobDBManager;
 
 /**
- * Enumaration of Recoverable managers, related to own HZ queue/map name.
+ * Enumeration of Recoverable managers, related to own HZ queue/map name.
  * @author Andrea "Stock" Stocchero
  * @version 2.3
  */
@@ -86,9 +87,9 @@ public enum RecoverableManager {
 	/**
 	 * Calls the recover method of recoverable manager, searching by HZ queue name.
 	 * @param statement statement to redo
-	 * @throws Exception if any error occurs applying the redo statement on DB
+	 * @throws JemException if any error occurs applying the redo statement on DB
 	 */
-	public static void recover(RedoStatement statement) throws Exception{
+	public static void recover(RedoStatement statement) throws JemException{
 		for (RecoverableManager rec : values()){
 			if (rec.getQueueName().equalsIgnoreCase(statement.getQueueName())){
 				rec.getRecoverable().recover(statement);

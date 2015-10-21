@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.notify;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with toast already sent
@@ -45,19 +46,19 @@ public class NotifyComparator extends IndexedColumnComparator<ToastMessage> {
 	public int compare(ToastMessage o1, ToastMessage o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0:
+			case ColumnIndex.COLUMN_1:
 				// sorts by date of toast
 				diff = o1.getDate().compareTo(o2.getDate());
 				break;
-			case 1:
+			case ColumnIndex.COLUMN_2:
 				// sorts by level (info, warning or error) of toast
 				diff = o1.getLevel().getIntLevel() - o2.getLevel().getIntLevel();
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by title
 				diff = o1.getTitle().compareTo(o2.getTitle());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by message
 				diff = o1.getMessage().compareTo(o2.getMessage());
 				break;

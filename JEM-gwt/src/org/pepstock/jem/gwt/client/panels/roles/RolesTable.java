@@ -92,7 +92,7 @@ public class RolesTable extends AbstractTable<Role> {
 			}
 		});
 				
-		table.setColumnWidth(checkColumn, 23, Unit.PX);
+		table.setColumnWidth(checkColumn, AbstractTable.DEFAULT_CHECK_COLUMN_WIDTH, Unit.PX);
 		table.addColumn(checkColumn, checkHeader);
 
 		AnchorTextColumn<Role> name = new AnchorTextColumn<Role>() {

@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.administration.current;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -44,39 +45,39 @@ public class NodesComparator extends IndexedColumnComparator<LightMemberSample> 
 	public int compare(LightMemberSample o1, LightMemberSample o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of node
 				diff = o1.getMemberLabel().compareTo(o2.getMemberLabel());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by input
 				diff = (int)(o1.getMapsStats().get(Queues.INPUT_QUEUE).getOwnedEntryCount() - o2.getMapsStats().get(Queues.INPUT_QUEUE).getOwnedEntryCount());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by input memory
 				diff = (int)(o1.getMapsStats().get(Queues.INPUT_QUEUE).getOwnedEntryMemoryCost() - o2.getMapsStats().get(Queues.INPUT_QUEUE).getOwnedEntryMemoryCost());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by running
 				diff = (int)(o1.getMapsStats().get(Queues.RUNNING_QUEUE).getOwnedEntryCount() - o2.getMapsStats().get(Queues.RUNNING_QUEUE).getOwnedEntryCount());
 				break;
-			case 6: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by running memory
 				diff = (int)(o1.getMapsStats().get(Queues.RUNNING_QUEUE).getOwnedEntryMemoryCost() - o2.getMapsStats().get(Queues.RUNNING_QUEUE).getOwnedEntryMemoryCost());
 				break;
-			case 7: 
+			case ColumnIndex.COLUMN_8: 
 				// sorts by output
 				diff = (int)(o1.getMapsStats().get(Queues.OUTPUT_QUEUE).getOwnedEntryCount() - o2.getMapsStats().get(Queues.OUTPUT_QUEUE).getOwnedEntryCount());
 				break;
-			case 8: 
+			case ColumnIndex.COLUMN_9: 
 				// sorts by output memory
 				diff = (int)(o1.getMapsStats().get(Queues.OUTPUT_QUEUE).getOwnedEntryMemoryCost() - o2.getMapsStats().get(Queues.OUTPUT_QUEUE).getOwnedEntryMemoryCost());
 				break;
-			case 9: 
+			case ColumnIndex.COLUMN_10: 
 				// sorts by routing
 				diff = (int)(o1.getMapsStats().get(Queues.ROUTING_QUEUE).getOwnedEntryCount() - o2.getMapsStats().get(Queues.ROUTING_QUEUE).getOwnedEntryCount());
 				break;
-			case 10: 
+			case ColumnIndex.COLUMN_11: 
 				// sorts by routing memory
 				diff = (int)(o1.getMapsStats().get(Queues.ROUTING_QUEUE).getOwnedEntryMemoryCost() - o2.getMapsStats().get(Queues.ROUTING_QUEUE).getOwnedEntryMemoryCost());
 				break;

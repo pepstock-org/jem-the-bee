@@ -69,8 +69,7 @@ public final class ResponseBuilder {
 	 * @return a response builder
 	 */
 	static ResponseBuilder media(String mediaType) {
-		ResponseBuilder replacer = new ResponseBuilder(mediaType);
-		return replacer;
+		return new ResponseBuilder(mediaType);
 	}
 
 	/**

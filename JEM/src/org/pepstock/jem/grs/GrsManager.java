@@ -66,7 +66,7 @@ public class GrsManager {
 	 * @param hInstance hazelcast instance
 	 * @return manager instance
 	 */
-	public synchronized static GrsManager createInstance(HazelcastInstance hInstance) {
+	public static synchronized GrsManager createInstance(HazelcastInstance hInstance) {
 		if (INSTANCE == null){
 			INSTANCE = new GrsManager(hInstance);		
 		}

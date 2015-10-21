@@ -17,6 +17,7 @@
 package org.pepstock.jem.gwt.client.panels.administration.queues;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -46,35 +47,35 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 	public int compare(DetailedQueueData o1, DetailedQueueData o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of queue
 				diff = o1.getFullName().compareTo(o2.getFullName());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by entries
 				diff = (int)(o1.getEntries() - o2.getEntries());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by hits
 				diff = (int)(o1.getHits() - o2.getHits());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by locked
 				diff = (int)(o1.getLocked() - o2.getLocked());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by locks wait
 				diff = (int)(o1.getLockWaits() - o2.getLockWaits());
 				break;
-			case 6: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by gets
 				diff = (int)(o1.getGets() - o2.getGets());
 				break;
-			case 7: 
+			case ColumnIndex.COLUMN_8: 
 				// sorts by puts
 				diff = (int)(o1.getPuts() - o2.getPuts());
 				break;
-			case 8: 
+			case ColumnIndex.COLUMN_9: 
 				// sorts by removes
 				diff = (int)(o1.getRemoves() - o2.getRemoves());
 				break;

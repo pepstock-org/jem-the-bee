@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.administration.certificates;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.security.CertificateEntry;
+import org.pepstock.jem.util.ColumnIndex;
 
 
 /**
@@ -45,23 +46,23 @@ public class CertificateEntriesComparator extends IndexedColumnComparator<Certif
 	public int compare(CertificateEntry o1, CertificateEntry o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by alias
 				diff = o1.getAlias().compareTo(o2.getAlias());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by issuer
 				diff = o1.getIssuer().compareTo(o2.getIssuer());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by subject
 				diff = o1.getSubject().compareTo(o2.getSubject());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by not before
 				diff = o1.getNotBefore().compareTo(o2.getNotBefore());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by not after 
 				diff = o1.getNotAfter().compareTo(o2.getNotAfter());
 				break;

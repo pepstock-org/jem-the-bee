@@ -114,7 +114,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 			}
 		});
 				
-		table.setColumnWidth(checkColumn, 23, Unit.PX);
+		table.setColumnWidth(checkColumn, AbstractTable.DEFAULT_CHECK_COLUMN_WIDTH, Unit.PX);
 		table.addColumn(checkColumn, checkHeader);
 
 		

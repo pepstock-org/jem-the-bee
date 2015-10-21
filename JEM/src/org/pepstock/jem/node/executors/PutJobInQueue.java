@@ -60,16 +60,7 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 				PreJobDBManager.getInstance().store(preJob);
 				// if OK, 
 				// puts the pre job in a queue for validating and moving to right QUEUE
-				IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
-				try {
-					jclCheckingQueue.put(preJob);
-				} catch (Exception e) {
-					// if the "put" wnet wrong,
-					// remove from db
-					PreJobDBManager.getInstance().delete(preJob);
-					// says to the client that is not able to submit the job
-					throw new ExecutorException(SubmitMessage.JEMW003E, e);
-				}
+				putInQueue(preJob);
 				return Boolean.TRUE;
 			} catch (MessageException e) {
 				// says to the client that is not able to submit the job
@@ -78,5 +69,23 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 		}
 		// says to the client that is not able to submit the job
 		return Boolean.FALSE;
+	}
+	
+	/**
+	 * Puts Pre-job in Hazelcast queue
+	 * @param preJob pre job instance to add to queue
+	 * @throws ExecutorException if any error occurs
+	 */
+	private void putInQueue(PreJob preJob) throws ExecutorException{
+		IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
+		try {
+			jclCheckingQueue.put(preJob);
+		} catch (Exception e) {
+			// if the "put" went wrong,
+			// remove from db
+			PreJobDBManager.getInstance().delete(preJob);
+			// says to the client that is not able to submit the job
+			throw new ExecutorException(SubmitMessage.JEMW003E, e);
+		}
 	}
 }

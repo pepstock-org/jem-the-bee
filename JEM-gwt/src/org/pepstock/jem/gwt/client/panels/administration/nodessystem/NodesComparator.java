@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.administration.nodessystem;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -47,33 +48,33 @@ public class NodesComparator extends IndexedColumnComparator<LightMemberSample> 
 	public int compare(LightMemberSample o1, LightMemberSample o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of node
 				diff = o1.getMemberLabel().compareTo(o2.getMemberLabel());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by cpu
 				double totCpu = o1.getCpuPercent() - o2.getCpuPercent();
 				diff = (int)(totCpu * 10000);
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by memory avail
 				diff = (int)(o1.getMemoryAvailable() - o2.getMemoryAvailable());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by memory free
 				diff = (int)(o1.getMemoryFree() - o2.getMemoryFree());
 				break;
-			case 6: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by process cpu 
 				double totPCpu = o1.getProcessCpuPercent() - o2.getProcessCpuPercent(); 
 				diff = (int)(totPCpu*10000);
 				break;
-			case 7: 
+			case ColumnIndex.COLUMN_8: 
 				// sorts by process tot cpu
 				diff = (int)(o1.getProcessTotalCpu() - o2.getProcessTotalCpu());
 				break;
-			case 8: 
+			case ColumnIndex.COLUMN_9: 
 				// sorts by process memory used
 				diff = (int)(o1.getProcessMemoryUsed() - o2.getProcessMemoryUsed());
 				break;

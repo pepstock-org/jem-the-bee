@@ -464,7 +464,7 @@ public class NodeProperties {
 		if (propValue != null && !"".equals(propValue.trim())) {
 			return propValue;
 		} else {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (Integer byteA : DEFAULT_MULTICAST_ADDRESS){
 				if (sb.length() > 0){
 					sb.append(".");

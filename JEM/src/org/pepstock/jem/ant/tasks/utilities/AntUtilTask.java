@@ -39,7 +39,7 @@ public abstract class AntUtilTask extends StepJava {
 	 * @throws IOException
 	 *             if IO error occurs
 	 */
-	public final static StringBuilder read(InputStream is) throws IOException {
+	public static final StringBuilder read(InputStream is) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		Scanner sc = new Scanner(is, CharSet.DEFAULT_CHARSET_NAME);
 		sc.useDelimiter("\n");

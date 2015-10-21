@@ -41,7 +41,7 @@ public class GrsRequestLock extends DefaultRequestLock {
 
 	private static final long serialVersionUID = 1L;
 
-	transient private CountDownLatch countDown = null;
+	private transient CountDownLatch countDown = null;
 	
 	private boolean isWaitingForLocks = false;
 

@@ -127,13 +127,6 @@ public final class LightMemberSampleColumns {
 	public static final TextColumn<LightMemberSample> USER_PREF_MEMORY_COST_SORTABLE = new MemoryCostSortableInternalColumn(Queues.USER_PREFERENCES_MAP);
 
 	/**
-	 * To avoid any instantiation
-	 */
-    private LightMemberSampleColumns() {
-
-    }
-
-	/**
 	 * PID (unsortable)
 	 */
 	public static final TextColumn<LightMemberSample> PID = new TextColumn<LightMemberSample>() {
@@ -180,6 +173,13 @@ public final class LightMemberSampleColumns {
 		TIME_SORTABLE.setSortable(true);
 	}
 
+	/**
+	 * To avoid any instantiation
+	 */
+    private LightMemberSampleColumns() {
+
+    }
+	
 	/*
 	 * Implementations  
 	 */
