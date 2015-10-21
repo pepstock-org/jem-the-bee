@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.roles.inspector.permissions;
 
 import java.util.Iterator;
 
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gwt.client.panels.roles.inspector.commons.CheckBoxPermissionsPanel;
 import org.pepstock.jem.gwt.client.panels.roles.inspector.commons.PermissionItem;
 import org.pepstock.jem.node.security.Permissions;
@@ -37,11 +38,11 @@ public class GfsPermissionsPanel extends CheckBoxPermissionsPanel {
 
 	// creates all check boxes
 	private PermissionItem gfsAll = new PermissionItem("All", "allows to see all global file system folders",Permissions.GFS_STAR);
-	private PermissionItem gfsData = new PermissionItem("Data","allows to see data folder", Permissions.GFS_DATA);
-	private PermissionItem gfsSource = new PermissionItem("Sources", "allows to see sources folder",Permissions.GFS_SOURCES);
-	private PermissionItem gfsLibrary = new PermissionItem("Library","allows to see library folder", Permissions.GFS_LIBRARY);
-	private PermissionItem gfsClasspath = new PermissionItem("Classpath","allows to see classpath folder", Permissions.GFS_CLASS);
-	private PermissionItem gfsBinary = new PermissionItem("Binary","allows to see binary folder", Permissions.GFS_BINARY);
+	private PermissionItem gfsData = new PermissionItem(GfsFileType.DATA_NAME,"allows to see data folder", Permissions.GFS_DATA);
+	private PermissionItem gfsSource = new PermissionItem(GfsFileType.SOURCE_NAME, "allows to see source folder",Permissions.GFS_SOURCE);
+	private PermissionItem gfsLibrary = new PermissionItem(GfsFileType.LIBRARY_NAME,"allows to see library folder", Permissions.GFS_LIBRARY);
+	private PermissionItem gfsClasspath = new PermissionItem(GfsFileType.CLASS_NAME,"allows to see class folder", Permissions.GFS_CLASS);
+	private PermissionItem gfsBinary = new PermissionItem(GfsFileType.BINARY_NAME,"allows to see binary folder", Permissions.GFS_BINARY);
 	
 
 	/**
@@ -139,7 +140,7 @@ public class GfsPermissionsPanel extends CheckBoxPermissionsPanel {
 	private PermissionItem getPermissionItemByPermission(String permission){
 		if (permission.equalsIgnoreCase(Permissions.GFS_DATA)){
 			return gfsData;
-		} else if (permission.equalsIgnoreCase(Permissions.GFS_SOURCES)){
+		} else if (permission.equalsIgnoreCase(Permissions.GFS_SOURCE)){
 			return gfsSource;
 		} else if (permission.equalsIgnoreCase(Permissions.GFS_LIBRARY)){
 			return gfsLibrary;

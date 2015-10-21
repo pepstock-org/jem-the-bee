@@ -34,6 +34,7 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.SetURLFactory;
 import org.pepstock.jem.factories.JclFactoryException;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
 import org.pepstock.jem.node.persistence.database.PreJobDBManager;
@@ -63,6 +64,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	private static final long INTERVAL_IF_QUEUE_IS_EMPTY = 2 * TimeUtils.SECOND;
 			
 	private static final long INTERVAL_IF_NODE_IS_NOT_OPERATIONAL =	15 * TimeUtils.SECOND;	
+	
+	private static final StringPermission JOB_SUBMIT_PERMISSION = new StringPermission(Permissions.JOBS_SUBMIT);
 
 	private boolean isDown = false;
 
@@ -165,31 +168,45 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			// assigned to user
 			List<Role> myroles = loadRoles(user);
 			// checks job submit permission
-			StringPermission jobSubmitPermission = new StringPermission(Permissions.JOBS_SUBMIT);
 			boolean allowedJobSubmit = false;
+			// gets GFS tag
+			String gfs = Factory.getGfsFromURL(prejob);
+			// checks GFS tag permission
+			boolean allowedGFSbyURL = gfs == null ? true : false;
 			// scans all roles of the job user
 			for (Role role : myroles) {
 				// administrators can always submit
 				if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)) {
 					allowedJobSubmit = true;
+					allowedGFSbyURL = true;
 				} else {
 					// scans the permissions of role
 					for (String permission : role.getPermissions()) {
 						StringPermission perm = new StringPermission(permission);
 						// if not yet allowed, implies the permission
 						if (!allowedJobSubmit){
-							allowedJobSubmit = perm.implies(new StringPermission(Permissions.JOBS_SUBMIT));
+							allowedJobSubmit = perm.implies(JOB_SUBMIT_PERMISSION);
+						}
+						if (!allowedGFSbyURL){
+							String permissionGfs = GfsFileType.getPermission(gfs);
+							if (permissionGfs != null){
+								allowedGFSbyURL = perm.implies(new StringPermission(permissionGfs));
+							}
 						}
 					}
 				}
 				// if allowed exit without continuing scanning all roles
-				if (allowedJobSubmit){
+				if (allowedJobSubmit && allowedGFSbyURL){
 					break;
 				}
 			}
 			// if not authorized, EXCEPTION
 			if (!allowedJobSubmit){
-				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), jobSubmitPermission);
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), Permissions.JOBS_SUBMIT);
+			}
+			// if not authorized, EXCEPTION
+			if (!allowedGFSbyURL){
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), GfsFileType.getPermission(gfs));
 			}
 
 			// checks if job has different users between job and jcl.

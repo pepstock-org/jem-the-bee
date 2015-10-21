@@ -83,7 +83,7 @@ public class Gfs extends SplitLayoutPanel implements InspectListener<String>, Re
 		} else if (option.equalsIgnoreCase(TreeOptions.LIBRARY_OPTION)) {
 			viewStack.showStack(2);
 			lib.load();
-		} else if (option.equalsIgnoreCase(TreeOptions.SOURCES_OPTION)) {
+		} else if (option.equalsIgnoreCase(TreeOptions.SOURCE_OPTION)) {
 			viewStack.showStack(3);
 			src.load();
 		} else if (option.equalsIgnoreCase(TreeOptions.CLASS_OPTION)) {

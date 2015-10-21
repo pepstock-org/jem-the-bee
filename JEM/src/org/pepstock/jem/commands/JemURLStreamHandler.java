@@ -42,8 +42,10 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
  */
 public final class JemURLStreamHandler extends URLStreamHandler {
 	
-	// separator of schemes
-	private static final String SEMICOLONS = ":";
+	/**
+	 * Default schemes separator
+	 */
+	public static final String SEMICOLONS = ":";
 	// jar url protocol
 	private static final String JAR_PROTOCOL = "jar:";
 	

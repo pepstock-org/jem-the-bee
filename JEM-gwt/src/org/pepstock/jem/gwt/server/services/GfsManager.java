@@ -278,7 +278,7 @@ public class GfsManager extends DefaultService {
 			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.SOURCE:
-			gfsPermission = Permissions.GFS_SOURCES;
+			gfsPermission = Permissions.GFS_SOURCE;
 			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.CLASS:

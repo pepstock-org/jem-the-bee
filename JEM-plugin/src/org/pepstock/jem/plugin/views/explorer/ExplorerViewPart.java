@@ -169,7 +169,7 @@ public class ExplorerViewPart extends LoginViewPart {
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.DATA), Permissions.GFS_DATA);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.LIBRARY), Permissions.GFS_LIBRARY);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.CLASS), Permissions.GFS_CLASS);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.SOURCE), Permissions.GFS_SOURCES);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.SOURCE), Permissions.GFS_SOURCE);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.BINARY), Permissions.GFS_BINARY);
 						}
 					});

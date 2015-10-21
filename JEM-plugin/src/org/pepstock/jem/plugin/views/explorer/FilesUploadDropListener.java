@@ -88,7 +88,7 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 				case GfsFileType.LIBRARY:
 					return Client.getInstance().isAuthorized(Permissions.GFS_LIBRARY);
 				case GfsFileType.SOURCE:
-					return Client.getInstance().isAuthorized(Permissions.GFS_SOURCES);
+					return Client.getInstance().isAuthorized(Permissions.GFS_SOURCE);
 				case GfsFileType.CLASS:
 					return Client.getInstance().isAuthorized(Permissions.GFS_CLASS);
 				case GfsFileType.BINARY:

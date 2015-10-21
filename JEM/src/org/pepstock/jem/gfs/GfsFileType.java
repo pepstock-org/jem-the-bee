@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.pepstock.jem.node.security.Permissions;
+
 
 /**
  * @author Simone "Busy" Businaro
@@ -144,5 +146,25 @@ public final class GfsFileType {
 			break;
 		}
 		return name;
+	}
+	
+	/**
+	 * Returns the type of path of GFS folder.
+	 * @param name data name (DATA, SOURCE, LIBRARY, CLASS, BINARY).
+	 * @return the type of path of GFS folder.
+	 */
+	public static final String getPermission(String name){
+		if (GfsFileType.DATA_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_DATA;
+		} else if (GfsFileType.LIBRARY_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_LIBRARY;
+		} else if (GfsFileType.SOURCE_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_SOURCE;
+		} else if (GfsFileType.CLASS_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_CLASS;
+		} else if (GfsFileType.BINARY_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_BINARY;
+		}
+		return null;
 	}
 }

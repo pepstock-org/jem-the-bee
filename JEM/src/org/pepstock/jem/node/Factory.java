@@ -23,8 +23,10 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.commands.JemURLStreamHandler;
 import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.factories.JclFactory;
 import org.pepstock.jem.factories.JclFactoryException;
@@ -81,7 +83,6 @@ public class Factory {
 		// sets JCL to JOB object, inside of PreJob container
 		prejob.getJob().setJcl(jcl);
 		prejob.getJob().setName(jcl.getJobName());
-
 	}
 
 	/**
@@ -150,6 +151,19 @@ public class Factory {
 				throw new JclFactoryException(prejob.getUrl(), e);
 			}
 		}
+	}
+	
+	/**
+	 * Gets the GFS tag from JEM URL, if there is
+	 * @param prejob job to submit
+	 * @return the GFS tag from JEM URL otherwise null.
+	 */
+	static String getGfsFromURL(PreJob prejob){
+		// only URL is not null and url is JEM URL
+		if (prejob.getUrl() != null && prejob.getUrl().startsWith(JemURLStreamHandlerFactory.PROTOCOL)){
+			return StringUtils.substringBetween(prejob.getUrl(), JemURLStreamHandler.SEMICOLONS);
+		}
+		return null;
 	}
 	
 }

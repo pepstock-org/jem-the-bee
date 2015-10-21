@@ -240,7 +240,7 @@ public class SecurityUtils {
 		} else if(fileName.startsWith(CLASS_PATH)){
 			return Permissions.GFS_CLASS;
 		} else if(fileName.startsWith(SOURCE_PATH)){
-			return Permissions.GFS_SOURCES;
+			return Permissions.GFS_SOURCE;
 		} 
 		return Permissions.GFS_LIBRARY;
 	}

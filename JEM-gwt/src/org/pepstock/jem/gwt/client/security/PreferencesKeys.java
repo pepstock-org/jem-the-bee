@@ -51,7 +51,7 @@ public class PreferencesKeys {
 	
 	public static final String EXPLORER_SEARCH_LIBRARY = "explorer.search.library";
 	
-	public static final String EXPLORER_SEARCH_SOURCES = "explorer.search.sources";
+	public static final String EXPLORER_SEARCH_SOURCES = "explorer.search.source";
 	
 	public static final String EXPLORER_SEARCH_CLASS = "explorer.search.class";
 	
@@ -83,7 +83,7 @@ public class PreferencesKeys {
 	
 	public static final String EXPLORER_SORT_LIBRARY = "explorer.sort.library";
 	
-	public static final String EXPLORER_SORT_SOURCES = "explorer.sort.sources";
+	public static final String EXPLORER_SORT_SOURCES = "explorer.sort.source";
 	
 	public static final String EXPLORER_SORT_CLASS = "explorer.sort.class";
 	
