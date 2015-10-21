@@ -23,6 +23,11 @@ package org.pepstock.jem.util;
 public final class Numbers {
 	
 	/**
+	 * Represents the NUMBER 0
+	 */
+	public static final int N_0 = 0;
+	
+	/**
 	 * Represents the NUMBER 1
 	 */
 	public static final int N_1 = 1;

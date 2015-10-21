@@ -30,6 +30,7 @@ import org.pepstock.catalog.gdg.GDGUtil;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -88,11 +89,11 @@ public class Rebuild extends Command {
 		}
 			
 		// we must have only 1 object
-		if (object.length == 1) {
+		if (object.length == Numbers.N_1) {
 			// sets gdg path
-			setDDName(object[0].toString());
+			setDDName(object[ELEMENT_1].toString());
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 
@@ -169,7 +170,7 @@ public class Rebuild extends Command {
 			if (!fileName.equalsIgnoreCase(Root.ROOT_FILE_NAME)){
 				
 				// the filenames are always 5 chars equals to generation (a number as #####)
-				String key = StringUtils.left(fileName, 5);
+				String key = StringUtils.left(fileName, GDGUtil.GDG_VERSION_DIGITS);
 				if (isByRoot()){
 					// if master is root ...
 					if (root.getProperties().containsKey(key)){

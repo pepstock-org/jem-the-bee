@@ -44,6 +44,14 @@ public final class ImplementationsContainer {
 	
 	private static final int LEVEL_WITHOUT_ID = 4;
 	
+	private static final int ELEMENT_1 = 0;
+
+	private static final int ELEMENT_2 = 1;
+
+	private static final int ELEMENT_3 = 2;
+	
+	private static final int ELEMENT_4 = 3;
+	
 	// format to check the reference: target, task, id and data description
 	private static final MessageFormat MESSAGE_FORMAT = new MessageFormat("*.{0}.{1}.{2}.{3}");
 
@@ -175,11 +183,11 @@ public final class ImplementationsContainer {
 			if (levels.length == LEVEL_WITH_ID){
 				return reference;
 			} else if (levels.length == LEVEL_WITHOUT_ID){
-				return  levels[0] + LEVEL_SEPARATOR + // *
-						levels[1] + LEVEL_SEPARATOR + // target
-						levels[2] + LEVEL_SEPARATOR + // task
+				return  levels[ELEMENT_1] + LEVEL_SEPARATOR + // *
+						levels[ELEMENT_2] + LEVEL_SEPARATOR + // target
+						levels[ELEMENT_3] + LEVEL_SEPARATOR + // task
 						DataDescriptionStep.DEFAULT_ID + LEVEL_SEPARATOR + // id
-						levels[3]; //dd
+						levels[ELEMENT_4]; //dd
 			}
 		}
 		return null;

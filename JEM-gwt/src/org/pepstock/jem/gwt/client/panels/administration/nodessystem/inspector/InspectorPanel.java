@@ -33,6 +33,7 @@ import org.pepstock.jem.gwt.client.panels.components.TableContainer;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightMemberSampleComparator;
 import org.pepstock.jem.node.stats.LightSample;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -125,7 +126,7 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     	    		
     	    		data.setMachineCpuPercent(msample.getCpuPercent()*100);
     	    		data.setProcessCpuPercent(msample.getProcessCpuPercent()*100);
-    	    		data.setProcessMemoryUtil((long) ((double)msample.getProcessMemoryUsed()/1024d/1024d));
+    	    		data.setProcessMemoryUtil((long) ((double)msample.getProcessMemoryUsed()/(double)MemorySize.MB));
     	    		
     	    		listData.add(data);
     				list.add(msample);

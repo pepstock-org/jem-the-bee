@@ -25,6 +25,7 @@ import org.pepstock.catalog.gdg.GDGUtil;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * GDG command to define a new GDG. Creates a new directory for GDG (passed by command) and creates a empty generation 0 if asked.
@@ -70,11 +71,11 @@ public class Define extends Command {
 			setNoEmpty(false);
 		}
 		// we must have only 1 object
-		if (object.length == 1) {
+		if (object.length == Numbers.N_1) {
 			// sets gdg path
-			setDDName(object[0].toString());
+			setDDName(object[ELEMENT_1].toString());
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 

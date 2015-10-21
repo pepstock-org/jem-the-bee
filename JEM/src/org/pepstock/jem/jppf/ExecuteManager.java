@@ -47,6 +47,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
+import org.pepstock.jem.util.Numbers;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -175,7 +176,7 @@ public class ExecuteManager {
 				// calculate char
 				if (delimiter.toLowerCase().startsWith("0x")){
 					delimiter = StringUtils.substringAfter(delimiter.toLowerCase(), "0x");
-					splitter = (char)Integer.parseInt(delimiter, 16);
+					splitter = (char)Integer.parseInt(delimiter, Numbers.N_16);
 				} else {
 					// if uses a escape java char
 					splitter = StringEscapeUtils.unescapeJava(delimiter).charAt(0);

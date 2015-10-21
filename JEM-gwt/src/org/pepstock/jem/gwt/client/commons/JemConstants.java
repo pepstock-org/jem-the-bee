@@ -50,20 +50,6 @@ public final class JemConstants {
 	public static final NumberFormat ENTRIES_FORMAT = NumberFormat.getFormat("###,###,##0");
 	
 	/*
-	 * BASE TYPES
-	 */
-	
-	/**
-	 * kilobyte
-	 */
-	public static final long KB = 1024;
-	
-	/**
-	 * megabyte
-	 */
-	public static final long MB = KB * 1024;
-	
-	/*
 	 * STRINGs
 	 */
 	

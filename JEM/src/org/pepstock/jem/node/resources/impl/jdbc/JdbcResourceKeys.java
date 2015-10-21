@@ -72,12 +72,6 @@ public final class JdbcResourceKeys {
 	));
 
 	/**
-	 * To avoid any instantiation
-	 */
-	private JdbcResourceKeys() {
-	}
-    
-	/**
 	 * List of all configuration properties.
 	 */
 	public static final List<String> PROPERTIES_ALL = Collections.unmodifiableList(Arrays.asList(
@@ -93,4 +87,10 @@ public final class JdbcResourceKeys {
 		    PROP_MINIDLE,
 		    PROP_INITIALSIZE
 	));
+
+	/**
+	 * To avoid any instantiation
+	 */
+	private JdbcResourceKeys() {
+	}
 }

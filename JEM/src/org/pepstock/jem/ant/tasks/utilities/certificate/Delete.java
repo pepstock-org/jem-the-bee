@@ -27,6 +27,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -60,11 +61,11 @@ public class Delete extends Command {
 		// parse command
 		Object[] object = FORMAT.parse(commandLine);
 
-		if (object.length == 1) {
-			setAlias(object[0].toString());
+		if (object.length == Numbers.N_1) {
+			setAlias(object[ELEMENT_1].toString());
 		} else {
 			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage()
-					.getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+					.getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 

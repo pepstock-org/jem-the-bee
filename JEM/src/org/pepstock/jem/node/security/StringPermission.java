@@ -26,6 +26,7 @@ import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.util.CollectionUtils;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Extension of wildcard permission of SHIRO, necessary to implement the regexpression premission.
@@ -98,9 +99,9 @@ public class StringPermission extends WildcardPermission implements Permission, 
 		String[] permissionParts = permission.split(RegExpPermission.PART_DIVIDER_TOKEN);
 
 		// if there is only one permission (only a token) adds the token
-		if (permissionParts.length == 1){
+		if (permissionParts.length == Numbers.N_1){
 			localParts.add(permissionParts[0]);	
-		} else if (permissionParts.length == 2){
+		} else if (permissionParts.length == Numbers.N_2){
 			// if there are 2 tokens, adds the 2 tokens
 			localParts.add(permissionParts[0]);
 			localParts.add(permissionParts[1]);
@@ -110,7 +111,7 @@ public class StringPermission extends WildcardPermission implements Permission, 
 			localParts.add(permissionParts[1]);
 			// joins all the rest in a unique part
 			StringBuilder lastPart = new StringBuilder();
-			for (int i=2; i<permissionParts.length; i++){
+			for (int i=Numbers.N_2; i<permissionParts.length; i++){
 				lastPart.append(permissionParts[i]);
 			}
 			localParts.add(lastPart.toString());

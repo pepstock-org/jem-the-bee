@@ -46,6 +46,8 @@ import com.hazelcast.core.IMap;
  * 
  */
 public class RecoveryManager {
+	
+	private static final long HEALTH_CHECK_INTERVAL = 15 * TimeUtils.SECOND;
 
 	private static final RecoveryManager INSTANCE = new RecoveryManager();
 
@@ -58,7 +60,7 @@ public class RecoveryManager {
 		String className = FilenameUtils.getExtension(this.getClass().getName());
 		// schedules the time
 		Timer timer = new Timer(className, false);
-		timer.schedule(new PersistenceHealthCheck(), 1, 15 * TimeUtils.SECOND);
+		timer.schedule(new PersistenceHealthCheck(), 1, HEALTH_CHECK_INTERVAL);
 	}
 
 	/**

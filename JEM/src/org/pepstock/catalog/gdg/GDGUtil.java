@@ -35,6 +35,11 @@ import org.pepstock.jem.util.CharSet;
  * 
  */
 public class GDGUtil {
+	
+	/**
+	 * Number of digits to represent a GDG version 
+	 */
+	public static final int GDG_VERSION_DIGITS = 5;
 
 	// format of GDG : pathname/#####. In JCL : pathname(####)
 	private static final String GDG_FORMAT = "{0}({1,number,integer})";
@@ -81,7 +86,7 @@ public class GDGUtil {
 			throw new IndexOutOfBoundsException(GDGMessage.JEMD005E.toMessage().getFormattedMessage(offset));
 		}
 		// formats the result, padding left with 0
-		return StringUtils.leftPad(String.valueOf(index), 5, "0");
+		return StringUtils.leftPad(String.valueOf(index), GDG_VERSION_DIGITS, "0");
 	}
 
 	/**

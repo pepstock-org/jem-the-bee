@@ -29,6 +29,7 @@ import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.MemorySize;
 import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.Scheduler;
@@ -247,7 +248,7 @@ public final class SystemActivity extends DefaultInspectorItem{
 				display = NumberFormat.getFormat("##0.00").format(result.getCpuPerc()*100) + " %";
 				layoutCpu.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_2, display);
 				
-				display = NumberFormat.getFormat("###,##0 MB").format((double)result.getMemory()/1024D/1024D);
+				display = NumberFormat.getFormat("###,##0 MB").format((double)result.getMemory()/(double)MemorySize.MB);
 				layoutMem.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_2, display);
 
 				layoutProc.removeAllRows();
@@ -292,7 +293,7 @@ public final class SystemActivity extends DefaultInspectorItem{
 	    layoutProc.setHTML(row, ColumnIndex.COLUMN_1, indent.toString()+process.getCommand());
 	    layoutProc.setHTML(row, ColumnIndex.COLUMN_2, String.valueOf(process.getPid()));
 	    layoutProc.setHTML(row, ColumnIndex.COLUMN_3, NumberFormat.getFormat("###,###,##0 ms").format(process.getCpu()));
-	    layoutProc.setHTML(row, ColumnIndex.COLUMN_4, NumberFormat.getFormat("###,##0 MB").format((double)process.getMemory()/1024D/1024D));
+	    layoutProc.setHTML(row, ColumnIndex.COLUMN_4, NumberFormat.getFormat("###,##0 MB").format((double)process.getMemory()/(double)MemorySize.MB));
 	    
 	    for (OSProcess p : process.getChildren()){
 	    	createProcessesList(p, level+1);

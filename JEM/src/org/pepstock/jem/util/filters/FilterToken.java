@@ -18,6 +18,8 @@ package org.pepstock.jem.util.filters;
 
 import java.io.Serializable;
 
+import org.pepstock.jem.util.Numbers;
+
 
 /**
  * Represent a token of a Filter in the form <code>name:value</code> 
@@ -133,7 +135,7 @@ public class FilterToken implements Serializable {
 	@Override
 	public int hashCode() {
 		// calculate a own hashcode 
-		final int prime = 31;
+		final int prime = Numbers.N_31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
@@ -199,9 +201,9 @@ public class FilterToken implements Serializable {
 			String[] nameValue = tokenString.split(FILTER_TOKEN_SEPARATOR);
 			// in case of number of tokens
 			switch (nameValue.length) {
-			case 2:
+			case Numbers.N_2:
 				return new FilterToken(nameValue[0], nameValue[1]);
-			case 1:
+			case Numbers.N_1:
 				return new FilterToken(null, nameValue[0]);
 			default:
 				throw new ArrayIndexOutOfBoundsException();

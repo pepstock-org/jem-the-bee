@@ -34,6 +34,12 @@ import org.pepstock.jem.log.LogAppl;
  */
 public class DBPoolManager {
 	
+	private static final int DEFAULT_INITIAL_SIZE = 5;
+	
+	private static final int DEFAULT_MAX_ACTIVE = 10;
+	
+	private static final int DEFAULT_MAX_IDLE = 5;
+	
 	private static final DBPoolManager POOL_MANAGER = new DBPoolManager();
 
 	private String driver = null;
@@ -177,9 +183,9 @@ public class DBPoolManager {
 			// Remember to commit all SQL statements
 			pool.setDefaultAutoCommit(false);
 			// sets the pool
-			pool.setInitialSize(5);
-			pool.setMaxActive(10);
-			pool.setMaxIdle(5);
+			pool.setInitialSize(DEFAULT_INITIAL_SIZE);
+			pool.setMaxActive(DEFAULT_MAX_ACTIVE);
+			pool.setMaxIdle(DEFAULT_MAX_IDLE);
 			// if configured, uses the keep alive query 
 			if (keepAliveConnectionSQL != null){
 				pool.setValidationQuery(keepAliveConnectionSQL);

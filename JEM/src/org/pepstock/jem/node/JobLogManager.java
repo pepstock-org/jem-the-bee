@@ -30,6 +30,7 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.Step;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.DateFormatter;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * Is a utility class which creates and maintain the information inside of
@@ -39,8 +40,6 @@ import org.pepstock.jem.util.DateFormatter;
  * 
  */
 public class JobLogManager {
-	
-	private static final int KB = 1024; 
 	
 	private static final int STEP_NAME_LENGTH_IF_MORE_THAN_24 = 21;
 	
@@ -172,7 +171,7 @@ public class JobLogManager {
 
 		// extract, using SIGAR, memory currently used by step, N/A otherwise
 		try {
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / KB), MEMORY_LENGTH));
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / MemorySize.KB), MEMORY_LENGTH));
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);

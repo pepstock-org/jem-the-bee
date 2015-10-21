@@ -40,6 +40,12 @@ import org.pepstock.jem.util.VariableSubstituter;
  */
 public class GenericShellScriptTask extends ShellScriptTask {
 	
+	private static final int REGEX_GROUP_1 = 1;
+	
+	private static final int REGEX_GROUP_2 = 2;
+	
+	private static final int REGEX_GROUP_3 = 3;
+	
 	private static final String SCRIPT_NAME_VARIABLE = "script.file.name";
 	
 	private static final String REGEX = "\"([^\"]*)\"|\'([^\']*)\'|(\\S+)";
@@ -112,14 +118,14 @@ public class GenericShellScriptTask extends ShellScriptTask {
         while (m.find()) {
         	String token = null;
         	// matches a token with quotes
-            if (m.group(1) != null) {
+            if (m.group(REGEX_GROUP_1) != null) {
             	token =  m.group(1);
-            } else if (m.group(2) != null) {
+            } else if (m.group(REGEX_GROUP_2) != null) {
             	// matches a token with single quotes
-            	token =  m.group(2);
+            	token =  m.group(REGEX_GROUP_2);
             } else {
             	// matches plain text
-            	token =  m.group(3);
+            	token =  m.group(REGEX_GROUP_3);
             }
             // if shel is not set,
             // set!! it's the first token

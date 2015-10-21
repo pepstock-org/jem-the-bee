@@ -42,6 +42,11 @@ import com.thoughtworks.xstream.XStream;
  * 
  */
 public abstract class AbstractDBManager<T>{
+	
+	private static final int FIRST_FIELD = 1;
+	
+	private static final int SECOND_FIELD = 2;
+	
 
 	private XStream xStream = null;
 	
@@ -99,7 +104,7 @@ public abstract class AbstractDBManager<T>{
 			updateStmt = connection.prepareStatement(delete);
 			// set resource name in prepared statement
 			// checks if is a string or long (long used only for queue of HC)
-			updateStmt.setString(1, key);
+			updateStmt.setString(FIRST_FIELD, key);
 			// executes the statement
 			updateStmt.executeUpdate();
 			// commit
@@ -152,9 +157,9 @@ public abstract class AbstractDBManager<T>{
 			// set resource name to key
 			// gets the key if null 
 			String myKey = (key == null) ? getKey(item) : key;
-			updateStmt.setString(1, myKey);
+			updateStmt.setString(FIRST_FIELD, myKey);
 			// set XML to clob
-			updateStmt.setCharacterStream(2, reader);
+			updateStmt.setCharacterStream(SECOND_FIELD, reader);
 			// executes SQL
 			updateStmt.executeUpdate();
 			// commit
@@ -207,11 +212,11 @@ public abstract class AbstractDBManager<T>{
 
 			updateStmt = connection.prepareStatement(update);
 			// set XML to clob
-			updateStmt.setCharacterStream(1, reader);
+			updateStmt.setCharacterStream(FIRST_FIELD, reader);
 			// set resource name to key
 			// gets the key if null 
 			String myKey = (key == null) ? getKey(item) : key;
-			updateStmt.setString(2, myKey);
+			updateStmt.setString(SECOND_FIELD, myKey);
 			// updates 
 			updateStmt.executeUpdate();
 			// gets updates rows
@@ -261,7 +266,7 @@ public abstract class AbstractDBManager<T>{
 			// creates the set
 			Set<String> allIds = new HashSet<String>();
 			while (rs.next()) {
-				Object o = rs.getObject(1);
+				Object o = rs.getObject(FIRST_FIELD);
 				allIds.add((String) o);
 				// loads all keys in a set
 			}
@@ -309,11 +314,11 @@ public abstract class AbstractDBManager<T>{
 			Map<String, T> allItems = new HashMap<String, T>();
 			while (rs.next()) {
 				// get CLOB field which contains resource XML serialization
-				T item = (T) xStream.fromXML(rs.getCharacterStream(1));
+				T item = (T) xStream.fromXML(rs.getCharacterStream(FIRST_FIELD));
 				
 				// uses 1 column has object. The key is the second one, if exists
 				if (rs.getMetaData().getColumnCount() > 1){
-					Object o = rs.getObject(2);
+					Object o = rs.getObject(SECOND_FIELD);
 					allItems.put((String) o, item);
 				} else {
 					allItems.put(getKey(item), item);
@@ -359,7 +364,7 @@ public abstract class AbstractDBManager<T>{
 			stmt = connection.prepareStatement(query);
 			// sets resource names where condition
 			// checks if is a string or long (long used only for queue of HC)
-			stmt.setString(1, key);
+			stmt.setString(FIRST_FIELD, key);
 			// executes query
 			rs = stmt.executeQuery();
 			T item = null;
@@ -370,7 +375,7 @@ public abstract class AbstractDBManager<T>{
 			if (rs.next()) {
 				// get CLOB field which contains RESOURCE XML serialization
 				// deserializes RESOURCE instance
-				item = (T) xStream.fromXML(rs.getCharacterStream(1));
+				item = (T) xStream.fromXML(rs.getCharacterStream(FIRST_FIELD));
 			}
 			return item;
 		} finally{
@@ -412,7 +417,7 @@ public abstract class AbstractDBManager<T>{
 			rs.next();
 			// returns the the first value of result sets
 			// always the sum of byte of items
-			return rs.getLong(1);
+			return rs.getLong(FIRST_FIELD);
 		} finally{
 			// closes statement and result set
 			try {

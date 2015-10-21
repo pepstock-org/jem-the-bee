@@ -36,6 +36,7 @@ import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * @author Simone "Stock" Businarp
@@ -72,14 +73,12 @@ public class Import extends Command {
 		Object[] object = null;
 		object = FORMAT_FILE.parse(commandLine);
 
-		if (object.length == 2) {
-			setFile(object[0].toString());
-			setAlias(object[1].toString());
+		if (object.length == Numbers.N_2) {
+			setFile(object[ELEMENT_1].toString());
+			setAlias(object[ELEMENT_2].toString());
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage()
-					.getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
-
 	}
 
 	/*

@@ -201,12 +201,15 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				}
 			}
 			// if not authorized, EXCEPTION
-			if (!allowedJobSubmit){
-				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), Permissions.JOBS_SUBMIT);
+			if (!allowedGFSbyURL){
+				// if not authorized to access to GFS,
+				// remove JCl read before
+				job.getJcl().setContent(null);
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), GfsFileType.getPermission(gfs));
 			}
 			// if not authorized, EXCEPTION
-			if (!allowedGFSbyURL){
-				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), GfsFileType.getPermission(gfs));
+			if (!allowedJobSubmit){
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), Permissions.JOBS_SUBMIT);
 			}
 
 			// checks if job has different users between job and jcl.
@@ -416,7 +419,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				try {
 					// continues checking every second
 					// before leaving this method
-					Thread.sleep(1 * TimeUtils.SECOND);
+					Thread.sleep(TimeUtils.SECOND);
 				} catch (InterruptedException e) {
 					throw new NodeException(e.getMessage(), e);
 				}

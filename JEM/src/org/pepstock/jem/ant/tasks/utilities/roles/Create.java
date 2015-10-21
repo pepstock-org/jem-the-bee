@@ -53,9 +53,9 @@ public class Create extends Command {
 		Object[] object = FORMAT.parse(commandLine);
 		
 		if (object.length == 1){
-			setRoles(object[0].toString());
+			setRoles(object[ELEMENT_1].toString());
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 

@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.pepstock.catalog.gdg.Root;
 import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -64,17 +65,17 @@ public class CleanUp extends Command {
 		// parse command
 		Object[] object = FORMAT.parse(commandLine);
 		// we must have only 1 object
-		if (object.length == 2) {
+		if (object.length == Numbers.N_2) {
 			// sets gdg path
-			setDDName(object[0].toString());
+			setDDName(object[ELEMENT_1].toString());
 
 			// gets versions
-			int gdgVersions = Parser.parseInt(object[1].toString(), NOVERSIONS);
+			int gdgVersions = Parser.parseInt(object[ELEMENT_2].toString(), NOVERSIONS);
 			// versions could less than zero but minimum value must be 0
 			versions = Math.max(gdgVersions, NOVERSIONS);
 			setVersions(versions);
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 

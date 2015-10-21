@@ -36,6 +36,8 @@ public class TimeDisplayUtils {
 	 * VERBOSE type of time display
 	 */
 	public static final int VERBOSE = 1;
+	
+	private static final int TENS = 10;
 
 	private TimeDisplayUtils() {
 	}
@@ -161,16 +163,16 @@ public class TimeDisplayUtils {
 		} else {
 			if (days != 0) {
 				sb.append(days).append(".");
-				sb.append((hours < 10) ? "0" + hours : hours).append(":");
-				sb.append((minutes < 10) ? "0" + minutes : minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((hours < TENS) ? "0" + hours : hours).append(":");
+				sb.append((minutes < TENS) ? "0" + minutes : minutes).append(":");
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else if (hours != 0) {
 				sb.append(hours).append(":");
-				sb.append((minutes < 10) ? "0" + minutes : minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((minutes < TENS) ? "0" + minutes : minutes).append(":");
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else if (minutes != 0) {
 				sb.append(minutes).append(":");
-				sb.append((seconds < 10) ? "0" + seconds : seconds);
+				sb.append((seconds < TENS) ? "0" + seconds : seconds);
 			} else {
 				sb.append(seconds).append(" s");
 			}

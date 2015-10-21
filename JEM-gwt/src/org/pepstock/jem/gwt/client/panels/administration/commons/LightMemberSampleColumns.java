@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.administration.commons;
 import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 
@@ -230,11 +231,11 @@ public final class LightMemberSampleColumns {
 		public String getValue(LightMemberSample memberSample) {
 			String data = null;
 			long cost = memberSample.getMapsStats().get(queueOrMap).getOwnedEntryMemoryCost();
-			if (cost < JemConstants.MB){
-				cost = cost / JemConstants.KB;
+			if (cost < MemorySize.MB){
+				cost = cost / MemorySize.KB;
 				data = JemConstants.KB_FORMAT.format(cost);
 			} else {
-				cost = cost / JemConstants.MB;
+				cost = cost / MemorySize.MB;
 				data = JemConstants.MB_FORMAT.format(cost);
 			}
 			return data;
@@ -255,11 +256,11 @@ public final class LightMemberSampleColumns {
 		public String getValue(LightMemberSample memberSample) {
 			String data = null;
 			long cost = memberSample.getInternalMapsStats().get(queueOrMap).getOwnedEntryMemoryCost();
-			if (cost < JemConstants.MB){
-				cost = cost / JemConstants.KB;
+			if (cost < MemorySize.MB){
+				cost = cost / MemorySize.KB;
 				data = JemConstants.KB_FORMAT.format(cost);
 			} else {
-				cost = cost / JemConstants.MB;
+				cost = cost / MemorySize.MB;
 				data = JemConstants.MB_FORMAT.format(cost);
 			}
 			return data;

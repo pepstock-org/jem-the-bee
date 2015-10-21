@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pepstock.jem.gwt.client.ColorsHex;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.googlecode.gflot.client.Series;
@@ -58,7 +59,7 @@ public class UsedFreePieChart extends PieChart {
 		SeriesData<String, Double> usedSeries = new SeriesData<String, Double>();
 		usedSeries.setColor(ColorsHex.LIGHT_RED.getCode());
 		List<DataPoint<String, Double>> usedDataPoints = new ArrayList<DataPoint<String,Double>>(1);
-		DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/1024d);
+		DataPoint<String, Double> used = new DataPoint<String, Double>("Used", usedBytes/(double)MemorySize.KB);
 		usedDataPoints.add(used);
 		usedSeries.setDataPoints(usedDataPoints);
 		
@@ -66,7 +67,7 @@ public class UsedFreePieChart extends PieChart {
 		SeriesData<String, Double> freeSeries = new SeriesData<String, Double>();
 		freeSeries.setColor(ColorsHex.LIGHT_BLUE.getCode());
 		List<DataPoint<String, Double>> freeDataPoints = new ArrayList<DataPoint<String,Double>>(1);
-		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", freeBytes/1024d);
+		DataPoint<String, Double> free = new DataPoint<String, Double>("Free", freeBytes/(double)MemorySize.KB);
 		freeDataPoints.add(free);
 		freeSeries.setDataPoints(freeDataPoints);
 		

@@ -90,7 +90,7 @@ public class DataLossHandler implements Runnable {
 			while (true) {
 				// wait for 1 sec to check if last migration is older
 				// than 2 secs
-				Thread.sleep(1000L);
+				Thread.sleep(TimeUtils.SECOND);
 				if (getLastMigrationCompleted() >= 0) {
 					long diff = System.currentTimeMillis() - getLastMigrationCompleted();
 					if ((diff) > DELAY) {

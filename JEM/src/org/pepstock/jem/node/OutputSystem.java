@@ -36,6 +36,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.DateFormatter;
+import org.pepstock.jem.util.MemorySize;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -411,9 +412,8 @@ public class OutputSystem {
 		
 		private static final int SAMPLES_COUNT = 10;
 		
-		private static final long MB = 1024;
-		
-		private static final long ONE_HUNDRED_MB = 100 * MB;
+		// 100 MB but in numbers of KB
+		private static final long ONE_HUNDRED_MB = 100 * MemorySize.MB / MemorySize.KB;
 		
 		private static final long TIMEOUT = 10 * TimeUtils.SECOND;
 		
@@ -433,7 +433,7 @@ public class OutputSystem {
 			if (Main.getNode() != null) {
 				Main.getNode().getLock().lock();
 				try {
-					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), TIMEOUT);
+					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), TIMEOUT) * MemorySize.KB;
 					
 					SpaceSample space = new SpaceSample();
 					space.setSpace(freeSpace);
@@ -464,7 +464,6 @@ public class OutputSystem {
 		 * @return true if there is NO space
 		 */
 		private boolean isUnderThreshold(){
-
 			// if we have only 1 sample, checks directly the value
 	        if (list.size() == 1){
 	        	SpaceSample space = ((LinkedList<SpaceSample>)list).getFirst();

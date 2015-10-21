@@ -382,12 +382,18 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 	 * @version 1.4
 	 */
 	class ThreadPoolDelegate extends ThreadPoolExecutor {
+		
+		private static final int CORE_POOL_SIZE = 1;
+		
+		private static final int MAX_POOL_SIZE = Integer.MAX_VALUE;
+		
+		private static final int KEEP_ALIVE = 10;
 
 		/**
 		 * Creates a thread pool with only 1 core thread and infinite maximum.
 		 */
 		public ThreadPoolDelegate() {
-			super(1, Integer.MAX_VALUE, 10, TimeUnit.SECONDS, RUNNABLES);
+			super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, RUNNABLES);
 		}
 
 		@Override

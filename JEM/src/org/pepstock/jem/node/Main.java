@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.pepstock.jem.Result;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.affinity.AffinityLoader;
@@ -271,15 +272,15 @@ public class Main {
 		} catch (ConfigurationException e) {
 			// occurs when we have some mis-configuration. Node ends
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		} catch (RemoteException e) {
 			// occurs when RMI registry is not able to start. Node ends
 			LogAppl.getInstance().emit(NodeMessage.JEMC007E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		} catch (NodeMessageException e) {
 			// occurs when the platform is not supported
 			LogAppl.getInstance().emit(NodeMessage.JEMC194E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		}
 		// here starts shutdown hook
 		System.exit(exitCode);

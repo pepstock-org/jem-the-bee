@@ -27,6 +27,7 @@ import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.OutputSystem;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * Returns the message log of the passed job. 
@@ -39,7 +40,7 @@ public class GetMessagesLog extends DefaultExecutor<String> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int MAX_NUMBER_OF_BYTE_READABLE = 1024 * 1024 * 5; // 5MB
+	private static final int MAX_NUMBER_OF_BYTE_READABLE = MemorySize.MB * 5; // 5MB
 
 	private Job job = null;
 

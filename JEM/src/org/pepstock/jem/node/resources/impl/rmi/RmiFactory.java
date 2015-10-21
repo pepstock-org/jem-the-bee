@@ -44,6 +44,8 @@ import org.pepstock.jem.util.Parser;
  * 
  */
 public class RmiFactory  extends AbstractObjectFactory {
+	
+	private static final int DEFAULT_RMI_PORT = 1099;
 
 	/* (non-Javadoc)
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)
@@ -75,7 +77,7 @@ public class RmiFactory  extends AbstractObjectFactory {
 			throw new JNDIException(NodeMessage.JEMC136E, RmiResourceKeys.HOSTNAME);
 		}
 		// gets registry port. if null, uses the default, 1099
-		int port = Parser.parseInt(properties.getProperty(RmiResourceKeys.PORT, "1099"), 1099);
+		int port = Parser.parseInt(properties.getProperty(RmiResourceKeys.PORT, String.valueOf(DEFAULT_RMI_PORT)), DEFAULT_RMI_PORT);
 		// gets if SSL connection is required. Default is false
 		boolean ssl = Parser.parseBoolean(properties.getProperty(RmiResourceKeys.SSL, "false"), false);
 

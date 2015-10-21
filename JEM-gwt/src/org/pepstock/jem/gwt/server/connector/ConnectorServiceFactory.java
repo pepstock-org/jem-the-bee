@@ -50,6 +50,8 @@ import com.hazelcast.config.TcpIpConfig;
  */
 public class ConnectorServiceFactory {
 	
+	private static final int PORT_INCREMENT = 100;
+	
 	/**
 	 * To avoid any instantiation
 	 */
@@ -70,7 +72,7 @@ public class ConnectorServiceFactory {
 		if (multicastConfig != null && multicastConfig.isEnabled()) {
 			// set multicast port plus one to use for JEM multicast service that
 			// must be different from hazelcast one
-			int multicastPort = multicastConfig.getMulticastPort() + 100;
+			int multicastPort = multicastConfig.getMulticastPort() + PORT_INCREMENT;
 			multicastConfig.setMulticastPort(multicastPort);
 			service = new WebMulticastService();
 		} else if (tcpIpConfig != null && tcpIpConfig.isEnabled()) {

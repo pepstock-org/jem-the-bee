@@ -42,6 +42,8 @@ import org.pepstock.jem.util.CharSet;
  */
 public class NodeMulticastListener implements Runnable {
 
+	private static final int BUFFER = 512;
+	
 	private boolean isReady = false;
 
 	/**
@@ -65,7 +67,7 @@ public class NodeMulticastListener implements Runnable {
 			socket.joinGroup(groupAddress);
 			isReady = true;
 			while (!Thread.currentThread().isInterrupted()) {
-				byte[] inBuf = new byte[512];
+				byte[] inBuf = new byte[BUFFER];
 				inPacket = new DatagramPacket(inBuf, inBuf.length);
 				// wait until a message is received
 				socket.receive(inPacket);

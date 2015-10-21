@@ -18,6 +18,8 @@ package org.pepstock.jem.log;
 
 import java.io.Serializable;
 
+import org.pepstock.jem.util.Numbers;
+
 
 /**
  * Enumeration to be used as Message/Toast severity level
@@ -30,15 +32,15 @@ public enum MessageLevel implements Serializable {
 	/**
 	 * Used for normal messages
 	 */
-	INFO(0), 
+	INFO(Numbers.N_0), 
 	/** 
 	 * Used for messages that needs attention
 	 */
-	WARNING(1),
+	WARNING(Numbers.N_1),
 	/**
 	 * Used for error messages
 	 */
-	ERROR(2);
+	ERROR(Numbers.N_2);
 	
 	private int intLevel = -1;
 	
@@ -65,10 +67,10 @@ public enum MessageLevel implements Serializable {
 	public static MessageLevel fromIntLevel(int intLevel) {
 		MessageLevel parsed = null;
 		switch (intLevel) {
-			case 1:
+			case Numbers.N_1:
 				parsed = WARNING;
 				break;
-			case 2:
+			case Numbers.N_2:
 				parsed = ERROR;
 				break;
 			default:

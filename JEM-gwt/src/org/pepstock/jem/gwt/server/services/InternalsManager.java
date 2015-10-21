@@ -193,7 +193,7 @@ public class InternalsManager extends DefaultService{
 		// to get the uptime
 		// uses the started time information of JEM node info
 		// try locks by uuid
-		if (nodes.tryLock(oldest.getUuid(), 10, TimeUnit.SECONDS)) {
+		if (nodes.tryLock(oldest.getUuid(), Queues.LOCK_TIMEOUT, TimeUnit.SECONDS)) {
 			try {
 				// if coordinator is not on map (mustn't be!!)
 				// set not available

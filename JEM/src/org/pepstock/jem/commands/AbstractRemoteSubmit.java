@@ -41,6 +41,8 @@ import org.pepstock.jem.util.TimeUtils;
  * @version 1.4
  */
 public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
+	
+	private static final long POLLING_INTERVAL = 30 * TimeUtils.SECOND;
 
 	private String user = null;
 	
@@ -241,7 +243,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 			Job resultJob = null;
 			while(resultJob == null){
 				try {
-					Thread.sleep(30 * TimeUtils.SECOND);
+					Thread.sleep(POLLING_INTERVAL);
 					resultJob = getEndedJob(getJob().getId());
 					if (resultJob != null){
 						// logs return code and exception if exists

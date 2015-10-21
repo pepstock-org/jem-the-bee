@@ -33,6 +33,10 @@ import org.pepstock.jem.node.security.Permissions;
  */
 public abstract class Command implements SubCommand{
 	
+	static final int ELEMENT_1 = 0;
+
+	static final int ELEMENT_2 = 1;
+	
 	private static final String ENTITIES_SEPARATOR = ",";
 	
 	private String commandLine = null;

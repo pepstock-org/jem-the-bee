@@ -378,7 +378,7 @@ public class NodeAttributes {
 				// get all the directory starting with "node-"
 				String[] automaticNodeNames = getEnvDir().list(new FilenameFilter() {
 					public boolean accept(File dir, String name) {
-						return name.toLowerCase().startsWith("node-") && dir.isDirectory();
+						return name.toLowerCase().startsWith(NODE_NAME_PREFIX) && dir.isDirectory();
 					}
 				});
 				// if no one exist
@@ -389,7 +389,7 @@ public class NodeAttributes {
 					Integer currIndex = 0;
 					for (String currName : automaticNodeNames) {
 						try {
-							currIndex = Integer.valueOf(currName.substring(5));
+							currIndex = Integer.valueOf(currName.substring(NODE_NAME_PREFIX.length()));
 						} catch (NumberFormatException e) {
 							// ignore
 						}

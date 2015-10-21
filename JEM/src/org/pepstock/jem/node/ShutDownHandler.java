@@ -34,6 +34,9 @@ import com.hazelcast.core.ILock;
  * 
  */
 public class ShutDownHandler extends Thread {
+	
+	private static final long CHECK_NODE_STATUS_INTERVAL  = 10 * TimeUtils.SECOND;
+	
 	/**
 	 * Creates the handler with a list of threads to interrupt
 	 * 
@@ -92,7 +95,7 @@ public class ShutDownHandler extends Thread {
 			NodeInfoUtility.drain();
 			// waits for a second before to check the status
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(TimeUtils.SECOND);
 			} catch (InterruptedException e) {
 				// ignore
 			}
@@ -105,7 +108,7 @@ public class ShutDownHandler extends Thread {
 					}
 				}
 				try {
-					Thread.sleep(10 * TimeUtils.SECOND);
+					Thread.sleep(CHECK_NODE_STATUS_INTERVAL);
 				} catch (InterruptedException e) {
 					// ignore
 				}

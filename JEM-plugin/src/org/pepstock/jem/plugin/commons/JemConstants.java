@@ -17,20 +17,6 @@ package org.pepstock.jem.plugin.commons;
 public final class JemConstants {
 	
 	/*
-	 * BASE TYPES
-	 */
-	
-	/**
-	 * kilobyte
-	 */
-	public static final long KB = 1024;
-	
-	/**
-	 * megabyte
-	 */
-	public static final long MB = KB * 1024;
-	
-	/*
 	 * STRINGs
 	 */
 	

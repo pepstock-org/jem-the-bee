@@ -41,6 +41,10 @@ import com.thoughtworks.xstream.XStream;
  * 
  */
 public abstract class Command implements SubCommand{
+	
+	static final int ELEMENT_1 = 0;
+
+	static final int ELEMENT_2 = 1;
 
 	private String commandLine = null;
 

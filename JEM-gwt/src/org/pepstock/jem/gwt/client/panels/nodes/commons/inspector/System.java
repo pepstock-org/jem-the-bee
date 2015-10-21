@@ -23,6 +23,7 @@ import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.ExecutionEnvironment;
 import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.MemorySize;
 import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
@@ -44,8 +45,6 @@ public final class System extends DefaultInspectorItem {
 		Styles.INSTANCE.common().ensureInjected();
 		Styles.INSTANCE.inspector().ensureInjected();
 	}
-
-	private static final long KB = 1024L;
 	
 	private NodeInfoBean node = null;
 
@@ -86,7 +85,7 @@ public final class System extends DefaultInspectorItem {
 	    ExecutionEnvironment env = node.getExecutionEnvironment();
 	   
 	    layoutSysInfo.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Memory (MB)");
-	    layoutSysInfo.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getTotalMemory()/KB/KB)));
+	    layoutSysInfo.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getTotalMemory()/MemorySize.MB)));
 
 	    layoutSysInfo.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Available processors");
 	    layoutSysInfo.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getAvailableProcessors())));

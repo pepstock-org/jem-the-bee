@@ -56,18 +56,20 @@ public class SortTask extends AbstractIOTask {
 	 */
 	private static final int BYTES_X_CHAR = 2;
 	
-	private static int DEFAULTMAXTEMPFILES = 1024;
+	private static final int DEFAULTMAXTEMPFILES = 1024;
 
 	/**
 	 * Key for the class to load to transform and load data  
 	 */
-	private static String CLASS = "class";
+	private static final String CLASS = "class";
 	
 	@AssignDataDescription(INPUT_DATA_DESCRIPTION_NAME)
 	private static FileInputStream istream = null;
 	
 	@AssignDataDescription(OUTPUT_DATA_DESCRIPTION_NAME)
 	private static FileOutputStream ostream = null;
+	
+	private static final int INITIAL_CAPACITY = 11;
 
 	/**
 	 * Empty constructor
@@ -229,7 +231,7 @@ public class SortTask extends AbstractIOTask {
 	 * @throws IOException 
 	 */
 	public static int mergeSortedFiles(List<File> files, FileOutputStream fileOutput, final Comparator<String> cmp, Charset cs) throws IOException {
-		PriorityQueue<BinaryFileBuffer> pq = new PriorityQueue<BinaryFileBuffer>(11, new Comparator<BinaryFileBuffer>() {
+		PriorityQueue<BinaryFileBuffer> pq = new PriorityQueue<BinaryFileBuffer>(INITIAL_CAPACITY, new Comparator<BinaryFileBuffer>() {
 			public int compare(BinaryFileBuffer i, BinaryFileBuffer j) {
 				return cmp.compare(i.peek(), j.peek());
 			}

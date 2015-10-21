@@ -83,7 +83,11 @@ import com.hazelcast.query.SqlPredicate;
  */
 @SuppressWarnings("deprecation")
 public class JobsManager extends DefaultService {
-
+	
+	private static final int LINE_WIDTH = 65;
+	
+	private static final int INDENT = 4;
+	
 	/**
 	 * Returns the list of jobs in INPUT, a filter string composed by UI filters
 	 * 
@@ -704,7 +708,7 @@ public class JobsManager extends DefaultService {
 		// means the probably the view on UI is old,
 		// and the job is no longer on map
 		// Constant string is NOT AVAILABLE
-		if (storedJob == null) {
+		if (storedJob == null || storedJob.getJcl().getContent() == null) {
 			return Jcl.CONTENT_NOT_AVAILABLE;
 		}
 		// return the JCL
@@ -847,9 +851,9 @@ public class JobsManager extends DefaultService {
 	        DocumentBuilder builder = factory.newDocumentBuilder();
 	        Document document = builder.parse(new ReaderInputStream(new StringReader(content)));
 	        OutputFormat format = new OutputFormat(document);
-	        format.setLineWidth(65);
+	        format.setLineWidth(LINE_WIDTH);
 	        format.setIndenting(true);
-	        format.setIndent(4);
+	        format.setIndent(INDENT);
 
 	        StringWriter writer = new StringWriter();
 	        XMLSerializer serializer = new XMLSerializer(writer, format);

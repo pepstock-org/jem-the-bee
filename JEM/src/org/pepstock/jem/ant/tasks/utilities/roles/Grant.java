@@ -29,6 +29,7 @@ import org.pepstock.jem.node.rmi.InternalUtilities;
 import org.pepstock.jem.node.rmi.UtilsInitiatorManager;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.tasks.JobId;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -54,11 +55,11 @@ public class Grant extends Command {
 		// parse command
 		Object[] object = FORMAT.parse(commandLine);
 		
-		if (object.length == 2){
-			setPermissions(object[0].toString());
-			setRoles(object[1].toString());
+		if (object.length == Numbers.N_2){
+			setPermissions(object[ELEMENT_1].toString());
+			setRoles(object[ELEMENT_2].toString());
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 	}
 

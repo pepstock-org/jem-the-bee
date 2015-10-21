@@ -60,6 +60,12 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 
 	private static final int COMMAND_WITH_LENGTH_AND_MODE = 3;
 	
+	private static final int ELEMENT_1 = 0;
+
+	private static final int ELEMENT_2 = 1;
+
+	private static final int ELEMENT_3 = 2;
+	
 	private static final String DATA_DESCRIPTION_NAME = "COMMAND";
 	
 	private static final MessageFormat MESSAGE_FORMAT_1 = new MessageFormat("({0,number,integer})");
@@ -233,47 +239,47 @@ public class DefaultComparator implements Comparator<String>, Serializable {
 		SingleComparator c = new SingleComparator();
 		// the first element of command MUST be a number
 		// it is the FIRST char to use to compare 
-		if (result[0] instanceof Number){
+		if (result[ELEMENT_1] instanceof Number){
 			Number n = (Number) result[0];
 			c.setStart(Math.max(n.intValue(), SingleComparator.ZERO));
 		} else {
-			throw new ParseException("First parameter is not a Number", 0);
+			throw new ParseException("First parameter is not a Number", ELEMENT_1);
 		}
 		
 		// if result has 2 elements
 		// means could have a second element both a number or a label.
 		if (result.length == COMMAND_WITH_LENGTH){
 			// if Number, is the length of string to compare
-			if (result[1] instanceof Number){
-				Number n = (Number) result[1];
+			if (result[ELEMENT_2] instanceof Number){
+				Number n = (Number) result[ELEMENT_2];
 				c.setLength(Math.max(n.intValue(), SingleComparator.ZERO));
 			} else {
 				// if is a string, checks if is ASC or DESC
 				// otherwise exception
-				String value = result[1].toString();
+				String value = result[ELEMENT_2].toString();
 				if (!value.equalsIgnoreCase(SingleComparator.ASC) && !value.equalsIgnoreCase(SingleComparator.DESC)){
-					throw new ParseException("Invalid format for sorting mode definition: must be ASC or DESC", 1);
+					throw new ParseException("Invalid format for sorting mode definition: must be ASC or DESC", ELEMENT_2);
 				}
 				c.setMode(value);
 			}
 		} else if (result.length == COMMAND_WITH_LENGTH_AND_MODE){
 			// if result has 3 elements
 			// it has element 2 as number (length)
-			if (result[1] instanceof Number){
-				Number n = (Number) result[1];
+			if (result[ELEMENT_2] instanceof Number){
+				Number n = (Number) result[ELEMENT_2];
 				c.setLength(Math.max(n.intValue(), SingleComparator.ZERO));
 			} else {
-				throw new ParseException("First parameter is not a Number", 1);
+				throw new ParseException("First parameter is not a Number", ELEMENT_2);
 			}
 			// and element 3 a string (mode) checks if is ASC or DESC
 			// otherwise exception			
-			String value = result[2].toString();
+			String value = result[ELEMENT_3].toString();
 			if (!value.equalsIgnoreCase(SingleComparator.ASC) && !value.equalsIgnoreCase(SingleComparator.DESC)){
-				throw new ParseException("Invalid format for sorting mode definition: must be ASC or DESC", 2);
+				throw new ParseException("Invalid format for sorting mode definition: must be ASC or DESC", ELEMENT_3);
 			}
 			c.setMode(value);
 		} else {
-			throw new ParseException("Invalid format for sorting definition: max length is 3 but is "+result.length, 0);
+			throw new ParseException("Invalid format for sorting definition: max length is 3 but is "+result.length, ELEMENT_1);
 		}
 		return c;
 	}

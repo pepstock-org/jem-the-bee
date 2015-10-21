@@ -34,6 +34,12 @@ import org.pepstock.jem.log.JemException;
  */
 public abstract class Command implements SubCommand{
 	
+	static final int ELEMENT_1 = 0;
+
+	static final int ELEMENT_2 = 1;
+
+	static final int ELEMENT_3 = 2;
+	
 	private String commandLine = null;
 	
 	private String ddname = null;

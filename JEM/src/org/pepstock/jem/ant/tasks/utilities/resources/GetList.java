@@ -37,6 +37,7 @@ import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesList;
 import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.node.tasks.jndi.ContextUtils;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -90,14 +91,14 @@ public class GetList extends Command {
 			}
 		}
 
-		if (object.length == 1) {
-			setParameter(object[0].toString());
-		} else if (object.length == 2) {
-			setParameter(object[0].toString());
-			setFile(object[1].toString());
+		if (object.length == Numbers.N_1) {
+			setParameter(object[ELEMENT_1].toString());
+		} else if (object.length == Numbers.N_2) {
+			setParameter(object[ELEMENT_1].toString());
+			setFile(object[ELEMENT_2].toString());
 			
 		} else {
-			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), 0);
+			throw new ParseException(AntUtilMessage.JEMZ004E.toMessage().getFormattedMessage(COMMAND_KEYWORD, commandLine), ELEMENT_1);
 		}
 
 	}
