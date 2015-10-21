@@ -704,7 +704,7 @@ public class Permissions {
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_BINARY = GFS + PERMISSION_SEPARATOR + GfsFileType.BINARY_NAME.toLowerCase();;
+	public static final String GFS_BINARY = GFS + PERMISSION_SEPARATOR + GfsFileType.BINARY_NAME.toLowerCase();
 
 	/**
 	 * Permission tag arrays with all permissions for GFS domain

@@ -59,9 +59,13 @@ import org.pepstock.jem.util.Numbers;
  */
 public class TablePreferencesContainer extends PreferencePage implements IWorkbenchPreferencePage, ShellContainer {
 
-	private static final String TITLE = "Loading preferences error!";
+	private static final String TITLE_LOAD = "Loading preferences error!";
 	
-	private static final String MSG = "Error while loading preferences, your preferences may not be loaded: ";
+	private static final String TITLE_SAVE = "Saving preferences error!";
+	
+	private static final String MSG_LOAD = "Error while loading preferences, your preferences may not be loaded: ";
+	
+	private static final String MSG_SAVE = "Error while saving preferences, your preferences may not be saved: ";
 	
 	private TablePreferences tablePreferences = new TablePreferences();
 	
@@ -108,11 +112,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 			} catch (StorageException e) {
 				// if any errors related to Eclipse way to manage preferences
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 			} catch (Exception e) {
 				// if any other errors, mainly de-serialization from XML 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD+ e.getMessage(), MessageLevel.ERROR);
 			}
 		}
 	}
@@ -248,11 +252,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		} catch (StorageException e) {
 			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_SAVE, MSG_SAVE + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
 			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_SAVE, MSG_SAVE + e.getMessage(), MessageLevel.ERROR);
 		}
 		return true;
 	}
@@ -272,11 +276,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		} catch (StorageException e) {
 			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
 			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 		}
 		return true;
 	}
