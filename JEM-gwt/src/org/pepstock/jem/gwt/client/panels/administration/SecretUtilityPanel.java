@@ -29,6 +29,8 @@ import org.pepstock.jem.gwt.client.commons.Tooltip;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -134,19 +136,19 @@ public class SecretUtilityPanel extends VerticalPanel implements ResizeCapable {
 	    form.setCellPadding(10);
     
 	    // Add some standard form options
-	    form.setHTML(0, 0, "Secret");
-	    form.setWidget(0, 1, secretBox);
-	    form.setHTML(1, 0, "Secret (twice to check)");
-	    form.setWidget(1, 1, secretBox2);
+	    form.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Secret");
+	    form.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, secretBox);
+	    form.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Secret (twice to check)");
+	    form.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, secretBox2);
 	    
-	    form.setHTML(2, 0, "");
-	    form.setWidget(2, 1, execButton);
+	    form.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "");
+	    form.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2, execButton);
 	    
-	    form.setHTML(3, 0, "Encrypted secret");
-	    form.setWidget(3, 1, encrypt);
+	    form.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_1, "Encrypted secret");
+	    form.setWidget(RowIndex.ROW_4,ColumnIndex.COLUMN_2, encrypt);
 
-	    form.setHTML(4, 0, "Hash secret");
-	    form.setWidget(4, 1, hash);
+	    form.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_1, "Hash secret");
+	    form.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_2, hash);
 
 	    container.add(form);
 	    

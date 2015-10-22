@@ -16,12 +16,15 @@
 */
 package org.pepstock.jem.gwt.client.panels.gfs;
 
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.node.security.Permissions;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -50,15 +53,15 @@ public class TreeOptions extends VerticalPanel {
 		Styles.INSTANCE.common().ensureInjected();
 	}
 	
-    public static final String DATA_OPTION = "data";
+    public static final String DATA_OPTION = GfsFileType.DATA_NAME.toLowerCase();
 
-    public static final String LIBRARY_OPTION = "library";
+    public static final String LIBRARY_OPTION = GfsFileType.LIBRARY_NAME.toLowerCase();
    
-	public static final String SOURCES_OPTION = "sources";
+	public static final String SOURCE_OPTION = GfsFileType.SOURCE_NAME.toLowerCase();
 	
-	public static final String CLASS_OPTION = "class";
+	public static final String CLASS_OPTION = GfsFileType.CLASS_NAME.toLowerCase();
 
-	public static final String BINARY_OPTION = "binary";
+	public static final String BINARY_OPTION = GfsFileType.BINARY_NAME.toLowerCase();
 
 	private InspectListener<String> listener = null;
 	
@@ -82,11 +85,11 @@ public class TreeOptions extends VerticalPanel {
 		admin.setOpen(true);
 		
 
-		CellPanel data = createItem("Data", DATA_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_DATA);
-		CellPanel lib = createItem("Library", LIBRARY_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_LIBRARY);
-		CellPanel src = createItem("Sources", SOURCES_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_SOURCES);
-		CellPanel classes = createItem("Class", CLASS_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_CLASS);
-		CellPanel bin = createItem("Binary", BINARY_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_BINARY);
+		CellPanel data = createItem(GfsFileType.DATA_NAME, DATA_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_DATA);
+		CellPanel lib = createItem(GfsFileType.LIBRARY_NAME, LIBRARY_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_LIBRARY);
+		CellPanel src = createItem(GfsFileType.SOURCE_NAME, SOURCE_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_SOURCE);
+		CellPanel classes = createItem(GfsFileType.CLASS_NAME, CLASS_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_CLASS);
+		CellPanel bin = createItem(GfsFileType.BINARY_NAME, BINARY_OPTION, Images.INSTANCE.folderRed24(), Permissions.GFS_BINARY);
 
 		
 		/*-------------------------+
@@ -112,7 +115,7 @@ public class TreeOptions extends VerticalPanel {
 		if (statusPanel.getElement().getChildCount() > 0){
 			admin.setContent(statusPanel);
 			Grid grid = new Grid(1, 1);
-			grid.setWidget(0, 0, admin);
+			grid.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, admin);
 			add(grid);
 		}
 	}
@@ -145,7 +148,7 @@ public class TreeOptions extends VerticalPanel {
 	 * @return
 	 */
 	private final CellPanel createItem(String description, final String option, ImageResource icon, String permission){
-		if (!ClientPermissions.isAuthorized(Permissions.GFS, permission)) {
+		if (!ClientPermissions.isAuthorized(permission)) {
 			return null;
 		}
 	

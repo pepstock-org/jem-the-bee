@@ -64,7 +64,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>https://127.0.0.1:8888</value>
+				     <value>http://127.0.0.1:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -87,7 +87,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>https://localhost:8888</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>password</name>
@@ -137,7 +137,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>https://127.0.0.1:8888</value>
+				     <value>http://127.0.0.1:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -160,7 +160,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>https://localhost:8888</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>password</name>

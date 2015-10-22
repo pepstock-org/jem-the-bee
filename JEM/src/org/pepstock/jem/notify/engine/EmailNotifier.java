@@ -314,7 +314,7 @@ public class EmailNotifier implements NotifierInterface {
 		}
 		if (!email.hasToEmailAddresses()) {
 			LogAppl.getInstance().emit(NotifyMessage.JEMN003E);
-			throw new SendMailException(NotifyMessage.JEMN003E.toMessage().getMessage());
+			throw new SendMailException(NotifyMessage.JEMN003E.toMessage().getContent());
 		}
 		if (!email.hasFromUserEmailAddress()) {
 			LogAppl.getInstance().emit(NotifyMessage.JEMN012E, "From User Email Address");
@@ -348,6 +348,7 @@ public class EmailNotifier implements NotifierInterface {
 	 * @see Email
 	 * @throws SendMailException if an error occurs.
 	 */
+	@SuppressWarnings("deprecation")
 	private void sendEmail(JemEmail email, Email sendingEmail) throws SendMailException {
 		try {
 			sendingEmail.setHostName(this.emailServer);

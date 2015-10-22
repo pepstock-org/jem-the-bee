@@ -1,0 +1,17 @@
+ID				char(39) primary key
+NAME			varchar2(64)
+USER			varchar2(16)
+ROUTED			boolean
+SUBMITTED_TIME	DOUBLE PRECISION
+RUNNING_TIME	DOUBLE PRECISION
+ENDED_TIME		DOUBLE PRECISION
+RETURN_CODE		smallint
+MEMBER			varchar2(24) 
+STEP			varchar2(16)
+JCL_TYPE		varchar2(16)
+JCL_USER		varchar2(16)
+JCL_ENVIRONMENT	varchar2(32)
+JCL_DOMAIN		varchar2(32)
+JCL_AFFINITY	varchar2(64)
+JCL_PRIORITY	smallint
+JCL_MEMORY		smallint

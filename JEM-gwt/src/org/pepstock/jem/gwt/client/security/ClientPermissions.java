@@ -33,11 +33,10 @@ public class ClientPermissions {
 	/**
 	 * Returns <code>true</code> if you are authorized to permission, by the domain.
 	 * 
-	 * @param domain container of subsets of permission, by category  
 	 * @param permission simple permission
 	 * @return <code>true</code> if authorized, otherwise <code>false</code>
 	 */
-	public static boolean isAuthorized(String domain, String permission){
+	public static boolean isAuthorized(String permission){
 		Boolean authorized = CurrentUser.getInstance().getUser().isAuthorized(permission);
 		return authorized.booleanValue();
 	}

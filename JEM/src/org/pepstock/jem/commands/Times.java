@@ -69,6 +69,6 @@ public final class Times {
 	 * @return a string with the times between different steps
 	 */
 	public static String toReadable(){
-		return "time to submit: "+(submit-start)+", elapsed time: "+(end-start);
+		return "time to submit: "+Math.max(submit-start, 0)+", elapsed time: "+Math.max(end-start, 0);
 	}
 }

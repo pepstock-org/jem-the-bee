@@ -16,6 +16,8 @@
  */
 package org.pepstock.jem.node.security;
 
+import org.pepstock.jem.gfs.GfsFileType;
+
 /**
  * Container of all permissions used inside of web app to check and activate the
  * several features of appliction.
@@ -682,32 +684,32 @@ public class Permissions {
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_DATA = GFS + PERMISSION_SEPARATOR + "data";
+	public static final String GFS_DATA = GFS + PERMISSION_SEPARATOR + GfsFileType.DATA_NAME.toLowerCase();
 
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_LIBRARY = GFS + PERMISSION_SEPARATOR + "library";
+	public static final String GFS_LIBRARY = GFS + PERMISSION_SEPARATOR + GfsFileType.LIBRARY_NAME.toLowerCase();
 
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_SOURCES = GFS + PERMISSION_SEPARATOR + "sources";
+	public static final String GFS_SOURCE = GFS + PERMISSION_SEPARATOR + GfsFileType.SOURCE_NAME.toLowerCase();
 
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_CLASS = GFS + PERMISSION_SEPARATOR + "class";
+	public static final String GFS_CLASS = GFS + PERMISSION_SEPARATOR + GfsFileType.CLASS_NAME.toLowerCase();
 
 	/**
 	 * Permission tag for role create action
 	 */
-	public static final String GFS_BINARY = GFS + PERMISSION_SEPARATOR + "binary";
+	public static final String GFS_BINARY = GFS + PERMISSION_SEPARATOR + GfsFileType.BINARY_NAME.toLowerCase();
 
 	/**
 	 * Permission tag arrays with all permissions for GFS domain
 	 */
-	public static final String[] GFS_ALL = { GFS_BINARY, GFS_CLASS, GFS_DATA, GFS_LIBRARY, GFS_SOURCES };
+	public static final String[] GFS_ALL = { GFS_BINARY, GFS_CLASS, GFS_DATA, GFS_LIBRARY, GFS_SOURCE };
 
 	/*-------------------------------
 	 ! A D V A N C E D              ! 
@@ -729,7 +731,7 @@ public class Permissions {
 
 	private static final String[] EQUALS_TO_CHECK = new String[] { STAR, INTERNAL_SERVICES, LOCAL_FILE_SYSTEM_ACCESS, RESOURCES_STAR, RESOURCES_CREATE, RESOURCES_DELETE, RESOURCES_UPDATE, RESOURCES_READ, FILES_STAR, NODES_STAR, NODES_DRAIN, NODES_START, NODES_UPDATE, VIEW_STAR,
 			VIEW_INPUT, VIEW_RUNNING, VIEW_OUTPUT, VIEW_ROUTING, VIEW_STATUS, VIEW_NODES, VIEW_ADMIN, VIEW_ROLES, VIEW_GFS_EXPLORER, VIEW_SWARM_NODES, JOBS_STAR, JOBS_PURGE, JOBS_HOLD, JOBS_RELEASE, JOBS_CANCEL, JOBS_KILL, JOBS_SUBMIT, JOBS_UPDATE,
-			ROLES_STAR, ROLES_CREATE, ROLES_DELETE, ROLES_UPDATE, ROLES_READ, CERTIFICATES_STAR, CERTIFICATES_CREATE, CERTIFICATES_DELETE, CERTIFICATES_READ, GFS_STAR, GFS_BINARY, GFS_CLASS, GFS_DATA, GFS_LIBRARY, GFS_SOURCES, SWARM_NODES_START,
+			ROLES_STAR, ROLES_CREATE, ROLES_DELETE, ROLES_UPDATE, ROLES_READ, CERTIFICATES_STAR, CERTIFICATES_CREATE, CERTIFICATES_DELETE, CERTIFICATES_READ, GFS_STAR, GFS_BINARY, GFS_CLASS, GFS_DATA, GFS_LIBRARY, GFS_SOURCE, SWARM_NODES_START,
 			SWARM_NODES_DRAIN, SWARM_NODES_STAR, SWARM_NODES_VIEW_CONFIG, SWARM_NODES_EDIT_CONFIG };
 
 	private static final String[] STARTSWITH_TO_CHECK = new String[] { FILES_READ, FILES_WRITE, FILES_EXECUTE, DATASOURCES + PERMISSION_SEPARATOR, SURROGATE + PERMISSION_SEPARATOR, SEARCH_JOBS, SEARCH_NODES, ADMINISTRATION_CLUSTER_STAR,

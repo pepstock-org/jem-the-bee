@@ -274,7 +274,7 @@ public class Configuration {
 		try {
 			config = xstream.fromXML(xmlConfiguration);
 		} catch (Exception e) {
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 		if (!(config instanceof Configuration)) {
 			throw new ConfigurationException(NodeMessage.JEMC009E.toMessage().getFormattedMessage(ConfigKeys.CONFIGURATION_TAG));

@@ -16,7 +16,9 @@
 */
 package org.pepstock.jem.node.persistence;
 
+import org.pepstock.jem.Job;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.RunningDBManager;
 
 /**
  * Persistent manager for INPUT queue.<br>
@@ -27,7 +29,7 @@ import org.pepstock.jem.node.Queues;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class RunningMapManager extends JobMapManager {
+public class RunningMapManager extends AbstractMapManager<Job> {
 	
 	private static RunningMapManager INSTANCE = null; 
 	
@@ -35,7 +37,7 @@ public class RunningMapManager extends JobMapManager {
 	 * Construct the object instantiating a new DBManager
 	 */
 	public RunningMapManager() {
-		super(Queues.RUNNING_QUEUE, RunningDBManager.getInstance());
+		super(Queues.RUNNING_QUEUE, RunningDBManager.getInstance(), true);
 		RunningMapManager.setInstance(this);
 	}
 

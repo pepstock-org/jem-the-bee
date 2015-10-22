@@ -24,6 +24,7 @@ import org.pepstock.jem.Service;
 import org.pepstock.jem.ServiceStatus;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Multicast service used when the hazelcast configuration is set with multicast
@@ -76,7 +77,7 @@ public class WebMulticastService extends Service {
 		executorService.execute(clientMulticastListeners);
 		while (!clientMulticastListeners.isReady()) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(TimeUtils.SECOND);
 			} catch (InterruptedException e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG066I, Thread.currentThread().getName());
 			}

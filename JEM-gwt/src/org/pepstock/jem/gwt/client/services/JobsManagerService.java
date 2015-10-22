@@ -22,7 +22,6 @@ import java.util.Map;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.log.JemException;
@@ -210,7 +209,7 @@ public interface JobsManagerService extends RemoteService {
 	 * @throws JemException
 	 *             if cluster is not available or not authorized
 	 */
-	OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException;
+	String getOutputFileContent(Job job, OutputListItem item) throws JemException;
 
 	/**
 	 * Returns a status with a set of collections

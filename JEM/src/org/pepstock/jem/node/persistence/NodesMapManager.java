@@ -18,6 +18,7 @@ package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.NodesDBManager;
 
 /**
  * Persistent manager for NodeInfos map.<br>
@@ -32,6 +33,6 @@ public class NodesMapManager extends AbstractMapManager<NodeInfo>{
 	 * Construct the object instantiating a new DBManager
 	 */
 	public NodesMapManager() {
-		super(Queues.NODES_MAP, NodesDBManager.getInstance());
+		super(Queues.NODES_MAP, NodesDBManager.getInstance(), false);
 	}
 }

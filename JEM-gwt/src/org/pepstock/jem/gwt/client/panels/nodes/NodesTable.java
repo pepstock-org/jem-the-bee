@@ -114,7 +114,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 			}
 		});
 				
-		table.setColumnWidth(checkColumn, 23, Unit.PX);
+		table.setColumnWidth(checkColumn, AbstractTable.DEFAULT_CHECK_COLUMN_WIDTH, Unit.PX);
 		table.addColumn(checkColumn, checkHeader);
 
 		
@@ -152,7 +152,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		 | DOMAIN                  |
 		 +-------------------------*/
 		
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> domain = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -177,7 +177,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | STATIC AFFINITIES       |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> affinity = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -195,7 +195,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 							value = Jcl.DEFAULT_AFFINITY;
 						}
 						nodeInfoBean.getExecutionEnvironment().getStaticAffinities().clear();
-						String[] affinities = value.split(",");
+						String[] affinities = value.split(Jcl.AFFINITY_SEPARATOR);
 						for (int i=0; i<affinities.length; i++){
 							nodeInfoBean.getExecutionEnvironment().getStaticAffinities().add(affinities[i]);
 						}
@@ -251,7 +251,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | Memory                  |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> memory = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -276,7 +276,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 		/*-------------------------+
 		 | Parallel jobs           |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.NODES, Permissions.NODES_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.NODES_UPDATE)){
 			Column<NodeInfoBean, String> parallelJobs = new Column<NodeInfoBean, String>(
 					new EditTextCell()) {
 				@Override
@@ -409,7 +409,7 @@ public class NodesTable extends AbstractTable<NodeInfoBean> {
 			if (!i.hasNext()){
 				return sb.toString();
 			}
-			sb.append(",");
+			sb.append(Jcl.AFFINITY_SEPARATOR);
 		}
 	}
 

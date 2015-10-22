@@ -19,6 +19,7 @@ package org.pepstock.jem.ant;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.ValidationException;
@@ -99,7 +100,7 @@ public class AntFactory extends AbstractFactory {
 	 * @throws JclFactoryException if syntax is not correct, a exception occurs
 	 */
 	@Override
-	public Jcl createJcl(String content) throws JclFactoryException {
+	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates JCL object setting the source code
 		Jcl jcl = new Jcl();
 		jcl.setType(ANT_TYPE);
@@ -246,11 +247,13 @@ public class AntFactory extends AbstractFactory {
 		// Extracts from ANT java version property
 		String java = p.getProperty(AntKeys.ANT_JAVA);
 		if(null != java) {
+			// adds automatically the java version name as an affinity
 			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
-				affinity = affinity + "," + java;
+				affinity = affinity + Jcl.AFFINITY_SEPARATOR + java;
 			} else {
 				affinity = java;
 			}
+			// stores java version
 			jcl.setJava(java);
 		}
 

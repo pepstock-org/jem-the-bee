@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.services;
 
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.About;
+import org.pepstock.jem.util.Numbers;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -37,47 +38,47 @@ public interface InfoService extends RemoteService {
 		/**
 		 * Length of array of data to return
 		 */
-		INFO_SIZE(5),
+		INFO_SIZE(Numbers.N_5),
 
 		/**
 		 * Index of array for JEM group
 		 */
-		 NAME(0),
+		 NAME(Numbers.N_0),
 
 		/**
 		 * Index of array for count of nodes
 		 */
-		NODES_COUNT(1),
+		NODES_COUNT(Numbers.N_1),
 
 		/**
 		 * Index of array for job in execution
 		 */
-		EXECUTION_JOB_COUNT(2),
+		EXECUTION_JOB_COUNT(Numbers.N_2),
 
 		/**
 		 * Index of array for JEM group started time
 		 */
-		STARTED_TIME(3),
+		STARTED_TIME(Numbers.N_3),
 
 		/**
 		 * Index of array for JEM group time
 		 */
-		CURRENT_TIME(4),
+		CURRENT_TIME(Numbers.N_4),
 
 		/**
 		 * Length of array of data to return
 		 */
-		INFO_LOGO_SIZE(2),
+		INFO_LOGO_SIZE(Numbers.N_2),
 
 		/**
 		 * Index of array for JEM group
 		 */
-		URL(0),
+		URL(Numbers.N_0),
 
 		/**
 		 * Index of array for count of nodes
 		 */
-		LINK(1);
+		LINK(Numbers.N_1);
 		
 		private int index;
 		

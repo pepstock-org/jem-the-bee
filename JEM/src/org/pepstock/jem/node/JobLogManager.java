@@ -17,6 +17,8 @@
 package org.pepstock.jem.node;
 
 import java.text.MessageFormat;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hyperic.sigar.Sigar;
@@ -28,6 +30,7 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.Step;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.util.DateFormatter;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * Is a utility class which creates and maintain the information inside of
@@ -37,8 +40,21 @@ import org.pepstock.jem.util.DateFormatter;
  * 
  */
 public class JobLogManager {
+	
+	private static final int STEP_NAME_LENGTH_IF_MORE_THAN_24 = 21;
+	
+	private static final int STEP_LENGTH = 24;
+	
+	private static final int RETURN_CODE_LENGTH = 4;
+	
+	private static final int CPU_LENGTH = 10;
+	
+	private static final int MEMORY_LENGTH = 10;
+	
+	private static final int MINIMUM_CPU_USAGE = 100;
+	
 	// used to save the previous cpu extracted. this is a workaround
-	private static long PREVIOUS_CPU = 0L;
+	private static final Map<String, Long> PREVIOUS_CPU = new ConcurrentHashMap<String, Long>();
 
 	private static final MessageFormat HEADER_JOB = new MessageFormat("J E M  job log -- Node {0}");
 
@@ -88,7 +104,7 @@ public class JobLogManager {
 	 */
 	public static void printJobStarted(Job job) {
 		// clear cpu because here a new process is started
-		PREVIOUS_CPU = 0;
+		PREVIOUS_CPU.put(job.getId(), 0L);
 		CancelableTask task = Main.CURRENT_TASKS.get(job.getId());
 		if (task != null){
 			Main.getOutputSystem().writeJobLog(job, getFormattedMessage(ROW_JOB_PID, job.getName(), task.getProcessId()));
@@ -118,17 +134,17 @@ public class JobLogManager {
 		
 		StringBuilder sb = new StringBuilder();
 		if (step == null){
-			sb.append(StringUtils.rightPad("[init]", 24));
-			sb.append(' ').append(StringUtils.rightPad("-", 4));
+			sb.append(StringUtils.rightPad("[init]", STEP_LENGTH));
+			sb.append(' ').append(StringUtils.rightPad("-", RETURN_CODE_LENGTH));
 		} else {
 			// if name of step more than 24 chars
 			// cut the name adding "..." as to be continued
-			if (step.getName().length() > 24){
-				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), 21), 24, "."));
+			if (step.getName().length() > STEP_LENGTH){
+				sb.append(StringUtils.rightPad(StringUtils.left(step.getName(), STEP_NAME_LENGTH_IF_MORE_THAN_24), STEP_LENGTH, "."));
 			} else {
-				sb.append(StringUtils.rightPad(step.getName(), 24));
+				sb.append(StringUtils.rightPad(step.getName(), STEP_LENGTH));
 			}
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(step.getReturnCode()), 4));
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(step.getReturnCode()), RETURN_CODE_LENGTH));
 		}
 		
 
@@ -141,26 +157,26 @@ public class JobLogManager {
 			// calculate cpu used on the step.
 			// Sigar gives total amount of cpu of process so a difference with
 			// previous one is mandatory
-			long cpu = proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU;
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), 10));
+			long cpu = Math.max(proxy.getProcCpu(id).getTotal() - PREVIOUS_CPU.get(job.getId()), MINIMUM_CPU_USAGE);
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(cpu), CPU_LENGTH));
 
 			// saved for next step
-			PREVIOUS_CPU = cpu;
+			PREVIOUS_CPU.put(job.getId(), cpu);
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			
-			sb.append(' ').append(StringUtils.rightPad("N/A", 10));
+			sb.append(' ').append(StringUtils.rightPad("N/A", CPU_LENGTH));
 		}
 
 		// extract, using SIGAR, memory currently used by step, N/A otherwise
 		try {
-			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / 1024), 10));
+			sb.append(' ').append(StringUtils.rightPad(String.valueOf(proxy.getProcMem(id).getResident() / MemorySize.KB), MEMORY_LENGTH));
 		} catch (SigarException e) {
 			// debug
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			
-			sb.append(' ').append(StringUtils.rightPad("N/A", 10));
+			sb.append(' ').append(StringUtils.rightPad("N/A", MEMORY_LENGTH));
 		}
 
 		Main.getOutputSystem().writeJobLog(job, sb.toString());
@@ -177,7 +193,7 @@ public class JobLogManager {
 	 */
 	public static void printFooter(Job job, int returnCode, String exception) {
 		// clear cpu because here the process is ended
-		PREVIOUS_CPU = 0;
+		PREVIOUS_CPU.remove(job.getId());
 		Main.getOutputSystem().writeJobLog(job, " ");
 		Main.getOutputSystem().writeJobLog(job, getFormattedMessage(ROW_JOB_TIME_ENDED, job.getName(), DateFormatter.getDate(job.getEndedTime(), "HH:mm:ss "), returnCode));
 		if (exception != null){

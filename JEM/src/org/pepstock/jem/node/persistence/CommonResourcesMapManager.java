@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
 import org.pepstock.jem.node.resources.Resource;
 
 /**
@@ -29,12 +30,29 @@ import org.pepstock.jem.node.resources.Resource;
  * 
  */
 public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
+	
+	private static CommonResourcesMapManager INSTANCE = null;
 
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
 	public CommonResourcesMapManager() {
-		super(Queues.COMMON_RESOURCES_MAP, CommonResourcesDBManager.getInstance());
+		super(Queues.COMMON_RESOURCES_MAP, CommonResourcesDBManager.getInstance(), true);
+		CommonResourcesMapManager.setInstance(this);
+	}
+	
+	/**
+	 * @return the iNSTANCE
+	 */
+	public static CommonResourcesMapManager getInstance() {
+		return INSTANCE;
+	}
+
+	/**
+	 * @param instance the instance to set
+	 */
+	private static void setInstance(CommonResourcesMapManager instance) {
+		INSTANCE = instance;
 	}
 
 }

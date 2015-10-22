@@ -36,22 +36,24 @@ public enum IoMessage implements MessageInterface{
 	/**
 	 * "Negative initial size: {0}.", MessageLevel.ERROR
 	 */
-	JEMI001E(1, "Negative initial size: {0}.", MessageLevel.ERROR),
+	JEMI001E("0001", "Negative initial size: {0}.", MessageLevel.ERROR),
 	
 	/**
 	 * "Invalid parameters for write: start offset = {0}, number of bytes to write={1}, data length = {2}.", MessageLevel.ERROR
 	 */
-	JEMI002E(2, "Invalid parameters for write: start offset = {0}, number of bytes to write={1}, data length = {2}.", MessageLevel.ERROR),
+	JEMI002E("0002", "Invalid parameters for write: start offset = {0}, number of bytes to write={1}, data length = {2}.", MessageLevel.ERROR),
 	
 	/**
 	 * "Encoding must not be null.", MessageLevel.ERROR
 	 */
-	JEMI003E(3, "Encoding must not be null.", MessageLevel.ERROR),
+	@Deprecated
+	JEMI003E("0003", "Encoding must not be null.", MessageLevel.ERROR),
 	
 	/**
 	 * "Stream Closed.", MessageLevel.ERROR
 	 */
-	JEMI004E(4, "Stream Closed.", MessageLevel.ERROR);
+	@Deprecated
+	JEMI004E("0004", "Stream Closed.", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>IoMessage</code>. 
@@ -69,7 +71,7 @@ public enum IoMessage implements MessageInterface{
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private IoMessage(int code, String messageContent, MessageLevel level){
+	private IoMessage(String code, String messageContent, MessageLevel level){
 		this.message = new Message(code, MessageCode.IO.getCode(), messageContent, level);
 	}
 	

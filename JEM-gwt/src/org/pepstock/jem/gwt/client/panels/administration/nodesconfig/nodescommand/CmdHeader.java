@@ -22,6 +22,8 @@ import org.pepstock.jem.gwt.client.commons.Tooltip;
 import org.pepstock.jem.gwt.client.panels.administration.NodesCommandsPanel;
 import org.pepstock.jem.gwt.client.panels.administration.nodesconfig.CommandExecutor;
 import org.pepstock.jem.gwt.client.panels.administration.nodesconfig.ResultPanel;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,16 +64,16 @@ public class CmdHeader extends FlexTable  {
 		rf.setVerticalAlign(0, HasVerticalAlignment.ALIGN_MIDDLE);
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
-		cf.setWidth(0, 0, Sizes.HUNDRED_PERCENT);
+		cf.setWidth(ColumnIndex.COLUMN_1, 0, Sizes.HUNDRED_PERCENT);
 		cf.setWordWrap(0, 0, false);
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 		cf.addStyleName(0, 0, Styles.INSTANCE.common().bold());
 		
 		
 		int column = 1;
 		for (final CommandExecutor executor : NodesCommandsPanel.COMMANDS){
 			// 0-1 > back
-			cf.setWidth(0, column, "15%");
+			cf.setWidth(ColumnIndex.COLUMN_1, column, "15%");
 			// logoff button (and handler)
 			final Button button = new Button(executor.getLabel());
 			button.addClickHandler(new ClickHandler() {
@@ -85,7 +87,7 @@ public class CmdHeader extends FlexTable  {
 			});
 			new Tooltip(button, executor.getTitle());
 			cf.setVerticalAlignment(0, column, HasVerticalAlignment.ALIGN_MIDDLE);
-			cf.setHorizontalAlignment(0, column, HasHorizontalAlignment.ALIGN_RIGHT);
+			cf.setHorizontalAlignment(RowIndex.ROW_1, column, HasHorizontalAlignment.ALIGN_RIGHT);
 			cf.setWordWrap(0, column, false);
 			setWidget(0, column, button);
 			if (column == 1){

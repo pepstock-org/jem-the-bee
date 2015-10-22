@@ -29,7 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.persistence.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.XmlUtil;
 import org.pepstock.jem.node.resources.impl.CommonKeys;
@@ -118,7 +118,7 @@ public final class ResourceDBUpdate extends DBUpdate{
 					transformer.transform(source, result);
 					// gets resource object
 					Resource res = (Resource) xs.fromXML(writer.toString());
-					// saves teh object by DB manager
+					// saves the object by DB manager
 					String statement = CommonResourcesDBManager.getInstance().getSqlContainer().getUpdateStatement();
 					CommonResourcesDBManager.getInstance().update(statement, res);
 					

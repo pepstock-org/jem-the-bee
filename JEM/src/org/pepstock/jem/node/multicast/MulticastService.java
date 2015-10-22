@@ -25,6 +25,8 @@ import org.pepstock.jem.ServiceStatus;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.multicast.messages.NodeResponse;
+import org.pepstock.jem.util.Numbers;
+import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.config.MulticastConfig;
 
@@ -112,7 +114,7 @@ public class MulticastService extends Service {
 		// Wait until multicast listener is ready
 		while (!multicastListeners.isReady()) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(TimeUtils.SECOND);
 			} catch (InterruptedException e) {
 				// ignore
 			}
@@ -133,7 +135,7 @@ public class MulticastService extends Service {
 		executorService.shutdownNow();
 		MulticastSender.sendShutDownMessage();
 		try {
-			if (!executorService.awaitTermination(100, TimeUnit.SECONDS)) {
+			if (!executorService.isShutdown() && !executorService.awaitTermination(Numbers.N_100, TimeUnit.SECONDS)) {
 				LogAppl.getInstance().emit(NodeMessage.JEMG228W);
 			}
 		} catch (InterruptedException e) {

@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * Creates a list of chunk reading files length or subset of bytes (if a delimiter is specified)
@@ -37,7 +38,7 @@ public final class ChunksFactory {
 	 */
 	public static final long DEFAULT_BUFFER_SIZE = 4096L;
 	
-	private static final long MINIMUM_BUFFER_SIZE = 1024L;
+	private static final long MINIMUM_BUFFER_SIZE = MemorySize.KB;
 
 	/**
 	 * To avoid any instantiation

@@ -23,11 +23,11 @@
 	-->
 
 	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 
 	<!-- create jdbc resource read from dataset -->
 	<target name="createJDBCReource" depends="createDasetJDBC">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="JUNIT_JPPF_JDBC_JEM" disposition="SHR">
 				<dataSet name="test_jppf/JEM_JDBC_RESOURCE" />
 			</dataDescription>

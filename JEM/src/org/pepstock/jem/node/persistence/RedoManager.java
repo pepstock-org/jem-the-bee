@@ -19,7 +19,6 @@ package org.pepstock.jem.node.persistence;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
-import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
@@ -33,9 +32,10 @@ import com.hazelcast.core.IMap;
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
+ * @param <T> Type of object to save for REDO
  * 
  */
-public class RedoManager {
+public class RedoManager<T> {
 
 	private String queueName = null;
 
@@ -56,28 +56,28 @@ public class RedoManager {
 	}
 
 	/**
-	 * Saves the job statement on internal Hazelcast map
-	 * @param job job instance to be stored
+	 * Saves the statement on internal Hazelcast map
+	 * @param entity entity instance to be stored
 	 */
-	public void store(Job job) {
-		storeRedoStatement(job.getId(), job, RedoStatement.STORE);
+	public void store(T entity) {
+		storeRedoStatement(null, entity, RedoStatement.STORE);
 	}
 
 	/**
 	 * Saves a delete redo statement on internal Hazelcast map
-	 * @param jobId job id to be removed
+	 * @param id id to be removed
 	 */
-	public void delete(String jobId) {
-		storeRedoStatement(jobId, null, RedoStatement.DELETE);
+	public void delete(String id) {
+		storeRedoStatement(id, null, RedoStatement.DELETE);
 	}
 
 	/**
 	 * Stores the redo statements in HC map
-	 * @param jobId job id used only if is a DELETE
-	 * @param job job instance used only if STORE
+	 * @param id id used only if is a DELETE
+	 * @param entity instance used only if STORE
 	 * @param what type of operation, or STORE or DELETE
 	 */
-	private void storeRedoStatement(String jobId, Job job, String what){
+	private void storeRedoStatement(String id, T entity, String what){
 		// gets hazelcast map
 		IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
 		// gets a lock to avoid
@@ -86,28 +86,29 @@ public class RedoManager {
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// creates a redo statement using a counter as ID
-				Long id = Long.valueOf(redoMap.size() + 1);
+				Long redoid = Long.valueOf(redoMap.size() + 1);
 				RedoStatement statement = new RedoStatement();
 				// sets redo information to re-apply the statement when 
 				// the database will be up and running
-				statement.setId(id);
+				statement.setId(redoid);
 				statement.setQueueName(queueName);
-				// for delete saved the JOB ID
-				// otherwise the job itself
+				// for delete saved the ID
+				// otherwise the entity itself
 				if (RedoStatement.DELETE.equalsIgnoreCase(what)){
-					statement.setJobId(jobId);	
+					statement.setEntityId(id);	
 				} else if (RedoStatement.STORE.equalsIgnoreCase(what)){
-					statement.setJob(job);
+					statement.setEntity(entity);
+					statement.setEntityToString(entity.toString());
 				} else {
 					throw new MessageException(NodeMessage.JEMC180E);
 				}
 				// sets action
 				statement.setAction(what);
 				// puts in the map
-				redoMap.put(id, statement);
+				redoMap.put(redoid, statement);
 				LogAppl.getInstance().emit(NodeMessage.JEMC179I, statement.toString());
 			} else {
 				throw new MessageException(NodeMessage.JEMC119E, Queues.REDO_STATEMENT_MAP);

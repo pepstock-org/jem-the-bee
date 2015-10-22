@@ -11,18 +11,19 @@
 package org.pepstock.jem.plugin;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
-import org.pepstock.jem.PreJob;
-import org.pepstock.jem.commands.util.Factory;
+import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.gfs.GfsFile;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.gfs.UploadedGfsFile;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
@@ -32,10 +33,9 @@ import org.pepstock.jem.plugin.event.EnvironmentEventListener;
 import org.pepstock.jem.plugin.preferences.Coordinate;
 import org.pepstock.jem.rest.RestClient;
 import org.pepstock.jem.rest.RestClientFactory;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
-import org.pepstock.jem.rest.entities.GfsRequest;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
-import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.services.GfsManager;
 import org.pepstock.jem.rest.services.JobsManager;
 import org.pepstock.jem.rest.services.LoginManager;
@@ -142,9 +142,9 @@ public class Client {
 	 * 
 	 * @param coordinate
 	 *            coordinate used to connect to JEM
-	 * @throws JemException 
+	 * @throws RestException 
 	 */
-	public void login(Coordinate coordinate) throws JemException {
+	public void login(Coordinate coordinate) throws RestException {
 		// creates a RESTclient, using host and REST context
 		RestClient client = RestClientFactory.getClient(coordinate.getHost() + "/" + coordinate.getRestContext());
 		// creates managers instance
@@ -157,7 +157,7 @@ public class Client {
 		if (user == null) {
 			// creates a new account
 			Account account = new Account();
-			account.setUserId(coordinate.getUserId());
+			account.setUserid(coordinate.getUserId());
 			account.setPassword(coordinate.getPassword());
 
 			// login to JEM
@@ -173,60 +173,19 @@ public class Client {
 	}
 
 	/**
-	 * Gets all jobs into INPUT queue
-	 * 
+	 * Gets all jobs into a passed queue
+	 * @param queue queue where perform the query
 	 * @param filter
 	 *            filter to use
 	 * @return a list of jobs
-	 * @throws JemException 
+	 * @throws RestException 
 	 *             if any exception occurs
 	 */
-	public Jobs refreshInput(String filter) throws JemException {
-		Jobs jobs = jobsManager.getInputQueue(filter);
-		return (jobs != null) ? jobs : new Jobs();
+	public Collection<Job> refreshJobs(JobQueue queue, String filter) throws RestException {
+		Collection<Job> jobs = jobsManager.getJobs(queue, filter);
+		return (jobs != null) ? jobs : new ArrayList<Job>();
 	}
 
-	/**
-	 * Gets all jobs into OUTPUT queue
-	 * 
-	 * @param filter
-	 *            filter to use
-	 * @return a list of jobs
-	 * @throws JemException
-	 *             if any exception occurs
-	 */
-	public Jobs refreshOutput(String filter) throws JemException {
-		Jobs jobs = jobsManager.getOutputQueue(filter);
-		return (jobs != null) ? jobs : new Jobs();
-	}
-
-	/**
-	 * Gets all jobs into RUNNING queue
-	 * 
-	 * @param filter
-	 *            filter to use
-	 * @return a list of jobs
-	 * @throws JemException
-	 *             if any exception occurs
-	 */
-	public Jobs refreshRunning(String filter) throws JemException {
-		Jobs jobs = jobsManager.getRunningQueue(filter);
-		return (jobs != null) ? jobs : new Jobs();
-	}
-
-	/**
-	 * Gets all jobs into ROUTING queue
-	 * 
-	 * @param filter
-	 *            filter to use
-	 * @return a list of jobs
-	 * @throws JemException
-	 *             if any exception occurs
-	 */
-	public Jobs refreshRouting(String filter) throws JemException {
-		Jobs jobs = jobsManager.getRoutingQueue(filter);
-		return (jobs != null) ? jobs : new Jobs();
-	}
 
 	/**
 	 * Submits a file as JOB. BE aware that from plugin the JCL type is not set.
@@ -235,60 +194,51 @@ public class Client {
 	 * @param jcl
 	 *            file with a JCL
 	 * @return JOB ID after submit
-	 * @throws JemException
+	 * @throws RestException
 	 *             if any exception occurs
 	 */
-	public String submit(File jcl) throws JemException  {
+	public String submit(File jcl) throws RestException  {
 		try {
-			// gets url of file to submit
-			URL url = jcl.toURI().toURL();
-			// creates a prejob
-			PreJob preJob = Factory.createPreJob(url);
-			Job job = new Job();
-			job.setName(jcl.getName());
-			// BE AWARE: NO JCL type
-			job.setUser(user.getId());
-			preJob.setJob(job);
 			// submits job and returns JOB ID
-			return jobsManager.submit(preJob);
-		} catch (MalformedURLException e) {
-			throw new JemException(e.getMessage(), e);
-		} catch (InstantiationException e) {
-			throw new JemException(e.getMessage(), e);
+			return jobsManager.submit(FileUtils.readFileToString(jcl));
+		} catch (IOException e) {
+			LogAppl.getInstance().ignore(e.getMessage(), e);
+			throw new RestException(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
 		}
 	}
 	
 	/**
 	 * Returns the JCL content of JOB
 	 * @param job job instance used to get JCL content
-	 * @param queueName where to get JCL, queue name
+	 * @param queue where to get JCL, queue name
 	 * @return jcl content in string format
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String getJcl(Job job, String queueName) throws JemException {
-		return jobsManager.getJcl(job, queueName);
+	public String getJcl(Job job, JobQueue queue) throws RestException {
+		return jobsManager.getJcl(job.getId(), queue);
 	}
 
 	/**
 	 * Returns the output file system tree of JOB
 	 * @param job job instance 
-	 * @param queueName where to get info, queue name
+	 * @param queue where to get info, queue name
 	 * @return output tree object
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public JobOutputTreeContent getOutputTree(Job job, String queueName) throws JemException {
-		return jobsManager.getOutputTree(job, queueName);
+	public OutputTree getOutputTree(Job job, JobQueue queue) throws RestException {
+		return jobsManager.getOutputTree(job.getId(), queue);
 	}
 
 	/**
 	 * Returns the content file from output folder in string format
 	 * @param job Job used to search file content
+	 * @param queue where to get info, queue name
 	 * @param item item to search
 	 * @return output file content
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
-		return jobsManager.getOutputFileContent(job, item);
+	public String getOutputFileContent(Job job, JobQueue queue, OutputListItem item) throws RestException {
+		return jobsManager.getOutputFileContent(job.getId(), queue, item);
 	}
 
 	/**
@@ -297,10 +247,10 @@ public class Client {
 	 * @param path relative path of file
 	 * @param pathName data path name
 	 * @return file content in string format
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public String getGfsFile(int type, String path, String pathName) throws JemException {
-		return gfsManager.getFile(createGfsRequest(type, path, pathName));
+	public byte[] getGfsFile(int type, String path, String pathName) throws RestException {
+		return gfsManager.getFile(GfsFileType.getName(type), path, pathName);
 	}
 
 	/**
@@ -309,20 +259,20 @@ public class Client {
 	 * @param path path relative path of folder
 	 * @param pathName data path name
 	 * @return list of files of GFS
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public Collection<GfsFile> getGfsFileList(int type, String path, String pathName) throws JemException {
-		return gfsManager.getFilesList(createGfsRequest(type, path, pathName)).getGfsFiles();
+	public Collection<GfsFile> getGfsFileList(int type, String path, String pathName) throws RestException {
+		return gfsManager.getFilesList(GfsFileType.getName(type), path, pathName);
 	}
 	
 	/**
 	 * Upload a file to GFS
 	 * @param file file coordinates necessary to upload file
 	 * @return REST status
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public int upload(UploadedGfsFile file) throws JemException {
-		return gfsManager.upload(file);
+	public boolean upload(UploadedGfsFile file) throws RestException {
+		return gfsManager.putFile(file);
 	}
 	
 	/**
@@ -331,10 +281,10 @@ public class Client {
 	 * @param path relative path of file
 	 * @param pathName data path name
 	 * @return file content in string format
-	 * @throws JemException if any exception occurs
+	 * @throws RestException if any exception occurs
 	 */
-	public void delete(int type, String path, String pathName) throws JemException {
-		gfsManager.delete(createGfsRequest(type, path, pathName));
+	public void delete(int type, String path, String pathName) throws RestException {
+		gfsManager.delete(GfsFileType.getName(type), path, pathName);
 	}
 	
 	/**
@@ -353,20 +303,6 @@ public class Client {
 	 */
 	public void removeUploadListener(UploadListener listener){
 		gfsManager.removeUploadListener(listener);
-	}
-	
-	/**
-	 * Returns a gfs request, with path or file and data path name, if exist 
-	 * @param path path relative path of folder
-	 * @param pathName data path name
-	 * @return a gfs request
-	 */
-	private GfsRequest createGfsRequest(int type, String path, String pathName){
-		GfsRequest request = new GfsRequest();
-		request.setItem(path);
-		request.setPathName(pathName);
-		request.setType(type);
-		return request;
 	}
 
 	/**
@@ -413,13 +349,11 @@ public class Client {
 	 * Returns <code>true</code> if you are authorized to permission, by the
 	 * domain.
 	 * 
-	 * @param domain
-	 *            container of subsets of permission, by category
 	 * @param permission
 	 *            simple permission
 	 * @return <code>true</code> if authorized, otherwise <code>false</code>
 	 */
-	public boolean isAuthorized(String domain, String permission) {
+	public boolean isAuthorized(String permission) {
 		Boolean authorized = user.isAuthorized(permission);
 		return authorized.booleanValue();
 	}

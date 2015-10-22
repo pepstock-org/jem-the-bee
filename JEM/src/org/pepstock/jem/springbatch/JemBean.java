@@ -156,6 +156,7 @@ public final class JemBean extends AbstractJcl implements ApplicationContextAwar
 	 */
 	@Override
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		
 		// creates Listener
 		StepListener listener = new StepListener();
 		// sets the springbatch listener

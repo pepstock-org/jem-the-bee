@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Composite which manages text field and button for searching.
@@ -47,7 +48,7 @@ public class Searcher extends Composite{
     public Searcher(Refresher refresher) {
     	super(refresher.getComposite(), SWT.NONE);
     	// sets layout
-    	setLayout(new GridLayout(3, false));
+    	setLayout(new GridLayout(Numbers.N_3, false));
   	
     	// uses this griddata to fill 
     	// horizontally

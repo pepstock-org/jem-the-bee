@@ -38,7 +38,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Create table for checking table
 	 */
-	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (PRE_JOB_ID BIGINT primary key not null, PRE_JOB CLOB (1000000) not null)";
+	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (JOB_ID char(39) primary key not null, PRE_JOB CLOB (1000000) not null)";
 	/**
 	 * Insert statement to put a pre job in CHECKING queue
 	 */
@@ -47,30 +47,30 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Delete statement to remove a pre job from CHECKING queue
 	 */
-	private static final String DELETE_CHECKING_QUEUE = "delete from CHECKING_QUEUE where PRE_JOB_ID = ?";
+	private static final String DELETE_CHECKING_QUEUE = "delete from CHECKING_QUEUE where JOB_ID = ?";
 
 	/**
 	 * Update statement to change a pre job in CHECKING queue
 	 */
-	private static final String UPDATE_CHECKING_QUEUE = "update CHECKING_QUEUE set PRE_JOB = ? where PRE_JOB_ID = ?";
+	private static final String UPDATE_CHECKING_QUEUE = "update CHECKING_QUEUE set PRE_JOB = ? where JOB_ID = ?";
 
 	/**
 	 * Select statement to get a pre job from CHECKING queue
 	 */
-	private static final String GET_PRE_JOB_CHECKING_QUEUE = "select PRE_JOB from CHECKING_QUEUE where PRE_JOB_ID = ?";
+	private static final String GET_PRE_JOB_CHECKING_QUEUE = "select PRE_JOB from CHECKING_QUEUE where JOB_ID = ?";
 
 	/**
 	 * Select statement to get all pre jobs (using a list of IDS) from CHECKING
 	 * queue. is not a PrepareStatement but a message format to feed with a list
 	 * of jobs id.
 	 */
-	private static final String GET_ALL_PRE_JOBS_CHECKING_QUEUE = "select PRE_JOB_ID PRE_JOB from CHECKING_QUEUE where PRE_JOB_ID IN ( {0} )";
+	private static final String GET_ALL_PRE_JOBS_CHECKING_QUEUE = "select PRE_JOB from CHECKING_QUEUE";
 
 	/**
 	 * Select statement to get all job ids (the keys of table) from CHECKING
 	 * queue
 	 */
-	private static final String GET_PRE_JOB_IDS_CHECKING_QUEUE = "select PRE_JOB_ID from CHECKING_QUEUE";
+	private static final String GET_PRE_JOB_IDS_CHECKING_QUEUE = "select JOB_ID from CHECKING_QUEUE";
 
 	/**
 	 * Get size of pre jobs inside the CHECKING_QUEUE

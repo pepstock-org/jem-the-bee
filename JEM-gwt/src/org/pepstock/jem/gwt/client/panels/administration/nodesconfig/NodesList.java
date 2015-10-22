@@ -74,6 +74,7 @@ public class NodesList extends VerticalPanel implements ResizeCapable {
 		// Add a selection model to handle user selection.
 		cellList.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				NodeInfoBean selected = selectionModel.getSelectedObject();
 				if (selected != null) {

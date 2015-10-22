@@ -34,7 +34,7 @@ package org.pepstock.jem.node.persistence;
  * 
  *      Table CHECKING_QUEUE has the following structure:<br>
  * <br>
- *      <code>PRE_JOB_ID bigint primary key</code>: used to store the pre job
+ *      <code>JOB_ID bigint primary key</code>: used to store the pre job
  *      id.<br>
  *      <code>PRE_JOB clob(1000000)</code>: used to store the pre job,
  *      serializing the PreJob object in XML format. XML must be less than 1M.<br>
@@ -78,6 +78,16 @@ public class  SQLContainer {
 	private String getAllKeysStatement = null;
 
 	private String checkQueueSizeStatement = null;
+
+	private String tableNameForEviction = null;
+	
+	private String createTableStatementForEviction = null;
+	
+	private String insertStatementForEviction = null;
+			
+	private String deleteStatementForEviction = null;
+
+	private String updateStatementForEviction = null;
 
 	/**
 	 * 
@@ -211,14 +221,85 @@ public class  SQLContainer {
 	public void setCheckQueueSizeStatement(String checkQueueSizeStatement) {
 		this.checkQueueSizeStatement = checkQueueSizeStatement;
 	}
+	
+	/**
+	 * @return the tableNameForEviction
+	 */
+	public String getTableNameForEviction() {
+		return tableNameForEviction;
+	}
+
+	/**
+	 * @param tableNameForEviction the tableNameForEviction to set
+	 */
+	public void setTableNameForEviction(String tableNameForEviction) {
+		this.tableNameForEviction = tableNameForEviction;
+	}
+
+	/**
+	 * @return the createTableStatementForEviction
+	 */
+	public String getCreateTableStatementForEviction() {
+		return createTableStatementForEviction;
+	}
+
+	/**
+	 * @param createTableStatementForEviction the createTableStatementForEviction to set
+	 */
+	public void setCreateTableStatementForEviction(String createTableStatementForEviction) {
+		this.createTableStatementForEviction = createTableStatementForEviction;
+	}
+
+	/**
+	 * @return the insertStatementForEviction
+	 */
+	public String getInsertStatementForEviction() {
+		return insertStatementForEviction;
+	}
+
+	/**
+	 * @param insertStatementForEviction the insertStatementForEviction to set
+	 */
+	public void setInsertStatementForEviction(String insertStatementForEviction) {
+		this.insertStatementForEviction = insertStatementForEviction;
+	}
+
+	/**
+	 * @return the deleteStatementForEviction
+	 */
+	public String getDeleteStatementForEviction() {
+		return deleteStatementForEviction;
+	}
+
+	/**
+	 * @param deleteStatementForEviction the deleteStatementForEviction to set
+	 */
+	public void setDeleteStatementForEviction(String deleteStatementForEviction) {
+		this.deleteStatementForEviction = deleteStatementForEviction;
+	}
+
+	/**
+	 * @return the updateStatementForEviction
+	 */
+	public String getUpdateStatementForEviction() {
+		return updateStatementForEviction;
+	}
+
+	/**
+	 * @param updateStatementForEviction the updateStatementForEviction to set
+	 */
+	public void setUpdateStatementForEviction(String updateStatementForEviction) {
+		this.updateStatementForEviction = updateStatementForEviction;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "SQLContainer [tableName=" + tableName + ", createTableStatement=" + createTableStatement + ", insertStatement=" + insertStatement + ", deleteTableStatement=" + deleteStatement 
-				+ ", updateStatement=" + updateStatement + ", getStatement=" + getStatement + ", getAllStatement=" + getAllStatement + ", getAllIDsStatement=" + getAllKeysStatement + ", checkQueueSizeStatement="
-				+ checkQueueSizeStatement + "]";
+		return "SQLContainer [tableName=" + tableName + ", createTableStatement=" + createTableStatement + ", insertStatement=" + insertStatement + ", deleteStatement=" + deleteStatement + ", updateStatement=" + updateStatement + ", getStatement="
+				+ getStatement + ", getAllStatement=" + getAllStatement + ", getAllKeysStatement=" + getAllKeysStatement + ", checkQueueSizeStatement=" + checkQueueSizeStatement + ", tableNameForEviction=" + tableNameForEviction
+				+ ", createTableStatementForEviction=" + createTableStatementForEviction + ", insertStatementForEviction=" + insertStatementForEviction + ", deleteStatementForEviction=" + deleteStatementForEviction + ", updateStatementForEviction="
+				+ updateStatementForEviction + "]";
 	}
-
 }

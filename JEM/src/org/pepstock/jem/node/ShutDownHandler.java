@@ -17,8 +17,9 @@
 package org.pepstock.jem.node;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.DBPoolManager;
+import org.pepstock.jem.node.persistence.database.DBPoolManager;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.ILock;
@@ -33,6 +34,9 @@ import com.hazelcast.core.ILock;
  * 
  */
 public class ShutDownHandler extends Thread {
+	
+	private static final long CHECK_NODE_STATUS_INTERVAL  = 10 * TimeUtils.SECOND;
+	
 	/**
 	 * Creates the handler with a list of threads to interrupt
 	 * 
@@ -91,7 +95,7 @@ public class ShutDownHandler extends Thread {
 			NodeInfoUtility.drain();
 			// waits for a second before to check the status
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(TimeUtils.SECOND);
 			} catch (InterruptedException e) {
 				// ignore
 			}
@@ -104,7 +108,7 @@ public class ShutDownHandler extends Thread {
 					}
 				}
 				try {
-					Thread.sleep(10 * TimeUtils.SECOND);
+					Thread.sleep(CHECK_NODE_STATUS_INTERVAL);
 				} catch (InterruptedException e) {
 					// ignore
 				}
@@ -132,6 +136,11 @@ public class ShutDownHandler extends Thread {
 		// stops the statistics timer
 		if (Main.getStatisticsManager() != null) {
 			Main.getStatisticsManager().stop();
+		}
+		
+		// calls all factories to notify that is closing
+		for (JemFactory factory : Main.FACTORIES_LIST.values()){
+			factory.beforeNodeStopped();
 		}
 
 		// interrupt Multicast Service

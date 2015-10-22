@@ -87,7 +87,7 @@ public class WidgetFactory {
 			panel.addFieldPanel(null);
 		} else {
 			for (AbstractFieldDescriptor afd : fields) {
-				AbstractFieldPanel<?,?,?> fieldPanel;
+				AbstractFieldPanel<?,?,?,?> fieldPanel;
 				if (afd instanceof PasswordFieldDescriptor) {
 					fieldPanel = new PasswordFieldPanel((PasswordFieldDescriptor)afd, panel);
 				} else if (afd instanceof TextFieldDescriptor) {

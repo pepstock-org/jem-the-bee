@@ -21,6 +21,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.ConfigKeys;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * This class contains the userid for all command which needs userid.
@@ -74,7 +75,7 @@ public class UserIDCommand {
 	 */
 	public long getResident(){
 		try {
-			return SIGAR.getProcMem(SIGAR.getPid()).getResident() / 1024;
+			return SIGAR.getProcMem(SIGAR.getPid()).getResident() / MemorySize.KB;
 		} catch (SigarException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			return -1;

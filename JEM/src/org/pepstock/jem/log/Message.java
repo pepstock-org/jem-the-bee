@@ -17,8 +17,9 @@
 package org.pepstock.jem.log;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents the informations that all JEM components are logging. This is the
@@ -35,14 +36,22 @@ public class Message implements Serializable{
 	 * Prefix of all messages
 	 */
 	public static final String PREFIX = "JEM";
-
-	private static final DecimalFormat DF = new DecimalFormat("0000");
-
+	
+	/**
+	 * Length to center the message
+	 */
+	public static final int ATTENTION_STRING_LEGTH = 40;
+	
+	/**
+	 * Common attention message
+	 */
+	public static final String ATTENTION_STRING = StringUtils.center("ATTENTION", ATTENTION_STRING_LEGTH, "-");
+	
 	private MessageFormat format = null;
 
-	private int code = 0;
+	private String code = null;
 
-	private String message = null;
+	private String content = null;
 
 	private MessageLevel level = MessageLevel.INFO;
 
@@ -57,16 +66,14 @@ public class Message implements Serializable{
 	 *            runtime
 	 * @param level severity of log message
 	 */
-	public Message(int code, String id, String msg, MessageLevel level) {
-		this.code = 0;
+	public Message(String code, String id, String msg, MessageLevel level) {
+		this.code = code;
 		this.level = level;
-		// formats the number to 5 digits
-		String codeString = DF.format(code);
-		// creates prefix to message "JEMnnnnn"
-		this.message = PREFIX + id + codeString + " " + msg;
+		// creates prefix to message "JEMnnnn"
+		this.content = PREFIX + id + code + " " + msg;
 
 		// creates format object
-		this.format = new MessageFormat(message);
+		this.format = new MessageFormat(content);
 	}
 
 	/**
@@ -74,7 +81,7 @@ public class Message implements Serializable{
 	 * 
 	 * @return identifier ID
 	 */
-	public int getCode() {
+	public String getCode() {
 		return code;
 	}
 
@@ -83,8 +90,8 @@ public class Message implements Serializable{
 	 * 
 	 * @return log message
 	 */
-	public String getMessage() {
-		return message;
+	public String getContent() {
+		return content;
 	}
 
 	/**

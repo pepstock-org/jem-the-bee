@@ -20,6 +20,7 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.JobFieldsComparator;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with job in output queue
@@ -45,43 +46,43 @@ public class OutputJobComparator extends IndexedColumnComparator<Job> {
 	public int compare(Job o1, Job o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by jobname
 				diff = o1.getName().compareTo(o2.getName());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by JCL type
 				diff = o1.getJcl().getType().compareTo(o2.getJcl().getType());
 				break;
-			case 3:
+			case ColumnIndex.COLUMN_4:
 				// sorts by job user
 				diff = JobFieldsComparator.sortByUser(o1, o2);
 				break;
-			case 4:
+			case ColumnIndex.COLUMN_5:
 				// environment
 				diff = o1.getJcl().getEnvironment().compareTo(o2.getJcl().getEnvironment());
 				break;
-			case 5:
+			case ColumnIndex.COLUMN_6:
 				// routed
 				diff = JobFieldsComparator.sortByRoutedTime(o1, o2);
 				break;
-			case 6: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by domain
 				diff = o1.getJcl().getDomain().compareTo(o2.getJcl().getDomain());
 				break;
-			case 7: 
+			case ColumnIndex.COLUMN_8: 
 				// sorts by affinity
 				diff = o1.getJcl().getAffinity().compareTo(o2.getJcl().getAffinity());
 				break;
-			case 8: 
+			case ColumnIndex.COLUMN_9: 
 				// sorts by ended time
 				diff = o1.getEndedTime().compareTo(o2.getEndedTime());
 				break;
-			case 9: 
+			case ColumnIndex.COLUMN_10: 
 				// sorts by return code
 				diff = o1.getResult().getReturnCode() - o2.getResult().getReturnCode();
 				break;
-			case 11:
+			case ColumnIndex.COLUMN_12:
 				String label1 = (o1.getMemberLabel() == null) ? "" : o1.getMemberLabel();
 				String label2 = (o2.getMemberLabel() == null) ? "" : o2.getMemberLabel();
 				diff = label1.compareTo(label2);

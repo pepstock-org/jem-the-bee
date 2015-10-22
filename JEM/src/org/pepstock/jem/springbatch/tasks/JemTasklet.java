@@ -36,6 +36,7 @@ import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.Message;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
@@ -318,7 +319,7 @@ public abstract class JemTasklet implements Tasklet{
 						LogAppl.getInstance().emit(SpringBatchMessage.JEMS047E, e.getMessage());
 					}
 					if (exceptions.length() > 0 && !isAbended){
-						LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, StringUtils.center("ATTENTION", 40, "-"));
+						LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, Message.ATTENTION_STRING);
 						LogAppl.getInstance().emit(SpringBatchMessage.JEMS025E, exceptions.toString());
 					}
 

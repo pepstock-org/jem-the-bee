@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.resources;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
 import org.pepstock.jem.node.resources.Resource;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with roles
@@ -43,19 +44,19 @@ public class ResourcesComparator extends IndexedColumnComparator<Resource> {
     public int compare(Resource o1, Resource o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by role name
 				diff = o1.getName().compareTo(o2.getName());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by type
 				diff = o1.getType().compareTo(o2.getType());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by last modified
 				diff = sortByLastModified(o1, o2);
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by user
 				diff = sortByUser(o1, o2);
 				break;				

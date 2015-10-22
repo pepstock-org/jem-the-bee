@@ -72,6 +72,8 @@ final class SelfSignedCertificate {
     // uses 1024 bit
     private static final int CERTIFICATE_BITS = 1024;
     
+    private static final long TEN_YEARS = 10 * TimeUtils.DAY * 365;
+    
     // random password 
     static final String CERTIFICATE_PASSWORD = UUID.randomUUID().toString();
     
@@ -108,7 +110,7 @@ final class SelfSignedCertificate {
 		// starting from now
 		long now = System.currentTimeMillis();
 		Date notBefore = new Date(now - TimeUtils.DAY);
-		Date notAfter = new Date(now + 10 * TimeUtils.DAY * 365);
+		Date notAfter = new Date(now + TEN_YEARS);
 		BigInteger serial = BigInteger.valueOf(now);
 
 		// creaets a builder

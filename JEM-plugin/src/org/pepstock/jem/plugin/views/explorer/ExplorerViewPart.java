@@ -88,7 +88,7 @@ public class ExplorerViewPart extends LoginViewPart {
 	private void createTabItem(ExplorerTableContainer container, String permission) {
 		// checks permission ONLY if is logged.
 		// permissions are stored in LoggedUser
-		if (Client.getInstance().isLogged() && Client.getInstance().isAuthorized(Permissions.GFS, permission)) {
+		if (Client.getInstance().isLogged() && Client.getInstance().isAuthorized(permission)) {
 			// creates columns for viewer
 			container.createViewer();
 			getSite().setSelectionProvider(container.getViewer());
@@ -160,7 +160,7 @@ public class ExplorerViewPart extends LoginViewPart {
 		if (enabled) {
 			// only if is logged
 			if (Client.getInstance().isLogged()) {
-				if (Client.getInstance().isAuthorized(Permissions.VIEW, Permissions.VIEW_GFS_EXPLORER)) {
+				if (Client.getInstance().isAuthorized(Permissions.VIEW_GFS_EXPLORER)) {
 					Display.getDefault().syncExec(new Runnable() {
 						@Override
 						public void run() {
@@ -169,7 +169,7 @@ public class ExplorerViewPart extends LoginViewPart {
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.DATA), Permissions.GFS_DATA);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.LIBRARY), Permissions.GFS_LIBRARY);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.CLASS), Permissions.GFS_CLASS);
-							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.SOURCE), Permissions.GFS_SOURCES);
+							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.SOURCE), Permissions.GFS_SOURCE);
 							createTabItem(new ExplorerTableContainer(tabFolder, SWT.SINGLE, GfsFileType.BINARY), Permissions.GFS_BINARY);
 						}
 					});

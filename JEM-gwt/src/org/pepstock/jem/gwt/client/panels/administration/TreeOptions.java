@@ -25,6 +25,7 @@ import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.node.security.Permissions;
+import org.pepstock.jem.util.ColumnIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -115,7 +116,7 @@ public class TreeOptions extends ScrollPanel {
 		List<CellPanel> panels = new LinkedList<CellPanel>();
 		List<DisclosurePanel> dPanels = new LinkedList<DisclosurePanel>();
 
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_CLUSTER_FOLDER)) {
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_CLUSTER_FOLDER)) {
 			if (cconfig != null) {
 				panels.add(cconfig);
 			}
@@ -136,7 +137,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_NODES_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_NODES_FOLDER)){
 			if (nconfig !=null) {
 				panels.add(nconfig);
 			}
@@ -154,7 +155,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_QUEUES_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_QUEUES_FOLDER)){
 			if (cqueues !=null) {
 				panels.add(cqueues);
 			}
@@ -169,7 +170,7 @@ public class TreeOptions extends ScrollPanel {
 			}
 		}
 		panels.clear();
-		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, Permissions.ADMINISTRATION_SECURITY_FOLDER)){
+		if (ClientPermissions.isAuthorized(Permissions.ADMINISTRATION_SECURITY_FOLDER)){
 			if (certificate !=null) {
 				panels.add(certificate);
 			}
@@ -184,7 +185,7 @@ public class TreeOptions extends ScrollPanel {
 		Grid grid = new Grid(dPanels.size(), 1);
 		int index = 0;
 		for (DisclosurePanel panel : dPanels){
-			grid.setWidget(index, 0, panel);
+			grid.setWidget(index,ColumnIndex.COLUMN_1, panel);
 			index++;
 		}
 		add(grid);
@@ -218,7 +219,7 @@ public class TreeOptions extends ScrollPanel {
 	 * @return
 	 */
 	private final CellPanel createItem(String description, final String option, ImageResource icon, String permission){
-		if (!ClientPermissions.isAuthorized(Permissions.ADMINISTRATION, permission)) {
+		if (!ClientPermissions.isAuthorized(permission)) {
 			return null;
 		}
 	

@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SigarProxy;
+import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Display how long the system has been running and the current load averages.
@@ -59,17 +60,17 @@ public class Uptime {
 	private static String formatUptime(double uptime) {
 		String retval = "";
 		// gets days
-		int days = (int) uptime / (60 * 60 * 24);
+		int days = (int) uptime / (int)(TimeUtils.DAY / TimeUtils.SECOND);
 		int minutes, hours;
 		// if has got days, puts the labels
 		if (days != 0) {
 			retval += days + " " + ((days > 1) ? "days" : "day") + ", ";
 		}
 		// caulates minutes, hours and so on.
-		minutes = (int) uptime / 60;
-		hours = minutes / 60;
-		hours %= 24;
-		minutes %= 60;
+		minutes = (int) uptime / TimeUtils.SECONDS_FOR_MINUTE;
+		hours = minutes / TimeUtils.MINUTES_FOR_HOUR;
+		hours %= TimeUtils.HOURS_FOR_DAY;
+		minutes %= TimeUtils.MINUTES_FOR_HOUR;
 
 		// creates the labels
 		if (hours != 0) {

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.plugin.util.Images;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Header of general job information dialog, with job icon and job name.
@@ -37,7 +38,7 @@ public class JobPropertiesHeader extends Composite{
     public JobPropertiesHeader(Composite parent, Job job) {
 	    super(parent, SWT.NONE);
 	    // sets grid layout
-	    setLayout(new GridLayout(3, false));
+	    setLayout(new GridLayout(Numbers.N_3, false));
 	    setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true, false, 0, 0));
 	    // sets ICON for JOB
 	    Label icon = new Label(this, SWT.NONE);

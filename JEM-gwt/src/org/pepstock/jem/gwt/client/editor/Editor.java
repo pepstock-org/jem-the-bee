@@ -35,7 +35,7 @@ public class Editor extends Widget implements RequiresResize {
 
 	private final String id;
 
-	private JavaScriptObject editor;
+	JavaScriptObject editorJS;
 
 	/**
 	 * Creates a editor element with a increment ID.
@@ -75,7 +75,7 @@ public class Editor extends Widget implements RequiresResize {
 	public native void start() /*-{
 		var editor = $wnd.ace.edit(this.@org.pepstock.jem.gwt.client.editor.Editor::id);
 		editor.getSession().setUseWorker(false);
-		this.@org.pepstock.jem.gwt.client.editor.Editor::editor = editor;
+		this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS = editor;
 		editor.resize();
 		this.@org.pepstock.jem.gwt.client.editor.Editor::redisplay();
 	}-*/;
@@ -84,7 +84,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * Re-display editor content.
 	 */
 	public native void redisplay() /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.renderer.onResize(true);
 		editor.renderer.updateFull();
 		editor.resize();
@@ -96,7 +96,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * Destroy editor.
 	 */
 	public native void destroy() /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.destroy();
 	}-*/;
 
@@ -114,7 +114,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param themeName string
 	 */
 	public native void setTheme(String themeName) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.setTheme("ace/theme/" + themeName);
 	}-*/;
 
@@ -131,7 +131,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param modeName
 	 */
 	public native void setMode(String modeName) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		var mode = "ace/mode/" + modeName;
 		editor.getSession().setMode(mode);
 	}-*/;
@@ -154,7 +154,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @return the text 
 	 */
 	public native String getText() /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		return editor.getSession().getValue();
 	}-*/;
 
@@ -163,7 +163,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param text the text to set
 	 */
 	public native void setText(String text) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.getSession().setValue(text);
 	}-*/;
 
@@ -172,7 +172,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param readOnly true sets read-only
 	 */
 	public native void setReadOnly(boolean readOnly) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.setReadOnly(readOnly);
 	}-*/;
 
@@ -181,7 +181,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param shouldHighlight true sets highlight
 	 */
 	public native void setHighlightActiveLine(boolean shouldHighlight) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.setHighlightActiveLine(shouldHighlight);
 	}-*/;
 
@@ -190,7 +190,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @return the text 
 	 */
 	public native String selectAll() /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		return editor.selectAll();
 	}-*/;
 	
@@ -200,7 +200,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param showPrintMargin true if the print margin should be shown, false otherwise
 	 */
 	public native void setShowPrintMargin(boolean showPrintMargin) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.renderer.setShowPrintMargin(showPrintMargin);
 	}-*/;
 
@@ -218,7 +218,7 @@ public class Editor extends Widget implements RequiresResize {
 	 * @param callback the change event handler
 	 */
 	public native void addOnChangeHandler(EditorChangeHandler callback) /*-{
-		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editor;
+		var editor = this.@org.pepstock.jem.gwt.client.editor.Editor::editorJS;
 		editor.getSession().on("change", function(e) {
 			callback.@org.pepstock.jem.gwt.client.editor.EditorChangeHandler::invokeAceCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(e);
 		});

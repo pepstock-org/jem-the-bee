@@ -10,10 +10,10 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 	
 	<target name="remove-resources">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					REMOVE JUNIT_JDBC_JEM;

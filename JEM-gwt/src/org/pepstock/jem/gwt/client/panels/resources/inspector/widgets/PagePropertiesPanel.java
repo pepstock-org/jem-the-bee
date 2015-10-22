@@ -24,6 +24,7 @@ import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.resources.definition.SectionDescriptor;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Builds a simple (single) property panel
@@ -32,7 +33,7 @@ import org.pepstock.jem.node.resources.definition.SectionDescriptor;
  */
 public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDescriptor> {
 
-	protected List<AbstractFieldPanel<?,?,?>> fields = new LinkedList<AbstractFieldPanel<?,?,?>>(); 
+	protected List<AbstractFieldPanel<?,?,?,?>> fields = new LinkedList<AbstractFieldPanel<?,?,?,?>>(); 
 	protected boolean stylized = false;
 	protected String resourceType = null;
 	
@@ -75,7 +76,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	public boolean checkMandatory() {
 		boolean result = true;
 		for (int i=0; i<fields.size() && result; i++) {
-			result &= ((AbstractFieldPanel<?,?,?>)fields.get(i)).checkMandatory();
+			result &= ((AbstractFieldPanel<?,?,?,?>)fields.get(i)).checkMandatory();
 		}
 		return result;
 	}
@@ -84,7 +85,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	public boolean validate() {
 		boolean result = true;
 		for (int i=0; i<fields.size() && result; i++) {
-			result &= ((AbstractFieldPanel<?,?,?>)fields.get(i)).validate();
+			result &= ((AbstractFieldPanel<?,?,?,?>)fields.get(i)).validate();
 		}
 		return result;
 	}
@@ -92,7 +93,7 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	@Override
 	public void loadProperties() {
 		for (int i=0; i<fields.size(); i++) {
-			((AbstractFieldPanel<?,?,?>)fields.get(i)).loadProperties();
+			((AbstractFieldPanel<?,?,?,?>)fields.get(i)).loadProperties();
 		}
 	}
 
@@ -100,12 +101,12 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 	 * Adds a {@link AbstractFieldPanel} to this container 
 	 * @param fieldPanel
 	 */
-	public void addFieldPanel(AbstractFieldPanel<?,?,?> fieldPanel) {
+	public void addFieldPanel(AbstractFieldPanel<?,?,?,?> fieldPanel) {
 		fields.add(fieldPanel);
 		int row = getTable().getRowCount();
-		getTable().setHTML(row, 0, fieldPanel.getLabel());
-		getTable().setWidget(row, 1, fieldPanel.getInputObject());
-		getTable().setHTML(row, 2, fieldPanel.getDescription());
+		getTable().setHTML(row,ColumnIndex.COLUMN_1, fieldPanel.getLabel());
+		getTable().setWidget(row,ColumnIndex.COLUMN_2, fieldPanel.getInputObject());
+		getTable().setHTML(row,ColumnIndex.COLUMN_3, fieldPanel.getDescription());
 		stylize();
 	}
 	
@@ -114,9 +115,9 @@ public class PagePropertiesPanel extends CommonResourcePropertiesPanel<SectionDe
 			// disable word wrapping for first column
 			getTable().getColumnFormatter().addStyleName(0, Styles.INSTANCE.common().noWrap());
 			// set column size
-			getTable().getColumnFormatter().setWidth(0, "15%");
-			getTable().getColumnFormatter().setWidth(1, "45%");
-			getTable().getColumnFormatter().setWidth(2, "40%");
+			getTable().getColumnFormatter().setWidth(ColumnIndex.COLUMN_1, "15%");
+			getTable().getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "45%");
+			getTable().getColumnFormatter().setWidth(ColumnIndex.COLUMN_3, "40%");
 			// set flag to avoid re-stylize
 			stylized = true;
 		}

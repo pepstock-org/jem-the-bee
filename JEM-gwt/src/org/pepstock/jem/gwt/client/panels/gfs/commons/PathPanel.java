@@ -21,6 +21,8 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.Images;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,7 +64,7 @@ public class PathPanel extends FlexTable {
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
 		cf.setWordWrap(0, 0, false);
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		setHTML(0, 0, "Path: ");
 
@@ -130,8 +132,8 @@ public class PathPanel extends FlexTable {
 	private void setCount(int count){
 		int col = getCellCount(0) + 1;
 		FlexCellFormatter cf = getFlexCellFormatter();
-		cf.setWidth(0, col, Sizes.HUNDRED_PERCENT);
-		cf.setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_RIGHT);
+		cf.setWidth(ColumnIndex.COLUMN_1, col, Sizes.HUNDRED_PERCENT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1, col, HasHorizontalAlignment.ALIGN_RIGHT);
 		setHTML(0, col, (count > 1) ? count+" files" : count+" file");
 		cf.setWordWrap(0, col, false);
 	}
@@ -157,13 +159,13 @@ public class PathPanel extends FlexTable {
 		for (int i=0; i<pathTokens.length; i++) {
 			int index0 = i*2+2;
 			cf.setWordWrap(0, index0, false);
-			cf.setHorizontalAlignment(0, index0, HasHorizontalAlignment.ALIGN_LEFT);
+			cf.setHorizontalAlignment(RowIndex.ROW_1, index0, HasHorizontalAlignment.ALIGN_LEFT);
 
 			setHTML(0, index0, PATH_SEPARATOR);
 			
 			int index1 = i*2+3;
 			cf.setWordWrap(0, index1, false);
-			cf.setHorizontalAlignment(0, index1, HasHorizontalAlignment.ALIGN_LEFT);
+			cf.setHorizontalAlignment(RowIndex.ROW_1, index1, HasHorizontalAlignment.ALIGN_LEFT);
 
 			setWidget(0, index1, createAnchor(i));
 		}

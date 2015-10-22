@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.administration.redo;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.persistence.RedoStatement;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -47,25 +48,29 @@ public class RedoComparator extends IndexedColumnComparator<RedoStatement> {
 	public int compare(RedoStatement o1, RedoStatement o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of node
 				diff = o1.getId().compareTo(o2.getId());
 				break;
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by cpu
 				diff = o1.getQueueName().compareTo(o2.getQueueName());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by memory avail
 				diff = o1.getAction().compareTo(o2.getAction());
 				break;
-			case 3: 
-				// sorts by process cpu 
-				diff = o1.getJobId().compareTo(o2.getJobId()); 
+			case ColumnIndex.COLUMN_4: 
+				// sorts by memory avail
+				diff = o1.getCreation().compareTo(o2.getCreation());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5:
+				// sorts by process cpu 
+				diff = sortByEntityID(o1, o2);
+				break;
+			case ColumnIndex.COLUMN_6: 
 				// sorts by process tot cpu
-				diff = o1.getJob().getName().compareTo(o2.getJob().getName()); 
+				diff = sortByEntity(o1, o2);
 				break;
 				
 			default:
@@ -77,4 +82,15 @@ public class RedoComparator extends IndexedColumnComparator<RedoStatement> {
 		return isAscending() ? diff : -diff;
 	}
 
+	private int sortByEntityID(RedoStatement o1, RedoStatement o2) {
+		String id1 = o1.getEntityId() != null ? o1.getEntityId() : ""; 
+		String id2 = o2.getEntityId() != null ? o2.getEntityId() : "";
+		return id1.compareTo(id2);
+	}
+	
+	private int sortByEntity(RedoStatement o1, RedoStatement o2) {
+		String id1 = o1.getEntityToString() != null ? o1.getEntityToString() : ""; 
+		String id2 = o2.getEntityToString() != null ? o2.getEntityToString() : "";
+		return id1.compareTo(id2);
+	}
 }

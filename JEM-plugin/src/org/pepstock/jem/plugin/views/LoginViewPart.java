@@ -33,6 +33,8 @@ import org.pepstock.jem.plugin.preferences.PreferencesManager;
 import org.pepstock.jem.plugin.util.LoginLoading;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Implements a view part which needs the login, using the environment header.
@@ -127,9 +129,9 @@ public abstract class LoginViewPart extends JemViewPart implements ShellContaine
 	 */
     @Override
     public void createPartControl(Composite parent) {
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = 2;
-		layout.marginWidth = 2;
+		GridLayout layout = new GridLayout(Numbers.N_1, false);
+		layout.marginHeight = Numbers.N_2;
+		layout.marginWidth = Numbers.N_2;
 		parent.setLayout(layout);
 		
 		// adds environment header
@@ -314,7 +316,7 @@ public abstract class LoginViewPart extends JemViewPart implements ShellContaine
 					}
 				}
 				Client.getInstance().login(choosed);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to login to "+getCoordinate().getName()+"!",
 						"Error occurred during login to '"+getCoordinate().getName()+"': "+e.getMessage(), MessageLevel.ERROR);

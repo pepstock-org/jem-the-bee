@@ -80,7 +80,7 @@ public class Root {
 	protected Root(File parent, boolean load) throws IOException {
 		// checks if is null
 		if (parent == null) {
-			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getContent());
 		}
 		// checks if exists (MUST exists!)
 		if (!parent.exists()) {
@@ -138,7 +138,7 @@ public class Root {
 					throw new IOException(GDGMessage.JEMD012E.toMessage().getFormattedMessage(lastGenStr), nfe);
 				}
 			} else {
-				throw new IOException(GDGMessage.JEMD013E.toMessage().getMessage());
+				throw new IOException(GDGMessage.JEMD013E.toMessage().getContent());
 			}
 		}
 	}

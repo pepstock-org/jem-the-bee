@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.taskdefs.ExecTask;
@@ -34,6 +33,7 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.Message;
 import org.pepstock.jem.util.Parser;
 
 /**
@@ -69,8 +69,8 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	private String name = null;
 
 	private int order = 0;
-
-	private static final String RESULT_KEY = "step-exec.result";
+	
+	private String resultProperty = null;
 
 	private final List<DataDescription> dataDescriptions = new ArrayList<DataDescription>();
 
@@ -88,7 +88,6 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 		// stops the execution of ANT if error occurs
 		super.setFailonerror(false);
 		super.setFailIfExecutionFails(true);
-		super.setResultProperty(RESULT_KEY);
 	}
 
 	/**
@@ -142,6 +141,15 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	@Override
 	public String getTargetName() {
 		return getOwningTarget().getName();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.taskdefs.ExecTask#setResultProperty(java.lang.String)
+	 */
+	@Override
+	public void setResultProperty(String resultProperty) {
+		super.setResultProperty(resultProperty);
+		this.resultProperty = resultProperty;
 	}
 
 	/**
@@ -197,6 +205,10 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		StepsContainer.getInstance().setCurrent(this);
+		if (resultProperty == null){
+			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
+		}
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception
 		// before calling the main class
@@ -251,12 +263,11 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 		} finally {
 			batchSM.setInternalAction(true);
 			
-			Object rcObject = PropertyHelper.getPropertyHelper(getProject()).getProperty(RESULT_KEY);
+			Object rcObject = PropertyHelper.getPropertyHelper(getProject()).getProperty(resultProperty);
 			if (rcObject != null) {
 				returnCode = Parser.parseInt(rcObject.toString(), Result.SUCCESS);
 			}
-			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
-
+			ReturnCodesContainer.getInstance().setReturnCode(this, returnCode);
 
 			// finally and always must release the locks previously asked
 			// checks datasets list
@@ -283,7 +294,7 @@ public class StepExec extends ExecTask implements DataDescriptionStep {
 					}
 				}
 				if (exceptions.length() > 0) {
-					log(StringUtils.center("ATTENTION", 40, "-"));
+					log(Message.ATTENTION_STRING);
 					log(exceptions.toString());
 				}
 			}

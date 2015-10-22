@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.Result;
@@ -51,7 +52,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 	public TasksDoorImpl() throws RemoteException {
 		super();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -59,6 +60,15 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 	 */
 	@Override
 	public JobStartedObjects setJobStarted(String jobId, String processId) throws RemoteException {
+		return setJobStarted(jobId, processId, null);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.rmi.TasksDoor#setJobStarted(java.lang.String, java.lang.String, java.util.Properties)
+	 */
+	@Override
+	public JobStartedObjects setJobStarted(String jobId, String processId,  Map<String, Object> props) throws RemoteException {
 		// gets current task by job id
 		CancelableTask task = getCurrentTask(jobId);
 		
@@ -66,7 +76,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 		task.setProcessId(processId);
 
 		// gets job object from static reference to print info
-		Job job =task.getJobTask().getJob();
+		Job job = task.getJobTask().getJob();
 		job.setProcessId(processId);
 		// gets job object from Hazelcast queue of RUNNING to change current
 		// process ID
@@ -78,6 +88,14 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 				Job storedJob = runningQueue.get(job.getId());
 				storedJob.setProcessId(processId);
 				// replaces job instance in queue
+				if (props != null && !props.isEmpty()){
+					Map<String, Object> jclProps = storedJob.getJcl().getProperties();
+					if (jclProps != null){
+						jclProps.putAll(props);
+					} else {
+						storedJob.getJcl().setProperties(props);
+					}
+				}
 				runningQueue.replace(storedJob.getId(), storedJob);
 			} else {
 				runningQueue.put(job.getId(), job);
@@ -184,4 +202,5 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 	public void setJobEnded(String jobId) throws RemoteException {
 		// do nothing
 	}
+
 }

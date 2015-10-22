@@ -18,6 +18,7 @@ package org.pepstock.jem.jbpm;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -99,7 +100,7 @@ public class JBpmFactory extends AbstractFactory {
 	 * @see org.pepstock.jem.factories.JclFactory#createJcl(java.lang.String)
 	 */
 	@Override
-	public Jcl createJcl(String content) throws JclFactoryException {
+	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates a default JCL
 		Jcl jcl = new Jcl();
 		// sets type and content
@@ -291,11 +292,13 @@ public class JBpmFactory extends AbstractFactory {
 		// Extracts from JBPM java version property
 		String java = p.getProperty(JBpmKeys.JBPM_JAVA);
 		if(null != java) {
+			// adds automatically the java version name as an affinity
 			if (affinity != null && !affinity.equalsIgnoreCase(Jcl.DEFAULT_AFFINITY)){
-				affinity = affinity + "," + java;
+				affinity = affinity + Jcl.AFFINITY_SEPARATOR + java;
 			} else {
 				affinity = java;
 			}
+			// stores java version
 			jcl.setJava(java);
 		}
 

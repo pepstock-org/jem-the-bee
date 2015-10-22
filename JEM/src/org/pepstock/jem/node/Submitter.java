@@ -216,12 +216,17 @@ public class Submitter implements Runnable {
 		IMap<String, Job> runningQueue = Main.getHazelcast().getMap(Queues.RUNNING_QUEUE);
 		IMap<String, Job> outputQueue = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
 
+		Job jobEnded = null;
+		
 		try {
 			outputQueue.lock(job.getId());
 			runningQueue.lock(job.getId());
 
-			runningQueue.remove(job.getId());
-			outputQueue.put(job.getId(), job);
+			jobEnded = runningQueue.remove(job.getId());
+			jobEnded.setResult(job.getResult());
+			jobEnded.setEndedTime(job.getEndedTime());
+			
+			outputQueue.put(job.getId(), jobEnded);
 			
 		} catch (Exception ex){
 			LogAppl.getInstance().emit(NodeMessage.JEMC175E, ex, job.getName());			
@@ -231,12 +236,12 @@ public class Submitter implements Runnable {
 		}
 
 		// fires event that the job is ended
-		Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addJobLifecycleEvent(new JobLifecycleEvent(Queues.OUTPUT_QUEUE, job));
+		Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addJobLifecycleEvent(new JobLifecycleEvent(Queues.OUTPUT_QUEUE, jobEnded));
 
 		if (!job.isNowait()){
 			// send a topic to client which is wait for
 			ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
-			topic.publish(job);
+			topic.publish(jobEnded);
 		}
 	}
 	

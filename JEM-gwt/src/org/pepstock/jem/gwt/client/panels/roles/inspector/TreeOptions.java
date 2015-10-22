@@ -19,6 +19,8 @@ package org.pepstock.jem.gwt.client.panels.roles.inspector;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.commons.Styles;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -81,15 +83,15 @@ public class TreeOptions extends ScrollPanel {
 		VerticalPanel admin = createItem("Administration", ADMINISTRATION);
 
 		Grid grid = new Grid(9, 1);
-		grid.setWidget(0, 0, views);
-		grid.setWidget(1, 0, jobs);
-		grid.setWidget(2, 0, nodes);
-		grid.setWidget(3, 0, roles);
-		grid.setWidget(4, 0, certificates);
-		grid.setWidget(5, 0, swarm);		
-		grid.setWidget(6, 0, resources);
-		grid.setWidget(7, 0, gfs);
-		grid.setWidget(8, 0, admin);
+		grid.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, views);
+		grid.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_1, jobs);
+		grid.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_1, nodes);
+		grid.setWidget(RowIndex.ROW_4,ColumnIndex.COLUMN_1, roles);
+		grid.setWidget(RowIndex.ROW_5,ColumnIndex.COLUMN_1, certificates);
+		grid.setWidget(RowIndex.ROW_6,ColumnIndex.COLUMN_1, swarm);		
+		grid.setWidget(RowIndex.ROW_7,ColumnIndex.COLUMN_1, resources);
+		grid.setWidget(RowIndex.ROW_8,ColumnIndex.COLUMN_1, gfs);
+		grid.setWidget(RowIndex.ROW_9,ColumnIndex.COLUMN_1, admin);
 		
 		add(grid);
 		

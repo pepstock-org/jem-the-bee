@@ -16,14 +16,21 @@
 */
 package org.pepstock.jem.ant.tasks;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
+import org.pepstock.jem.Result;
+import org.pepstock.jem.annotations.ExitCode;
+import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
+import org.pepstock.jem.log.LogAppl;
 
 /**
  * Is singleton object. Only one instance of this container must instantiated.<br>
@@ -116,19 +123,49 @@ public final class ReturnCodesContainer {
 	 * Adds new data description implementation, defined for passed target and
 	 * task.
 	 * 
+	 * @param item task in executing
+	 * @param rc return code to set
+	 */
+	void setReturnCode(DataDescriptionStep item, Integer rc) {
+		setReturnCode(null, item, rc);
+	}
+
+	/**
+	 * Adds new data description implementation, defined for passed target and
+	 * task.
+	 * 
 	 * @param project ANT project
 	 * @param item task in executing
-	 * @param rc 
-	 * @param task task name
-	 * @param dd data description implementation
+	 * @param rc return code to set
 	 */
 	void setReturnCode(Project project, DataDescriptionStep item, Integer rc) {
+		setReturnCode(project, item, null, rc);
+	}
+
+	/**
+	 * Adds new data description implementation, defined for passed target and
+	 * task.
+	 * 
+	 * @param project ANT project
+	 * @param item task in executing
+	 * @param rc return code to set
+	 * @param property ANT property name to be set
+	 */
+	void setReturnCode(Project project, DataDescriptionStep item, String property, Integer rc) {
 		// create a key using message format defined for reference
 		String key = createKey(item);
 		mapReturnCodes.put(key, rc);
-		
-		PropertyHelper.getPropertyHelper(project).setNewProperty(key, rc);
+		if (project != null){
+			if (property == null) {
+				PropertyHelper.getPropertyHelper(project).setNewProperty(key, rc);
+			} else if (PropertyHelper.getPropertyHelper(project).getProperty(property) == null){
+				PropertyHelper.getPropertyHelper(project).setNewProperty(property, rc);
+			} else {
+				PropertyHelper.getPropertyHelper(project).setProperty(property, rc, true);
+			}
+		}
 	}
+
 
 	/**
 	 * Creates a key using the format defined for searching
@@ -138,7 +175,7 @@ public final class ReturnCodesContainer {
 	 * @param task task name
 	 * @return the key of map (always lower-case)
 	 */
-	private String createKey(DataDescriptionStep item) {
+	String createKey(DataDescriptionStep item) {
 		String key = MESSAGE_FORMAT.format(new Object[] { item.getTargetName(), item.getTaskName(), item.getId() }, new StringBuffer(), null).toString();
 		return key.toLowerCase();
 	}
@@ -154,15 +191,36 @@ public final class ReturnCodesContainer {
 			if (levels.length == LEVEL_WITH_ID){
 				return reference;
 			} else if (levels.length == LEVEL_WITHOUT_ID){
-				String referenceNew = levels[0] + LEVEL_SEPARATOR + // target
+				return levels[0] + LEVEL_SEPARATOR + // target
 						levels[1] + LEVEL_SEPARATOR + // task
 						DataDescriptionStep.DEFAULT_ID; // id
-				return referenceNew;		
 			}
 		}
 		return null;
 	}
 
+	final int getReturnCode(Class<?> clazz){
+		// scans all declared fields
+		for (Field field : clazz.getDeclaredFields()){
+			// if has got data description annotation
+			if (field.isAnnotationPresent(ExitCode.class)){
+				// get the static field and nly if integer
+				try {
+					Object obj = null;
+					if (Modifier.isStatic(field.getModifiers()) && (field.getType().equals(Integer.class) || field.getType().equals(int.class) )){
+						obj = FieldUtils.readStaticField(field, true);
+						return (Integer)obj;					
+					} else {
+						LogAppl.getInstance().emit(AntMessage.JEMA078E, field.getName());
+					}
+				} catch (IllegalAccessException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
+		}
+		return Result.SUCCESS;
+	}
+	
 	/**
 	 * Returns the string representation of data description container (uses
 	 * HaspMap to string method).

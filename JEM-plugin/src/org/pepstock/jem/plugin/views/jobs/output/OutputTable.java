@@ -16,13 +16,10 @@ import java.util.Collections;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.TabFolder;
-import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.commons.JemTableColumn;
 import org.pepstock.jem.plugin.views.jobs.JobColumnSorter;
 import org.pepstock.jem.plugin.views.jobs.JobsTableContainer;
-import org.pepstock.jem.rest.entities.Jobs;
+import org.pepstock.jem.rest.entities.JobQueue;
 
 /**
  * Table container of jobs in OUTPUT queue of JEM.
@@ -64,7 +61,7 @@ public class OutputTable extends JobsTableContainer {
 	 * @param style style for composites
 	 */
     public OutputTable(TabFolder parent, int style) {
-	    super(parent, style, Queues.OUTPUT_QUEUE);
+	    super(parent, style, JobQueue.OUTPUT);
 	}
 
 	/* (non-Javadoc)
@@ -74,15 +71,7 @@ public class OutputTable extends JobsTableContainer {
     public String getName() {
 	    return NAME;
     }
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.plugin.views.tabbedQueues.QueueTab#loadData(java.lang.String)
-	 */
-    @Override
-    public Jobs loadData(String filter) throws JemException {
-    	return Client.getInstance().refreshOutput(filter);
-    }
-    
+ 
     /* (non-Javadoc)
 	 * @see org.pepstock.jem.plugin.views.jobs.JobsTablePanel#getColumns()
 	 */

@@ -48,6 +48,7 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.node.security.keystore.Factory;
 import org.pepstock.jem.node.security.keystore.KeyStoreInfo;
 import org.pepstock.jem.node.security.keystore.KeyStoreUtil;
+import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Create a node on a jem installation. Is a command (to execute by command
@@ -73,6 +74,8 @@ import org.pepstock.jem.node.security.keystore.KeyStoreUtil;
  * 
  */
 public class CreateNode {
+	
+	private static final int MAX_ATTEMPTS = 10;
 
 	/**
 	 * Key for the url for global file system
@@ -195,12 +198,12 @@ public class CreateNode {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				// increments number of errors
 				count++;
-				if (count == 10){
+				if (count == MAX_ATTEMPTS){
 					throw new MessageException(NodeMessage.JEMC247E, e);
 				}
-				// waits for 500ms to try again
+				// waits for 1 sec to try again
 				try {
-					Thread.sleep(500);
+					Thread.sleep(TimeUtils.SECOND);
 				} catch (InterruptedException e1) {
 					LogAppl.getInstance().ignore(e1.getMessage(), e1);
 				}

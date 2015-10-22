@@ -81,23 +81,7 @@ public class Authorizator {
 		try {
 			// gets map and performs predicate!
 			IMap<String, Role> roles = SharedObjects.getInstance().getHazelcastClient().getMap(Queues.ROLES_MAP);
-			Collection<Role> myroles = null;
-			boolean isLock = false;
-			Lock lock = SharedObjects.getInstance().getHazelcastClient().getLock(Queues.ROLES_MAP_LOCK);
-			try {
-				isLock = lock.tryLock(10, TimeUnit.SECONDS);
-				if (isLock) {
-					myroles = roles.values(predicate);
-				} else {
-					throw new MessageException(UserInterfaceMessage.JEMG022E, Queues.ROLES_MAP);
-				}
-			} catch (InterruptedException e) {
-				throw new MessageException(UserInterfaceMessage.JEMG022E, e, Queues.ROLES_MAP);
-            } finally {
-				if (isLock) {
-					lock.unlock();
-				}
-			}
+			Collection<Role> myroles = getRoles(roles, predicate);
 
 			Collection<Permission> perms = new ArrayList<Permission>();
 			// scans roles
@@ -106,14 +90,16 @@ public class Authorizator {
 				account.addRole(role.getName());
 				// scans permissions
 				for (String permission : role.getPermissions()) {
+					boolean regExPermission = permission.startsWith(Permissions.SEARCH) || 
+							permission.startsWith(Permissions.DATASOURCES) || 
+							permission.startsWith(Permissions.SURROGATE);
+					regExPermission = regExPermission || permission.startsWith(Permissions.FILES_READ) ||
+							permission.startsWith(Permissions.FILES_WRITE) ||
+							permission.startsWith(Permissions.FILES_EXECUTE);
+					
 					// if the permission is for SEARCH, uses a regular
 					// expression permission
-					if (permission.startsWith(Permissions.SEARCH) || 
-							permission.startsWith(Permissions.DATASOURCES) || 
-							permission.startsWith(Permissions.FILES_READ) ||
-							permission.startsWith(Permissions.FILES_WRITE) ||
-							permission.startsWith(Permissions.FILES_EXECUTE) ||
-							permission.startsWith(Permissions.SURROGATE)) {
+					if (regExPermission) {
 						RegExpPermission perm = new RegExpPermission(permission);
 						account.addObjectPermission(perm);
 						perms.add(perm);
@@ -130,6 +116,32 @@ public class Authorizator {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG031E, e, user.getId());
 		}
 		return account;
+	}
+	
+	/**
+	 * Gets the roles using a predicate based on user info
+	 * @param roles MAP of roles
+	 * @param predicate predicate to perform
+	 * @return the collection of roles
+	 * @throws MessageException if any error occurs
+	 */
+	private Collection<Role> getRoles(IMap<String, Role> roles, RolesQueuePredicate predicate) throws MessageException{
+		boolean isLock = false;
+		Lock lock = SharedObjects.getInstance().getHazelcastClient().getLock(Queues.ROLES_MAP_LOCK);
+		try {
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			if (isLock) {
+				return roles.values(predicate);
+			} else {
+				throw new MessageException(UserInterfaceMessage.JEMG022E, Queues.ROLES_MAP);
+			}
+		} catch (InterruptedException e) {
+			throw new MessageException(UserInterfaceMessage.JEMG022E, e, Queues.ROLES_MAP);
+        } finally {
+			if (isLock) {
+				lock.unlock();
+			}
+		}
 	}
 
 	/**

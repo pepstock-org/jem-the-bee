@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import javax.naming.Reference;
 
@@ -55,5 +56,13 @@ public interface CommonResourcer extends RmiObject {
 	 * @throws RemoteException occurs if errors
 	 */
 	Reference lookupReference(String jobId, String resourceType) throws RemoteException;
+	
+	/**
+	 * Returns the properties of the JEM factory plugin, identified by name.
+	 * @param type JEM factory type
+	 * @return the properties
+	 * @throws RemoteException if any error occurs
+	 */
+	Properties getJemFactoryProperties(String type) throws RemoteException;
 
 }

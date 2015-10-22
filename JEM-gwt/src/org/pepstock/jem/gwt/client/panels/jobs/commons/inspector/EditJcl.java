@@ -22,6 +22,7 @@ import org.pepstock.jem.gwt.client.commons.Loading;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.editor.Editor;
+import org.pepstock.jem.gwt.client.editor.Mode;
 import org.pepstock.jem.gwt.client.editor.actions.Discard;
 import org.pepstock.jem.gwt.client.editor.actions.Indent;
 import org.pepstock.jem.gwt.client.editor.actions.SelectAll;
@@ -73,7 +74,11 @@ public class EditJcl extends XmlModifier{
 		super.setEditorAttributes(editor);
 		// sets mode returned by JCL
 		Jcl jcl = inspector.getJob().getJcl();
-		editor.setMode(jcl.getMode());
+		if (!Mode.isValid(jcl.getMode())){
+			editor.setMode(Mode.BATCHFILE.getName());
+		} else {
+			editor.setMode(jcl.getMode());
+		}
 		editor.setHighlightActiveLine(true);
     }
 
@@ -110,6 +115,10 @@ public class EditJcl extends XmlModifier{
 	    	selectAll.getItem().setEnabled(false);
 	    	submitMenuItem.setEnabled(false);
 	    }
+	    Jcl jcl = inspector.getJob().getJcl();
+    	if (jcl.getMode() == null || !jcl.getMode().equalsIgnoreCase(Mode.XML.getName())){
+    		indent.getItem().setEnabled(false);
+    	}
 	    menu.addSeparator();
 	    menu.addItem(discard.getItem());
 	    menu.addItem(submitMenuItem);

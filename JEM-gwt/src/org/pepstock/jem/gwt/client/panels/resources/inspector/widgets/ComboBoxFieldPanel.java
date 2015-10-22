@@ -24,7 +24,10 @@ import java.util.Map;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.SingleSelectableListFieldDescriptor;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -35,7 +38,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * Build a list-based property field, with only one value can be selected.
  * @author Marco "Fuzzo" Cuccato
  */
-public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectableListFieldDescriptor, Grid, String> {
+public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectableListFieldDescriptor, Grid, String, SectionDescriptor> {
 
 	private ListBox list = null;
 	
@@ -44,7 +47,7 @@ public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectabl
 	 * @param descriptor the descriptor who knows how to render the panel
 	 * @param panel the parent panel
 	 */
-	public ComboBoxFieldPanel(SingleSelectableListFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public ComboBoxFieldPanel(SingleSelectableListFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}
@@ -73,7 +76,7 @@ public final class ComboBoxFieldPanel extends AbstractFieldPanel<SingleSelectabl
 			setSelectedValue(defaultValue);
 			saveProperty(defaultValue);
 		}
-		inputObject.setWidget(0, 0, list);
+		inputObject.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, list);
 	}
 
 	@Override

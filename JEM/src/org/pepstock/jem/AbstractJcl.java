@@ -30,7 +30,11 @@ import java.io.Serializable;
 public abstract class AbstractJcl extends AbstractExecutionEnvironment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * The affinities separator. All affinities must be set comma separated
+	 */
+	public static final String AFFINITY_SEPARATOR = ",";
 	/**
 	 * Default affinity, value "default".
 	 */

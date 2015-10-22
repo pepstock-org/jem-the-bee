@@ -17,6 +17,9 @@
 */
 package org.pepstock.jem.gwt.client.commons;
 
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
+
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -64,8 +67,8 @@ public class Tooltip extends PopupPanel {
 		HTML text = new HTML(tooltipText);
 		text.setStyleName(Styles.INSTANCE.tooltip().tooltipText());
 		
-		content.setWidget(0, 0, arrow);
-		content.setWidget(1, 0, text);
+		content.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_1, arrow);
+		content.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_1, text);
 		
 		setWidget(content);
 		

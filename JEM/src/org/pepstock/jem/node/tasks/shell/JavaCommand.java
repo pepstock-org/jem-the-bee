@@ -37,7 +37,7 @@ public class JavaCommand extends Command {
 	 */
 	public static final String JAVA_HOME = "JAVA_HOME";
 	
-	private static final String SUB_FOLDER_JAVA_COMMAND_NAME = "bin";
+	private static final String JAVA_BIN_FOLDER = "bin";
 	
 	private static final String JAVA_COMMAND_NAME = "java";
 	
@@ -75,7 +75,7 @@ public class JavaCommand extends Command {
 		this();
 		this.javaHome = javaHome;
 		// creates the complete path of JAVA command
-		String javaCommand = javaHome + File.separator + SUB_FOLDER_JAVA_COMMAND_NAME + File.separator + JAVA_COMMAND_NAME;
+		String javaCommand = javaHome + File.separator + JAVA_BIN_FOLDER + File.separator + JAVA_COMMAND_NAME;
 		// uses the " if any blank is in the path
 		String name = "\""+javaCommand+"\"";
 		// overrides the name

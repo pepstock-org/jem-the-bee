@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
 
+import org.pepstock.jem.Result;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.JemException;
 
@@ -41,6 +42,7 @@ public class JavaMainClassLauncher {
 	private JavaMainClassLauncher() {
 
 	}
+	
 
 	/**
 	 * Is a standard main class which calls another main class. This is used in ANT to use annotations on main class with classpath.
@@ -82,6 +84,14 @@ public class JavaMainClassLauncher {
 			// static method doesn't have an instance, for this reason the first parameter is null
 			try {
 				main.invoke(null, (Object) argsToBePassed);
+				// gets return code by annotation
+				int returnCode = ReturnCodesContainer.getInstance().getReturnCode(clazz);
+				// if not success, get it and 
+				// stores it as system property
+				// using the className as KEY
+				if (returnCode != Result.SUCCESS){
+					SharedReturnCode.getInstance().setRC(returnCode);
+				}
 			} catch (InvocationTargetException e) {
 				throw new JemException(e.getCause().getMessage(), e);
 			} 

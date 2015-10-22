@@ -28,13 +28,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
@@ -43,7 +43,6 @@ import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
 import com.hazelcast.core.Member;
@@ -200,6 +199,9 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	@Override
 	public void jobSubmit() throws SubmitException {
+		// add JEM url handler factory if the user will use
+		// JEM url to add JCL content from GFS of JEM
+		SetURLFactory.install();
 		// sets HC with Log4j
 		System.setProperty("hazelcast.logging.type", "log4j");
 		// creates a new Client instance of Hazelcast
@@ -273,16 +275,8 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			topic.addMessageListener(this);
 		}
 
-		// puts the pre job in a queue for validating and miving to right QUEUE
-		// (input if is correct, output if is wrong)
-		IQueue<PreJob> jclCheckingQueue = client.getQueue(Queues.JCL_CHECKING_QUEUE);
-		try {
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
-			throw new SubmitException(SubmitMessage.JEMW003E, e);
-		}
+		SubmitPreJob.submit(client, preJob);
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.SubmitCommandLine#execute(java.lang.String[])
@@ -420,15 +414,14 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		Set<Member> set = cluster.getMembers();
 		Member member = set.iterator().next();
 		// calls a distributed task to get standard output and error
-		DistributedTask<OutputFileContent> task = new DistributedTask<OutputFileContent>(new GetMessagesLog(getJob()), member);
+		DistributedTask<String> task = new DistributedTask<String>(new GetMessagesLog(getJob()), member);
 		ExecutorService executorService = client.getExecutorService();
 		executorService.execute(task);
-		OutputFileContent content;
 		try {
 			// gets content
-			content = task.get();
+			String content = task.get();
 			// prints the content
-			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content.getContent());
+			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content);
 		} catch (InterruptedException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
 		} catch (ExecutionException e) {

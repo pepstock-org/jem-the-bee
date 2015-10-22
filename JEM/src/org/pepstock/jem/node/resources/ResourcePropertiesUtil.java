@@ -66,7 +66,7 @@ public class ResourcePropertiesUtil {
 		prop.setName(name);
 		prop.setValue(value);
 		prop.setVisible(visible);
-		prop.setOverride(false);
+		prop.setOverride(override);
 		
 		resource.getProperties().put(name, prop);
 	}

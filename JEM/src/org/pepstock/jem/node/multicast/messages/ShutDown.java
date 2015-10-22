@@ -34,20 +34,20 @@ public class ShutDown implements MulticastMessage {
 	
 	private static final String SHUTDOWN_ELEMENT = "shutDownMessage";
 
-	private boolean shutDown=true;
+	private boolean shuttedDown=true;
 
 	/**
 	 * @return the shutDown
 	 */
-	public boolean isShutDown() {
-		return shutDown;
+	public boolean isShuttedDown() {
+		return shuttedDown;
 	}
 
 	/**
 	 * @param shutDown the shutDown to set
 	 */
-	public void setShutDown(boolean shutDown) {
-		this.shutDown = shutDown;
+	public void setShuttedDown(boolean shutDown) {
+		this.shuttedDown = shutDown;
 	}
 
 	/**

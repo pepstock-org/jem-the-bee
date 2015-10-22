@@ -21,6 +21,8 @@ import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -74,19 +76,19 @@ public final class System extends DefaultInspectorItem {
 	    sysInfoVp.add(sysInfoLabel);
 	    
 	    FlexTable layoutSysInfo = new FlexTable();
-	    layoutSysInfo.getColumnFormatter().setWidth(0, "50%");
-	    layoutSysInfo.getColumnFormatter().setWidth(1, "50%");
+	    layoutSysInfo.getColumnFormatter().setWidth(ColumnIndex.COLUMN_1, "50%");
+	    layoutSysInfo.getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "50%");
 	    layoutSysInfo.setCellPadding(10);
 	    layoutSysInfo.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    layoutSysInfo.setHTML(0, 0, "PID");
-	    layoutSysInfo.setWidget(0, 1, new HTML(String.valueOf(node.getProcessId())));
+	    layoutSysInfo.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "PID");
+	    layoutSysInfo.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getProcessId())));
 
-	    layoutSysInfo.setHTML(1, 0, "System architecture");
-	    layoutSysInfo.setWidget(1, 1, new HTML(node.getSystemArchitecture()));
+	    layoutSysInfo.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "System architecture");
+	    layoutSysInfo.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, new HTML(node.getSystemArchitecture()));
 	    
-	    layoutSysInfo.setHTML(2, 0, "System name");
-	    layoutSysInfo.setWidget(2, 1, new HTML(node.getSystemName()));
+	    layoutSysInfo.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "System name");
+	    layoutSysInfo.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2, new HTML(node.getSystemName()));
 
 	    UITools.setFlexTableStyles(layoutSysInfo, 
 	    		Styles.INSTANCE.inspector().rowDark(), 

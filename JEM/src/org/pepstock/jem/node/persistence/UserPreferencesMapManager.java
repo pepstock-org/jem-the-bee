@@ -19,6 +19,7 @@ package org.pepstock.jem.node.persistence;
 import java.util.Map;
 
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
 import org.pepstock.jem.node.security.UserPreference;
 
 /**
@@ -33,7 +34,7 @@ public class UserPreferencesMapManager extends AbstractMapManager<Map<String, Us
 	 * Construct the object instantiating a new DBManager
 	 */
 	public UserPreferencesMapManager() {
-		super(Queues.USER_PREFERENCES_MAP, UserPreferencesDBManager.getInstance());
+		super(Queues.USER_PREFERENCES_MAP, UserPreferencesDBManager.getInstance(), false);
 	}
 
 }

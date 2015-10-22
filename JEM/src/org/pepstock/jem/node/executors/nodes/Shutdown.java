@@ -32,6 +32,8 @@ import org.pepstock.jem.util.TimeUtils;
  */
 public class Shutdown extends DefaultExecutor<ExecutionResult> {
 
+	private static long WAIT_BEFORE_EXIT = 5 * TimeUtils.SECOND;
+	
 	private static final long serialVersionUID = 1L;
 
 	/** 
@@ -54,7 +56,7 @@ public class Shutdown extends DefaultExecutor<ExecutionResult> {
 		public void run(){
 			try {
 				// wait 5 seconds and close
-				Thread.sleep(5 * TimeUtils.SECOND);
+				Thread.sleep(WAIT_BEFORE_EXIT);
 			} catch (InterruptedException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 			}

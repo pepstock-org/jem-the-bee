@@ -86,13 +86,13 @@ public class FilesUploadDropListener extends ViewerDropAdapter implements ShellC
 					// is not possible to load data on GFS DATA
 					return false;
 				case GfsFileType.LIBRARY:
-					return Client.getInstance().isAuthorized(Permissions.GFS, Permissions.GFS_LIBRARY);
+					return Client.getInstance().isAuthorized(Permissions.GFS_LIBRARY);
 				case GfsFileType.SOURCE:
-					return Client.getInstance().isAuthorized(Permissions.GFS, Permissions.GFS_SOURCES);
+					return Client.getInstance().isAuthorized(Permissions.GFS_SOURCE);
 				case GfsFileType.CLASS:
-					return Client.getInstance().isAuthorized(Permissions.GFS, Permissions.GFS_CLASS);
+					return Client.getInstance().isAuthorized(Permissions.GFS_CLASS);
 				case GfsFileType.BINARY:
-					return Client.getInstance().isAuthorized(Permissions.GFS, Permissions.GFS_BINARY);
+					return Client.getInstance().isAuthorized(Permissions.GFS_BINARY);
 				default:
 					return false;
 			}

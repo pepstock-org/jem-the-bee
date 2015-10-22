@@ -12,9 +12,9 @@
 	<property name="jem.job.affinity" value="affinity"/> 
 	-->
 
-	<taskdef name="certificate" classname="org.pepstock.jem.ant.CertificateTask" />
+	<taskdef name="certificate" classname="org.pepstock.jem.ant.tasks.utilities.CertificateTask" />
 	<target name="import_cert">
-		<certificate license="Pepstock_JEM_AntUtil.license">
+		<certificate>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					DELETE ALIAS PIPPO;

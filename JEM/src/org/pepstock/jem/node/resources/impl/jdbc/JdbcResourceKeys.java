@@ -60,13 +60,7 @@ public final class JdbcResourceKeys {
     static final String PROP_MAXIDLE = "maxIdle";
     static final String PROP_MINIDLE = "minIdle";
     static final String PROP_INITIALSIZE = "initialSize";
-    
-	/**
-	 * To avoid any instantiation
-	 */
-	private JdbcResourceKeys() {
-	}
-    
+
 	/**
 	 * List of mandatory properties
 	 */
@@ -76,7 +70,7 @@ public final class JdbcResourceKeys {
 			CommonKeys.PASSWORD,
 			DRIVER_CLASS_NAME
 	));
-	
+
 	/**
 	 * List of all configuration properties.
 	 */
@@ -93,4 +87,10 @@ public final class JdbcResourceKeys {
 		    PROP_MINIDLE,
 		    PROP_INITIALSIZE
 	));
+
+	/**
+	 * To avoid any instantiation
+	 */
+	private JdbcResourceKeys() {
+	}
 }

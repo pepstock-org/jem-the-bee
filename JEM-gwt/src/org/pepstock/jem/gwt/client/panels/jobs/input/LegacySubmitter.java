@@ -32,6 +32,8 @@ import org.pepstock.jem.gwt.client.security.CurrentUser;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -105,11 +107,11 @@ public class LegacySubmitter extends AbstractInspector implements Submitter {
 		content.setCellSpacing(10);
 	    content.setWidth(Sizes.HUNDRED_PERCENT);
 
-	    content.setHTML(0, 0, "Job JCL file:");
-	    content.setWidget(0, 1, fileUpload);
+	    content.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Job JCL file:");
+	    content.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, fileUpload);
 	    
-	    content.setHTML(1, 0, "JCL type:");
-	    content.setWidget(1, 1, typesList);
+	    content.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "JCL type:");
+	    content.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, typesList);
 
 	    // add the content to form
 	    form.setWidget(content);

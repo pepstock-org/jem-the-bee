@@ -21,13 +21,13 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.OutputSystem;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.util.MemorySize;
 
 /**
  * Returns the message log of the passed job. 
@@ -36,11 +36,11 @@ import org.pepstock.jem.node.executors.ExecutorException;
  * @version 1.0
  * 
  */
-public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
+public class GetMessagesLog extends DefaultExecutor<String> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int MAX_NUMBER_OF_BYTE_READABLE = 1024 * 1024 * 5; // 5MB
+	private static final int MAX_NUMBER_OF_BYTE_READABLE = MemorySize.MB * 5; // 5MB
 
 	private Job job = null;
 
@@ -60,16 +60,13 @@ public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
 	 * @throws if I/O error occurs
 	 */
 	@Override
-	public OutputFileContent execute() throws ExecutorException {
-		// creates a output container and sets job file content
-		OutputFileContent output = new OutputFileContent();
+	public String execute() throws ExecutorException {
 		// if is a routed job
 		if (job.getRoutingInfo().getId() != null) {
 			// if routed it can't get the log
 			LogAppl.getInstance().emit(NodeMessage.JEMC197I, job, job.getJcl().getEnvironment());
 			// returns the message of error as content
-			 String content = NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
-			 output.setContent(content);
+			 return NodeMessage.JEMC197I.toMessage().getFormattedMessage(job, job.getJcl().getEnvironment());
 		} else {
 			try {
 				// gets the jcl file to extract the directory
@@ -90,16 +87,14 @@ public class GetMessagesLog extends DefaultExecutor<OutputFileContent> {
 				// must be check the file size... if too big could create problems
 				// checks if file is over the maximum nuber of bytes
 				if (file.length() > MAX_NUMBER_OF_BYTE_READABLE){
-					output.setContent("Output log file too large. Current file size is "+file.length()+" bytes but maximum is "+MAX_NUMBER_OF_BYTE_READABLE+" bytes");
+					return "Output log file too large. Current file size is "+file.length()+" bytes but maximum is "+MAX_NUMBER_OF_BYTE_READABLE+" bytes";
 				} else {
 					// creates a output container and sets job file content
-					output.setContent(FileUtils.readFileToString(file));
+					return FileUtils.readFileToString(file);
 				}			
-				return output;
 			} catch (IOException e) {
 				throw new ExecutorException(NodeMessage.JEMC242E, e, OutputSystem.MESSAGESLOG_FILE);
 			}
 		}
-		return output;
 	}
 }

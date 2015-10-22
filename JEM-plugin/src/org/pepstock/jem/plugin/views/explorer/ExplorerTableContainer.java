@@ -53,6 +53,9 @@ import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.Searcher;
 import org.pepstock.jem.plugin.views.jobs.Refresher;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Table container of explorer of GFS. It contains a table for each type of data in GFS.
@@ -81,12 +84,13 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	
 	private int type = -1;
 	
+	
 	// list all all columns (name and dimension) of the table
 	private final Collection<JemTableColumn> columns = Collections.unmodifiableCollection(Arrays.asList(new JemTableColumn[]{ 
-			new JemTableColumn("Name", 50),
-			new JemTableColumn("Size (bytes)", 15),
-			new JemTableColumn("Last modified", 20),
-			new JemTableColumn("Path name", 15),
+			new JemTableColumn("Name", Numbers.N_50),
+			new JemTableColumn("Size (bytes)", Numbers.N_15),
+			new JemTableColumn("Last modified", Numbers.N_20),
+			new JemTableColumn("Path name", Numbers.N_15),
 	}));
 
 	/**
@@ -98,7 +102,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	public ExplorerTableContainer(TabFolder parent, int style, int type) {
 		this.type = type;
 		composite = new Composite(parent, style); // style
-		composite.setLayout(new GridLayout(1, false));
+		composite.setLayout(new GridLayout(Numbers.N_1, false));
 		
 		// adds searcher
 		searcher = new Searcher(this);
@@ -123,7 +127,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 
 		// total amount of items
 		Composite compositeTot = new Composite(this.composite, SWT.NONE);
-		compositeTot.setLayout(new GridLayout(2, false));
+		compositeTot.setLayout(new GridLayout(Numbers.N_2, false));
 		compositeTot.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 1, 1));
 		// adds label with total items
 		Label numberLabel = new Label(compositeTot, SWT.NONE);
@@ -228,26 +232,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 		table.setLinesVisible(true);
 		
 		// add Double Click listener
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				// gets GFS file
-				ISelection selection = viewer.getSelection();
-				GfsFile file = (GfsFile)((IStructuredSelection) selection).getFirstElement();
-				if (file != null){
-					// DRILL down only for directory
-					if (file.isDirectory()){
-						refresh(file.getLongName(), file.getDataPathName());
-					} else {
-						//only DATA and SOURCE can be downloaded
-						if ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE)){
-							// load file 
-							FileLoading loading = new GFSLoading(ExplorerTableContainer.this, type, file);
-							loading.run();
-						}
-					}
-				}
-			}
-		});
+		viewer.addDoubleClickListener(new ViewerDoubleClick());
 	}
 	
 	/* (non-Javadoc)
@@ -305,6 +290,33 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 	}
 	
 	/**
+	 * Class to manage the double click on viewer
+	 * @author Andrea "Stock" Stocchero
+	 * @version 2.3
+	 */
+	private class ViewerDoubleClick implements IDoubleClickListener{
+		@Override
+		public void doubleClick(DoubleClickEvent event) {
+			// gets GFS file
+			ISelection selection = viewer.getSelection();
+			GfsFile file = (GfsFile)((IStructuredSelection) selection).getFirstElement();
+			if (file != null){
+				// DRILL down only for directory
+				if (file.isDirectory()){
+					refresh(file.getLongName(), file.getDataPathName());
+				} else {
+					//only DATA and SOURCE can be downloaded
+					if ((type == GfsFileType.DATA) || (type == GfsFileType.SOURCE)){
+						// load file 
+						FileLoading loading = new GFSLoading(ExplorerTableContainer.this, type, file);
+						loading.run();
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Extends the file loading, dedicated for all actions to GFS
 	 * 
 	 * @author Andrea "Stock" Stocchero
@@ -330,7 +342,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
         @Override
         protected void execute() throws JemException {
 			try {
-				String content = null;
+				byte[] content = null;
 				// if source of data, you can download
 				if (type == GfsFileType.DATA || type == GfsFileType.SOURCE){
 					content = Client.getInstance().getGfsFile(type, getFile().getLongName(), getFile().getDataPathName());
@@ -340,13 +352,13 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 				}
 				// activate the editor
 				// going in editor with the content of the file
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(new String(content, CharSet.DEFAULT), getFile().getName()), "org.eclipse.ui.DefaultTextEditor");		
 			} catch (PartInitException e) {
 				// if any errors from editing 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to open the editor!", 
 						"Error occurred during opening of editor: "+e.getMessage(), MessageLevel.ERROR);
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors to download the file
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(super.getShell(), "Unable to get "+getFile().getName()+"!", 
@@ -404,7 +416,7 @@ public class ExplorerTableContainer implements ShellContainer, Refresher{
 						searcher.setText(getFilter());
 					}
 				});
-			} catch (JemException e) {
+			} catch (RestException e) {
 				// if any errors from REST APi
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getShell(), "Unable to load data", e.getMessage(), MessageLevel.ERROR);

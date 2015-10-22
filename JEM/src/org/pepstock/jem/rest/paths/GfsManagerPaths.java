@@ -25,28 +25,69 @@ package org.pepstock.jem.rest.paths;
 public final class GfsManagerPaths {
 	
 	/**
-	 * Key to define the path to bind this services
+	 * Path parameter name to define the type of GFS to perform the action
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +  "gfs";
+	public static final String TYPE = "type";
+	
+	/**
+	 * Path parameter REST format to define the type of GFS to perform the action
+	 */
+	public static final String TYPE_PATH_PARAM = "{"+TYPE+"}";
 
 	/**
-	 * Key to define the path to bind get job output file content method
+	 * Path parameter name to define the file code (random) for upload files
 	 */
-	public static final String FILE_LIST = CommonPaths.QUERYSTRING_SEPARATOR +  "ls";
+	public static final String FILE_CODE = "fileCode";
+
+	/**
+	 * Path parameter REST format to define the file code (random) for upload files
+	 */
+	public static final String FILE_CODE_PATH_PARAM = "{"+FILE_CODE+"}";
 	
 	/**
-	 * "bin" parameter on url
+	 * Query parameter path name for GFS DATA file systems
 	 */
-	public static final String FILE_UPLOAD = CommonPaths.QUERYSTRING_SEPARATOR +  "upload";
+	public static final String PATH_NAME_QUERY_STRING = "pathName";
+
+	/**
+	 * Query parameter item to get or put on GFS
+	 */
+	public static final String ITEM_QUERY_STRING = "item";
+
+	/**
+	 * Query parameter last upate of file (use on upload)
+	 */
+	public static final String LAST_UPDATE_QUERY_STRING = "lastUpdate";
+
+	/**
+	 * Query parameter to understand if the upload is completed (last chunk)
+	 */
+	public static final String COMPLETED_QUERY_STRING = "completed";
 	
 	/**
-	 * "bin" parameter on url
+	 * Key to define the path to bind this services
 	 */
-	public static final String FILE_DELETE = CommonPaths.QUERYSTRING_SEPARATOR +  "delete";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +  "gfs";
+
 	/**
-	 * Key to define the path to bind get job output file content method
+	 * Key to define the path to bind get a list of GFS files
 	 */
-	public static final String OUTPUT_FILE_CONTENT_PATH = CommonPaths.QUERYSTRING_SEPARATOR +  "cat";
+	public static final String LIST = CommonPaths.PATH_SEPARATOR +  "list"  + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
+	
+	/**
+	 * Key to define the path to bind put a file into GFS
+	 */
+	public static final String PUT = CommonPaths.PATH_SEPARATOR +  "put" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM + CommonPaths.PATH_SEPARATOR + FILE_CODE_PATH_PARAM;
+	
+	/**
+	 * Key to define the path to bind delete a file from GFS
+	 */
+	public static final String DELETE = CommonPaths.PATH_SEPARATOR +  "delete" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
+	
+	/**
+	 * Key to define the path to bind get the file content method
+	 */
+	public static final String GET = CommonPaths.PATH_SEPARATOR +  "get" + CommonPaths.PATH_SEPARATOR + TYPE_PATH_PARAM;
 
 	/**
 	 * To avoid any instantiation

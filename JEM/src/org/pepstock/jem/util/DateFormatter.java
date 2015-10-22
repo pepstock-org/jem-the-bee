@@ -78,7 +78,7 @@ public class DateFormatter {
 	 * @return the date string
 	 */
 	public static String getDate(long timestamp, String format) {
-		return getDate(new Date(timestamp));
+		return getDate(new Date(timestamp), format);
 	}
 
 	/**

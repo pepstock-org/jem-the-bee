@@ -354,9 +354,7 @@ public abstract class AbstractSyntaxHighlighter extends VerticalPanel implements
 	 * Called by editor listener when the text of editor is changed
 	 * @param changed <code>true</code> if text is changed
 	 */
-	public void onChange(boolean changed){
-		// NOP
-	}
+	public abstract void onChange(boolean changed);
 	
 	/**
 	 * @see org.pepstock.jem.gwt.client.ResizeCapable#onResize(int, int)

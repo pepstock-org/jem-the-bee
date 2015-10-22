@@ -1,0 +1,17 @@
+ID				char(39) primary key
+NAME			varchar(64)
+USER			varchar(16)
+ROUTED			smallint
+SUBMITTED_TIME	bigint
+RUNNING_TIME	bigint
+ENDED_TIME		bigint
+RETURN_CODE		integer
+MEMBER			varchar(24) 
+STEP			varchar(16)
+JCL_TYPE		varchar(16)
+JCL_USER		varchar(16)
+JCL_ENVIRONMENT	varchar(32)
+JCL_DOMAIN		varchar(32)
+JCL_AFFINITY	varchar(64)
+JCL_PRIORITY	integer
+JCL_MEMORY		integer

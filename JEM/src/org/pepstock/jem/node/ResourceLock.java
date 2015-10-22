@@ -74,11 +74,11 @@ public class ResourceLock implements Serializable {
 	public ResourceLock(String name, int mode) {
 		// checks name. if null, exception occurs
 		if (name == null){
-			throw new IllegalArgumentException(NodeMessage.JEMC145E.toMessage().getMessage());
+			throw new IllegalArgumentException(NodeMessage.JEMC145E.toMessage().getContent());
 		}
 		// checks mode. if not READ and WRITE, exception occurs
 		if (mode != READ_MODE && mode != WRITE_MODE){
-			throw new IllegalArgumentException(NodeMessage.JEMC146E.toMessage().getMessage());
+			throw new IllegalArgumentException(NodeMessage.JEMC146E.toMessage().getContent());
 		}
 
 		// sets name and mode

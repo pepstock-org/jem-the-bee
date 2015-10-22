@@ -21,6 +21,7 @@ import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.panels.administration.commons.LightMemberSampleColumns;
 import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -82,7 +83,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
 				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
-				return MB_FORMAT.format(futil.getFree()/1024D);
+				return MB_FORMAT.format(futil.getFree()/(double)MemorySize.KB);
 			}
 		};
 		freeMb.setSortable(true);
@@ -109,7 +110,7 @@ public class GfsTable extends AbstractTable<LightMemberSample> {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
 				FileSystemUtilization futil = Util.getFileSystemUtilization(memberSample, fileSystemName);
-				return MB_FORMAT.format(futil.getUsed()/1024D);
+				return MB_FORMAT.format(futil.getUsed()/(double)MemorySize.KB);
 			}
 		};
 		usedMb.setSortable(true);

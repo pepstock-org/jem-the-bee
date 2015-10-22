@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.pepstock.jem.node.security.Permissions;
+
 
 /**
  * @author Simone "Busy" Businaro
@@ -27,6 +29,11 @@ import java.util.List;
  *
  */
 public final class GfsFileType {
+	
+	/**
+	 * for the GFS/data folder
+	 */
+	public static final int NO_TYPE = -1;
 		
 	/**
 	 * for the GFS/data folder
@@ -108,7 +115,7 @@ public final class GfsFileType {
 		} else if (GfsFileType.BINARY_NAME.equalsIgnoreCase(name)) {
 			return GfsFileType.BINARY;
 		}
-		return GfsFileType.DATA;
+		return NO_TYPE;
 	}
 	
 	/**
@@ -135,9 +142,29 @@ public final class GfsFileType {
 			name = GfsFileType.BINARY_NAME;
 			break;
 		default:
-			name = GfsFileType.DATA_NAME;
+			name = null;
 			break;
 		}
 		return name;
+	}
+	
+	/**
+	 * Returns the type of path of GFS folder.
+	 * @param name data name (DATA, SOURCE, LIBRARY, CLASS, BINARY).
+	 * @return the type of path of GFS folder.
+	 */
+	public static final String getPermission(String name){
+		if (GfsFileType.DATA_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_DATA;
+		} else if (GfsFileType.LIBRARY_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_LIBRARY;
+		} else if (GfsFileType.SOURCE_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_SOURCE;
+		} else if (GfsFileType.CLASS_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_CLASS;
+		} else if (GfsFileType.BINARY_NAME.equalsIgnoreCase(name)) {
+			return Permissions.GFS_BINARY;
+		}
+		return null;
 	}
 }

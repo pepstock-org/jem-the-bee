@@ -1,108 +1,146 @@
 package org.pepstock.jem.junit.test.rest;
 
-import java.io.File;
-import java.net.URL;
-
-import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJob;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.junit.init.JemTestManager;
 import org.pepstock.jem.junit.init.RestConf;
 import org.pepstock.jem.node.security.LoggedUser;
+import org.pepstock.jem.rest.HTTPBaseAuthRestClient;
 import org.pepstock.jem.rest.MultiRestClient;
 import org.pepstock.jem.rest.RestClient;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.SingleRestClient;
 import org.pepstock.jem.rest.entities.Account;
+import org.pepstock.jem.rest.services.CertificatesManager;
 import org.pepstock.jem.rest.services.GfsManager;
 import org.pepstock.jem.rest.services.JobsManager;
 import org.pepstock.jem.rest.services.LoginManager;
+import org.pepstock.jem.rest.services.NodesManager;
+import org.pepstock.jem.rest.services.StatisticsManager;
+import org.pepstock.jem.rest.services.SwarmNodesManager;
 
 /**
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class RestManager {
+public class RestManager{
+	
+	private LoginManager loginManager;
 
 	private JobsManager jobManager;
 	
 	private GfsManager gfsManager;
 	
+	private NodesManager nodesManager;
+	
+	private CertificatesManager certificatesManager;
+	
+	private StatisticsManager statisticsManager;
+	
+	private SwarmNodesManager swarmNodesManager;
+	
 	private RestClient restClient;
 	
 	private String user;
 	
-	private static RestManager restManager;
+	private static RestManager INSTANCE = null; 
 	
-	/**
-	 * 
-	 * @return RestManager for rest call
-	 * @throws Exception
-	 */
-	public static RestManager getSharedInstance() throws Exception {
-		if(restManager==null){
-			restManager=new RestManager();
+	public static RestManager getInstance() throws Exception{
+		if (INSTANCE == null){
+			INSTANCE = new RestManager(MultiRestClient.class);
 		}
-		return restManager;
+		return INSTANCE;
 	}
+	
 	
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private RestManager() throws Exception{
+	private RestManager(Class<?> client) throws Exception{
 		RestConf conf=JemTestManager.getSharedInstance().getRestConf();
 		if(conf==null){
 			throw new Exception("Rest configuration is null. Check Configuration.xml file !");
 		}
-		user=conf.getUser();
-		restClient = new MultiRestClient(conf.getUrl());
-		LoginManager man = new LoginManager(restClient);
+		user = conf.getUser();
+		
+		if (MultiRestClient.class.equals(client)){
+			restClient = new MultiRestClient(conf.getUrl());
+		} else if (SingleRestClient.class.equals(client)){
+			restClient = new SingleRestClient(conf.getUrl());
+		} else if (HTTPBaseAuthRestClient.class.equals(client)){
+			restClient = new HTTPBaseAuthRestClient(conf.getUrl(), conf.getUser(), conf.getPassword());
+		}
+		loginManager = new LoginManager(restClient);
 		gfsManager=new GfsManager(restClient);
 		jobManager=new JobsManager(restClient);
-		LoggedUser user = man.getUser();
+		nodesManager = new NodesManager(restClient);
+		certificatesManager = new CertificatesManager(restClient);
+		statisticsManager = new StatisticsManager(restClient);
+		swarmNodesManager = new SwarmNodesManager(restClient);
+		login(conf);
+	}
+	
+	private void login(RestConf conf) throws RestException{
+		LoggedUser user = loginManager.getUser();
 		if (user == null) {
 			// Creo l'oggetto account con uid e pwd
 			Account account = new Account();
-			account.setUserId(conf.getUser());
+			account.setUserid(conf.getUser());
 			account.setPassword(conf.getPassword());
 			// faccio login e mi salvo logged user
-			user = man.login(account);
+			user = loginManager.login(account);
 		}
 		System.out.println("User "+user+" has logged in succesfully.");
 	}
 
+	
+	
 	/**
-	 * 
-	 * @return job manager for rest call
+	 * @return the loginManager
+	 */
+	public LoginManager getLoginManager() {
+		return loginManager;
+	}
+
+	/**
+	 * @return the jobManager
 	 */
 	public JobsManager getJobManager() {
 		return jobManager;
 	}
 
 	/**
-	 * 
-	 * @return gfs manager for rest call
+	 * @return the gfsManager
 	 */
 	public GfsManager getGfsManager() {
 		return gfsManager;
 	}
 
 	/**
-	 * Create job from jcl
-	 * 
-	 * @param jcl
-	 * @param jobType
-	 * @return
-	 * @throws Exception
+	 * @return the nodesManager
 	 */
-	public PreJob createJob(File jcl, String jobType) throws Exception{
-		URL urlJcl = new URL("file:"+jcl.getAbsolutePath());
-		PreJob preJob = Factory.createPreJob(urlJcl);
-		preJob.setJclType(jobType);
-		Job job = new Job();
-		job.setUser(user);
-		preJob.setJob(job);
-		return preJob;
+	public NodesManager getNodesManager() {
+		return nodesManager;
 	}
 
+	/**
+	 * @return the certificatesManager
+	 */
+	public CertificatesManager getCertificatesManager() {
+		return certificatesManager;
+	}
+
+	/**
+	 * @return the statisticsManager
+	 */
+	public StatisticsManager getStatisticsManager() {
+		return statisticsManager;
+	}
+
+	/**
+	 * @return the swarmNodesManager
+	 */
+	public SwarmNodesManager getSwarmNodesManager() {
+		return swarmNodesManager;
+	}
 }

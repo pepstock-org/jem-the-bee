@@ -4,10 +4,10 @@
 		This job creates a JPPF resource to use to test FTP functionalities.
     </description>
 
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 
 	<target name="create">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="RESOURCE" disposition="SHR">
 				<dataset>
 					<![CDATA[

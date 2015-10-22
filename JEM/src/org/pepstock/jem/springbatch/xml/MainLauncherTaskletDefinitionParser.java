@@ -57,9 +57,9 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 		BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(MainLauncherTaskletFactoryBean.class);
 		factory.addPropertyValue(TASKLET_ELEMENT, parseTasklet(element));
 		// parses all arguments elements
-		parseArguments(element, factory, context);
+		parseArguments(element, factory);
 		// parses classPath elements
-		parseClassPath(element, factory, context);
+		parseClassPath(element, factory);
 		// loads all data description, locks, data source
 		loadChildren(element, factory, context);
 		return factory.getBeanDefinition();
@@ -75,7 +75,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	private BeanDefinition parseTasklet(Element element) {
 		// gets main laucnher tasklet
 		BeanDefinitionBuilder component = BeanDefinitionBuilder.rootBeanDefinition(MainLauncherTasklet.class);
-		// reads teh mandatory attribute if class name
+		// reads the mandatory attribute if class name
 		component.addPropertyValue(CLASS_NAME_ATTRIBUTE, element.getAttribute(CLASS_NAME_ATTRIBUTE));
 		return component.getBeanDefinition();
 	}
@@ -86,7 +86,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	 * @param factory parent bean builder to load
 	 * @param context parser context
 	 */
-	private void parseArguments(Element element, BeanDefinitionBuilder factory, ParserContext context) {
+	private void parseArguments(Element element, BeanDefinitionBuilder factory) {
 		// gets the ARGUMENTS element
 		Element arguments = DomUtils.getChildElementByTagName(element, ARGUMENTS_ELEMENT);
 		// if is missing, return
@@ -108,7 +108,7 @@ public class MainLauncherTaskletDefinitionParser extends TaskletDefinitionParser
 	 * @param factory parent bean builder to load
 	 * @param context parser context
 	 */
-	private void parseClassPath(Element element, BeanDefinitionBuilder factory, ParserContext context) {
+	private void parseClassPath(Element element, BeanDefinitionBuilder factory) {
 		// gets the CLASSPATH element
 		Element classpath = DomUtils.getChildElementByTagName(element,CLASSPATH_ELEMENT);
 		// if is missing, return

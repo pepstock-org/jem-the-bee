@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="GDG-DELETE" default="gdg-delete" basedir=".">
+	<description>
+		DELETE 2 GDGs
+    </description>
+
+	<property name="jem.job.name" value="GDG-DELETE"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!-- to refers the environment variable -->
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+
+	<target name="gdg-delete">
+		<gdg>
+
+			<dataDescription name="GDG1" disposition="OLD">
+				<dataSet name="gdg/jemtest"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+                    DELETE GDG GDG1 00022;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+</project>

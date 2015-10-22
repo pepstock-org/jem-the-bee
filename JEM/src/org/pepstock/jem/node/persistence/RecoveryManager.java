@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.io.FilenameUtils;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
@@ -45,6 +46,8 @@ import com.hazelcast.core.IMap;
  * 
  */
 public class RecoveryManager {
+	
+	private static final long HEALTH_CHECK_INTERVAL = 15 * TimeUtils.SECOND;
 
 	private static final RecoveryManager INSTANCE = new RecoveryManager();
 
@@ -57,7 +60,7 @@ public class RecoveryManager {
 		String className = FilenameUtils.getExtension(this.getClass().getName());
 		// schedules the time
 		Timer timer = new Timer(className, false);
-		timer.schedule(new PersistenceHealthCheck(), 1, 15 * TimeUtils.SECOND);
+		timer.schedule(new PersistenceHealthCheck(), 1, HEALTH_CHECK_INTERVAL);
 	}
 
 	/**
@@ -76,12 +79,12 @@ public class RecoveryManager {
 	public boolean applyRedoStatements() throws MessageException {
 		// gets the HC map
 		IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
-		// locks inetrnally of JEM cluster
+		// locks internally of JEM cluster
 		Lock lock = Main.getHazelcast().getLock(Queues.REDO_STATEMENT_MAP_LOCK);
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// if map of redo statements is empty
 				// means nothing to apply
@@ -103,24 +106,8 @@ public class RecoveryManager {
 				for (RedoStatement statement : values) {
 					// extracts the map store of HC
 					// using the queue information of redo statement
-					JobMapManager mapStore = null;
-					if (statement.getQueueName().equalsIgnoreCase(Queues.INPUT_QUEUE)) {
-						mapStore = InputMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.RUNNING_QUEUE)) {
-						mapStore = RunningMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.OUTPUT_QUEUE)) {
-						mapStore = OutputMapManager.getInstance();
-					} else if (statement.getQueueName().equalsIgnoreCase(Queues.ROUTING_QUEUE)) {
-						mapStore = RoutingMapManager.getInstance();
-					}
-					// if action is store, it calls the store method
-					// of map store
-					// otherwise it calls the delete one
-					if (statement.getAction().equalsIgnoreCase(RedoStatement.STORE)) {
-						mapStore.store(statement.getJob().getId(), statement.getJob(), true);
-					} else if (statement.getAction().equalsIgnoreCase(RedoStatement.DELETE)) {
-						mapStore.delete(statement.getJobId(), true);
-					}
+					RecoverableManager.recover(statement);
+
 					// remove the redo statement from HC map
 					redoMap.remove(statement.getId());
 					// shows the redo has been ended correctly
@@ -132,6 +119,8 @@ public class RecoveryManager {
 			} else {
 				throw new MessageException(NodeMessage.JEMC119E, Queues.REDO_STATEMENT_MAP);
 			}
+		}  catch (JemException e) {
+			throw new MessageException(NodeMessage.JEMC043E, e);
 		} catch (Exception e) {
 			throw new MessageException(NodeMessage.JEMC119E, e, Queues.REDO_STATEMENT_MAP);
 		} finally {
@@ -191,14 +180,13 @@ public class RecoveryManager {
 					LogAppl.getInstance().emit(NodeMessage.JEMC172I);
 				} else {
 					// if not able to apply the redo statements
-					// gets all size of HC maps for jobs
+					// gets all size of HC maps 
 					// checking if the database is working well
 					// checks all tables because we could have a issue
 					// on a specific table
-					InputDBManager.getInstance().getSize();
-					RunningDBManager.getInstance().getSize();
-					OutputDBManager.getInstance().getSize();
-					RoutingDBManager.getInstance().getSize();
+					for (RecoverableManager manager : RecoverableManager.values()){
+						manager.getRecoverable().check();
+					}
 					
 					// if here, all queries went well
 					// then the node is operational

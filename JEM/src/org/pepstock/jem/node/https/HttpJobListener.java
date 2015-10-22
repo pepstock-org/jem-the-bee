@@ -44,6 +44,12 @@ import org.pepstock.jem.util.Parser;
  */
 public class HttpJobListener implements JobLifecycleListener {
 	
+	private static final int ELEMENT_1 = 0;
+
+	private static final int ELEMENT_2 = 1;
+
+	private static final int ELEMENT_3 = 2;
+	
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.events.JobLifecycleListener#init(java.util.Properties)
@@ -83,24 +89,24 @@ public class HttpJobListener implements JobLifecycleListener {
 		if (job.getInputArguments() != null && job.getInputArguments().contains(SubmitHandler.JOB_SUBMIT_IP_ADDRESS_KEY)){
 			// creates the URL
 			// the path is always the JOBID
-			String url = "http://"+job.getInputArguments().get(0)+":"+job.getInputArguments().get(1)+"/"+job.getId();
+			String url = "http://"+job.getInputArguments().get(ELEMENT_1)+":"+job.getInputArguments().get(ELEMENT_2)+"/"+job.getId();
 			// creates a HTTP client
 			CloseableHttpClient httpclient = null;
 			try {
 				httpclient = HttpUtil.createHttpClient(url);
 				// gets if printoutput is required
-				boolean printOutput = Parser.parseBoolean(job.getInputArguments().get(2), false);
+				boolean printOutput = Parser.parseBoolean(job.getInputArguments().get(ELEMENT_3), false);
 				// creates the response
 				// ALWAYS the return code
 				StringBuilder sb = new StringBuilder();
 				sb.append(job.getResult().getReturnCode()).append("\n");
 				// if client needs output
-				// it adds teh output of job
+				// it adds the output of job
 				if (printOutput){
 					File file = Main.getOutputSystem().getMessagesLogFile(job);
 					sb.append(FileUtils.readFileToString(file));
 				}
-				// creates teh HTTP entity
+				// creates the HTTP entity
 				StringEntity entity = new StringEntity(sb.toString(), ContentType.create("text/plain", CharSet.DEFAULT_CHARSET_NAME));
 
 				// prepares POST request and basic response handler
@@ -112,7 +118,7 @@ public class HttpJobListener implements JobLifecycleListener {
 				response.close();
 				return;
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC289E, e, job.getInputArguments().get(0)+":"+job.getInputArguments().get(1), job.toString());
+				LogAppl.getInstance().emit(NodeMessage.JEMC289E, e, job.getInputArguments().get(ELEMENT_1)+":"+job.getInputArguments().get(ELEMENT_2), job.toString());
 			} finally {
 				// close http client
 				if (httpclient != null){

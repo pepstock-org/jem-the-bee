@@ -66,6 +66,8 @@ public class StatisticsManager {
 	private static final int MAXIMUM_NUMBER_OF_SAMPLES = 20;
 
 	private static final long POLLING_INTERVAL = 1 * TimeUtils.MINUTE;
+	
+	private static final long THRESHOLD_ELAPSED_TIME = 2 * TimeUtils.SECOND;
 
 	private String savedDay = DateFormatter.getCurrentDate(DateFormatter.DEFAULT_DATE_FORMAT);
 
@@ -355,7 +357,7 @@ public class StatisticsManager {
 							boolean isLock = false;
 							try {
 								// locks the map
-								isLock = lock.tryLock(10, TimeUnit.SECONDS);
+								isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 								// adds the new sample
 								samples.put(lightEnvironmentSample.getKey(), lightEnvironmentSample);
 								// here checks if the map has got more than
@@ -387,7 +389,7 @@ public class StatisticsManager {
 			// print a warning on the log the elapsed time
 			// if beyond of 2 seconds. It should never happen
 			long elapsed = System.currentTimeMillis() - start;
-			if (elapsed > (2 * TimeUtils.SECOND)) {
+			if (elapsed > THRESHOLD_ELAPSED_TIME) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC081W, String.valueOf(elapsed));
 			}
 		}

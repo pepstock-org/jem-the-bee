@@ -30,14 +30,6 @@ public class UserPreference implements Serializable {
 	private String valueString = null;
 	
 	private List<String> valueList = null;
-	
-	/**
-	 * Returns true if value is a string
-	 * @return returns true if value is a string
-	 */
-	public boolean isValueString(){
-		return valueString !=null;
-	}
 
 	/**
 	 * @return the valueString

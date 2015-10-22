@@ -13,6 +13,7 @@ package org.pepstock.jem.plugin.views.jobs.output;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.plugin.views.jobs.JobColumnSorter;
+import org.pepstock.jem.util.ColumnIndex;
 /**
  * It provides column sorter for a table viewer for OUTPUT job queue.
  * @author Andrea "Stock" Stocchero
@@ -29,47 +30,47 @@ public class OutputColumnSorter extends JobColumnSorter {
 	public int compare(Job o1, Job o2) {
 		int diff = 0;
 		switch(getIndex()){
-		case 0: 
+		case ColumnIndex.COLUMN_1: 
 			// sorts by jobname
 			diff = o1.getName().compareTo(o2.getName());
 			break;
-		case 1: 
+		case ColumnIndex.COLUMN_2: 
 			// sort jcl type
 			diff = getComparedType(o1, o2);
 			break;
-		case 2:
+		case ColumnIndex.COLUMN_3:
 			// sorts by user
 			diff = getComparedUser(o1, o2);
 			break;
-		case 3:
+		case ColumnIndex.COLUMN_4:
 			// environment
 			diff = o1.getJcl().getEnvironment().compareTo(o2.getJcl().getEnvironment());
 			break;
-		case 4:
+		case ColumnIndex.COLUMN_5:
 			// routed
 			diff = getComparedRoutingTime(o1, o2);
 			break;
-		case 5: 
+		case ColumnIndex.COLUMN_6: 
 			// sorts by domain
 			diff = o1.getJcl().getDomain().compareTo(o2.getJcl().getDomain());
 			break;
-		case 6: 
+		case ColumnIndex.COLUMN_7: 
 			// sorts by affinity
 			diff = o1.getJcl().getAffinity().compareTo(o2.getJcl().getAffinity());
 			break;
-		case 7: 
+		case ColumnIndex.COLUMN_8: 
 			// sorts by ended time
 			diff = o1.getEndedTime().compareTo(o2.getEndedTime());
 			break;
-		case 8: 
+		case ColumnIndex.COLUMN_9: 
 			// sorts by return code
 			diff = o1.getResult().getReturnCode() - o2.getResult().getReturnCode();
 			break;
-		case 9:
+		case ColumnIndex.COLUMN_10:
 			// sorts by hold
 			diff = (o1.getJcl().isHold() ? 1 : 0) - (o2.getJcl().isHold() ? 1 : 0);
 			break;
-		case 10:
+		case ColumnIndex.COLUMN_11:
 			// sorts by node member
 			diff = getComparedMember(o1, o2);
 			break;

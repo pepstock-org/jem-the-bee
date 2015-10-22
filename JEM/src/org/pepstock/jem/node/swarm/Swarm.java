@@ -31,6 +31,7 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.node.swarm.listeners.NodeListener;
+import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.ExecutorConfig;
@@ -51,6 +52,12 @@ import com.hazelcast.core.Member;
  * 
  */
 public class Swarm {
+	
+	private static final int CORE_POOL = 16;
+	
+	private static final int MAX_ACTIVIE = 64;
+	
+	private static final int KEEP_ALIVE = 60;
 
 	/**
 	 * It represent the hazelcast configuration for the swarm environment
@@ -217,7 +224,7 @@ public class Swarm {
 			// job
 			while (!getRoutingQueueManager().isRouteEnded() || !getOutputQueueManager().isNotifyOutputEnded()) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(TimeUtils.SECOND);
 				} catch (InterruptedException e) {
 					LogAppl.getInstance().emit(SwarmNodeMessage.JEMO015E, e);
 				}
@@ -268,7 +275,7 @@ public class Swarm {
 		cfg.getPartitionGroupConfig().setEnabled(true);
 		cfg.getPartitionGroupConfig().setGroupType(MemberGroupType.HOST_AWARE);
 		cfg.getProperties().setProperty("hazelcast.logging.type", "log4j");
-		ExecutorConfig executor = new ExecutorConfig("pool", 16, 64, 60);
+		ExecutorConfig executor = new ExecutorConfig("pool", CORE_POOL, MAX_ACTIVIE, KEEP_ALIVE);
 		cfg.addExecutorConfig(executor);
 		swarmInstance = Hazelcast.newHazelcastInstance(cfg);
 		swarmInstance.getCluster().addMembershipListener(new NodeListener());

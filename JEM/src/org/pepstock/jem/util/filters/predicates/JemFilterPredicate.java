@@ -136,6 +136,10 @@ public abstract class JemFilterPredicate<T> extends AbstractPredicate implements
 	 * @return true if matches
 	 */
 	protected boolean checkTime(String tokenValue, Date time){
+		// checks if time is ok
+		if (time == null){
+			return false;
+		}
 		// gets current time
 		// used to subtract the filter value
 		long now = System.currentTimeMillis();

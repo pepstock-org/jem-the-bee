@@ -21,6 +21,7 @@ import java.util.List;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.security.CurrentUser;
 import org.pepstock.jem.log.MessageLevel;
+import org.pepstock.jem.util.ColumnIndex;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -127,8 +128,8 @@ public class SearcherHistoryTextBox extends FlexTable {
         historyImage.addClickHandler(new HistoryImageClickHandler());
         
         FlexCellFormatter formatter = getFlexCellFormatter();
-        formatter.setWidth(0, 0, Sizes.HUNDRED_PERCENT);
-        formatter.setWidth(0, 1, Sizes.toString(historyImage.getWidth()+1));
+        formatter.setWidth(ColumnIndex.COLUMN_1, 0, Sizes.HUNDRED_PERCENT);
+        formatter.setWidth(ColumnIndex.COLUMN_1, 1, Sizes.toString(historyImage.getWidth()+1));
         formatter.setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
     }
     

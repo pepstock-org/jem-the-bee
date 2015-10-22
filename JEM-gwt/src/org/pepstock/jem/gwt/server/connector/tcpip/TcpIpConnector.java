@@ -36,6 +36,8 @@ import com.hazelcast.core.HazelcastInstance;
  * 
  */
 public class TcpIpConnector implements Runnable {
+	
+	private static final int MAXIMUM_NUMBER_OF_NODES_PER_MACHINE = 5;
 
 	/**
 	 * Retry interval
@@ -56,7 +58,7 @@ public class TcpIpConnector implements Runnable {
 				List<String> members = config.getNetworkConfig().getJoin().getTcpIpConfig().getMembers();
 				int port = config.getNetworkConfig().getPort();
 				for (String member : members) {
-					for (int i = 0; i < 5; i++) {
+					for (int i = 0; i < MAXIMUM_NUMBER_OF_NODES_PER_MACHINE; i++) {
 						int currPort = port + i;
 						String currMember = member + ":" + currPort;
 						clientConfig.addAddress(currMember);

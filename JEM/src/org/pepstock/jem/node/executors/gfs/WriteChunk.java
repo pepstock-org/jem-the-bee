@@ -102,6 +102,14 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 			if (!file.exists() && !file.createNewFile()){
 				throw new ExecutorException(NodeMessage.JEMC266E, file.getAbsolutePath());
 			}
+			// write to the temporary file in APPEND mode
+			FileOutputStream output = new FileOutputStream(file.getAbsolutePath(), true);
+			try {
+				// write the buffer of chunkf
+				output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
+			} finally {
+				output.close();
+			}
 			// if the transferred is complete just rename the tmp file
 			if (chunk.isTransferComplete()) {
 				File finalFile = new File(parentPath, chunk.getFilePath());
@@ -119,14 +127,6 @@ public class WriteChunk extends DefaultExecutor<Boolean> {
 					LogAppl.getInstance().debug("Unable to set last modified date! Ignored!");
 				}
 				return true;
-			}
-			// write to the temporary file in APPEND mode
-			FileOutputStream output = new FileOutputStream(file.getAbsolutePath(), true);
-			try {
-				// write the buffer of chunkf
-				output.write(chunk.getChunk(), 0, chunk.getNumByteToWrite());
-			} finally {
-				output.close();
 			}
 		} catch (Exception e) {
 			// upload get an exception so delete tmp file

@@ -32,6 +32,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * The dialog to create/edit coordinates from table preferences.
@@ -119,7 +120,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 
 		// internal composite
 		Composite main = new Composite(parent, SWT.LEFT);
-		GridLayout mainLayout = new GridLayout(1, false);
+		GridLayout mainLayout = new GridLayout(Numbers.N_1, false);
 		// sets fixed margins
 		mainLayout.marginTop = DEFAULT_MARGIN_VERTICAL;
 		mainLayout.marginBottom = DEFAULT_MARGIN_VERTICAL;
@@ -139,7 +140,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 
 		// composites with all labels and text fields
 		Composite composite = new Composite(main, SWT.LEFT);
-		GridLayout compLayout = new GridLayout(2, false);
+		GridLayout compLayout = new GridLayout(Numbers.N_2, false);
 		// sets fixed margin
 		compLayout.verticalSpacing = DEFAULT_MARGIN_HORIZONTAL;
 		composite.setLayout(compLayout);
@@ -156,6 +157,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		}
 		// adds listener to update buttons status
 		host.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}
@@ -175,6 +177,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		}
 		// adds listener to update buttons status
 		restContext.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateButtonStatus();
 			}
@@ -204,6 +207,7 @@ public class CoordinateDialog extends Dialog implements ShellContainer {
 		// text field because you can't insert a password
 		// without a user
 		userid.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				if (userid.getText().length() > 0){
 					password.setEnabled(true);

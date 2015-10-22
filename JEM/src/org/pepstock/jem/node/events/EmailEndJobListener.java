@@ -247,8 +247,8 @@ public class EmailEndJobListener extends EmailNotifier implements JobLifecycleLi
 	 * Empty.
 	 * 
 	 * @param job <code>Job</code> instance
-	 * @Override
 	 */
+	@Override
 	public void queued(Job job) {
 		// do nothing
 	}
@@ -257,8 +257,9 @@ public class EmailEndJobListener extends EmailNotifier implements JobLifecycleLi
 	 * Empty.
 	 * 
 	 * @param job <code>Job</code> instance
-	 * @Override
+	 * 
 	 */
+	@Override
 	public void running(Job job) {
 		// do nothing
 	}

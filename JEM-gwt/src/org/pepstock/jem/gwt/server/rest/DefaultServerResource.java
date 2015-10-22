@@ -13,40 +13,83 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.gwt.server.rest;
 
-import org.pepstock.jem.gwt.server.UserInterfaceMessage;
+import javax.ws.rs.core.Response;
+
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.rest.entities.ReturnedObject;
 
 /**
- * Abstract REST server resource, which provides a helpful method to check if the
- * JEM group is available or not.
+ * Abstract REST server resource, which provides a helpful method to check if
+ * the JEM group is available or not and a preliminary check if everything is ok
+ * before calling the the logic.
  * 
  * @author Andrea "Stock" Stocchero
- *
+ * @version 2.3
+ * 
  */
 public abstract class DefaultServerResource {
 
+	// boolean to check if it has to call the init of the managers or not
+	private boolean managerLoaded = false;
+
+	// sync object
+	private static final Object SYNC = new Object();
+
 	/**
-	 * Returns <code>true</code> if JEM group is available (at least one member up and running).
+	 * Performs the same checks for all services
 	 * 
-	 * @return <code>true</code> if JEM group is available (at least one member up and running), otherwise <code>false</code>
+	 * @return if there is any error, return the response, otherwise null.
 	 */
-	protected boolean isEnable(){
+	final Response check(ResponseBuilder builder) {
+		// checks if environment is available
+		if (isEnable()) {
+			try {
+				// checks if manager is loaded
+				if (!managerLoaded) {
+					// sync to avoid multi instantiation of manager
+					synchronized (SYNC) {
+						if (!managerLoaded) {
+							// initialized
+							managerLoaded = init();
+						}
+					}
+				}
+				// everything is ok, there for return null
+				return null;
+			} catch (Exception e) {
+				// throws a HTTP severe error
+				LogAppl.getInstance().ignore(e.getMessage(), e);
+				return builder.serverError(e);
+			}
+		} else {
+			// return the response that
+			// the environment is not ready
+			return builder.unableException();
+		}
+	}
+
+	/**
+	 * Method called to init the service
+	 * 
+	 * @return true is ok, otherwise false
+	 * @throws Exception
+	 *             if any error occurs
+	 */
+	abstract boolean init() throws JemException;
+
+	/**
+	 * Returns <code>true</code> if JEM group is available (at least one member
+	 * up and running).
+	 * 
+	 * @return <code>true</code> if JEM group is available (at least one member
+	 *         up and running), otherwise <code>false</code>
+	 */
+	final boolean isEnable() {
 		return SharedObjects.getInstance().isDataClusterAvailable();
 	}
-	
-	/**
-	 * Sets the exception for JEM cluster not available to returned object of REST call.
-	 * 
-	 * @param object returned object of REST call
-	 */
-	void setUnableExcepton(ReturnedObject object){
-		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG003E, SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-		String msg = UserInterfaceMessage.JEMG003E.toMessage().getFormattedMessage(SharedObjects.getInstance().getHazelcastConfig().getGroupConfig().getName());
-		object.setExceptionMessage(msg);
-	}
+
 }

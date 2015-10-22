@@ -22,6 +22,9 @@ import org.pepstock.jem.gwt.client.commons.DefaultInspectorItem;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.ExecutionEnvironment;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.MemorySize;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -42,7 +45,7 @@ public final class System extends DefaultInspectorItem {
 		Styles.INSTANCE.common().ensureInjected();
 		Styles.INSTANCE.inspector().ensureInjected();
 	}
-
+	
 	private NodeInfoBean node = null;
 
 	/**
@@ -75,32 +78,32 @@ public final class System extends DefaultInspectorItem {
 	    sysInfoVp.add(sysInfoLabel);
 	    
 	    FlexTable layoutSysInfo = new FlexTable();
-	    layoutSysInfo.getColumnFormatter().setWidth(0, "50%");
-	    layoutSysInfo.getColumnFormatter().setWidth(1, "50%");
+	    layoutSysInfo.getColumnFormatter().setWidth(ColumnIndex.COLUMN_1, "50%");
+	    layoutSysInfo.getColumnFormatter().setWidth(RowIndex.ROW_2, "50%");
 	    layoutSysInfo.setCellPadding(10);
 	    layoutSysInfo.setWidth(Sizes.HUNDRED_PERCENT);
 	    ExecutionEnvironment env = node.getExecutionEnvironment();
 	   
-	    layoutSysInfo.setHTML(0, 0, "Memory (MB)");
-	    layoutSysInfo.setWidget(0, 1, new HTML(String.valueOf(node.getTotalMemory()/1024L/1024L)));
+	    layoutSysInfo.setHTML(RowIndex.ROW_1, ColumnIndex.COLUMN_1, "Memory (MB)");
+	    layoutSysInfo.setWidget(RowIndex.ROW_1, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getTotalMemory()/MemorySize.MB)));
 
-	    layoutSysInfo.setHTML(1, 0, "Available processors");
-	    layoutSysInfo.setWidget(1, 1, new HTML(String.valueOf(node.getAvailableProcessors())));
+	    layoutSysInfo.setHTML(RowIndex.ROW_2, ColumnIndex.COLUMN_1, "Available processors");
+	    layoutSysInfo.setWidget(RowIndex.ROW_2, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getAvailableProcessors())));
 
-	    layoutSysInfo.setHTML(2, 0, "PID");
-	    layoutSysInfo.setWidget(2, 1, new HTML(String.valueOf(node.getProcessId())));
+	    layoutSysInfo.setHTML(RowIndex.ROW_3, ColumnIndex.COLUMN_1, "PID");
+	    layoutSysInfo.setWidget(RowIndex.ROW_3, ColumnIndex.COLUMN_2, new HTML(String.valueOf(node.getProcessId())));
 
-	    layoutSysInfo.setHTML(3, 0, "System architecture");
-	    layoutSysInfo.setWidget(3, 1, new HTML(node.getSystemArchitecture()));
+	    layoutSysInfo.setHTML(RowIndex.ROW_4, ColumnIndex.COLUMN_1, "System architecture");
+	    layoutSysInfo.setWidget(RowIndex.ROW_4, ColumnIndex.COLUMN_2, new HTML(node.getSystemArchitecture()));
 	    
-	    layoutSysInfo.setHTML(4, 0, "System name");
-	    layoutSysInfo.setWidget(4, 1, new HTML(node.getSystemName()));
+	    layoutSysInfo.setHTML(RowIndex.ROW_5, ColumnIndex.COLUMN_1, "System name");
+	    layoutSysInfo.setWidget(RowIndex.ROW_5, ColumnIndex.COLUMN_2, new HTML(node.getSystemName()));
 	    
-	    layoutSysInfo.setHTML(5, 0, "Maximum heap size used for jobs (MB)");
-	    layoutSysInfo.setWidget(5, 1, new HTML(String.valueOf(env.getMemory())));
+	    layoutSysInfo.setHTML(RowIndex.ROW_6, ColumnIndex.COLUMN_1, "Maximum heap size used for jobs (MB)");
+	    layoutSysInfo.setWidget(RowIndex.ROW_6, ColumnIndex.COLUMN_2, new HTML(String.valueOf(env.getMemory())));
 
-	    layoutSysInfo.setHTML(6, 0, "Java Virtual Machine");
-	    layoutSysInfo.setWidget(6, 1, new HTML("Vendor: "+node.getJavaVendor()+", Version: "+node.getJavaVersion()));
+	    layoutSysInfo.setHTML(RowIndex.ROW_7, ColumnIndex.COLUMN_1, "Java Virtual Machine");
+	    layoutSysInfo.setWidget(RowIndex.ROW_7, ColumnIndex.COLUMN_2, new HTML("Vendor: "+node.getJavaVendor()+", Version: "+node.getJavaVersion()));
 
 	    
 	    UITools.setFlexTableStyles(layoutSysInfo, 

@@ -233,7 +233,7 @@ public final class MainLauncherTasklet extends JemTasklet {
 	 * @throws IOException if any error occurs
 	 * @throws ClassNotFoundException if any error occurs
 	 */
-	private Class<?> loadCustomClass(String classNam) throws IOException, ClassNotFoundException{
+	private Class<?> loadCustomClass(String className) throws IOException, ClassNotFoundException{
 		// CLASSPATH has been set therefore it an try to load the plugin by
 		// a custom classloader
 		// collection of all file of classpath
@@ -280,7 +280,7 @@ public final class MainLauncherTasklet extends JemTasklet {
 			}
 		}
 		// checks if the collection is empty.
-		// if yes, all classpath definiton is wrong and no files have been
+		// if yes, all classpath definition is wrong and no files have been
 		// loaded
 		if (!files.isEmpty()) {
 			// gets where the class is located
@@ -305,7 +305,7 @@ public final class MainLauncherTasklet extends JemTasklet {
 			// loads the plugin from classloader
 			return loader.loadClass(className);
 		} else {
-			throw new IOException(UtilMessage.JEMB009E.toMessage().getMessage());
+			throw new IOException(UtilMessage.JEMB009E.toMessage().getContent());
 		}
 	}
 }

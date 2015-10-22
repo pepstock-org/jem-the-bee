@@ -4,10 +4,9 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.PreJob;
 import org.pepstock.jem.ant.AntFactory;
-import org.pepstock.jem.rest.entities.Jobs;
 /**
  * 
  * @author Andrea "Stock" Stocchero
@@ -21,17 +20,14 @@ public class Clean extends TestCase {
 	 * @throws Exception
 	 */
 	public void testCleanJobs() throws Exception {
-		File jcl=getJcl("clean/TEST_REST_CLEAN_JOBS.xml");
-		PreJob prejob=RestManager.getSharedInstance().createJob(jcl, "ant");
-		// get jobid
-		String jobId=RestManager.getSharedInstance().getJobManager().submit(prejob);
+		File jcl= getJcl("clean/TEST_REST_CLEAN_JOBS.xml");
+		String jobId = RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		// verify output
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			Jobs jobs=RestManager.getSharedInstance().getJobManager().getOutputQueue(jobId);
-			if(jobs!=null && jobs.getJobs()!=null && !jobs.getJobs().isEmpty()){
-				Job job=jobs.getJobs().iterator().next();
+			Job job = RestManager.getInstance().getJobManager().getEndedJobById(jobId);
+			if(job != null){
 				assertEquals(job.getResult().getReturnCode(), 0);
 				break;
 			}
@@ -45,15 +41,13 @@ public class Clean extends TestCase {
 	 */
 	public void testCleanData() throws Exception {
 		File jcl=getJcl("clean/TEST_REST_DELETE_DATA.xml");
-		PreJob prejob=RestManager.getSharedInstance().createJob(jcl, AntFactory.ANT_TYPE);
 		// get jobid
-		String jobId=RestManager.getSharedInstance().getJobManager().submit(prejob);
+		String jobId=RestManager.getInstance().getJobManager().submit(FileUtils.readFileToString(jcl), AntFactory.ANT_TYPE);
 		while (true) {
 			Thread.sleep(500);
 			// verify if is finished that is if it is in the output queue
-			Jobs jobs=RestManager.getSharedInstance().getJobManager().getOutputQueue(jobId);
-			if(jobs!=null && jobs.getJobs()!=null && !jobs.getJobs().isEmpty()){
-				Job job=jobs.getJobs().iterator().next();
+			Job job = RestManager.getInstance().getJobManager().getEndedJobById(jobId);
+			if(job != null){
 				assertEquals(job.getResult().getReturnCode(), 0);
 				break;
 			}

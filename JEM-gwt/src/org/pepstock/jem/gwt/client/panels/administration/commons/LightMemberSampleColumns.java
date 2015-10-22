@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.administration.commons;
 import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 
@@ -127,13 +128,6 @@ public final class LightMemberSampleColumns {
 	public static final TextColumn<LightMemberSample> USER_PREF_MEMORY_COST_SORTABLE = new MemoryCostSortableInternalColumn(Queues.USER_PREFERENCES_MAP);
 
 	/**
-	 * To avoid any instantiation
-	 */
-    private LightMemberSampleColumns() {
-
-    }
-
-	/**
 	 * PID (unsortable)
 	 */
 	public static final TextColumn<LightMemberSample> PID = new TextColumn<LightMemberSample>() {
@@ -180,6 +174,13 @@ public final class LightMemberSampleColumns {
 		TIME_SORTABLE.setSortable(true);
 	}
 
+	/**
+	 * To avoid any instantiation
+	 */
+    private LightMemberSampleColumns() {
+
+    }
+	
 	/*
 	 * Implementations  
 	 */
@@ -230,11 +231,11 @@ public final class LightMemberSampleColumns {
 		public String getValue(LightMemberSample memberSample) {
 			String data = null;
 			long cost = memberSample.getMapsStats().get(queueOrMap).getOwnedEntryMemoryCost();
-			if (cost < JemConstants.MB){
-				cost = cost / JemConstants.KB;
+			if (cost < MemorySize.MB){
+				cost = cost / MemorySize.KB;
 				data = JemConstants.KB_FORMAT.format(cost);
 			} else {
-				cost = cost / JemConstants.MB;
+				cost = cost / MemorySize.MB;
 				data = JemConstants.MB_FORMAT.format(cost);
 			}
 			return data;
@@ -255,11 +256,11 @@ public final class LightMemberSampleColumns {
 		public String getValue(LightMemberSample memberSample) {
 			String data = null;
 			long cost = memberSample.getInternalMapsStats().get(queueOrMap).getOwnedEntryMemoryCost();
-			if (cost < JemConstants.MB){
-				cost = cost / JemConstants.KB;
+			if (cost < MemorySize.MB){
+				cost = cost / MemorySize.KB;
 				data = JemConstants.KB_FORMAT.format(cost);
 			} else {
-				cost = cost / JemConstants.MB;
+				cost = cost / MemorySize.MB;
 				data = JemConstants.MB_FORMAT.format(cost);
 			}
 			return data;

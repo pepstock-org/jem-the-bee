@@ -13,10 +13,10 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->
 	
-	<taskdef name="nodes" classname="org.pepstock.jem.ant.NodesTask" />
+	<taskdef name="nodes" classname="org.pepstock.jem.ant.tasks.utilities.NodesTask" />
 
 	<target name="test">
-		<nodes license="Pepstock_JEM_AntUtil.license">
+		<nodes>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					DRAIN *; 

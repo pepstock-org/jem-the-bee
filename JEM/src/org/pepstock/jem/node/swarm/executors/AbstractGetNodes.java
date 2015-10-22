@@ -26,6 +26,7 @@ import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.swarm.SwarmException;
 import org.pepstock.jem.node.swarm.SwarmQueues;
 
@@ -66,7 +67,7 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 		boolean isLock = false;
 		try {
 			// trying lock
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// gets all swarm nodes
 				allNodes = nodes.values(predicate);

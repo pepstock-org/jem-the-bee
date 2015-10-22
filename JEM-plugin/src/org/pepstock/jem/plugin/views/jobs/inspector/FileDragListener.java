@@ -23,7 +23,6 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.widgets.Shell;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
@@ -35,6 +34,8 @@ import org.pepstock.jem.plugin.util.ShellContainer;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.entities.JobQueue;
 
 /**
  * File drag listener utility, enables to open files of output directory of a job., using DND.
@@ -44,9 +45,13 @@ import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
  */
 public class FileDragListener implements DragSourceListener, ShellContainer {
 	
+	private static final String MSG = "Error while getting output file: ";
+	
+	private static final String TITLE = "Unable to get Output!";
+	
 	private Job job = null;
 	
-	private String queueName = null;
+	private JobQueue queueName = null;
 
 	private TreeViewer treeViewer = null;
 
@@ -67,14 +72,14 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 	/**
 	 * @return the queueName
 	 */
-	public String getQueueName() {
+	public JobQueue getQueueName() {
 		return queueName;
 	}
 
 	/**
 	 * @param queueName the queueName to set
 	 */
-	public void setQueueName(String queueName) {
+	public void setQueueName(JobQueue queueName) {
 		this.queueName = queueName;
 	}
 
@@ -172,12 +177,12 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
      * @throws IOException 
      * @throws Exception if any error occurs
      */
-    private File dragProducedOutput(ProducedOutput out) throws JemException, IOException{
+    private File dragProducedOutput(ProducedOutput out) throws RestException, IOException{
     	OutputListItem item = out.getOutItem();
 		// rest call
-		OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, out.getOutItem());
+		String content = Client.getInstance().getOutputFileContent(job, queueName, out.getOutItem());
 		String fileName = FilenameUtils.getName(item.getFileRelativePath());
-		return FilesUtil.writeToTempFile(fileName, ofc.getContent());
+		return FilesUtil.writeToTempFile(fileName, content);
     }
 
     /**
@@ -242,10 +247,10 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
             		listFiles.add(file.getAbsolutePath());
                 } catch (IOException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
-					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
-                } catch (JemException e) {
+					Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
+                } catch (RestException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
-					Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+					Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
                 }
             }
             // if it's created files
@@ -279,12 +284,12 @@ public class FileDragListener implements DragSourceListener, ShellContainer {
 				// download a single files
 				File file = dragProducedOutput(getOutput());
 				getEvent().data = new String[] { file.getAbsolutePath() };
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
 			} catch (IOException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(FileDragListener.this, "Unable to get Output!", "Error while getting output file: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(FileDragListener.this, TITLE, MSG + e.getMessage(), MessageLevel.ERROR);
             }
 		}    	
     }

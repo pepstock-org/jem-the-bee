@@ -22,7 +22,6 @@ import java.util.Map;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
@@ -409,7 +408,7 @@ public class JobsManagerServiceImpl extends DefaultManager implements JobsManage
 	 * (Job job, OutputListItem item)
 	 */
 	@Override
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws JemException {
+	public String getOutputFileContent(Job job, OutputListItem item) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();

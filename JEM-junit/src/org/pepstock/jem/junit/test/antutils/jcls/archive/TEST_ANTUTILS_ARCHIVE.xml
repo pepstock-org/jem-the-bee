@@ -17,10 +17,10 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->	
 
-	<taskdef name="archive" classname="org.pepstock.jem.ant.JobOutputArchiveTask" />
+	<taskdef name="archive" classname="org.pepstock.jem.ant.tasks.utilities.JobOutputArchiveTask" />
 
 	<target name="archive_jobs">
-		<archive license="Pepstock_JEM_AntUtil.license">
+		<archive>
 			<arg value="-class"/>
 			<arg value="org.pepstock.jem.node.archive.DefaultJobOutputArchive"/>
 			<dataDescription name="COMMAND" disposition="SHR">

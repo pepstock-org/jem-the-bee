@@ -20,8 +20,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * Represents the tree of job output. It has 2 level:<br>
  * <ul>
@@ -33,7 +31,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @version 1.0	
  *
  */
-@XmlRootElement
 public class OutputTree implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

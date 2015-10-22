@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="YAUXCOPY" default="step1" basedir=".">
+	<description>
+		REBUILD root 3 GDGs
+    </description>
+
+	<property name="jem.job.name" value="YAUXCOPY"/>
+	<property name="jem.job.environment" value="C0-CRM"/>
+	<property name="jem.job.domain" value="domain"/>
+	<!-- to refers the environment variable -->
+	<property environment="env"/>
+
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+
+	<target name="step1">
+		<gdg>
+			<dataDescription name="GDG1" disposition="OLD">
+				<dataSet name="gdg1/jemtest"/>
+			</dataDescription>
+
+			<dataDescription name="GDG2" disposition="OLD">
+				<dataSet name="gdg2/jemtest"/>
+			</dataDescription>
+			
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					REBUILD GDG GDG1 ;
+					REBUILD GDG GDG2 MASTER(GENERATIONS);
+					REBUILD GDG GDG2 MASTER(ROOT);
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+</project>

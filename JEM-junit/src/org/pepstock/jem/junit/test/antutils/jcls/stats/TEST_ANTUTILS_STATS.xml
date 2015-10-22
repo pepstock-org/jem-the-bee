@@ -16,10 +16,10 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->
 
-	<taskdef onerror="ignore" name="stats" classname="org.pepstock.jem.ant.StatsCollectTask"/>
+	<taskdef onerror="ignore" name="stats" classname="org.pepstock.jem.ant.tasks.utilities.StatsCollectTask"/>
 
 	<target name="step">
-		<stats license="Pepstock_JEM_AntUtil.license">
+		<stats>
 			<arg value="-days"/>
 			<arg value="-1"/>
 			<!--

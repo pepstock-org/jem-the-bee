@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.roles.inspector.commons;
 
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.node.security.Role;
+import org.pepstock.jem.util.ColumnIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -55,7 +56,7 @@ public class CheckBoxPermissionsPanel extends ScrollPanel {
 		viewTable.setWidth(Sizes.HUNDRED_PERCENT);
 		
 		for (int i=0; i<items.length; i++){
-			viewTable.setWidget(i, 0, items[i]);
+			viewTable.setWidget(i,ColumnIndex.COLUMN_1, items[i]);
 		}
 		main.add(viewTable);
 	}

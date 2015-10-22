@@ -230,7 +230,7 @@ public abstract class JobTask extends CommandLineTask {
 		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
 		boolean isLock = false;
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				myroles = new ArrayList<Role>(rolesMap.values(predicate));
 			} else {
@@ -292,7 +292,9 @@ public abstract class JobTask extends CommandLineTask {
 				map.put(e.getKey(), e.getValue());
 			}
 			// adds a custom JAVA runtime to be executed
+			// if is set
 			if (getCommand().getJavaHome() != null){
+				// sets env variable with the right JAVA HOME
 				map.put(JavaCommand.JAVA_HOME, getCommand().getJavaHome());
 			}
 			
@@ -327,10 +329,9 @@ public abstract class JobTask extends CommandLineTask {
 	 * @return true if it was able to cancel the job in execution otherwise
 	 *         false
 	 */
-	public final boolean cancel(String pid, boolean force) {
+	public final boolean cancel(boolean force) {
 		// PID is usually pass in the format [pid]@[hostname] by JMX
 		// implementation of JDK.
-
 		String id = StringUtils.substringBefore(getJob().getProcessId(), "@");
 		long intId = Parser.parseLong(id, -1L);
 		if (intId == -1L){

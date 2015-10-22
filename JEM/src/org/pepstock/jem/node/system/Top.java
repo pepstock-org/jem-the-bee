@@ -39,6 +39,8 @@ public class Top implements Callable<String>, Serializable {
 	
 	private static final long INTERVAL = TimeUtils.SECOND;
 
+	private static final int CYCLES = 2;
+	
 	/**
 	 * Header and then fields showed by UI
 	 */
@@ -55,7 +57,7 @@ public class Top implements Callable<String>, Serializable {
 		StringBuilder sb = new StringBuilder();
 		// performs twice the same commands
 		// to have a consistent information.
-		for (int k = 0; k < 2; k++) {
+		for (int k = 0; k < CYCLES; k++) {
 			// commons information 
 			// about system
 			sb.append(Uptime.getInfo(sigar));

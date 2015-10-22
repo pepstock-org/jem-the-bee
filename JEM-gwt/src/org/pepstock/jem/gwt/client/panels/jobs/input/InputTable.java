@@ -20,9 +20,9 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.AnchorTextColumn;
-import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.commons.InspectListener;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.gwt.client.commons.TextFilterableHeader;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.UpdateListener;
@@ -105,7 +105,7 @@ public class InputTable extends AbstractTable<Job> {
 				}
 			}
 		});
-		table.setColumnWidth(checkColumn, 23, Unit.PX);
+		table.setColumnWidth(checkColumn, AbstractTable.DEFAULT_CHECK_COLUMN_WIDTH, Unit.PX);
 		table.addColumn(checkColumn, checkHeader);
 		
 		/*-------------------------+
@@ -167,7 +167,7 @@ public class InputTable extends AbstractTable<Job> {
 		/*-------------------------+
 		 | ENVIRONMENT             |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_UPDATE)){
 			Column<Job, String> environment = new Column<Job, String>(
 					new EditTextCell()) {
 				@Override
@@ -211,7 +211,7 @@ public class InputTable extends AbstractTable<Job> {
 		/*-------------------------+
 		 | DOMAIN                  |
 		 +-------------------------*/
-	    if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_UPDATE)){
+	    if (ClientPermissions.isAuthorized(Permissions.JOBS_UPDATE)){
 	    	Column<Job, String> domain = new Column<Job, String>(
 	    			new EditTextCell()) {
 	    		@Override
@@ -261,7 +261,7 @@ public class InputTable extends AbstractTable<Job> {
 		/*-------------------------+
 		 | STATIC AFFINITIES       |
 		 +-------------------------*/	    
-	    if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_UPDATE)){
+	    if (ClientPermissions.isAuthorized(Permissions.JOBS_UPDATE)){
 	    	Column<Job, String> affinity = new Column<Job, String>(
 	    			new EditTextCell()) {
 	    		@Override
@@ -327,7 +327,7 @@ public class InputTable extends AbstractTable<Job> {
 		/*-------------------------+
 		 | PRIORITY                |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_UPDATE)){
 			Column<Job, String> priority = new Column<Job, String>(
 					new EditTextCell()) {
 				@Override
@@ -380,7 +380,7 @@ public class InputTable extends AbstractTable<Job> {
 		/*-------------------------+
 		 | MEMORY                  |
 		 +-------------------------*/
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_UPDATE)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_UPDATE)){
 			Column<Job, String> memory = new Column<Job, String>(
 					new EditTextCell()) {
 				@Override

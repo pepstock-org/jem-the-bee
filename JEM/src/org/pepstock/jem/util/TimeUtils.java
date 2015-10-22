@@ -32,19 +32,34 @@ public final class TimeUtils {
 	public static final long SECOND = 1000;
 	
 	/**
+	 * Seconds per minute
+	 */
+	public static final int SECONDS_FOR_MINUTE = 60;
+	
+	/**
 	 * One minute in milliseconds
 	 */
-	public static final long MINUTE = SECOND * 60;
+	public static final long MINUTE = SECOND * SECONDS_FOR_MINUTE;
+	
+	/**
+	 * Minutes for hour
+	 */
+	public static final int MINUTES_FOR_HOUR = 60;
 	
 	/**
 	 * One hour in milliseconds
 	 */
-	public static final long HOUR = MINUTE * 60;
+	public static final long HOUR = MINUTE * MINUTES_FOR_HOUR;
+	
+	/**
+	 * Hours per day
+	 */
+	public static final int HOURS_FOR_DAY = 24;
 	
 	/**One day in milliseconds
 	 * 
 	 */
-	public static final long DAY = HOUR * 24;
+	public static final long DAY = HOUR * HOURS_FOR_DAY;
 
 	/**
 	 * Days string representation

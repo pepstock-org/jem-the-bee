@@ -25,7 +25,6 @@ import javax.naming.Name;
 import javax.naming.Reference;
 import javax.xml.bind.JAXBContext;
 
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.resources.impl.AbstractObjectFactory;
@@ -33,6 +32,7 @@ import org.pepstock.jem.node.resources.impl.CommonKeys;
 import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.tasks.jndi.JNDIException;
 import org.pepstock.jem.rest.ResourceRestClient;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.entities.Account;
 import org.pepstock.jem.rest.services.LoginManager;
 
@@ -103,12 +103,12 @@ public class JemFactory  extends AbstractObjectFactory {
 			if (user == null) {
 				// creates a Account object
 				Account account = new Account();
-				account.setUserId(username);
+				account.setUserid(username);
 				account.setPassword(password);
 				// log in
 				manager.login(account);
 			}
-		} catch (JemException e) {
+		} catch (RestException e) {
 			throw new JNDIException(NodeMessage.JEMC269E, e);
 		} 
 		// returns the client
@@ -156,7 +156,7 @@ public class JemFactory  extends AbstractObjectFactory {
 				try {
 					// performs logoff
 					manager.logoff();
-				} catch (JemException e) {
+				} catch (RestException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}

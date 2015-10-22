@@ -19,13 +19,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.pepstock.jem.gfs.UploadedGfsFile;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.views.Searcher;
+import org.pepstock.jem.rest.RestException;
 import org.pepstock.jem.rest.services.UploadListener;
+
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * Progress monitor when some files are uploading to GFS.
@@ -162,15 +164,15 @@ public class FileUploadJob extends Job {
 					// path where to store the file
 					fileToupload.setGfsPath(path);
 					// UPLOAD by REST!!!
-					int status = Client.getInstance().upload(fileToupload);
+					boolean status = Client.getInstance().upload(fileToupload);
 					// if Return Code HTTP not equals 200, excpetion
-					if (status != 200){
-						throw new JemException("Status code incorrect: "+status);
+					if (!status){
+						throw new RestException(ClientResponse.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Unable to upload the file "+file);
 					}
 				}
 			}
 			return Status.OK_STATUS;
-		} catch (JemException e) {
+		} catch (RestException e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			// shows the error with
 			// file and exception

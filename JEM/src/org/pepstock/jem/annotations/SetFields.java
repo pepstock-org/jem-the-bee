@@ -75,7 +75,7 @@ public final class SetFields {
 	 * @throws IllegalAccessException if any error occurs
 	 */
 	public static void applyByAnnotation(Object object, boolean isUsingUniqueInitialContext) throws NamingException, IllegalAccessException{
-		applyByAnnotation(object, object.getClass(), false);
+		applyByAnnotation(object, object.getClass(), isUsingUniqueInitialContext);
 	}
 	
 	/**

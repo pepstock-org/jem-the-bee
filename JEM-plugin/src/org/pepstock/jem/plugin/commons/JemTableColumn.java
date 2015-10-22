@@ -23,7 +23,7 @@ public class JemTableColumn {
 	 */
 	public static final int DEFAULT_WEIGHT = 100;
 	
-	private int weight = 10;
+	private int weight = DEFAULT_WEIGHT;
 	
 	private String name = null;
 	
@@ -74,12 +74,13 @@ public class JemTableColumn {
 		this.name = name;
 	}
 
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
     @Override
     public String toString() {
-	    return "JobTableColumn [weight=" + weight + ", name=" + name + "]";
+	    return "JemTableColumn [weight=" + weight + ", name=" + name + "]";
     }
 
 }

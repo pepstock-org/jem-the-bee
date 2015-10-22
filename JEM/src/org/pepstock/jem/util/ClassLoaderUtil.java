@@ -190,7 +190,7 @@ public final class ClassLoaderUtil {
 				result.setObject(clazz.newInstance());
 				result.setLoader(loader);
 			} else {
-				throw new IOException(UtilMessage.JEMB009E.toMessage().getMessage());
+				throw new IOException(UtilMessage.JEMB009E.toMessage().getContent());
 			}
 		}
 		return result;

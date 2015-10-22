@@ -30,8 +30,10 @@
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
+					
 					<!-- all SPRING-SOURCE jars are excluded from SPRING framework -->
 					<exclude name="spring/com.springsource.*.jar" />
+					<exclude name="spring/com.springsource.org.codehaus.*.jar" />
 				</fileset>
 				<pathelement path="${java.class.path}" />
 			</classpath>

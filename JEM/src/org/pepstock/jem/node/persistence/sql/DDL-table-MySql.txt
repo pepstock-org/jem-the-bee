@@ -1,0 +1,18 @@
+create table OUTPUT_QUEUE_4_EVICTION (
+ID				char(39) primary key,
+NAME			varchar(64) not null,
+USER			varchar(16) not null,
+ROUTED			bit(1) not null
+SUBMITTED_TIME	integer not null.
+RUNNING_TIME	integer ,
+ENDED_TIME		integer ,
+RETURN_CODE		smallint not null,
+MEMBER			varchar(24) ,
+STEP			varchar(16) ,
+JCL_TYPE		varchar(16) not null,
+JCL_USER		varchar(16) ,
+JCL_ENVIRONMENT	varchar(32) not null,
+JCL_DOMAIN		varchar(32) not null,
+JCL_AFFINITY	varchar(64) not null,
+JCL_PRIORITY	smallint not null,
+JCL_MEMORY		smallint not null)

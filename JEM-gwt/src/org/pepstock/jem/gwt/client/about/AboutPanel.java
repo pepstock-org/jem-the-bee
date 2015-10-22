@@ -21,7 +21,8 @@ import org.pepstock.jem.gwt.client.commons.AbstractInspector;
 import org.pepstock.jem.gwt.client.commons.Styles;
 import org.pepstock.jem.gwt.client.commons.UITools;
 import org.pepstock.jem.node.About;
-import org.pepstock.jem.node.NodeLicense;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -80,18 +81,18 @@ public class AboutPanel extends AbstractInspector {
 		aboutTable.setCellPadding(10);
 	    aboutTable.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
 	    aboutTable.addStyleName(Styles.INSTANCE.common().noWrap());
-	    aboutTable.getColumnFormatter().setWidth(1, "80%");
+	    aboutTable.getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "80%");
 
-	    aboutTable.setHTML(0, 0, "Site");
-	    aboutTable.setWidget(0, 1, site);
+	    aboutTable.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Site");
+	    aboutTable.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, site);
 	    
-	    aboutTable.setHTML(1, 0, "Version");
-	    aboutTable.setHTML(1, 1, about.getVersion());
+	    aboutTable.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Version");
+	    aboutTable.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_2, about.getVersion());
 
-	    aboutTable.setHTML(2, 0, "Build time");
-	    aboutTable.setHTML(2, 1, about.getCreationTime());
+	    aboutTable.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Build time");
+	    aboutTable.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_2, about.getCreationTime());
 
-		Label licensesLabel = new Label("Installed Licences");
+		Label licensesLabel = new Label("Licence");
 		licensesLabel.setWidth(Sizes.HUNDRED_PERCENT);
 		licensesLabel.setStyleName(Styles.INSTANCE.inspector().title());
 		licensesLabel.addStyleName(Styles.INSTANCE.common().bold());
@@ -99,31 +100,18 @@ public class AboutPanel extends AbstractInspector {
 		FlexTable licensesTable = new FlexTable();
 		licensesTable.setCellPadding(10);
 		licensesTable.setSize(Sizes.HUNDRED_PERCENT, Sizes.HUNDRED_PERCENT);
-	    
-		if (!about.getLicenses().isEmpty()) {
-		    int row = 0;
-		    for (NodeLicense license : about.getLicenses()) {
-		    	StringBuilder builder = new StringBuilder();
-		    	builder.append("Module: <b>"+license.getModule()+"</b>, ");
-		    	builder.append("File name: <b>"+license.getFileName()+"</b><br/>");
-		    	builder.append("Subject: <b>"+license.getSubject()+"</b>, ");
-		    	builder.append("Email: <b>"+license.getEmail()+"</b>, ");
-		    	builder.append("Issue date: <b>"+license.getIssuedate()+"</b>, ");
-		    	builder.append("Expire date: <b>"+license.getExpiredate()+"</b>, ");
-		    	builder.append("Max nodes: <b>"+license.getMaxnodes()+"</b>");
-		    	licensesTable.setHTML(row, 0, builder.toString());
-			    row++;
-		    }
-		} else {
-			licensesTable.setHTML(0, 0, "(none)");
-		}
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("<center>GNU GENERAL PUBLIC LICENSE</center><br/>");
+		builder.append("<center>Version 3, 29 June 2007</center><br/>");
+		builder.append("<br/>");
+		builder.append("<center>Copyright (C) 2007 Free Software Foundation, Inc. http://fsf.org/</center><br/>");
+		builder.append("<center>Everyone is permitted to copy and distribute verbatim copies</center><br/>");
+		builder.append("<center>of this license document, but changing it is not allowed.</center>");
+		licensesTable.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, builder.toString());
 	    
 	    // styles
 	    UITools.setFlexTableRowStyles(aboutTable, 
-	    		Styles.INSTANCE.inspector().rowDark(), 
-	    		Styles.INSTANCE.inspector().rowLight());
-	    
-	    UITools.setFlexTableRowStyles(licensesTable, 
 	    		Styles.INSTANCE.inspector().rowDark(), 
 	    		Styles.INSTANCE.inspector().rowLight());
 	    

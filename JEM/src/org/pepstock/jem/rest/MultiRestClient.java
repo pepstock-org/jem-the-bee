@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.rest;
 
+import java.io.PrintStream;
+
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 
@@ -41,7 +43,17 @@ public class MultiRestClient extends RestClient{
 	 * @throws Exception if any SSL errors occurs
 	 */
 	public MultiRestClient(String uriString){
-		super(uriString);
+		this(uriString, null);
+	}
+	
+	/**
+	 * Creates the object using the base URL of rest
+	 * @param uriString URL to access to JEM by HTTP
+	 * @param debugStream stream to use for debugging
+	 * @throws Exception if any SSL errors occurs
+	 */
+	public MultiRestClient(String uriString, PrintStream debugStream){
+		super(uriString, debugStream);
 	}
 	
 	/* (non-Javadoc)

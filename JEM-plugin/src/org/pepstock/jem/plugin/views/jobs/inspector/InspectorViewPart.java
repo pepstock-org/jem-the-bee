@@ -33,7 +33,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.OutputFileContent;
+import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageLevel;
@@ -46,7 +46,9 @@ import org.pepstock.jem.plugin.views.JemViewPart;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.Category;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.CategoryFactory;
 import org.pepstock.jem.plugin.views.jobs.inspector.model.ProducedOutput;
-import org.pepstock.jem.rest.entities.JobOutputTreeContent;
+import org.pepstock.jem.rest.RestException;
+import org.pepstock.jem.rest.entities.JobQueue;
+import org.pepstock.jem.util.Numbers;
 
 /**
  *  Is a viewPart, activated to show the details of a job. It has got the job header to provide short info about job anme and JEM environment.
@@ -71,23 +73,23 @@ public class InspectorViewPart extends JemViewPart {
 	
 	private JobHeader jobHeader;
 	
-	private JobOutputTreeContent data = null;
+	private OutputTree data = null;
 	
 	private Job job = null;
 	
-	private String queueName = null;
+	private JobQueue queueName = null;
 
 	/**
 	 * @return the data
 	 */
-	public JobOutputTreeContent getData() {
+	public OutputTree getData() {
 		return data;
 	}
 
 	/**
 	 * @param data the data to set
 	 */
-	public void setData(JobOutputTreeContent data) {
+	public void setData(OutputTree data) {
 		this.data = data;
 	}
 
@@ -108,14 +110,14 @@ public class InspectorViewPart extends JemViewPart {
 	/**
 	 * @return the queueName
 	 */
-	public String getQueueName() {
+	public JobQueue getQueueName() {
 		return queueName;
 	}
 
 	/**
 	 * @param queueName the queueName to set
 	 */
-	public void setQueueName(String queueName) {
+	public void setQueueName(JobQueue queueName) {
 		this.queueName = queueName;
 	}
 
@@ -132,9 +134,6 @@ public class InspectorViewPart extends JemViewPart {
     	jobHeader.setJob(getJob());
     	dragListener.setJob(getJob());
     	dragListener.setQueueName(getQueueName());
-    	
-    	
-
     }
   
 	/* (non-Javadoc)
@@ -151,9 +150,9 @@ public class InspectorViewPart extends JemViewPart {
 	 */
     @Override
     public void createPartControl(Composite parent) {
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = 2;
-		layout.marginWidth = 2;
+		GridLayout layout = new GridLayout(Numbers.N_1, false);
+		layout.marginHeight = Numbers.N_2;
+		layout.marginWidth = Numbers.N_2;
 		parent.setLayout(layout);
 		
 		// job header
@@ -162,7 +161,7 @@ public class InspectorViewPart extends JemViewPart {
 		//Instantiate TableViewer
 		//Create the composite
 		Composite compositeTree = new Composite(parent, SWT.NONE);
-		compositeTree.setLayout(new GridLayout(1, true));
+		compositeTree.setLayout(new GridLayout(Numbers.N_1, true));
 		compositeTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0));
 		// Creates tree
 		treeViewer = new TreeViewer(compositeTree, SWT.NONE);
@@ -170,7 +169,7 @@ public class InspectorViewPart extends JemViewPart {
 		treeViewer.setLabelProvider(LABEL_PROVIDER);
 		treeViewer.setInput(data);
 		// expands all to solve the pack view
-		treeViewer.setAutoExpandLevel(10);
+		treeViewer.setAutoExpandLevel(Numbers.N_10);
 		treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 0, 0));
 		
 		// DND
@@ -232,11 +231,11 @@ public class InspectorViewPart extends JemViewPart {
 		public void execute() throws JemException {
 			try {
 				// loads file content
-				OutputFileContent ofc = Client.getInstance().getOutputFileContent(job, getOutput().getOutItem());
+				String content = Client.getInstance().getOutputFileContent(job, queueName, getOutput().getOutItem());
 				// open text plain editor
-				getSite().getWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(ofc.getContent(), getOutput().getName()), 
+				getSite().getWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content, getOutput().getName()), 
 						"org.eclipse.ui.DefaultTextEditor");
-			} catch (JemException e) {
+			} catch (RestException e) {
 				LogAppl.getInstance().ignore(e.getMessage(), e);
 				Notifier.showMessage(getSite().getShell(), "Unable to get Log!", "Error while getting log file: " + e.getMessage(), MessageLevel.ERROR);
             } catch (PartInitException e) {

@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.nodes;
 import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -44,40 +45,40 @@ public class NodesComparator extends IndexedColumnComparator<NodeInfoBean> {
 	public int compare(NodeInfoBean o1, NodeInfoBean o2) {
 		int diff = 0;
 		switch(getIndex()){
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by label of node
 				diff = o1.getLabel().compareTo(o2.getLabel());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by host name
 				diff = o1.getHostname().compareTo(o2.getHostname());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				diff = o1.getExecutionEnvironment().getDomain().compareTo(o2.getExecutionEnvironment().getDomain());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				diff = o1.getExecutionEnvironment().getStaticAffinities().toString().compareTo(o2.getExecutionEnvironment().getStaticAffinities().toString());
 				break;
-			case 5: 
+			case ColumnIndex.COLUMN_6: 
 				diff = o1.getExecutionEnvironment().getDynamicAffinities().toString().compareTo(o2.getExecutionEnvironment().getDynamicAffinities().toString());
 				break;				
-			case 6: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by status
 				diff = o1.getStatus().compareTo(o2.getStatus());
 				break;
-			case 7: 
+			case ColumnIndex.COLUMN_8: 
 				// sorts by os
 				diff = o1.getSystemName().compareTo(o2.getSystemName());
 				break;
-			case 8: 
+			case ColumnIndex.COLUMN_9: 
 				// sorts by memory
 				diff = o1.getExecutionEnvironment().getMemory() - o2.getExecutionEnvironment().getMemory();
 				break;
-			case 9: 
+			case ColumnIndex.COLUMN_10: 
 				// sorts by parallel jobs
 				diff = o1.getExecutionEnvironment().getParallelJobs() - o2.getExecutionEnvironment().getParallelJobs();
 				break;
-			case 10: 
+			case ColumnIndex.COLUMN_11: 
 				// sorts by jobnames list
 				diff = o1.getJobNames().size() - o2.getJobNames().size();
 				break;

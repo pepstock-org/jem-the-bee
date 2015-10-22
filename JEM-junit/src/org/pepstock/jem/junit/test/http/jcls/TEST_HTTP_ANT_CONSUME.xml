@@ -12,7 +12,6 @@
 	-->
 
 	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
 
 	<target name="consume-message">
 		<step-java classname="org.pepstock.jem.junit.test.http.java.HttpConsumeAnt">

@@ -39,128 +39,129 @@ public enum SwarmNodeMessage implements MessageInterface {
 	 * "Swarm node is starting", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the Swarm Node is starting. A Swarm node is a node that belong to different environments")
-	JEMO001I(1, "Swarm node is starting", MessageLevel.INFO),
+	JEMO001I("0001", "Swarm node is starting", MessageLevel.INFO),
 
 	/**
 	 * "The configuration of Swarm Environment is not enable.", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when active configuration for the Swarm Environment is not enable.")
-	JEMO002I(2, "The configuration of Swarm Environment is not enable.", MessageLevel.INFO),
+	JEMO002I("0002", "The configuration of Swarm Environment is not enable.", MessageLevel.INFO),
 	/**
 	 * "Swarm node is shutting down", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the Swarm Node is shutting down. A Swarm node is a node that belong to different environments")
-	JEMO003I(3, "Swarm node is shutting down", MessageLevel.INFO),
+	JEMO003I("0003", "Swarm node is shutting down", MessageLevel.INFO),
 
 	/**
 	 * "Swarm node shutdown is completed", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the Swarm Node is shut down. A Swarm node is a node that belong to different environments")
-	JEMO004I(4, "Swarm node shutdown is completed", MessageLevel.INFO),
+	JEMO004I("0004", "Swarm node shutdown is completed", MessageLevel.INFO),
 
 	/**
 	 * "Error while trying to notify the end of the routed job: {0}",
 	 * MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when there is an exception during the notification of the end of a job that was routed")
-	JEMO005E(5, "Error while trying to notify the end of the routed job: {0}", MessageLevel.ERROR),
+	JEMO005E("0005", "Error while trying to notify the end of the routed job: {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Notifying the of the execution for routed job {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the notification for the end of a routed job start.")
-	JEMO006I(6, "Notifying the of the execution for routed job {0}", MessageLevel.INFO),
+	JEMO006I("0006", "Notifying the of the execution for routed job {0}", MessageLevel.INFO),
 
 	/**
 	 * "End of execution of routed job {0} is been notified", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the end of a routed job is been notified to the environment that route it")
-	JEMO007I(7, "End of execution of routed job {0} is been notified", MessageLevel.INFO),
+	JEMO007I("0007", "End of execution of routed job {0} is been notified", MessageLevel.INFO),
 
 	/**
 	 * "Member is null cannot process job {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when a ditributed task find a member down")
-	JEMO008E(8, "Hazelcast instance is null cannot process job {0}", MessageLevel.ERROR),
+	JEMO008E("0008", "Hazelcast instance is null cannot process job {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Routing job {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the routing process start.")
-	JEMO009I(9, "Routing job {0}", MessageLevel.INFO),
+	JEMO009I("0009", "Routing job {0}", MessageLevel.INFO),
 
 	/**
 	 * "Job {0} is been routed", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the routing process end.")
-	JEMO010I(10, "Job {0} is been routed", MessageLevel.INFO),
+	JEMO010I("0010", "Job {0} is been routed", MessageLevel.INFO),
 
 	/**
 	 * "Error while routing job: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when there is an exception during the routing process of a job")
-	JEMO011E(11, "Error while routing job: {0}", MessageLevel.ERROR),
+	JEMO011E("0011", "Error while routing job: {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Removed job {0} from ROUTING QUEUE", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the system remove a job from ROUTING QUEUE")
-	JEMO012I(12, "Removed job {0} from ROUTING QUEUE", MessageLevel.INFO),
+	JEMO012I("0012", "Removed job {0} from ROUTING QUEUE", MessageLevel.INFO),
 
 	/**
 	 * "Inserted job {0} in ROUTED QUEUE", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the system insert the job in the ROUTED QUEUE")
-	JEMO013I(13, "Inserted job {0} in ROUTED QUEUE", MessageLevel.INFO),
+	JEMO013I("0013", "Inserted job {0} in ROUTED QUEUE", MessageLevel.INFO),
 
 	/**
 	 * "Unable to execute the service for nodes", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when there is an exception inside of swarm nodes service.<br>Contact JEM administrator.")
-	JEMO014I(14, "Unable to execute the service for swarm nodes", MessageLevel.ERROR),
+	JEMO014I("0014", "Unable to execute the service for swarm nodes", MessageLevel.ERROR),
 
 	/**
 	 * "Unexpeted Exception", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when an unespected exception occurs")
-	JEMO015E(15, "Unexpeted Exception", MessageLevel.ERROR),
+	JEMO015E("0015", "Unexpeted Exception", MessageLevel.ERROR),
 
 	/**
 	 * ""Unable to store node information in memory data map", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs when the swarm node is not able to store its data in Hazelcast.<br>Please contact your JEM administrators.")
-	JEMO016E(16, "Unable to store swarm node information in memory data map", MessageLevel.ERROR),
+	JEMO016E("0016", "Unable to store swarm node information in memory data map", MessageLevel.ERROR),
 
 	/**
 	 * "Member removed \"{0}\" is not in {1} queue", MessageLevel.ERROR
 	 */
 	@Description(explanation = "Display the member which is not present on queue as expected. Internal error.")
-	JEMO017E(17, "Member removed \"{0}\" is not in {1} queue", MessageLevel.ERROR),
+	JEMO017E("0017", "Member removed \"{0}\" is not in {1} queue", MessageLevel.ERROR),
 
 	/**
 	 * "Unable to store node information in memory data map", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the web node is not able to store its data in Swarm Hazelcast.<br>Please contact your JEM administrators.")
-	JEMO018E(18, "Unable to store node information in swarm memory data map", MessageLevel.ERROR),
+	JEMO018E("0018", "Unable to store node information in swarm memory data map", MessageLevel.ERROR),
 
 	/**
 	 * "Unable to start swarm because it's disable by configuration",
 	 * MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs you try to start a node but the configuration is enable to false.<br>Please change the configuration and start again.")
-	JEMO019E(19, "Unable to start swarm because it's disable by configuration", MessageLevel.ERROR),
+	JEMO019E("0019", "Unable to start swarm because it's disable by configuration", MessageLevel.ERROR),
 
 	/**
 	 * ""Unable to store node information in memory data map", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs you try to start a node but the configuration has no members defined.<br>Please change the configuration and start again.")
-	JEMO020E(20, "Unable to start swarm because members of swarm configuration is empty", MessageLevel.ERROR),
+	JEMO020E("0020", "Unable to start swarm because members of swarm configuration is empty", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get swarm configuration", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when web app is not able to get sarm configuration to manage.<br>Please contact your JEM administrators.")
-	JEMO021E(21, "Unable to get swarm configuration", MessageLevel.ERROR);
+	JEMO021E("0021", "Unable to get swarm configuration", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
@@ -181,7 +182,7 @@ public enum SwarmNodeMessage implements MessageInterface {
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private SwarmNodeMessage(int code, String messageContent, MessageLevel level) {
+	private SwarmNodeMessage(String code, String messageContent, MessageLevel level) {
 		this.message = new Message(code, MessageCode.SWARM_NODE.getCode(), messageContent, level);
 	}
 

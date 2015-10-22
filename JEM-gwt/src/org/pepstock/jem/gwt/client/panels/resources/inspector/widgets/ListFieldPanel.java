@@ -26,6 +26,7 @@ import org.pepstock.jem.gwt.client.log.LogClient;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.TextListFieldDescriptor;
 
 /**
@@ -33,7 +34,7 @@ import org.pepstock.jem.node.resources.definition.fields.TextListFieldDescriptor
  * Rendered with a {@link ListEditor}
  * @author Marco "Fuzzo" Cuccato
  */
-public final class ListFieldPanel extends AbstractFieldPanel<TextListFieldDescriptor, ListEditor, String[]> implements ListEditorListener<String[]> {
+public final class ListFieldPanel extends AbstractFieldPanel<TextListFieldDescriptor, ListEditor, String[], SectionDescriptor> implements ListEditorListener<String[]> {
 
 	/**
 	 * Builds the panel

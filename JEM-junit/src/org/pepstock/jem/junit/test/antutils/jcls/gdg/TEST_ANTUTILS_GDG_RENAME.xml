@@ -15,14 +15,14 @@
 	-->
 	<!-- to refers the environment variable -->
 
-	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.tasks.utilities.GDGTask" />
 	<target name="execute" depends="gdg-define, gdg-rename">
 	    
 	</target>
 	
 	<target name="gdg-define">
 	    <!-- define the gdg -->
-	    <gdg license="Pepstock_JEM_AntUtil.license">
+	    <gdg>
 			<dataDescription name="GDG_RENAME" disposition="NEW">
 				<dataSet name="test_antutils/gdg/rename"/>
 			</dataDescription>
@@ -36,7 +36,7 @@
 	</target>
 	
 	<target name="gdg-rename">
-		<gdg license="Pepstock_JEM_AntUtil.license">
+		<gdg>
 	    <!-- rename the gdg -->
 			<dataDescription name="GDG_RENAME" disposition="OLD">
 				<dataSet name="test_antutils/gdg/rename"/>

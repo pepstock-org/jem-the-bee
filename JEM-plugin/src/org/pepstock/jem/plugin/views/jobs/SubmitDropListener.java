@@ -26,6 +26,7 @@ import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.plugin.Client;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Utility to submit jobs inside of JEM, using DND.
@@ -68,7 +69,7 @@ public class SubmitDropListener extends ViewerDropAdapter implements ShellContai
 		// it can drop only if is connected
 		if (Client.getInstance().isLogged()){
 			// and only it has got the authorization to submit jobs
-			return Client.getInstance().isAuthorized(Permissions.JOBS, Permissions.JOBS_SUBMIT);
+			return Client.getInstance().isAuthorized(Permissions.JOBS_SUBMIT);
 		}
 		return false;
 	}
@@ -116,7 +117,7 @@ public class SubmitDropListener extends ViewerDropAdapter implements ShellContai
 	                    Notifier.showMessage(super.getShell(), "Job submitted", "'"+jcl.getName()+"' has been submitted and this is job id : "+jobid, 
 	                    		   MessageLevel.INFO);
 
-                    } catch (JemException e) {
+                    } catch (RestException e) {
                     	// error for any REST API calls will fail
                     	LogAppl.getInstance().ignore(e.getMessage(), e);
                        Notifier.showMessage(super.getShell(), "Unable to submit job", "Unable to submit '"+jcl.getName()+"' due to following exception: "+e.getMessage(), 

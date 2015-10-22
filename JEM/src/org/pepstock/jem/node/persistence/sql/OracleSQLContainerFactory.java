@@ -35,7 +35,7 @@ public class OracleSQLContainerFactory extends DefaultSQLContainerFactory {
 	/**
 	 * Create table for checking table
 	 */
-	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (PRE_JOB_ID NUMBER(19) primary key, PRE_JOB CLOB not null)";
+	private static final String CREATE_CHECKING_QUEUE = "create table CHECKING_QUEUE (JOB_ID char(39) primary key, PRE_JOB CLOB not null)";
 
 	/*------------------------------------
 	| I N P U T                          |

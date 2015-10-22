@@ -32,9 +32,12 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.commands.SetURLFactory;
 import org.pepstock.jem.factories.JclFactoryException;
+import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
+import org.pepstock.jem.node.persistence.database.PreJobDBManager;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.RegExpPermission;
 import org.pepstock.jem.node.security.Role;
@@ -57,6 +60,12 @@ import com.hazelcast.core.Transaction;
  * 
  */
 public class JclCheckingQueueManager extends Thread implements ShutDownInterface {
+	
+	private static final long INTERVAL_IF_QUEUE_IS_EMPTY = 2 * TimeUtils.SECOND;
+			
+	private static final long INTERVAL_IF_NODE_IS_NOT_OPERATIONAL =	15 * TimeUtils.SECOND;	
+	
+	private static final StringPermission JOB_SUBMIT_PERMISSION = new StringPermission(Permissions.JOBS_SUBMIT);
 
 	private boolean isDown = false;
 
@@ -64,6 +73,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	 * Empty constructor
 	 */
 	public JclCheckingQueueManager() {
+		SetURLFactory.install();
 	}
 
 	/**
@@ -101,11 +111,11 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 						// commit always! Rollback is never necessary
 						// Rollback is called automatically when node crashed
 						tran.commit();
-						Thread.sleep(2 * TimeUtils.SECOND);
+						Thread.sleep(INTERVAL_IF_QUEUE_IS_EMPTY);
 					}
 				} else {
 					// sleeps 15 second before checks if there is a new job on queue
-					Thread.sleep(15 * TimeUtils.SECOND);
+					Thread.sleep(INTERVAL_IF_NODE_IS_NOT_OPERATIONAL);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -127,9 +137,9 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		try {
 			// poll on queue for 10
 			// seconds and then leaves
-			prejob = jclCheckingQueue.poll(10L, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC163E);
+			prejob = jclCheckingQueue.poll(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC163E, e);
 		}
 		return prejob;
 	}
@@ -147,6 +157,8 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// extract JOB from prejob
 		Job job = prejob.getJob();
 		try {
+			// removes from queue
+			PreJobDBManager.getInstance().delete(prejob);
 			// using the factory, validates, checks and loads JCL into JOB
 			Factory.loadJob(prejob);
 			// check if user is grant for job submitting
@@ -156,31 +168,48 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			// assigned to user
 			List<Role> myroles = loadRoles(user);
 			// checks job submit permission
-			StringPermission jobSubmitPermission = new StringPermission(Permissions.JOBS_SUBMIT);
 			boolean allowedJobSubmit = false;
+			// gets GFS tag
+			String gfs = Factory.getGfsFromURL(prejob);
+			// checks GFS tag permission
+			boolean allowedGFSbyURL = gfs == null ? true : false;
 			// scans all roles of the job user
 			for (Role role : myroles) {
 				// administrators can always submit
 				if (role.getName().equalsIgnoreCase(Roles.ADMINISTRATOR)) {
 					allowedJobSubmit = true;
+					allowedGFSbyURL = true;
 				} else {
 					// scans the permissions of role
 					for (String permission : role.getPermissions()) {
 						StringPermission perm = new StringPermission(permission);
 						// if not yet allowed, implies the permission
 						if (!allowedJobSubmit){
-							allowedJobSubmit = perm.implies(new StringPermission(Permissions.JOBS_SUBMIT));
+							allowedJobSubmit = perm.implies(JOB_SUBMIT_PERMISSION);
+						}
+						if (!allowedGFSbyURL){
+							String permissionGfs = GfsFileType.getPermission(gfs);
+							if (permissionGfs != null){
+								allowedGFSbyURL = perm.implies(new StringPermission(permissionGfs));
+							}
 						}
 					}
 				}
 				// if allowed exit without continuing scanning all roles
-				if (allowedJobSubmit){
+				if (allowedJobSubmit && allowedGFSbyURL){
 					break;
 				}
 			}
 			// if not authorized, EXCEPTION
+			if (!allowedGFSbyURL){
+				// if not authorized to access to GFS,
+				// remove JCl read before
+				job.getJcl().setContent(null);
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), GfsFileType.getPermission(gfs));
+			}
+			// if not authorized, EXCEPTION
 			if (!allowedJobSubmit){
-				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), jobSubmitPermission);
+				throw new NodeMessageException(NodeMessage.JEMC144E, job.getUser(), Permissions.JOBS_SUBMIT);
 			}
 
 			// checks if job has different users between job and jcl.
@@ -272,7 +301,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		boolean isLock = false;
 		try {
 			// locks the map, if not EXCEPTION!!
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// reads the roles of the job user
 				myroles = new ArrayList<Role>(roles.values(predicate));
@@ -390,7 +419,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 				try {
 					// continues checking every second
 					// before leaving this method
-					Thread.sleep(1 * TimeUtils.SECOND);
+					Thread.sleep(TimeUtils.SECOND);
 				} catch (InterruptedException e) {
 					throw new NodeException(e.getMessage(), e);
 				}

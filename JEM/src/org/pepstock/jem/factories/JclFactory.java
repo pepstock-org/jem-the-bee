@@ -17,6 +17,7 @@
 package org.pepstock.jem.factories;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.pepstock.jem.Jcl;
 
@@ -38,10 +39,11 @@ public interface JclFactory extends Serializable {
 	 * @see org.pepstock.jem.Jcl#getContent()
 	 * @param job job to submit
 	 * @param content the string representing source code
+	 * @param inputArguments list of properties passed to job during submitting
 	 * @return jcl object
 	 * @throws JclFactoryException if the syntax of source code is not correct,
 	 *             new exception will throw.
 	 */
-	Jcl createJcl(String content) throws JclFactoryException;
+	Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException;
 
 }

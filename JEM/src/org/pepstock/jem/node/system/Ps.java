@@ -33,6 +33,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SigarProxy;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.TimeUtils;
 
 /**
  * Show processes status. This is used from TOP command
@@ -147,8 +148,8 @@ public class Ps {
      * @return cpu time in string format
      */
     private static String getCpuTime(long total) {
-        long t = total / 1000;
-        return t/60 + ":" + t%60;
+        long t = total / TimeUtils.SECOND;
+        return t / TimeUtils.SECONDS_FOR_MINUTE + ":" + t % TimeUtils.SECONDS_FOR_MINUTE;
     }
 
     /**
@@ -172,7 +173,7 @@ public class Ps {
         long timeNow = System.currentTimeMillis();
         String fmt = "MMMd";
 
-        if ((timeNow - time) < ((60*60*24) * 1000)) {
+        if ((timeNow - time) < TimeUtils.DAY) {
             fmt = "HH:mm";
         }
         return new SimpleDateFormat(fmt).format(new Date(time));

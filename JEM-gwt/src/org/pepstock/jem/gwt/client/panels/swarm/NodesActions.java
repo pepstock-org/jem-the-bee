@@ -118,7 +118,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 
 	private void addStartButton() {
 		// checks if user has the permission to START swarm nodes
-		if (ClientPermissions.isAuthorized(Permissions.SWARM, Permissions.SWARM_NODES_START)) {
+		if (ClientPermissions.isAuthorized(Permissions.SWARM_NODES_START)) {
 			Button startButton = new Button("Start", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -133,7 +133,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 
 	private void addStopButton() {
 		// checks if user has the permission to STOP swarm nodes
-		if (ClientPermissions.isAuthorized(Permissions.SWARM, Permissions.SWARM_NODES_DRAIN)) {
+		if (ClientPermissions.isAuthorized(Permissions.SWARM_NODES_DRAIN)) {
 			Button drainButton = new Button("Drain", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -148,7 +148,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 
 	private void addConfButton() {
 		// checks if user has the permission to EDIT swarm configuration
-		if (ClientPermissions.isAuthorized(Permissions.SWARM, Permissions.SWARM_NODES_EDIT_CONFIG)) {
+		if (ClientPermissions.isAuthorized(Permissions.SWARM_NODES_EDIT_CONFIG)) {
 			Button editButton = new Button("Configure...", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -158,7 +158,7 @@ public class NodesActions extends AbstractActionsButtonPanel<NodeInfoBean> {
 			add(editButton);
 			editButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
 			new Tooltip(editButton, "Edit Swarm configuration");
-		} else if (ClientPermissions.isAuthorized(Permissions.SWARM, Permissions.SWARM_NODES_VIEW_CONFIG)) {
+		} else if (ClientPermissions.isAuthorized(Permissions.SWARM_NODES_VIEW_CONFIG)) {
 			Button viewButton = new Button("Configuration", new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

@@ -40,12 +40,12 @@ public class ResourceTemplates {
 	 * Name of the resourceTemplates field. 
 	 * @see XStream
 	 */
-	public static final String RESOURCE_TEMPLATES_FIELD = "resourceTemplates";
+	public static final String RESOURCE_TEMPLATES_FIELD = "resourceTemplatesSet";
 	
 	/**
 	 * The list of the resource templates. <br>
 	 */
-	private final Set<ResourceTemplate> resourceTemplates = new HashSet<ResourceTemplate>();
+	private final Set<ResourceTemplate> resourceTemplatesSet = new HashSet<ResourceTemplate>();
 	
 	/**
 	 * Adds a resource template in the list of the resource templates.
@@ -53,7 +53,7 @@ public class ResourceTemplates {
 	 * @see ResourceTemplate
 	 */
 	public void add(ResourceTemplate resourceTemplate) {
-		this.resourceTemplates.add(resourceTemplate);
+		this.resourceTemplatesSet.add(resourceTemplate);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class ResourceTemplates {
 	 * @return the list of the resource templates.
 	 */
 	public Set<ResourceTemplate> getContent() {
-		return this.resourceTemplates;
+		return this.resourceTemplatesSet;
 	}
 
 }

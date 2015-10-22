@@ -21,6 +21,7 @@ import org.pepstock.jem.gwt.client.commons.AnchorTextColumn;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.gwt.client.panels.administration.commons.LightMemberSampleColumns;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.MemorySize;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -97,7 +98,7 @@ public class NodesTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> memoryAvail = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getMemoryAvailable()/1024D/1024D);
+				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getMemoryAvailable()/(double)MemorySize.MB);
 			}
 		};
 		memoryAvail.setSortable(true);
@@ -109,7 +110,7 @@ public class NodesTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> memoryFree = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getMemoryFree()/1024D/1024D);
+				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getMemoryFree()/(double)MemorySize.MB);
 			}
 		};
 		memoryFree.setSortable(true);
@@ -147,7 +148,7 @@ public class NodesTable extends AbstractTable<LightMemberSample> {
 		TextColumn<LightMemberSample> processMemoryUsed = new TextColumn<LightMemberSample>() {
 			@Override
 			public String getValue(LightMemberSample memberSample) {
-				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getProcessMemoryUsed()/1024D/1024D);
+				return NumberFormat.getFormat("###,##0 MB").format((double)memberSample.getProcessMemoryUsed()/(double)MemorySize.MB);
 			}
 		};
 		processMemoryUsed.setSortable(true);

@@ -24,7 +24,7 @@ import org.pepstock.jem.ant.tasks.utilities.scripts.BashScriptTask;
  * @author Andrea "Stock" Stocchero
  * @version 2.2
  */
-public class BashFactory extends ScriptFactory {
+public class BashFactory extends ScriptFactory<BashScriptTask> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -55,7 +55,7 @@ public class BashFactory extends ScriptFactory {
 	 * @see org.pepstock.jem.ant.ScriptFactory#getAntTask()
 	 */
 	@Override
-	public Class<?> getAntTask() {
+	public Class<BashScriptTask> getAntTask() {
 		return BashScriptTask.class;
 	}
 

@@ -38,199 +38,200 @@ public enum JPPFMessage implements MessageInterface{
 	 * "Runnable attribute is null and is not allowed.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when runnable class name attribute is missing.<br>Please check JCL definition.")
-	JEMJ001E(1, "Runnable class name attribute is null and is not allowed", MessageLevel.ERROR),
+	JEMJ001E("0001", "Runnable class name attribute is null and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "Runnable class name must be {0} or {1} instance. It is {2}.", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when runnable class is neither a Runnable nor a JPPFTask.<br>Please check JCL definition and runnable class implementation.")
-	JEMJ002E(2, "Runnable class {0} must be {1} or {2} instance", MessageLevel.ERROR),
+	JEMJ002E("0002", "Runnable class {0} must be {1} or {2} instance", MessageLevel.ERROR),
 	
 	/**
 	 * "Job {0} is submitted on JPPF grid.", MessageLevel.INFO
 	 */
 	@Description(explanation = "Informs that the job has been submitted on JPPF grid.")
-	JEMJ003I(3, "Job {0} is submitted on JPPF grid", MessageLevel.INFO),
+	JEMJ003I("0003", "Job {0} is submitted on JPPF grid", MessageLevel.INFO),
 	
 	/**
 	 * "{0} is executed on node {1} ", MessageLevel.INFO
 	 */
 	@Description(explanation = "Informs that the task has been excuted on JPPF grid.")
-	JEMJ004I(4, "{0} is executed on node {1} ", MessageLevel.INFO),
+	JEMJ004I("0004", "{0} is executed on node {1} ", MessageLevel.INFO),
 
 	/**
 	 * "{0} ended with exception: {1}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when runnable is ended with some errors.<br>Please check output to find the error.")
-	JEMJ005E(5, "{0} ended with exception: {1}", MessageLevel.ERROR),
+	JEMJ005E("0005", "{0} ended with exception: {1}", MessageLevel.ERROR),
 	
 	/**
 	 * {0} ended providing the following result: {1}", MessageLevel.INFO
 	 */
 	@Description(explanation = "Informs that task is ended and shows the result provided from task.")
-	JEMJ006I(6, "{0} ended providing the following result: {1}", MessageLevel.INFO),
+	JEMJ006I("0006", "{0} ended providing the following result: {1}", MessageLevel.INFO),
 	
 	/**
 	 * {0} ended without any result", MessageLevel.INFO
 	 */
 	@Description(explanation = "Informs that task is ended, without any result.")
-	JEMJ007I(7, "{0} ended without any result", MessageLevel.INFO),
+	JEMJ007I("0007", "{0} ended without any result", MessageLevel.INFO),
 	
 	/**
 	 * "Host or port definition is missing: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined port vwithout host or viceversa.<br>Please check JCL and add the missing attribute.")
-	JEMJ008E(8, "Host or port definition is missing: {0}", MessageLevel.ERROR),
+	JEMJ008E("0008", "Host or port definition is missing: {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "String refeernce addr {0} is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JEM is trying to create a JPPF resource but there is any property.<br>Please check JPPF resource definition.")
-	JEMJ009E(9, "String reference addr {0} is missing", MessageLevel.ERROR),
+	JEMJ009E("0009", "String reference addr {0} is missing", MessageLevel.ERROR),
 	
 	/**
 	 * "Resource \"{0}\" is a \"{1}\" instance instead of \"{2}\"", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JNDI factory for JPPF create an object of a wrong type.<br>Please check JPPF resource definition.")
-	JEMJ010E(10, "Resource \"{0}\" is a \"{1}\" instance instead of \"{2}\"", MessageLevel.ERROR),
+	JEMJ010E("0010", "Resource \"{0}\" is a \"{1}\" instance instead of \"{2}\"", MessageLevel.ERROR),
 	
 	/**
 	 * "Bean with JPPF configuration is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when SpringBatch bean to configure JPPF is missing.<br>Please check SpringBtach JCL.")
-	JEMJ011E(11, "Bean with JPPF configuration is missing", MessageLevel.ERROR),
+	JEMJ011E("0011", "Bean with JPPF configuration is missing", MessageLevel.ERROR),
 	
 	/**
 	 * {0} ended without any result", MessageLevel.ERROR
 	 */
+	@Deprecated
 	@Description(explanation = "It occurs before merging when result is null.<br> Please check with JEM administrator.")
-	JEMJ012E(12, "{0} ended without any result", MessageLevel.ERROR),
+	JEMJ012E("0012", "{0} ended without any result", MessageLevel.ERROR),
 	
 	/**
 	 * "Delimiter is defined but chunkableDataDescription is missing", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the delimiter to read chunks but no input datadescription is passed.<br> Please check your JCL JPPF task.")
-	JEMJ013E(13, "Delimiter is defined but chunkableDataDescription is missing", MessageLevel.ERROR),
+	JEMJ013E("0013", "Delimiter is defined but chunkableDataDescription is missing", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\" is in disposition SHR and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the mergedDataDescription parameter but is defined in SHR. It couldn't be due to you must write the file.<br> Please check your JCL JPPF task.")
-	JEMJ014E(14, "DataDescription \"{0}\" is in disposition SHR and is not allowed", MessageLevel.ERROR),
+	JEMJ014E("0014", "DataDescription \"{0}\" is in disposition SHR and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\"  is not in disposition SHR and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the chunkableDataDescription parameter but is not defined in SHR. It couldn't be due to you must read the file.<br> Please check your JCL JPPF task.")
-	JEMJ015E(15, "DataDescription \"{0}\"  is not in disposition SHR and is not allowed", MessageLevel.ERROR),
+	JEMJ015E("0015", "DataDescription \"{0}\"  is not in disposition SHR and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\"  is multidataset but only singledataset is allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the chunkableDataDescription parameter but datadescritpiton is more than a dataset. It couldn't be due to you must read a single file.<br> Please check your JCL JPPF task.")
-	JEMJ016E(16, "DataDescription \"{0}\"  is multidataset but only singledataset is allowed", MessageLevel.ERROR),
+	JEMJ016E("0016", "DataDescription \"{0}\"  is multidataset but only singledataset is allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\"  is a datasource link and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the chunkableDataDescription parameter but datadescritpiton is linked to a datasource. It couldn't be due to you must read a single file.<br> Please check your JCL JPPF task.")
-	JEMJ017E(17, "DataDescription \"{0}\"  is a datasource link and is not allowed", MessageLevel.ERROR),
+	JEMJ017E("0017", "DataDescription \"{0}\"  is a datasource link and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\"  is inline and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the chunkableDataDescription parameter but datadescritpiton is a inline dataset. It couldn't be due to you must read a single file.<br> Please check your JCL JPPF task.")
-	JEMJ018E(18, "DataDescription \"{0}\"  is inline and is not allowed", MessageLevel.ERROR),
+	JEMJ018E("0018", "DataDescription \"{0}\"  is inline and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 * "DataDescription \"{0}\"  is inline and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when you defined the chunkableDataDescription parameter but datadescritpiton is not defined.<br> Please check your JCL JPPF task.")
-	JEMJ019E(19, "DataDescription \"{0}\"  is missing", MessageLevel.ERROR),
+	JEMJ019E("0019", "DataDescription \"{0}\"  is missing", MessageLevel.ERROR),
 
 	/**
 	 * "Delimtier \"{0}\" used for chunking", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs about the delimiter used to creates the chunks.")
-	JEMJ020I(20, "Delimiter \"{0}\" used for chunking", MessageLevel.INFO),
+	JEMJ020I("0020", "Delimiter \"{0}\" used for chunking", MessageLevel.INFO),
 	
 	/**
 	 * Chunks \"{0}\" ", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs about the list of chunks.")
-	JEMJ021I(21, "Chunks {0} ", MessageLevel.INFO),
+	JEMJ021I("0021", "Chunks {0} ", MessageLevel.INFO),
 	
 	/**
 	 * "Temporary file \"{0}\" used for task {1} for merging", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs about the temporary file created and passed to task, necessary for emrging after computing.")
-	JEMJ022I(22, "Temporary file \"{0}\" used for task {1} for merging ", MessageLevel.INFO),
+	JEMJ022I("0022", "Temporary file \"{0}\" used for task {1} for merging ", MessageLevel.INFO),
 	
 	/**
 	 * "{0} tasks has been created to be executed in grid", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs about how many tasks has been created.")
-	JEMJ023I(23, "{0} tasks has been created to be executed in grid", MessageLevel.INFO),
+	JEMJ023I("0023", "{0} tasks has been created to be executed in grid", MessageLevel.INFO),
 	
 	/**
 	 * "Merge phase is started", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs that merging is starting.")
-	JEMJ024I(24, "Merge phase is starting", MessageLevel.INFO),
+	JEMJ024I("0024", "Merge phase is starting", MessageLevel.INFO),
 	
 	/**
 	 * "{0} has been merged, {1} bytes written", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs that merging is starting.")
-	JEMJ025I(25, "{0} has been merged, {1} bytes written", MessageLevel.INFO),
+	JEMJ025I("0025", "{0} has been merged, {1} bytes written", MessageLevel.INFO),
 	
 	/**
 	 * "Merge phase is ended", MessageLevel.INFO
 	 */
 	@Description(explanation = "It informs that merging is ended.")
-	JEMJ026I(26, "Merge phase is ended", MessageLevel.INFO),
+	JEMJ026I("0026", "Merge phase is ended", MessageLevel.INFO),
 	
 	/**
 	 *"Both delimiter and delimiterString attribute are defined and is not allowed", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when both 'delimiter' and 'delimiterString' are defined. Please check JCL.")
-	JEMJ027E(27, "Both delimiter and delimiterString attribute are defined and is not allowed", MessageLevel.ERROR),
+	JEMJ027E("0027", "Both delimiter and delimiterString attribute are defined and is not allowed", MessageLevel.ERROR),
 	
 	/**
 	 *"Unable to submit JPFF job", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when JPPF client is not able to submit the job.<br> Please check generated exception.")
-	JEMJ028E(28, "Unable to submit JPFF job", MessageLevel.ERROR),
+	JEMJ028E("0028", "Unable to submit JPFF job", MessageLevel.ERROR),
 	
 	/**
 	 * "Merge phase is ended with exception: {0}", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it is not able to merge the results of all tasks.<br> Please check generated exception.")
-	JEMJ029E(29, "Merge phase is ended with exception: {0}", MessageLevel.ERROR),
+	JEMJ029E("0029", "Merge phase is ended with exception: {0}", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to create the JPPF job, MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it is not able to create JPPF job, accessing to JNDI or JPPF internal exception.<br> Please check generated exception.")
-	JEMJ030E(30, "Unable to create the JPPF job", MessageLevel.ERROR),
+	JEMJ030E("0030", "Unable to create the JPPF job", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to create the JPPF job, accessing to chunks utility", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it is not able to chunk the files.<br> Please check generated exception.")
-	JEMJ031E(31, "Unable to create JPPF job, accessing to chunks utility", MessageLevel.ERROR),
+	JEMJ031E("0031", "Unable to create JPPF job, accessing to chunks utility", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to consume necessary information by JNDI context", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it is not able to create JPPF job, accessing to JNDI or JPPF internal exception.<br> Please check generated exception.")
-	JEMJ032E(32, "Unable to consume necessary information by JNDI context", MessageLevel.ERROR),
+	JEMJ032E("0032", "Unable to consume necessary information by JNDI context", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get files stream", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it is not able to create input or output stream for files.<br> Please check generated exception.")
-	JEMJ033E(33, "Unable to get files stream", MessageLevel.ERROR);
+	JEMJ033E("0033", "Unable to get files stream", MessageLevel.ERROR);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>JPPFMessage</code>. 
@@ -248,7 +249,7 @@ public enum JPPFMessage implements MessageInterface{
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private JPPFMessage(int code, String messageContent, MessageLevel level){
+	private JPPFMessage(String code, String messageContent, MessageLevel level){
 		this.message = new Message(code, MessageCode.JPPF.getCode(), messageContent, level);
 	}
 	

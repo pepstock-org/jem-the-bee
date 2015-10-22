@@ -32,9 +32,10 @@ import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
  * @version 1.4
  */
 @RunWith(Suite.class)
-// @SuiteClasses(FTPSuite.class, JMSSuite.class,JPPFSuite.class })
+//@SuiteClasses({SpringBatchSuite.class })
 @SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
 		RestSuite.class, HttpSuite.class, JBpmSuite.class})
+//@SuiteClasses({ CommonSuite.class, RestSuite.class})
 public class JemTestSuite {
 
 }

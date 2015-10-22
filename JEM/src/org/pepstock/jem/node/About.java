@@ -17,8 +17,6 @@
 package org.pepstock.jem.node;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Bean with information about JEM version, build time and all licenses installed.
@@ -35,27 +33,11 @@ public class About implements Serializable {
 	private String version = NodeInfo.UNKNOWN_VERSION;
 			
 	private String creationTime = NodeInfo.UNKNOWN_VERSION;		
-	
-	private List<NodeLicense> licenses = new ArrayList<NodeLicense>();
 
 	/**
 	 * Empty constructor
 	 */
 	public About() {
-	}
-
-	/**
-	 * @return the licenses
-	 */
-	public List<NodeLicense> getLicenses() {
-		return licenses;
-	}
-
-	/**
-	 * @param licenses the licenses to set
-	 */
-	public void setLicenses(List<NodeLicense> licenses) {
-		this.licenses = licenses;
 	}
 	
 	/**
@@ -91,6 +73,6 @@ public class About implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "About [version=" + version + ", creationTime=" + creationTime + ", licenses=" + licenses + "]";
+		return "About [version=" + version + ", creationTime=" + creationTime + "]";
 	}
 }

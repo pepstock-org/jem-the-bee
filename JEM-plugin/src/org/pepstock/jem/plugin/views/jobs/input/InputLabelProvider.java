@@ -13,6 +13,7 @@ package org.pepstock.jem.plugin.views.jobs.input;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.plugin.views.jobs.JobLabelProvider;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Provides the labels to use inside the INPUT jobs table, for each job.
@@ -28,34 +29,34 @@ public class InputLabelProvider extends JobLabelProvider {
     public String getColumnText(Object obj, int index) {
 		Job job = (Job) obj;
 		switch (index) {
-		case 0:
+		case ColumnIndex.COLUMN_1:
 			// job name
 			return job.getName();
-		case 1:
+		case ColumnIndex.COLUMN_2:
 			// jcl type
 			return job.getJcl().getType();
-		case 2:
+		case ColumnIndex.COLUMN_3:
 			// user
 			return (job.isUserSurrogated()) ? job.getJcl().getUser() : job.getUser();
-		case 3:
+		case ColumnIndex.COLUMN_4:
 			// env
 			return job.getJcl().getEnvironment();
-		case 4:
+		case ColumnIndex.COLUMN_5:
 			// domain
 			return job.getJcl().getDomain();
-		case 5:
+		case ColumnIndex.COLUMN_6:
 			// affinity
 			return job.getJcl().getAffinity();
-		case 6:
+		case ColumnIndex.COLUMN_7:
 			// submitted time
 			return getDateFormatter().format(job.getSubmittedTime());
-		case 7:
+		case ColumnIndex.COLUMN_8:
 			// priority
 			return String.valueOf(job.getJcl().getPriority());
-		case 8:
+		case ColumnIndex.COLUMN_9:
 			// memeory
 			return String.valueOf(job.getJcl().getMemory());
-		case 9:
+		case ColumnIndex.COLUMN_10:
 			// hold
 			return job.getJcl().isHold() ? "hold" : "";
 		default:

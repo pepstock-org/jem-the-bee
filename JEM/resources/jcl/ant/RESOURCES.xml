@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="RESOURCES" default="step1" basedir=".">
+	<description>
+		ROLES actions
+    </description>
+
+	<!--
+	GET FTPlocalhost;
+	GETLIST;
+	REMOVE
+	-->
+
+	<property name="jem.job.name" value="RESOURCES"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
+
+	<target name="step1">
+		<resources>
+			<dataDescription name="OUTPUT" sysout="true" disposition="MOD"/>
+			<dataDescription name="mio" sysout="true" disposition="MOD"/>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					GETLIST *;
+					GETLIST * FILE OUTPUT;
+					GETLIST * FILE OUTPUT NOENCRYPTION;
+					GETLIST * FILE mio;
+					GETLIST * FILE mio NOENCRYPTION;
+
+					GETLIST *.F*;
+					GETLIST *.F* FILE OUTPUT;
+					GETLIST *.F* FILE OUTPUT NOENCRYPTION;
+					GETLIST *.F* FILE mio;
+					GETLIST *.F* FILE mio NOENCRYPTION;
+
+					GETLIST ftp.*;
+					GETLIST ftp.* FILE OUTPUT;
+					GETLIST ftp.* FILE OUTPUT NOENCRYPTION;
+					GETLIST ftp.* FILE mio;
+					GETLIST ftp.* FILE mio NOENCRYPTION;
+					
+				</dataSet>
+			</dataDescription>
+		</resources>
+	</target>
+
+</project>

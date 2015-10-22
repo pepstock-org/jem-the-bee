@@ -135,10 +135,10 @@ public class TextFilteredCell extends TextCell {
 					showable = false;
 				}
 			} else if (BrowserEvents.MOUSEOUT.equals(event.getType())) {
-				hideFilterPanel(event);
+				hideFilterPanel();
 				showable = true;
 			} else if (BrowserEvents.CLICK.equals(event.getType())) {
-				hideFilterPanel(event);
+				hideFilterPanel();
 				showable = false;				
 			}
 		} catch (Exception e) {
@@ -167,7 +167,7 @@ public class TextFilteredCell extends TextCell {
 	/**
 	 * @param event hides the {@link FilterInputPanel}
 	 */
-	protected void hideFilterPanel(NativeEvent event) {
+	protected void hideFilterPanel() {
 		if (filterInputPanel != null) {
 			filterInputPanel.stopProcessing();
 		}

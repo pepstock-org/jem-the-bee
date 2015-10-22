@@ -60,6 +60,8 @@ public class Crypto {
 
 	private static final String DESEDE_ALGORITHM = "DESede";
 	
+	private static final int SYMMETRIC_KEY_SIZE = 168;
+	
 	/**
 	 * To avoid any instantiation
 	 */
@@ -182,7 +184,7 @@ public class Crypto {
 		// Get a key generator for Triple DES (a.k.a DESede)
 		KeyGenerator keygen = KeyGenerator.getInstance(DESEDE_ALGORITHM);
 		// set key size
-		keygen.init(168);
+		keygen.init(SYMMETRIC_KEY_SIZE);
 		// Use it to generate a key
 		return keygen.generateKey();
 	}

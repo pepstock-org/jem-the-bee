@@ -131,23 +131,23 @@ public class GfsManager extends DefaultService {
 	 * @throws Exception
 	 *             if any error occurs
 	 */
-	public String getFile(int type, String file, String pathName)
-			throws ServiceMessageException {
+	public byte[] getFile(int type, String file, String pathName) throws ServiceMessageException {
 		// checks authentication only if
-		// the request is for data. All other file systems
-		// are always available in READ
+		// the request is for data. 
 		if (type == GfsFileType.DATA) {
 			// creates the permission by file name
 			String filesPermission = Permissions.FILES_READ + file;
 			// checks user authentication
 			// if not, this method throws an exception
 			checkAuthorization(new StringPermission(filesPermission));
+		} else {
+			// checks if you can see the other filesystems
+			checkGfsPermission(type);
 		}
-		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(
-				new GetFile(type, file, pathName), getMember());
+		DistributedTaskExecutor<byte[]> task = new DistributedTaskExecutor<byte[]>(new GetFile(type, file, pathName), getMember());
 		return task.getResult();
 	}
-
+	
 	/**
 	 * Checks if the user has got the authorization to scan GFS
 	 * 
@@ -218,16 +218,17 @@ public class GfsManager extends DefaultService {
 	 * 
 	 * @param chunkFile
 	 *            to upload
+	 * @return true if the chunk write ended correctly, otherwise false 
 	 * @throws ServiceMessageException
 	 *             if any exception occurred during uploading
 	 */
-	public void uploadChunk(UploadedGfsChunkFile chunkFile)
+	public Boolean uploadChunk(UploadedGfsChunkFile chunkFile)
 			throws ServiceMessageException {
 		checkAuthentication();
 		checkGfsPermission(chunkFile.getType());
 		DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(
 				new WriteChunk(chunkFile), getMember());
-		task.getResult();
+		return task.getResult();
 	}
 
 	/**
@@ -245,7 +246,7 @@ public class GfsManager extends DefaultService {
 	 * @throws Exception
 	 *             if any error occurs
 	 */
-	public boolean deleteFile(int type, String file, String pathName)
+	public Boolean deleteFile(int type, String file, String pathName)
 			throws ServiceMessageException {
 		checkAuthentication();
 		checkGfsPermission(type);
@@ -274,27 +275,19 @@ public class GfsManager extends DefaultService {
 		switch (type) {
 		case GfsFileType.LIBRARY:
 			gfsPermission = Permissions.GFS_LIBRARY;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.SOURCE:
-			gfsPermission = Permissions.GFS_SOURCES;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			gfsPermission = Permissions.GFS_SOURCE;
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.CLASS:
 			gfsPermission = Permissions.GFS_CLASS;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		case GfsFileType.BINARY:
 			gfsPermission = Permissions.GFS_BINARY;
-			if (currentUser.isPermitted(new StringPermission(gfsPermission))) {
-				permitted = true;
-			}
+			permitted = currentUser.isPermitted(new StringPermission(gfsPermission));
 			break;
 		default:
 			throw new ServiceMessageException(NodeMessage.JEMC264E);
@@ -313,4 +306,5 @@ public class GfsManager extends DefaultService {
 					userid, gfsPermission);
 		}
 	}
+
 }

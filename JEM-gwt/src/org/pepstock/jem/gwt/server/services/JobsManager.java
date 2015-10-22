@@ -40,17 +40,19 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.JobStatus;
 import org.pepstock.jem.JobSystemActivity;
-import org.pepstock.jem.OutputFileContent;
 import org.pepstock.jem.OutputListItem;
 import org.pepstock.jem.OutputTree;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
+import org.pepstock.jem.UpdateJob;
+import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.Cancel;
 import org.pepstock.jem.node.executors.jobs.GetJclTypes;
 import org.pepstock.jem.node.executors.jobs.GetJobSystemActivity;
@@ -60,6 +62,7 @@ import org.pepstock.jem.node.executors.jobs.Purge;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
+import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
@@ -68,7 +71,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
 import com.hazelcast.query.SqlPredicate;
@@ -81,7 +83,11 @@ import com.hazelcast.query.SqlPredicate;
  */
 @SuppressWarnings("deprecation")
 public class JobsManager extends DefaultService {
-
+	
+	private static final int LINE_WIDTH = 65;
+	
+	private static final int INDENT = 4;
+	
 	/**
 	 * Returns the list of jobs in INPUT, a filter string composed by UI filters
 	 * 
@@ -149,7 +155,7 @@ public class JobsManager extends DefaultService {
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	private Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
+	public Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
 		// creates a filter object
 		Filter filter = null;
 		try {
@@ -244,6 +250,38 @@ public class JobsManager extends DefaultService {
 		return new ArrayList<Job>(jobs.values(sql));
 	}
 
+	/**
+	 * Returns a job by its job id.
+	 * 
+	 * @param jobId
+	 *            job id to search
+	 * @return job, if found, otherwise null
+	 * @throws ServiceMessageException 
+	 *             if any exception occurs or a lock timeout on map occurs
+	 */
+	public Job getJobById(String jobId) throws ServiceMessageException {
+		// starts searching on output because usually is
+		// largest of others
+		Job job = getJobById(JobQueue.OUTPUT.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.RUNNING.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.INPUT.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		job = getJobById(JobQueue.ROUTING.getName(), jobId);
+		if (job != null){
+			return job;
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * Returns a job by its job id.
 	 * 
@@ -561,6 +599,30 @@ public class JobsManager extends DefaultService {
 	 *             if any exception occurs
 	 */
 	public Boolean update(Job job, String queueName) throws ServiceMessageException {
+		Jcl jcl = job.getJcl();
+		UpdateJob updateJob = new UpdateJob();
+		updateJob.setId(job.getId());
+		updateJob.setAffinity(jcl.getAffinity());
+		updateJob.setDomain(jcl.getDomain());
+		updateJob.setEnvironment(jcl.getEnvironment());
+		updateJob.setMemory(jcl.getMemory());
+		updateJob.setPriority(jcl.getPriority());
+		return update(updateJob, queueName);
+	}
+	
+	/**
+	 * Updates some attributes of job. Usually is used in input queue to change
+	 * environment, domain, affinity, memory or priority.
+	 * 
+	 * @param job
+	 *            job to update
+	 * @param queueName
+	 *            map where job is
+	 * @return true if it updated, otherwise false
+	 * @throws ServiceMessageException 
+	 *             if any exception occurs
+	 */
+	public Boolean update(UpdateJob job, String queueName) throws ServiceMessageException {
 		// builds permission
 		String permission = Permissions.JOBS_UPDATE;
 		// checks if the user is authorized to update job
@@ -577,10 +639,28 @@ public class JobsManager extends DefaultService {
 				// and stores new job
 				Job storedJob = queue.get(job.getId());
 				Jcl storedJcl = storedJob.getJcl();
-				// sets JCL because JCL is not
-				// serialized to GWT (too big)
-				job.getJcl().setContent(storedJcl.getContent());
-				queue.replace(job.getId(), job);
+				
+				// checks if it must change the environment attribute
+				if (job.getEnvironment() != null && !job.getEnvironment().equalsIgnoreCase(storedJcl.getEnvironment())){
+					storedJcl.setEnvironment(job.getEnvironment());
+				}
+				// checks if it must change the domain attribute
+				if (job.getDomain() != null && !job.getDomain().equalsIgnoreCase(storedJcl.getDomain())){
+					storedJcl.setDomain(job.getDomain());
+				}
+				// checks if it must change the affinity attribute
+				if (job.getAffinity() != null && !job.getAffinity().equalsIgnoreCase(storedJcl.getAffinity())){
+					storedJcl.setAffinity(job.getAffinity());
+				}
+				// checks if it must change the priority attribute
+				if (job.getPriority() >= 0 && job.getPriority() != storedJcl.getPriority()){
+					storedJcl.setPriority(job.getPriority());
+				}
+				// checks if it must change the priority attribute
+				if (job.getMemory() >= 0 && job.getMemory() != storedJcl.getMemory()){
+					storedJcl.setMemory(job.getMemory());
+				}
+				queue.replace(job.getId(), storedJob);
 			}
 		} finally {
 			// unlocks always the key
@@ -628,7 +708,7 @@ public class JobsManager extends DefaultService {
 		// means the probably the view on UI is old,
 		// and the job is no longer on map
 		// Constant string is NOT AVAILABLE
-		if (storedJob == null) {
+		if (storedJob == null || storedJob.getJcl().getContent() == null) {
 			return Jcl.CONTENT_NOT_AVAILABLE;
 		}
 		// return the JCL
@@ -700,14 +780,14 @@ public class JobsManager extends DefaultService {
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	public OutputFileContent getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
+	public String getOutputFileContent(Job job, OutputListItem item) throws ServiceMessageException  {
 		// builds permission
 		String permission = Permissions.SEARCH_JOBS + job.getName();
 		// checks if the user is authorized to get file
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
 	
-		DistributedTaskExecutor<OutputFileContent> task = new DistributedTaskExecutor<OutputFileContent>(new GetOutputFileContent(item), getMember());
+		DistributedTaskExecutor<String> task = new DistributedTaskExecutor<String>(new GetOutputFileContent(item), getMember());
 		return task.getResult();
 	}
 
@@ -749,16 +829,11 @@ public class JobsManager extends DefaultService {
 		// via HTTP is not possible to wait the end of job
 		job.setNowait(true);
 
-		// puts the pre job in a queue for validating
-		IQueue<PreJob> jclCheckingQueue = getInstance().getQueue(Queues.JCL_CHECKING_QUEUE);
 		try {
-			jclCheckingQueue.put(preJob);
-		} catch (InterruptedException e) {
+			SubmitPreJob.submit(getInstance(), preJob);
+		} catch (SubmitException e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.JCL_CHECKING_QUEUE);
-		} catch (Exception e) {
-			LogAppl.getInstance().debug(e.getMessage(), e);
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.JCL_CHECKING_QUEUE);
+			throw new ServiceMessageException(e.getMessageInterface(), e, Queues.JCL_CHECKING_QUEUE);
 		}
 		return jobId;
 	}
@@ -776,9 +851,9 @@ public class JobsManager extends DefaultService {
 	        DocumentBuilder builder = factory.newDocumentBuilder();
 	        Document document = builder.parse(new ReaderInputStream(new StringReader(content)));
 	        OutputFormat format = new OutputFormat(document);
-	        format.setLineWidth(65);
+	        format.setLineWidth(LINE_WIDTH);
 	        format.setIndenting(true);
-	        format.setIndent(4);
+	        format.setIndent(INDENT);
 
 	        StringWriter writer = new StringWriter();
 	        XMLSerializer serializer = new XMLSerializer(writer, format);

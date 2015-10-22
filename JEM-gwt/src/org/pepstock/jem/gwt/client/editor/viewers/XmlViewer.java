@@ -77,4 +77,12 @@ public class XmlViewer extends AbstractSyntaxHighlighter{
 	    menu.addSeparator();
 	    menu.addItem(indent.getItem());
     }
+    
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.client.editor.AbstractSyntaxHighlighter#onChange(boolean)
+	 */
+    @Override
+    public void onChange(boolean changed) {
+	    // NOP
+    }
 }

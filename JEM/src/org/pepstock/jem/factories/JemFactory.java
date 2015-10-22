@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.node.NodeLifeCycleListener;
 
 /**
  * Is the merge of JCL and JobTask factories and the main interface to implement
@@ -31,7 +32,7 @@ import org.pepstock.jem.log.JemException;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public interface JemFactory extends JclFactory, JobTaskFactory, Serializable {
+public interface JemFactory extends JclFactory, JobTaskFactory, NodeLifeCycleListener, Serializable {
 
 	/**
 	 * Called to initialize the factory. A set of properties are passed, or a

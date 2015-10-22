@@ -14,10 +14,10 @@
 	-->
 	<!-- to refers the environment variable -->
 
-	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask" />
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.tasks.utilities.GDGTask" />
 
 	<target name="gdg-definition">
-		<gdg license="Pepstock_JEM_AntUtil.license">
+		<gdg>
 			<dataDescription name="GDG_DEFINE1" disposition="NEW">
 				<dataSet name="test_antutils/gdg/define1"/>
 			</dataDescription>

@@ -77,7 +77,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 
 	private void addReleaseButton() {
 		// checks if user has the permission to RELEASE job 
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_RELEASE)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_RELEASE)){
 			Button releaseButton = new Button("Release", new Release());
 			add(releaseButton);
 			releaseButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -87,7 +87,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	
 	private void addHoldButton() {
 		// checks if user has the permission to HOLD job 
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_HOLD)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_HOLD)){
 			Button holdButton = new Button("Hold", new Hold());
 			add(holdButton);
 			holdButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -97,7 +97,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	
 	private void addPurgeButton() {
 		// checks if user has the permission to PURGE job 
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_PURGE)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_PURGE)){
 			Button purgeButton = new Button("Purge", new Purge());
 			add(purgeButton);
 			purgeButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -106,7 +106,7 @@ public class JobsBaseActions extends AbstractJobsActions {
 	}
 	
 	private void addSubmitButton() {
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_SUBMIT)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_SUBMIT)){
 			// ALL users can submit jobs 
 			Button submitButton = new Button("Submit...", new Submit());
 			add(submitButton);

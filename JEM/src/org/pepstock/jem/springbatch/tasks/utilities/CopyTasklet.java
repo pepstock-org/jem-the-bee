@@ -22,6 +22,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.pepstock.jem.annotations.AssignDataDescription;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.springbatch.SpringBatchMessage;
 import org.pepstock.jem.springbatch.tasks.JemTasklet;
 import org.pepstock.jem.springbatch.tasks.TaskletException;
@@ -73,7 +74,7 @@ public class CopyTasklet extends JemTasklet {
 			IOUtils.closeQuietly(istream);
 			IOUtils.closeQuietly(ostream);
 			// display the amount of bytes copied
-			System.err.println(SpringBatchMessage.JEMS053I.toMessage().getFormattedMessage(bytes));
+			LogAppl.getInstance().emit(SpringBatchMessage.JEMS053I, bytes);
 		} catch (IOException e) {
 			throw new TaskletException(e.getMessage(), e);
 		}

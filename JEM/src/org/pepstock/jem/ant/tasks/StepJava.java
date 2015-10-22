@@ -45,6 +45,7 @@ import org.pepstock.jem.ant.AntKeys;
 import org.pepstock.jem.ant.AntMessage;
 import org.pepstock.jem.ant.DataDescriptionStep;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.log.Message;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.resources.Resource;
@@ -61,7 +62,6 @@ import org.pepstock.jem.node.tasks.jndi.ContextUtils;
 import org.pepstock.jem.node.tasks.jndi.DataPathsReference;
 import org.pepstock.jem.node.tasks.jndi.DataStreamReference;
 import org.pepstock.jem.node.tasks.jndi.StringRefAddrKeys;
-import org.pepstock.jem.util.Parser;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -84,11 +84,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class StepJava extends Java  implements DataDescriptionStep {
 	
-	/**
-	 * Internal property used to save the result of step
-	 */
-    public static final String RESULT_KEY = "step-java.result";
-	
 	private String id = DataDescriptionStep.DEFAULT_ID;
 	
 	private String name = null;
@@ -102,6 +97,12 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	private final List<Lock> locks = new ArrayList<Lock>(); 
 	
 	private String classname = null;
+	
+	private String resultProperty = null;
+	
+	private Class<?> clazz = null;
+	
+	private ReturnCode sharedRC = SharedReturnCode.getInstance(); 
 
 	/**
 	 * Calls super constructor and set fail-on-error to <code>true</code>.
@@ -167,6 +168,15 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	@Override
 	public String getTargetName() {
 		return getOwningTarget().getName();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.taskdefs.Java#setResultProperty(java.lang.String)
+	 */
+	@Override
+	public void setResultProperty(String resultProperty) {
+		super.setResultProperty(resultProperty);
+		this.resultProperty = resultProperty;
 	}
 
 
@@ -253,6 +263,17 @@ public class StepJava extends Java  implements DataDescriptionStep {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		// sets the current step
+		StepsContainer.getInstance().setCurrent(this);
+		// reset the return code
+		sharedRC.setRC(Result.SUCCESS);
+		// checks if the result property is set
+		// if not, it sets automatically
+		// one based on target, task and id
+		if (resultProperty == null){
+			setResultProperty(ReturnCodesContainer.getInstance().createKey(this));
+		}
+		
 		int returnCode = Result.SUCCESS;
 		// this boolean is necessary to understand if I have an exception 
 		// before calling the main class
@@ -416,11 +437,21 @@ public class StepJava extends Java  implements DataDescriptionStep {
 			throw new BuildException(e);
 		} finally {
 			batchSM.setInternalAction(true);
-			String rcObject = System.getProperty(RESULT_KEY);
-			if (rcObject != null){
-				returnCode = Parser.parseInt(rcObject, Result.SUCCESS);
-			}
-			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, returnCode);
+			// only if I don't have any error
+			// gets the return code
+			if (returnCode == Result.SUCCESS){
+				// checks if launcher is used
+				// if not, gets return code from class
+				if (clazz != null){
+					returnCode = ReturnCodesContainer.getInstance().getReturnCode(clazz);
+				} else {
+					// gets return code by proxy due to different classloader 
+					returnCode = sharedRC.getRC();
+				}
+			} 
+			// stores the return code
+			ReturnCodesContainer.getInstance().setReturnCode(getProject(), this, resultProperty, returnCode);
+			
 			// checks datasets list
 			if (ddList != null && !ddList.isEmpty()) {
 				StringBuilder exceptions = new StringBuilder();
@@ -468,7 +499,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				// used to collect exception string. 
 				// Stringbuffer is not empty, throws an exception
 				if (exceptions.length() > 0){
-					log(StringUtils.center("ATTENTION", 40, "-"));
+					log(Message.ATTENTION_STRING);
 					log(exceptions.toString());
 				}
 				batchSM.setInternalAction(false);
@@ -521,10 +552,10 @@ public class StepJava extends Java  implements DataDescriptionStep {
 		try {
 			// if has got a classpath, change the main class with a JEM one
 			if (super.getCommandLine().haveClasspath()){
-				Class<?> clazz = JavaMainClassLauncher.class;
+				Class<?> customClazz = JavaMainClassLauncher.class;
 				// gets where the class is located
 				// becuase it must be added to classpath
-				CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+				CodeSource codeSource = customClazz.getProtectionDomain().getCodeSource();
 				if ( codeSource != null) {
 					// gets URL
 					URL url = codeSource.getLocation();
@@ -539,7 +570,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				}
 			} else {
 				// if no classpath, can substitute here
-				Class<?> clazz = Class.forName(getClassname());
+				clazz = Class.forName(getClassname());
 				SetFields.applyByAnnotation(clazz);
 			}
 		} catch (ClassNotFoundException e) {

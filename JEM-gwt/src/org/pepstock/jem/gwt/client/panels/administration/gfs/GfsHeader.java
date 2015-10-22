@@ -21,6 +21,8 @@ import org.pepstock.jem.gwt.client.commons.InspectListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.ColumnIndex;
+import org.pepstock.jem.util.RowIndex;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -57,12 +59,12 @@ public class GfsHeader extends FlexTable {
 		
 		FlexCellFormatter cf = getFlexCellFormatter();
 		
-		cf.setWidth(0, 0, Sizes.HUNDRED_PERCENT);
-		cf.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+		cf.setWidth(ColumnIndex.COLUMN_1, 0, Sizes.HUNDRED_PERCENT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_1, HasHorizontalAlignment.ALIGN_RIGHT);
 		setHTML(0, 0, "FileSystem:");
 		
 		// set 30% of space for the combo box
-		cf.setWidth(0, 1, "30%");
+		cf.setWidth(ColumnIndex.COLUMN_1, 1, "30%");
 		
 		// logoff button (and handler)
 		typeCombo.addChangeHandler(new ChangeHandler() {
@@ -73,7 +75,7 @@ public class GfsHeader extends FlexTable {
 		});
 		cf.setWordWrap(0, 1, false);
 		cf.setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
-		cf.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+		cf.setHorizontalAlignment(RowIndex.ROW_1,ColumnIndex.COLUMN_2, HasHorizontalAlignment.ALIGN_RIGHT);
 		setWidget(0, 1, typeCombo);
 	}
 

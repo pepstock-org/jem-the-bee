@@ -19,8 +19,10 @@ package org.pepstock.jem.ant;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
@@ -29,6 +31,7 @@ import org.pepstock.jem.ant.tasks.DataSet;
 import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.ant.tasks.ValueParser;
 import org.pepstock.jem.factories.JclFactoryException;
+import org.pepstock.jem.util.CharSet;
 
 /**
  * Is a JCL factory which enables to submit a script directly, withou having any ANT file.<br>
@@ -44,8 +47,9 @@ import org.pepstock.jem.factories.JclFactoryException;
  *  
  * @author Andrea "Stock" Stocchero
  * @version 2.2
+ * @param <T> Ant task to use for execution
  */
-public abstract class ScriptFactory extends AntFactory {
+public abstract class ScriptFactory<T> extends AntFactory {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -77,17 +81,27 @@ public abstract class ScriptFactory extends AntFactory {
 	 * Returns the ANT task to use to execute the script.
 	 * @return the ANT task to use to execute the script
 	 */
-	public abstract Class<?> getAntTask();
-
+	public abstract Class<T> getAntTask();
+	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.AntFactory#createJcl(java.lang.String)
 	 */
 	@Override
-	public final Jcl createJcl(String content) throws JclFactoryException {
+	public final Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		StringBuilder result = null;
 		try {
 			// reads script extracting the JEM properties
 			Properties jemProperties = getProperties(content);
+			
+			// by default, it loads all properties
+			// sets on JCL factory definition as additional properties
+			for (Entry<Object, Object> entry : getProperties().entrySet()){
+				// it puts in HEX format to avoid
+				// XML error by encoding
+				Hex hex = new Hex(CharSet.DEFAULT);
+				String value = new String(hex.encode(entry.getValue().toString().getBytes(CharSet.DEFAULT)), CharSet.DEFAULT);
+				jemProperties.put(entry.getKey(), value);
+			}
 			// creates ANT file 
 			result = getAntJcl(content, jemProperties);
 		} catch (Exception e) {
@@ -96,7 +110,7 @@ public abstract class ScriptFactory extends AntFactory {
 		Jcl jcl;
 		try {
 			// used ANTJcl to create the JCL 
-			jcl = super.createJcl(result.toString());
+			jcl = super.createJcl(result.toString(), inputArguments);
 		} catch (JclFactoryException e) {
 			// At this time type=ANT and it's not correct
 			// so overrides the new type
@@ -193,7 +207,7 @@ public abstract class ScriptFactory extends AntFactory {
 	 */
 	private StringBuilder getAntJcl(String content, Properties jemProperties) throws AntException{
 		StringBuilder resultDD = new StringBuilder();
-		
+
 		StringBuilder result = new StringBuilder();
 	    result.append("<?xml version=\"1.0\"?>");
 	    result.append("<project default=\"exec\" basedir=\".\">");
@@ -208,11 +222,12 @@ public abstract class ScriptFactory extends AntFactory {
 	    		result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
 	    	}
 	    }
+    
 	    // sets the ANT task which will execute the script
 	    result.append("<taskdef name=\"script\" classname=\""+getAntTask().getName()+"\" />");
 	    result.append("<target name=\"exec\">");
-	    // writes all script
-	    result.append("<script><![CDATA[");
+	    // writes all script. Sets failonerror to TRUE, because is a single step
+	    result.append("<script failonerror=\"true\"><![CDATA[");
 		result.append(content);
 	    result.append("]]>");
 	    result.append(resultDD);

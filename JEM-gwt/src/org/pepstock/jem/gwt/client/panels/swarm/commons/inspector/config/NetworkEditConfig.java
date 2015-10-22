@@ -84,6 +84,7 @@ public final class NetworkEditConfig extends HorizontalPanel implements InspectL
 		// Add a selection model to handle user selection.
 		cellList.setSelectionModel(selectionModel);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				String selected = selectionModel.getSelectedObject();
 				if (selected != null) {

@@ -59,6 +59,11 @@ public abstract class AbstractTable<T> {
 	 */
 	public static final int DEFAULT_PAGE_SIZE = 25;
 	
+	/**
+	 * The default check column width
+	 */
+	public static final int DEFAULT_CHECK_COLUMN_WIDTH = 23;
+	
 	private final List<T> emptyList = new ArrayList<T>();
 
 	private CellTable<T> table = null;

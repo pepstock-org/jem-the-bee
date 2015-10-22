@@ -27,7 +27,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.DBPoolManager;
+import org.pepstock.jem.node.persistence.database.DBPoolManager;
+import org.pepstock.jem.util.Numbers;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -101,7 +102,7 @@ abstract class DBUpdate {
 					// creates XML document factories
 					DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = documentFactory.newDocumentBuilder();
-					Document document = builder.parse(new InputSource(rs.getCharacterStream(2)));
+					Document document = builder.parse(new InputSource(rs.getCharacterStream(Numbers.N_2)));
 					update(document);
 				} catch (ParserConfigurationException e) {
 					throw new SQLException(e.getMessage(), e);

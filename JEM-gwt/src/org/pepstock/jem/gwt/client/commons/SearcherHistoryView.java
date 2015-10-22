@@ -102,6 +102,7 @@ public final class SearcherHistoryView extends PopupPanel {
 		cellList.setSelectionModel(selectionModel);
 		
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				if (!onClickToRemove){
 					select(selectionModel.getSelectedObject());

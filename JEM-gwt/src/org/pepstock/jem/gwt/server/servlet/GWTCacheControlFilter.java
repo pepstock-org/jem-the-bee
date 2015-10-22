@@ -28,12 +28,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.pepstock.jem.util.TimeUtils;
+
 /**
  * {@link Filter} to add cache control headers for GWT generated files to ensure
  * that the correct files get cached.
  */
 public class GWTCacheControlFilter implements Filter {
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String requestURI = httpRequest.getRequestURI();
@@ -43,18 +46,18 @@ public class GWTCacheControlFilter implements Filter {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			httpResponse.setDateHeader("Date", now.getTime());
 			// one day old
-			httpResponse.setDateHeader("Expires", now.getTime() - 86400000L);
+			httpResponse.setDateHeader("Expires", now.getTime() - TimeUtils.DAY);
 			httpResponse.setHeader("Pragma", "no-cache");
 			httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
 		}
 
 		filterChain.doFilter(request, response);
 	}
-	
+	@Override
 	public void destroy() {
 		// do nothing
 	}
-
+	@Override
 	public void init(FilterConfig config) throws ServletException {
 		// do nothing
 	}

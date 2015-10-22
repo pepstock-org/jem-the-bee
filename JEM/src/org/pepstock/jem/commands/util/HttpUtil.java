@@ -65,6 +65,8 @@ import com.thoughtworks.xstream.XStream;
  * 
  */
 public final class HttpUtil {
+	
+	private static final long MAX_CONTENT_LENGTH = 2048L;
 
 	/**
 	 * Key used to store user id
@@ -132,7 +134,7 @@ public final class HttpUtil {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				long len = entity.getContentLength();
-				if (len != -1 && len < 2048) {
+				if (len != -1 && len < MAX_CONTENT_LENGTH) {
 					// executes and parse the results
 					// result must be
 					// [ipaddress:port],[ipaddress:port],[ipaddress:port],....[ipaddress:port]

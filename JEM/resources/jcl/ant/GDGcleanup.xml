@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="GDGCleanUP" default="step1" basedir=".">
+	<description>
+		Clean up GDG
+    </description>
+
+
+	<property name="jem.job.name" value="GDGCleanUP"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<!-- to refers the environment variable -->
+	<!--taskdef name="gdg" classpathref="my.classes" classname="org.pepstock.jem.ant.GDGTask" /-->
+	
+	<!--path id="my.classes"> 
+		<pathelement location="D:/JEM-runtime/jemhome/lib/jem-enterprise.jar"/> 
+	</path--> 
+	
+	<taskdef name="gdg" classname="org.pepstock.jem.ant.GDGTask"/>
+	
+	<target name="step1">
+		<gdg>
+			<dataDescription name="GDG1" disposition="OLD">
+				<dataSet name="gdg2/jemtest"/>
+			</dataDescription>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					CLEANUP GDG GDG1 VERSIONS 10;
+				</dataSet>
+			</dataDescription>
+		</gdg>
+	</target>
+
+</project>

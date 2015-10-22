@@ -241,7 +241,7 @@ public class CommonResourcesManager extends DefaultService {
 		boolean isLock = false;
 		Lock lock = getInstance().getLock(Queues.COMMON_RESOURCES_MAP_LOCK);
 		try {
-			isLock = lock.tryLock(10, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// performs predicate to have the collection
 				result = map.values(predicate);

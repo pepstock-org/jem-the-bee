@@ -12,6 +12,7 @@ package org.pepstock.jem.plugin.views.explorer;
 
 import org.pepstock.jem.gfs.GfsFile;
 import org.pepstock.jem.plugin.commons.JemColumnSorter;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * It provides column sorter for a table viewer for explorer.
@@ -32,19 +33,19 @@ public class ExplorerColumnSorter extends JemColumnSorter<GfsFile> {
 	public int compare(GfsFile o1, GfsFile o2) {
 		int diff = 0;
 		switch (getIndex()) {
-		case 0:
+		case ColumnIndex.COLUMN_1:
 			// sorts by file 
 			diff = getComparedName(o1, o2);
 			break;
-		case 1:
+		case ColumnIndex.COLUMN_2:
 			// size of file
 			diff = getComparedSize(o1, o2);
 			break;
-		case 2:
+		case ColumnIndex.COLUMN_3:
 			// last modified of file
 			diff = getComparedLastModified(o1, o2);
 			break;
-		case 3:
+		case ColumnIndex.COLUMN_4:
 			// last modified of file
 			diff = getComparedDataPath(o1, o2);
 			break;

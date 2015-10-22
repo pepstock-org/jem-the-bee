@@ -16,6 +16,8 @@
  */
 package org.pepstock.jem.rest;
 
+import java.io.PrintStream;
+
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
@@ -43,7 +45,19 @@ public class HTTPBaseAuthRestClient extends RestClient {
 	 * @param password password of userid
 	 */
 	public HTTPBaseAuthRestClient(String uriString, String userid, String password) {
-		super(uriString);
+		this(uriString, userid, password, null);
+	}
+	
+	/**
+	 * Constructs the object.
+	 * 
+	 * @param uriString REST context, restAuth
+	 * @param userid user id to authenticate
+	 * @param password password of userid
+	 * @param debugStream stream to use for debugging
+	 */
+	public HTTPBaseAuthRestClient(String uriString, String userid, String password, PrintStream debugStream) {
+		super(uriString, debugStream);
 		this.userid = userid;
 		this.password = password;
 		client = initialHttpClient();

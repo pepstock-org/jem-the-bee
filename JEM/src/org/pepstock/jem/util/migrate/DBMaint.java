@@ -34,14 +34,14 @@ import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.Configuration;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.node.configuration.Database;
-import org.pepstock.jem.node.persistence.CommonResourcesDBManager;
-import org.pepstock.jem.node.persistence.DBPoolManager;
-import org.pepstock.jem.node.persistence.InputDBManager;
-import org.pepstock.jem.node.persistence.JobDBManager;
-import org.pepstock.jem.node.persistence.OutputDBManager;
-import org.pepstock.jem.node.persistence.RoutingDBManager;
-import org.pepstock.jem.node.persistence.RunningDBManager;
 import org.pepstock.jem.node.persistence.SQLContainerFactory;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.database.DBPoolManager;
+import org.pepstock.jem.node.persistence.database.InputDBManager;
+import org.pepstock.jem.node.persistence.database.JobDBManager;
+import org.pepstock.jem.node.persistence.database.OutputDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingDBManager;
+import org.pepstock.jem.node.persistence.database.RunningDBManager;
 import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
@@ -49,7 +49,7 @@ import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
 import org.pepstock.jem.util.CharSet;
 
 /**
- * Utility to migrate teh jobs and resources (changed on own XML format)
+ * Utility to migrate the jobs and resources (changed on own XML format)
  * from version 2.1 and 2.2.
  * 
  * @author Andrea "Stock" Stocchero
@@ -108,7 +108,7 @@ public class DBMaint {
 			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 		
 		// parses the configuration object

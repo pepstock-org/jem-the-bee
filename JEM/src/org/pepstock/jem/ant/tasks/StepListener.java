@@ -58,6 +58,7 @@ import org.pepstock.jem.util.rmi.RmiKeys;
  * starting and steps ending.
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 2.3
  * 
  */
 public class StepListener implements BuildListener {
@@ -71,6 +72,11 @@ public class StepListener implements BuildListener {
 	// and then it uses reflection to get it
 	private static final String ANT_JAVA_TASK_FORK_ATTRIBUTE_NAME = "fork";
 	
+	// this is the RESULTPROPERTY attribute name of ANT tasks
+	// ANT task doesn't publish any get method to get it
+	// and then it uses reflection to get it
+	private static final String ANT_TASK_RESULT_PROPERTY_ATTRIBUTE_NAME = "resultProperty";
+	
 	private int stepOrder = MAX_TASKS_FOR_TARGET;
 	
 	private TasksDoor door = null;
@@ -80,6 +86,9 @@ public class StepListener implements BuildListener {
 	private String lockingScope = AntKeys.ANT_JOB_SCOPE;
 	
 	private Locker locker = null;
+	
+	// this the variable which store the max return code of task for each target
+	private int maxTargetReturnCode = Result.SUCCESS;
 
 	/**
 	 * Empty constructor
@@ -141,7 +150,7 @@ public class StepListener implements BuildListener {
 					if (System.getSecurityManager() == null) {
 						System.setSecurityManager(new AntBatchSecurityManager(myroles));
 					} else {
-						throw new BuildException(AntMessage.JEMA039E.toMessage().getMessage());
+						throw new BuildException(AntMessage.JEMA039E.toMessage().getContent());
 					}
 				} else {
 					throw new BuildException(AntMessage.JEMA038E.toMessage().getFormattedMessage(TasksDoor.NAME));
@@ -289,9 +298,10 @@ public class StepListener implements BuildListener {
 				step.setName(event.getTarget().getName());
 				step.setDescription(event.getTarget().getDescription());
 
-				// checks if has an exception.If yes, sets ERROR, otherwise
-				// SUCCESS
-				step.setReturnCode((event.getException() != null) ? Result.ERROR : Result.SUCCESS);
+				// checks if has an exception, comparing
+				// the result with maximum return codes
+				// provided by taks of target
+				step.setReturnCode((event.getException() != null) ? Math.max(Result.ERROR, maxTargetReturnCode) : maxTargetReturnCode);
 				// checks if has an exception, sets the exception message
 				if (event.getException() != null){
 					step.setException(event.getException().getMessage());
@@ -314,6 +324,7 @@ public class StepListener implements BuildListener {
 			}
 		}
 		batchSM.setInternalAction(false);
+		maxTargetReturnCode = Result.SUCCESS;
 	}
 
 	/**
@@ -398,6 +409,66 @@ public class StepListener implements BuildListener {
 				throw new BuildException(e);
 			}
 		}
+		// gets the current step if there is
+		// ONLY the JEM tasks are DataDescriptionStep
+		DataDescriptionStep item = StepsContainer.getInstance().getCurrent();
+		// if it's a JEM task
+		if (item != null){
+			// gets the return code
+			Integer rc = ReturnCodesContainer.getInstance().getReturnCode(item);
+			// if not null, sets the return code
+			if (rc != null){
+				maxTargetReturnCode = Math.max(maxTargetReturnCode, ReturnCodesContainer.getInstance().getReturnCode(item));
+			} 
+		} else {
+			// if here, the task is not a JEM task
+			// uses the reflection to get RESULT property value, if set
+			// checks if is cast-able
+			if (event.getTask() != null){
+				Task task = null;
+				// checks if is an Unknown element
+				if (event.getTask() instanceof UnknownElement){
+					// gets ANT task
+					UnknownElement ue = (UnknownElement)event.getTask();
+					ue.maybeConfigure();
+					task = (Task)ue.getTask();
+				} else if (event.getTask() instanceof Task){
+					// gets the task
+					// here if the ANT task is already configured
+					// mainly on sequential, parallel and JEM procedure
+					task = (Task)event.getTask();
+				}
+				// if task not null
+				if (task != null){
+					try {
+						// reflection to understand if the attribute RESULT property is set, to get
+						// the exit code
+						// unfortunately ANT java task don't have any get method to have resultproperty value
+						Field f = task.getClass().getDeclaredField(ANT_TASK_RESULT_PROPERTY_ATTRIBUTE_NAME);
+						// reads the attribute
+						Object obj = FieldUtils.readField(f, task, true);
+						// if not null
+						if (obj != null){
+							// gets the result property value from project properties 
+							// the result property is always set when you specify in a ANt task
+							String resultProperty = event.getProject().getProperty(obj.toString());
+							if (resultProperty != null){
+								// sets the return code
+								maxTargetReturnCode = Math.max(maxTargetReturnCode, Parser.parseInt(resultProperty, Result.SUCCESS));
+							}
+						}
+					} catch (SecurityException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					} catch (NoSuchFieldException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					} catch (IllegalAccessException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);				
+					}
+				}
+			}
+		}
+		// removes always the step instance
+		StepsContainer.getInstance().setCurrent(null);
 	}
 
 	/**

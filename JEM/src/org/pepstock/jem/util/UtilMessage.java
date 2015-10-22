@@ -37,54 +37,54 @@ public enum UtilMessage implements MessageInterface{
 	/**
 	 * "Registry Container is not instantiated.", MessageLevel.ERROR
 	 */
-	JEMB001E(1, "Registry Container is not instantiated.", MessageLevel.ERROR),
+	JEMB001E("0001", "Registry Container is not instantiated.", MessageLevel.ERROR),
 
 	/**
 	 * "Instance CLIENT is null! Call 'createInstance' method before to get an instance.", MessageLevel.ERROR
 	 */
 	@Deprecated
-	JEMB002E(2, "Instance CLIENT is null! Call 'createInstance' method before to get an instance.", MessageLevel.ERROR),
+	JEMB002E("0002", "Instance CLIENT is null! Call 'createInstance' method before to get an instance.", MessageLevel.ERROR),
 
 	/**
 	 * "{0}.", MessageLevel.ERROR
 	 */
-	JEMB003E(3, "RMI {0} error: {1}", MessageLevel.ERROR),
+	JEMB003E("0003", "RMI {0} error: {1}", MessageLevel.ERROR),
 
 	/**
 	 * "Error building MapVariableDereferencer for: [{0}].", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs if there are problems building the MapVariableDereferencer with the properties of the Job end of the NodeInfo. It is a system error.<br>An exception is thrown.<br>Check in the log if other errors are displayed, they could be the real cause.")
-	JEMB004E(4, "Error building MapVariableDereferencer for: [{0}].", MessageLevel.ERROR),
+	JEMB004E("0004", "Error building MapVariableDereferencer for: [{0}].", MessageLevel.ERROR),
 	
 
 	/**
 	 * "Addedd variabile: key [{0}] - value [{1}].", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs building the MapVariableDereferencer with the properties of the Job end of the NodeInfo.<br>In particular it is displayed when a new variable name (a Job or NodeInfo property name, specified in the log: {0}) and value(the respective Job or NodeInfo property value, specified in the log: {1}) is added in the MapVariableDereferencer.<br>No exception is thrown, but this information is logged.")
-	JEMB005I(5, "Added variabile: key [{0}] - value [{1}].", MessageLevel.INFO),
+	JEMB005I("0005", "Added variabile: key [{0}] - value [{1}].", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to unbind {0} object", MessageLevel.INFO
 	 */
-	JEMB006I(6, "Unable to unbind {0} object", MessageLevel.INFO),
+	JEMB006I("0006", "Unable to unbind {0} object", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to unbind {0} object", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when someone is trying to access to RMI listener.<br>RMI listener can be used ONLY by job in execution on the same machine.")
-	JEMB007E(7, "Access to RMI listener from other machine is not allowed: {0}", MessageLevel.ERROR),
+	JEMB007E("0007", "Access to RMI listener from other machine is not allowed: {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Unable to unbind {0} object", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the client receives an execption during the SSL initialization.<br>Please contact your JEM administrators.")
-	JEMB008E(8, "Unable to activate SSL protocol for REST client", MessageLevel.ERROR),
+	JEMB008E("0008", "Unable to activate SSL protocol for REST client", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to unbind {0} object", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the URLs list necessary for custom classloader is empty.<br>Please hve a look to JEM configuration.")
-	JEMB009E(9, "No URLS have been loaded! ", MessageLevel.ERROR);
+	JEMB009E("0009", "No URLS have been loaded! ", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UtilMessage</code>. 
@@ -102,7 +102,7 @@ public enum UtilMessage implements MessageInterface{
 	 * @param level severity of log message
 	 * @see Message
 	 */
-	private UtilMessage(int code, String messageContent, MessageLevel level){
+	private UtilMessage(String code, String messageContent, MessageLevel level){
 		this.message = new Message(code, MessageCode.UTIL.getCode(), messageContent, level);
 	}
 	

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.pepstock.jem.node.resources.ResourcePropertiesUtil;
 import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.definition.SectionDescriptor;
 import org.pepstock.jem.node.resources.definition.fields.CheckBoxFieldDescriptor;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,14 +32,14 @@ import com.google.gwt.user.client.ui.CheckBox;
  * @author Marco "Fuzzo" Cuccato
  *
  */
-public class CheckBoxFieldPanel extends AbstractFieldPanel<CheckBoxFieldDescriptor, CheckBox, String> {
+public class CheckBoxFieldPanel extends AbstractFieldPanel<CheckBoxFieldDescriptor, CheckBox, String, SectionDescriptor> {
 
 	/**
 	 * Builds the text based property panel
 	 * @param descriptor the descriptor who know how to render the panel
 	 * @param panel the parent panel
 	 */
-	public CheckBoxFieldPanel(CheckBoxFieldDescriptor descriptor, CommonResourcePropertiesPanel<?> panel) {
+	public CheckBoxFieldPanel(CheckBoxFieldDescriptor descriptor, PagePropertiesPanel panel) {
 		super(descriptor, panel);
 		build();
 	}

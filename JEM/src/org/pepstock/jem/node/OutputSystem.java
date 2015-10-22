@@ -36,6 +36,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.DateFormatter;
+import org.pepstock.jem.util.MemorySize;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -111,6 +112,10 @@ public class OutputSystem {
 	 * execution.
 	 */
 	public static final String MESSAGESLOG_FILE = "messages.log";
+	
+	private static final long SCHEDULE_INITIAL_INTERVAL = 20 * TimeUtils.SECOND;
+	
+	private static final long SCHEDULE_INTERVAL = 1 * TimeUtils.MINUTE;
 
 	private File currentPath = null;
 
@@ -160,7 +165,7 @@ public class OutputSystem {
 		
 		String className = FilenameUtils.getExtension(this.getClass().getName());
         Timer timer = new Timer(className, false);
-        timer.schedule(new GlobalFileSystemHealthCheck(), 20 * TimeUtils.SECOND, 1 * TimeUtils.MINUTE);
+        timer.schedule(new GlobalFileSystemHealthCheck(), SCHEDULE_INITIAL_INTERVAL, SCHEDULE_INTERVAL);
 	}
 
 	/**
@@ -298,7 +303,7 @@ public class OutputSystem {
 	 * @throws IOException 
 	 */
 	public File getMessagesLogFile(Job job, boolean createDirectory) throws IOException {
-		File dirJob = createDirectoryForJob(job, true);
+		File dirJob = createDirectoryForJob(job, createDirectory);
 		return new File(dirJob, MESSAGESLOG_FILE);
 	}
 
@@ -404,14 +409,17 @@ public class OutputSystem {
 	 *
 	 */
 	class GlobalFileSystemHealthCheck extends TimerTask{
-
-		private static final long MINUTE = 60;
 		
 		private static final int SAMPLES_COUNT = 10;
 		
-		private static final long MB = 1024;
+		// 100 MB but in numbers of KB
+		private static final long ONE_HUNDRED_MB = 100 * MemorySize.MB / MemorySize.KB;
 		
-		private List<Space> list = new LinkedList<OutputSystem.Space>();
+		private static final long TIMEOUT = 10 * TimeUtils.SECOND;
+		
+		private static final long TEN_MINUTES = 10 * TimeUtils.MINUTES_FOR_HOUR;
+		
+		private List<SpaceSample> list = new LinkedList<OutputSystem.SpaceSample>();
 
 		/* (non-Javadoc)
 		 * @see java.util.TimerTask#run()
@@ -425,15 +433,15 @@ public class OutputSystem {
 			if (Main.getNode() != null) {
 				Main.getNode().getLock().lock();
 				try {
-					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), 10 * TimeUtils.SECOND);
+					long freeSpace = FileSystemUtils.freeSpaceKb(outputPath.getAbsolutePath(), TIMEOUT) * MemorySize.KB;
 					
-					Space space = new Space();
+					SpaceSample space = new SpaceSample();
 					space.setSpace(freeSpace);
-					space.setTime(System.currentTimeMillis() / 1000);
+					space.setTime(System.currentTimeMillis() / TimeUtils.SECOND);
 					
-					((LinkedList<Space>)list).addLast(space);
+					((LinkedList<SpaceSample>)list).addLast(space);
 					if (list.size() >  SAMPLES_COUNT){
-						((LinkedList<Space>)list).removeFirst();
+						((LinkedList<SpaceSample>)list).removeFirst();
 					}
 					
 					if (isUnderThreshold()){
@@ -456,18 +464,17 @@ public class OutputSystem {
 		 * @return true if there is NO space
 		 */
 		private boolean isUnderThreshold(){
-
 			// if we have only 1 sample, checks directly the value
 	        if (list.size() == 1){
-	        	Space space = ((LinkedList<Space>)list).getFirst();
-	        	return space.getSpace() < (MB * 100);
+	        	SpaceSample space = ((LinkedList<SpaceSample>)list).getFirst();
+	        	return space.getSpace() < ONE_HUNDRED_MB;
 	        }
 	        
 	        double[] values = new double[list.size()];
 	        double[][] times = new double[list.size()][];
 	        
 	        int index = 0;
-	        for (Space space : list){
+	        for (SpaceSample space : list){
 	        	values[index] = space.getSpace();
 	        	times[index] = new double[]{space.getTime()};
 	        	index++;
@@ -483,22 +490,22 @@ public class OutputSystem {
 	        double q = betaHat[0];
 	        
 	        // using the linear regression, try to estimate the space in 10 minutes
-	        Space last = ((LinkedList<Space>)list).getLast();
-	        double x = last.getTime() + (10 * MINUTE);
+	        SpaceSample last = ((LinkedList<SpaceSample>)list).getLast();
+	        double x = last.getTime() + TEN_MINUTES;
 	        
 	        double y = (m * x) + q;
-			return y < (MB * 100);
+			return y < ONE_HUNDRED_MB;
 		}
 	}
 	
 	/**
-	 * This bean contains the samples needed to calculate the lineaer regression
+	 * This bean contains the samples needed to calculate the linear regression
 	 * 
 	 * @author Andrea "Stock" Stocchero
 	 * @version 1.0	
 	 *
 	 */
-	static class Space {
+	static class SpaceSample {
 		
 		private long space = 0;
 		

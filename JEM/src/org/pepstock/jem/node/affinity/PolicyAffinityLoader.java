@@ -55,6 +55,8 @@ public abstract class PolicyAffinityLoader extends FileAlterationListenerAdaptor
 	private boolean reloadAfterJobEnded = false;
 
 	private static final long POLLING_INTERVAL = 5 * TimeUtils.SECOND;
+	
+	private static final long POLLING_RELOAD_INTERVAL = 5 * TimeUtils.MINUTE;
 
 	/**
 	 * Empty constructor
@@ -87,7 +89,7 @@ public abstract class PolicyAffinityLoader extends FileAlterationListenerAdaptor
 				}
 				String className = FilenameUtils.getExtension(this.getClass().getName());
 				Timer timer = new Timer(className, false);
-				timer.schedule(new PeriodicallyAffinitiesReloader(), 5 * TimeUtils.MINUTE, 5 * TimeUtils.MINUTE);
+				timer.schedule(new PeriodicallyAffinitiesReloader(), POLLING_RELOAD_INTERVAL, POLLING_RELOAD_INTERVAL);
 			}
 		}
 	}

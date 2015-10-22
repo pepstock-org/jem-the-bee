@@ -27,32 +27,22 @@ public class LoginManagerPaths {
 	/**
 	 * Key to define the path to bind this services
 	 */
-	public static final String MAIN = CommonPaths.QUERYSTRING_SEPARATOR +   "auth";
+	public static final String MAIN = CommonPaths.PATH_SEPARATOR +   "user";
 	
 	/**
 	 * Key to define the path to bind user management method
 	 */
-	public static final String GET_USER = CommonPaths.QUERYSTRING_SEPARATOR +   "getUser";
+	public static final String GET = CommonPaths.PATH_SEPARATOR +   "get";
 	
 	/**
 	 * Key to define the path to bind login management method
 	 */
-	public static final String LOGIN = CommonPaths.QUERYSTRING_SEPARATOR +   "login";
+	public static final String LOGIN = CommonPaths.PATH_SEPARATOR +   "login";
 	
 	/**
 	 * Key to define the path to bind logoff management method
 	 */
-	public static final String LOGOFF = CommonPaths.QUERYSTRING_SEPARATOR +   "logoff";
-	
-	/**
-	 * Key to define the path to bind logoff management method saving preferences
-	 */
-	public static final String LOGOFF_SAVING_PREFERENCES = CommonPaths.QUERYSTRING_SEPARATOR +   "logoffSavingPreferences";
-	
-	/**
-	 * Key to define the path to bind store prefences method
-	 */
-	public static final String SAVE_PREFERENCES = CommonPaths.QUERYSTRING_SEPARATOR +   "savePreferences";
+	public static final String LOGOFF = CommonPaths.PATH_SEPARATOR +   "logoff";
 
 	/**
 	 * 

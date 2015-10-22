@@ -23,11 +23,11 @@
 	-->
 
 	<taskdef name="step-java" classname="org.pepstock.jem.ant.tasks.StepJava" />
-	<taskdef name="resources" classname="org.pepstock.jem.ant.CommonResourcesTask" />
+	<taskdef name="resources" classname="org.pepstock.jem.ant.tasks.utilities.CommonResourcesTask" />
 
 	<!-- create jdbc resource read from dataset -->
 	<target name="removeJDBCReource">
-		<resources license="Pepstock_JEM_AntUtil.license">
+		<resources>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					REMOVE JUNIT_JPPF_JDBC_JEM;

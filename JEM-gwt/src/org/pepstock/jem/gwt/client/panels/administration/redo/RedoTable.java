@@ -18,6 +18,7 @@ package org.pepstock.jem.gwt.client.panels.administration.redo;
 
 import org.pepstock.jem.gwt.client.commons.AbstractTable;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
+import org.pepstock.jem.gwt.client.commons.JemConstants;
 import org.pepstock.jem.node.persistence.RedoStatement;
 
 import com.google.gwt.user.cellview.client.CellTable;
@@ -82,30 +83,42 @@ public class RedoTable extends AbstractTable<RedoStatement> {
 		};
 		action.setSortable(true);
 		table.addColumn(action, "Action");
-		
-		/*-------------------------+
-		 | JOBID                   |
-		 +-------------------------*/
-		TextColumn<RedoStatement> jobId = new TextColumn<RedoStatement>() {
-			@Override
-			public String getValue(RedoStatement redo) {
-				return redo.getJobId() == null ? redo.getJob() == null ? "" : redo.getJob().getId() : redo.getJobId() ;
-			}
-		};
-		jobId.setSortable(true);
-		table.addColumn(jobId, "Job ID");		
 
 		/*-------------------------+
-		 | JOB             |
+		 | SUBMITTED DATE          |
 		 +-------------------------*/
-		TextColumn<RedoStatement> jobName = new TextColumn<RedoStatement>() {
+		TextColumn<RedoStatement> creationDate = new TextColumn<RedoStatement>() {
 			@Override
 			public String getValue(RedoStatement redo) {
-				return (redo.getJob() == null) ? "" : redo.getJob().getName();
+				return JemConstants.DATE_TIME_FULL.format(redo.getCreation()); 
 			}
 		};
-		jobName.setSortable(true);
-		table.addColumn(jobName, "Job Name");		
+		creationDate.setSortable(true);
+		table.addColumn(creationDate, "Creation time");
+		
+		/*-------------------------+
+		 | EntityID                   |
+		 +-------------------------*/
+		TextColumn<RedoStatement> entityId = new TextColumn<RedoStatement>() {
+			@Override
+			public String getValue(RedoStatement redo) {
+				return redo.getEntityId() == null ? "" : redo.getEntityId() ;
+			}
+		};
+		entityId.setSortable(true);
+		table.addColumn(entityId, "Entity ID");		
+
+		/*-------------------------+
+		 | Entity             |
+		 +-------------------------*/
+		TextColumn<RedoStatement> entityName = new TextColumn<RedoStatement>() {
+			@Override
+			public String getValue(RedoStatement redo) {
+				return (redo.getEntityToString() == null) ? "" : redo.getEntityToString() ;
+			}
+		};
+		entityName.setSortable(true);
+		table.addColumn(entityName, "Entity toString");		
 		
 
 		return new RedoComparator(0);

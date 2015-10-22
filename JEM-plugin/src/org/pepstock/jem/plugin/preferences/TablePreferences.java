@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.Image;
 import org.pepstock.jem.plugin.commons.JemColumnSorter;
 import org.pepstock.jem.plugin.commons.JemLabelProvider;
 import org.pepstock.jem.plugin.commons.JemTableColumn;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Table preferences definition, with the list of columns, label provider and column sorter for the JEM coordinates table.
@@ -75,22 +76,22 @@ public class TablePreferences  {
         @Override
         public String getTextColumn(Coordinate element, int index) {
 			switch (index) {
-			case 0:
+			case ColumnIndex.COLUMN_1:
 				// host url
 				return element.getHost();
-			case 1:
+			case ColumnIndex.COLUMN_2:
 				// REST context
 				return element.getRestContext();
-			case 2:
+			case ColumnIndex.COLUMN_3:
 				// JEM environment name
 				return element.getName();
-			case 3:
+			case ColumnIndex.COLUMN_4:
 				// userid to use to connect
 				return element.getUserId();
-			case 4:
+			case ColumnIndex.COLUMN_5:
 				// crypted password
 				return HIDDEN;
-			case 5:
+			case ColumnIndex.COLUMN_6:
 				// is defaut
 				return element.isDefault() ? "√" : "";
 			default:
@@ -124,27 +125,27 @@ public class TablePreferences  {
         public int compare(Coordinate o1, Coordinate o2) {
 			int diff = 0;
 			switch(getIndex()){
-			case 0:
+			case ColumnIndex.COLUMN_1:
 				// sorts by host
 				diff = o1.getHost().compareTo(o2.getHost());
 				break;
-			case 1:
+			case ColumnIndex.COLUMN_2:
 				// sorts by rest context
 				diff = o1.getRestContext().compareTo(o2.getRestContext());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by name
 				diff = o1.getName().compareTo(o2.getName());
 				break;
-			case 3:
+			case ColumnIndex.COLUMN_4:
 				// sorts by userid
 				diff = o1.getUserId().compareTo(o2.getUserId());
 				break;
-			case 4:
+			case ColumnIndex.COLUMN_5:
 				// sorts by password
 				// nop
 				break;
-			case 5:
+			case ColumnIndex.COLUMN_6:
 				// sorts by default
 				diff = (o1.isDefault() ? 1 : 0) - (o2.isDefault() ? 1 : 0);
 				break;

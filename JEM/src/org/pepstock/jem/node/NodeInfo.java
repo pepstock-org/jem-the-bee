@@ -100,6 +100,9 @@ public class NodeInfo implements Serializable {
 
 	@GwtTransient
 	private Map<String, RequestLock> requests = new ConcurrentHashMap<String, RequestLock>();
+	
+	@GwtTransient
+	private Properties initProperties = null;
 
 	private boolean isOperational = true;
 	
@@ -132,7 +135,7 @@ public class NodeInfo implements Serializable {
 	 * @throws NodeException if exception occurs
 	 */
 	public void init(Properties properties) throws NodeException {
-		// do nothing
+		this.initProperties = properties;
 	}
 
 	/**
@@ -359,6 +362,13 @@ public class NodeInfo implements Serializable {
 	public Map<String, RequestLock> getRequests() {
 		return requests;
 	}
+	
+	/**
+	 * @return the initProperties
+	 */
+	public Properties getInitProperties() {
+		return initProperties;
+	}
 
 	/**
 	 * Creates a request lock every time that a job will be executed
@@ -414,7 +424,7 @@ public class NodeInfo implements Serializable {
 	 * @return all locks info for resource name
 	 */
 	public String displayRequestors(String resourceKey) {
-		return displayRequestors();
+		return resourceKey+": "+displayRequestors();
 	}
 
 	/**

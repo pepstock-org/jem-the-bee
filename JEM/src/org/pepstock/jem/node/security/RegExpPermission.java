@@ -114,7 +114,7 @@ public class RegExpPermission implements Permission, Serializable {
 	private void load() {
 		// if string permission if not valid, throw an exception
 		if (permissionPattern == null || permissionPattern.trim().length() == 0) {
-			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getMessage());
+			throw new IllegalArgumentException(NodeMessage.JEMC129E.toMessage().getContent());
 		}
 
 		// removes blanks
@@ -130,7 +130,7 @@ public class RegExpPermission implements Permission, Serializable {
 			// loads sub parts of permission
 			Set<String> subparts = CollectionUtils.asSet(part.split(SUBPART_DIVIDER_TOKEN));
 			if (subparts.isEmpty()) {
-				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getMessage());
+				throw new IllegalArgumentException(NodeMessage.JEMC130E.toMessage().getContent());
 			}
 			Set<Pattern> patternSubparts = new LinkedHashSet<Pattern>(subparts.size());
 			// scans all subparts
@@ -149,7 +149,7 @@ public class RegExpPermission implements Permission, Serializable {
 		}
 		// if not parts, the permission string syntax is wrong
 		if (this.parts.isEmpty()) {
-			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getMessage());
+			throw new IllegalArgumentException(NodeMessage.JEMC131E.toMessage().getContent());
 		}
 	}
 	

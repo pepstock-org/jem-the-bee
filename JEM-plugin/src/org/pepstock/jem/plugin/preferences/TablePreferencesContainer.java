@@ -48,6 +48,7 @@ import org.pepstock.jem.plugin.event.EnvironmentEvent;
 import org.pepstock.jem.plugin.event.PreferencesEnvironmentEventListener;
 import org.pepstock.jem.plugin.util.Notifier;
 import org.pepstock.jem.plugin.util.ShellContainer;
+import org.pepstock.jem.util.Numbers;
 
 /**
  * Container of table preferences, which contains all JEM environments coordinates.
@@ -58,6 +59,14 @@ import org.pepstock.jem.plugin.util.ShellContainer;
  */
 public class TablePreferencesContainer extends PreferencePage implements IWorkbenchPreferencePage, ShellContainer {
 
+	private static final String TITLE_LOAD = "Loading preferences error!";
+	
+	private static final String TITLE_SAVE = "Saving preferences error!";
+	
+	private static final String MSG_LOAD = "Error while loading preferences, your preferences may not be loaded: ";
+	
+	private static final String MSG_SAVE = "Error while saving preferences, your preferences may not be saved: ";
+	
 	private TablePreferences tablePreferences = new TablePreferences();
 	
 	private TableViewer tableViewer;
@@ -103,11 +112,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 			} catch (StorageException e) {
 				// if any errors related to Eclipse way to manage preferences
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(this, "Loading preferences error!", "Error while loading preferences, your preferences may not be loaded: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 			} catch (Exception e) {
 				// if any other errors, mainly de-serialization from XML 
 				LogAppl.getInstance().ignore(e.getMessage(), e);
-				Notifier.showMessage(this, "Loading preferences error!", "Error while loading preferences, your preferences may not be loaded: " + e.getMessage(), MessageLevel.ERROR);
+				Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD+ e.getMessage(), MessageLevel.ERROR);
 			}
 		}
 	}
@@ -123,7 +132,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		
 		// Main container
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(new GridLayout(2, false));
+		composite.setLayout(new GridLayout(Numbers.N_2, false));
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		// list of environments label
@@ -157,9 +166,9 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 
 		// Initializes Buttons
 		Composite buttons = new Composite(composite, SWT.NULL);
-		buttons.setLayout(new GridLayout(1, false));
+		buttons.setLayout(new GridLayout(Numbers.N_1, false));
 		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.widthHint = 80;
+		gd.widthHint = Numbers.N_80;
 		buttons.setLayoutData(gd);
 
 		// ADD button
@@ -243,11 +252,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		} catch (StorageException e) {
 			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_SAVE, MSG_SAVE + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
 			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Saving preferences error!", "Error while saving preferences, your preferences may not be saved: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_SAVE, MSG_SAVE + e.getMessage(), MessageLevel.ERROR);
 		}
 		return true;
 	}
@@ -267,11 +276,11 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
 		} catch (StorageException e) {
 			// if any errors related to Eclipse way to manage preferences
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 		} catch (Exception e) {
 			// if any other errors, mainly de-serialization from XML 
 			LogAppl.getInstance().ignore(e.getMessage(), e);
-			Notifier.showMessage(this, "Loading preferences error!", "Error while saving preferences, your preferences may not be loaed: " + e.getMessage(), MessageLevel.ERROR);
+			Notifier.showMessage(this, TITLE_LOAD, MSG_LOAD + e.getMessage(), MessageLevel.ERROR);
 		}
 		return true;
 	}
@@ -451,7 +460,7 @@ public class TablePreferencesContainer extends PreferencePage implements IWorkbe
      * @version 2.0
      */
     private class TableChanged implements ISelectionChangedListener{
-    	
+    	@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			// if no select, no Remove, no Edit
 			if (tableViewer.getTable().getSelectionCount() == 0) {

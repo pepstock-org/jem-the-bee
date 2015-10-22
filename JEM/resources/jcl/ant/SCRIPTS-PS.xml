@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project name="SCRIPTS-2" default="step1" basedir=".">
+	<description>
+		SCRIPTS-2 action
+    </description>
+
+
+	<property name="jem.job.name" value="SCRIPTS-2"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	<!--property name="jem.job.user" value="utenteCheNonEsiste"/-->
+
+	<taskdef name="ps" classname="org.pepstock.jem.ant.tasks.utilities.scripts.PowerShellScriptTask" />
+
+	<target name="step1">
+		
+		<ps>
+			<dataDescription name="OUTPUT" disposition="NEW">
+				<dataSet name="gdg/jemtest(1)"/>
+			</dataDescription>
+			
+			<dataDescription name="INPUT" disposition="SHR">
+				<dataSet name="gdg/jemtest(0)"/>
+			</dataDescription>
+			
+			Write-Host "hello World!"
+			echo "filesizecounter : $env:DD_INPUT"
+
+		</ps>
+	</target>
+
+</project>

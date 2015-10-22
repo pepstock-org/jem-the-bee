@@ -77,67 +77,67 @@ public class MainTabPanel extends TabPanel implements ResizeCapable {
 	
 	private void addPermissionDrivenPanels() {
 		// checks id user is authorized to see input tab	
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_INPUT)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_INPUT)){
 			Input inputQueueLayoutPanel = new Input();
 			add(inputQueueLayoutPanel, "Input", false);
 		}
 
 		// checks id user is authorized to see running tab	
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_RUNNING)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_RUNNING)){
 			Running runningQueueLayoutPanel = new Running(); 
 			add(runningQueueLayoutPanel, "Running", false);
 		}
 		
 		// checks id user is authorized to see output tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_OUTPUT)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_OUTPUT)){
 			Output output2QueueLayoutPanel = new Output(); 
 			add(output2QueueLayoutPanel, "Output", false);
 		}
 		
 		// checks id user is authorized to see routing tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_ROUTING)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_ROUTING)){
 			Routing routingQueueLayoutPanel = new Routing();
 			add(routingQueueLayoutPanel, "Routing", false);
 		}
 		
 		// checks id user is authorized to see status tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_STATUS)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_STATUS)){
 			Status statusLayoutPanel = new Status();
 			add(statusLayoutPanel, "Status", false);
 		}
 		
 		// checks id user is authorized to see nodes tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_NODES)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_NODES)){
 			Nodes nodesLayoutPanel = new Nodes();
 			add(nodesLayoutPanel, "Nodes", false);
 		}
 		
 		// checks id user is authorized to see swarm nodes tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_SWARM_NODES)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_SWARM_NODES)){
 			Swarm swarmNodesLayoutPanel = new Swarm();
 			add(swarmNodesLayoutPanel, "Swarm", false);
 		}
 		
 		// checks id user is authorized to see role tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_ROLES)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_ROLES)){
 			Roles roles = new Roles();
 			add(roles, "Roles", true);
 		}
 
 		// checks id user is authorized to see role tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_RESOURCES)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_RESOURCES)){
 			CommonResources resource = new CommonResources();
 			add(resource, "Resources", true);
 		}
 		
 		// checks id user is authorized to see admin tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_GFS_EXPLORER)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_GFS_EXPLORER)){
 			Gfs v = new Gfs();
 			add(v, "Explorer", true);
 		}
 		
 		// checks id user is authorized to see admin tab
-		if (ClientPermissions.isAuthorized(Permissions.VIEW, Permissions.VIEW_ADMIN)){
+		if (ClientPermissions.isAuthorized(Permissions.VIEW_ADMIN)){
 			Administration admin = new Administration();
 			add(admin, "Administration", true);
 		}

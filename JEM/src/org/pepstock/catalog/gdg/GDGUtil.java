@@ -35,6 +35,11 @@ import org.pepstock.jem.util.CharSet;
  * 
  */
 public class GDGUtil {
+	
+	/**
+	 * Number of digits to represent a GDG version 
+	 */
+	public static final int GDG_VERSION_DIGITS = 5;
 
 	// format of GDG : pathname/#####. In JCL : pathname(####)
 	private static final String GDG_FORMAT = "{0}({1,number,integer})";
@@ -81,7 +86,7 @@ public class GDGUtil {
 			throw new IndexOutOfBoundsException(GDGMessage.JEMD005E.toMessage().getFormattedMessage(offset));
 		}
 		// formats the result, padding left with 0
-		return StringUtils.leftPad(String.valueOf(index), 5, "0");
+		return StringUtils.leftPad(String.valueOf(index), GDG_VERSION_DIGITS, "0");
 	}
 
 	/**
@@ -151,7 +156,7 @@ public class GDGUtil {
 	public static Root createGDG(File parent, boolean createEmptyGeneration) throws IOException {
 		// checks if is null
 		if (parent == null) {
-			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getContent());
 		}
 		// checks if exists (MUST exists!)
 		if (parent.exists()) {
@@ -204,7 +209,7 @@ public class GDGUtil {
 	public static Root createGDGEmptyRoot(File parent) throws IOException {
 		// checks if is null
 		if (parent == null) {
-			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getMessage());
+			throw new FileNotFoundException(GDGMessage.JEMD006E.toMessage().getContent());
 		}
 
 		Root root = new Root(parent, false);

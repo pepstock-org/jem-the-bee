@@ -69,7 +69,7 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 
 	private void addCreateButton() {
 		// checks if user has the permission to CREATE resource 
-		if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_CREATE)) {
+		if (ClientPermissions.isAuthorized(Permissions.RESOURCES_CREATE)) {
 			Button createButton = new Button("New", new CreateButtonClickHandler());
 			add(createButton);
 			createButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -93,7 +93,7 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 	
 	private void addRemoveButton() {
 		// checks if user has the permission to REMOVE resource 
-		if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_DELETE)) {
+		if (ClientPermissions.isAuthorized(Permissions.RESOURCES_DELETE)) {
 			Button removeButton = new Button("Remove", new RemoveButtonClickHandler());
 			add(removeButton);
 			removeButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -130,7 +130,7 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 	
 	private void addCloneButton() {
 		// checks if user has the permission to CLONE resource 
-		if (ClientPermissions.isAuthorized(Permissions.RESOURCES, Permissions.RESOURCES_CREATE)) {
+		if (ClientPermissions.isAuthorized(Permissions.RESOURCES_CREATE)) {
 			Button cloneButton = new Button("Clone", new CloneButtonClickHandler());
 			add(cloneButton);
 			cloneButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());

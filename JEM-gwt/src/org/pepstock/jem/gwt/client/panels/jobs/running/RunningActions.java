@@ -58,7 +58,7 @@ public class RunningActions extends AbstractJobsActions {
 
 	private void addCancelButton() {
 		// checks if user has the permission to CANCEL job
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_CANCEL)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_CANCEL)){
 			Button cancelButton = new Button("Cancel", new CancelButtonClickHandler());
 			add(cancelButton);
 			cancelButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -96,7 +96,7 @@ public class RunningActions extends AbstractJobsActions {
 	
 	private void addForceButton() {
 		// checks if user has the permission to CANCEL job
-		if (ClientPermissions.isAuthorized(Permissions.JOBS, Permissions.JOBS_KILL)){
+		if (ClientPermissions.isAuthorized(Permissions.JOBS_KILL)){
 			Button forceButton = new Button("Kill", new ForceButtonClickHandler());
 			add(forceButton);
 			forceButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());

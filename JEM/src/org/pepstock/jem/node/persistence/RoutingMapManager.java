@@ -16,7 +16,9 @@
 */
 package org.pepstock.jem.node.persistence;
 
+import org.pepstock.jem.Job;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.database.RoutingDBManager;
 
 /**
  * Persistent manager for ROUTING queue.<br>
@@ -27,7 +29,7 @@ import org.pepstock.jem.node.Queues;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class RoutingMapManager extends JobMapManager {
+public class RoutingMapManager extends AbstractMapManager<Job> {
 	
 	private static RoutingMapManager INSTANCE = null; 
 
@@ -35,7 +37,7 @@ public class RoutingMapManager extends JobMapManager {
 	 * Construct the object instantiating a new DBManager
 	 */
 	public RoutingMapManager() {
-		super(Queues.ROUTING_QUEUE, RoutingDBManager.getInstance());
+		super(Queues.ROUTING_QUEUE, RoutingDBManager.getInstance(), true);
 		RoutingMapManager.setInstance(this);
 	}
 	

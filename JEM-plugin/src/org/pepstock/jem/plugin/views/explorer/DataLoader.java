@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.pepstock.jem.gfs.GfsFile;
-import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.plugin.Client;
+import org.pepstock.jem.rest.RestException;
 
 /**
  * Utility to load collection of files from JEM.
@@ -38,9 +38,9 @@ public class DataLoader {
 	 * @param longName long name of folder of GFS 
 	 * @param pathName data path name
 	 * @return colletion of files of folder requested
-	 * @throws JemException if any error occurs
+	 * @throws RestException if any error occurs
 	 */
-	public static Collection<GfsFile> loadData(int type, String longName, String pathName) throws JemException {
+	public static Collection<GfsFile> loadData(int type, String longName, String pathName) throws RestException {
 		if (Client.getInstance().isLogged()){
 			return Client.getInstance().getGfsFileList(type, longName, pathName);
 		}

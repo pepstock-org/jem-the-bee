@@ -72,22 +72,22 @@ import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
-import org.pepstock.jem.node.persistence.AbstractDBManager;
-import org.pepstock.jem.node.persistence.CommonResourcesDBManager;
-import org.pepstock.jem.node.persistence.DBPoolManager;
-import org.pepstock.jem.node.persistence.InputDBManager;
-import org.pepstock.jem.node.persistence.JobDBManager;
-import org.pepstock.jem.node.persistence.NodesDBManager;
-import org.pepstock.jem.node.persistence.OutputDBManager;
-import org.pepstock.jem.node.persistence.PreJobDBManager;
 import org.pepstock.jem.node.persistence.RecoveryManager;
-import org.pepstock.jem.node.persistence.RolesDBManager;
-import org.pepstock.jem.node.persistence.RoutingConfigDBManager;
-import org.pepstock.jem.node.persistence.RoutingDBManager;
-import org.pepstock.jem.node.persistence.RunningDBManager;
 import org.pepstock.jem.node.persistence.SQLContainer;
 import org.pepstock.jem.node.persistence.SQLContainerFactory;
-import org.pepstock.jem.node.persistence.UserPreferencesDBManager;
+import org.pepstock.jem.node.persistence.database.AbstractDBManager;
+import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.database.DBPoolManager;
+import org.pepstock.jem.node.persistence.database.InputDBManager;
+import org.pepstock.jem.node.persistence.database.JobDBManager;
+import org.pepstock.jem.node.persistence.database.NodesDBManager;
+import org.pepstock.jem.node.persistence.database.OutputDBManager;
+import org.pepstock.jem.node.persistence.database.PreJobDBManager;
+import org.pepstock.jem.node.persistence.database.RolesDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
+import org.pepstock.jem.node.persistence.database.RoutingDBManager;
+import org.pepstock.jem.node.persistence.database.RunningDBManager;
+import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
 import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
@@ -137,6 +137,12 @@ import com.hazelcast.partition.PartitionService;
  * 
  */
 public class StartUpSystem {
+	
+	private static final int KB = 1000;
+	
+	private static final int DOUBLE = 2;
+	
+	private static final int ONETEN = 10;
 
 	private static final Properties PROPERTIES = new Properties();
 
@@ -185,6 +191,13 @@ public class StartUpSystem {
 		}
 		// start multicast service
 		startMulticastService();
+		
+		// notifies all factories that
+		// node is started
+		for (JemFactory factory : Main.FACTORIES_LIST.values()){
+			factory.afterNodeStarted();
+		}
+
 	}
 
 	/**
@@ -195,7 +208,7 @@ public class StartUpSystem {
 	private static void startMulticastService() {
 		if (Main.getHazelcast().getConfig().getNetworkConfig().getJoin().getMulticastConfig().isEnabled()) {
 			MulticastConfig hMulticastConfig = Main.getHazelcast().getConfig().getNetworkConfig().getJoin().getMulticastConfig();
-			int multicastPorth = hMulticastConfig.getMulticastPort() + 100;
+			int multicastPorth = hMulticastConfig.getMulticastPort() + Main.INCREMENT_RMI_PORT;
 			MulticastConfig multicastConfig = new MulticastConfig();
 			multicastConfig.setEnabled(true);
 			multicastConfig.setMulticastGroup(hMulticastConfig.getMulticastGroup());
@@ -295,7 +308,7 @@ public class StartUpSystem {
 				NodeInfoUtility.loadNodeInfo(member, Main.getNode());
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC147E, e);
-				throw new ConfigurationException(NodeMessage.JEMC147E.toMessage().getMessage(), e);
+				throw new ConfigurationException(NodeMessage.JEMC147E.toMessage().getContent(), e);
 			}
 			NodeInfoUtility.storeNodeInfo(Main.getNode(), true);
 
@@ -347,6 +360,7 @@ public class StartUpSystem {
 			
 			// bring in memory the persisted queue
 			loadQueues();
+		
 		} finally {
 			lock.unlock();
 		}
@@ -391,7 +405,7 @@ public class StartUpSystem {
 		}
 
 		// times 2 because in memory there will be a replication copy
-		long queueSize = calculateQueueSize() * 2;
+		long queueSize = calculateQueueSize() * DOUBLE;
 		// calculate the number of nodes (exclude light member)
 		Cluster cluster = Main.getHazelcast().getCluster();
 		int membersNumber = cluster.getMembers().size();
@@ -402,12 +416,12 @@ public class StartUpSystem {
 		long clusterFreMemory = freeMemoryForNode * membersNumber;
 		// we consider clusterFreMemory enough if is grather than the queueSize
 		// + 20%
-		long neededMemory = queueSize + (queueSize / 10) * 2;
+		long neededMemory = queueSize + (queueSize / ONETEN) * DOUBLE;
 		if (clusterFreMemory > neededMemory) {
 			semaphore.release(membersNumber - 1);
 			return;
 		} else {
-			LogAppl.getInstance().emit(NodeMessage.JEMC086W, clusterFreMemory / 1000, neededMemory / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC086W, clusterFreMemory / KB, neededMemory / KB);
 			try {
 				semaphore.acquire();
 			} catch (Exception e) {
@@ -424,28 +438,26 @@ public class StartUpSystem {
 	private static long calculateQueueSize() throws ConfigurationException {
 		try {
 			long inputQueueSize = InputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / KB);
 			long runningQueueSize = RunningDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / KB);
 
 			long outputQueueSize = OutputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / KB);
 			long routingQueueSize = RoutingDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / KB);
 			long rolesSize = RolesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / KB);
 			long resourcesSize = CommonResourcesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / KB);
 			long checkingQueueSize = PreJobDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / KB);
 			long routingConfSize = RoutingConfigDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / KB);
 			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / 1000);
+			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / KB);
 
-			long totlaSize = inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
-
-			return totlaSize;
+			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}
@@ -476,7 +488,7 @@ public class StartUpSystem {
 			Lock lock = Main.getHazelcast().getLock(Queues.RUNNING_QUEUE_LOCK);
 			boolean isLock = false;
 			try {
-				isLock = lock.tryLock(10, TimeUnit.SECONDS);
+				isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
 				if (!runningQueue.isEmpty()) {
 					for (Job job : runningQueue.values()) {
 						org.pepstock.jem.Result result = new org.pepstock.jem.Result();
@@ -522,6 +534,13 @@ public class StartUpSystem {
 
 		IMap<String, Map<String, UserPreference>> userPreferencesMap = Main.getHazelcast().getMap(Queues.USER_PREFERENCES_MAP);
 		userPreferencesMap.size();
+		
+		// loads all jobs in check queue
+		try {
+			PreJobDBManager.getInstance().loadAll();
+		} catch (MessageException e) {
+			throw new ConfigurationException(e);
+		}
 
 	}
 
@@ -545,7 +564,7 @@ public class StartUpSystem {
 			xmlConfig = FileUtils.readFileToString(fileConfig, CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 		PROPERTIES.setProperty(ConfigKeys.JEM_ENV_CONF_FOLDER, FilenameUtils.normalize(fileConfig.getParent(), true));
 		
@@ -591,7 +610,7 @@ public class StartUpSystem {
 			xmlConfig = FileUtils.readFileToString(new File(configFile), CharSet.DEFAULT_CHARSET_NAME);
 		} catch (IOException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E);
-			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getMessage(), e);
+			throw new ConfigurationException(NodeMessage.JEMC006E.toMessage().getContent(), e);
 		}
 
 		JEM_NODE_CONFIG = Configuration.unmarshall(xmlConfig);
@@ -605,37 +624,62 @@ public class StartUpSystem {
 	}
 	
 	/**
-	 * 
-	 * @throws ConfigurationException
+	 * Loads the JVM to use and installed in the same machine of the node.
+	 * This can be used by JCL from the job.
+	 * @throws ConfigurationException if any errors occurs
 	 */
 	private static void loadJavaRuntimes()  throws ConfigurationException {
+		// gets java runtimes configuration
 		JavaRuntimes runtimes = JEM_NODE_CONFIG.getJavaRuntimes();
+		// if there is		
 		if (runtimes != null){
-			// adds current one
+			// gets the affinitity
+			// because it adds automatically the JVM tag names as affinity of this node
 			String affinities = JEM_NODE_CONFIG.getExecutionEnviroment().getAffinity();
 			boolean updated = false;
+			// scans all java configuration
 			for (Java java : runtimes.getJavas()){
+				// creates the file
 				File file = new File(java.getPath());
+				// if file exists and is a folder ok,
+				// otherwise this is a wrong directory 
 				if (file.exists() && file.isDirectory()){
+					// checks if some static affinities are set
 					if (affinities != null){
-						affinities = affinities + "," + java.getName();
+						// if yes, it adds the JVM tag name
+						affinities = affinities + Jcl.AFFINITY_SEPARATOR + java.getName();
 					} else {
+						// if no, sets as affinity the JVM name
 						affinities = java.getName();
 					}
 					updated = true;
+					// normalized the folder for the OS system where JEM node is running
 					String normalizedFolder = FilenameUtils.normalizeNoEndSeparator(java.getPath());
+					// stores this new JVM to the collection
 					Main.getJavaRuntimes().put(java.getName(), normalizedFolder);
-					if (java.isDefault()){
+					// if the JVM is set as default
+					if (java.isDefault() && Main.getDefaultJavaRuntime() == null){
+						// sets default and writes a message
 						Main.setDefaultJavaRuntime(normalizedFolder);
 						LogAppl.getInstance().emit(NodeMessage.JEMC291I, java.getName(), normalizedFolder);
+					} else if (java.isDefault() && Main.getDefaultJavaRuntime() != null){
+						// the default is already set!
+						// ignore the default and writes a warning
+						LogAppl.getInstance().emit(NodeMessage.JEMC293W, java.getName());
+						// notifies that there is a JVM definition
+						LogAppl.getInstance().emit(NodeMessage.JEMC290I, java.getName(), normalizedFolder);	
 					} else {
+						// notifies that there is a JVM definition
 						LogAppl.getInstance().emit(NodeMessage.JEMC290I, java.getName(), normalizedFolder);	
 					}
 				} else {
+					// if java home doesn't exist, exception
 					LogAppl.getInstance().emit(NodeMessage.JEMC292E, java.getName(), file.getAbsolutePath());
 					throw new ConfigurationException(NodeMessage.JEMC292E.toMessage().getFormattedMessage(java.getName(), file.getAbsolutePath()));
 				}
 			}
+			// if the affinities has been updated
+			// stores the new value
 			if (updated){
 				JEM_NODE_CONFIG.getExecutionEnviroment().setAffinity(affinities);
 			}
@@ -988,13 +1032,13 @@ public class StartUpSystem {
 	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
 	 * @throws SQLException if any error occurs cheching the existence of tables
 	 */
-	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?, ?> manager) throws SQLException {
+	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?> manager) throws SQLException {
 		ResultSet rs = null;
 		try {
 			// gets SQL container
 			SQLContainer container = manager.getSqlContainer();
 			// gets a result set which searches for the table anme
-			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE" });
+			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE", "ALIAS" });
 			// if result set is empty, it creates the table
 			if (!rs.next()) {
 				// creates table and return a empty set because if empty of

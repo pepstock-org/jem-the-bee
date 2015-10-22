@@ -22,7 +22,6 @@ import java.util.Set;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.config.MapConfig;
@@ -91,7 +90,7 @@ public class DataLossHandler implements Runnable {
 			while (true) {
 				// wait for 1 sec to check if last migration is older
 				// than 2 secs
-				Thread.sleep(1000L);
+				Thread.sleep(TimeUtils.SECOND);
 				if (getLastMigrationCompleted() >= 0) {
 					long diff = System.currentTimeMillis() - getLastMigrationCompleted();
 					if ((diff) > DELAY) {
@@ -119,46 +118,38 @@ public class DataLossHandler implements Runnable {
 		for (Entry<String, MapConfig> configs : Main.getHazelcast().getConfig().getMapConfigs().entrySet()) {
 			// the key is the name of map
 			String key = configs.getKey();
-			// ONLY the JCL checking is not able to reload
-			// all other maps can be reloaded
-			if (!key.equalsIgnoreCase(Queues.JCL_CHECKING_MAP)) {
-				// gets mapstore config
-				MapStoreConfig mStoreConfig = configs.getValue().getMapStoreConfig();
-				// checks if mapstore is enabled
-				if (mStoreConfig != null && mStoreConfig.isEnabled()) {
-					try {
-						// loads the mapp store defined for the map
-						@SuppressWarnings({ "unchecked" })
-						MapStore<String, Object> clazz = (MapStore<String, Object>) Class.forName(mStoreConfig.getClassName()).newInstance();
-						// gets all keys
-						Set<String> keys = clazz.loadAllKeys();
-						LogAppl.getInstance().emit(NodeMessage.JEMC220I, key);
-						// the best way to reload the data, is the "containsKey" the object
-						// from the map by key. If is not in memory, HC reloads from
-						// mapstore and then from database
-						for (String storeKey : keys) {
-							try {
-								// lock
-								Main.getHazelcast().getMap(key).lock(storeKey);
-								// check if in map (if not in memory, HC askes to map store to load from DB)
-								Main.getHazelcast().getMap(key).containsKey(storeKey);
-							} finally {
-								// always unlock
-								Main.getHazelcast().getMap(key).unlock(storeKey);
-							}
+			// gets mapstore config
+			MapStoreConfig mStoreConfig = configs.getValue().getMapStoreConfig();
+			// checks if mapstore is enabled
+			if (mStoreConfig != null && mStoreConfig.isEnabled()) {
+				try {
+					// loads the mapp store defined for the map
+					@SuppressWarnings({ "unchecked" })
+					MapStore<String, Object> clazz = (MapStore<String, Object>) Class.forName(mStoreConfig.getClassName()).newInstance();
+					// gets all keys
+					Set<String> keys = clazz.loadAllKeys();
+					LogAppl.getInstance().emit(NodeMessage.JEMC220I, key);
+					// the best way to reload the data, is the "containsKey" the object
+					// from the map by key. If is not in memory, HC reloads from
+					// mapstore and then from database
+					for (String storeKey : keys) {
+						try {
+							// lock
+							Main.getHazelcast().getMap(key).lock(storeKey);
+							// check if in map (if not in memory, HC askes to map store to load from DB)
+							Main.getHazelcast().getMap(key).containsKey(storeKey);
+						} finally {
+							// always unlock
+							Main.getHazelcast().getMap(key).unlock(storeKey);
 						}
-					} catch (InstantiationException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
-					} catch (IllegalAccessException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
-					} catch (ClassNotFoundException e) {
-						LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
 					}
+				} catch (InstantiationException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
+				} catch (IllegalAccessException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
+				} catch (ClassNotFoundException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
 				}
-			} else {
-				// nop
-				// JCL CHECKING is not recovered because
-				// is not consistent reload queue jcl
 			}
 		}
 		long end = System.currentTimeMillis() - start;

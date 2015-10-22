@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project name="CERTIFICATE" default="step1" basedir=".">
+	<description>
+		CERTIFICATE actions
+    </description>
+	<property name="jem.job.name" value="ROLES"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+
+	<taskdef name="cert" classname="org.pepstock.jem.ant.tasks.utilities.CertificateTask" />
+
+	<target name="step1">
+		<cert>
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					IMPORT CERTIFICATE CERT ALIAS example ;
+				</dataSet>
+			</dataDescription>
+	<dataDescription name="CERT" disposition="SHR">
+		<dataSet>
+-----BEGIN CERTIFICATE-----
+MIICfzCCAegCCQDTmJ1IhSlS0DANBgkqhkiG9w0BAQUFADCBgzELMAkGA1UEBhMC
+SVQxCzAJBgNVBAgTAlZSMQ8wDQYDVQQHEwZWZXJvbmExFTATBgNVBAoTDHBlcHN0
+b2NrLm9yZzEMMAoGA1UECxMDamVtMQ8wDQYDVQQDEwZzaW1vbmUxIDAeBgkqhkiG
+9w0BCQEWEWluZm9AcGVwc3RvY2sub3JnMB4XDTEzMDgwNTEwMTYzNloXDTE0MDgw
+NTEwMTYzNlowgYMxCzAJBgNVBAYTAklUMQswCQYDVQQIEwJWUjEPMA0GA1UEBxMG
+VmVyb25hMRUwEwYDVQQKEwxwZXBzdG9jay5vcmcxDDAKBgNVBAsTA2plbTEPMA0G
+A1UEAxMGc2ltb25lMSAwHgYJKoZIhvcNAQkBFhFpbmZvQHBlcHN0b2NrLm9yZzCB
+nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA0gHVe/xx4G3Rm0TN1j9mLBN56R/R
+XkqIXu30OvOKCrPmghfswabQ4qHNMBI009dDnPIcOds9pm7mlJ586MF5J0eY3vTS
+mRW2Hedus9Zn+x2triBv7aqVgGYZi3yW6LljebGtrdDlf8Ev1BKYxEsXlZpA1j66
+88lRj9RWUctf2ukCAwEAATANBgkqhkiG9w0BAQUFAAOBgQCJCeCp2aDPPZ87fa/d
+3WnhQKZziGAiOBRVDTee1UUyGI2AdJidZTU802h60Zp83IFGxRdfnO9imsO/oiFr
+M/y1+HYI7fFipT+FFTHSCydD6kCqVHEz0HT/W+nk9EpSw11GrNIgpa5dV4z4SfIh
+crERHmBJT4LFMBUCxRqt37rnDQ==
+-----END CERTIFICATE-----
+		</dataSet>
+	</dataDescription>
+
+		</cert>
+	</target>
+
+</project>

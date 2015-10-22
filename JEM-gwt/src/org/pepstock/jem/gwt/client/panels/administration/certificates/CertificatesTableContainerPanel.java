@@ -59,7 +59,7 @@ public class CertificatesTableContainerPanel extends BasePanel<CertificateEntry>
 	@Override
 	public void search(final String filter) {
 		// check permission to read certificates
-		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES, Permissions.CERTIFICATES_READ)) {
+		if (ClientPermissions.isAuthorized(Permissions.CERTIFICATES_READ)) {
 			getCommandPanel().getSearcher().setEnabled(false);
 			Loading.startProcessing();
 		    Scheduler scheduler = Scheduler.get();

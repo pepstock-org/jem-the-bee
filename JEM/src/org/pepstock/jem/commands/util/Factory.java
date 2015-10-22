@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
+import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 
@@ -74,11 +75,15 @@ public class Factory {
 	 */
 	public static PreJob createPreJob(URL url) throws InstantiationException{
 		try {
-			// load JCL content from url
-			String content = load(url);
 			// create PreJob and load content
 			PreJob job = new PreJob();
-			job.setJclContent(content);
+			if (!url.getProtocol().equalsIgnoreCase(JemURLStreamHandlerFactory.PROTOCOL)){
+				// load JCL content from url
+				String content = load(url);
+				job.setJclContent(content);
+			} else {
+				job.setUrl(url.toString());
+			}
 			return job;
 		} catch (IOException e) {
 			// debug

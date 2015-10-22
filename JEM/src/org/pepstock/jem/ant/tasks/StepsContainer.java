@@ -34,6 +34,8 @@ public class StepsContainer {
 	private static final StepsContainer INSTANCE = new StepsContainer();
 	
 	private List<DataDescriptionStep> dataDescriptionSteps = new LinkedList<DataDescriptionStep>();
+	
+	private DataDescriptionStep current = null;
 
 	/**
 	 * Singleton, emtpy constructor
@@ -55,5 +57,19 @@ public class StepsContainer {
 	 */
 	List<DataDescriptionStep> getDataDescriptionSteps() {
 		return dataDescriptionSteps;
+	}
+
+	/**
+	 * @return the current
+	 */
+	DataDescriptionStep getCurrent() {
+		return current;
+	}
+
+	/**
+	 * @param current the current to set
+	 */
+	void setCurrent(DataDescriptionStep current) {
+		this.current = current;
 	}
 }

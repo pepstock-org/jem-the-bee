@@ -22,8 +22,14 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
+ * Is the XML element which defines a JVM installed in the JEM machine and it can be used.
+ * <br>
+ * Every JVM must be identified by a name (to use in JCL and the affinity).
+ * <br>
+ * A machine can be set as default to use for all jobs. The content is th JAVA_HOME path of this JVM.
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 2.3
  */
 @XStreamAlias("java")
 @XStreamConverter(value=ToAttributedValueConverter.class, strings={"path"})

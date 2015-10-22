@@ -80,6 +80,23 @@ public class CertificatesManager extends DefaultService{
 		DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(new AddCertificate(ba, alias), getMember());
 		return task.getResult();
     }
+    
+    /**
+     * Removes a collection of certificates from JEM.
+     * 
+     * @param alias alias of certificate to be removed 
+     * @return <code>false</code> if is not able to remove the certificate
+     * @throws ServiceMessageException if any exception
+     */
+    public Boolean removeCertificate(String alias) throws ServiceMessageException {
+		// checks if the user is authorized to delete certificates
+		// if not, this method throws an exception
+    	checkAuthorization(new StringPermission(Permissions.CERTIFICATES_DELETE));
+    	Member member = getMember();
+		// scans all certificates
+		DistributedTaskExecutor<Boolean> task = new DistributedTaskExecutor<Boolean>(new RemoveCertificate(alias), member);
+		return task.getResult();
+    }
 
     /**
      * Removes a collection of certificates from JEM.

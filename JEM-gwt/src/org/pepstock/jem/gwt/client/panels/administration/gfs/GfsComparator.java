@@ -19,6 +19,7 @@ package org.pepstock.jem.gwt.client.panels.administration.gfs;
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
 import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMemberSample;
+import org.pepstock.jem.util.ColumnIndex;
 
 /**
  * Is the column comparator to sort cell table for table with nodes
@@ -62,23 +63,23 @@ public class GfsComparator extends IndexedColumnComparator<LightMemberSample> {
 		
 		int diff = 0;
 		switch(getIndex()){
-			case 0: 
+			case ColumnIndex.COLUMN_1: 
 				// sorts by label of node
 				diff = one.getKey().compareTo(two.getKey());
 				break;
-			case 1: 
+			case ColumnIndex.COLUMN_2: 
 				// sorts by free
 				diff = (int)(fsu1.getFree() - fsu2.getFree());
 				break;
-			case 2: 
+			case ColumnIndex.COLUMN_3: 
 				// sorts by free
 				diff = (int)(fsu1.getFree() - fsu2.getFree());
 				break;
-			case 3: 
+			case ColumnIndex.COLUMN_4: 
 				// sorts by used
 				diff = (int)(fsu1.getUsed() - fsu2.getUsed());
 				break;
-			case 4: 
+			case ColumnIndex.COLUMN_5: 
 				// sorts by used
 				diff = (int)(fsu1.getUsed() - fsu2.getUsed());
 				break;

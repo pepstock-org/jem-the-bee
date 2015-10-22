@@ -140,7 +140,7 @@ public class NodeInfoUtility {
 			// gets attributes
 			Attributes at = (Attributes) jarFile.getManifest().getAttributes(ConfigKeys.JEM_MANIFEST_SECTION);
 			// gets version
-			return at.getValue(ConfigKeys.JEM_MANIFEST_VERSION);
+			return at.getValue(what);
 		} catch (IOException e) {
 			// ignore the stack trace
 			LogAppl.getInstance().ignore(e.getMessage(), e);

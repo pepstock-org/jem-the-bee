@@ -72,7 +72,7 @@ public class RolesActions extends AbstractActionsButtonPanel<Role> {
 
 	private void addCreateButton() {
 		// checks if user has the permission to CREATE job 
-		if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_CREATE)) {
+		if (ClientPermissions.isAuthorized(Permissions.ROLES_CREATE)) {
 			Button createButton = new Button("New", new CreateButtonClickHandler());
 			add(createButton);
 			createButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -105,7 +105,7 @@ public class RolesActions extends AbstractActionsButtonPanel<Role> {
 	
 	private void addDeleteButton() {
 		// checks if user has the permission to REMOVE job 
-		if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_DELETE)) {
+		if (ClientPermissions.isAuthorized(Permissions.ROLES_DELETE)) {
 			Button removeButton = new Button("Remove", new RemoveButtonClickHandler());
 			add(removeButton);
 			removeButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());
@@ -143,7 +143,7 @@ public class RolesActions extends AbstractActionsButtonPanel<Role> {
 	
 	private void addCloneButton() {
 		// checks if user has the permission to CLONE job 
-		if (ClientPermissions.isAuthorized(Permissions.ROLES, Permissions.ROLES_CREATE)) {
+		if (ClientPermissions.isAuthorized(Permissions.ROLES_CREATE)) {
 			Button cloneButton = new Button("Clone", new CloneButtonClickHandler());
 			add(cloneButton);
 			cloneButton.addStyleName(Styles.INSTANCE.common().bigButtonPadding());

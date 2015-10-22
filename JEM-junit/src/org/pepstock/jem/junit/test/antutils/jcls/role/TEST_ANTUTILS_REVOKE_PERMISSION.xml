@@ -31,10 +31,10 @@
 	<property name="jem.job.affinity" value="affinity"/>
 	-->		
 
-	<taskdef name="roles" classname="org.pepstock.jem.ant.RolesTask" />
+	<taskdef name="roles" classname="org.pepstock.jem.ant.tasks.utilities.RolesTask" />
 
 	<target name="step1">
-		<roles license="Pepstock_JEM_AntUtil.license">
+		<roles>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					REVOKE jobs:* TO JunitRole;	

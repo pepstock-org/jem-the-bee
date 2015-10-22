@@ -71,13 +71,7 @@ public class CertificateAdderManagerServiceImpl extends FileUploadManager implem
 	        // checks is alias and certificate are correct
 	        if (alias != null){
 	        	if (certificate != null){
-	        		try {
-	        			// adds them!
-	                    manager.addCertificate(certificate, alias);
-	                } catch (Exception e) {
-	                	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG051E, e, e.getMessage());
-	                	throw new JemException(UserInterfaceMessage.JEMG051E.toMessage().getFormattedMessage(e.getMessage()));
-	                }
+	        		addCertificate(manager, certificate, alias);
 	        	} else {
 	        		// send Exception
 	        		throw new JemException(UserInterfaceMessage.JEMG050E.toMessage().getFormattedMessage(CertificateAdder.FILE_UPLOAD_FIELD));
@@ -91,6 +85,23 @@ public class CertificateAdderManagerServiceImpl extends FileUploadManager implem
         	LogAppl.getInstance().ignore(e.getMessage(), e);
         	throw new JemException(UserInterfaceMessage.JEMG051E.toMessage().getFormattedMessage(e.getMessage()));
     	}
+    }
+    
+    /**
+     * Adds the certificate
+     * @param manager the certificate manager
+     * @param certificate bytes of certificates
+     * @param alias alias to assign to certificate
+     * @throws JemException if any error occurs
+     */
+    private void addCertificate(CertificatesManager manager, byte[] certificate, String alias) throws JemException{
+		try {
+			// adds them!
+            manager.addCertificate(certificate, alias);
+        } catch (Exception e) {
+        	LogAppl.getInstance().emit(UserInterfaceMessage.JEMG051E, e, e.getMessage());
+        	throw new JemException(UserInterfaceMessage.JEMG051E.toMessage().getFormattedMessage(e.getMessage()));
+        }
     }
 
 }

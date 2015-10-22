@@ -36,6 +36,7 @@ import org.pepstock.jem.node.security.loginprotocol.ClientLoginProtocol;
 import org.pepstock.jem.node.security.loginprotocol.LoginRequest;
 import org.pepstock.jem.node.security.loginprotocol.ServerLoginProtocol;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.config.SocketInterceptorConfig;
 import com.hazelcast.nio.MemberSocketInterceptor;
@@ -52,6 +53,8 @@ import com.hazelcast.nio.MemberSocketInterceptor;
  * 
  */
 public class NodeInterceptor implements MemberSocketInterceptor {
+	
+	private static final int DEFAULT_SOCKET_TIMEOUT = 30 * (int)TimeUtils.SECOND;
 
 	private KeyStoresInfo keystoresInfo;
 
@@ -142,7 +145,7 @@ public class NodeInterceptor implements MemberSocketInterceptor {
 			// and no exception will be throw. In this way, after 30 second the
 			// server will throw an exception that will be present in the log of
 			// the jem node
-			acceptedSocket.setSoTimeout(30000);
+			acceptedSocket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
 			// get the printer to use to send the response to the client
 			PrintWriter out = new PrintWriter(new OutputStreamWriter(acceptedSocket.getOutputStream(), CharSet.DEFAULT), true);
 			// get the reader to read the request from the client
@@ -159,7 +162,7 @@ public class NodeInterceptor implements MemberSocketInterceptor {
 				out.println(outputResponse);
 				out.flush();
 				if (jemProtocol.isServerException()) {
-					Thread.sleep(1000);
+					Thread.sleep(TimeUtils.SECOND);
 					throw new NodeMessageException(NodeMessage.JEMC107W, callingSubject);
 				}
 				if (jemProtocol.isConversationTerminated()){

@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.pepstock.jem.Result;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.affinity.AffinityLoader;
@@ -212,6 +213,7 @@ public class Main {
 	
 	/**
 	 * List of java runtimes installed on the machine
+	 * the key os the tag for JVM and the value is the JAVA HOME
 	 */
 	private static final Map<String, String> JAVA_RUNTIMES = new HashMap<String, String>();
 	
@@ -246,7 +248,7 @@ public class Main {
 
 			// starts the configuration loading and sub component instantiation
 			StartUpSystem.run();
-			// starts a RMI regirty container for objects necessary from job
+			// starts a RMI registry container for objects necessary from job
 			// execution
 			// uses the TCP port defined for Hazelcast cluster, adding a
 			// constant number 200
@@ -268,17 +270,17 @@ public class Main {
 			waitState();
 
 		} catch (ConfigurationException e) {
-			// occurs when we have some misconfiguration. Node ends
+			// occurs when we have some mis-configuration. Node ends
 			LogAppl.getInstance().emit(NodeMessage.JEMC006E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		} catch (RemoteException e) {
 			// occurs when RMI registry is not able to start. Node ends
 			LogAppl.getInstance().emit(NodeMessage.JEMC007E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		} catch (NodeMessageException e) {
 			// occurs when the platform is not supported
 			LogAppl.getInstance().emit(NodeMessage.JEMC194E, e);
-			exitCode = 12;
+			exitCode = Result.FATAL;
 		}
 		// here starts shutdown hook
 		System.exit(exitCode);
