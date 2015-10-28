@@ -83,6 +83,7 @@ public class NodesManagerTest extends TestCase {
 		
 		NodeInfoBean newNode = RestManager.getInstance().getNodesManager().getNode(node.getKey());
 		assertNotNull(newNode);
+		Thread.sleep(5000);
 		if (!newNode.getExecutionEnvironment().getDomain().equalsIgnoreCase("NewDomain")){
 			throw new Exception("Unable to update node");
 		}

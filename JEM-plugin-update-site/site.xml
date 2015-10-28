@@ -3,7 +3,7 @@
    <description name="JEM, the BEE - Update Site for Eclipse" url="http://www.pepstock.org/jem/eclipse/plugin">
       JEM is java and cloud application which implements a batch execution environment which is able to manage the execution of job, described by a JCL.
    </description>
-   <feature url="features/org.pepstock.jem.plugin.feature_2.2.0.jar" id="org.pepstock.jem.plugin.feature" version="2.2">
+   <feature url="features/org.pepstock.jem.plugin.feature_2.3.0.jar" id="org.pepstock.jem.plugin.feature" version="2.3">
       <category name="org.pepstock.jem.plugin.category"/>
    </feature>
    <category-def name="org.pepstock.jem.plugin.category" label="JEM, the BEE - Eclipse Plugin"/>

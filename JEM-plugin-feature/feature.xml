@@ -2,7 +2,7 @@
 <feature
       id="org.pepstock.jem.plugin.feature"
       label="JEM, the BEE - Eclipse Plugin"
-      version="2.2"
+      version="2.3"
       provider-name="pepstock.org">
 
    <description url="http://www.pepstock.org/">
@@ -90,6 +90,8 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <url>
       <update label="JEM, the BEE - Update Site for Eclipse" url="http://www.pepstock.org/jem/eclipse/plugin"/>
+      <discovery label="JEM, the BEE - Official Site" url="http://jemthebee.org"/>
+      <discovery label="PepStock Community - Official Site" url="http://www.pepstock.org"/>
    </url>
 
    <requires>
@@ -106,7 +108,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="org.pepstock.jem.plugin"
          download-size="0"
          install-size="0"
-         version="2.2.0"
+         version="2.3"
          unpack="false"/>
 
 </feature>
