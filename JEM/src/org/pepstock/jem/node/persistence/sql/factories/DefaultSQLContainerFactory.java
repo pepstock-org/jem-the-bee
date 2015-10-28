@@ -14,10 +14,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.sql;
+package org.pepstock.jem.node.persistence.sql.factories;
 
-import org.pepstock.jem.node.persistence.SQLContainer;
-import org.pepstock.jem.node.persistence.SQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.SQLContainer;
+import org.pepstock.jem.node.persistence.sql.SQLContainerFactory;
 
 /**
  * Container of all SQL statements for Hazelcast persistence. This is a default, based on DB2 SQL 

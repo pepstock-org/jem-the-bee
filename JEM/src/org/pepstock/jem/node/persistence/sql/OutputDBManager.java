@@ -14,54 +14,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
-import java.util.Map;
+import org.pepstock.jem.node.Queues;
 
-import org.pepstock.jem.node.security.UserPreference;
+
 
 /**
- * Manages all SQL statements towards the database to persist the user preferences.<br>
+ * Manages all SQL statements towards the database to persist the commons
+ * resources.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4	
- *
+ * @version 1.0
+ * 
  */
-public class UserPreferencesDBManager extends AbstractDBManager<Map<String, UserPreference>>{
+public class OutputDBManager extends JobDBManager{
 
-	private static final UserPreferencesDBManager INSTANCE = new UserPreferencesDBManager();
-
+//	private static final OutputDBManager INSTANCE = new OutputDBManager();
+	
 	/**
-	 * Empty Constructor
+	 * To avoid any instantiation
 	 */
-	private UserPreferencesDBManager(){
+	OutputDBManager() {
+		super(Queues.OUTPUT_QUEUE);
 	}
 
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
+	 * instance of CommonResourcesDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized UserPreferencesDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
-	 */
-	@Override
-	public String getKey(Map<String, UserPreference> item) {
-		return null;
-	}
-	
+//	public static synchronized OutputDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 }

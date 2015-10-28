@@ -14,8 +14,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
+import org.pepstock.jem.node.Queues;
 
 
 /**
@@ -26,15 +27,15 @@ package org.pepstock.jem.node.persistence.database;
  * @version 1.0
  * 
  */
-public class OutputDBManager extends JobDBManager{
+public class RoutingDBManager extends JobDBManager{
 
-	private static final OutputDBManager INSTANCE = new OutputDBManager();
+//	private static final RoutingDBManager INSTANCE = new RoutingDBManager();
 	
 	/**
 	 * To avoid any instantiation
 	 */
-	private OutputDBManager() {
-		
+	RoutingDBManager() {
+		super(Queues.ROUTING_QUEUE);
 	}
 
 	/**
@@ -45,14 +46,14 @@ public class OutputDBManager extends JobDBManager{
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized OutputDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
+//	public static synchronized RoutingDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 }

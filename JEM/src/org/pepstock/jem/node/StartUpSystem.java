@@ -24,9 +24,6 @@ import java.lang.management.MemoryMXBean;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Key;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,26 +69,17 @@ import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
+import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.PreJobMapManager;
 import org.pepstock.jem.node.persistence.RecoveryManager;
-import org.pepstock.jem.node.persistence.SQLContainer;
-import org.pepstock.jem.node.persistence.SQLContainerFactory;
-import org.pepstock.jem.node.persistence.database.AbstractDBManager;
-import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
-import org.pepstock.jem.node.persistence.database.DBPoolManager;
-import org.pepstock.jem.node.persistence.database.InputDBManager;
-import org.pepstock.jem.node.persistence.database.JobDBManager;
-import org.pepstock.jem.node.persistence.database.NodesDBManager;
-import org.pepstock.jem.node.persistence.database.OutputDBManager;
-import org.pepstock.jem.node.persistence.database.PreJobDBManager;
-import org.pepstock.jem.node.persistence.database.RolesDBManager;
-import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
-import org.pepstock.jem.node.persistence.database.RoutingDBManager;
-import org.pepstock.jem.node.persistence.database.RunningDBManager;
-import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
-import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.DBPoolManager;
+import org.pepstock.jem.node.persistence.sql.JobDBManager;
+import org.pepstock.jem.node.persistence.sql.SQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
+import org.pepstock.jem.node.persistence.sql.factories.DB2SQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.DefaultSQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.MySqlSQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.OracleSQLContainerFactory;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesUtil;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
@@ -437,27 +425,28 @@ public class StartUpSystem {
 	 */
 	private static long calculateQueueSize() throws ConfigurationException {
 		try {
-			long inputQueueSize = InputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / KB);
-			long runningQueueSize = RunningDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / KB);
-
-			long outputQueueSize = OutputDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / KB);
-			long routingQueueSize = RoutingDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / KB);
-			long rolesSize = RolesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / KB);
-			long resourcesSize = CommonResourcesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / KB);
-			long checkingQueueSize = PreJobDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / KB);
-			long routingConfSize = RoutingConfigDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / KB);
-			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
-			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / KB);
-
-			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
+			return SQLDBManager.getSize();
+//			long inputQueueSize = InputDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / KB);
+//			long runningQueueSize = RunningDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / KB);
+//
+//			long outputQueueSize = OutputDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / KB);
+//			long routingQueueSize = RoutingDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / KB);
+//			long rolesSize = RolesDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / KB);
+//			long resourcesSize = CommonResourcesDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / KB);
+//			long checkingQueueSize = PreJobDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / KB);
+//			long routingConfSize = RoutingConfigDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / KB);
+//			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
+//			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / KB);
+//
+//			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
 		} catch (Exception e) {
 			throw new ConfigurationException(e);
 		}
@@ -537,7 +526,7 @@ public class StartUpSystem {
 		
 		// loads all jobs in check queue
 		try {
-			PreJobDBManager.getInstance().loadAll();
+			PreJobMapManager.getInstance().loadAll();
 		} catch (MessageException e) {
 			throw new ConfigurationException(e);
 		}
@@ -957,107 +946,29 @@ public class StartUpSystem {
 
 			DBPoolManager.getInstance().init();
 
-			InputDBManager.getInstance().setSqlContainer(engine.getSQLContainerForInputQueue());
-			RunningDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRunningQueue());
-			OutputDBManager.getInstance().setSqlContainer(engine.getSQLContainerForOutputQueue());
-			RoutingDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRoutingQueue());
+			SQLDBManager.setSQLContainer(Queues.INPUT_QUEUE, engine.getSQLContainerForInputQueue());
+			SQLDBManager.setSQLContainer(Queues.RUNNING_QUEUE, engine.getSQLContainerForRunningQueue());
+			SQLDBManager.setSQLContainer(Queues.OUTPUT_QUEUE, engine.getSQLContainerForOutputQueue());
+			SQLDBManager.setSQLContainer(Queues.ROUTING_QUEUE, engine.getSQLContainerForRoutingQueue());
+			SQLDBManager.setSQLContainer(Queues.JCL_CHECKING_QUEUE, engine.getSQLContainerForCheckingQueue());
 
-			PreJobDBManager.getInstance().setSqlContainer(engine.getSQLContainerForCheckingQueue());
+			SQLDBManager.setSQLContainer(Queues.ROLES_MAP, engine.getSQLContainerForRolesMap());
+			SQLDBManager.setSQLContainer(Queues.COMMON_RESOURCES_MAP, engine.getSQLContainerForCommonResourcesMap());
+			SQLDBManager.setSQLContainer(Queues.ROUTING_CONFIG_MAP, engine.getSQLContainerForRoutingConfigMap());
+			SQLDBManager.setSQLContainer(Queues.USER_PREFERENCES_MAP, engine.getSQLContainerForUserPreferencesMap());
+			
+			SQLDBManager.setSQLContainer(Queues.NODES_MAP, engine.getSQLContainerForNodesMap());
 
-			RolesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRolesMap());
-
-			CommonResourcesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForCommonResourcesMap());
-
-			RoutingConfigDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRoutingConfigMap());
-
-			UserPreferencesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForUserPreferencesMap());
-
-			NodesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForNodesMap());
-
-			// creates all necessary tables
-			createTables();
+			SQLDBManager.initAll();
 
 		} catch (SQLException e) {
 			throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(JobDBManager.class.getName()), e);
+		} catch (DatabaseException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e);
+			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
 		}
 	}
 	
-	/**
-	 * Creates all tbales necessary to persist Hazelcast maps.
-	 * @throws SQLException if any SQL error occurs
-	 * @throws ConfigurationException if any error occurs during the table creation
-	 */
-	private static void createTables() throws SQLException, ConfigurationException{
-		// gets the DB connection from pool
-		Connection conn = DBPoolManager.getInstance().getConnection();
-		try {
-			// gets metadata
-			DatabaseMetaData md = conn.getMetaData();
-			// checks input
-			checkAndCreateTable(md, InputDBManager.getInstance());
-			// checks running
-			checkAndCreateTable(md, RunningDBManager.getInstance());
-			// checks output
-			checkAndCreateTable(md, OutputDBManager.getInstance());
-			// checks routing
-			checkAndCreateTable(md, RoutingDBManager.getInstance());
-			// checks JCL checking table
-			checkAndCreateTable(md, PreJobDBManager.getInstance());
-			// checks nodes
-			checkAndCreateTable(md, NodesDBManager.getInstance());
-			// checks roles
-			checkAndCreateTable(md, RolesDBManager.getInstance());
-			// checks resources
-			checkAndCreateTable(md, CommonResourcesDBManager.getInstance());
-			// checks routing and swarm configuration
-			checkAndCreateTable(md, RoutingConfigDBManager.getInstance());
-			// checks user preferences
-			checkAndCreateTable(md, UserPreferencesDBManager.getInstance());
-
-		} catch (SQLException e1) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e1);
-			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
-		} finally {
-			// if connection not null
-			// it closes putting again on pool
-			if (conn != null) {
-				conn.close();
-			}
-		}
-	}
-
-	/**
-	 * Checks if the necessary tables exists on database. If not, it creates them.
-	 * @param md metadata of the database
-	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
-	 * @throws SQLException if any error occurs cheching the existence of tables
-	 */
-	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?> manager) throws SQLException {
-		ResultSet rs = null;
-		try {
-			// gets SQL container
-			SQLContainer container = manager.getSqlContainer();
-			// gets a result set which searches for the table anme
-			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE", "ALIAS" });
-			// if result set is empty, it creates the table
-			if (!rs.next()) {
-				// creates table and return a empty set because if empty of
-				// course
-				DBPoolManager.getInstance().create(container.getCreateTableStatement());
-			}
-		} finally {
-			// if result set is not null
-			// it closes the result set
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e) {
-					// ignoring any exception
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-				}
-			}
-		}
-	}
 
 	/**
 	 * load the factories of the jem configuration checking if they are

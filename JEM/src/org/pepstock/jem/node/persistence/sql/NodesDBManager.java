@@ -14,44 +14,55 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
+import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.Queues;
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the nodes.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
- * 
+ * @version 1.5	
+ *
  */
-public class InputDBManager extends JobDBManager{
+public class NodesDBManager extends AbstractDBManager<NodeInfo>{
 
-	private static final InputDBManager INSTANCE = new InputDBManager();
+//	private static final NodesDBManager INSTANCE = new NodesDBManager();
+
+	/**
+	 * Empty constructor
+	 */
+	NodesDBManager(){
+		super(Queues.NODES_MAP);
+	}
 	
 	/**
-	 * To avoid any instantiation
-	 */
-	private InputDBManager() {
-		
-	}
-
-	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
+	 * instance of JobDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized InputDBManager getInstance(){
-		return INSTANCE;
-	}
+//	public static synchronized NodesDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
+	@Override
+	public String getKey(NodeInfo item) {
+		return item.getKey();
 	}
+	
+	
 }

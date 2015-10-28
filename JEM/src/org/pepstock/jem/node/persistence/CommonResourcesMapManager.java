@@ -16,8 +16,7 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 import org.pepstock.jem.node.resources.Resource;
 
 /**
@@ -37,7 +36,7 @@ public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
 	 * Construct the object instantiating a new DBManager
 	 */
 	public CommonResourcesMapManager() {
-		super(Queues.COMMON_RESOURCES_MAP, CommonResourcesDBManager.getInstance(), true);
+		super(SQLDBManager.RESOURCES.getManager(Resource.class), true);
 		CommonResourcesMapManager.setInstance(this);
 	}
 	

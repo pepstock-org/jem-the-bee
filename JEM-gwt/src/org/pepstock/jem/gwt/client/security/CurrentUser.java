@@ -119,7 +119,7 @@ public class CurrentUser {
 	 */
 	public String getStringPreference(String key){
 		if (key != null){
-			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().get(key);
+			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().getPreferences().get(key);
 			if (pref != null && pref.getValueString() != null){
 				return pref.getValueString();
 			}
@@ -134,7 +134,7 @@ public class CurrentUser {
 	 */
 	public List<String> getListPreference(String key){
 		if (key != null){
-			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().get(key);
+			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().getPreferences().get(key);
 			if (pref != null && !(pref.getValueString() != null)){
 				return pref.getValueList();
 			}
@@ -149,12 +149,12 @@ public class CurrentUser {
 	 */
 	public void setStringPreference(String key, String value){
 		if (key != null){
-			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().get(key);
+			UserPreference pref = CurrentUser.getInstance().getUser().getPreferences().getPreferences().get(key);
 			if (pref == null){
 				pref = new UserPreference();
 			}
 			pref.setValueString(value);
-			getUser().getPreferences().put(key, pref);
+			getUser().getPreferences().getPreferences().put(key, pref);
 			setLastUpdateTime();
 		}
 	}
@@ -168,7 +168,7 @@ public class CurrentUser {
 		if (key != null){
 			UserPreference pref = new UserPreference();
 			pref.setValueList(values);
-			getUser().getPreferences().put(key, pref);
+			getUser().getPreferences().getPreferences().put(key, pref);
 			setLastUpdateTime();
 		}
 	}

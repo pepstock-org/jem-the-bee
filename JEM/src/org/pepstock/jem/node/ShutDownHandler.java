@@ -19,7 +19,7 @@ package org.pepstock.jem.node;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.database.DBPoolManager;
+import org.pepstock.jem.node.persistence.sql.DBPoolManager;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.ILock;

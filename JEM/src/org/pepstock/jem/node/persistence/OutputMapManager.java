@@ -17,8 +17,7 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.OutputDBManager;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 
 /**
  * Persistent manager for OUTPUT queue.<br>
@@ -37,7 +36,7 @@ public class OutputMapManager extends AbstractMapManager<Job> {
 	 * Construct the object instantiating a new DBManager
 	 */
 	public OutputMapManager() {
-		super(Queues.OUTPUT_QUEUE, OutputDBManager.getInstance(), true);
+		super(SQLDBManager.OUTPUT.getManager(Job.class), true);
 		OutputMapManager.setInstance(this);
 	}
 	

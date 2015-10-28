@@ -16,9 +16,8 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
-import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 
 /**
  * Persistent manager for RoutingConfs map.<br>
@@ -32,6 +31,6 @@ public class RoutingConfigMapManager extends AbstractMapManager<SwarmConfigurati
 	 * Construct the object instantiating a new DBManager
 	 */
 	public RoutingConfigMapManager() {
-		super(Queues.ROUTING_CONFIG_MAP, RoutingConfigDBManager.getInstance(), false);
+		super(SQLDBManager.ROUTING_CONFIG.getManager(SwarmConfiguration.class), false);
 	}
 }

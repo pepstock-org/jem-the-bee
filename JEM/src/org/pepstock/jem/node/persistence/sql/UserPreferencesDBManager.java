@@ -14,27 +14,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
-import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.security.UserPreferences;
 
 /**
- * Manages all SQL statements towards the database to persist the nodes.<br>
+ * Manages all SQL statements towards the database to persist the user preferences.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.5	
+ * @version 1.4	
  *
  */
-public class NodesDBManager extends AbstractDBManager<NodeInfo>{
+public class UserPreferencesDBManager extends AbstractDBManager<UserPreferences>{
 
-	private static final NodesDBManager INSTANCE = new NodesDBManager();
+//	private static final UserPreferencesDBManager INSTANCE = new UserPreferencesDBManager();
 
 	/**
-	 * Empty constructor
+	 * Empty Constructor
 	 */
-	private NodesDBManager(){
+	UserPreferencesDBManager(){
+		super(Queues.USER_PREFERENCES_MAP);
 	}
-	
+
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
 	 * instance of JobDBManager.<br>
@@ -43,24 +45,23 @@ public class NodesDBManager extends AbstractDBManager<NodeInfo>{
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized NodesDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
+//	public static synchronized UserPreferencesDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */
 	@Override
-	public String getKey(NodeInfo item) {
-		return item.getKey();
+	public String getKey(UserPreferences item) {
+		return item.getId();
 	}
-	
 	
 }

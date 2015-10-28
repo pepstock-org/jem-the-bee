@@ -14,44 +14,54 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
+import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.security.Role;
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the roles.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
- * 
+ * @version 1.0	
+ *
  */
-public class RunningDBManager extends JobDBManager{
+public class RolesDBManager extends AbstractDBManager<Role> {
 
-	private static final RunningDBManager INSTANCE = new RunningDBManager();
-	
+//	private static final RolesDBManager INSTANCE = new RolesDBManager();
+
 	/**
-	 * To avoid any instantiation
+	 * Empty constructor
 	 */
-	private RunningDBManager() {
-		
+	RolesDBManager(){
+		super(Queues.ROLES_MAP);
 	}
 
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
+	 * instance of JobDBManager.<br>
 	 * You must ONLY one instance of this per JVM instance.<br>
 	 * 
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized RunningDBManager getInstance(){
-		return INSTANCE;
+//	public static synchronized RolesDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
+	 */
+	@Override
+	public String getKey(Role item) {
+		return item.getName();
 	}
 
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
 }

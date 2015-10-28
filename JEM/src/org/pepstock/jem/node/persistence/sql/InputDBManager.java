@@ -14,10 +14,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
-import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.XmlUtil;
+import org.pepstock.jem.node.Queues;
+
 
 /**
  * Manages all SQL statements towards the database to persist the commons
@@ -27,15 +27,15 @@ import org.pepstock.jem.node.resources.XmlUtil;
  * @version 1.0
  * 
  */
-public class CommonResourcesDBManager extends AbstractDBManager<Resource>{
+public class InputDBManager extends JobDBManager{
 
-	private static final CommonResourcesDBManager INSTANCE = new CommonResourcesDBManager();
+//	private static final InputDBManager INSTANCE = new InputDBManager();
 	
 	/**
 	 * To avoid any instantiation
 	 */
-	private CommonResourcesDBManager() {
-		super(XmlUtil.getXStream());
+	InputDBManager() {
+		super(Queues.INPUT_QUEUE);
 	}
 
 	/**
@@ -46,22 +46,14 @@ public class CommonResourcesDBManager extends AbstractDBManager<Resource>{
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized CommonResourcesDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
-	 */
-	@Override
-	public String getKey(Resource item) {
-		return item.getName();
-	}
+//	public static synchronized InputDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 }

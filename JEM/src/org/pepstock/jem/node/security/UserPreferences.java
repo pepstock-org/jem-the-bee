@@ -14,30 +14,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.sql;
+package org.pepstock.jem.node.security;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Contains all DB2 SQL for Hazelcast persistence
- * 
  * @author Andrea "Stock" Stocchero
- * @version 2.2
+ * @version 2.3
  */
-public class DB2SQLContainerFactory extends DefaultSQLContainerFactory {
+public class UserPreferences implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
+	private String id = null;
+	
+	private Map<String, UserPreference> preferences = new HashMap<String, UserPreference>();
+
 	/**
-	 * is the type of the database in this case mysql
+	 * @return the id
 	 */
-	public static final String DATABASE_TYPE = "db2";
-	
-	private static final String TEST_CONNECTION_SQL_QUERY = "SELECT CURRENT DATE FROM SYSIBM.SYSDUMMY1";
-
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.SQLContainerFactory#getTestConnectionSQL()
-	 */
-	@Override
-	public String getKeepAliveConnectionSQL() {
-		return TEST_CONNECTION_SQL_QUERY;
+	public String getId() {
+		return id;
 	}
-	
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the preferences
+	 */
+	public Map<String, UserPreference> getPreferences() {
+		return preferences;
+	}
+
+	/**
+	 * @param preferences the preferences to set
+	 */
+	public void setPreferences(Map<String, UserPreference> preferences) {
+		this.preferences = preferences;
+	}
+
 }

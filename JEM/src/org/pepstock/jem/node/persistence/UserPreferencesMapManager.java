@@ -16,11 +16,8 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import java.util.Map;
-
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
-import org.pepstock.jem.node.security.UserPreference;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
+import org.pepstock.jem.node.security.UserPreferences;
 
 /**
  * Persistent manager for RoutingConfs map.<br>
@@ -28,13 +25,13 @@ import org.pepstock.jem.node.security.UserPreference;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class UserPreferencesMapManager extends AbstractMapManager<Map<String, UserPreference>> {
+public class UserPreferencesMapManager extends AbstractMapManager<UserPreferences> {
 
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
 	public UserPreferencesMapManager() {
-		super(Queues.USER_PREFERENCES_MAP, UserPreferencesDBManager.getInstance(), false);
+		super(SQLDBManager.USER_PREFERENCES.getManager(UserPreferences.class), false);
 	}
 
 }

@@ -14,9 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
@@ -30,11 +29,11 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.Recoverable;
 import org.pepstock.jem.node.persistence.RecoveryManager;
 import org.pepstock.jem.node.persistence.RedoManager;
 import org.pepstock.jem.node.persistence.RedoStatement;
-import org.pepstock.jem.node.persistence.SQLContainer;
 
 import com.hazelcast.core.IQueue;
 
@@ -46,7 +45,7 @@ import com.hazelcast.core.IQueue;
  */
 public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recoverable{ 
 
-	private static final PreJobDBManager INSTANCE = new PreJobDBManager();
+//	private static final PreJobDBManager INSTANCE = new PreJobDBManager();
 	
 	private RedoManager<PreJob> redoManager = new RedoManager<PreJob>(Queues.JCL_CHECKING_QUEUE);
 	
@@ -55,7 +54,8 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 * 
 	 * @throws Exception occurs if an error
 	 */
-	private PreJobDBManager(){
+	PreJobDBManager(){
+		super(Queues.JCL_CHECKING_QUEUE);
 	}
 
 	/**
@@ -66,16 +66,16 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized PreJobDBManager getInstance() {
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
+//	public static synchronized PreJobDBManager getInstance() {
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
@@ -101,10 +101,9 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 */
 	public void store(PreJob preJob) throws MessageException {
 		try {
-			SQLContainer sql = getSqlContainer();
 			// inserts the job in table
-			insert(sql.getInsertStatement(), preJob.getJob().getId(), preJob);
-		} catch (SQLException e) {
+			insert(preJob.getJob().getId(), preJob);
+		} catch (DatabaseException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);
 		}
 	}
@@ -118,15 +117,13 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 			// puts the pre job in a queue for validating and moving to right QUEUE
 			// (input if is correct, output if is wrong)
 			IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
-
-			SQLContainer sql = getSqlContainer();
 			// load job instance from table
-			Map<String, PreJob> prejobs = getAllItems(sql.getGetAllStatement());
+			Map<String, PreJob> prejobs = getAllItems();
 			LogAppl.getInstance().emit(NodeMessage.JEMC048I, String.valueOf(prejobs.size()), Queues.JCL_CHECKING_QUEUE);
 			for (PreJob prejob : prejobs.values()){
 					jclCheckingQueue.put(prejob);
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);
 		} catch (Exception e) {
 			throw new MessageException(SubmitMessage.JEMW003E, e);
@@ -155,7 +152,7 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	public void check() throws JemException {
 		try {
 			getSize();
-		} catch (SQLException e) {
+		} catch (DatabaseException e) {
 			throw new JemException(e);
 		}
 	}
@@ -169,16 +166,15 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 */
 	void delete(String id, boolean exception) {
 		try {
-			SQLContainer sql = getSqlContainer();
 			// deletes the job in table
-			delete(sql.getDeleteStatement(), id);
+			delete(id);
 			// if you don't want the exception
 			// means it has been called by recovery manager
 			if (!exception){
 				// checks and resets of attributes of node
 				checkNodeStatus();
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseException e) {
 			// if exception, it throws the exception
 			if (exception) {
 				throw new MessageRuntimeException(NodeMessage.JEMC043E, e);

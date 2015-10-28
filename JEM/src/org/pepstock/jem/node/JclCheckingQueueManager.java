@@ -37,7 +37,7 @@ import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
-import org.pepstock.jem.node.persistence.database.PreJobDBManager;
+import org.pepstock.jem.node.persistence.PreJobMapManager;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.RegExpPermission;
 import org.pepstock.jem.node.security.Role;
@@ -158,7 +158,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		Job job = prejob.getJob();
 		try {
 			// removes from queue
-			PreJobDBManager.getInstance().delete(prejob);
+			PreJobMapManager.getInstance().delete(prejob);
 			// using the factory, validates, checks and loads JCL into JOB
 			Factory.loadJob(prejob);
 			// check if user is grant for job submitting

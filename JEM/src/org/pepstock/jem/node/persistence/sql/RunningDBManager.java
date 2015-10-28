@@ -14,7 +14,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
+
+import org.pepstock.jem.node.Queues;
 
 
 /**
@@ -25,33 +27,33 @@ package org.pepstock.jem.node.persistence.database;
  * @version 1.0
  * 
  */
-public class RoutingDBManager extends JobDBManager{
+public class RunningDBManager extends JobDBManager{
 
-	private static final RoutingDBManager INSTANCE = new RoutingDBManager();
+//	private static final RunningDBManager INSTANCE = new RunningDBManager();
 	
 	/**
 	 * To avoid any instantiation
 	 */
-	private RoutingDBManager() {
-		
+	public RunningDBManager() {
+		super(Queues.RUNNING_QUEUE);
 	}
 
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-	public static synchronized RoutingDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
+//	/**
+//	 * Is a static method (typical of a singleton) that returns the unique
+//	 * instance of CommonResourcesDBManager.<br>
+//	 * You must ONLY one instance of this per JVM instance.<br>
+//	 * 
+//	 * @return manager instance
+//	 * @throws Exception
+//	 */
+//	public static synchronized RunningDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 }

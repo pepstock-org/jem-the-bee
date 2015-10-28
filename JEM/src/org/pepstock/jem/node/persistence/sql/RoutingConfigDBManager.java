@@ -14,8 +14,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.database;
+package org.pepstock.jem.node.persistence.sql;
 
+import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 
 /**
@@ -27,12 +28,13 @@ import org.pepstock.jem.node.configuration.SwarmConfiguration;
  */
 public class RoutingConfigDBManager extends AbstractDBManager<SwarmConfiguration>{
 
-	private static final RoutingConfigDBManager INSTANCE = new RoutingConfigDBManager();
+//	private static final RoutingConfigDBManager INSTANCE = new RoutingConfigDBManager();
 
 	/**
 	 * 
 	 */
-	private RoutingConfigDBManager(){
+	RoutingConfigDBManager(){
+		super(Queues.ROUTING_CONFIG_MAP);
 	}
 
 	/**
@@ -43,16 +45,16 @@ public class RoutingConfigDBManager extends AbstractDBManager<SwarmConfiguration
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized RoutingConfigDBManager getInstance(){
-		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
-	}
+//	public static synchronized RoutingConfigDBManager getInstance(){
+//		return INSTANCE;
+//	}
+//
+//	/**
+//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
+//	 */
+//	public static boolean isInstanciated(){
+//		return INSTANCE != null;
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

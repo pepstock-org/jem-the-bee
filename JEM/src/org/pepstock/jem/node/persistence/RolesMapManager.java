@@ -16,8 +16,7 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.RolesDBManager;
+import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 import org.pepstock.jem.node.security.Role;
 
 /**
@@ -34,7 +33,7 @@ public class RolesMapManager extends AbstractMapManager<Role> {
 	 * Construct the object instantiating a new DBManager
 	 */
 	public RolesMapManager() {
-		super(Queues.ROLES_MAP, RolesDBManager.getInstance(), true);
+		super(SQLDBManager.ROLES.getManager(Role.class), true);
 		RolesMapManager.setInstance(this);
 	}
 	
