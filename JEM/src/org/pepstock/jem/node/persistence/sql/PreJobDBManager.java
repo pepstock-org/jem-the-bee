@@ -44,45 +44,23 @@ import com.hazelcast.core.IQueue;
  * 
  */
 public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recoverable{ 
-
-//	private static final PreJobDBManager INSTANCE = new PreJobDBManager();
 	
 	private RedoManager<PreJob> redoManager = new RedoManager<PreJob>(Queues.JCL_CHECKING_QUEUE);
 	
 	/**
-	 * Calls super class to create the connection
-	 * 
-	 * @throws Exception occurs if an error
+	 * Creates the DB manager
+	 * @param factory SQL factory
 	 */
-	PreJobDBManager(){
-		super(Queues.JCL_CHECKING_QUEUE);
+	public PreJobDBManager(SQLContainerFactory factory){
+		super(Queues.JCL_CHECKING_QUEUE, factory.getSQLContainerForCheckingQueue());
 	}
-
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized PreJobDBManager getInstance() {
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */
 	@Override
 	public String getKey(PreJob item) {
-		return item.getJob().getId();
+		return item.getId();
 	}
 	
 	/**
@@ -91,7 +69,7 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	 * @throws MessageException if any error occurs
 	 */
 	public void delete(PreJob preJob) {
-		delete(preJob.getJob().getId(), false);
+		delete(preJob.getId(), false);
 	}
 
 	/**
@@ -102,7 +80,7 @@ public class PreJobDBManager extends AbstractDBManager<PreJob> implements Recove
 	public void store(PreJob preJob) throws MessageException {
 		try {
 			// inserts the job in table
-			insert(preJob.getJob().getId(), preJob);
+			insert(preJob);
 		} catch (DatabaseException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);
 		}

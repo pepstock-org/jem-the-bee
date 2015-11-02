@@ -28,33 +28,13 @@ import org.pepstock.jem.node.security.UserPreferences;
  */
 public class UserPreferencesDBManager extends AbstractDBManager<UserPreferences>{
 
-//	private static final UserPreferencesDBManager INSTANCE = new UserPreferencesDBManager();
-
 	/**
-	 * Empty Constructor
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	UserPreferencesDBManager(){
-		super(Queues.USER_PREFERENCES_MAP);
+	public UserPreferencesDBManager(SQLContainerFactory factory){
+		super(Queues.USER_PREFERENCES_MAP, factory.getSQLContainerForUserPreferencesMap());
 	}
-
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized UserPreferencesDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

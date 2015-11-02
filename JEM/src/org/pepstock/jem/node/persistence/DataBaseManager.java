@@ -29,7 +29,7 @@ import java.util.Set;
  * @param <T> object stored in Hazelcast map 
  * 
  */
-public interface AbstractDataBaseManager<T>{
+public interface DataBaseManager<T>{
 	
 	/**
 	 * Returns the Hazelcast queue name
@@ -60,15 +60,6 @@ public interface AbstractDataBaseManager<T>{
 	void insert(T item) throws DatabaseException ;
 	
 	/**
-	 * Inserts a item in table
-	 * 
-	 * @param key key to be used to add item or null
-	 * @param item instance to add
-	 * @throws DatabaseException if occurs
-	 */
-	void insert(String key, T item) throws DatabaseException;
-
-	/**
 	 * Updates the resource instance by resource name
 	 * 
 	 * @param item resource instance to serialize
@@ -76,14 +67,6 @@ public interface AbstractDataBaseManager<T>{
 	 */
 	void update(T item) throws DatabaseException;
 	
-	/**
-	 * Updates the resource instance by resource name
-	 * 
-	 * @param key key to be used to update item or null
-	 * @param item resource instance to serialize
-	 * @throws DatabaseException if occurs
-	 */
-	void update(String key, T item) throws DatabaseException;
 	/**
 	 * Returns all resource names (keys) in a Set object (asked by Hazelcast
 	 * framework).

@@ -29,7 +29,6 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 
 import com.hazelcast.core.IQueue;
 
@@ -41,9 +40,9 @@ import com.hazelcast.core.IQueue;
  */
 public class PreJobMapManager implements Recoverable{ 
 
-	private static final PreJobMapManager INSTANCE = new PreJobMapManager();
+	private static PreJobMapManager INSTANCE = null;
 	
-	private AbstractDataBaseManager<PreJob> dbManager = null;
+	private DataBaseManager<PreJob> dbManager = null;
 	
 	private RedoManager<PreJob> redoManager = new RedoManager<PreJob>(Queues.JCL_CHECKING_QUEUE);
 	
@@ -52,10 +51,39 @@ public class PreJobMapManager implements Recoverable{
 	 * 
 	 * @throws Exception occurs if an error
 	 */
-	PreJobMapManager(){
-		dbManager = SQLDBManager.PREJOB.getManager(PreJob.class);
+	private PreJobMapManager(DataBaseManager<PreJob> dbManager){
+		this.dbManager = dbManager;
 	}
 
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static synchronized PreJobMapManager createInstance(DataBaseManager<PreJob> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new PreJobMapManager(dbManager);
+		}
+		return INSTANCE;
+	}
+	
+	/**
+	 * Queries on DB to get the estimated size of map
+	 * @return total amount of bytes 
+	 * @throws DatabaseException if any DB error occurs
+	 */
+	public long getSize() throws DatabaseException{
+		return dbManager.getSize();
+	}
+	
+	/**
+	 * Checks if persistence objects are available and creates that if not
+	 * @throws DatabaseException if any DB 
+	 */
+	public void checkAndCreate() throws DatabaseException {
+		dbManager.checkAndCreate();
+	}
+	
 	/**
 	 * Is a static method (typical of a singleton) that returns the unique
 	 * instance of JobDBManager.<br>
@@ -64,15 +92,8 @@ public class PreJobMapManager implements Recoverable{
 	 * @return manager instance
 	 * @throws Exception
 	 */
-	public static synchronized PreJobMapManager getInstance() {
+	public static PreJobMapManager getInstance() {
 		return INSTANCE;
-	}
-
-	/**
-	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-	 */
-	public static boolean isInstanciated(){
-		return INSTANCE != null;
 	}
 	
 	/**
@@ -92,7 +113,7 @@ public class PreJobMapManager implements Recoverable{
 	public void store(PreJob preJob) throws MessageException {
 		try {
 			// inserts the job in table
-			dbManager.insert(preJob.getJob().getId(), preJob);
+			dbManager.insert(preJob);
 		} catch (DatabaseException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);
 		}
@@ -109,9 +130,11 @@ public class PreJobMapManager implements Recoverable{
 			IQueue<PreJob> jclCheckingQueue = Main.getHazelcast().getQueue(Queues.JCL_CHECKING_QUEUE);
 			// load job instance from table
 			Map<String, PreJob> prejobs = dbManager.getAllItems();
-			LogAppl.getInstance().emit(NodeMessage.JEMC048I, String.valueOf(prejobs.size()), Queues.JCL_CHECKING_QUEUE);
-			for (PreJob prejob : prejobs.values()){
+			if (prejobs != null){
+				LogAppl.getInstance().emit(NodeMessage.JEMC048I, String.valueOf(prejobs.size()), Queues.JCL_CHECKING_QUEUE);
+				for (PreJob prejob : prejobs.values()){
 					jclCheckingQueue.put(prejob);
+				}
 			}
 		} catch (DatabaseException e) {
 			throw new MessageException(NodeMessage.JEMC043E, e);

@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 import org.pepstock.jem.node.security.Role;
 
 /**
@@ -30,11 +29,23 @@ public class RolesMapManager extends AbstractMapManager<Role> {
 	private static RolesMapManager INSTANCE = null;
 
 	/**
-	 * Construct the object instantiating a new DBManager
+	 * Construct the object using a DBManager
+	 * @param dbManager DB manager
 	 */
-	public RolesMapManager() {
-		super(SQLDBManager.ROLES.getManager(Role.class), true);
-		RolesMapManager.setInstance(this);
+	private RolesMapManager(DataBaseManager<Role> dbManager) {
+		super(dbManager, true);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static RolesMapManager createInstance(DataBaseManager<Role> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new RolesMapManager(dbManager);
+		}
+		return INSTANCE;
 	}
 	
 	/**
@@ -42,12 +53,5 @@ public class RolesMapManager extends AbstractMapManager<Role> {
 	 */
 	public static RolesMapManager getInstance() {
 		return INSTANCE;
-	}
-
-	/**
-	 * @param instance the instance to set
-	 */
-	private static void setInstance(RolesMapManager instance) {
-		INSTANCE = instance;
 	}
 }

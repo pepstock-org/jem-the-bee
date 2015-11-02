@@ -20,40 +20,19 @@ import org.pepstock.jem.node.Queues;
 
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the jobs in ROUTING queue.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
  * 
  */
 public class RoutingDBManager extends JobDBManager{
-
-//	private static final RoutingDBManager INSTANCE = new RoutingDBManager();
 	
 	/**
-	 * To avoid any instantiation
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	RoutingDBManager() {
-		super(Queues.ROUTING_QUEUE);
+	public RoutingDBManager(SQLContainerFactory factory) {
+		super(Queues.ROUTING_QUEUE, factory.getSQLContainerForRoutingQueue());
 	}
-
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized RoutingDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 }

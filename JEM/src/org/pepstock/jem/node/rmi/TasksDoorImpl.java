@@ -20,6 +20,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.Step;
 import org.pepstock.jem.log.LogAppl;
@@ -68,7 +69,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 	 * @see org.pepstock.jem.node.rmi.TasksDoor#setJobStarted(java.lang.String, java.lang.String, java.util.Properties)
 	 */
 	@Override
-	public JobStartedObjects setJobStarted(String jobId, String processId,  Map<String, Object> props) throws RemoteException {
+	public JobStartedObjects setJobStarted(String jobId, String processId,  Map<String, String> props) throws RemoteException {
 		// gets current task by job id
 		CancelableTask task = getCurrentTask(jobId);
 		
@@ -89,11 +90,13 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 				storedJob.setProcessId(processId);
 				// replaces job instance in queue
 				if (props != null && !props.isEmpty()){
-					Map<String, Object> jclProps = storedJob.getJcl().getProperties();
+					PropertiesWrapper jclProps = storedJob.getJcl().getProperties();
 					if (jclProps != null){
 						jclProps.putAll(props);
 					} else {
-						storedJob.getJcl().setProperties(props);
+						PropertiesWrapper newProps = new PropertiesWrapper();
+						newProps.putAll(props);
+						storedJob.getJcl().setProperties(newProps);
 					}
 				}
 				runningQueue.replace(storedJob.getId(), storedJob);

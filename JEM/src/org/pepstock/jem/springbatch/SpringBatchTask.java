@@ -18,11 +18,11 @@ package org.pepstock.jem.springbatch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.tasks.DefaultJobTask;
@@ -100,7 +100,7 @@ public class SpringBatchTask extends DefaultJobTask {
 		JavaCommand jCommand = getCommand();
 		jCommand.setClassPath(currentClassPath);
 		
-		Map<String, Object> jclMap = jcl.getProperties();
+		PropertiesWrapper jclMap = jcl.getProperties();
 		String sbParms = null;
 		if (jclMap.containsKey(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE)){
 			sbParms = jclMap.get(JemBeanDefinitionParser.PARAMETERS_ATTRIBUTE).toString();

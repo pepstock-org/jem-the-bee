@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 import org.pepstock.jem.node.resources.Resource;
 
 /**
@@ -34,10 +33,22 @@ public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
 
 	/**
 	 * Construct the object instantiating a new DBManager
+	 * @param dbManager database manager
 	 */
-	public CommonResourcesMapManager() {
-		super(SQLDBManager.RESOURCES.getManager(Resource.class), true);
-		CommonResourcesMapManager.setInstance(this);
+	private CommonResourcesMapManager(DataBaseManager<Resource> dbManager) {
+		super(dbManager, true);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static CommonResourcesMapManager createInstance(DataBaseManager<Resource> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new CommonResourcesMapManager(dbManager);
+		}
+		return INSTANCE;
 	}
 	
 	/**
@@ -46,12 +57,4 @@ public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
 	public static CommonResourcesMapManager getInstance() {
 		return INSTANCE;
 	}
-
-	/**
-	 * @param instance the instance to set
-	 */
-	private static void setInstance(CommonResourcesMapManager instance) {
-		INSTANCE = instance;
-	}
-
 }

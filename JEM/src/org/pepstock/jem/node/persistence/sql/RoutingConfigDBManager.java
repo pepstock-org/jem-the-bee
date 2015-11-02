@@ -28,33 +28,13 @@ import org.pepstock.jem.node.configuration.SwarmConfiguration;
  */
 public class RoutingConfigDBManager extends AbstractDBManager<SwarmConfiguration>{
 
-//	private static final RoutingConfigDBManager INSTANCE = new RoutingConfigDBManager();
-
 	/**
-	 * 
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	RoutingConfigDBManager(){
-		super(Queues.ROUTING_CONFIG_MAP);
+	public RoutingConfigDBManager(SQLContainerFactory factory){
+		super(Queues.ROUTING_CONFIG_MAP, factory.getSQLContainerForRoutingConfigMap());
 	}
-
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized RoutingConfigDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

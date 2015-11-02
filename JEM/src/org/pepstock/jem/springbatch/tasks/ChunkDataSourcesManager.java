@@ -19,7 +19,6 @@ package org.pepstock.jem.springbatch.tasks;
 import java.io.File;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +30,7 @@ import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.DataPathsContainer;
 import org.pepstock.jem.node.configuration.ConfigKeys;
@@ -118,7 +118,7 @@ public final class ChunkDataSourcesManager {
 			for (Property property : source.getProperties()) {
 				if (property.isCustom()){
 					if (res.getCustomProperties() == null){
-						res.setCustomProperties(new HashMap<String, String>());
+						res.setCustomProperties(new PropertiesWrapper());
 					}
 					if (!res.getCustomProperties().containsKey(property.getName())){
 						res.getCustomProperties().put(property.getName(), property.getValue());

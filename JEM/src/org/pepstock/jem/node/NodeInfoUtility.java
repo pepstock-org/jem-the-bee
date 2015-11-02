@@ -60,8 +60,6 @@ public class NodeInfoUtility {
 
     private static final Sigar SIGAR = new Sigar();
 
-    private static final NodesMapManager MANAGER = new NodesMapManager();
-
     /**
 	 * Private constructor to avoid new instantiations
 	 */
@@ -250,8 +248,8 @@ public class NodeInfoUtility {
                 membersMap.replace(info.getKey(), info);
             }
             // if it must be persit, persist!!!
-            if (hasToStore) {
-                MANAGER.store(info.getKey(), info);
+            if (hasToStore){
+            	NodesMapManager.getInstance().store(info.getKey(), info);
             }
         } catch (Exception ex) {
             LogAppl.getInstance().emit(NodeMessage.JEMC174E, ex);
@@ -270,12 +268,12 @@ public class NodeInfoUtility {
 
         try {
         	// scans all nodes on databases
-            for (String key : MANAGER.loadAllKeys()) {
+            for (String key : NodesMapManager.getInstance().loadAllKeys()) {
                 try {
                 	// locks map and delete if not exist
                     nodesMap.lock(key);
                     if (!nodesMap.containsKey(key)) {
-                        MANAGER.delete(key);
+                    	NodesMapManager.getInstance().delete(key);
                     }
                 } finally {
                 	// always unlock
@@ -288,32 +286,32 @@ public class NodeInfoUtility {
     }
 
     /**
-     * gets the node reading the inforamtion from mapstore
+     * gets the node reading the inforamMation from mapstore
      * 
      * @param key key of node
      * @return NodeInfo node instance or null if is not on the database
      */
     public static NodeInfo getNodeInfoFromMapStore(String key) {
-        try {
-        	// loads the node from database
-            return MANAGER.load(key);
-        } catch (Exception e) {
-        	LogAppl.getInstance().debug(e.getMessage(), e);
-        }
+    	try {
+    		// loads the node from database
+    		return NodesMapManager.getInstance().load(key);
+    	} catch (Exception e) {
+    		LogAppl.getInstance().debug(e.getMessage(), e);
+    	}
         return null;
     }
 
     /**
      * Removes a node information by key from mapstore
-     * @param key unique key of node insatnce
+     * @param key unique key of node instance
      */
     public static void removeNodeInfoFromMapStore(String key) {
-        try {
-        	// removes from database
-            MANAGER.delete(key);
-        } catch (Exception e) {
-        	LogAppl.getInstance().debug(e.getMessage(), e);
-        }
+    	try {
+    		// removes from database
+    		NodesMapManager.getInstance().delete(key);
+    	} catch (Exception e) {
+    		LogAppl.getInstance().debug(e.getMessage(), e);
+    	}
     }
 
     /**

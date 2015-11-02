@@ -17,13 +17,10 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 
 /**
  * Persistent manager for ROUTING queue.<br>
- * It uses DBManager instance to perform all sqls.<br>
- * It throws MapStoreException if the database manager has errors but Hazelcast
- * is not able to catch them, so it logs all errors.<br>
+ * It uses database Manager instance to perform all operations.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -33,11 +30,23 @@ public class RoutingMapManager extends AbstractMapManager<Job> {
 	private static RoutingMapManager INSTANCE = null; 
 
 	/**
-	 * Construct the object instantiating a new DBManager
+	 * Construct the object using a DBManager
+	 * @param dbManager DB manager
 	 */
-	public RoutingMapManager() {
-		super(SQLDBManager.ROUTING.getManager(Job.class), true);
-		RoutingMapManager.setInstance(this);
+	private RoutingMapManager(DataBaseManager<Job> dbManager) {
+		super(dbManager, true);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static RoutingMapManager createInstance(DataBaseManager<Job> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new RoutingMapManager(dbManager);
+		}
+		return INSTANCE;
 	}
 	
 	/**
@@ -45,12 +54,5 @@ public class RoutingMapManager extends AbstractMapManager<Job> {
 	 */
 	public static RoutingMapManager getInstance() {
 		return INSTANCE;
-	}
-
-	/**
-	 * @param instance the instance to set
-	 */
-	private static void setInstance(RoutingMapManager instance) {
-		INSTANCE = instance;
 	}
 }

@@ -16,10 +16,9 @@
 */
 package org.pepstock.jem.node.resources;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 import com.thoughtworks.xstream.converters.Converter;
@@ -53,7 +52,7 @@ public class ResourceCustomPropertyConverter implements Converter {
 	 */
 	@Override
 	public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
-		return clazz.equals(HashMap.class);
+		return clazz.equals(PropertiesWrapper.class);
 	}
 
 	/* (non-Javadoc)
@@ -61,9 +60,8 @@ public class ResourceCustomPropertyConverter implements Converter {
 	 */
 	@Override
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext marsh) {
-	     @SuppressWarnings("unchecked")
 	     // writes a map as properties
-		Map<String, String> map = (Map<String, String>)value;
+	     PropertiesWrapper map = (PropertiesWrapper)value;
 	     for (Entry<String, String> entry : map.entrySet()){
 		     writer.startNode(ConfigKeys.PROPERTY_ATTRIBUTE_ALIAS);
 	         writer.addAttribute(ConfigKeys.NAME_FIELD, entry.getKey());
@@ -78,7 +76,7 @@ public class ResourceCustomPropertyConverter implements Converter {
 	 */
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext unmarsh) {
-		Map<String, String> map = new HashMap<String, String>();
+		PropertiesWrapper map = new PropertiesWrapper();
 		while(reader.hasMoreChildren()){
 			// scans all nodes
 			reader.moveDown();

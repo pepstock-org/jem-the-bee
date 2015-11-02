@@ -63,7 +63,7 @@ public interface TasksDoor extends RmiObject {
 	 * @return collection of roles with permission for user of job and storage groups manager
 	 * @throws RemoteException occurs if errors
 	 */
-	JobStartedObjects setJobStarted(String jobId, String processId, Map<String, Object> props) throws RemoteException;
+	JobStartedObjects setJobStarted(String jobId, String processId, Map<String, String> props) throws RemoteException;
 
 	
 	/**

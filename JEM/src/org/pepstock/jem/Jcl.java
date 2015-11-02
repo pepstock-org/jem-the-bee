@@ -17,7 +17,6 @@
 package org.pepstock.jem;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -65,7 +64,7 @@ public final class Jcl extends AbstractJcl implements Serializable {
 	 * Put @GWTTransinet to improve serialization performance.
 	 */
 	@GwtTransient
-	private Map<String, Object> properties = null;
+	private PropertiesWrapper properties = null;
 
 	/**
 	 * Put @GWTTransinet to improve serialization performance. Do not use java transient because 
@@ -155,14 +154,14 @@ public final class Jcl extends AbstractJcl implements Serializable {
 	/**
 	 * @return the properties
 	 */
-	public Map<String, Object> getProperties() {
+	public PropertiesWrapper getProperties() {
 		return properties;
 	}
 
 	/**
 	 * @param properties the properties to set
 	 */
-	public void setProperties(Map<String, Object> properties) {
+	public void setProperties(PropertiesWrapper properties) {
 		this.properties = properties;
 	}
 

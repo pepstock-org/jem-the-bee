@@ -38,6 +38,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.annotations.ToBeExecuted;
 import org.pepstock.jem.jbpm.JBpmKeys;
@@ -278,7 +279,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
 						if (res.getCustomProperties() == null){
-							res.setCustomProperties(new HashMap<String, String>());
+							res.setCustomProperties(new PropertiesWrapper());
 						}
 						if (!res.getCustomProperties().containsKey(property.getName())){
 							res.getCustomProperties().put(property.getName(), property.getText().toString());

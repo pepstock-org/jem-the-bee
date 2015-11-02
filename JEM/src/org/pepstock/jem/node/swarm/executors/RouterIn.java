@@ -95,6 +95,7 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 		long id = generator.newId();
 		// creates job id
 		String jobId = Factory.createJobId(job, id);
+		preJob.setId(jobId);
 		// sets job id
 		job.setId(jobId);
 		// sets job

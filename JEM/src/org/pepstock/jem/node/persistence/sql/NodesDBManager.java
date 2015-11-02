@@ -23,39 +23,19 @@ import org.pepstock.jem.node.Queues;
  * Manages all SQL statements towards the database to persist the nodes.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.5	
+ * @version 3.0	
  *
  */
 public class NodesDBManager extends AbstractDBManager<NodeInfo>{
 
-//	private static final NodesDBManager INSTANCE = new NodesDBManager();
-
 	/**
-	 * Empty constructor
+	 * Creates the DB manager
+	 * @param factory SQL factory
 	 */
-	NodesDBManager(){
-		super(Queues.NODES_MAP);
+	public NodesDBManager(SQLContainerFactory factory){
+		super(Queues.NODES_MAP, factory.getSQLContainerForNodesMap());
 	}
 	
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized NodesDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
-
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
 	 */

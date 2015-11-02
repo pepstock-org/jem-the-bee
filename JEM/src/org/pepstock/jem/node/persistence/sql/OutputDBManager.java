@@ -21,8 +21,7 @@ import org.pepstock.jem.node.Queues;
 
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the jobs in OUTPUT queue.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * @version 1.0
@@ -30,31 +29,12 @@ import org.pepstock.jem.node.Queues;
  */
 public class OutputDBManager extends JobDBManager{
 
-//	private static final OutputDBManager INSTANCE = new OutputDBManager();
-	
 	/**
-	 * To avoid any instantiation
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	OutputDBManager() {
-		super(Queues.OUTPUT_QUEUE);
+	public OutputDBManager(SQLContainerFactory factory) {
+		super(Queues.OUTPUT_QUEUE, factory.getSQLContainerForOutputQueue());
 	}
 
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized OutputDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 }

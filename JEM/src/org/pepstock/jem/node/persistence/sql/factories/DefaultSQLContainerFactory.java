@@ -497,7 +497,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	 * map. is not a PrepareStatement but a message format to feed with a list
 	 * of USER_PREFERENCESs names.
 	 */
-	private static final String GET_ALL_USER_PREFERENCES_MAP = "select USER_PREFERENCES, USER_ID from USER_PREFERENCES_MAP where USER_ID IN ( {0} )";
+	private static final String GET_ALL_USER_PREFERENCES_MAP = "select USER_PREFERENCES from USER_PREFERENCES_MAP where USER_ID IN ( {0} )";
 
 	/**
 	 * Select statement to get all USER_PREFERENCES names (the keys of table) from USER_PREFERENCESS map

@@ -30,33 +30,13 @@ import org.pepstock.jem.node.resources.XmlUtil;
  */
 public class CommonResourcesDBManager extends AbstractDBManager<Resource>{
 
-//	private static final CommonResourcesDBManager INSTANCE = new CommonResourcesDBManager();
-	
 	/**
-	 * To avoid any instantiation
+	 * Creates the DB manager
+	 * @param factory SQL factory
 	 */
-	CommonResourcesDBManager() {
-		super(Queues.COMMON_RESOURCES_MAP, XmlUtil.getXStream());
+	public CommonResourcesDBManager(SQLContainerFactory factory) {
+		super(Queues.COMMON_RESOURCES_MAP, factory.getSQLContainerForCommonResourcesMap(), XmlUtil.getXStream());
 	}
-
-//	/**
-//	 * Is a static method (typical of a singleton) that returns the unique
-//	 * instance of CommonResourcesDBManager.<br>
-//	 * You must ONLY one instance of this per JVM instance.<br>
-//	 * 
-//	 * @return manager instance
-//	 * @throws Exception
-//	 */
-//	public static synchronized CommonResourcesDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

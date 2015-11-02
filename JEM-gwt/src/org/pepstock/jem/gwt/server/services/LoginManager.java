@@ -200,7 +200,6 @@ public class LoginManager extends DefaultService {
 		user.addAuthorized(Roles.ADMINISTRATOR, currentUser.hasRole(Roles.ADMINISTRATOR));
 		
 		user.setPreferences(getUserPreferences(userId));
-		
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG016I, user.toString());
 		return user;
 	}
@@ -252,14 +251,18 @@ public class LoginManager extends DefaultService {
 	        	if (map.containsKey(userId)){
 	        		return map.get(userId);
 	        	} else {
-	        		return new UserPreferences();
+	        		UserPreferences pref =  new UserPreferences();
+	        		pref.setId(userId);
+	        		return pref;
 	        	}
 	        } finally {
 	        	map.unlock(userId);
 	        }
         } catch (Exception e) {
         	LogAppl.getInstance().debug(e.getMessage(), e);
-        	return new UserPreferences();
+    		UserPreferences pref =  new UserPreferences();
+    		pref.setId(userId);
+    		return pref;
         }
 	}
 	

@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 import org.pepstock.jem.node.security.UserPreferences;
 
 /**
@@ -26,12 +25,37 @@ import org.pepstock.jem.node.security.UserPreferences;
  * 
  */
 public class UserPreferencesMapManager extends AbstractMapManager<UserPreferences> {
+	
+	private static UserPreferencesMapManager INSTANCE = null;
 
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	public UserPreferencesMapManager() {
-		super(SQLDBManager.USER_PREFERENCES.getManager(UserPreferences.class), false);
+	private UserPreferencesMapManager(DataBaseManager<UserPreferences> dbManager) {
+		super(dbManager, false);
 	}
 
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static UserPreferencesMapManager createInstance(DataBaseManager<UserPreferences> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new UserPreferencesMapManager(dbManager);
+		}
+		return INSTANCE;
+	}
+	
+	/**
+	 * Is a static method (typical of a singleton) that returns the unique
+	 * instance of JobDBManager.<br>
+	 * You must ONLY one instance of this per JVM instance.<br>
+	 * 
+	 * @return manager instance
+	 * @throws Exception
+	 */
+	public static UserPreferencesMapManager getInstance() {
+		return INSTANCE;
+	}
 }

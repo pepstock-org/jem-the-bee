@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.node;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Is the container for all resources that you have to lock.<br>
@@ -35,7 +33,7 @@ public class DefaultRequestLock implements RequestLock {
 
 	private String requestorName = NO_REQUESTOR_NAME;
 
-	private Map<String, ResourceLock> resources = new HashMap<String, ResourceLock>();
+	private ResourceLockMap resources = new ResourceLockMap();
 
 	/**
 	 * Empty constructor
@@ -95,7 +93,7 @@ public class DefaultRequestLock implements RequestLock {
 	 * 
 	 * @return map with all resources
 	 */
-	public Map<String, ResourceLock> getResources() {
+	public ResourceLockMap getResources() {
 		return resources;
 	}
 

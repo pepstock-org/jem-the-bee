@@ -17,8 +17,6 @@
 package org.pepstock.jem.node.security;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -30,7 +28,7 @@ public class UserPreferences implements Serializable{
 
 	private String id = null;
 	
-	private Map<String, UserPreference> preferences = new HashMap<String, UserPreference>();
+	private UserPreferencesMap preferences = new UserPreferencesMap();
 
 	/**
 	 * @return the id
@@ -49,14 +47,14 @@ public class UserPreferences implements Serializable{
 	/**
 	 * @return the preferences
 	 */
-	public Map<String, UserPreference> getPreferences() {
+	public UserPreferencesMap getPreferences() {
 		return preferences;
 	}
 
 	/**
 	 * @param preferences the preferences to set
 	 */
-	public void setPreferences(Map<String, UserPreference> preferences) {
+	public void setPreferences(UserPreferencesMap preferences) {
 		this.preferences = preferences;
 	}
 

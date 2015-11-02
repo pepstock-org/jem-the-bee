@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.AbstractDataBaseManager;
+import org.pepstock.jem.node.persistence.DataBaseManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
 
 import com.thoughtworks.xstream.XStream;
@@ -41,12 +41,11 @@ import com.thoughtworks.xstream.XStream;
  * Manages all SQL statements towards the database to persist the Hazelcast items.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
- * @param <String> Key of table
+ * @version 3.0
  * @param <T> object stored in Hazelcast map 
  * 
  */
-public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>{
+public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 	
 	private static final int FIRST_FIELD = 1;
 	
@@ -61,17 +60,18 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 	/**
 	 * Standard constructor which creates a Xstream instance
 	 */
-	AbstractDBManager(String queueName) {
-		this(queueName, new XStream());
+	AbstractDBManager(String queueName, SQLContainer sqlContainer) {
+		this(queueName, sqlContainer, new XStream());
 	}
 
 	/**
 	 * Creates the object using the XStream instance 
 	 * @param xs XStream instance
 	 */
-	AbstractDBManager(String queueName, XStream xs) {
+	AbstractDBManager(String queueName, SQLContainer sqlContainer, XStream xs) {
 		this.queueName = queueName;
 		this.xStream = xs;
+		this.sqlContainer = sqlContainer;
 	}
 	
 	/**
@@ -86,13 +86,6 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 	 */
 	public SQLContainer getSqlContainer() {
 		return sqlContainer;
-	}
-
-	/**
-	 * @param sqlContainer the sqlContainer to set
-	 */
-	public void setSqlContainer(SQLContainer sqlContainer) {
-		this.sqlContainer = sqlContainer;
 	}
 	
 	/**
@@ -150,21 +143,9 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 	 * 
 	 * @param insert SQL statement to be executed
 	 * @param item item to be serialize on the database
-	 * @throws SQLException if any error occurs
+	 * @throws DatabaseException if any error occurs
 	 */
 	public void insert(T item) throws DatabaseException {
-		insert(null, item);
-	}
-	
-	/**
-	 * Inserts a item in table, serializing resource in XML
-	 * 
-	 * @param insert SQL statement to be executed
-	 * @param key key to be used to add item or null
-	 * @param item instance to add
-	 * @throws SQLException if occurs
-	 */
-	public void insert(String key, T item) throws DatabaseException {
 		// open connection
 		// getting a connection from pool
 		Connection connection = null;
@@ -177,7 +158,7 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 			updateStmt = connection.prepareStatement(sqlContainer.getInsertStatement());
 			// set resource name to key
 			// gets the key if null 
-			String myKey = (key == null) ? getKey(item) : key;
+			String myKey = getKey(item);
 			updateStmt.setString(FIRST_FIELD, myKey);
 			// set XML to clob
 			updateStmt.setCharacterStream(SECOND_FIELD, reader);
@@ -213,21 +194,9 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 	 * 
 	 * @param update SQL statement
 	 * @param item resource instance to serialize
-	 * @throws SQLException if occurs
+	 * @throws DatabaseException if occurs
 	 */
 	public void update(T item) throws DatabaseException {
-		update(null, item);
-	}
-	/**
-	 * Updates the resource instance by resource name, serializing resource in
-	 * XML
-	 * 
-	 * @param update SQL statement
-	 * @param key key to be used to update item or null
-	 * @param item resource instance to serialize
-	 * @throws SQLException if occurs
-	 */
-	public void update(String key, T item) throws DatabaseException {
 		int updatedRows = 0;
 		// open connection
 		// getting a connection from pool
@@ -243,7 +212,7 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 			updateStmt.setCharacterStream(FIRST_FIELD, reader);
 			// set resource name to key
 			// gets the key if null 
-			String myKey = (key == null) ? getKey(item) : key;
+			String myKey = getKey(item);
 			updateStmt.setString(SECOND_FIELD, myKey);
 			// updates 
 			updateStmt.executeUpdate();
@@ -253,7 +222,7 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 			connection.commit();
 			// if rows updated are 0, EXCEPTION!!
 			if (updatedRows <= 0){
-				throw new SQLException("Not update! Not found "+key);
+				throw new SQLException("Not update! Not found "+myKey);
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
@@ -357,43 +326,18 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 		ResultSet rs = null;
 		try {
 			connection = DBPoolManager.getInstance().getConnection();
-			String sqlString = null;
-			if (keys != null && !keys.isEmpty()){
-				// use collections of keys in string format, to create SQL
-				// for IN statement, put ' and , on right position
-				StringBuilder sb = new StringBuilder();
-				Iterator<String> iter = keys.iterator();
-				for (;;){
-					String key = iter.next();
-					sb.append("'").append(key).append("'");
-					if (!iter.hasNext()){
-						break;
-					}
-					sb.append(", ");
-				}
-				// formats SQL to get all roles by keys 
-				sqlString = MessageFormat.format(sqlContainer.getGetAllStatement(), sb.toString());
-			} else {
-				sqlString = sqlContainer.getGetAllStatement();
-			}
 			// creates statement and
 			// executes it
 			stmt = connection.createStatement();
-			rs = stmt.executeQuery(sqlString);
+			rs = stmt.executeQuery(createSQLforAllItems(keys));
 
 			// creates the set
 			Map<String, T> allItems = new HashMap<String, T>();
 			while (rs.next()) {
 				// get CLOB field which contains resource XML serialization
 				T item = (T) xStream.fromXML(rs.getCharacterStream(FIRST_FIELD));
-				
-				// uses 1 column has object. The key is the second one, if exists
-				if (rs.getMetaData().getColumnCount() > 1){
-					Object o = rs.getObject(SECOND_FIELD);
-					allItems.put((String) o, item);
-				} else {
-					allItems.put(getKey(item), item);
-				}
+				String myKey = getKey(item);
+				allItems.put(myKey, item);
 			}
 			return allItems;
 		} catch (SQLException e) {
@@ -418,6 +362,32 @@ public abstract class AbstractDBManager<T> implements AbstractDataBaseManager<T>
 					throw new DatabaseException(e);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Creates a SQL query using all keys requsted by HC.
+	 * @param keys list of keys to extract
+	 * @return SQL statement
+	 */
+	private String createSQLforAllItems(Collection<String> keys){
+		if (keys != null && !keys.isEmpty()){
+			// use collections of keys in string format, to create SQL
+			// for IN statement, put ' and , on right position
+			StringBuilder sb = new StringBuilder();
+			Iterator<String> iter = keys.iterator();
+			for (;;){
+				String key = iter.next();
+				sb.append("'").append(key).append("'");
+				if (!iter.hasNext()){
+					break;
+				}
+				sb.append(", ");
+			}
+			// formats SQL to get all roles by keys 
+			return MessageFormat.format(sqlContainer.getGetAllStatement(), sb.toString());
+		} else {
+			return sqlContainer.getGetAllStatement();
 		}
 	}
 

@@ -28,32 +28,13 @@ import org.pepstock.jem.node.Queues;
  * 
  */
 public class RunningDBManager extends JobDBManager{
-
-//	private static final RunningDBManager INSTANCE = new RunningDBManager();
 	
 	/**
-	 * To avoid any instantiation
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	public RunningDBManager() {
-		super(Queues.RUNNING_QUEUE);
+	public RunningDBManager(SQLContainerFactory factory) {
+		super(Queues.RUNNING_QUEUE, factory.getSQLContainerForRunningQueue());
 	}
 
-//	/**
-//	 * Is a static method (typical of a singleton) that returns the unique
-//	 * instance of CommonResourcesDBManager.<br>
-//	 * You must ONLY one instance of this per JVM instance.<br>
-//	 * 
-//	 * @return manager instance
-//	 * @throws Exception
-//	 */
-//	public static synchronized RunningDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 }

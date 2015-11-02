@@ -20,40 +20,20 @@ import org.pepstock.jem.node.Queues;
 
 
 /**
- * Manages all SQL statements towards the database to persist the commons
- * resources.<br>
+ * Manages all SQL statements towards the database to persist the jobs in INPUT queue.<br>
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.0
+ * @version 3.0
  * 
  */
 public class InputDBManager extends JobDBManager{
 
-//	private static final InputDBManager INSTANCE = new InputDBManager();
-	
 	/**
-	 * To avoid any instantiation
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	InputDBManager() {
-		super(Queues.INPUT_QUEUE);
+	public InputDBManager(SQLContainerFactory factory) {
+		super(Queues.INPUT_QUEUE, factory.getSQLContainerForInputQueue());
 	}
 
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of CommonResourcesDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized InputDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 }

@@ -25,16 +25,18 @@ import org.pepstock.jem.Job;
  * for queue)<br>
  * 
  * @author Andrea "Stock" Stocchero
+ * @version 3.0
  * 
  */
 public class JobDBManager extends AbstractDBManager<Job>{
 
 	/**
-	 * @param queueName
+	 * Creates a common DB manager for JOBS
+	 * @param queueName hazelcast queuename
+	 * @param sqlContainer SQL container
 	 */
-	JobDBManager(String queueName) {
-		super(queueName);
-		// TODO Auto-generated constructor stub
+	public JobDBManager(String queueName, SQLContainer sqlContainer) {
+		super(queueName, sqlContainer);
 	}
 
 	/* (non-Javadoc)

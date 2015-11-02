@@ -28,33 +28,13 @@ import org.pepstock.jem.node.security.Role;
  */
 public class RolesDBManager extends AbstractDBManager<Role> {
 
-//	private static final RolesDBManager INSTANCE = new RolesDBManager();
-
 	/**
-	 * Empty constructor
+	 * Creates DB manager
+	 * @param factory SQL factory
 	 */
-	RolesDBManager(){
-		super(Queues.ROLES_MAP);
+	public RolesDBManager(SQLContainerFactory factory){
+		super(Queues.ROLES_MAP, factory.getSQLContainerForRolesMap());
 	}
-
-	/**
-	 * Is a static method (typical of a singleton) that returns the unique
-	 * instance of JobDBManager.<br>
-	 * You must ONLY one instance of this per JVM instance.<br>
-	 * 
-	 * @return manager instance
-	 * @throws Exception
-	 */
-//	public static synchronized RolesDBManager getInstance(){
-//		return INSTANCE;
-//	}
-//
-//	/**
-//	 * @return <code>true</code> is is instanciated, otherwise <code>false</code>.
-//	 */
-//	public static boolean isInstanciated(){
-//		return INSTANCE != null;
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)

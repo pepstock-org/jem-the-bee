@@ -43,7 +43,7 @@ import com.hazelcast.core.MapStore;
  */
 public abstract class AbstractMapManager<T> implements MapStore<String, T>, Recoverable {
 
-	private AbstractDataBaseManager<T> dbManager = null;
+	private DataBaseManager<T> dbManager = null;
 	
 	private RedoManager<T> redoManager = null;
 
@@ -53,7 +53,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * @param dbManager dbManager instance
 	 * @param recovery if the map must use redo in case of DB failure
 	 */
-	public AbstractMapManager(AbstractDataBaseManager<T> dbManager, boolean recovery) {
+	public AbstractMapManager(DataBaseManager<T> dbManager, boolean recovery) {
 		this.dbManager = dbManager;
 		if (recovery){
 			this.redoManager = new RedoManager<T>(dbManager.getQueueName());
@@ -74,6 +74,23 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 		return redoManager;
 	}
 
+	/**
+	 * Returns if this map must entry into REDO cycles
+	 * @return true if must be in redo cycle, otherwise false
+	 */
+	public boolean hasToRecover(){
+		return redoManager != null;
+	}
+	
+	/**
+	 * Queries on DB to get the estimated size of map
+	 * @return total amount of bytes 
+	 * @throws DatabaseException if any DB error occurs
+	 */
+	public long getSize() throws DatabaseException{
+		return dbManager.getSize();
+	}
+	
 	/**
 	 * Loads object instance by object name passed by Hazelcast
 	 * 
@@ -114,7 +131,11 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			try {
 				// loadAll keys from table
 				set = dbManager.getAllKeys();
-				LogAppl.getInstance().emit(NodeMessage.JEMC045I, String.valueOf(set.size()), getQueueName());
+				
+				System.err.println(getQueueName()+" "+set);
+				if (set != null){
+					LogAppl.getInstance().emit(NodeMessage.JEMC045I, String.valueOf(set.size()), getQueueName());
+				}
 			} catch (DatabaseException e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
 			}
@@ -226,6 +247,14 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	}
 
 	/**
+	 * Checks if persistence objects are available and creates that if not
+	 * @throws DatabaseException if any DB 
+	 */
+	public void checkAndCreate() throws DatabaseException {
+		dbManager.checkAndCreate();
+	}
+	
+	/**
 	 * Deletes the entities by  ID. Accepts also if an exception must be thrown or not.
 	 * This is done because the same method is called both from normal persistence and
 	 * from recovery manager to apply the redo statements.
@@ -299,7 +328,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 */
 	private void recoverDeleteStatement(String id, Exception e){
 		// if not redo, return
-		if (redoManager == null){
+		if (!hasToRecover()){
 			return;
 		}
 		// locks node
@@ -393,7 +422,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 */
 	private void recoverStoreStatement(T entity, Exception e){
 		// if not redo, return
-		if (redoManager == null){
+		if (!hasToRecover()){
 			return;
 		}
 		// gets node lock

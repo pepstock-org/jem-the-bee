@@ -29,13 +29,13 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleListener;
@@ -204,10 +204,10 @@ public class SpringBatchJobLifecycleListener implements JobLifecycleListener {
 	 */
 	@Override
 	public void ended(Job job) {
-		Map<String, Object> props = job.getJcl().getProperties();
+		PropertiesWrapper props = job.getJcl().getProperties();
 		if (props != null && props.containsKey(JOB_INSTANCE_ID) && props.containsKey(JOB_EXECUTION_ID)){
-			Long jobInstanceId = (Long)props.get(JOB_INSTANCE_ID);  
-			Long jobExecutionId = (Long)props.get(JOB_EXECUTION_ID);
+			Long jobInstanceId = Long.parseLong(props.get(JOB_INSTANCE_ID));  
+			Long jobExecutionId = Long.parseLong(props.get(JOB_EXECUTION_ID));
 			if (job.getResult().getReturnCode() == Result.SUCCESS){
 				clean(jobInstanceId);
 			} else if (job.getResult().getReturnCode() == Result.CANCELED || job.getResult().getReturnCode() == Result.FATAL){

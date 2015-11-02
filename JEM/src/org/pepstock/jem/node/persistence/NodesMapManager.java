@@ -17,7 +17,6 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.persistence.sql.SQLDBManager;
 
 /**
  * Persistent manager for NodeInfos map.<br>
@@ -27,11 +26,33 @@ import org.pepstock.jem.node.persistence.sql.SQLDBManager;
  * 
  */
 public class NodesMapManager extends AbstractMapManager<NodeInfo>{
+	
+	private static NodesMapManager INSTANCE = null;
 
 	/**
-	 * Construct the object instantiating a new DBManager
+	 * Construct the object using a DBManager
+	 * @param dbManager db manager
 	 */
-	public NodesMapManager() {
-		super(SQLDBManager.NODES.getManager(NodeInfo.class), false);
+	private NodesMapManager(DataBaseManager<NodeInfo> dbManager) {
+		super(dbManager, false);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static NodesMapManager createInstance(DataBaseManager<NodeInfo> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new NodesMapManager(dbManager);
+		}
+		return INSTANCE;
+	}
+	
+	/**
+	 * @return the iNSTANCE
+	 */
+	public static NodesMapManager getInstance() {
+		return INSTANCE;
 	}
 }
