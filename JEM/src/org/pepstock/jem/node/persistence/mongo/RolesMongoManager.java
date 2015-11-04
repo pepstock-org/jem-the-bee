@@ -23,6 +23,7 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.security.Role;
 
 /**
+ * Map manager based on MONGO for roles.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -31,8 +32,7 @@ public class RolesMongoManager extends AbstractMongoManager<Role> {
 	private static final String FIELD_KEY = "name";
 
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 * Creates the object setting queue and field key of JSON
 	 */
 	public RolesMongoManager() {
 		super(Queues.ROLES_MAP, FIELD_KEY);

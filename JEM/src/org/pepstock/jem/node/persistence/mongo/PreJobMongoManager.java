@@ -40,6 +40,7 @@ import org.pepstock.jem.node.persistence.RedoStatement;
 import com.hazelcast.core.IQueue;
 
 /**
+ * Map manager based on MONGO for prejob instances in teh CHECKING queue.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -50,8 +51,7 @@ public class PreJobMongoManager extends AbstractMongoManager<PreJob> implements 
 	private RedoManager<PreJob> redoManager = new RedoManager<PreJob>(Queues.JCL_CHECKING_QUEUE);
 	
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 * Creates the object setting queue and field key of JSON
 	 */
 	public PreJobMongoManager() {
 		super(Queues.JCL_CHECKING_QUEUE, FIELD_KEY);

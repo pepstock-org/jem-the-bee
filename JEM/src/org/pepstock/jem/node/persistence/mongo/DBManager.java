@@ -19,6 +19,8 @@ package org.pepstock.jem.node.persistence.mongo;
 import java.net.UnknownHostException;
 
 import org.bson.Document;
+import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.util.TimeUtils;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -32,6 +34,11 @@ import com.mongodb.client.MongoDatabase;
  * @version 3.0
  */
 public final class DBManager {
+	
+	/**
+	 * Default timeout to check if the connection is good
+	 */
+	public static final int SERVER_SELECTION_TIMEOUT = 5* (int)TimeUtils.SECOND;
 	
 	private static DBManager INSTANCE = null;
 	
@@ -56,10 +63,12 @@ public final class DBManager {
 	 * @param configuration configuration read from JEM configuration
 	 * @return a DB instance
 	 * @throws UnknownHostException if any network errors occurs
+	 * @throws DatabaseException 
 	 */
-	public static DBManager createInstance(MongoClientURI configuration) throws UnknownHostException{
+	public synchronized static DBManager createInstance(MongoClientURI configuration) throws UnknownHostException, DatabaseException{
 		if (INSTANCE == null){
 			INSTANCE = new DBManager(configuration);
+			INSTANCE.init();
 		}
 		return INSTANCE;
 	}
@@ -70,6 +79,20 @@ public final class DBManager {
 	 */
 	public static DBManager getInstance(){
 		return INSTANCE;
+	}
+	
+	/**
+	 * Initializes the client, checking if the connection is ok running a ping command.
+	 * This is mandatory because Mongo JAVA client doesn't return any exception if the credentials are not ok. 
+	 * @throws DatabaseException if credentials are not ok.
+	 */
+	private void init() throws DatabaseException{
+		try {
+			// checks the status of cedetials
+			client.getDatabase(configuration.getDatabase()).runCommand(new Document("ping", 1));
+		} catch (Exception e) {
+			throw new DatabaseException(e);
+		}
 	}
 	
 	/**
@@ -89,5 +112,4 @@ public final class DBManager {
 		MongoDatabase db = client.getDatabase(configuration.getDatabase());
 		return db.getCollection(collection);
 	}
-
 }

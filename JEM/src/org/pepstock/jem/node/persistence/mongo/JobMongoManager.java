@@ -22,6 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.pepstock.jem.Job;
 
 /**
+ * Map manager based on MONGO for jobs.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -30,8 +31,8 @@ public class JobMongoManager extends AbstractMongoManager<Job> {
 	private static final String FIELD_KEY = "id";
 
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 * Creates the object setting queue and field key of JSON
+	 * @param queueName job queue name to manage
 	 */
 	public JobMongoManager(String queueName) {
 		super(queueName, FIELD_KEY);

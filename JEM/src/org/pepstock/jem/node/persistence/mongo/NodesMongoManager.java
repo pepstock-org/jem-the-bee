@@ -23,6 +23,7 @@ import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.Queues;
 
 /**
+ * Map manager based on MONGO for nodes.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -31,8 +32,7 @@ public class NodesMongoManager extends AbstractMongoManager<NodeInfo> {
 	private static final String FIELD_KEY = "key";
 
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 * Creates the object setting queue and field key of JSON
 	 */
 	public NodesMongoManager() {
 		super(Queues.NODES_MAP, FIELD_KEY);

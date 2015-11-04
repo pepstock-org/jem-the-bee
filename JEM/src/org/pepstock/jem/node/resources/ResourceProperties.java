@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Wraps a MAP with all reource properties of a resource. This is MANDATORY to use JSON and to apply a specific JSON module to de/serialize the keys 
+ * 
  * @author Andrea "Stock" Stocchero
- * @version 2.3
+ * @version 3.0
  */
 public class ResourceProperties extends HashMap<String, ResourceProperty> implements Map<String, ResourceProperty>, Serializable{
 

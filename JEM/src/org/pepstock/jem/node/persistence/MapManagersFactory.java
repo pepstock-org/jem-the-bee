@@ -39,7 +39,7 @@ import org.pepstock.jem.node.persistence.sql.SQLContainerFactory;
 import org.pepstock.jem.node.persistence.sql.UserPreferencesDBManager;
 
 /**
- * Instantiates all map stores for HC, btoh for SQL and for MONGO.
+ * Instantiates all map stores for HC, both for SQL and for MONGO.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
@@ -72,7 +72,7 @@ public class MapManagersFactory {
 	/**
 	 * Creates all map managers for Mongo backend
 	 */
-	public static void createMapManagers(){
+	public static void createMapManagers() {
 		InputMapManager.createInstance(new InputMongoManager());
 		RunningMapManager.createInstance(new RunningMongoManager());
 		OutputMapManager.createInstance(new OutputMongoManager());
@@ -90,16 +90,16 @@ public class MapManagersFactory {
 	 * @throws DatabaseException if any DB error occurs
 	 */
 	public static void initAll() throws DatabaseException{
-		InputMapManager.getInstance().checkAndCreate();
-		RunningMapManager.getInstance().checkAndCreate();
-		OutputMapManager.getInstance().checkAndCreate();
-		RoutingMapManager.getInstance().checkAndCreate();
-		CommonResourcesMapManager.getInstance().checkAndCreate();
-		NodesMapManager.getInstance().checkAndCreate();
-		PreJobMapManager.getInstance().checkAndCreate();
-		RolesMapManager.getInstance().checkAndCreate();
-		RoutingConfigMapManager.getInstance().checkAndCreate();
-		UserPreferencesMapManager.getInstance().checkAndCreate();
+			InputMapManager.getInstance().checkAndCreate();
+			RunningMapManager.getInstance().checkAndCreate();
+			OutputMapManager.getInstance().checkAndCreate();
+			RoutingMapManager.getInstance().checkAndCreate();
+			CommonResourcesMapManager.getInstance().checkAndCreate();
+			NodesMapManager.getInstance().checkAndCreate();
+			PreJobMapManager.getInstance().checkAndCreate();
+			RolesMapManager.getInstance().checkAndCreate();
+			RoutingConfigMapManager.getInstance().checkAndCreate();
+			UserPreferencesMapManager.getInstance().checkAndCreate();
 	}
 	
 }

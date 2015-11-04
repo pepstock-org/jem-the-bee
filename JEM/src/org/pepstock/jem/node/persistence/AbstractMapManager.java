@@ -131,8 +131,6 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			try {
 				// loadAll keys from table
 				set = dbManager.getAllKeys();
-				
-				System.err.println(getQueueName()+" "+set);
 				if (set != null){
 					LogAppl.getInstance().emit(NodeMessage.JEMC045I, String.valueOf(set.size()), getQueueName());
 				}

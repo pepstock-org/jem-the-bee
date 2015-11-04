@@ -74,6 +74,7 @@ import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
+import org.pepstock.jem.node.persistence.AbstractMapManager;
 import org.pepstock.jem.node.persistence.CommonResourcesMapManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.InputMapManager;
@@ -125,6 +126,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.ISemaphore;
 import com.hazelcast.core.Member;
 import com.hazelcast.partition.PartitionService;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 
 /**
@@ -401,7 +403,7 @@ public class StartUpSystem {
 	 * @param mapStore MapStore implementation to set it.
 	 * @throws MessageException if a mandatory map is missing
 	 */
-	private static void checkMapStore(Config config, String mapName, Object mapStore) throws MessageException{
+	private static void checkMapStore(Config config, String mapName, AbstractMapManager<?> mapStore) throws MessageException{
 		// get map config
 		MapConfig mapConfig = config.findMatchingMapConfig(mapName);
 		// if map has been configured
@@ -989,24 +991,45 @@ public class StartUpSystem {
 		String user = substituteVariable(database.getUser());
 		database.setUser(user);
 
+		// checks if the database is MONGO
 		if (database.getUrl().startsWith(MongoFactory.DATABASE_TYPE)){
+			// creates URI for MONGO for connection
 			UriBuilder builder = UriBuilder.fromUri(database.getUrl());
+			// checks all properteis
 			if (database.getProperties() != null && !database.getProperties().isEmpty()){
+				// scans proprties 
 				for (Entry<Object, Object> entry : database.getProperties().entrySet()){
+					// adds to URI as querystring
 					builder.queryParam(entry.getKey().toString(), entry.getValue().toString());
 				}
 			}
-			MongoClientURI clientUri = new MongoClientURI(builder.build().toString());
+			// checks teh user and passwrod are passed
+			if (database.getUser() != null && database.getPassword() != null &&
+					!"".equalsIgnoreCase(database.getUser().trim()) && !"".equalsIgnoreCase(database.getPassword().trim())){
+				// if passed, adds teh user info information to URI
+				builder.userInfo(database.getUser()+":"+database.getPassword());
+			}
+			// creates teh MONGO connection string using the URI created
+			// setting a custom MONGO options that sets a server conn timeout.
+			// this timeout is mandatory to check if the credentials are ok
+			// because MONGO client doen't throw any exception
+			MongoClientURI clientUri = new MongoClientURI(builder.build().toString(), 
+					MongoClientOptions.builder().serverSelectionTimeout(DBManager.SERVER_SELECTION_TIMEOUT));
+			// initializes DB manager for mongo
+			// and all mapstores
 			try {
 				DBManager.createInstance(clientUri);
 				MapManagersFactory.createMapManagers();
 			} catch (UnknownHostException e) {
 				throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(database.getUrl()), e);
+			} catch (DatabaseException e) {
+				throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(database.getUrl()), e);
 			}
 		} else {
+			// initializes DB manager for SQL db
 			loadSQLDatabase(database);
 		}
-
+		// initializes all map stores.
 		try {
 			MapManagersFactory.initAll();
 		} catch (DatabaseException e) {
@@ -1015,7 +1038,11 @@ public class StartUpSystem {
 		}
 	}
 	
-	
+	/**
+	 * Creates the DB manager for SQL database using the DATABASE configuration
+	 * @param database JEM configuration of database
+	 * @throws ConfigurationException if any error occurs
+	 */
 	private static void loadSQLDatabase(Database database) throws ConfigurationException{
 		String dbType = null;
 		try {

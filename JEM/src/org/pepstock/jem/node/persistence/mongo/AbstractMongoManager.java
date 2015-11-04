@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +31,9 @@ import org.pepstock.jem.node.persistence.DataBaseManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.util.JSON;
@@ -43,6 +46,8 @@ import com.mongodb.util.JSON;
  * @param <T> object stored in Hazelcast map
  */
 public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
+	
+	private static final String MONGO_KEY_FOR_INDEX = "key";
 
 	private String queueName = null;
 	
@@ -279,6 +284,22 @@ public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
 	 */
 	@Override
 	public void checkAndCreate() throws DatabaseException {
-		collection.createIndex(new Document(fieldKey, 1));
+		Document indexFormat = new Document(fieldKey, 1);
+		try {
+			ListIndexesIterable<Document> listIndexes = collection.listIndexes();
+			Iterator<Document> iter = listIndexes.iterator();
+			if (iter != null){
+				while(iter.hasNext()){
+					Document index = iter.next();
+					Document key = (Document)index.get(MONGO_KEY_FOR_INDEX);
+					if (key != null && key.equals(indexFormat)){
+						return;
+					}
+				}
+			}
+			collection.createIndex(indexFormat);
+		} catch (MongoTimeoutException e) {
+			throw new DatabaseException(e);
+		}
 	}
 }

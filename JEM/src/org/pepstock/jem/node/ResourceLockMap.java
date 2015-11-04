@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Wraps a MAP with all reource locks of a node. This is MANDATORY to use JSON and to apply a specific JSON module to de/serialize the keys 
  * @author Andrea "Stock" Stocchero
- * @version 2.3
+ * @version 3.0
  */
 public class ResourceLockMap extends HashMap<String, ResourceLock> implements Map<String, ResourceLock>, Serializable {
 

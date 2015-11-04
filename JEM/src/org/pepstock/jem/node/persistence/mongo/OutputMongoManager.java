@@ -19,13 +19,14 @@ package org.pepstock.jem.node.persistence.mongo;
 import org.pepstock.jem.node.Queues;
 
 /**
+ * Map manager based on MONGO for jobs into OUTPUT queue.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
 public class OutputMongoManager extends JobMongoManager {
 
 	/**
-	 * @param queueName
+	 * Creates the object setting queue 
 	 */
 	public OutputMongoManager() {
 		super(Queues.OUTPUT_QUEUE);

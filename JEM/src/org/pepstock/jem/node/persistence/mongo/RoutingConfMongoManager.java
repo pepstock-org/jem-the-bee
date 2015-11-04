@@ -23,6 +23,8 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 
 /**
+ * Map manager based on MONGO for rounting configuration
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -31,8 +33,7 @@ public class RoutingConfMongoManager extends AbstractMongoManager<SwarmConfigura
 	private static final String FIELD_KEY = "name";
 	
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 * Creates the object setting queue and field key of JSON
 	 */
 	public RoutingConfMongoManager() {
 		super(Queues.ROUTING_CONFIG_MAP, FIELD_KEY);

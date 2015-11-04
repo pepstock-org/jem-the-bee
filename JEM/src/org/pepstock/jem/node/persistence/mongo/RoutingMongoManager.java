@@ -19,13 +19,15 @@ package org.pepstock.jem.node.persistence.mongo;
 import org.pepstock.jem.node.Queues;
 
 /**
+ * Map manager based on MONGO for jobs into ROUTING queue
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
 public class RoutingMongoManager extends JobMongoManager {
 
 	/**
-	 * @param queueName
+	 * Creates the object setting queue 
 	 */
 	public RoutingMongoManager() {
 		super(Queues.ROUTING_QUEUE);

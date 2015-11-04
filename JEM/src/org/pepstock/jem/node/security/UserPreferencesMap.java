@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Wraps a MAP with all user preferences. This is MANDATORY to use JSON and to apply a specific JSON module to de/serialize the keys 
  * @author Andrea "Stock" Stocchero
- * @version 2.3
+ * @version 3.0
  */
 public class UserPreferencesMap extends HashMap<String, UserPreference> implements Map<String, UserPreference>, Serializable{
 

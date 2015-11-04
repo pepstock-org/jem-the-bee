@@ -23,6 +23,8 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.security.UserPreferences;
 
 /**
+ * Map manager based on MONGO for user preferences.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -32,8 +34,7 @@ public class UserPreferencesMongoManager extends AbstractMongoManager<UserPrefer
 
 
 	/**
-	 * @param queueName
-	 * @param fieldKey
+	 *  Creates the object setting queue and field key of JSON
 	 */
 	public UserPreferencesMongoManager() {
 		super(Queues.USER_PREFERENCES_MAP, FIELD_KEY);
