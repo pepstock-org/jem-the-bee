@@ -18,29 +18,31 @@ package org.pepstock.jem.node;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.security.Key;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -72,26 +74,27 @@ import org.pepstock.jem.node.executors.nodes.GetDataPaths;
 import org.pepstock.jem.node.listeners.NodeListener;
 import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
+import org.pepstock.jem.node.persistence.AbstractMapManager;
+import org.pepstock.jem.node.persistence.CommonResourcesMapManager;
+import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.InputMapManager;
+import org.pepstock.jem.node.persistence.MapManagersFactory;
+import org.pepstock.jem.node.persistence.OutputMapManager;
+import org.pepstock.jem.node.persistence.PreJobMapManager;
 import org.pepstock.jem.node.persistence.RecoveryManager;
-import org.pepstock.jem.node.persistence.SQLContainer;
-import org.pepstock.jem.node.persistence.SQLContainerFactory;
-import org.pepstock.jem.node.persistence.database.AbstractDBManager;
-import org.pepstock.jem.node.persistence.database.CommonResourcesDBManager;
-import org.pepstock.jem.node.persistence.database.DBPoolManager;
-import org.pepstock.jem.node.persistence.database.InputDBManager;
-import org.pepstock.jem.node.persistence.database.JobDBManager;
-import org.pepstock.jem.node.persistence.database.NodesDBManager;
-import org.pepstock.jem.node.persistence.database.OutputDBManager;
-import org.pepstock.jem.node.persistence.database.PreJobDBManager;
-import org.pepstock.jem.node.persistence.database.RolesDBManager;
-import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
-import org.pepstock.jem.node.persistence.database.RoutingDBManager;
-import org.pepstock.jem.node.persistence.database.RunningDBManager;
-import org.pepstock.jem.node.persistence.database.UserPreferencesDBManager;
-import org.pepstock.jem.node.persistence.sql.DB2SQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.DefaultSQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.MySqlSQLContainerFactory;
-import org.pepstock.jem.node.persistence.sql.OracleSQLContainerFactory;
+import org.pepstock.jem.node.persistence.RolesMapManager;
+import org.pepstock.jem.node.persistence.RoutingConfigMapManager;
+import org.pepstock.jem.node.persistence.RoutingMapManager;
+import org.pepstock.jem.node.persistence.RunningMapManager;
+import org.pepstock.jem.node.persistence.UserPreferencesMapManager;
+import org.pepstock.jem.node.persistence.mongo.DBManager;
+import org.pepstock.jem.node.persistence.mongo.MongoFactory;
+import org.pepstock.jem.node.persistence.sql.DBPoolManager;
+import org.pepstock.jem.node.persistence.sql.SQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.DB2SQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.DefaultSQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.MySqlSQLContainerFactory;
+import org.pepstock.jem.node.persistence.sql.factories.OracleSQLContainerFactory;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesUtil;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;
@@ -107,8 +110,12 @@ import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.VariableSubstituter;
 import org.pepstock.jem.util.locks.ConcurrentLock;
 import org.pepstock.jem.util.net.InterfacesUtils;
+import org.xml.sax.SAXException;
 
+import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.MapStoreConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.SemaphoreConfig;
 import com.hazelcast.core.Cluster;
@@ -119,6 +126,8 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.ISemaphore;
 import com.hazelcast.core.Member;
 import com.hazelcast.partition.PartitionService;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientURI;
 
 /**
  * It starts up loading the configuration from a file, passed by a system
@@ -267,7 +276,20 @@ public class StartUpSystem {
 				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig(ConcurrentLock.NO_ACCESSING_PREFIX+"*", 1);
 				config.addSemaphoreConfig(semaphoreConfig1);
 				config.addSemaphoreConfig(semaphoreConfig2);
-						
+				
+				// checks map store configuration
+				checkMapStore(config, Queues.INPUT_QUEUE, InputMapManager.getInstance());
+				checkMapStore(config, Queues.RUNNING_QUEUE, RunningMapManager.getInstance());	
+				checkMapStore(config, Queues.OUTPUT_QUEUE, OutputMapManager.getInstance());
+				checkMapStore(config, Queues.ROUTING_QUEUE, RoutingMapManager.getInstance());
+				checkMapStore(config, Queues.COMMON_RESOURCES_MAP, CommonResourcesMapManager.getInstance());
+				checkMapStore(config, Queues.ROLES_MAP, RolesMapManager.getInstance());
+				checkMapStore(config, Queues.ROUTING_CONFIG_MAP, RoutingConfigMapManager.getInstance());
+				checkMapStore(config, Queues.USER_PREFERENCES_MAP, UserPreferencesMapManager.getInstance());
+				// PAY ATTENTION
+				// NODES don't have the map store
+				
+				// saves HC config
 				Main.setHazelcastConfig(config);
 
 				// to avoid to loose data, sets Hazelcast shutdown hook disable
@@ -279,7 +301,15 @@ public class StartUpSystem {
 				// creates a key anyway, even if couldn't be necessary, to avoid
 				loadKey();
 
-			} catch (Exception e) {
+			} catch (MessageException e) {
+				throw new ConfigurationException(e);
+			} catch (FileNotFoundException e) {
+				throw new ConfigurationException(e);
+			} catch (ParserConfigurationException e) {
+				throw new ConfigurationException(e);
+			} catch (SAXException e) {
+				throw new ConfigurationException(e);
+			} catch (IOException e) {
 				throw new ConfigurationException(e);
 			} finally {
 				if (fis != null) {
@@ -367,6 +397,43 @@ public class StartUpSystem {
 	}
 	
 	/**
+	 * reads HC configuration and set the mapstore and enables the mapstore, overriding the HC config
+	 * @param config HC configuration
+	 * @param mapName map to check
+	 * @param mapStore MapStore implementation to set it.
+	 * @throws MessageException if a mandatory map is missing
+	 */
+	private static void checkMapStore(Config config, String mapName, AbstractMapManager<?> mapStore) throws MessageException{
+		// get map config
+		MapConfig mapConfig = config.findMatchingMapConfig(mapName);
+		// if map has been configured
+		if (mapConfig != null && !mapConfig.getName().equalsIgnoreCase("default")){
+			// gets mapstore config
+			MapStoreConfig msConfig = mapConfig.getMapStoreConfig();
+			// if mapstore has been configure
+			if (msConfig != null){
+				// override setting true to enable it
+				msConfig.setEnabled(true);
+				// stores the MAPSTOE object
+				msConfig.setImplementation(mapStore);
+			} else {
+				// if here, there isn't any mapstore configuration
+				// but it's mandatory
+				// therefore it add a default config
+				msConfig = new MapStoreConfig();
+				// enables mapstore
+				msConfig.setEnabled(true);
+				// stores the MAPSTOE object
+				msConfig.setImplementation(mapStore);
+				// by default it sets SYNC store
+				msConfig.setWriteDelaySeconds(0);
+			}
+		} else {
+			throw new MessageException(NodeMessage.JEMC294E, mapName);
+		}
+	}
+	
+	/**
 	 * Loads the unique simmetric key of JEM cluster
 	 * @throws ConfigurationException if any error occurs creating or getting the key
 	 */
@@ -437,24 +504,24 @@ public class StartUpSystem {
 	 */
 	private static long calculateQueueSize() throws ConfigurationException {
 		try {
-			long inputQueueSize = InputDBManager.getInstance().getSize();
+			long inputQueueSize = InputMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.INPUT_QUEUE, inputQueueSize / KB);
-			long runningQueueSize = RunningDBManager.getInstance().getSize();
+			long runningQueueSize = RunningMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.RUNNING_QUEUE, runningQueueSize / KB);
 
-			long outputQueueSize = OutputDBManager.getInstance().getSize();
+			long outputQueueSize = OutputMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.OUTPUT_QUEUE, outputQueueSize / KB);
-			long routingQueueSize = RoutingDBManager.getInstance().getSize();
+			long routingQueueSize = RoutingMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_QUEUE, routingQueueSize / KB);
-			long rolesSize = RolesDBManager.getInstance().getSize();
+			long rolesSize = RolesMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROLES_MAP, rolesSize / KB);
-			long resourcesSize = CommonResourcesDBManager.getInstance().getSize();
+			long resourcesSize = CommonResourcesMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.COMMON_RESOURCES_MAP, resourcesSize / KB);
-			long checkingQueueSize = PreJobDBManager.getInstance().getSize();
+			long checkingQueueSize = PreJobMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.JCL_CHECKING_QUEUE, checkingQueueSize / KB);
-			long routingConfSize = RoutingConfigDBManager.getInstance().getSize();
+			long routingConfSize = RoutingConfigMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.ROUTING_CONFIG_MAP, routingConfSize / KB);
-			long userPrefSize = UserPreferencesDBManager.getInstance().getSize();
+			long userPrefSize = UserPreferencesMapManager.getInstance().getSize();
 			LogAppl.getInstance().emit(NodeMessage.JEMC085I, Queues.USER_PREFERENCES_MAP, userPrefSize / KB);
 
 			return inputQueueSize + runningQueueSize + outputQueueSize + routingQueueSize + rolesSize + resourcesSize + checkingQueueSize + routingConfSize + userPrefSize;
@@ -515,7 +582,8 @@ public class StartUpSystem {
 
 		IMap<String, Job> routingQueue = Main.getHazelcast().getMap(Queues.ROUTING_QUEUE);
 		routingQueue.size();
-
+		
+		// starts reccovery manager
 		RecoveryManager.getInstance();
 
 		IMap<String, Resource> resourceMap = Main.getHazelcast().getMap(Queues.COMMON_RESOURCES_MAP);
@@ -534,14 +602,13 @@ public class StartUpSystem {
 
 		IMap<String, Map<String, UserPreference>> userPreferencesMap = Main.getHazelcast().getMap(Queues.USER_PREFERENCES_MAP);
 		userPreferencesMap.size();
-		
+			
 		// loads all jobs in check queue
 		try {
-			PreJobDBManager.getInstance().loadAll();
+			PreJobMapManager.getInstance().loadAll();
 		} catch (MessageException e) {
 			throw new ConfigurationException(e);
 		}
-
 	}
 
 	/**
@@ -924,6 +991,59 @@ public class StartUpSystem {
 		String user = substituteVariable(database.getUser());
 		database.setUser(user);
 
+		// checks if the database is MONGO
+		if (database.getUrl().startsWith(MongoFactory.DATABASE_TYPE)){
+			// creates URI for MONGO for connection
+			UriBuilder builder = UriBuilder.fromUri(database.getUrl());
+			// checks all properteis
+			if (database.getProperties() != null && !database.getProperties().isEmpty()){
+				// scans proprties 
+				for (Entry<Object, Object> entry : database.getProperties().entrySet()){
+					// adds to URI as querystring
+					builder.queryParam(entry.getKey().toString(), entry.getValue().toString());
+				}
+			}
+			// checks teh user and passwrod are passed
+			if (database.getUser() != null && database.getPassword() != null &&
+					!"".equalsIgnoreCase(database.getUser().trim()) && !"".equalsIgnoreCase(database.getPassword().trim())){
+				// if passed, adds teh user info information to URI
+				builder.userInfo(database.getUser()+":"+database.getPassword());
+			}
+			// creates teh MONGO connection string using the URI created
+			// setting a custom MONGO options that sets a server conn timeout.
+			// this timeout is mandatory to check if the credentials are ok
+			// because MONGO client doen't throw any exception
+			MongoClientURI clientUri = new MongoClientURI(builder.build().toString(), 
+					MongoClientOptions.builder().serverSelectionTimeout(DBManager.SERVER_SELECTION_TIMEOUT));
+			// initializes DB manager for mongo
+			// and all mapstores
+			try {
+				DBManager.createInstance(clientUri);
+				MapManagersFactory.createMapManagers();
+			} catch (UnknownHostException e) {
+				throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(database.getUrl()), e);
+			} catch (DatabaseException e) {
+				throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(database.getUrl()), e);
+			}
+		} else {
+			// initializes DB manager for SQL db
+			loadSQLDatabase(database);
+		}
+		// initializes all map stores.
+		try {
+			MapManagersFactory.initAll();
+		} catch (DatabaseException e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e);
+			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
+		}
+	}
+	
+	/**
+	 * Creates the DB manager for SQL database using the DATABASE configuration
+	 * @param database JEM configuration of database
+	 * @throws ConfigurationException if any error occurs
+	 */
+	private static void loadSQLDatabase(Database database) throws ConfigurationException{
 		String dbType = null;
 		try {
 			URI url1 = new URI(database.getUrl());
@@ -944,9 +1064,7 @@ public class StartUpSystem {
 		} else {
 			engine = new DefaultSQLContainerFactory();
 		}
-
 		// load JobManager for input, output, routing
-
 		try {
 			DBPoolManager.getInstance().setDriver(database.getDriver());
 			DBPoolManager.getInstance().setUrl(database.getUrl());
@@ -954,110 +1072,14 @@ public class StartUpSystem {
 			DBPoolManager.getInstance().setPassword(database.getPassword());
 			DBPoolManager.getInstance().setProperties(database.getProperties());
 			DBPoolManager.getInstance().setKeepAliveConnectionSQL(engine.getKeepAliveConnectionSQL());
-
 			DBPoolManager.getInstance().init();
 
-			InputDBManager.getInstance().setSqlContainer(engine.getSQLContainerForInputQueue());
-			RunningDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRunningQueue());
-			OutputDBManager.getInstance().setSqlContainer(engine.getSQLContainerForOutputQueue());
-			RoutingDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRoutingQueue());
-
-			PreJobDBManager.getInstance().setSqlContainer(engine.getSQLContainerForCheckingQueue());
-
-			RolesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRolesMap());
-
-			CommonResourcesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForCommonResourcesMap());
-
-			RoutingConfigDBManager.getInstance().setSqlContainer(engine.getSQLContainerForRoutingConfigMap());
-
-			UserPreferencesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForUserPreferencesMap());
-
-			NodesDBManager.getInstance().setSqlContainer(engine.getSQLContainerForNodesMap());
-
-			// creates all necessary tables
-			createTables();
-
+			MapManagersFactory.createMapManagers(engine);
 		} catch (SQLException e) {
-			throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(JobDBManager.class.getName()), e);
+			throw new ConfigurationException(NodeMessage.JEMC165E.toMessage().getFormattedMessage(database.getUrl()), e);
 		}
 	}
 	
-	/**
-	 * Creates all tbales necessary to persist Hazelcast maps.
-	 * @throws SQLException if any SQL error occurs
-	 * @throws ConfigurationException if any error occurs during the table creation
-	 */
-	private static void createTables() throws SQLException, ConfigurationException{
-		// gets the DB connection from pool
-		Connection conn = DBPoolManager.getInstance().getConnection();
-		try {
-			// gets metadata
-			DatabaseMetaData md = conn.getMetaData();
-			// checks input
-			checkAndCreateTable(md, InputDBManager.getInstance());
-			// checks running
-			checkAndCreateTable(md, RunningDBManager.getInstance());
-			// checks output
-			checkAndCreateTable(md, OutputDBManager.getInstance());
-			// checks routing
-			checkAndCreateTable(md, RoutingDBManager.getInstance());
-			// checks JCL checking table
-			checkAndCreateTable(md, PreJobDBManager.getInstance());
-			// checks nodes
-			checkAndCreateTable(md, NodesDBManager.getInstance());
-			// checks roles
-			checkAndCreateTable(md, RolesDBManager.getInstance());
-			// checks resources
-			checkAndCreateTable(md, CommonResourcesDBManager.getInstance());
-			// checks routing and swarm configuration
-			checkAndCreateTable(md, RoutingConfigDBManager.getInstance());
-			// checks user preferences
-			checkAndCreateTable(md, UserPreferencesDBManager.getInstance());
-
-		} catch (SQLException e1) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e1);
-			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
-		} finally {
-			// if connection not null
-			// it closes putting again on pool
-			if (conn != null) {
-				conn.close();
-			}
-		}
-	}
-
-	/**
-	 * Checks if the necessary tables exists on database. If not, it creates them.
-	 * @param md metadata of the database
-	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
-	 * @throws SQLException if any error occurs cheching the existence of tables
-	 */
-	private static void checkAndCreateTable(DatabaseMetaData md, AbstractDBManager<?> manager) throws SQLException {
-		ResultSet rs = null;
-		try {
-			// gets SQL container
-			SQLContainer container = manager.getSqlContainer();
-			// gets a result set which searches for the table anme
-			rs = md.getTables(null, null, container.getTableName(), new String[] { "TABLE", "ALIAS" });
-			// if result set is empty, it creates the table
-			if (!rs.next()) {
-				// creates table and return a empty set because if empty of
-				// course
-				DBPoolManager.getInstance().create(container.getCreateTableStatement());
-			}
-		} finally {
-			// if result set is not null
-			// it closes the result set
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e) {
-					// ignoring any exception
-					LogAppl.getInstance().ignore(e.getMessage(), e);
-				}
-			}
-		}
-	}
 
 	/**
 	 * load the factories of the jem configuration checking if they are

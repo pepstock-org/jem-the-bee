@@ -171,7 +171,7 @@ public class Submitter implements Runnable {
 			Main.CURRENT_TASKS.remove(job.getId());
 			// cleans nodeinfo data
 			Main.getNode().getJobs().remove(job.getId());
-
+			
 			// store node info in NODES_QUEUE map
 			// using the hook of threadpool in inputqueuemanager
 		} finally {

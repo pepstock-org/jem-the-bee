@@ -16,9 +16,7 @@
 */
 package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
-import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
 
 /**
  * Persistent manager for RoutingConfs map.<br>
@@ -27,11 +25,37 @@ import org.pepstock.jem.node.persistence.database.RoutingConfigDBManager;
  * 
  */
 public class RoutingConfigMapManager extends AbstractMapManager<SwarmConfiguration> {
+	
+	private static RoutingConfigMapManager INSTANCE = null;
 
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	public RoutingConfigMapManager() {
-		super(Queues.ROUTING_CONFIG_MAP, RoutingConfigDBManager.getInstance(), false);
+	private RoutingConfigMapManager(DataBaseManager<SwarmConfiguration> dbManager) {
+		super(dbManager, false);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static RoutingConfigMapManager createInstance(DataBaseManager<SwarmConfiguration> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new RoutingConfigMapManager(dbManager);
+		}
+		return INSTANCE;
+	}
+	
+	/**
+	 * Is a static method (typical of a singleton) that returns the unique
+	 * instance of JobDBManager.<br>
+	 * You must ONLY one instance of this per JVM instance.<br>
+	 * 
+	 * @return manager instance
+	 * @throws Exception
+	 */
+	public static RoutingConfigMapManager getInstance() {
+		return INSTANCE;
 	}
 }

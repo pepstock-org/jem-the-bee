@@ -39,7 +39,6 @@
 package org.pepstock.jem.node;
 
 import java.io.Serializable;
-import java.util.Map;
 
 
 
@@ -104,7 +103,7 @@ public interface RequestLock extends Serializable {
 	 * 
 	 * @return map with all resources
 	 */
-	Map<String, ResourceLock> getResources();
+	ResourceLockMap getResources();
 
 	/**
 	 * Performs the lock request into GRS.<br>

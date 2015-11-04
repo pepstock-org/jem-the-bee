@@ -41,12 +41,15 @@ package org.pepstock.jem.node;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.NodeInfoBean;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
@@ -90,6 +93,7 @@ public class NodeInfo implements Serializable {
 
 	private boolean isSwarmNode = false;
 
+	@JsonIgnore
 	private NodeInfoBean nodeInfoBean = new NodeInfoBean();
 
 	private ExecutionEnvironment executionEnvironment = null;
@@ -102,7 +106,7 @@ public class NodeInfo implements Serializable {
 	private Map<String, RequestLock> requests = new ConcurrentHashMap<String, RequestLock>();
 	
 	@GwtTransient
-	private Properties initProperties = null;
+	private PropertiesWrapper initProperties = null;
 
 	private boolean isOperational = true;
 	
@@ -135,7 +139,12 @@ public class NodeInfo implements Serializable {
 	 * @throws NodeException if exception occurs
 	 */
 	public void init(Properties properties) throws NodeException {
-		this.initProperties = properties;
+		if (properties != null && !properties.isEmpty()){
+			this.initProperties = new PropertiesWrapper();
+			for (Entry<Object, Object> entry : properties.entrySet()){
+				this.initProperties.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+		}
 	}
 
 	/**
@@ -366,7 +375,7 @@ public class NodeInfo implements Serializable {
 	/**
 	 * @return the initProperties
 	 */
-	public Properties getInitProperties() {
+	public PropertiesWrapper getInitProperties() {
 		return initProperties;
 	}
 

@@ -181,7 +181,7 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 	 */
 	private void cleanUpNode(NodeInfo info) {
 		// first check: has got request for lock pending to unlock?
-		if (!info.getRequests().isEmpty()) {
+		if (info.getRequests() != null && !info.getRequests().isEmpty()) {
 			// get request for locking to check if we had some locks in
 			// place
 			for (RequestLock request : info.getRequests().values()) {
@@ -194,7 +194,7 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 			}
 		}
 		// second check: has got any jobs running during the crash?
-		if (!info.getJobs().isEmpty()) {
+		if (info.getJobs() != null && !info.getJobs().isEmpty()) {
 			for (String job : info.getJobs().keySet()) {
 				jobEnded(job, info.getJobs().get(job));
 			}

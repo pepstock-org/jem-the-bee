@@ -38,7 +38,7 @@ public class LoggedUser extends Subject {
 	
 	private Map<String, Boolean> authorized = new HashMap<String, Boolean>();
 	
-	private Map<String, UserPreference> preferences = new HashMap<String, UserPreference>();
+	private UserPreferences preferences = new UserPreferences();
 	
 	private OrganizationalUnit organizationalUnit = null;
 
@@ -105,14 +105,14 @@ public class LoggedUser extends Subject {
 	/**
 	 * @return the preferences
 	 */
-	public Map<String, UserPreference> getPreferences() {
+	public UserPreferences getPreferences() {
 		return preferences;
 	}
 
 	/**
 	 * @param preferences the preferences to set
 	 */
-	public void setPreferences(Map<String, UserPreference> preferences) {
+	public void setPreferences(UserPreferences preferences) {
 		this.preferences = preferences;
 	}
 

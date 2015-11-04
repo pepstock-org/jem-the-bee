@@ -18,7 +18,6 @@ package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.PreJobDBManager;
 
 /**
  * Enumeration of Recoverable managers, related to own HZ queue/map name.
@@ -30,7 +29,7 @@ public enum RecoverableManager {
 	/**
 	 *  JCL checking queue
 	 */
-	JCL_CHECKING(PreJobDBManager.getInstance(), Queues.JCL_CHECKING_QUEUE),
+	JCL_CHECKING(PreJobMapManager.getInstance(), Queues.JCL_CHECKING_QUEUE),
 	/**
 	 * INPUT queue
 	 */

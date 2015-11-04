@@ -16,9 +16,6 @@
 */
 package org.pepstock.jem.gwt.server.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -38,7 +35,7 @@ import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.Roles;
 import org.pepstock.jem.node.security.User;
-import org.pepstock.jem.node.security.UserPreference;
+import org.pepstock.jem.node.security.UserPreferences;
 
 import com.hazelcast.core.IMap;
 
@@ -203,7 +200,6 @@ public class LoginManager extends DefaultService {
 		user.addAuthorized(Roles.ADMINISTRATOR, currentUser.hasRole(Roles.ADMINISTRATOR));
 		
 		user.setPreferences(getUserPreferences(userId));
-		
 		LogAppl.getInstance().emit(UserInterfaceMessage.JEMG016I, user.toString());
 		return user;
 	}
@@ -247,22 +243,26 @@ public class LoginManager extends DefaultService {
 	 * @param userId key to use to get user preferences
 	 * @return a map with all user preferences
 	 */
-	private Map<String, UserPreference> getUserPreferences(String userId){
+	private UserPreferences getUserPreferences(String userId){
 		try {
-	        IMap<String, Map<String, UserPreference>> map = getInstance().getMap(Queues.USER_PREFERENCES_MAP);
+	        IMap<String, UserPreferences> map = getInstance().getMap(Queues.USER_PREFERENCES_MAP);
 	        try {
 	        	map.lock(userId);
 	        	if (map.containsKey(userId)){
 	        		return map.get(userId);
 	        	} else {
-	        		return new HashMap<String, UserPreference>();
+	        		UserPreferences pref =  new UserPreferences();
+	        		pref.setId(userId);
+	        		return pref;
 	        	}
 	        } finally {
 	        	map.unlock(userId);
 	        }
         } catch (Exception e) {
         	LogAppl.getInstance().debug(e.getMessage(), e);
-        	return new HashMap<String, UserPreference>();
+    		UserPreferences pref =  new UserPreferences();
+    		pref.setId(userId);
+    		return pref;
         }
 	}
 	
@@ -282,7 +282,7 @@ public class LoginManager extends DefaultService {
 	 * @param preferences preferences to store
 	 * @return Always true
 	 */
-	public Boolean logoff(Map<String, UserPreference> preferences) {
+	public Boolean logoff(UserPreferences preferences) {
 		if (preferences != null){
 			try {
 	            storePreferences(preferences);
@@ -320,7 +320,7 @@ public class LoginManager extends DefaultService {
 	 * @return Always <code>true</code>
 	 * @throws ServiceMessageException if any exception occurs
 	 */
-	public Boolean storePreferences(Map<String, UserPreference> preferences) throws ServiceMessageException {
+	public Boolean storePreferences(UserPreferences preferences) throws ServiceMessageException {
 		// get the currently executing user:
 		Subject currentUser = SecurityUtils.getSubject();
 		
@@ -332,7 +332,7 @@ public class LoginManager extends DefaultService {
 		User userPrincipal = (User)currentUser.getPrincipal();
 		String userId = userPrincipal.getId();
 		
-		IMap<String, Map<String, UserPreference>> map = getInstance().getMap(Queues.USER_PREFERENCES_MAP);
+		IMap<String, UserPreferences> map = getInstance().getMap(Queues.USER_PREFERENCES_MAP);
 		try {
 			map.lock(userId);
 			if (map.containsKey(userId)){

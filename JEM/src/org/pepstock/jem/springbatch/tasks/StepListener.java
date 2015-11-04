@@ -145,9 +145,9 @@ public final class StepListener implements StepExecutionListener, JobExecutionLi
 					door = (TasksDoor) locator.getRmiObject(TasksDoor.NAME);
 					// creates a properties object with JOB instance ID and 
 					// JOB EXECUTION ID
-					 Map<String, Object> props = new HashMap<String, Object>();
-					props.put(SpringBatchJobLifecycleListener.JOB_INSTANCE_ID, jobExecution.getJobId());
-					props.put(SpringBatchJobLifecycleListener.JOB_EXECUTION_ID, jobExecution.getId());
+					 Map<String, String> props = new HashMap<String, String>();
+					props.put(SpringBatchJobLifecycleListener.JOB_INSTANCE_ID, String.valueOf(jobExecution.getJobId()));
+					props.put(SpringBatchJobLifecycleListener.JOB_EXECUTION_ID, String.valueOf(jobExecution.getId()));
 					
 					// send to JEM node the current process id.
 					// uses JMX implementation of JDK.

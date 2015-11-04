@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.Message;
@@ -202,7 +202,7 @@ public abstract class JemTasklet implements Tasklet{
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
 						if (res.getCustomProperties() == null){
-							res.setCustomProperties(new HashMap<String, String>());
+							res.setCustomProperties(new PropertiesWrapper());
 						}
 						if (!res.getCustomProperties().containsKey(property.getName())){
 							res.getCustomProperties().put(property.getName(), property.getValue());

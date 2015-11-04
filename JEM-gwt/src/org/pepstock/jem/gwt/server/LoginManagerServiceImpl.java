@@ -16,8 +16,6 @@
  */
 package org.pepstock.jem.gwt.server;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.pepstock.jem.gwt.client.services.LoginManagerService;
@@ -25,7 +23,7 @@ import org.pepstock.jem.gwt.server.services.LoginManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.node.security.UserPreference;
+import org.pepstock.jem.node.security.UserPreferences;
 
 /**
  * Is GWT server service which can provide all methods to manage login/logoff
@@ -102,7 +100,7 @@ public class LoginManagerServiceImpl extends DefaultManager implements LoginMana
 	 * util.Map)
 	 */
 	@Override
-	public Boolean logoff(Map<String, UserPreference> preferences) throws JemException {
+	public Boolean logoff(UserPreferences preferences) throws JemException {
 		Boolean result = Boolean.FALSE;
 		try {
 			if (loginManager != null) {
@@ -131,7 +129,7 @@ public class LoginManagerServiceImpl extends DefaultManager implements LoginMana
 	 * (java.util.Map)
 	 */
 	@Override
-	public Boolean storePreferences(Map<String, UserPreference> preferences) throws JemException {
+	public Boolean storePreferences(UserPreferences preferences) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();

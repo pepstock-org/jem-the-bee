@@ -35,6 +35,18 @@
 	<classpathentry kind="lib" path="lib/hazelcast/hazelcast-all-2.6.6.jar"/>
 	<classpathentry kind="lib" path="lib/rhino/js-14.jar"/>
 	<classpathentry kind="lib" path="lib/xstream/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-apache-client4-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-bundle-1.19.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-core-1.19.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-json-1.19.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-multipart-1.19.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/mimepull-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/db/mongo-java-driver-3.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/sigar/sigar.jar"/>
 	<classpathentry kind="lib" path="lib/xalan/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/emailing/dsn-1.5.2.jar"/>
@@ -281,17 +293,6 @@
 	<classpathentry kind="lib" path="lib/spring/com.springsource.util.osgi-2.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring/com.springsource.util.parser.manifest-2.0.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring/org.osgi.core-4.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jackson-core-asl-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jackson-jaxrs-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jackson-mapper-asl-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jackson-xc-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-apache-client4-1.9.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-bundle-1.19.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-core-1.19.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-json-1.19.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jersey-multipart-1.19.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/jsr311-api-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/jersey/mimepull-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

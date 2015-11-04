@@ -21,14 +21,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.factories.AbstractFactory;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.log.JemException;
@@ -264,7 +263,7 @@ public class SpringBatchFactory extends AbstractFactory {
 
 		// loads the JBPM process ID in a map to reuse when a JBPM task will be
 		// scheduled
-		Map<String, Object> jclMap = new HashMap<String, Object>();
+		PropertiesWrapper jclMap = new PropertiesWrapper();
 		// if options are set, add to JCL
 		if (bean.getOptions() != null) {
 			jclMap.put(JemBeanDefinitionParser.OPTIONS_ATTRIBUTE, bean.getOptions());

@@ -16,10 +16,8 @@
  */
 package org.pepstock.jem.gwt.client.services;
 
-import java.util.Map;
-
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.node.security.UserPreference;
+import org.pepstock.jem.node.security.UserPreferences;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -49,12 +47,12 @@ public interface LoginManagerServiceAsync {
 	 * @param preferences
 	 * @param callback
 	 */
-	void logoff(Map<String, UserPreference> preferences, AsyncCallback<Boolean> callback);
+	void logoff(UserPreferences preferences, AsyncCallback<Boolean> callback);
 
 	/**
 	 * @see LoginManagerService#storePreferences()
 	 * @param preferences
 	 * @param callback
 	 */
-	void storePreferences(Map<String, UserPreference> preferences, AsyncCallback<Boolean> callback);
+	void storePreferences(UserPreferences preferences, AsyncCallback<Boolean> callback);
 }

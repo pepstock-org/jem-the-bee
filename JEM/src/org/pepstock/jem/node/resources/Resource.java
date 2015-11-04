@@ -17,9 +17,8 @@
 package org.pepstock.jem.node.resources;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.node.UpdateableItem;
 
 /**
@@ -36,10 +35,9 @@ public final class Resource extends UpdateableItem implements Serializable{
 	
 	private String type = null;
 
-	private Map<String, ResourceProperty> properties = new HashMap<String, ResourceProperty>();
+	private ResourceProperties properties = new ResourceProperties();
 	
-	
-	private Map<String, String> customProperties = new HashMap<String, String>();
+	private PropertiesWrapper customProperties = new PropertiesWrapper();
 	
 	/**
 	 * Empty constructor
@@ -76,28 +74,28 @@ public final class Resource extends UpdateableItem implements Serializable{
 	/**
 	 * @return the properties
 	 */
-	public Map<String, ResourceProperty> getProperties() {
+	public ResourceProperties getProperties() {
 		return properties;
 	}
 
 	/**
 	 * @param properties the properties to set
 	 */
-	public void setProperties(Map<String, ResourceProperty> properties) {
+	public void setProperties(ResourceProperties properties) {
 		this.properties = properties;
 	}
 
 	/**
 	 * @return the customProperties
 	 */
-	public Map<String, String> getCustomProperties() {
+	public PropertiesWrapper getCustomProperties() {
 		return customProperties;
 	}
 
 	/**
 	 * @param customProperties the customProperties to set
 	 */
-	public void setCustomProperties(Map<String, String> customProperties) {
+	public void setCustomProperties(PropertiesWrapper customProperties) {
 		this.customProperties = customProperties;
 	}
 
@@ -107,12 +105,14 @@ public final class Resource extends UpdateableItem implements Serializable{
 	 */
 	public String getCustomPropertiesString(){
 		String result = null;
-		for (String key : this.customProperties.keySet()){
-			String value = this.customProperties.get(key);
-			if (result == null){
-				result = key.concat("=").concat(value).concat(";");
-			} else {
-				result = result.concat(key).concat("=").concat(value).concat(";");
+		if (this.customProperties != null){
+			for (String key : this.customProperties.keySet()){
+				String value = this.customProperties.get(key);
+				if (result == null){
+					result = key.concat("=").concat(value).concat(";");
+				} else {
+					result = result.concat(key).concat("=").concat(value).concat(";");
+				}
 			}
 		}
 		return result;

@@ -22,7 +22,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,6 +38,7 @@ import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.types.Path;
 import org.pepstock.catalog.DataDescriptionImpl;
 import org.pepstock.catalog.gdg.GDGManager;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.annotations.SetFields;
 import org.pepstock.jem.ant.AntKeys;
@@ -330,7 +330,7 @@ public class StepJava extends Java  implements DataDescriptionStep {
 				for (Property property : source.getProperties()){
 					if (property.isCustom()){
 						if (res.getCustomProperties() == null){
-							res.setCustomProperties(new HashMap<String, String>());
+							res.setCustomProperties(new PropertiesWrapper());
 						}
 						if (!res.getCustomProperties().containsKey(property.getName())){
 							res.getCustomProperties().put(property.getName(), property.getText().toString());

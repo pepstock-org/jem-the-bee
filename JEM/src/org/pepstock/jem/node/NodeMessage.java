@@ -1001,7 +1001,7 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to create the database connection for {0}", MessageLevel.ERROR);
 	 */
 	@Description(explanation = "It occurs during start up of node when opens the connection with database to persist Hazelcast structures.<br>Please check configuration file on database element and contact your JEM administrators.")
-	JEMC165E("0165", "Unable to create the database connection for {0}", MessageLevel.ERROR),
+	JEMC165E("0165", "Unable to create the database connection to {0}", MessageLevel.ERROR),
 
 	/**
 	 * "Unable to parse URL string parameter for the database connection: {0}",
@@ -1784,7 +1784,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING
 	 */
 	@Description(explanation = "It occurs when during the startup if node, it loads all JAVA defined and the JAVA definition says it's the default but there is already another default JAVA set.<br>Please have a look to the node configuration.")
-	JEMC293W("0293", "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING);
+	JEMC293W("0293", "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING),
+	
+	/**
+	 * "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when during the startup the Hazelcast configuration is not completed and a map is missing.<br>Please have a look to the Hazelcast configuration.")
+	JEMC294E("0294", "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
