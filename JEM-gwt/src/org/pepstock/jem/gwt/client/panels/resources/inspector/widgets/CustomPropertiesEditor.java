@@ -18,10 +18,9 @@ package org.pepstock.jem.gwt.client.panels.resources.inspector.widgets;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.AbstractPager;
 import org.pepstock.jem.gwt.client.commons.DefaultTablePager;
@@ -108,7 +107,7 @@ public class CustomPropertiesEditor extends PagePropertiesPanel implements Updat
 	 */
     @Override
     public boolean validate() {
-    	Map<String, String> map = new HashMap<String, String>();
+    	PropertiesWrapper map = new PropertiesWrapper();
     	for (ResourceProperty p : list){
     		if (!p.getName().equals(NO_VALUE)){
     			map.put(p.getName(), p.getValue());

@@ -824,6 +824,7 @@ public class JobsManager extends DefaultService {
 
 		// creates job id and sets it
 		String jobId = Factory.createJobId(job, id);
+		preJob.setId(jobId);
 		job.setId(jobId);
 		
 		// via HTTP is not possible to wait the end of job

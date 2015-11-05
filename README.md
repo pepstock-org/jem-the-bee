@@ -1,8 +1,8 @@
 # jem-the-bee
 
-##Version 2.3 Bergamotto is coming soon! (October, 2015)##
+##Version 2.3 Bergamotto has been released!##
  
-Download previous versions from [here](http://www.pepstock.org/download.htm)!
+Download previous versions from [here](http://jemthebee.org/index.php/downloads/)!
 
 **Play with JEM version 2.1!** Download the sandbox from [here](http://www.pepstock.org/download/jem-v2.1-centos-x64-sandbox.ova), for both Virtual Box and VMWare player, and try it!
  

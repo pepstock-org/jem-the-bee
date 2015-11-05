@@ -32,6 +32,7 @@ import org.pepstock.jem.ant.tasks.Lock;
 import org.pepstock.jem.ant.tasks.ValueParser;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.VariableSubstituter;
 
 /**
  * Is a JCL factory which enables to submit a script directly, withou having any ANT file.<br>
@@ -103,7 +104,7 @@ public abstract class ScriptFactory<T> extends AntFactory {
 				jemProperties.put(entry.getKey(), value);
 			}
 			// creates ANT file 
-			result = getAntJcl(content, jemProperties);
+			result = getAntJcl(content, jemProperties, inputArguments);
 		} catch (Exception e) {
 			throw new JclFactoryException(e.getMessage(), e);
 		}
@@ -205,7 +206,17 @@ public abstract class ScriptFactory<T> extends AntFactory {
 	 * @return a string with ANT file
 	 * @throws AntException 
 	 */
-	private StringBuilder getAntJcl(String content, Properties jemProperties) throws AntException{
+	private StringBuilder getAntJcl(String content, Properties jemProperties, List<String> inputArguments) throws AntException{
+		Properties vars = new Properties();
+		for (String prop : inputArguments){
+			if (prop.startsWith("-Djem.custom.")){
+				String key = StringUtils.substringBetween(prop, "-D", "=");
+				String value = StringUtils.substringAfter(prop, "=");
+				vars.put(key, value);
+			}
+		}
+
+		
 		StringBuilder resultDD = new StringBuilder();
 
 		StringBuilder result = new StringBuilder();
@@ -213,7 +224,7 @@ public abstract class ScriptFactory<T> extends AntFactory {
 	    result.append("<project default=\"exec\" basedir=\".\">");
 	    // loads all jem properties
 	    for (Object key : jemProperties.keySet()){
-	    	String value = jemProperties.getProperty(key.toString());
+	    	String value = VariableSubstituter.substitute(jemProperties.getProperty(key.toString()), vars);
 	    	if (key.toString().startsWith(AntKeys.ANT_DATA_DESCRIPTION_PREFIX)){
 	    		resultDD.append(createDataDescription(key.toString(), value));
 	    	} else if (key.toString().equalsIgnoreCase(AntKeys.ANT_LOCK_KEY)){
@@ -222,7 +233,7 @@ public abstract class ScriptFactory<T> extends AntFactory {
 	    		result.append("<property name=\""+key.toString()+"\" value=\""+value+"\"/>");
 	    	}
 	    }
-    
+	    result.append("<property environment=\"env\"/>");
 	    // sets the ANT task which will execute the script
 	    result.append("<taskdef name=\"script\" classname=\""+getAntTask().getName()+"\" />");
 	    result.append("<target name=\"exec\">");

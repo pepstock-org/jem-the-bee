@@ -19,7 +19,7 @@ package org.pepstock.jem.node.persistence;
 import org.pepstock.jem.log.JemException;
 
 /**
- * Interface to recover the red statements
+ * Interface to recover the redo statements
  * 
  * @author Andrea "Stock" Stocchero
  * @version 2.3

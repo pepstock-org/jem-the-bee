@@ -17,9 +17,8 @@
 package org.pepstock.jem.gwt.client.panels.resources;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.gwt.client.commons.ConfirmMessageBox;
 import org.pepstock.jem.gwt.client.commons.HideHandler;
 import org.pepstock.jem.gwt.client.commons.Loading;
@@ -33,7 +32,7 @@ import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
 import org.pepstock.jem.node.resources.Resource;
-import org.pepstock.jem.node.resources.ResourceProperty;
+import org.pepstock.jem.node.resources.ResourceProperties;
 import org.pepstock.jem.node.resources.definition.ResourceDescriptor;
 import org.pepstock.jem.node.security.Permissions;
 
@@ -157,11 +156,11 @@ public class ResourcesActions extends AbstractActionsButtonPanel<Resource> {
 			final Resource clone = new Resource();
 			clone.setType(resource.getType());
 			// create a deep copy of resource properties
-			Map<String, ResourceProperty> clonedProperties = new HashMap<String, ResourceProperty>();
+			ResourceProperties clonedProperties = new ResourceProperties();
 			clonedProperties.putAll(resource.getProperties());
 			clone.setProperties(clonedProperties);
 			
-			Map<String, String> clonedCustomProperties = new HashMap<String, String>();
+			PropertiesWrapper clonedCustomProperties = new PropertiesWrapper();
 			if (resource.getCustomProperties() != null){
 				clonedCustomProperties.putAll(resource.getCustomProperties());
 			}

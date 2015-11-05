@@ -17,14 +17,10 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.InputDBManager;
 
 /**
  * Persistent manager for INPUT queue.<br>
- * It uses DBManager instance to perform all sqls.<br>
- * It throws MapStoreException if the database manager has errors but Hazelcast
- * is not able to catch them, so it logs all errors.<br>
+ * It uses database Manager instance to perform all operations.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -34,11 +30,23 @@ public class InputMapManager extends AbstractMapManager<Job> {
 	private static InputMapManager INSTANCE = null; 
 	
 	/**
-	 * Construct the object instantiating a new DBManager
+	 * Construct the object using a database Manager
+	 * @param dbManager database manager
 	 */
-	public InputMapManager() {
-		super(Queues.INPUT_QUEUE, InputDBManager.getInstance(), true);
-		InputMapManager.setInstance(this);
+	private InputMapManager(DataBaseManager<Job> dbManager) {
+		super(dbManager, true);
+	}
+	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static InputMapManager createInstance(DataBaseManager<Job> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new InputMapManager(dbManager);
+		}
+		return INSTANCE;
 	}
 
 	/**
@@ -46,13 +54,6 @@ public class InputMapManager extends AbstractMapManager<Job> {
 	 */
 	public static InputMapManager getInstance() {
 		return INSTANCE;
-	}
-
-	/**
-	 * @param instance the instance to set
-	 */
-	private static void setInstance(InputMapManager instance) {
-		INSTANCE = instance;
 	}
 	
 }

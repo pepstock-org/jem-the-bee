@@ -17,14 +17,10 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.OutputDBManager;
 
 /**
  * Persistent manager for OUTPUT queue.<br>
- * It uses DBManager instance to perform all sqls.<br>
- * It throws MapStoreException if the database manager has errors but Hazelcast
- * is not able to catch them, so it logs all errors.<br>
+ * It uses database Manager instance to perform all operations.<br>
  * 
  * @author Andrea "Stock" Stocchero
  * 
@@ -36,24 +32,25 @@ public class OutputMapManager extends AbstractMapManager<Job> {
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	public OutputMapManager() {
-		super(Queues.OUTPUT_QUEUE, OutputDBManager.getInstance(), true);
-		OutputMapManager.setInstance(this);
+	private OutputMapManager(DataBaseManager<Job> dbManager) {
+		super(dbManager, true);
 	}
 	
+	/**
+	 * Creates the instance of map store if not already initialized
+	 * @param dbManager database manger to use for persistence
+	 * @return the map store
+	 */
+	public static OutputMapManager createInstance(DataBaseManager<Job> dbManager){
+		if (INSTANCE == null){
+			INSTANCE = new OutputMapManager(dbManager);
+		}
+		return INSTANCE;
+	}
 	/**
 	 * @return the iNSTANCE
 	 */
 	public static OutputMapManager getInstance() {
 		return INSTANCE;
 	}
-
-	/**
-	 * @param instance the instance to set
-	 */
-	private static void setInstance(OutputMapManager instance) {
-		INSTANCE = instance;
-	}
-	
-	
 }

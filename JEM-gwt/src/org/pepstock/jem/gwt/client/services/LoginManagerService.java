@@ -16,11 +16,9 @@
  */
 package org.pepstock.jem.gwt.client.services;
 
-import java.util.Map;
-
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.security.LoggedUser;
-import org.pepstock.jem.node.security.UserPreference;
+import org.pepstock.jem.node.security.UserPreferences;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -63,7 +61,7 @@ public interface LoginManagerService extends RemoteService {
 	 * @throws JemException
 	 *             if authentication error occurs
 	 */
-	Boolean logoff(Map<String, UserPreference> preferences) throws JemException;
+	Boolean logoff(UserPreferences preferences) throws JemException;
 
 	/**
 	 * Stores user preferences
@@ -74,6 +72,6 @@ public interface LoginManagerService extends RemoteService {
 	 * @throws JemException
 	 *             if any error occurs
 	 */
-	Boolean storePreferences(Map<String, UserPreference> preferences) throws JemException;
+	Boolean storePreferences(UserPreferences preferences) throws JemException;
 
 }

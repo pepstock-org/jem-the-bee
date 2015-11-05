@@ -266,6 +266,7 @@ public class SubmitHandler implements HttpRequestHandler {
 		long id = generator.newId();
 		// Pads the value with "0"
 		String jobId = Factory.createJobId(job, id);
+		preJob.setId(jobId);
 		job.setId(jobId);
 		// loads all line arguments (the -D properties).
 		// could be useful to factories, listeners and during job execution to

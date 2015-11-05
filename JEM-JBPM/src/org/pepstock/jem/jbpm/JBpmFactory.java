@@ -17,9 +17,7 @@
 package org.pepstock.jem.jbpm;
 
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -34,6 +32,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
+import org.pepstock.jem.PropertiesWrapper;
 import org.pepstock.jem.factories.AbstractFactory;
 import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.log.LogAppl;
@@ -207,7 +206,7 @@ public class JBpmFactory extends AbstractFactory {
 	    	jcl.setJobName(p.getProperty(JBpmKeys.JBPM_JOB_NAME));
 	    	
 	    	// loads the JBPM process ID in a map to reuse when a JBPM task will be scheduled
-	    	Map<String, Object> jclMap = new HashMap<String, Object>();
+	    	PropertiesWrapper jclMap = new PropertiesWrapper();
 	    	jclMap.put(JBpmKeys.JBPM_JOB_NAME, jobName);
 	    	jcl.setProperties(jclMap);
 		

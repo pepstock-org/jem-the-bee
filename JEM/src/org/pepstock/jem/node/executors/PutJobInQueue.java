@@ -21,7 +21,7 @@ import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.persistence.database.PreJobDBManager;
+import org.pepstock.jem.node.persistence.PreJobMapManager;
 
 import com.hazelcast.core.IQueue;
 
@@ -57,7 +57,7 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 		if (preJob != null){
 			try {
 				// before puts on DB
-				PreJobDBManager.getInstance().store(preJob);
+				PreJobMapManager.getInstance().store(preJob);
 				// if OK, 
 				// puts the pre job in a queue for validating and moving to right QUEUE
 				putInQueue(preJob);
@@ -83,7 +83,7 @@ public class PutJobInQueue extends DefaultExecutor<Boolean>{
 		} catch (Exception e) {
 			// if the "put" went wrong,
 			// remove from db
-			PreJobDBManager.getInstance().delete(preJob);
+			PreJobMapManager.getInstance().delete(preJob);
 			// says to the client that is not able to submit the job
 			throw new ExecutorException(SubmitMessage.JEMW003E, e);
 		}

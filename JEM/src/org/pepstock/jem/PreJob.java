@@ -32,6 +32,8 @@ public class PreJob implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Job job = null;
+	
+	private String id = null;
 
 	private String jclContent = null;
 
@@ -43,6 +45,20 @@ public class PreJob implements Serializable {
 	 * Constructor without any arguments
 	 */
 	public PreJob() {
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**
