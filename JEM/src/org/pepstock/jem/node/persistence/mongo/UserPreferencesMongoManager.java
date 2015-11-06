@@ -37,7 +37,7 @@ public class UserPreferencesMongoManager extends AbstractMongoManager<UserPrefer
 	 *  Creates the object setting queue and field key of JSON
 	 */
 	public UserPreferencesMongoManager() {
-		super(Queues.USER_PREFERENCES_MAP, FIELD_KEY);
+		super(Queues.USER_PREFERENCES_MAP, FIELD_KEY, true);
 	}
 
 	/* (non-Javadoc)

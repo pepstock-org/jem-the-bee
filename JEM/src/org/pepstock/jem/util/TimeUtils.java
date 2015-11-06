@@ -17,7 +17,7 @@
 package org.pepstock.jem.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pepstock.jem.util.filters.ParseException;
+import org.pepstock.jem.util.filters.FilterParseException;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -108,14 +108,14 @@ public final class TimeUtils {
 	 * 
 	 * @param tokenValue the value to be parsed
 	 * @return the milliseconds identified by parameter
-	 * @throws ParseException if the parameter cannot be parsed
+	 * @throws FilterParseException if the parameter cannot be parsed
 	 */
-	public static long parseDuration(String tokenValue) throws ParseException {
+	public static long parseDuration(String tokenValue) throws FilterParseException {
 		// validate the value!
 		if (!(StringUtils.endsWithIgnoreCase(tokenValue, D_STRING) 
 				|| StringUtils.endsWithIgnoreCase(tokenValue, H_STRING) 
 				|| StringUtils.endsWithIgnoreCase(tokenValue, M_STRING))) {
-			throw new ParseException("Invalid time unit!");
+			throw new FilterParseException("Invalid time unit!");
 		}
 		
 		// parse the date value
@@ -125,7 +125,7 @@ public final class TimeUtils {
 		try {
 			timeValue = Integer.parseInt(tokenValue.substring(0, timeUnitIndex));
 		} catch (NumberFormatException e) {
-			throw new ParseException("Invalid time value!", e);
+			throw new FilterParseException("Invalid time value!", e);
 		}
 
 		long time;
@@ -140,7 +140,7 @@ public final class TimeUtils {
 				time = timeValue * MINUTE;
 				break;
 			default:
-				throw new ParseException("Invalid time unit!");
+				throw new FilterParseException("Invalid time unit!");
 		}
 
 		return time;

@@ -49,7 +49,23 @@ public class MySqlSQLContainerFactory extends DefaultSQLContainerFactory {
 	/**
 	 * the sql for the creation of the OUTPUT_QUEUE
 	 */
-	public static final String CREATE_OUTPUT_QUEUE = "create table OUTPUT_QUEUE (JOB_ID char(39) primary key, JOB LONGTEXT not null)";
+	public static final String CREATE_OUTPUT_QUEUE = "create table OUTPUT_QUEUE (JOB_ID char(39) primary key, JOB LONGTEXT not null,"
+			+ "JOB_NAME			    varchar(128) not null,"
+			+ "JOB_USERID		    varchar(64) not null,"
+			+ "JOB_ROUTED			bit(1) not null,"
+			+ "JOB_SUBMITTED_TIME	bigint not null,"
+			+ "JOB_RUNNING_TIME	    bigint,"
+			+ "JOB_ENDED_TIME		bigint not null,"
+			+ "JOB_RETURN_CODE		smallint not null,"
+			+ "JOB_MEMBER			varchar(24),"
+			+ "JOB_STEP			    varchar(128),"
+			+ "JOB_JCL_TYPE		    varchar(16),"
+			+ "JOB_JCL_ENVIRONMENT	varchar(64) not null,"
+			+ "JOB_JCL_DOMAIN		varchar(64) not null,"
+			+ "JOB_JCL_AFFINITY	    varchar(128) not null,"
+			+ "JOB_JCL_PRIORITY	    smallint not null,"
+			+ "JOB_JCL_MEMORY		smallint not null"
+			+ ")";
 
 	/**
 	 * the sql for the creation of the ROUTING_QUEUE

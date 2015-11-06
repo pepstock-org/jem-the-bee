@@ -64,6 +64,8 @@ public class HazelcastUtil {
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
 			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
+			clientConfig.setReconnectionAttemptLimit(1);
+			clientConfig.setReConnectionTimeOut(5000);
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
@@ -116,7 +118,7 @@ public class HazelcastUtil {
 		// sets the group name (received by http call) and sets the constant
 		// password
 		clientConfig.getGroupConfig().setName(groupName).setPassword(envPassword);
-
+		
 		// connect to Hazelcast using the complete list of current members
 		clientConfig.addAddress(HttpUtil.getMembers(url));
 

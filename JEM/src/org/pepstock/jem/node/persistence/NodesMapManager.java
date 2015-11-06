@@ -33,7 +33,7 @@ public class NodesMapManager extends AbstractMapManager<NodeInfo>{
 	 * Construct the object using a DBManager
 	 * @param dbManager db manager
 	 */
-	private NodesMapManager(DataBaseManager<NodeInfo> dbManager) {
+	private NodesMapManager(DatabaseManager<NodeInfo> dbManager) {
 		super(dbManager, false);
 	}
 	
@@ -42,7 +42,7 @@ public class NodesMapManager extends AbstractMapManager<NodeInfo>{
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static NodesMapManager createInstance(DataBaseManager<NodeInfo> dbManager){
+	public static NodesMapManager createInstance(DatabaseManager<NodeInfo> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new NodesMapManager(dbManager);
 		}

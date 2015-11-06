@@ -33,7 +33,7 @@ public class RoutingMapManager extends AbstractMapManager<Job> {
 	 * Construct the object using a DBManager
 	 * @param dbManager DB manager
 	 */
-	private RoutingMapManager(DataBaseManager<Job> dbManager) {
+	private RoutingMapManager(DatabaseManager<Job> dbManager) {
 		super(dbManager, true);
 	}
 	
@@ -42,7 +42,7 @@ public class RoutingMapManager extends AbstractMapManager<Job> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static RoutingMapManager createInstance(DataBaseManager<Job> dbManager){
+	public static RoutingMapManager createInstance(DatabaseManager<Job> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new RoutingMapManager(dbManager);
 		}

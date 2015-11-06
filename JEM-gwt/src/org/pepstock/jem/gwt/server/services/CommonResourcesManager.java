@@ -36,6 +36,7 @@ import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
 import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterFactory;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.ResourceFilterFields;
 import org.pepstock.jem.util.filters.predicates.ResourcePredicate;
@@ -225,7 +226,7 @@ public class CommonResourcesManager extends DefaultService {
 		// using filter filled on UI
 		ResourcePredicate predicate;
 		try {
-			predicate = new ResourcePredicate(Filter.parse(filter));
+			predicate = new ResourcePredicate(FilterFactory.parse(filter));
 		} catch (Exception e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			// default case, all resources with empty filter by name

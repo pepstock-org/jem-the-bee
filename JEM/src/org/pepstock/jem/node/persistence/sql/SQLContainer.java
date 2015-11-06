@@ -83,12 +83,6 @@ public class  SQLContainer {
 	
 	private String createTableStatementForEviction = null;
 	
-	private String insertStatementForEviction = null;
-			
-	private String deleteStatementForEviction = null;
-
-	private String updateStatementForEviction = null;
-
 	/**
 	 * 
 	 */
@@ -250,48 +244,6 @@ public class  SQLContainer {
 		this.createTableStatementForEviction = createTableStatementForEviction;
 	}
 
-	/**
-	 * @return the insertStatementForEviction
-	 */
-	public String getInsertStatementForEviction() {
-		return insertStatementForEviction;
-	}
-
-	/**
-	 * @param insertStatementForEviction the insertStatementForEviction to set
-	 */
-	public void setInsertStatementForEviction(String insertStatementForEviction) {
-		this.insertStatementForEviction = insertStatementForEviction;
-	}
-
-	/**
-	 * @return the deleteStatementForEviction
-	 */
-	public String getDeleteStatementForEviction() {
-		return deleteStatementForEviction;
-	}
-
-	/**
-	 * @param deleteStatementForEviction the deleteStatementForEviction to set
-	 */
-	public void setDeleteStatementForEviction(String deleteStatementForEviction) {
-		this.deleteStatementForEviction = deleteStatementForEviction;
-	}
-
-	/**
-	 * @return the updateStatementForEviction
-	 */
-	public String getUpdateStatementForEviction() {
-		return updateStatementForEviction;
-	}
-
-	/**
-	 * @param updateStatementForEviction the updateStatementForEviction to set
-	 */
-	public void setUpdateStatementForEviction(String updateStatementForEviction) {
-		this.updateStatementForEviction = updateStatementForEviction;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -299,7 +251,6 @@ public class  SQLContainer {
 	public String toString() {
 		return "SQLContainer [tableName=" + tableName + ", createTableStatement=" + createTableStatement + ", insertStatement=" + insertStatement + ", deleteStatement=" + deleteStatement + ", updateStatement=" + updateStatement + ", getStatement="
 				+ getStatement + ", getAllStatement=" + getAllStatement + ", getAllKeysStatement=" + getAllKeysStatement + ", checkQueueSizeStatement=" + checkQueueSizeStatement + ", tableNameForEviction=" + tableNameForEviction
-				+ ", createTableStatementForEviction=" + createTableStatementForEviction + ", insertStatementForEviction=" + insertStatementForEviction + ", deleteStatementForEviction=" + deleteStatementForEviction + ", updateStatementForEviction="
-				+ updateStatementForEviction + "]";
+				+ ", createTableStatementForEviction=" + createTableStatementForEviction + "]";
 	}
 }

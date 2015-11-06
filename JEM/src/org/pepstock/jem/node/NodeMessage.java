@@ -1790,8 +1790,13 @@ public enum NodeMessage implements MessageInterface {
 	 * "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when during the startup the Hazelcast configuration is not completed and a map is missing.<br>Please have a look to the Hazelcast configuration.")
-	JEMC294E("0294", "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR);
+	JEMC294E("0294", "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR),
 	
+	/**
+	 * "Unable to get the objects from database", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when it tries to get the data directly from database when teh Hazelcast eviction is active.")
+	JEMC295E("0295", "Unable to get the objects from database", MessageLevel.ERROR);
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
 	 * instance of <code>NodeMessage</code>.

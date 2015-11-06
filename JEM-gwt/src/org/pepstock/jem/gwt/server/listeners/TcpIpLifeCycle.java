@@ -20,10 +20,8 @@ import org.pepstock.jem.ServiceStatus;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.security.JemCacheManager;
 
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.LifecycleEvent;
 import com.hazelcast.core.LifecycleEvent.LifecycleState;
-import com.hazelcast.core.LifecycleListener;
 
 /**
  * Is the client life cycle listener for the TCP/IP service. It handled the
@@ -32,7 +30,7 @@ import com.hazelcast.core.LifecycleListener;
  * @author Simone "Busy" Businaro
  * @version 1.3
  */
-public class TcpIpLifeCycle implements LifecycleListener {
+public class TcpIpLifeCycle extends LifeCycle {
 
 	private boolean isClientConnected = false;
 
@@ -97,19 +95,6 @@ public class TcpIpLifeCycle implements LifecycleListener {
 				&& !SharedObjects.getInstance().getConnectorService().getStatus().equals(ServiceStatus.SHUT_DONW)) {
 			SharedObjects.getInstance().getConnectorService().start();
 		}
-	}
-
-	/**
-	 * This method was added to this class to centralized all operation relative
-	 * to the client start up. Some operation need the hazelcast instance that
-	 * cannot be available in the listener so we use this method
-	 * 
-	 * @param instance
-	 */
-	public void atInstantiation(HazelcastInstance instance) {
-		SharedObjects.getInstance().setDataClusterAvailable(true);
-		SharedObjects.getInstance().setHazelcastClient(instance);
-		JemCacheManager.updateJemCache();
 	}
 
 	/**

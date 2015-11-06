@@ -14,34 +14,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.sql;
+package org.pepstock.jem.node.executors;
 
-import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.security.UserPreferences;
+import org.pepstock.jem.node.persistence.EvictionHelper;
+
 
 /**
- * Manages all SQL statements towards the database to persist the user preferences.<br>
+ * Extracts if the mapname passed is evicted or not
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4	
- *
+ * @version 3.0
+ * 
  */
-public class UserPreferencesDBManager extends AbstractDBManager<UserPreferences>{
+public class GetEvictionInfo extends DefaultExecutor<Boolean>{
+
+	private static final long serialVersionUID = 1L;
+	
+	private String mapName = null;
+	
+	/**
+	 * Creates the executor with map name to check 
+	 * @param mapName map name to check 
+	 */
+	public GetEvictionInfo(String mapName) {
+		super();
+		this.mapName = mapName;
+	}
 
 	/**
-	 * Creates DB manager
-	 * @param factory SQL factory
-	 */
-	public UserPreferencesDBManager(SQLContainerFactory factory){
-		super(Queues.USER_PREFERENCES_MAP, factory.getSQLContainerForUserPreferencesMap(), true);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.node.persistence.AbstractDBManager#getKey(java.lang.Object)
+	 * returns if the map is evicted
+	 * @return if the map is evicted
+	 * @throws ExecutorException occurs if errors
 	 */
 	@Override
-	public String getKey(UserPreferences item) {
-		return item.getId();
+	public Boolean execute() throws ExecutorException {
+		return EvictionHelper.isEvicted(mapName);
 	}
-	
 }

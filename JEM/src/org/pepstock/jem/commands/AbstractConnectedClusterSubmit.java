@@ -292,7 +292,6 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		return result;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.SubmitCommandLine#beforeJobSubmit()
 	 */
@@ -351,6 +350,17 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			SubmitArgument sakey= arguments.get(SubmitParameters.PRIVATE_KEY_PWD.getName());
 			setPrivateKeyPassword(sakey.getValue());
 		}
+	}
+	
+	/**
+	 * Called by lifecycle client listener when
+	 * the HC client lost the connection
+	 */
+	void clientDisconnect(){
+		// set to null to end in error
+		setJob(null);
+		// notify that job is ended
+		lock.countDown();
 	}
 
 	/* (non-Javadoc)

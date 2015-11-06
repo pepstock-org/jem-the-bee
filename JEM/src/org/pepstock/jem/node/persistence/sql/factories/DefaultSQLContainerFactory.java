@@ -188,7 +188,7 @@ public class DefaultSQLContainerFactory implements SQLContainerFactory {
 	/**
 	 * Insert statement to put a job in OUTPUT queue
 	 */
-	private static final String INSERT_OUTPUT_QUEUE = "insert into OUTPUT_QUEUE values(?, ?)";
+	private static final String INSERT_OUTPUT_QUEUE = "insert into OUTPUT_QUEUE values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	/**
 	 * Delete statement to remove a job from OUTPUT queue

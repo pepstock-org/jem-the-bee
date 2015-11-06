@@ -19,10 +19,8 @@ package org.pepstock.jem.gwt.server.listeners;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.security.JemCacheManager;
 
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.LifecycleEvent;
 import com.hazelcast.core.LifecycleEvent.LifecycleState;
-import com.hazelcast.core.LifecycleListener;
 
 /**
  * Is the client life cycle listener for the multicast service. Here the
@@ -32,7 +30,7 @@ import com.hazelcast.core.LifecycleListener;
  * @version 1.3
  * 
  */
-public class MulticastLifeCycle implements LifecycleListener {
+public class MulticastLifeCycle extends LifeCycle {
 
 	/**
 	 * Be aware of the fact that at least in hazelcast 3.1.3 a client will pass
@@ -94,16 +92,4 @@ public class MulticastLifeCycle implements LifecycleListener {
 		JemCacheManager.updateJemCache();
 	}
 
-	/**
-	 * This method was added to this class to centralized all operation relative
-	 * to the client start up. Some operation need the hazelcast instance that
-	 * cannot be available in the listener so we use this method
-	 * 
-	 * @param instance
-	 */
-	public void atInstantiation(HazelcastInstance instance) {
-		SharedObjects.getInstance().setDataClusterAvailable(true);
-		SharedObjects.getInstance().setHazelcastClient(instance);
-		JemCacheManager.updateJemCache();
-	}
 }

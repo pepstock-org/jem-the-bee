@@ -36,7 +36,17 @@ public class JobDBManager extends AbstractDBManager<Job>{
 	 * @param sqlContainer SQL container
 	 */
 	public JobDBManager(String queueName, SQLContainer sqlContainer) {
-		super(queueName, sqlContainer);
+		this(queueName, sqlContainer, false);
+	}
+
+	/**
+	 * Creates a common DB manager for JOBS
+	 * @param queueName hazelcast queuename
+	 * @param sqlContainer SQL container
+	 * @param canBeEvicted if teh map can be evited in HC
+	 */
+	public JobDBManager(String queueName, SQLContainer sqlContainer, boolean canBeEvicted) {
+		super(queueName, sqlContainer, canBeEvicted);
 	}
 
 	/* (non-Javadoc)

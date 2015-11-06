@@ -14,22 +14,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.mongo;
+package org.pepstock.jem.node.persistence.sql;
 
-import org.pepstock.jem.node.Queues;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
- * Map manager based on MONGO for jobs into OUTPUT queue.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public class OutputMongoManager extends JobMongoManager {
-
-	/**
-	 * Creates the object setting queue 
-	 */
-	public OutputMongoManager() {
-		super(Queues.OUTPUT_QUEUE, true);
-	}
-
+interface EvictionHandler<T> {
+	
+	void fillSQLStatement(PreparedStatement statement, T item) throws SQLException;
+	
 }

@@ -57,6 +57,11 @@ public final class JobsManagerPaths  {
 	public static final String FORCE_PATH_PARAM = "{"+FORCE+"}";
 	
 	/**
+	 * Query parameter to get to perform query on history or not
+	 */
+	public static final String ON_HISTORY_QUERY_STRING  = "history";
+	
+	/**
 	 * Query parameter to get the type of JCL to submit
 	 */
 	public static final String JCL_TYPE_QUERY_STRING  = "type";

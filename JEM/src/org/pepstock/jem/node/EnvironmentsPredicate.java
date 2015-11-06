@@ -81,7 +81,16 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	@Override
 	public final boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
 		// gets job instance and JCL
-		Job job = (Job) entry.getValue();
+		return apply((Job) entry.getValue());
+	}
+	
+	/**
+	 * Checks if the job fits the filter
+	 * @param job job instance to check
+	 * @return true if fits otherwise false;
+	 */
+	public final boolean apply(Job job) {
+		// gets job instance and JCL
 		if (job == null){
 			return false;
 		}
@@ -90,6 +99,7 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 			return false;
 		}
 		return check(job);
+		
 	}
 	
 	/**

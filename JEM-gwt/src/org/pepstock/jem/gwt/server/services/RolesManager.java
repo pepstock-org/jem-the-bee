@@ -34,6 +34,7 @@ import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
 import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterFactory;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.RoleFilterFields;
 import org.pepstock.jem.util.filters.predicates.RolePredicate;
@@ -66,7 +67,7 @@ public class RolesManager extends DefaultService{
 		RolePredicate predicate;
 		try {
 			// creates predicate by filter string
-			predicate = new RolePredicate(Filter.parse(filter));
+			predicate = new RolePredicate(FilterFactory.parse(filter));
 		} catch (Exception e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			// default case, all roles

@@ -17,6 +17,7 @@
 package org.pepstock.jem.node.persistence.mongo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +28,10 @@ import java.util.Set;
 import org.bson.Document;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.DataBaseManager;
+import org.pepstock.jem.node.persistence.AbstractDatabaseManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.DatabaseManager;
+import org.pepstock.jem.util.filters.Filter;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoTimeoutException;
@@ -45,7 +48,7 @@ import com.mongodb.util.JSON;
  * @version 3.0
  * @param <T> object stored in Hazelcast map
  */
-public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
+public abstract class AbstractMongoManager<T> extends AbstractDatabaseManager<T> implements DatabaseManager<T> {
 	
 	private static final String MONGO_KEY_FOR_INDEX = "key";
 
@@ -54,7 +57,7 @@ public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
 	private String fieldKey = null;
 	
 	private MongoCollection<Document> collection = null;
-	
+
 	/**
 	 * Creates a MONGO manager using HC queue/map name and the field name used as KEY in the 
 	 * Mongo collection.
@@ -62,6 +65,18 @@ public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
 	 * @param fieldKey the field name used as KEY in the Mongo collection
 	 */
 	AbstractMongoManager(String queueName, String fieldKey) {
+		this(queueName, fieldKey, false);
+	}
+	
+	/**
+	 * Creates a MONGO manager using HC queue/map name and the field name used as KEY in the 
+	 * Mongo collection.
+	 * @param queueName HC queue/map name
+	 * @param fieldKey the field name used as KEY in the Mongo collection
+	 * @param canBeEvicted if the map can be evicted
+	 */
+	AbstractMongoManager(String queueName, String fieldKey, boolean canBeEvicted) {
+		super(canBeEvicted);
 		this.queueName = queueName;
 		this.fieldKey = fieldKey;
 		// saves collection
@@ -275,8 +290,29 @@ public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
 	 */
 	@Override
 	public long getSize() throws DatabaseException {
-		// FIXME
-		return 0L;
+		long size= 0;
+		MongoCursor<Document> cursor = null;
+		try {
+			FindIterable<Document> iterator = collection.find();
+			Document first = iterator.first();
+			if (first != null){
+				cursor = iterator.iterator();
+				while (cursor.hasNext()) {
+					size += cursor.next().toJson().length();
+				}
+			}
+		} catch (Exception e) {
+			throw new DatabaseException(e);
+		} finally {
+			if (cursor != null){
+				try {
+					cursor.close();
+				} catch (Exception e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
+		}
+		return size;
 	}
 
 	/* (non-Javadoc)
@@ -302,4 +338,15 @@ public abstract class AbstractMongoManager<T> implements DataBaseManager<T> {
 			throw new DatabaseException(e);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.DatabaseManager#loadAll(org.pepstock.jem.util.filters.Filter)
+	 */
+	@Override
+	public Collection<T> loadAll(Filter filter) throws DatabaseException {
+		// TODO 
+		return new ArrayList<T>();
+	}
+	
+	
 }

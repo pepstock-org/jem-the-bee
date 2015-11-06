@@ -16,6 +16,9 @@
  */
 package org.pepstock.jem.gwt.server.commons;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 
 import org.pepstock.jem.Service;
@@ -58,6 +61,8 @@ public class SharedObjects {
 	private ServletContext context;
 	
 	private Interface networkInterface = null;
+	
+	private Map<String, Boolean> mapEvictionInfo = new HashMap<String, Boolean>();
 	
 	/**
 	 * Empty constructor
@@ -126,6 +131,13 @@ public class SharedObjects {
 	 */
 	public void setContext(ServletContext context) {
 		this.context = context;
+	}
+	
+	/**
+	 * @return the mapEvictionInfo
+	 */
+	public Map<String, Boolean> getMapEvictionInfo() {
+		return mapEvictionInfo;
 	}
 
 	/**

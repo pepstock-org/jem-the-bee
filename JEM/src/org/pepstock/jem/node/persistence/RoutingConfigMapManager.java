@@ -31,7 +31,7 @@ public class RoutingConfigMapManager extends AbstractMapManager<SwarmConfigurati
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	private RoutingConfigMapManager(DataBaseManager<SwarmConfiguration> dbManager) {
+	private RoutingConfigMapManager(DatabaseManager<SwarmConfiguration> dbManager) {
 		super(dbManager, false);
 	}
 	
@@ -40,7 +40,7 @@ public class RoutingConfigMapManager extends AbstractMapManager<SwarmConfigurati
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static RoutingConfigMapManager createInstance(DataBaseManager<SwarmConfiguration> dbManager){
+	public static RoutingConfigMapManager createInstance(DatabaseManager<SwarmConfiguration> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new RoutingConfigMapManager(dbManager);
 		}

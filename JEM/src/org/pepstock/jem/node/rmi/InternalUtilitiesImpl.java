@@ -41,6 +41,9 @@ import org.pepstock.jem.node.executors.jobs.Purge;
 import org.pepstock.jem.node.executors.nodes.Drain;
 import org.pepstock.jem.node.executors.nodes.Start;
 import org.pepstock.jem.node.executors.resources.AddResource;
+import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.EvictionHelper;
+import org.pepstock.jem.node.persistence.OutputMapManager;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.ResourcesUtil;
@@ -51,6 +54,9 @@ import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.Roles;
 import org.pepstock.jem.node.security.keystore.CertificatesUtil;
 import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterFactory;
+import org.pepstock.jem.util.filters.FilterParseException;
+import org.pepstock.jem.util.filters.predicates.JobPredicate;
 import org.pepstock.jem.util.filters.predicates.NodePredicate;
 import org.pepstock.jem.util.filters.predicates.ResourcePredicate;
 
@@ -59,7 +65,6 @@ import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.Transaction;
-import com.hazelcast.query.SqlPredicate;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -175,7 +180,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		// creates a filter object
 		Filter filter = null;
 		try {
-			filter = Filter.parse(nodesFilter);
+			filter = FilterFactory.parse(nodesFilter);
 		} catch (Exception e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage());
@@ -590,10 +595,21 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 	 * @see org.pepstock.jem.node.rmi.InternalUtilities#getJobs(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Collection<Job> getJobs(String jobId, String sqlPredicate) throws RemoteException {
-		IMap<String, Job> jobs = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
-		SqlPredicate predicate = new SqlPredicate(sqlPredicate);
-		return new ArrayList<Job>(jobs.values(predicate));
+	public Collection<Job> getJobs(String jobId, String searchString) throws RemoteException {
+		try {
+			Filter filter = FilterFactory.parse(searchString);
+			if (EvictionHelper.isEvicted(Queues.OUTPUT_QUEUE)){
+				return OutputMapManager.getInstance().loadAll(filter);
+			} else {
+				IMap<String, Job> jobs = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
+				JobPredicate predicate = new JobPredicate(filter);
+				return new ArrayList<Job>(jobs.values(predicate));
+			}
+		} catch (FilterParseException e) {
+			throw new RemoteException(e.getMessage(), e);
+		} catch (DatabaseException e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -711,7 +727,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		// using filter filled on UI 
 		ResourcePredicate predicate;
 		try {
-			 predicate = new ResourcePredicate(Filter.parse(filter));
+			 predicate = new ResourcePredicate(FilterFactory.parse(filter));
 		} catch (Exception e) {
 			LogAppl.getInstance().ignore(e.getMessage(), e);
 			throw new RemoteException(e.getMessage());

@@ -32,7 +32,7 @@ public class RolesMapManager extends AbstractMapManager<Role> {
 	 * Construct the object using a DBManager
 	 * @param dbManager DB manager
 	 */
-	private RolesMapManager(DataBaseManager<Role> dbManager) {
+	private RolesMapManager(DatabaseManager<Role> dbManager) {
 		super(dbManager, true);
 	}
 	
@@ -41,7 +41,7 @@ public class RolesMapManager extends AbstractMapManager<Role> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static RolesMapManager createInstance(DataBaseManager<Role> dbManager){
+	public static RolesMapManager createInstance(DatabaseManager<Role> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new RolesMapManager(dbManager);
 		}

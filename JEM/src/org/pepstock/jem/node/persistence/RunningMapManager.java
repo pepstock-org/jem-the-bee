@@ -35,7 +35,7 @@ public class RunningMapManager extends AbstractMapManager<Job> {
 	 * Construct the object using a DBManager
 	 * @param dbManager DB manager
 	 */
-	private RunningMapManager(DataBaseManager<Job> dbManager) {
+	private RunningMapManager(DatabaseManager<Job> dbManager) {
 		super(dbManager, true);
 	}
 
@@ -44,7 +44,7 @@ public class RunningMapManager extends AbstractMapManager<Job> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static RunningMapManager createInstance(DataBaseManager<Job> dbManager){
+	public static RunningMapManager createInstance(DatabaseManager<Job> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new RunningMapManager(dbManager);
 		}

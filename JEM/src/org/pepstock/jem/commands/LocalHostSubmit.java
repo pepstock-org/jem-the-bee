@@ -21,7 +21,11 @@ import java.util.Map;
 import org.pepstock.jem.commands.util.HazelcastUtil;
 import org.pepstock.jem.log.LogAppl;
 
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.LifecycleEvent;
+import com.hazelcast.core.LifecycleEvent.LifecycleState;
+import com.hazelcast.core.LifecycleListener;
 
 /**
  * Submits JCL into JEM.<br>
@@ -140,12 +144,24 @@ public class LocalHostSubmit extends AbstractConnectedClusterSubmit {
 	 */
 	@Override
 	public HazelcastInstance createClient() throws SubmitException {
-		return HazelcastUtil.getLocalInstance(getEnvironment(), 
+		HazelcastInstance client = (HazelcastClient) HazelcastUtil.getLocalInstance(getEnvironment(), 
 				getPort(), 
 				getPassword(), 
 				getPrivateKey(), 
 				getPrivateKeyPassword(), 
 				getUserID());
+		// adds a client lifecycle listener to unblock teh client when the node
+		// where is connected shutting down.
+		client.getLifecycleService().addLifecycleListener(new LifecycleListener() {
+			@Override
+			public void stateChanged(LifecycleEvent event) {
+				// if lost the connection, shutdown with errors
+				if (event.getState().equals(LifecycleState.CLIENT_CONNECTION_LOST)){
+					clientDisconnect();
+				}
+			}
+		});
+		return client;
 	}
 
 	/**

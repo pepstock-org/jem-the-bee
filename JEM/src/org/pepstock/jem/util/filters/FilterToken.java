@@ -18,8 +18,6 @@ package org.pepstock.jem.util.filters;
 
 import java.io.Serializable;
 
-import org.pepstock.jem.util.Numbers;
-
 
 /**
  * Represent a token of a Filter in the form <code>name:value</code> 
@@ -29,14 +27,27 @@ import org.pepstock.jem.util.Numbers;
 public class FilterToken implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Separator between name and value
+	 */
+	public static final String DEFAULT_NAME = "$default$";
 
 	/**
 	 * Separator between name and value
 	 */
-	public static final String FILTER_TOKEN_SEPARATOR = ":";
+	public static final String SEPARATOR = ":";
+	
+	/**
+	 * char to set NOT boolean logic
+	 */
+	public static final String NOT_CHAR = "!";
 
-	private String name = null;
+	private String name = DEFAULT_NAME;
+	
 	private String value = null;
+	
+	private boolean isNot = false;
 
 	/**
 	 * Builds an empty {@link FilterToken}
@@ -54,11 +65,28 @@ public class FilterToken implements Serializable {
 		if (filterName != null) {
 			// normalize removing blanks and lowering case
 			this.name = filterName.trim().toLowerCase();
-		} 
+		} else {
+			this.name= DEFAULT_NAME;
+		}
 		// if value not null
 		if (filterValue != null){
-			// assigns the value without blanks
-			this.value = filterValue.trim();
+			// gets value
+			String myValue = filterValue.trim();
+			if (myValue.startsWith(NOT_CHAR)){
+				if (myValue.length() > 1){
+					// sets not
+					isNot = true;
+					this.value = myValue.substring(1);
+				} else {
+					// set to null because
+					// a negative has been set but 
+					// without a right value
+					this.value = null;
+				}
+			} else {
+				// assigns the value without blanks
+				this.value = myValue;
+			}
 		}
 	}
 
@@ -76,13 +104,6 @@ public class FilterToken implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	/**
-	 * @return <code>true</code> if this {@link FilterToken} has a non-null and non-empty name
-	 */
-	public boolean hasName() {
-		return name != null && name.length() > 0;
-	}
 	
 	/**
 	 * @return the token value
@@ -99,6 +120,21 @@ public class FilterToken implements Serializable {
 		this.value = value;
 	}
 
+	
+	/**
+	 * @return the isNot
+	 */
+	public boolean isNot() {
+		return isNot;
+	}
+
+	/**
+	 * @param isNot the isNot to set
+	 */
+	public void setNot(boolean isNot) {
+		this.isNot = isNot;
+	}
+
 	/**
 	 * @return <code>true</code> if this {@link FilterToken} has a non-null and non-empty value
 	 */
@@ -106,110 +142,11 @@ public class FilterToken implements Serializable {
 		return value != null && value.length() > 0;
 	}
 	
-	/**
-	 * @return <code>true</code> if this token has only the value (and <code>null</code> name)
-	 */
-	public boolean hasValueOnly() {
-		return !hasName() && hasValue();
-	}
-	
-	/**
-	 * @param filterName
-	 * @return <code>true</code> if the name of this {@link FilterToken} equals the parameter
-	 */
-	public boolean is(String filterName) {
-		return this.name.equalsIgnoreCase(filterName.trim());
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return name + FILTER_TOKEN_SEPARATOR + value;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		// calculate a own hashcode 
-		final int prime = Numbers.N_31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		// if argument == to this
-		if (this == obj){
-			return true;
-		}
-		// if argument is null FALSE
-		if (obj == null){
-			return false;
-		}
-		// if argument is instance of filtertoken
-		if (obj instanceof FilterToken){
-			FilterToken other = (FilterToken) obj;
-			// compares name
-			if (name == null) {
-				// if both null, equals
-				if (other.name != null){
-					return false;
-				}
-			} else if (!name.equals(other.name)){
-				// if the names are different
-				return false;
-			}
-			// compares values
-			if (value == null) {
-				// if are both null ok
-				if (other.value != null) {
-					return false;
-				}
-			} else if (!value.equals(other.value)) {
-				// if the values are different
-				return false;
-			}
-			// if here, they are equals
-			return true;
-		}
-		// if here, the argument is not a filtertoken
-		return false;
-	}
-
-	/**
-	 * Build a {@link FilterToken} from a human-provided {@link String}
-	 * @param tokenString the {@link String} representation of token
-	 * @return a {@link FilterToken}
-	 * @throws ParseException when the parameter is unparsable
-	 */
-	public static FilterToken parse(String tokenString) throws ParseException {
-		try {
-			// checks if empty string
-			if (tokenString == null || tokenString.trim().isEmpty()) {
-				throw new ParseException("Unparsable null/empty tokenString");
-			}
-			// splits the token 
-			String[] nameValue = tokenString.split(FILTER_TOKEN_SEPARATOR);
-			// in case of number of tokens
-			switch (nameValue.length) {
-			case Numbers.N_2:
-				return new FilterToken(nameValue[0], nameValue[1]);
-			case Numbers.N_1:
-				return new FilterToken(null, nameValue[0]);
-			default:
-				throw new ArrayIndexOutOfBoundsException();
-			}
-		} catch (Exception e) {
-			throw new ParseException("Unparsable tokenString '" + tokenString + "; cause: " + e.getMessage(), e);
-		}
+		return (DEFAULT_NAME.equalsIgnoreCase(name) ? "" : name + SEPARATOR) + (isNot ? NOT_CHAR : "") + value;
 	}
 }

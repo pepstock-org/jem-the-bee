@@ -19,6 +19,7 @@ package org.pepstock.jem.util.filters.predicates;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.ParseException;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
@@ -73,97 +74,101 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 		// initial flag, this should be invalidated if some checks fail
 		boolean includeThis = true;
 		
-		// iterate over all filter tokens
-		FilterToken[] tokens = getFilter().toTokenArray();
-		// exit if tokens already processed OR if i can immediate exclude this
-		for (int i=0; i<tokens.length && includeThis; i++) {
-			FilterToken token = tokens[i];
-			// gets name and value
-			// remember that filters are built:
-			// -[name] [value]
-			String tokenName = token.getName();
-			String tokenValue = token.getValue();
-			// gets the filter field for jobs by name
-			JobFilterFields field = JobFilterFields.getByName(tokenName);
-			// if field is not present,
-			// used NAME as default
-			if (field == null) {
-				// this is the default field for Job
-				field = JobFilterFields.NAME;
-			}
-			// based on name of field, it will check
-			// different attributes 
-			// all matches are in AND
-			switch (field) {
-			case NAME:
-				// checks name of JOB
-				includeThis &= checkName(tokenValue, job);
-				break;
-			case TYPE:
-				// checks type of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getType(), tokenValue);
-				break;
-			case USER:
-				// checks user (the surrogated as weel) of JOB
-				includeThis &= job.isUserSurrogated() ? StringUtils.containsIgnoreCase(job.getJcl().getUser(), tokenValue) : StringUtils.containsIgnoreCase(job.getUser(), tokenValue);
-				break;
-			case ENVIRONMENT:
-				// checks environment of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getEnvironment(), tokenValue);
-				break;
-			case DOMAIN:
-				// checks domain of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getDomain(), tokenValue);
-				break;
-			case AFFINITY:
-				// checks affinity of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getJcl().getAffinity(), tokenValue);
-				break;
-			case SUBMITTED_TIME:
-				// checks the submitted time of JOB
-				includeThis &= checkTime(tokenValue, job.getSubmittedTime());
-				break;
-			case PRIORITY:
-				// checks the priority of JOB
-				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getPriority()), tokenValue);
-				break;
-			case MEMORY:
-				// checks the memory requested of JOB
-				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getMemory()), tokenValue);
-				break;
-			case STEP:
-				// checks the current step of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getCurrentStep().getName(), tokenValue);
-				break;
-			case RUNNING_TIME:
-				// checks the running time of JOB
-				includeThis &= checkTime(tokenValue, job.getStartedTime());
-				break;
-			case MEMBER:
-				// checks the JEM node where the job is executing
-				includeThis &= StringUtils.containsIgnoreCase(job.getMemberLabel(), tokenValue);
-				break;
-			case ENDED_TIME:
-				// checks the ended time of JOB
-				includeThis &= checkTime(tokenValue, job.getEndedTime());
-				break;
-			case RETURN_CODE:
-				// checks the return code of JOB
-				includeThis &= checkReturnCode(tokenValue, job);
-				break;
-			case ID:
-				// checks the ID of JOB
-				includeThis &= StringUtils.containsIgnoreCase(job.getId(), tokenValue);
-				break;
-				// checks JOB is routed
-			case ROUTED:
-				boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
-				boolean isRouted = job.getRoutingInfo().getRoutedTime() != null; 
-				includeThis &= wantRouted == isRouted;
-				break;
-			default:
-				// otherwise it uses a wrong filter name
-				throw new JemRuntimeException("Unrecognized Job filter field: " + field);
+		if (!getFilter().isEmpty()){
+			// iterate over all filter tokens
+			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			// exit if tokens already processed OR if i can immediate exclude this
+			while(iterator.hasNext() && includeThis) {
+				FilterToken token = iterator.next();
+				// gets name and value
+				// remember that filters are built:
+				// -[name] [value]
+				String tokenName = token.getName();
+				String tokenValue = token.getValue();
+				// gets the filter field for jobs by name
+				JobFilterFields field = JobFilterFields.getByName(tokenName);
+				// if field is not present,
+				// used NAME as default
+				if (field == null) {
+					// this is the default field for Job
+					field = JobFilterFields.NAME;
+				}
+				boolean match = true;
+				// based on name of field, it will check
+				// different attributes 
+				// all matches are in AND
+				switch (field) {
+					case NAME:
+						// checks name of JOB
+						match = checkName(tokenValue, job);
+						break;
+					case TYPE:
+						// checks type of JOB
+						match = StringUtils.containsIgnoreCase(job.getJcl().getType(), tokenValue);
+						break;
+					case USER:
+						// checks user (the surrogated as weel) of JOB
+						match = job.isUserSurrogated() ? StringUtils.containsIgnoreCase(job.getJcl().getUser(), tokenValue) : StringUtils.containsIgnoreCase(job.getUser(), tokenValue);
+						break;
+					case ENVIRONMENT:
+						// checks environment of JOB
+						match = StringUtils.containsIgnoreCase(job.getJcl().getEnvironment(), tokenValue);
+						break;
+					case DOMAIN:
+						// checks domain of JOB
+						match = StringUtils.containsIgnoreCase(job.getJcl().getDomain(), tokenValue);
+						break;
+					case AFFINITY:
+						// checks affinity of JOB
+						match = StringUtils.containsIgnoreCase(job.getJcl().getAffinity(), tokenValue);
+						break;
+					case SUBMITTED_TIME:
+						// checks the submitted time of JOB
+						match = checkTime(tokenValue, job.getSubmittedTime());
+						break;
+					case PRIORITY:
+						// checks the priority of JOB
+						match = StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getPriority()), tokenValue);
+						break;
+					case MEMORY:
+						// checks the memory requested of JOB
+						match = StringUtils.containsIgnoreCase(String.valueOf(job.getJcl().getMemory()), tokenValue);
+						break;
+					case STEP:
+						// checks the current step of JOB
+						match = StringUtils.containsIgnoreCase(job.getCurrentStep().getName(), tokenValue);
+						break;
+					case RUNNING_TIME:
+						// checks the running time of JOB
+						match = checkTime(tokenValue, job.getStartedTime());
+						break;
+					case MEMBER:
+						// checks the JEM node where the job is executing
+						match = StringUtils.containsIgnoreCase(job.getMemberLabel(), tokenValue);
+						break;
+					case ENDED_TIME:
+						// checks the ended time of JOB
+						match = checkTime(tokenValue, job.getEndedTime());
+						break;
+					case RETURN_CODE:
+						// checks the return code of JOB
+						match = checkReturnCode(tokenValue, job);
+						break;
+					case ID:
+						// checks the ID of JOB
+						match = StringUtils.containsIgnoreCase(job.getId(), tokenValue);
+						break;
+						// checks JOB is routed
+					case ROUTED:
+						boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
+						boolean isRouted = job.getRoutingInfo().getRoutedTime() != null; 
+						match = wantRouted == isRouted;
+						break;
+					default:
+						// otherwise it uses a wrong filter name
+						throw new JemRuntimeException("Unrecognized Job filter field: " + field);
+				}
+				includeThis &= (token.isNot()) ? !match : match;
 			}
 		}
 		return includeThis;

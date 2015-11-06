@@ -40,6 +40,11 @@ public final class CommonPaths {
 	public static final String PATH_SEPARATOR = "/";
 	
 	/**
+	 * false value for default
+	 */
+	public static final String FALSE = "false";
+	
+	/**
 	 * To avoid any instantiation
 	 */
 	private CommonPaths() {

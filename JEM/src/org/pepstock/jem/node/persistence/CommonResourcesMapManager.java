@@ -35,7 +35,7 @@ public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
 	 * Construct the object instantiating a new DBManager
 	 * @param dbManager database manager
 	 */
-	private CommonResourcesMapManager(DataBaseManager<Resource> dbManager) {
+	private CommonResourcesMapManager(DatabaseManager<Resource> dbManager) {
 		super(dbManager, true);
 	}
 	
@@ -44,7 +44,7 @@ public class CommonResourcesMapManager extends AbstractMapManager<Resource> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static CommonResourcesMapManager createInstance(DataBaseManager<Resource> dbManager){
+	public static CommonResourcesMapManager createInstance(DatabaseManager<Resource> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new CommonResourcesMapManager(dbManager);
 		}

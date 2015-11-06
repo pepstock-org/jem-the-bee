@@ -64,6 +64,7 @@ import org.pepstock.jem.node.executors.nodes.Update;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterFactory;
 import org.pepstock.jem.util.filters.fields.NodeFilterFields;
 import org.pepstock.jem.util.filters.predicates.NodePredicate;
 
@@ -188,14 +189,14 @@ public class NodesManager extends DefaultService {
 	 */
 	public Collection<NodeInfoBean> getNodesByFilter(String nodesFilter) throws ServiceMessageException {
 		// creates a filter object
-		Filter filter = Filter.parseOrDefault(nodesFilter, Filter.NODE_DEFAULT_FILTER);
+		Filter filter = FilterFactory.parse(nodesFilter, FilterFactory.NODE_DEFAULT_FILTER);
 		// extract the label or hostname, if it is.
 		// necessary to check permission because it is based on
 		// label or hostname
-		String nodesPermString = filter.get(NodeFilterFields.NAME.getName());
+		String nodesPermString = filter.getValue(NodeFilterFields.NAME.getName());
 		// if label is null, try with hostname
 		if ((nodesPermString == null) || (nodesPermString.trim().length() == 0)) {
-			nodesPermString = filter.get(NodeFilterFields.HOSTNAME.getName());
+			nodesPermString = filter.getValue(NodeFilterFields.HOSTNAME.getName());
 			// if hostname is null as well, then use *
 			if ((nodesPermString == null) || (nodesPermString.trim().length() == 0)) {
 				nodesPermString = "*";

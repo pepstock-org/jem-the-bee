@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +33,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.persistence.DataBaseManager;
+import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.persistence.AbstractDatabaseManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.DatabaseManager;
+import org.pepstock.jem.util.filters.Filter;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -45,7 +49,7 @@ import com.thoughtworks.xstream.XStream;
  * @param <T> object stored in Hazelcast map 
  * 
  */
-public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
+public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> implements DatabaseManager<T>{
 	
 	private static final int FIRST_FIELD = 1;
 	
@@ -56,22 +60,41 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 	private String queueName = null;
 	
 	private SQLContainer sqlContainer = null;
+	
+	private EvictionHandler<T> envictionHandler = null;
 
 	/**
 	 * Standard constructor which creates a Xstream instance
+	 * @param queueName hazelcast queuename
+	 * @param sqlContainer SQL container
 	 */
 	AbstractDBManager(String queueName, SQLContainer sqlContainer) {
-		this(queueName, sqlContainer, new XStream());
+		this(queueName, sqlContainer, false);
+	}
+	
+	/**
+	 * Standard constructor which creates a Xstream instance
+	 * @param queueName hazelcast queuename
+	 * @param sqlContainer SQL container
+	 * @param canBeEvicted if the map can be evited in HC
+	 */
+	AbstractDBManager(String queueName, SQLContainer sqlContainer, boolean canBeEvicted) {
+		this(queueName, sqlContainer, new XStream(), canBeEvicted);
 	}
 
 	/**
 	 * Creates the object using the XStream instance 
+	 * @param queueName hazelcast queuename
+	 * @param sqlContainer SQL container
 	 * @param xs XStream instance
+	 * @param canBeEvicted if the map can be evited in HC
 	 */
-	AbstractDBManager(String queueName, SQLContainer sqlContainer, XStream xs) {
+	AbstractDBManager(String queueName, SQLContainer sqlContainer, XStream xs, boolean canBeEvicted) {
+		super(canBeEvicted);
 		this.queueName = queueName;
 		this.xStream = xs;
 		this.sqlContainer = sqlContainer;
+		
 	}
 	
 	/**
@@ -88,6 +111,20 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 		return sqlContainer;
 	}
 	
+	/**
+	 * @return the envictionHandler
+	 */
+	public EvictionHandler<T> getEnvictionHandler() {
+		return envictionHandler;
+	}
+
+	/**
+	 * @param envictionHandler the envictionHandler to set
+	 */
+	public void setEnvictionHandler(EvictionHandler<T> envictionHandler) {
+		this.envictionHandler = envictionHandler;
+	}
+
 	/**
 	 * Returns for a key fields for object
 	 * @param item instance used to get key
@@ -132,7 +169,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -162,11 +199,17 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 			updateStmt.setString(FIRST_FIELD, myKey);
 			// set XML to clob
 			updateStmt.setCharacterStream(SECOND_FIELD, reader);
+			if (canBeEvicted() && getEnvictionHandler() != null){
+				getEnvictionHandler().fillSQLStatement(updateStmt, item);
+			}
 			// executes SQL
 			updateStmt.executeUpdate();
 			// commit
 			connection.commit();
 		} catch (SQLException e) {
+			if (getQueueName().equalsIgnoreCase(Queues.OUTPUT_QUEUE)){
+				e.printStackTrace();
+			}
 			throw new DatabaseException(e);
 		} finally{
 			// closes statement
@@ -182,7 +225,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -240,7 +283,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -294,7 +337,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -359,7 +402,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -445,7 +488,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -492,7 +535,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -520,7 +563,7 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					throw new DatabaseException(e);
+					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
 		}
@@ -558,4 +601,71 @@ public abstract class AbstractDBManager<T> implements DataBaseManager<T>{
 			}
 		}
 	}
+	
+	/**
+	 * This method must be overrided from DB managers which needds to access to database
+	 * to get object. Mandatory to use when a HC map has been configured with eviction.
+	 * @param filter filter to apply
+	 * @return alwasy null
+	 */
+	String getStatementForFilter(Filter filter){
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.DatabaseManager#loadAll(org.pepstock.jem.util.filters.Filter)
+	 */
+	@Override
+	public final Collection<T> loadAll(Filter filter) throws DatabaseException {
+		Collection<T> allItems = new ArrayList<T>();
+		
+		String stmtString = getStatementForFilter(filter);
+		if (stmtString != null){
+			// open connection
+			// getting a connection from pool
+			Connection connection = null;
+			Statement stmt = null;
+			ResultSet rs = null;
+			try {
+				connection = DBPoolManager.getInstance().getConnection();
+				// creates statement and
+				// executes it
+				stmt = connection.createStatement();
+				rs = stmt.executeQuery(stmtString);
+
+				// creates the set
+				while (rs.next()) {
+					// get CLOB field which contains resource XML serialization
+					@SuppressWarnings("unchecked")
+					T item = (T) xStream.fromXML(rs.getCharacterStream(FIRST_FIELD));
+					allItems.add(item);
+				}
+			} catch (SQLException e) {
+				throw new DatabaseException(e);
+			} finally{
+				// closes statement and result set
+				try {
+					if (stmt != null){
+						stmt.close();
+					}			
+					if (rs != null){
+						rs.close();
+					}
+				} catch (SQLException e) {
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+				// closes connection
+				if (connection != null){
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						LogAppl.getInstance().ignore(e.getMessage(), e);
+					}
+				}
+			}
+		}
+		return allItems;
+	}
+	
+	
 }

@@ -35,7 +35,7 @@ public class CommonResourcesDBManager extends AbstractDBManager<Resource>{
 	 * @param factory SQL factory
 	 */
 	public CommonResourcesDBManager(SQLContainerFactory factory) {
-		super(Queues.COMMON_RESOURCES_MAP, factory.getSQLContainerForCommonResourcesMap(), XmlUtil.getXStream());
+		super(Queues.COMMON_RESOURCES_MAP, factory.getSQLContainerForCommonResourcesMap(), XmlUtil.getXStream(), false);
 	}
 
 	/* (non-Javadoc)

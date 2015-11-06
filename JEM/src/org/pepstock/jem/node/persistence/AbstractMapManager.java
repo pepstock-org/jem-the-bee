@@ -28,6 +28,7 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.util.filters.Filter;
 
 import com.hazelcast.core.MapStore;
 
@@ -43,7 +44,7 @@ import com.hazelcast.core.MapStore;
  */
 public abstract class AbstractMapManager<T> implements MapStore<String, T>, Recoverable {
 
-	private DataBaseManager<T> dbManager = null;
+	private DatabaseManager<T> dbManager = null;
 	
 	private RedoManager<T> redoManager = null;
 
@@ -53,11 +54,18 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * @param dbManager dbManager instance
 	 * @param recovery if the map must use redo in case of DB failure
 	 */
-	public AbstractMapManager(DataBaseManager<T> dbManager, boolean recovery) {
+	public AbstractMapManager(DatabaseManager<T> dbManager, boolean recovery) {
 		this.dbManager = dbManager;
 		if (recovery){
 			this.redoManager = new RedoManager<T>(dbManager.getQueueName());
 		}
+	}
+	
+	/**
+	 * @return the queueName
+	 */
+	public boolean canBeEvicted() {
+		return dbManager.canBeEvicted();
 	}
 	
 	/**
@@ -146,7 +154,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * 
 	 * @see com.hazelcast.core.MapLoader#loadAll(java.util.Collection)
 	 * @param collaction of keys to load
-	 * @return maps with all roles
+	 * @return maps with all objects
 	 */
 	@Override
 	public Map<String, T> loadAll(Collection<String> keys) {
@@ -167,6 +175,28 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 		return objects;
 	}
 
+	
+	/**
+	 * Loads all objects saved, by a list of keys.
+	 * 
+	 * @see com.hazelcast.core.MapLoader#loadAll(java.util.Collection)
+	 * @param filter filter to apply to database
+	 * @return collection with all objects
+	 * @throws DatabaseException if any errors occurs
+	 */
+	public Collection<T> loadAll(Filter filter) throws DatabaseException {
+		Collection<T> objects = null;
+		// check if I have the database manager, otherwise log error and
+		// exception
+		if (dbManager == null) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
+		} else {
+			// load object instance from table
+			objects = dbManager.loadAll(filter);
+		}
+		return objects;
+	}
+	
 	/**
 	 * Deletes a object instance from queue by object name
 	 * 

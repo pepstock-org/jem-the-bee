@@ -14,22 +14,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.mongo;
+package org.pepstock.jem.node.persistence;
 
-import org.pepstock.jem.node.Queues;
 
 /**
- * Map manager based on MONGO for jobs into OUTPUT queue.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
+ * @param <T> type of objects to manage on HC
  */
-public class OutputMongoManager extends JobMongoManager {
+public abstract class AbstractDatabaseManager<T> implements DatabaseManager<T> {
 
+	private boolean canBeEvicted = false;
+	
 	/**
-	 * Creates the object setting queue 
+	 * Sets if the database can manage evicted maps
+	 * @param canBeEvicted if true, it can manage evictable maps
 	 */
-	public OutputMongoManager() {
-		super(Queues.OUTPUT_QUEUE, true);
+	public AbstractDatabaseManager(boolean canBeEvicted) {
+		this.canBeEvicted = canBeEvicted;
 	}
 
+	/**
+	 * @return the canBeEvicted
+	 */
+	@Override
+	public final boolean canBeEvicted() {
+		return canBeEvicted;
+	}
 }

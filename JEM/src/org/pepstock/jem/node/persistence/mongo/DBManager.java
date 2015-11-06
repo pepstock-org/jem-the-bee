@@ -65,7 +65,7 @@ public final class DBManager {
 	 * @throws UnknownHostException if any network errors occurs
 	 * @throws DatabaseException 
 	 */
-	public synchronized static DBManager createInstance(MongoClientURI configuration) throws UnknownHostException, DatabaseException{
+	public static synchronized DBManager createInstance(MongoClientURI configuration) throws UnknownHostException, DatabaseException{
 		if (INSTANCE == null){
 			INSTANCE = new DBManager(configuration);
 			INSTANCE.init();

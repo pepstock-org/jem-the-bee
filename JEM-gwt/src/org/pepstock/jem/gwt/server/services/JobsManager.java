@@ -50,12 +50,14 @@ import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
+import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.Cancel;
 import org.pepstock.jem.node.executors.jobs.GetJclTypes;
 import org.pepstock.jem.node.executors.jobs.GetJobSystemActivity;
+import org.pepstock.jem.node.executors.jobs.GetJobs;
 import org.pepstock.jem.node.executors.jobs.GetOutputFileContent;
 import org.pepstock.jem.node.executors.jobs.GetOutputTree;
 import org.pepstock.jem.node.executors.jobs.Purge;
@@ -64,6 +66,7 @@ import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterFactory;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 import org.pepstock.jem.util.filters.predicates.JobPredicate;
@@ -98,7 +101,7 @@ public class JobsManager extends DefaultService {
 	 *             if any exception occurs
 	 */
 	public Collection<Job> getInputQueue(String filter) throws ServiceMessageException {
-		return getJobsByQueue(Queues.INPUT_QUEUE, filter);
+		return getJobsByQueue(Queues.INPUT_QUEUE, filter, false);
 	}
 
 	/**
@@ -112,7 +115,7 @@ public class JobsManager extends DefaultService {
 	 *             if any exception occurs
 	 */
 	public Collection<Job> getRunningQueue(String filter) throws ServiceMessageException {
-		return getJobsByQueue(Queues.RUNNING_QUEUE, filter);
+		return getJobsByQueue(Queues.RUNNING_QUEUE, filter, false);
 	}
 
 	/**
@@ -121,12 +124,13 @@ public class JobsManager extends DefaultService {
 	 * 
 	 * @param filter
 	 *            filter string
+	 * @param onHistory if to perform teh query on database
 	 * @return collection of jobs
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	public Collection<Job> getOutputQueue(String filter) throws ServiceMessageException {
-		return getJobsByQueue(Queues.OUTPUT_QUEUE, filter);
+	public Collection<Job> getOutputQueue(String filter, boolean onHistory) throws ServiceMessageException {
+		return getJobsByQueue(Queues.OUTPUT_QUEUE, filter, onHistory);
 	}
 
 	/**
@@ -140,7 +144,7 @@ public class JobsManager extends DefaultService {
 	 *             if any exception occurs
 	 */
 	public Collection<Job> getRoutingQueue(String filter) throws ServiceMessageException{
-		return getJobsByQueue(Queues.ROUTING_QUEUE, filter);
+		return getJobsByQueue(Queues.ROUTING_QUEUE, filter, false);
 	}
 
 	/**
@@ -151,15 +155,16 @@ public class JobsManager extends DefaultService {
 	 *            queue name to use to get the right map
 	 * @param filterString
 	 *            filter string
+	 * @param onHistory if to perform the query on database
 	 * @return collection of jobs
 	 * @throws ServiceMessageException 
 	 *             if any exception occurs
 	 */
-	public Collection<Job> getJobsByQueue(String queueName, String filterString) throws ServiceMessageException {
+	public Collection<Job> getJobsByQueue(String queueName, String filterString, boolean onHistory) throws ServiceMessageException {
 		// creates a filter object
 		Filter filter = null;
 		try {
-			filter = Filter.parse(filterString);
+			filter = FilterFactory.parse(filterString);
 		} catch (Exception e) {
 			LogAppl.getInstance().debug(e.getMessage(), e);
 			// default case, all jobs
@@ -169,17 +174,27 @@ public class JobsManager extends DefaultService {
 		// extract the jobname, if it is.
 		// necessary to check permission because it is based on
 		// job name
-		String jobName = filter.get(JobFilterFields.NAME.getName());
+		
+		String jobName = filter.getValue(JobFilterFields.NAME.getName());
+		
 		// if job name is null, means all, then "*"
 		if (jobName == null || jobName.trim().length() == 0) {
 			jobName = "*";
-		}
+		} 
 		// creates the right permission by job name
 		String permission = Permissions.SEARCH_JOBS + jobName;
 		// checks if the user is authorized to get jobs
 		// if not, this method throws an exception
 		checkAuthorization(new StringPermission(permission));
 
+		if (SharedObjects.getInstance().getMapEvictionInfo().containsKey(queueName) && onHistory){
+			boolean evicted = SharedObjects.getInstance().getMapEvictionInfo().get(queueName);
+			if (evicted){
+				DistributedTaskExecutor<Collection<Job>> task = new DistributedTaskExecutor<Collection<Job>>(new GetJobs(queueName, filter), getMember());
+				return task.getResult();
+			}
+		}
+		
 		IMap<String, Job> jobs = getInstance().getMap(queueName);
 		// creates predicate
 		JobPredicate predicate = new JobPredicate(filter);

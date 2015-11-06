@@ -14,22 +14,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.persistence.mongo;
+package org.pepstock.jem.gwt.client.panels.jobs.output;
 
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.gwt.client.panels.jobs.commons.JobsSearcher;
+import org.pepstock.jem.gwt.client.security.PreferencesKeys;
+
+import com.google.gwt.i18n.client.HasDirection.Direction;
+import com.google.gwt.user.client.ui.CheckBox;
 
 /**
- * Map manager based on MONGO for jobs into OUTPUT queue.
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public class OutputMongoManager extends JobMongoManager {
+public class OutputSearcher extends JobsSearcher {
+	
+	private CheckBox history = null;
 
 	/**
-	 * Creates the object setting queue 
+	 * @param preferenceKey
 	 */
-	public OutputMongoManager() {
-		super(Queues.OUTPUT_QUEUE, true);
+	public OutputSearcher() {
+		super(PreferencesKeys.JOB_SEARCH_OUTPUT);
+		history = new CheckBox();
+		history.setText("Search on history", Direction.LTR);
+		add(history);
+	}
+	
+	/**
+	 * Returns true if the user checked the box to perform the query on database
+	 * @return true if the user checked the box to perform the query on database
+	 */
+	public boolean isHistorySelected(){
+		return history.getValue();
 	}
 
 }

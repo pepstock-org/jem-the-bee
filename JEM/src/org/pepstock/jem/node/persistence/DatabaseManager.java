@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.pepstock.jem.util.filters.Filter;
+
 /**
  * Manages all SQL statements towards the database to persist the Hazelcast items.<br>
  * 
@@ -29,7 +31,7 @@ import java.util.Set;
  * @param <T> object stored in Hazelcast map 
  * 
  */
-public interface DataBaseManager<T>{
+public interface DatabaseManager<T>{
 	
 	/**
 	 * Returns the Hazelcast queue name
@@ -112,4 +114,18 @@ public interface DataBaseManager<T>{
 	 * @throws DatabaseException if any error occurs
 	 */
 	void checkAndCreate() throws DatabaseException;
+	
+	/**
+	 * Returns true if the HC map can be evicted otherwise false.
+	 * @return true if the HC map can be evicted otherwise false
+	 */
+	boolean canBeEvicted();
+	
+	/**
+	 * Load data from database when eviction is activated
+	 * @param filter filter to apply to database
+	 * @return collection of objects
+	 * @throws DatabaseException if any errors occurs
+	 */
+	Collection<T> loadAll(Filter filter) throws DatabaseException;
 }
