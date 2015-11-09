@@ -20,9 +20,6 @@ import org.pepstock.jem.ServiceStatus;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.security.JemCacheManager;
 
-import com.hazelcast.core.LifecycleEvent;
-import com.hazelcast.core.LifecycleEvent.LifecycleState;
-
 /**
  * Is the client life cycle listener for the TCP/IP service. It handled the
  * business logic for each state changes
@@ -34,68 +31,27 @@ public class TcpIpLifeCycle extends LifeCycle {
 
 	private boolean isClientConnected = false;
 
-	/**
-	 * Be aware of the fact that at least in hazelcast 3.1.3 a client will pass
-	 * through the states starting and started even if it will never be able to
-	 * actually connect to a cluster. In deep, a client that will fail to
-	 * connect to a cluster will pass through the following states:
-	 * <p>
-	 * {@link LifecycleState#STARTING}
-	 * <p>
-	 * {@link LifecycleState#STARTED}
-	 * <p>
-	 * {@link LifecycleState#SHUTTING_DOWN}
-	 * <p>
-	 * {@link LifecycleState#SHUTDOWN}
-	 * 
-	 * at state change we do the necessary business logic
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.listeners.LifeCycle#handleShuttingDown()
 	 */
-	@Override
-	public void stateChanged(LifecycleEvent event) {
-		if (event.getState().equals(LifecycleState.STARTING)) {
-			handleStarting();
-		} else if (event.getState().equals(LifecycleState.STARTED)) {
-			handleStarted();
-		} else if (event.getState().equals(LifecycleState.SHUTTING_DOWN)) {
-			handleShuttingDown();
-		} else if (event.getState().equals(LifecycleState.SHUTDOWN)) {
-			handleShutDown();
-		}
-	}
-
-	/**
-	 * Handle the client started event
-	 */
-	private void handleStarted() {
-		// do nothing
-	}
-
-	/**
-	 * Handle the client starting event
-	 */
-	private void handleStarting() {
-		// do nothing
-	}
-
-	/**
-	 * Handle the client shutting down
-	 */
-	private void handleShuttingDown() {
+    @Override
+    public void shuttingDown() {
 		SharedObjects.getInstance().setDataClusterAvailable(false);
 		JemCacheManager.updateJemCache();
-	}
+    }
 
-	/**
-	 * Handle the cliet shut down
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.listeners.LifeCycle#handleShutDown()
 	 */
-	private void handleShutDown() {
+    @Override
+    public void shuttedDown() {
 		// if the client was connected than restart the TcpIpService only if the
 		// status of the service is not SHUTTING_DOWN or SHUT_DOWN
 		if (isClientConnected && !SharedObjects.getInstance().getConnectorService().getStatus().equals(ServiceStatus.SHUTTING_DOWN)
 				&& !SharedObjects.getInstance().getConnectorService().getStatus().equals(ServiceStatus.SHUT_DONW)) {
 			SharedObjects.getInstance().getConnectorService().start();
 		}
-	}
+    }
 
 	/**
 	 * This method is used to understand if the client fulfilled the connection

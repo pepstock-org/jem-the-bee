@@ -51,5 +51,4 @@ public abstract class Service {
 		this.status = status;
 	}
 
-	
 }

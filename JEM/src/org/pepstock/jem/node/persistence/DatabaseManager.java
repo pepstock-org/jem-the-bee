@@ -127,5 +127,5 @@ public interface DatabaseManager<T>{
 	 * @return collection of objects
 	 * @throws DatabaseException if any errors occurs
 	 */
-	Collection<T> loadAll(Filter filter) throws DatabaseException;
+	Collection<T> loadByFilter(Filter filter) throws DatabaseException;
 }

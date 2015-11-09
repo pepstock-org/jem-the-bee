@@ -1796,7 +1796,14 @@ public enum NodeMessage implements MessageInterface {
 	 * "Unable to get the objects from database", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when it tries to get the data directly from database when teh Hazelcast eviction is active.")
-	JEMC295E("0295", "Unable to get the objects from database", MessageLevel.ERROR);
+	JEMC295E("0295", "Unable to get the objects from database", MessageLevel.ERROR),
+
+	/**
+	 * "Client is {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when Hazelcast client changes its status.")
+	JEMC296I("0296", "Client is {0}", MessageLevel.INFO);
+	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an
 	 * instance of <code>NodeMessage</code>.

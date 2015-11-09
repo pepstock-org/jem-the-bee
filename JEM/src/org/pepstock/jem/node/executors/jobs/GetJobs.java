@@ -67,7 +67,7 @@ public class GetJobs extends DefaultExecutor<Collection<Job>>{
 	public Collection<Job> execute() throws ExecutorException {
 		try {
 			if (Queues.OUTPUT_QUEUE.equalsIgnoreCase(mapName)){
-				return OutputMapManager.getInstance().loadAll(filter);
+				return OutputMapManager.getInstance().loadByFilter(filter);
 			} else {
 				IMap<String, Job> jobs = Main.getHazelcast().getMap(mapName);
 				JobPredicate predicate = new JobPredicate(filter);

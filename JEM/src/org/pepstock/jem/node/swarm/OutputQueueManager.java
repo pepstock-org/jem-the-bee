@@ -144,7 +144,7 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 						Filter filter = new Filter();
 						filter.add(new FilterToken(JobFilterFields.ENVIRONMENT.getName(), env));
 						try {
-							Collection<Job> tempJobs = OutputMapManager.getInstance().loadAll(filter);
+							Collection<Job> tempJobs = OutputMapManager.getInstance().loadByFilter(filter);
 							if (!tempJobs.isEmpty()){
 								Iterator<Job> iter = tempJobs.iterator();
 								while(iter.hasNext()){

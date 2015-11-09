@@ -599,7 +599,7 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		try {
 			Filter filter = FilterFactory.parse(searchString);
 			if (EvictionHelper.isEvicted(Queues.OUTPUT_QUEUE)){
-				return OutputMapManager.getInstance().loadAll(filter);
+				return OutputMapManager.getInstance().loadByFilter(filter);
 			} else {
 				IMap<String, Job> jobs = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
 				JobPredicate predicate = new JobPredicate(filter);

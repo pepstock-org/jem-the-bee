@@ -34,14 +34,13 @@ import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
-import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
 
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
@@ -68,7 +67,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	private String privateKeyPassword = null;
 
-	private HazelcastInstance client = null;
+	private HazelcastClient client = null;
 	
 	// uses a count down latch to wait end of job
 	private final CountDownLatch lock = new CountDownLatch(1);
@@ -189,8 +188,15 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 * @return Hazelcast instance 
 	 * @throws SubmitException if nay excetpion occurs
 	 */
-	public abstract HazelcastInstance createClient() throws SubmitException;
+	public abstract HazelcastClient createClient() throws SubmitException;
 	
+	/**
+	 * @return the client
+	 */
+	HazelcastClient getClient() {
+		return client;
+	}
+
 	/**
 	 * Submits the job, connecting to Hazelcast, reading JCL content and
 	 * creating new PRE job object, adds itself as listener to a hazelcast topic
@@ -276,7 +282,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			topic.addMessageListener(this);
 		}
 
-		SubmitPreJob.submit(client, preJob);
+//		SubmitPreJob.submit(client, preJob);
 	}
 	
 	/* (non-Javadoc)
@@ -358,7 +364,18 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	void clientDisconnect(){
 		// set to null to end in error
-		setJob(null);
+		clientDisconnect(null);
+	}
+
+	/**
+	 * Called by lifecycle client listener when the HC client lost the connection or when, after restart, get the job in output.
+	 * 
+	 * @param job if null, the caller wants to close the HC client because is not able to get connected with the cluster, otherwise
+	 * after a restart, it found teh job in output, then completed
+	 */
+	void clientDisconnect(Job job){
+		// set to null to end in error
+		setJob(job);
 		// notify that job is ended
 		lock.countDown();
 	}
@@ -368,6 +385,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	@Override
 	public int afterJobSubmit() throws SubmitException {
+		// FIXME return code collegandole alle constanti
 		int rc = 0;
 		// gets the result only if is in wait
 		if (isWait()){

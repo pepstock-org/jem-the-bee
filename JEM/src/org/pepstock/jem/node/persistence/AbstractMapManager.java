@@ -184,7 +184,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 * @return collection with all objects
 	 * @throws DatabaseException if any errors occurs
 	 */
-	public Collection<T> loadAll(Filter filter) throws DatabaseException {
+	public Collection<T> loadByFilter(Filter filter) throws DatabaseException {
 		Collection<T> objects = null;
 		// check if I have the database manager, otherwise log error and
 		// exception
@@ -192,7 +192,7 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			LogAppl.getInstance().emit(NodeMessage.JEMC044E);
 		} else {
 			// load object instance from table
-			objects = dbManager.loadAll(filter);
+			objects = dbManager.loadByFilter(filter);
 		}
 		return objects;
 	}

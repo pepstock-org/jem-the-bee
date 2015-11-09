@@ -27,7 +27,6 @@ import org.pepstock.jem.node.security.socketinterceptor.SubmitInterceptor;
 
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Utility to creates Hazelcast instance to submit jobs.
@@ -57,7 +56,7 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastInstance getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastClient getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		try {
 			// creates a client configuration for Hazelcast
@@ -66,6 +65,8 @@ public class HazelcastUtil {
 			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
 			clientConfig.setReconnectionAttemptLimit(1);
 			clientConfig.setReConnectionTimeOut(5000);
+			clientConfig.setUpdateAutomatic(true);
+			
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
@@ -108,7 +109,7 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastInstance getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastClient getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		String groupName = HttpUtil.getGroupName(url);
 
@@ -121,6 +122,10 @@ public class HazelcastUtil {
 		
 		// connect to Hazelcast using the complete list of current members
 		clientConfig.addAddress(HttpUtil.getMembers(url));
+		clientConfig.setReconnectionAttemptLimit(1);
+		clientConfig.setReConnectionTimeOut(5000);
+
+		clientConfig.setUpdateAutomatic(true);
 
 		// if properties are not empyt, sets up SocketInterceptor.
 		if (privateKeyPathFile != null) {

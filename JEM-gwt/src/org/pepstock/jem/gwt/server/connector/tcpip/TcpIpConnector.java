@@ -27,7 +27,6 @@ import org.pepstock.jem.log.LogAppl;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Is the runnable that try to connect to the JEM cluster in TCP/IP mode
@@ -64,9 +63,10 @@ public class TcpIpConnector implements Runnable {
 						clientConfig.addAddress(currMember);
 					}
 				}
+				clientConfig.setUpdateAutomatic(true);
 				TcpIpLifeCycle lc = new TcpIpLifeCycle();
 				clientConfig.getListeners().add(lc);
-				HazelcastInstance instance = HazelcastClient.newHazelcastClient(clientConfig);
+				HazelcastClient instance = HazelcastClient.newHazelcastClient(clientConfig);
 				lc.atInstantiation(instance);
 				lc.setClientConnected(true);
 				break;

@@ -616,7 +616,7 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	 * @see org.pepstock.jem.node.persistence.DatabaseManager#loadAll(org.pepstock.jem.util.filters.Filter)
 	 */
 	@Override
-	public final Collection<T> loadAll(Filter filter) throws DatabaseException {
+	public final Collection<T> loadByFilter(Filter filter) throws DatabaseException {
 		Collection<T> allItems = new ArrayList<T>();
 		
 		String stmtString = getStatementForFilter(filter);

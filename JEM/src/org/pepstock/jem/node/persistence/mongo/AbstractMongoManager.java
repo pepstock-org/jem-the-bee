@@ -343,7 +343,7 @@ public abstract class AbstractMongoManager<T> extends AbstractDatabaseManager<T>
 	 * @see org.pepstock.jem.node.persistence.DatabaseManager#loadAll(org.pepstock.jem.util.filters.Filter)
 	 */
 	@Override
-	public Collection<T> loadAll(Filter filter) throws DatabaseException {
+	public Collection<T> loadByFilter(Filter filter) throws DatabaseException {
 		// TODO 
 		return new ArrayList<T>();
 	}
