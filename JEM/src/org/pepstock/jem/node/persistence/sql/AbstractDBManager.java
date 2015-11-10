@@ -546,17 +546,59 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	 */
 	@Override
 	public void checkAndCreate() throws DatabaseException {
+		try {
+			// checks input
+			checkAndCreateTable();
+			checkAndCreateIndexes();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
+	
+	/**
+	 * Called to hand over the control to DB manager to create additional SQL structure (like indexes).
+	 * @throws SQLException if any error occurs 
+	 */
+	private void checkAndCreateIndexes() throws SQLException {
+		// gets SQL container
+		SQLContainer container = getSqlContainer();
+		if (container.getIndexes().isEmpty()){
+			return;
+		}
 		// gets the DB connection from pool
 		Connection connection = null;
+		ResultSet rs = null;
 		try {
 			connection = DBPoolManager.getInstance().getConnection();
 			// gets metadata
 			DatabaseMetaData md = connection.getMetaData();
-			// checks input
-			checkAndCreateTable(md);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
+			// gets a result set which searches for the table anme
+			rs = md.getIndexInfo(null, null, container.getTableName(), false, true);
+			// if result set is empty, it creates the table
+			while(!rs.next()) {
+				String indexName = rs.getString("INDEX_NAME");
+				if (container.getIndexes().containsKey(indexName)){
+					container.getIndexes().remove(indexName);
+				}
+			}
+			if (!container.getIndexes().isEmpty()){
+				for (String stmt : container.getIndexes().values()){
+					// creates table and return a empty set because if empty of
+					// course
+					DBPoolManager.getInstance().create(stmt);
+				}
+			}
 		} finally {
+			// if result set is not null
+			// it closes the result set
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					// ignoring any exception
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
 			// if connection not null
 			// it closes putting again on pool
 			if (connection != null) {
@@ -571,13 +613,16 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	
 	/**
 	 * Checks if the necessary tables exists on database. If not, it creates them.
-	 * @param md metadata of the database
-	 * @param manager the DB manager which contains the SQL container and all SQL statements and the table name
-	 * @throws SQLException if any error occurs cheching the existence of tables
+	 * @throws SQLException if any error occurs checking the existence of tables
 	 */
-	private void checkAndCreateTable(DatabaseMetaData md) throws SQLException {
+	private void checkAndCreateTable() throws SQLException {
+		// gets the DB connection from pool
+		Connection connection = null;
 		ResultSet rs = null;
 		try {
+			connection = DBPoolManager.getInstance().getConnection();
+			// gets metadata
+			DatabaseMetaData md = connection.getMetaData();
 			// gets SQL container
 			SQLContainer container = getSqlContainer();
 			// gets a result set which searches for the table anme
@@ -596,6 +641,15 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 					rs.close();
 				} catch (Exception e) {
 					// ignoring any exception
+					LogAppl.getInstance().ignore(e.getMessage(), e);
+				}
+			}
+			// if connection not null
+			// it closes putting again on pool
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
 					LogAppl.getInstance().ignore(e.getMessage(), e);
 				}
 			}
@@ -618,7 +672,7 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	@Override
 	public final Collection<T> loadByFilter(Filter filter) throws DatabaseException {
 		Collection<T> allItems = new ArrayList<T>();
-		
+		// gets SQL statements
 		String stmtString = getStatementForFilter(filter);
 		if (stmtString != null){
 			// open connection

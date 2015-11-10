@@ -60,15 +60,17 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 	 */
 	@Override
 	public void fillSQLStatement(PreparedStatement statement, Job item) throws SQLException {
+		// sets on prepare statement all fields to add the job
 		statement.setString(3, item.getName().toLowerCase());
 		statement.setString(4, (item.isUserSurrogated()) ? item.getJcl().getUser().toLowerCase() : item.getUser().toLowerCase());
+		// checks if job has got routing info
 		if (item.getRoutingInfo() != null){
 			statement.setBoolean(5, item.getRoutingInfo().getRoutedTime() != null);
 		} else {
 			statement.setBoolean(5, false);
 		}
-			
 		statement.setLong(6, item.getSubmittedTime().getTime());
+		// checks if job has been executed
 		if (item.getStartedTime() != null){
 			statement.setLong(7, item.getStartedTime().getTime());
 		} else {
@@ -77,6 +79,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 		statement.setLong(8, item.getEndedTime().getTime());
 		statement.setInt(9, item.getResult().getReturnCode());
 		statement.setString(10, item.getMemberLabel() != null ? item.getMemberLabel().toLowerCase() : null);
+		// checks if job has been executed and then it has got a step
 		if (item.getCurrentStep() != null){
 			statement.setString(11, item.getCurrentStep().getName().toLowerCase());
 		} else {
@@ -195,6 +198,12 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 		return StringUtils.substringBeforeLast(sb.toString(), AND);
 	}
 
+	/**
+	 * Adds the time filter
+	 * @param statement SQL statement to be updated
+	 * @param token filter token to apply
+	 * @param field job filter field
+	 */
 	private void addTimeFilter(StringBuffer statement, FilterToken token, JobFilterFields field){
 		try {
 			if (token.getValue() != null){
@@ -210,16 +219,36 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 		}
 	}
 	
+	/**
+	 * Adds the number filter
+	 * @param statement SQL statement to be updated
+	 * @param token filter token to apply
+	 * @param field job filter field
+	 */
 	private void addNumberFilter(StringBuffer statement, FilterToken token, JobFilterFields field){
 		if (token.getValue() != null && StringUtils.isNumeric(token.getValue())){
 			statement.append(field.getSqlField()).append(" ").append((token.isNot() ? "!= " : "= ")).append(token.getValue()).append(AND);
 		}
 	}
 	
+	/**
+	 * Adds the string filter which tests if token has been part of string
+	 * @param statement SQL statement to be updated
+	 * @param token filter token to apply
+	 * @param field job filter field
+	 */
 	private void addStringFilter(StringBuffer statement, FilterToken token, JobFilterFields field){
 		addStringFilter(statement, token, field, token.getValue());
 	}
 	
+	/**
+	/**
+	 * Adds the string filter which tests if token has been part of string with an updated value
+	 * @param statement SQL statement to be updated
+	 * @param token filter token to apply
+	 * @param field job filter field
+	 * @param newTokenvalue new value to add
+	 */
 	private void addStringFilter(StringBuffer statement, FilterToken token, JobFilterFields field, String newTokenvalue){
 		if (token.getValue() != null){
 			statement.append(field.getSqlField()).append(" ").append((token.isNot() ? "NOT LIKE " : "LIKE ")).append("'%").append(newTokenvalue.toLowerCase()).append("%' ").append(AND);

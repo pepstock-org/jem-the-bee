@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.node.persistence.sql;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Contains all DDL and SQL statements constants for Hazelcast persistence.<br>
  * The implementation follows the idea to have a table for each queue, even if
@@ -82,6 +85,8 @@ public class  SQLContainer {
 	private String tableNameForEviction = null;
 	
 	private String createTableStatementForEviction = null;
+	
+	private final Map<String, String> indexes = new LinkedHashMap<String, String>();
 	
 	/**
 	 * 
@@ -242,6 +247,13 @@ public class  SQLContainer {
 	 */
 	public void setCreateTableStatementForEviction(String createTableStatementForEviction) {
 		this.createTableStatementForEviction = createTableStatementForEviction;
+	}
+
+	/**
+	 * @return the additionalDDL
+	 */
+	public Map<String, String> getIndexes() {
+		return indexes;
 	}
 
 	/* (non-Javadoc)

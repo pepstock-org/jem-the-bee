@@ -34,6 +34,7 @@ import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
@@ -282,7 +283,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			topic.addMessageListener(this);
 		}
 
-//		SubmitPreJob.submit(client, preJob);
+		SubmitPreJob.submit(client, preJob);
 	}
 	
 	/* (non-Javadoc)

@@ -68,6 +68,16 @@ public class MySqlSQLContainerFactory extends DefaultSQLContainerFactory {
 			+ ")";
 
 	/**
+	 * Creates index for OUTPUT 
+	 */
+	public static final String CREATE_OUTPUT_QUEUE_INDEX = "create index OUTPUT_QUEUE_I01 ON OUTPUT_QUEUE (JOB_NAME ASC)";
+	
+	/**
+	 * Index name
+	 */
+	public static final String OUTPUT_QUEUE_INDEX_NAME = "OUTPUT_QUEUE_I01";
+
+	/**
 	 * the sql for the creation of the ROUTING_QUEUE
 	 */
 	public static final String CREATE_ROUTING_QUEUE = "create table ROUTING_QUEUE (JOB_ID char(39) primary key,	JOB LONGTEXT not null)";
@@ -132,6 +142,7 @@ public class MySqlSQLContainerFactory extends DefaultSQLContainerFactory {
 	public SQLContainer getSQLContainerForOutputQueue() {
 		SQLContainer container = super.getSQLContainerForOutputQueue();
 		container.setCreateTableStatement(CREATE_OUTPUT_QUEUE);
+		container.getIndexes().put(OUTPUT_QUEUE_INDEX_NAME, CREATE_OUTPUT_QUEUE_INDEX);
 		return container;
 	}
 
