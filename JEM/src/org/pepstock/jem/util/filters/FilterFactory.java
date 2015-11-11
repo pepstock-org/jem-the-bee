@@ -77,16 +77,12 @@ public class FilterFactory {
 		String[] tokens = searchString.trim().split(Filter.SPACE);
 		// scans all tokens
 		for (String tokenString : tokens) {
-			try {
-				// creates a filter token, with internal parser
-				// of filter token class
-				FilterToken token = parseToken(tokenString);
-				if (!toReturn.has(token.getName())){
-					// adds token
-					toReturn.add(token);
-				}
-			} catch (FilterParseException tpe) {
-				LogAppl.getInstance().ignore(tpe.getMessage(), tpe);
+			// creates a filter token, with internal parser
+			// of filter token class
+			FilterToken token = parseToken(tokenString);
+			if (token != null && !toReturn.has(token.getName())){
+				// adds token
+				toReturn.add(token);
 			}
 		}
 		return toReturn;
@@ -116,11 +112,10 @@ public class FilterFactory {
 	 * @return a {@link FilterToken}
 	 * @throws FilterParseException when the parameter is unparsable
 	 */
-	private static FilterToken parseToken(String tokenString) throws FilterParseException {
-		try {
+	private static FilterToken parseToken(String tokenString) {
 			// checks if empty string
 			if (tokenString == null || tokenString.trim().isEmpty()) {
-				throw new FilterParseException("Unparsable null/empty tokenString");
+				return null;
 			}
 			// splits the token 
 			String[] nameValue = tokenString.split(FilterToken.SEPARATOR);
@@ -131,10 +126,7 @@ public class FilterFactory {
 			case Numbers.N_1:
 				return new FilterToken(null, nameValue[0]);
 			default:
-				throw new ArrayIndexOutOfBoundsException();
+				return null;
 			}
-		} catch (Exception e) {
-			throw new FilterParseException("Unparsable tokenString '" + tokenString + "; cause: " + e.getMessage(), e);
-		}
 	}
 }
