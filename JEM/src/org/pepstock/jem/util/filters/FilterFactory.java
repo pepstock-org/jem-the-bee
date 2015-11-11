@@ -86,7 +86,7 @@ public class FilterFactory {
 					toReturn.add(token);
 				}
 			} catch (FilterParseException tpe) {
-				// NOPE
+				LogAppl.getInstance().ignore(tpe.getMessage(), tpe);
 			}
 		}
 		return toReturn;

@@ -421,6 +421,7 @@ public abstract class AbstractMongoManager<T> extends AbstractDatabaseManager<T>
 	 * @return Document to use as filter on MONGO
 	 */
 	Document getMongoFilter(Filter filter){
+		LogAppl.getInstance().debug(filter.toString());
 		return null;
 	}
 

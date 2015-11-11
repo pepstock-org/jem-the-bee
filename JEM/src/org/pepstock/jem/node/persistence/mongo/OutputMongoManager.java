@@ -183,7 +183,7 @@ public class OutputMongoManager extends JobMongoManager {
 						break;
 						// checks JOB is routed
 					case ROUTED:
-						boolean wantRouted = (token.isNot() ? tokenValue.trim().equalsIgnoreCase(JemFilterFields.NO) : tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES));
+						boolean wantRouted = token.isNot() ? tokenValue.trim().equalsIgnoreCase(JemFilterFields.NO) : tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
 						mongoDocument.put(field.getMongoField(), new Document(Operator.EXISTS.getName(), wantRouted));
 						break;
 					default:
@@ -249,7 +249,7 @@ public class OutputMongoManager extends JobMongoManager {
 				// checks input ime based on filter
 				long inputTime = now - TimeUtils.parseDuration(token.getValue());
 				// adds filter
-				doc.put(field.getMongoField(), new Document((token.isNot() ? Operator.LESS_THAN.getName() : Operator.GREATER_OR_EQUALS_THAN.getName()), inputTime));
+				doc.put(field.getMongoField(), new Document(token.isNot() ? Operator.LESS_THAN.getName() : Operator.GREATER_OR_EQUALS_THAN.getName(), inputTime));
 			} catch (FilterParseException e) {
 				// ignore
 				LogAppl.getInstance().ignore(e.getMessage(), e);
@@ -267,7 +267,7 @@ public class OutputMongoManager extends JobMongoManager {
 		// if not null and is a number
 		if (token.getValue() != null && StringUtils.isNumeric(token.getValue())){
 			// adds filter
-			doc.put(field.getMongoField(), new Document((token.isNot() ? Operator.NOT_EQUALS.getName() : Operator.EQUALS.getName()), Parser.parseInt(token.getValue())));
+			doc.put(field.getMongoField(), new Document(token.isNot() ? Operator.NOT_EQUALS.getName() : Operator.EQUALS.getName(), Parser.parseInt(token.getValue())));
 		}
 	}
 

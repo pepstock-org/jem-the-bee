@@ -28,6 +28,7 @@ import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterParseException;
@@ -44,7 +45,7 @@ import org.pepstock.jem.util.filters.fields.JobFilterFields;
  */
 public class OutputDBManager extends JobDBManager implements EvictionHandler<Job>{
 	
-	private final static String AND = " and ";
+	private static final String AND = " and ";
 
 	/**
 	 * Creates DB manager
@@ -61,36 +62,36 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 	@Override
 	public void fillSQLStatement(PreparedStatement statement, Job item) throws SQLException {
 		// sets on prepare statement all fields to add the job
-		statement.setString(3, item.getName().toLowerCase());
-		statement.setString(4, (item.isUserSurrogated()) ? item.getJcl().getUser().toLowerCase() : item.getUser().toLowerCase());
+		statement.setString(Numbers.N_3, item.getName().toLowerCase());
+		statement.setString(Numbers.N_4, (item.isUserSurrogated()) ? item.getJcl().getUser().toLowerCase() : item.getUser().toLowerCase());
 		// checks if job has got routing info
 		if (item.getRoutingInfo() != null){
-			statement.setBoolean(5, item.getRoutingInfo().getRoutedTime() != null);
+			statement.setBoolean(Numbers.N_5, item.getRoutingInfo().getRoutedTime() != null);
 		} else {
-			statement.setBoolean(5, false);
+			statement.setBoolean(Numbers.N_5, false);
 		}
-		statement.setLong(6, item.getSubmittedTime().getTime());
+		statement.setLong(Numbers.N_6, item.getSubmittedTime().getTime());
 		// checks if job has been executed
 		if (item.getStartedTime() != null){
-			statement.setLong(7, item.getStartedTime().getTime());
+			statement.setLong(Numbers.N_7, item.getStartedTime().getTime());
 		} else {
-			statement.setLong(7, item.getSubmittedTime().getTime());
+			statement.setLong(Numbers.N_7, item.getSubmittedTime().getTime());
 		}
-		statement.setLong(8, item.getEndedTime().getTime());
-		statement.setInt(9, item.getResult().getReturnCode());
-		statement.setString(10, item.getMemberLabel() != null ? item.getMemberLabel().toLowerCase() : null);
+		statement.setLong(Numbers.N_8, item.getEndedTime().getTime());
+		statement.setInt(Numbers.N_9, item.getResult().getReturnCode());
+		statement.setString(Numbers.N_10, item.getMemberLabel() != null ? item.getMemberLabel().toLowerCase() : null);
 		// checks if job has been executed and then it has got a step
 		if (item.getCurrentStep() != null){
-			statement.setString(11, item.getCurrentStep().getName().toLowerCase());
+			statement.setString(Numbers.N_11, item.getCurrentStep().getName().toLowerCase());
 		} else {
-			statement.setString(11, null);	
+			statement.setString(Numbers.N_11, null);	
 		}
-		statement.setString(12, item.getJcl().getType() != null ? item.getJcl().getType().toLowerCase() : null);
-		statement.setString(13, item.getJcl().getEnvironment().toLowerCase());
-		statement.setString(14, item.getJcl().getDomain().toLowerCase());
-		statement.setString(15, item.getJcl().getAffinity().toLowerCase());
-		statement.setInt(16, item.getJcl().getPriority());
-		statement.setInt(17, item.getJcl().getMemory());
+		statement.setString(Numbers.N_12, item.getJcl().getType() != null ? item.getJcl().getType().toLowerCase() : null);
+		statement.setString(Numbers.N_13, item.getJcl().getEnvironment().toLowerCase());
+		statement.setString(Numbers.N_14, item.getJcl().getDomain().toLowerCase());
+		statement.setString(Numbers.N_15, item.getJcl().getAffinity().toLowerCase());
+		statement.setInt(Numbers.N_16, item.getJcl().getPriority());
+		statement.setInt(Numbers.N_17, item.getJcl().getMemory());
 	}
 
 	/* (non-Javadoc)
@@ -187,7 +188,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 						// checks JOB is routed
 					case ROUTED:
 						boolean wantRouted = tokenValue.trim().equalsIgnoreCase(JemFilterFields.YES);
-						sb.append(field.getSqlField()).append(" ").append((token.isNot() ? "< " : ">= ")).append((wantRouted ? 1 : 0)).append(AND);
+						sb.append(field.getSqlField()).append(" ").append(token.isNot() ? "< " : ">= ").append(wantRouted ? 1 : 0).append(AND);
 						break;
 					default:
 						// otherwise it uses a wrong filter name
@@ -211,7 +212,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 				// used to subtract the filter value
 				long now = System.currentTimeMillis();
 				long inputTime = now - TimeUtils.parseDuration(token.getValue());
-				statement.append(field.getSqlField()).append(" ").append((token.isNot() ? "< " : ">= ")).append(inputTime).append(AND);
+				statement.append(field.getSqlField()).append(" ").append(token.isNot() ? "< " : ">= ").append(inputTime).append(AND);
 			}
 		} catch (FilterParseException e) {
 			// ignore
@@ -227,7 +228,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 	 */
 	private void addNumberFilter(StringBuffer statement, FilterToken token, JobFilterFields field){
 		if (token.getValue() != null && StringUtils.isNumeric(token.getValue())){
-			statement.append(field.getSqlField()).append(" ").append((token.isNot() ? "!= " : "= ")).append(token.getValue()).append(AND);
+			statement.append(field.getSqlField()).append(" ").append(token.isNot() ? "!= " : "= ").append(token.getValue()).append(AND);
 		}
 	}
 	
@@ -251,7 +252,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 	 */
 	private void addStringFilter(StringBuffer statement, FilterToken token, JobFilterFields field, String newTokenvalue){
 		if (token.getValue() != null){
-			statement.append(field.getSqlField()).append(" ").append((token.isNot() ? "NOT LIKE " : "LIKE ")).append("'%").append(newTokenvalue.toLowerCase()).append("%' ").append(AND);
+			statement.append(field.getSqlField()).append(" ").append(token.isNot() ? "NOT LIKE " : "LIKE ").append("'%").append(newTokenvalue.toLowerCase()).append("%' ").append(AND);
 		}
 	}
 	

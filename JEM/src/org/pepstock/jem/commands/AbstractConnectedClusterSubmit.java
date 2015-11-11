@@ -386,7 +386,6 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 */
 	@Override
 	public int afterJobSubmit() throws SubmitException {
-		// FIXME return code collegandole alle constanti
 		int rc = 0;
 		// gets the result only if is in wait
 		if (isWait()){

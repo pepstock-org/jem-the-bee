@@ -37,6 +37,10 @@ import com.hazelcast.client.HazelcastClient;
  */
 public class HazelcastUtil {
 	
+	private static final int DEFAULT_RECONNECTION_TIMEOUT = 5000;
+	
+	private static final int DEFAULT_RECONNECTION_ATTEMPT_LIMIT = 1;
+	
 	/**
 	 * To avoid any instantiation
 	 */
@@ -63,8 +67,8 @@ public class HazelcastUtil {
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
 			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
-			clientConfig.setReconnectionAttemptLimit(1);
-			clientConfig.setReConnectionTimeOut(5000);
+			clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+			clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
 			clientConfig.setUpdateAutomatic(true);
 			
 			// check if the environment has the socket interceptor enable is so
@@ -122,8 +126,8 @@ public class HazelcastUtil {
 		
 		// connect to Hazelcast using the complete list of current members
 		clientConfig.addAddress(HttpUtil.getMembers(url));
-		clientConfig.setReconnectionAttemptLimit(1);
-		clientConfig.setReConnectionTimeOut(5000);
+		clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+		clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
 
 		clientConfig.setUpdateAutomatic(true);
 

@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.persistence.AbstractDatabaseManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.DatabaseManager;
@@ -207,9 +206,6 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 			// commit
 			connection.commit();
 		} catch (SQLException e) {
-			if (getQueueName().equalsIgnoreCase(Queues.OUTPUT_QUEUE)){
-				e.printStackTrace();
-			}
 			throw new DatabaseException(e);
 		} finally{
 			// closes statement
@@ -663,6 +659,7 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	 * @return alwasy null
 	 */
 	String getStatementForFilter(Filter filter){
+		LogAppl.getInstance().debug(filter.toString());
 		return null;
 	}
 
