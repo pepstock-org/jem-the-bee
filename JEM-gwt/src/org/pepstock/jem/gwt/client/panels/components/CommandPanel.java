@@ -19,7 +19,10 @@ package org.pepstock.jem.gwt.client.panels.components;
 import org.pepstock.jem.gwt.client.Sizes;
 import org.pepstock.jem.gwt.client.commons.SearcherListenerWidget;
 
+import com.google.gwt.i18n.client.HasDirection.Direction;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -33,11 +36,17 @@ public class CommandPanel<T> extends HorizontalPanel {
 
 	private SearcherListenerWidget searcher = null;
 	private AbstractActionsButtonPanel<T> actions = null;
+	private final CheckBox history = new CheckBox();
 	
 	/**
-	 * 
+	 * Default width of search text field and search button
 	 */
 	public static final int DEFAULT_PERCENT_SEARCHER_WIDTH = 40;
+	
+	/**
+	 * Default width of history widget
+	 */
+	public static final int DEFAULT_PERCENT_HISTORY_WIDTH = 20;
 	
 	private int percentSearcherWidth = -1;
 	
@@ -47,7 +56,18 @@ public class CommandPanel<T> extends HorizontalPanel {
 	 * @param actions the actions, on right
 	 */
 	public CommandPanel(SearcherListenerWidget searcher, AbstractActionsButtonPanel<T> actions) {
-		this(searcher, actions, DEFAULT_PERCENT_SEARCHER_WIDTH);
+		this(searcher, actions, false);
+	}
+
+	/**
+	 * Builds the command panel, composed by a {@link SearcherListenerWidget} and by a {@link AbstractActionsButtonPanel} 
+	 * @param searcher the searcher, on left
+	 * @param middle middle components
+	 * @param actions the actions, on right
+	 * @param hasHistory if the history widget must be showed
+	 */
+	public CommandPanel(SearcherListenerWidget searcher, AbstractActionsButtonPanel<T> actions, boolean hasHistory) {
+		this(searcher, actions, DEFAULT_PERCENT_SEARCHER_WIDTH, hasHistory);
 	}
 	
 	/**
@@ -56,12 +76,24 @@ public class CommandPanel<T> extends HorizontalPanel {
 	 * @param percentSearcherWidth the with of searcher, in percent
 	 */
 	public CommandPanel(SearcherListenerWidget searcher, AbstractActionsButtonPanel<T> actions, int percentSearcherWidth) {
+		this(searcher, actions, percentSearcherWidth, false);
+	}
+
+	/**
+	 * @param searcher
+	 * @param actions
+	 * @param percentSearcherWidth the with of searcher, in percent
+	 * @param hasHistory if the history widget must be showed
+	 */
+	public CommandPanel(SearcherListenerWidget searcher, AbstractActionsButtonPanel<T> actions, int percentSearcherWidth, boolean hasHistory) {
 		setWidth(Sizes.HUNDRED_PERCENT);
 		this.percentSearcherWidth = percentSearcherWidth;
 		setSearcher(searcher);
+		if (hasHistory){
+			setHistory();
+		}
 		setActions(actions);
 	}
-
 	/**
 	 * @return
 	 */
@@ -80,6 +112,24 @@ public class CommandPanel<T> extends HorizontalPanel {
 		}
 	}
 
+	/**
+	 * Returns true if the user checked the box to perform the query on database
+	 * @return true if the user checked the box to perform the query on database
+	 */
+	public boolean isHistorySelected(){
+		return history.getValue();
+	}
+	
+	protected final void setHistory() {
+		history.setText("Search on history", Direction.LTR);
+		add(history);
+		setCellHorizontalAlignment(history, HasHorizontalAlignment.ALIGN_LEFT);
+		setCellVerticalAlignment(history, HasVerticalAlignment.ALIGN_MIDDLE);
+		setCellWidth(history, DEFAULT_PERCENT_HISTORY_WIDTH + "%");
+		this.percentSearcherWidth += DEFAULT_PERCENT_HISTORY_WIDTH;
+	}
+	
+	
 	/**
 	 * @return
 	 */

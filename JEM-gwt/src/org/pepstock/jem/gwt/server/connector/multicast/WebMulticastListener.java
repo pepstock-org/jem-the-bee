@@ -79,14 +79,14 @@ public class WebMulticastListener implements Runnable {
 			InetAddress groupAddress = InetAddress.getByName(multicastGroup);
 			socket.joinGroup(groupAddress);
 			ready = true;
-
+			
 			// so we can shatted down
 			while (!Thread.currentThread().isInterrupted()) {
 				byte[] inBuf = new byte[20000];
 				inPacket = new DatagramPacket(inBuf, inBuf.length);
 				socket.receive(inPacket);
 				String inMsg = new String(inBuf, 0, inPacket.getLength(), CharSet.DEFAULT);
-
+				
 				MulticastMessage multicastMesssage = MulticastMessageFactory.getMessage(inMsg);
 				// if is a client message do nothing I'm not
 				// interesting
@@ -98,6 +98,9 @@ public class WebMulticastListener implements Runnable {
 					if (message.getGroup() != null && message.getGroup().equals(config.getGroupConfig().getName())){
 						// checks if HC client is already instantiated
 						if (SharedObjects.getInstance().getHazelcastClient() == null || !SharedObjects.getInstance().isDataClusterAvailable()) {
+							if (SharedObjects.getInstance().getHazelcastClient() != null){
+								SharedObjects.getInstance().getHazelcastClient().shutdown();
+							}
 							// start hazelcast client only if it is not runnig.
 							LogAppl.getInstance().emit(UserInterfaceMessage.JEMG058I, inPacket.getAddress(), inMsg);
 							// create client config

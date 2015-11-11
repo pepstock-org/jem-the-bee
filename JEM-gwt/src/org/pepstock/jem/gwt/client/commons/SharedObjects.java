@@ -43,6 +43,11 @@ public class SharedObjects {
 	 * Saves execution environment name
 	 */
 	private static String executionEnvironment = null;
+	
+	/**
+	 * if eviction in HC has been set
+	 */
+	private static boolean hasEviction = false;
 
 	/**
 	 * To avoid any instantiation
@@ -81,6 +86,19 @@ public class SharedObjects {
 	public static void setExecutionEnvironment(String executionEnvironment) {
 		SharedObjects.executionEnvironment = executionEnvironment;
 	}
-	
+
+	/**
+	 * @return the hasEviction
+	 */
+	public static boolean hasEviction() {
+		return hasEviction;
+	}
+
+	/**
+	 * @param hasEviction the hasEviction to set
+	 */
+	public static void setEviction(boolean hasEviction) {
+		SharedObjects.hasEviction = hasEviction;
+	}
 	
 }

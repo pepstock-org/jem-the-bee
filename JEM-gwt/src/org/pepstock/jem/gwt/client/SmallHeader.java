@@ -256,10 +256,12 @@ public class SmallHeader extends Grid {
 					long elapsed = System.currentTimeMillis() - start;
 					SharedObjects.setClusterDifferenceTime(System.currentTimeMillis()-Long.parseLong(result[InfoService.Indexes.CURRENT_TIME.getIndex()]) - elapsed);
 					SharedObjects.setExecutionEnvironment(result[InfoService.Indexes.NAME.getIndex()]);
-					
+
 					Long uptime = Long.parseLong(result[InfoService.Indexes.STARTED_TIME.getIndex()]);
 					String readableUptime = TimeDisplayUtils.getReadableTimeDiff(uptime, TimeDisplayUtils.VERBOSE);
 					environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, readableUptime);
+					
+					SharedObjects.setEviction(Boolean.parseBoolean(result[InfoService.Indexes.EVICTION.getIndex()]));
 				} catch (Exception e) {
 					LogClient.getInstance().warning(e.getMessage(), e);
 					environmentInfoBox.setText(RowIndex.ROW_3, ColumnIndex.COLUMN_4, JemConstants.UNAVAILABLE_BRACKETS);

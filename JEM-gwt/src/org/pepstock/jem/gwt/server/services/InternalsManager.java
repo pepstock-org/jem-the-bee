@@ -216,6 +216,11 @@ public class InternalsManager extends DefaultService{
 		// between client and servers
 		infos[Indexes.CURRENT_TIME.getIndex()] = String.valueOf(System.currentTimeMillis());
 
+		boolean hasEviction = SharedObjects.getInstance().getMapEvictionInfo().containsKey(Queues.OUTPUT_QUEUE) ?
+				SharedObjects.getInstance().getMapEvictionInfo().get(Queues.OUTPUT_QUEUE) : false;
+		
+		// gets if eviction is activated
+		infos[Indexes.EVICTION.getIndex()] = String.valueOf(hasEviction);
 		return infos;
     }
 }

@@ -38,7 +38,7 @@ public interface InfoService extends RemoteService {
 		/**
 		 * Length of array of data to return
 		 */
-		INFO_SIZE(Numbers.N_5),
+		INFO_SIZE(Numbers.N_6),
 
 		/**
 		 * Index of array for JEM group
@@ -64,6 +64,11 @@ public interface InfoService extends RemoteService {
 		 * Index of array for JEM group time
 		 */
 		CURRENT_TIME(Numbers.N_4),
+
+		/**
+		 * Index of array for eviction activated or not
+		 */
+		EVICTION(Numbers.N_5),
 
 		/**
 		 * Length of array of data to return
