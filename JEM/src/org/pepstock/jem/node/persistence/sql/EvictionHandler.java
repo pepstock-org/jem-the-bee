@@ -13,29 +13,18 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test;
+*/
+package org.pepstock.jem.node.persistence.sql;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
-import org.pepstock.jem.junit.test.common.CommonSuite;
-import org.pepstock.jem.junit.test.http.HttpSuite;
-import org.pepstock.jem.junit.test.jbpm.JBpmSuite;
-import org.pepstock.jem.junit.test.rest.RestSuite;
-import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
- * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 3.0
  */
-@RunWith(Suite.class)
-//@SuiteClasses({SpringBatchSuite.class })
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
-		RestSuite.class, HttpSuite.class, JBpmSuite.class})
-//@SuiteClasses({ CommonSuite.class, JBpmSuite.class})
-public class JemTestSuite {
-
+interface EvictionHandler<T> {
+	
+	void fillSQLStatement(PreparedStatement statement, T item) throws SQLException;
+	
 }

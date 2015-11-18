@@ -32,7 +32,7 @@ public class OutputMapManager extends AbstractMapManager<Job> {
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	private OutputMapManager(DataBaseManager<Job> dbManager) {
+	private OutputMapManager(DatabaseManager<Job> dbManager) {
 		super(dbManager, true);
 	}
 	
@@ -41,7 +41,7 @@ public class OutputMapManager extends AbstractMapManager<Job> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static OutputMapManager createInstance(DataBaseManager<Job> dbManager){
+	public static OutputMapManager createInstance(DatabaseManager<Job> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new OutputMapManager(dbManager);
 		}

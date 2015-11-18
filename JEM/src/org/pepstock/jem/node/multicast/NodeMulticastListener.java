@@ -59,7 +59,7 @@ public class NodeMulticastListener implements Runnable {
 			// Prepare to join multicast group
 			socket = new MulticastSocket(Main.getMulticastService().getConfig().getMulticastPort());
 			socket.setNetworkInterface(Main.getNetworkInterface().getNetworkInterface());
-			
+
 			socket.setTimeToLive(Main.getMulticastService().getConfig().getMulticastTimeToLive());
 			
 			InetAddress groupAddress = InetAddress.getByName(Main.getMulticastService().getConfig().getMulticastGroup());
@@ -73,10 +73,13 @@ public class NodeMulticastListener implements Runnable {
 				socket.receive(inPacket);
 				String inMsg = new String(inBuf, 0, inPacket.getLength(), CharSet.DEFAULT);
 				MulticastMessage message = MulticastMessageFactory.getMessage(inMsg);
+
+				
 				// if is a message from client to get notify about the cluster
 				// members
 				if (message instanceof ClientRequest) {
 					ClientRequest multicastRequest = (ClientRequest) message;
+					
 					if (multicastRequest.getGroup().equals(Main.EXECUTION_ENVIRONMENT.getEnvironment())) {
 						LogAppl.getInstance().emit(NodeMessage.JEMC225I, inPacket.getAddress());
 						MulticastSender.sendNodesInfo();

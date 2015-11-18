@@ -59,12 +59,32 @@ public class AboutPanel extends AbstractInspector {
 		super(false);
 		
 		// link to PEPSTOCK site
+		Anchor jemSite = new Anchor("www.jemthebee.org");
+		jemSite.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open("http://www.jemthebee.org/", "_blank", "");
+			}
+		});
+
+		// link to PEPSTOCK site
 		Anchor site = new Anchor("www.pepstock.org");
 		site.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				Window.open("http://www.pepstock.org/", "_blank", "");
+			}
+		});
+
+		// link to PEPSTOCK site
+		Anchor docSite = new Anchor("GutHub wiki");
+		docSite.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open("https://github.com/pepstock-org/jem-the-bee/wiki", "_blank", "");
 			}
 		});
 
@@ -83,14 +103,20 @@ public class AboutPanel extends AbstractInspector {
 	    aboutTable.addStyleName(Styles.INSTANCE.common().noWrap());
 	    aboutTable.getColumnFormatter().setWidth(ColumnIndex.COLUMN_2, "80%");
 
-	    aboutTable.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "Site");
-	    aboutTable.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, site);
-	    
-	    aboutTable.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Version");
-	    aboutTable.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_2, about.getVersion());
+	    aboutTable.setHTML(RowIndex.ROW_1,ColumnIndex.COLUMN_1, "JEM the BEE site");
+	    aboutTable.setWidget(RowIndex.ROW_1,ColumnIndex.COLUMN_2, jemSite);
 
-	    aboutTable.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Build time");
-	    aboutTable.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_2, about.getCreationTime());
+	    aboutTable.setHTML(RowIndex.ROW_2,ColumnIndex.COLUMN_1, "Community site");
+	    aboutTable.setWidget(RowIndex.ROW_2,ColumnIndex.COLUMN_2, site);
+
+	    aboutTable.setHTML(RowIndex.ROW_3,ColumnIndex.COLUMN_1, "Documentation");
+	    aboutTable.setWidget(RowIndex.ROW_3,ColumnIndex.COLUMN_2, docSite);
+	    
+	    aboutTable.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_1, "Version");
+	    aboutTable.setHTML(RowIndex.ROW_4,ColumnIndex.COLUMN_2, about.getVersion());
+
+	    aboutTable.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_1, "Build time");
+	    aboutTable.setHTML(RowIndex.ROW_5,ColumnIndex.COLUMN_2, about.getCreationTime());
 
 		Label licensesLabel = new Label("Licence");
 		licensesLabel.setWidth(Sizes.HUNDRED_PERCENT);

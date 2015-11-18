@@ -17,6 +17,7 @@
 package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.JemRuntimeException;
@@ -68,54 +69,58 @@ public class RolePredicate extends JemFilterPredicate<Role> implements Serializa
 		Role role = (Role)entry.getValue();
 		boolean includeThis = true;
 		// gets all tokens of filter
-		FilterToken[] tokens = getFilter().toTokenArray();
-		// scans all tokens
-		for (int i=0; i<tokens.length && includeThis; i++) {
-			FilterToken token = tokens[i];
-			// gets name and value
-			// remember that filters are built:
-			// -[name] [value]
-			String tokenName = token.getName();
-			String tokenValue = token.getValue();
-			// gets the filter field for roles by name
-			RoleFilterFields field = RoleFilterFields.getByName(tokenName);
-			// if field is not present,
-			// used NAME as default
-			if (field == null) {
-				field = RoleFilterFields.NAME;
-			}
-			
-			// based on name of field, it will check
-			// different attributes 
-			// all matches are in AND
-			switch (field) {
-			case NAME:
-				// checks name of ROLE
-				includeThis &= checkName(tokenValue, role.getName());
-				break;
-			case REMOVABLE:
-				// checks removable attribute of ROLE
-				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(role.isRemovable()), tokenValue);
-				break;
-			case PERMISSIONS:
-				// skipped permission isEmpty check
-				includeThis &= StringUtils.containsIgnoreCase(role.getPermissions().toString(), tokenValue);
-				break;
-			case USERS:
-				// skipped users isEmpty check
-				includeThis &= StringUtils.containsIgnoreCase(role.getUsers().toString(), tokenValue);
-				break;
-			case MODIFIED:
-				// checks modified time of ROLE
-				includeThis &= checkTime(tokenValue, role.getLastModified());
-				break;
-			case MODIFIED_BY:
-				// checks who changed the role
-				includeThis &= StringUtils.containsIgnoreCase(role.getUser(), tokenValue);
-				break;
-			default:
-				// otherwise it uses a wrong filter name
-				throw new JemRuntimeException("Unrecognized Role filter field: " + field);
+		if (!getFilter().isEmpty()){
+			// iterate over all filter tokens
+			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			// exit if tokens already processed OR if i can immediate exclude this
+			while(iterator.hasNext() && includeThis) {
+				FilterToken token = iterator.next();
+				// gets name and value
+				// remember that filters are built:
+				// -[name] [value]
+				String tokenName = token.getName();
+				String tokenValue = token.getValue();
+				// gets the filter field for roles by name
+				RoleFilterFields field = RoleFilterFields.getByName(tokenName);
+				// if field is not present,
+				// used NAME as default
+				if (field == null) {
+					field = RoleFilterFields.NAME;
+				}
+				boolean match = true;
+				// based on name of field, it will check
+				// different attributes 
+				// all matches are in AND
+				switch (field) {
+					case NAME:
+						// checks name of ROLE
+						match = checkName(tokenValue, role.getName());
+						break;
+					case REMOVABLE:
+						// checks removable attribute of ROLE
+						match = StringUtils.containsIgnoreCase(String.valueOf(role.isRemovable()), tokenValue);
+						break;
+					case PERMISSIONS:
+						// skipped permission isEmpty check
+						match = StringUtils.containsIgnoreCase(role.getPermissions().toString(), tokenValue);
+						break;
+					case USERS:
+						// skipped users isEmpty check
+						match = StringUtils.containsIgnoreCase(role.getUsers().toString(), tokenValue);
+						break;
+					case MODIFIED:
+						// checks modified time of ROLE
+						match = checkTime(tokenValue, role.getLastModified());
+						break;
+					case MODIFIED_BY:
+						// checks who changed the role
+						match = StringUtils.containsIgnoreCase(role.getUser(), tokenValue);
+						break;
+					default:
+						// otherwise it uses a wrong filter name
+						throw new JemRuntimeException("Unrecognized Role filter field: " + field);
+				}
+				includeThis &= (token.isNot()) ? !match : match;
 			}
 		}
 		return includeThis;

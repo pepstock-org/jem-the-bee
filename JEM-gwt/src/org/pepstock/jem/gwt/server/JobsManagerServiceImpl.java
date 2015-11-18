@@ -109,7 +109,7 @@ public class JobsManagerServiceImpl extends DefaultManager implements JobsManage
 	 * (String jobNameFilter)
 	 */
 	@Override
-	public Collection<Job> getOutputQueue(String jobNameFilter) throws JemException {
+	public Collection<Job> getOutputQueue(String jobNameFilter, boolean onHistory) throws JemException {
 		// check if JEM is available
 		// if not, throws an exception
 		checkIsEnable();
@@ -119,7 +119,7 @@ public class JobsManagerServiceImpl extends DefaultManager implements JobsManage
 			initManager();
 		}
 		try {
-			return jobsManager.getOutputQueue(jobNameFilter);
+			return jobsManager.getOutputQueue(jobNameFilter, onHistory);
 		} catch (Exception ex) {
 			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG038E, ex);
 			// creates a new Exception to avoid to try

@@ -31,7 +31,7 @@ public class UserPreferencesMapManager extends AbstractMapManager<UserPreference
 	/**
 	 * Construct the object instantiating a new DBManager
 	 */
-	private UserPreferencesMapManager(DataBaseManager<UserPreferences> dbManager) {
+	private UserPreferencesMapManager(DatabaseManager<UserPreferences> dbManager) {
 		super(dbManager, false);
 	}
 
@@ -40,7 +40,7 @@ public class UserPreferencesMapManager extends AbstractMapManager<UserPreference
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static UserPreferencesMapManager createInstance(DataBaseManager<UserPreferences> dbManager){
+	public static UserPreferencesMapManager createInstance(DatabaseManager<UserPreferences> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new UserPreferencesMapManager(dbManager);
 		}

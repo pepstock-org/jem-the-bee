@@ -32,7 +32,7 @@ import org.pepstock.jem.util.TimeUtils;
  */
 public class Shutdown extends DefaultExecutor<ExecutionResult> {
 
-	private static long WAIT_BEFORE_EXIT = 5 * TimeUtils.SECOND;
+	private static final long WAIT_BEFORE_EXIT = 5 * TimeUtils.SECOND;
 	
 	private static final long serialVersionUID = 1L;
 

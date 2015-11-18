@@ -407,7 +407,12 @@ public class StartUpSystem {
 		// get map config
 		MapConfig mapConfig = config.findMatchingMapConfig(mapName);
 		// if map has been configured
-		if (mapConfig != null && !mapConfig.getName().equalsIgnoreCase("default")){
+		if (mapConfig != null && !"default".equalsIgnoreCase(mapConfig.getName())){
+			// if map DON'T have to use eviction
+			// override the value setting NONE
+			if (!mapStore.canBeEvicted()){
+				mapConfig.setEvictionPolicy(MapConfig.DEFAULT_EVICTION_POLICY);
+			}
 			// gets mapstore config
 			MapStoreConfig msConfig = mapConfig.getMapStoreConfig();
 			// if mapstore has been configure

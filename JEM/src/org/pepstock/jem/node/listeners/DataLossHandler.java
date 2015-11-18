@@ -122,33 +122,25 @@ public class DataLossHandler implements Runnable {
 			MapStoreConfig mStoreConfig = configs.getValue().getMapStoreConfig();
 			// checks if mapstore is enabled
 			if (mStoreConfig != null && mStoreConfig.isEnabled()) {
-				try {
-					// loads the mapp store defined for the map
-					@SuppressWarnings({ "unchecked" })
-					MapStore<String, Object> clazz = (MapStore<String, Object>) Class.forName(mStoreConfig.getClassName()).newInstance();
-					// gets all keys
-					Set<String> keys = clazz.loadAllKeys();
-					LogAppl.getInstance().emit(NodeMessage.JEMC220I, key);
-					// the best way to reload the data, is the "containsKey" the object
-					// from the map by key. If is not in memory, HC reloads from
-					// mapstore and then from database
-					for (String storeKey : keys) {
-						try {
-							// lock
-							Main.getHazelcast().getMap(key).lock(storeKey);
-							// check if in map (if not in memory, HC askes to map store to load from DB)
-							Main.getHazelcast().getMap(key).containsKey(storeKey);
-						} finally {
-							// always unlock
-							Main.getHazelcast().getMap(key).unlock(storeKey);
-						}
+				// loads the mapp store defined for the map
+				@SuppressWarnings({ "unchecked" })
+				MapStore<String, Object> clazz = (MapStore<String, Object>) mStoreConfig.getImplementation();
+				// gets all keys
+				Set<String> keys = clazz.loadAllKeys();
+				LogAppl.getInstance().emit(NodeMessage.JEMC220I, key);
+				// the best way to reload the data, is the "containsKey" the object
+				// from the map by key. If is not in memory, HC reloads from
+				// mapstore and then from database
+				for (String storeKey : keys) {
+					try {
+						// lock
+						Main.getHazelcast().getMap(key).lock(storeKey);
+						// check if in map (if not in memory, HC askes to map store to load from DB)
+						Main.getHazelcast().getMap(key).containsKey(storeKey);
+					} finally {
+						// always unlock
+						Main.getHazelcast().getMap(key).unlock(storeKey);
 					}
-				} catch (InstantiationException e) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
-				} catch (IllegalAccessException e) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
-				} catch (ClassNotFoundException e) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC222E, e);
 				}
 			}
 		}

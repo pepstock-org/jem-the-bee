@@ -49,6 +49,7 @@ import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;
+import org.pepstock.jem.util.Parser;
 
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -72,23 +73,27 @@ public class JobsManagerImpl extends DefaultServerResource {
 	 *            queue of JEM where perform query
 	 * @param jobNameFilter
 	 *            job name filter (default *)
+	 * @param onHistory if to perform query on database
 	 * @return a list of jobs
 	 */
 	@GET
 	@Path(JobsManagerPaths.LIST)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter) {
+	public Response getJobs(@PathParam(JobsManagerPaths.QUEUE) String queue, @DefaultValue(CommonPaths.DEFAULT_FILTER) @QueryParam(CommonPaths.FILTER_QUERY_STRING) String jobNameFilter,
+			@DefaultValue(CommonPaths.FALSE) @QueryParam(JobsManagerPaths.ON_HISTORY_QUERY_STRING) String onHistory) {
 		// it uses JSON response builder
 		// also checking the common status of REST services
 		Response resp = check(ResponseBuilder.JSON);
 		// if response not null means we have an exception
 		if (resp == null) {
 			try {
+				boolean history = Parser.parseBoolean(onHistory, false);
 				// gets the job queue by name
 				JobQueue jQueue = getJobQueue(queue);
+				// FIXME to perform onHISTORY
 				// if queue is null, bad request otherwise it performs the query
-				return (jQueue == null) ? ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE) : ResponseBuilder.JSON.ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter));
+				return (jQueue == null) ? ResponseBuilder.JSON.badRequest(JobsManagerPaths.QUEUE) : ResponseBuilder.JSON.ok(jobsManager.getJobsByQueue(jQueue.getName(), jobNameFilter, history));
 			} catch (Exception e) {
 				// catches the exception and return it
 				LogAppl.getInstance().ignore(e.getMessage(), e);

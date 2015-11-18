@@ -21,6 +21,7 @@ import org.pepstock.jem.Job;
 /**
  * Collect all {@link Job} filterable fields.
  * <br>
+ * It contains also the SQL and MONGO field to perform queries in case of eviction into HC.
  * 
  * @author Marco "Fuzzo" Cuccato
  * @version 1.4	
@@ -28,22 +29,22 @@ import org.pepstock.jem.Job;
 @SuppressWarnings("javadoc")
 public enum JobFilterFields implements JemFilterFields<Job> {
 	
-	NAME("name"),
-	TYPE("type"),
-	USER("user"),
-	ENVIRONMENT("environment"),
-	ROUTED("routed", YES_NO_PATTERN_DESCRIPTION),
-	DOMAIN("domain"),
-	AFFINITY("affinity"),
-	ENDED_TIME("endedtime", DURATION_PATTERN_DESCRIPTION),
-	RETURN_CODE("returncode"),
-	MEMBER("member"),
-	SUBMITTED_TIME("submittedtime", DURATION_PATTERN_DESCRIPTION),
-	PRIORITY("priority"),
-	MEMORY("memory"),
-	STEP("step"),
-	RUNNING_TIME("runningtime", DURATION_PATTERN_DESCRIPTION),
-	ID("id");
+	NAME("name", "JOB_NAME", "name"),
+	TYPE("type", "JOB_JCL_TYPE", "jcl.type"),
+	USER("user", "JOB_USERID", "user, jcl.user"),
+	ENVIRONMENT("environment", "JOB_JCL_ENVIRONMENT", "jcl.environment"),
+	ROUTED("routed", "JOB_ROUTED", "routingInfo.routedTime", YES_NO_PATTERN_DESCRIPTION),
+	DOMAIN("domain", "JOB_JCL_DOMAIN", "jcl.domain"),
+	AFFINITY("affinity", "JOB_JCL_AFFINITY", "jcl.affinity"),
+	ENDED_TIME("endedtime", "JOB_ENDED_TIME", "endedTime", DURATION_PATTERN_DESCRIPTION),
+	RETURN_CODE("returncode", "JOB_RETURN_CODE", "result.returnCode"),
+	MEMBER("member", "JOB_MEMBER", "memberLabel"),
+	SUBMITTED_TIME("submittedtime", "JOB_SUBMITTED_TIME", "subittedTime", DURATION_PATTERN_DESCRIPTION),
+	PRIORITY("priority", "JOB_JCL_PRIORITY", "jcl.priority"),
+	MEMORY("memory", "JOB_JCL_MEMORY", "jcl.memory"),
+	STEP("step", "JOB_STEP", "currentStep.name"),
+	RUNNING_TIME("runningtime", "JOB_RUNNING_TIME", "startedTime", DURATION_PATTERN_DESCRIPTION),
+	ID("id", "JOB_ID", "id");
 
 	public static final JobFilterFields[] DEFAULTS = new JobFilterFields[] {NAME};
 	
@@ -51,22 +52,32 @@ public enum JobFilterFields implements JemFilterFields<Job> {
 	
 	private String pattern = null;
 	
+	private String sqlField = null;
+	
+	private String mongoField= null;
+	
 	/**
 	 * Constructor which use the name of the field of job 
-	 * @param name name of the field of job
+	 * @param name filter name
+	 * @param sqlField SQL field
+	 * @param mongoField MONGO field
 	 */
-	private JobFilterFields(String name) {
-		this(name, null);
+	private JobFilterFields(String name, String sqlField, String mongoField) {
+		this(name, sqlField, mongoField, null);
 	}
 	
 	/**
 	 * Constructor which use the name of the field of job and 
 	 * the pattern
-	 * @param name name of the field of job
+	 * @param name filter name
+	 * @param sqlField SQL field
+	 * @param mongoField MONGO field
 	 * @param pattern pattern of filter field
 	 */
-	private JobFilterFields(String name, String pattern) {
+	private JobFilterFields(String name, String sqlField, String mongoField, String pattern) {
 		this.name = name;
+		this.sqlField = sqlField;
+		this.mongoField = mongoField;
 		this.pattern = pattern;
 	}
 	
@@ -94,6 +105,20 @@ public enum JobFilterFields implements JemFilterFields<Job> {
 		return pattern;
 	}
 	
+	/**
+	 * @return the sqlField
+	 */
+	public String getSqlField() {
+		return sqlField;
+	}
+
+	/**
+	 * @return the mongoField
+	 */
+	public String getMongoField() {
+		return mongoField;
+	}
+
 	/**
 	 * Utility method to get a filter fields by field name
 	 * 

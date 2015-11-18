@@ -10,6 +10,8 @@
 	<property name="jem.job.name" value="WAIT"/>
 	<property name="jem.job.environment" value="TEST-Env"/>
 	<property name="jem.job.memory" value="80"></property>
+	<property name="jem.job.hold" value="true"/>
+	<!--property name="jem.job.affinity" value="test"/-->
 	<!--property name="jem.job.domain" value="domain"/>
 	<property name="jem.job.affinity" value="classA"/>
 	<property name="jem.job.priority" value="99"/>
@@ -25,7 +27,7 @@
 	-->
 	<target name="wait">
 		<wait>
-			<arg value="100" />
+			<arg value="9999" />
 		</wait>
 
 	</target>

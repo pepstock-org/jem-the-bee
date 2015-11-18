@@ -30,10 +30,17 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.JobComparator;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.OutputQueuePredicate;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
+import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.node.persistence.EvictionHelper;
+import org.pepstock.jem.node.persistence.OutputMapManager;
 import org.pepstock.jem.node.swarm.executors.RouterOut;
+import org.pepstock.jem.util.filters.Filter;
+import org.pepstock.jem.util.filters.FilterToken;
+import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
@@ -128,10 +135,33 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 				IMap<String, Job> outputQueue = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
 				// creates the predicate 
 				// to get all jobs submitted from another environment
+				Collection<Job> jobs = null;
 				OutputQueuePredicate oqp = new OutputQueuePredicate();
 				oqp.setEnvironments(environments);
-				// gets jobs
-				Collection<Job> jobs = outputQueue.values(oqp);
+				if (EvictionHelper.isEvicted(Queues.OUTPUT_QUEUE)){
+					jobs = new ArrayList<Job>();
+					for (String env : environments){
+						Filter filter = new Filter();
+						filter.add(new FilterToken(JobFilterFields.ENVIRONMENT.getName(), env));
+						try {
+							Collection<Job> tempJobs = OutputMapManager.getInstance().loadByFilter(filter);
+							if (!tempJobs.isEmpty()){
+								Iterator<Job> iter = tempJobs.iterator();
+								while(iter.hasNext()){
+									if (!oqp.apply(iter.next())){
+										iter.remove();
+									}
+								}
+								jobs.addAll(tempJobs);
+							}
+						} catch (DatabaseException e) {
+							LogAppl.getInstance().emit(NodeMessage.JEMC295E, e);
+						}
+					}
+				} else {
+					// gets jobs
+					jobs = outputQueue.values(oqp);
+				}
 				// sort jobs
 				List<Job> queuedJobs = new ArrayList<Job>(jobs);
 				Collections.sort(queuedJobs, comparator);

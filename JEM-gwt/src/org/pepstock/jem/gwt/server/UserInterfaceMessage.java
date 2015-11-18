@@ -477,7 +477,13 @@ public enum UserInterfaceMessage implements MessageInterface {
 	 *  "Content is empty", MessageLevel.ERROR
 	 */
 	@Description(explanation = "It occurs when the REST call has got an empty HTTP body and the service needs a content.<br>Please check the REST call.")
-	JEMG075E("0075", "Content is empty", MessageLevel.ERROR);
+	JEMG075E("0075", "Content is empty", MessageLevel.ERROR),
+	
+	/**
+	 *  "Ignore message from multicast service", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the web app receives a message from multicast but the client is up and running.")
+	JEMG076I("0076", "Ignore message from multicast service", MessageLevel.INFO);
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 

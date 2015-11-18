@@ -39,9 +39,9 @@ import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
 
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
@@ -68,7 +68,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	private String privateKeyPassword = null;
 
-	private HazelcastInstance client = null;
+	private HazelcastClient client = null;
 	
 	// uses a count down latch to wait end of job
 	private final CountDownLatch lock = new CountDownLatch(1);
@@ -189,8 +189,15 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 * @return Hazelcast instance 
 	 * @throws SubmitException if nay excetpion occurs
 	 */
-	public abstract HazelcastInstance createClient() throws SubmitException;
+	public abstract HazelcastClient createClient() throws SubmitException;
 	
+	/**
+	 * @return the client
+	 */
+	HazelcastClient getClient() {
+		return client;
+	}
+
 	/**
 	 * Submits the job, connecting to Hazelcast, reading JCL content and
 	 * creating new PRE job object, adds itself as listener to a hazelcast topic
@@ -292,7 +299,6 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		return result;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.SubmitCommandLine#beforeJobSubmit()
 	 */
@@ -351,6 +357,28 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			SubmitArgument sakey= arguments.get(SubmitParameters.PRIVATE_KEY_PWD.getName());
 			setPrivateKeyPassword(sakey.getValue());
 		}
+	}
+	
+	/**
+	 * Called by lifecycle client listener when
+	 * the HC client lost the connection
+	 */
+	void clientDisconnect(){
+		// set to null to end in error
+		clientDisconnect(null);
+	}
+
+	/**
+	 * Called by lifecycle client listener when the HC client lost the connection or when, after restart, get the job in output.
+	 * 
+	 * @param job if null, the caller wants to close the HC client because is not able to get connected with the cluster, otherwise
+	 * after a restart, it found teh job in output, then completed
+	 */
+	void clientDisconnect(Job job){
+		// set to null to end in error
+		setJob(job);
+		// notify that job is ended
+		lock.countDown();
 	}
 
 	/* (non-Javadoc)

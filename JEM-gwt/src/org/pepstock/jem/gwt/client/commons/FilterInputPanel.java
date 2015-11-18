@@ -85,7 +85,7 @@ public class FilterInputPanel extends DelayedPopupPanel {
 		filterLine.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		filterLine.setSpacing(5);
 		
-		Label filterLabel = new Label(filterToken + FilterToken.FILTER_TOKEN_SEPARATOR);
+		Label filterLabel = new Label(filterToken + FilterToken.SEPARATOR);
 		
 		filterLine.add(filterLabel);
 		if (helpPattern != null && !helpPattern.trim().isEmpty()) {

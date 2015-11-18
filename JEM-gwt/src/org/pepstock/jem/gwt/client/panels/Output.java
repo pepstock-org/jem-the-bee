@@ -23,13 +23,13 @@ import org.pepstock.jem.gwt.client.commons.SearchListener;
 import org.pepstock.jem.gwt.client.commons.ServiceAsyncCallback;
 import org.pepstock.jem.gwt.client.commons.Toast;
 import org.pepstock.jem.gwt.client.commons.UpdateListener;
-import org.pepstock.jem.gwt.client.panels.common.GetQueueAsyncCallback;
 import org.pepstock.jem.gwt.client.panels.components.BasePanel;
 import org.pepstock.jem.gwt.client.panels.components.CommandPanel;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.JobInspector;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.JobsSearcher;
 import org.pepstock.jem.gwt.client.panels.jobs.output.OutputActions;
+import org.pepstock.jem.gwt.client.panels.jobs.output.OutputGetJobsAsyncCallback;
 import org.pepstock.jem.gwt.client.panels.jobs.output.OutputTable;
 import org.pepstock.jem.gwt.client.security.PreferencesKeys;
 import org.pepstock.jem.gwt.client.services.Services;
@@ -51,12 +51,14 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class Output extends BasePanel<Job> implements SearchListener, UpdateListener<Job> {
 	
+	private int countOfSearchWithoutHistory = 0;
+	
 	/**
 	 * Constructs all UI 
 	 */
 	public Output() {
 		super(new TableContainer<Job>(new OutputTable(true)),
-				new CommandPanel<Job>(new JobsSearcher(PreferencesKeys.JOB_SEARCH_OUTPUT), new OutputActions()));
+				new CommandPanel<Job>(new JobsSearcher(PreferencesKeys.JOB_SEARCH_OUTPUT), new OutputActions(), true));
 		getTableContainer().getUnderlyingTable().setInspectListener(this);
 	}
 
@@ -66,15 +68,20 @@ public class Output extends BasePanel<Job> implements SearchListener, UpdateList
 	@Override
 	public void search(final String jobsFilter) {
 		getCommandPanel().getSearcher().setEnabled(false);
+		final boolean history = getCommandPanel().isHistorySelected();
+		if (!history){
+			countOfSearchWithoutHistory++;
+		}
+
 		Loading.startProcessing();
-		
-	    Scheduler scheduler = Scheduler.get();
+
+		Scheduler scheduler = Scheduler.get();
 	    scheduler.scheduleDeferred(new ScheduledCommand() {
 			
 			@Override
 			public void execute() {
-				Services.QUEUES_MANAGER.getOutputQueue(jobsFilter, 
-						new GetQueueAsyncCallback<Job>(getTableContainer().getUnderlyingTable(), getCommandPanel().getSearcher()));
+				Services.QUEUES_MANAGER.getOutputQueue(jobsFilter, history,
+						new OutputGetJobsAsyncCallback(getTableContainer().getUnderlyingTable(), getCommandPanel().getSearcher(), history, countOfSearchWithoutHistory));
 			}
 		});
 	}

@@ -33,7 +33,7 @@ public class InputMapManager extends AbstractMapManager<Job> {
 	 * Construct the object using a database Manager
 	 * @param dbManager database manager
 	 */
-	private InputMapManager(DataBaseManager<Job> dbManager) {
+	private InputMapManager(DatabaseManager<Job> dbManager) {
 		super(dbManager, true);
 	}
 	
@@ -42,7 +42,7 @@ public class InputMapManager extends AbstractMapManager<Job> {
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static InputMapManager createInstance(DataBaseManager<Job> dbManager){
+	public static InputMapManager createInstance(DatabaseManager<Job> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new InputMapManager(dbManager);
 		}

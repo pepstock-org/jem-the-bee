@@ -37,7 +37,6 @@ import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.MulticastConfig;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * ClientMulticastListener listen to the same multicast address of hazelcast on
@@ -48,6 +47,8 @@ import com.hazelcast.core.HazelcastInstance;
  * @author Simone "Busy" Businaro
  */
 public class WebMulticastListener implements Runnable {
+	
+	private final MulticastLifeCycle lifeCycle = new MulticastLifeCycle();
 
 	private boolean ready = false;
 
@@ -78,14 +79,14 @@ public class WebMulticastListener implements Runnable {
 			InetAddress groupAddress = InetAddress.getByName(multicastGroup);
 			socket.joinGroup(groupAddress);
 			ready = true;
-
+			
 			// so we can shatted down
 			while (!Thread.currentThread().isInterrupted()) {
 				byte[] inBuf = new byte[20000];
 				inPacket = new DatagramPacket(inBuf, inBuf.length);
 				socket.receive(inPacket);
 				String inMsg = new String(inBuf, 0, inPacket.getLength(), CharSet.DEFAULT);
-
+				
 				MulticastMessage multicastMesssage = MulticastMessageFactory.getMessage(inMsg);
 				// if is a client message do nothing I'm not
 				// interesting
@@ -94,23 +95,30 @@ public class WebMulticastListener implements Runnable {
 				} else if (multicastMesssage instanceof NodeResponse) {
 					NodeResponse message = (NodeResponse) multicastMesssage;
 					// check if group is correct
-					if (message.getGroup() != null && message.getGroup().equals(config.getGroupConfig().getName()) &&
-							(SharedObjects.getInstance().getHazelcastClient() == null || !SharedObjects.getInstance().getHazelcastClient().getLifecycleService().isRunning())) {
-						// start hazelcast client only if it is not runnig.
-						LogAppl.getInstance().emit(UserInterfaceMessage.JEMG058I, inPacket.getAddress(), inMsg);
-						// create client config
-						ClientConfig clientConfig = new ClientConfig();
-						clientConfig.setGroupConfig(config.getGroupConfig());
-						// check socket interceptor
-						if (isSocketInterceptor) {
-							clientConfig.setSocketInterceptor(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+					if (message.getGroup() != null && message.getGroup().equals(config.getGroupConfig().getName())){
+						// checks if HC client is already instantiated
+						if (SharedObjects.getInstance().getHazelcastClient() == null || !SharedObjects.getInstance().isDataClusterAvailable()) {
+							if (SharedObjects.getInstance().getHazelcastClient() != null){
+								SharedObjects.getInstance().getHazelcastClient().shutdown();
+							}
+							// start hazelcast client only if it is not runnig.
+							LogAppl.getInstance().emit(UserInterfaceMessage.JEMG058I, inPacket.getAddress(), inMsg);
+							// create client config
+							ClientConfig clientConfig = new ClientConfig();
+							clientConfig.setGroupConfig(config.getGroupConfig());
+							//enables that HC client will listen the membership on cluster to maintain the members 
+							clientConfig.setUpdateAutomatic(true);
+							// check socket interceptor
+							if (isSocketInterceptor) {
+								clientConfig.setSocketInterceptor(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+							}
+							clientConfig.setAddresses(message.getNodesMembers());
+							clientConfig.getListeners().add(lifeCycle);
+							HazelcastClient instance = HazelcastClient.newHazelcastClient(clientConfig);
+							lifeCycle.atInstantiation(instance);
+						} else {
+							LogAppl.getInstance().emit(UserInterfaceMessage.JEMG076I);
 						}
-						clientConfig.setAddresses(message.getNodesMembers());
-						MulticastLifeCycle lifeCycle = new MulticastLifeCycle();
-
-						clientConfig.getListeners().add(lifeCycle);
-						HazelcastInstance instance = HazelcastClient.newHazelcastClient(clientConfig);
-						lifeCycle.atInstantiation(instance);
 					}
 				} else if (multicastMesssage instanceof ShutDown) {
 					// ignore

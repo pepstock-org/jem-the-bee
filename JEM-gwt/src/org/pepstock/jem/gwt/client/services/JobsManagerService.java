@@ -64,11 +64,12 @@ public interface JobsManagerService extends RemoteService {
 	 * 
 	 * @param jobNameFilter
 	 *            filter name
+	 * @param onHistory if to perform the query on database directly
 	 * @return a collection of jobs in output
 	 * @throws JemException
 	 *             if cluster is not available or not authorized
 	 */
-	Collection<Job> getOutputQueue(String jobNameFilter) throws JemException;
+	Collection<Job> getOutputQueue(String jobNameFilter, boolean onHistory) throws JemException;
 
 	/**
 	 * Returns all jobs in routing queue, using a job filter name.

@@ -27,7 +27,6 @@ import org.pepstock.jem.node.security.socketinterceptor.SubmitInterceptor;
 
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Utility to creates Hazelcast instance to submit jobs.
@@ -37,6 +36,10 @@ import com.hazelcast.core.HazelcastInstance;
  * 
  */
 public class HazelcastUtil {
+	
+	private static final int DEFAULT_RECONNECTION_TIMEOUT = 5000;
+	
+	private static final int DEFAULT_RECONNECTION_ATTEMPT_LIMIT = 1;
 	
 	/**
 	 * To avoid any instantiation
@@ -57,13 +60,17 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastInstance getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastClient getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		try {
 			// creates a client configuration for Hazelcast
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
 			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
+			clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+			clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
+			clientConfig.setUpdateAutomatic(true);
+			
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
@@ -106,7 +113,7 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastInstance getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastClient getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		String groupName = HttpUtil.getGroupName(url);
 
@@ -116,9 +123,13 @@ public class HazelcastUtil {
 		// sets the group name (received by http call) and sets the constant
 		// password
 		clientConfig.getGroupConfig().setName(groupName).setPassword(envPassword);
-
+		
 		// connect to Hazelcast using the complete list of current members
 		clientConfig.addAddress(HttpUtil.getMembers(url));
+		clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+		clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
+
+		clientConfig.setUpdateAutomatic(true);
 
 		// if properties are not empyt, sets up SocketInterceptor.
 		if (privateKeyPathFile != null) {

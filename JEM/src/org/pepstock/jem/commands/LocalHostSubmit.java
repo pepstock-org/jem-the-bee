@@ -21,7 +21,7 @@ import java.util.Map;
 import org.pepstock.jem.commands.util.HazelcastUtil;
 import org.pepstock.jem.log.LogAppl;
 
-import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.client.HazelcastClient;
 
 /**
  * Submits JCL into JEM.<br>
@@ -139,13 +139,17 @@ public class LocalHostSubmit extends AbstractConnectedClusterSubmit {
 	 * @see org.pepstock.jem.commands.ConnectedClusterSubmit#createClient()
 	 */
 	@Override
-	public HazelcastInstance createClient() throws SubmitException {
-		return HazelcastUtil.getLocalInstance(getEnvironment(), 
+	public HazelcastClient createClient() throws SubmitException {
+		HazelcastClient client = HazelcastUtil.getLocalInstance(getEnvironment(), 
 				getPort(), 
 				getPassword(), 
 				getPrivateKey(), 
 				getPrivateKeyPassword(), 
 				getUserID());
+		
+		HazelcastClientLifeCycler listener = new HazelcastClientLifeCycler(this, client);
+		client.getLifecycleService().addLifecycleListener(listener);
+		return client;
 	}
 
 	/**

@@ -50,9 +50,10 @@ public interface JobsManagerServiceAsync {
 	/**
 	 * @see JobsManagerService#getOutputQueue(String)
 	 * @param jobNameFilter
+	 * @param onHistory if perfrom query on DB
 	 * @param callback
 	 */
-	void getOutputQueue(String jobNameFilter, AsyncCallback<Collection<Job>> callback);
+	void getOutputQueue(String jobNameFilter, boolean onHistory, AsyncCallback<Collection<Job>> callback);
 
 	/**
 	 * @see JobsManagerService#getRoutingQueue(String)

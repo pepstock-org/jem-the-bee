@@ -24,21 +24,21 @@ import org.pepstock.jem.log.JemException;
  * @version 1.0	
  *
  */
-public class ParseException extends JemException {
+public class FilterParseException extends JemException {
 
 	private static final long serialVersionUID = 8002367713613656195L;
 
 	/**
 	 * Empty constructor
 	 */
-	public ParseException() {
+	public FilterParseException() {
 	}
 
 	/**
 	 * Message contructor
 	 * @param arg0 the message
 	 */
-	public ParseException(String arg0) {
+	public FilterParseException(String arg0) {
 		super(arg0);
 	}
 
@@ -46,7 +46,7 @@ public class ParseException extends JemException {
 	 * {@link Throwable} contructor
 	 * @param arg0 the root cause
 	 */
-	public ParseException(Throwable arg0) {
+	public FilterParseException(Throwable arg0) {
 		super(arg0);
 	}
 
@@ -55,7 +55,7 @@ public class ParseException extends JemException {
 	 * @param arg0 the message
 	 * @param arg1 the root cause
 	 */
-	public ParseException(String arg0, Throwable arg1) {
+	public FilterParseException(String arg0, Throwable arg1) {
 		super(arg0, arg1);
 	}
 

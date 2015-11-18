@@ -42,7 +42,7 @@ public class PreJobMapManager implements Recoverable{
 
 	private static PreJobMapManager INSTANCE = null;
 	
-	private DataBaseManager<PreJob> dbManager = null;
+	private DatabaseManager<PreJob> dbManager = null;
 	
 	private RedoManager<PreJob> redoManager = new RedoManager<PreJob>(Queues.JCL_CHECKING_QUEUE);
 	
@@ -51,7 +51,7 @@ public class PreJobMapManager implements Recoverable{
 	 * 
 	 * @throws Exception occurs if an error
 	 */
-	private PreJobMapManager(DataBaseManager<PreJob> dbManager){
+	private PreJobMapManager(DatabaseManager<PreJob> dbManager){
 		this.dbManager = dbManager;
 	}
 
@@ -60,7 +60,7 @@ public class PreJobMapManager implements Recoverable{
 	 * @param dbManager database manger to use for persistence
 	 * @return the map store
 	 */
-	public static synchronized PreJobMapManager createInstance(DataBaseManager<PreJob> dbManager){
+	public static synchronized PreJobMapManager createInstance(DatabaseManager<PreJob> dbManager){
 		if (INSTANCE == null){
 			INSTANCE = new PreJobMapManager(dbManager);
 		}

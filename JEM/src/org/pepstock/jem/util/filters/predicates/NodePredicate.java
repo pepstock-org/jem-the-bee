@@ -18,6 +18,7 @@ package org.pepstock.jem.util.filters.predicates;
 
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.NodeInfoBean;
@@ -67,74 +68,78 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 		// casts the object to a NodeInfo
 		NodeInfoBean node = ((NodeInfo)entry.getValue()).getNodeInfoBean();
 		boolean includeThis = true;
-		// gets all tokens of filter
-		FilterToken[] tokens = getFilter().toTokenArray();
-		// scans all tokens
-		for (int i=0; i<tokens.length && includeThis; i++) {
-			FilterToken token = tokens[i];
-			// gets name and value
-			// remember that filters are built:
-			// -[name] [value]
-			String tokenName = token.getName();
-			String tokenValue = token.getValue();
-			// gets the filter field for nodes by name
-			NodeFilterFields field = NodeFilterFields.getByName(tokenName);
-			// if field is not present,
-			// used NAME as default
-			if (field == null) {
-				field = NodeFilterFields.NAME;
-			}
-			// based on name of field, it will check
-			// different attributes 
-			// all matches are in AND
-			switch (field) {
-			case NAME:
-				// checks name of NODE
-				includeThis &= checkName(tokenValue, node.getLabel());
-				break;
-			case HOSTNAME:
-				// checks hostname or ip of NODE
-				includeThis &= StringUtils.containsIgnoreCase(node.getHostname(), tokenValue);
-				break;
-			case DOMAIN:
-				// checks domain of NODE
-				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDomain(), tokenValue);
-				break;
-			case STATIC_AFFINITIES:
-				// checks static affinities of NODE
-				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getStaticAffinities().toString(), tokenValue);
-				break;
-			case DYNAMIC_AFFINITIES:
-				// checks dinamic affinities of NODE
-				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDynamicAffinities().toString(), tokenValue);
-				break;
-			case STATUS:
-				// skipped status == null check
-				includeThis &= StringUtils.containsIgnoreCase(node.getStatus(), tokenValue);
-				break;
-			case OS:
-				// checks operating system of NODE
-				includeThis &= StringUtils.containsIgnoreCase(node.getSystemName(), tokenValue);
-				break;
-			case MEMORY:
-				// checks memory of NODE
-				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getMemory()), tokenValue);
-				break;
-			case PARALLEL_JOBS:
-				// checks parallel jobs of NODE
-				includeThis &= StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getParallelJobs()), tokenValue);
-				break;
-			case CURRENT_JOB:
-				// skipped jobName == null check
-				includeThis &= StringUtils.containsIgnoreCase(node.getJobNames().toString() , tokenValue);
-				break;
-			case ENVIRONMENT:
-				// skipped jobName == null check
-				includeThis &= StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getEnvironment(), tokenValue);
-				break;
-			default:
-				// otherwise it uses a wrong filter name
-				throw new JemRuntimeException("Unrecognized Node filter field: " + field);
+		if (!getFilter().isEmpty()){
+			// iterate over all filter tokens
+			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			// exit if tokens already processed OR if i can immediate exclude this
+			while(iterator.hasNext() && includeThis) {
+				FilterToken token = iterator.next();			
+				// gets name and value
+				// remember that filters are built:
+				// -[name] [value]
+				String tokenName = token.getName();
+				String tokenValue = token.getValue();
+				// gets the filter field for nodes by name
+				NodeFilterFields field = NodeFilterFields.getByName(tokenName);
+				// if field is not present,
+				// used NAME as default
+				if (field == null) {
+					field = NodeFilterFields.NAME;
+				}
+				boolean match = true;
+				// based on name of field, it will check
+				// different attributes 
+				// all matches are in AND
+				switch (field) {
+					case NAME:
+						// checks name of NODE
+						match = checkName(tokenValue, node.getLabel());
+						break;
+					case HOSTNAME:
+						// checks hostname or ip of NODE
+						match = StringUtils.containsIgnoreCase(node.getHostname(), tokenValue);
+						break;
+					case DOMAIN:
+						// checks domain of NODE
+						match = StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDomain(), tokenValue);
+						break;
+					case STATIC_AFFINITIES:
+						// checks static affinities of NODE
+						match = StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getStaticAffinities().toString(), tokenValue);
+						break;
+					case DYNAMIC_AFFINITIES:
+						// checks dinamic affinities of NODE
+						match = StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getDynamicAffinities().toString(), tokenValue);
+						break;
+					case STATUS:
+						// skipped status == null check
+						match = StringUtils.containsIgnoreCase(node.getStatus(), tokenValue);
+						break;
+					case OS:
+						// checks operating system of NODE
+						match = StringUtils.containsIgnoreCase(node.getSystemName(), tokenValue);
+						break;
+					case MEMORY:
+						// checks memory of NODE
+						match = StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getMemory()), tokenValue);
+						break;
+					case PARALLEL_JOBS:
+						// checks parallel jobs of NODE
+						match = StringUtils.containsIgnoreCase(String.valueOf(node.getExecutionEnvironment().getParallelJobs()), tokenValue);
+						break;
+					case CURRENT_JOB:
+						// skipped jobName == null check
+						match = StringUtils.containsIgnoreCase(node.getJobNames().toString() , tokenValue);
+						break;
+					case ENVIRONMENT:
+						// skipped jobName == null check
+						match = StringUtils.containsIgnoreCase(node.getExecutionEnvironment().getEnvironment(), tokenValue);
+						break;
+					default:
+						// otherwise it uses a wrong filter name
+						throw new JemRuntimeException("Unrecognized Node filter field: " + field);
+				}
+				includeThis &= (token.isNot()) ? !match : match;
 			}
 		}
 		return includeThis;

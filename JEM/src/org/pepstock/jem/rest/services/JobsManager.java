@@ -68,14 +68,33 @@ public class JobsManager extends AbstractRestManager {
 	 * @throws RestException if any exception occurs
 	 */
 	public Collection<Job> getJobs(JobQueue queue, String filter) throws RestException {
+		return getJobs(queue, filter, false);
+	}
+
+	/**
+	 * This is common method to extract jobs from different queues by filter
+	 * string
+	 * 
+	 * @param queue queue name to use to get the right map
+	 * @param filter filter string
+	 * @param onHistory if to perform the query on database
+	 * @return collection of jobs
+	 * @throws RestException if any exception occurs
+	 */
+	public Collection<Job> getJobs(JobQueue queue, String filter, boolean onHistory) throws RestException {
 		try {
 			// creates a request builder with the APPLICATION/JSON media type as
 			// accept type (the default)
 			RequestBuilder builder = RequestBuilder.media(this);
 			// replaces on the path the queue of the jobs to search
 			String path = PathReplacer.path(JobsManagerPaths.LIST).replace(JobsManagerPaths.QUEUE_PATH_PARAM, queue.getPath()).build();
-			// performs the request adding the filter query param
-			ClientResponse response = builder.filter(filter).get(path);
+			// adds item to search and data path name (if there is)
+			// as HTTP query parameters
+			Map<String, String> queryParams = new HashMap<String, String>();
+			queryParams.put(JobsManagerPaths.ON_HISTORY_QUERY_STRING, String.valueOf(onHistory));
+			// performs the rest call
+			// setting query parameters
+			ClientResponse response = builder.filter(filter).query(queryParams).get(path);
 			// if HTTP status code is OK,parses the result to list of jobs
 			if (response.getStatus() == Status.OK.getStatusCode()) {
 				return JsonUtil.getInstance().deserializeList(response, Job.class);

@@ -16,6 +16,9 @@
  */
 package org.pepstock.jem.gwt.server.commons;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 
 import org.pepstock.jem.Service;
@@ -26,6 +29,7 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.util.net.Interface;
 
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -45,7 +49,7 @@ public class SharedObjects {
 
 	private boolean isDataClusterAvailable = false;
 
-	private HazelcastInstance hazelcastClient = null;
+	private HazelcastClient hazelcastClient = null;
 
 	private String sessionsInstance = null;
 
@@ -58,6 +62,8 @@ public class SharedObjects {
 	private ServletContext context;
 	
 	private Interface networkInterface = null;
+	
+	private Map<String, Boolean> mapEvictionInfo = new HashMap<String, Boolean>();
 	
 	/**
 	 * Empty constructor
@@ -127,6 +133,13 @@ public class SharedObjects {
 	public void setContext(ServletContext context) {
 		this.context = context;
 	}
+	
+	/**
+	 * @return the mapEvictionInfo
+	 */
+	public Map<String, Boolean> getMapEvictionInfo() {
+		return mapEvictionInfo;
+	}
 
 	/**
 	 * Sets <code>true</code> if hazelcast cluster has node with data.
@@ -169,7 +182,7 @@ public class SharedObjects {
 	 * 
 	 * @return the client of Hazelcast
 	 */
-	public HazelcastInstance getHazelcastClient() {
+	public HazelcastClient getHazelcastClient() {
 		return hazelcastClient;
 	}
 
@@ -179,7 +192,7 @@ public class SharedObjects {
 	 * @param hazelcastClient
 	 *            the Hazelcast client to set
 	 */
-	public void setHazelcastClient(HazelcastInstance hazelcastClient) {
+	public void setHazelcastClient(HazelcastClient hazelcastClient) {
 		this.hazelcastClient = hazelcastClient;
 	}
 

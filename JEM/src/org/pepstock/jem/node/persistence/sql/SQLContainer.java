@@ -16,6 +16,9 @@
 */
 package org.pepstock.jem.node.persistence.sql;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Contains all DDL and SQL statements constants for Hazelcast persistence.<br>
  * The implementation follows the idea to have a table for each queue, even if
@@ -83,12 +86,8 @@ public class  SQLContainer {
 	
 	private String createTableStatementForEviction = null;
 	
-	private String insertStatementForEviction = null;
-			
-	private String deleteStatementForEviction = null;
-
-	private String updateStatementForEviction = null;
-
+	private final Map<String, String> indexes = new LinkedHashMap<String, String>();
+	
 	/**
 	 * 
 	 */
@@ -251,45 +250,10 @@ public class  SQLContainer {
 	}
 
 	/**
-	 * @return the insertStatementForEviction
+	 * @return the additionalDDL
 	 */
-	public String getInsertStatementForEviction() {
-		return insertStatementForEviction;
-	}
-
-	/**
-	 * @param insertStatementForEviction the insertStatementForEviction to set
-	 */
-	public void setInsertStatementForEviction(String insertStatementForEviction) {
-		this.insertStatementForEviction = insertStatementForEviction;
-	}
-
-	/**
-	 * @return the deleteStatementForEviction
-	 */
-	public String getDeleteStatementForEviction() {
-		return deleteStatementForEviction;
-	}
-
-	/**
-	 * @param deleteStatementForEviction the deleteStatementForEviction to set
-	 */
-	public void setDeleteStatementForEviction(String deleteStatementForEviction) {
-		this.deleteStatementForEviction = deleteStatementForEviction;
-	}
-
-	/**
-	 * @return the updateStatementForEviction
-	 */
-	public String getUpdateStatementForEviction() {
-		return updateStatementForEviction;
-	}
-
-	/**
-	 * @param updateStatementForEviction the updateStatementForEviction to set
-	 */
-	public void setUpdateStatementForEviction(String updateStatementForEviction) {
-		this.updateStatementForEviction = updateStatementForEviction;
+	public Map<String, String> getIndexes() {
+		return indexes;
 	}
 
 	/* (non-Javadoc)
@@ -299,7 +263,6 @@ public class  SQLContainer {
 	public String toString() {
 		return "SQLContainer [tableName=" + tableName + ", createTableStatement=" + createTableStatement + ", insertStatement=" + insertStatement + ", deleteStatement=" + deleteStatement + ", updateStatement=" + updateStatement + ", getStatement="
 				+ getStatement + ", getAllStatement=" + getAllStatement + ", getAllKeysStatement=" + getAllKeysStatement + ", checkQueueSizeStatement=" + checkQueueSizeStatement + ", tableNameForEviction=" + tableNameForEviction
-				+ ", createTableStatementForEviction=" + createTableStatementForEviction + ", insertStatementForEviction=" + insertStatementForEviction + ", deleteStatementForEviction=" + deleteStatementForEviction + ", updateStatementForEviction="
-				+ updateStatementForEviction + "]";
+				+ ", createTableStatementForEviction=" + createTableStatementForEviction + "]";
 	}
 }

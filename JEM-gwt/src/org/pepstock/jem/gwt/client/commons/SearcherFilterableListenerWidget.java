@@ -19,7 +19,8 @@ package org.pepstock.jem.gwt.client.commons;
 import org.pepstock.jem.gwt.client.events.FilterEvent;
 import org.pepstock.jem.gwt.client.events.FilterEventHandler;
 import org.pepstock.jem.util.filters.Filter;
-import org.pepstock.jem.util.filters.ParseException;
+import org.pepstock.jem.util.filters.FilterFactory;
+import org.pepstock.jem.util.filters.FilterParseException;
 
 /**
  * Add {@link FilterEvent} handling capability to {@link SearcherListenerWidget}
@@ -84,13 +85,13 @@ public abstract class SearcherFilterableListenerWidget extends SearcherListenerW
 		if (UITools.isInForegroundVisible(this)) {
 			Filter filter;
 			try {
-				filter = Filter.parse(getSearchText().trim());
-			} catch (ParseException pe) {
+				filter = FilterFactory.parse(getSearchText().trim());
+			} catch (FilterParseException pe) {
 				filter = new Filter();
 			}
 			filter.add(event.getFilterToken());
 			
-			setSearchText(filter.toSearchString().trim());
+			setSearchText(FilterFactory.toSearchString(filter).trim());
 			setEnabled(true);
 		}
 	}

@@ -35,7 +35,16 @@ public class JobMongoManager extends AbstractMongoManager<Job> {
 	 * @param queueName job queue name to manage
 	 */
 	public JobMongoManager(String queueName) {
-		super(queueName, FIELD_KEY);
+		this(queueName, false);
+	}
+	
+	/**
+	 * Creates the object setting queue and field key of JSON
+	 * @param queueName job queue name to manage
+	 * @param canBeEvicted if the HC map can be evicted
+	 */
+	public JobMongoManager(String queueName, boolean canBeEvicted) {
+		super(queueName, FIELD_KEY, canBeEvicted);
 	}
 
 	/* (non-Javadoc)

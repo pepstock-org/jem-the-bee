@@ -55,7 +55,7 @@ public class LoginImager extends AbsolutePanel {
 	/**
 	 * Default link
 	 */
-	private static final String DEFAULT_LOGO_LINK = "http://www.pepstock.org";
+	private static final String DEFAULT_LOGO_LINK = "http://www.jemthebee.org";
 	
 	private final HTML license = new HTML(SharedObjects.LICENSE);
 	
