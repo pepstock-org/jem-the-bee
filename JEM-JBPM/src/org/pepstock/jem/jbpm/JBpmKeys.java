@@ -16,7 +16,6 @@
 */
 package org.pepstock.jem.jbpm;
 
-import org.pepstock.jem.ant.AntKeys;
 
 
 /**
@@ -32,100 +31,100 @@ public final class JBpmKeys {
 	 * Is the attribute value for property element inside of
 	 * process element, to set job Name. Is optional.
 	 */
-	public static final String JBPM_JOB_NAME = AntKeys.ANT_JOB_NAME;
+	public static final String JBPM_JOB_NAME = "jem.job.name";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set environment. Is optional.
 	 */
-	public static final String JBPM_ENVIRONMENT = AntKeys.ANT_ENVIRONMENT;
+	public static final String JBPM_ENVIRONMENT = "jem.job.environment";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set domain. Is optional.
 	 */
-	public static final String JBPM_DOMAIN = AntKeys.ANT_DOMAIN;
+	public static final String JBPM_DOMAIN = "jem.job.domain";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set affinity. Is optional.
 	 */
-	public static final String JBPM_AFFINITY = AntKeys.ANT_AFFINITY;
+	public static final String JBPM_AFFINITY = "jem.job.affinity";
 
 	/**
 	 * It is the attribute value for property element inside of
 	 * process element, to set email addresses to send the notification of the end
 	 * of the Job. It is optional.
 	 */
-	public static final String JBPM_EMAILS_NOTIFICATION = AntKeys.ANT_EMAILS_NOTIFICATION;
+	public static final String JBPM_EMAILS_NOTIFICATION = "jem.job.emailsNotification";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set the user to use to executed the job. Is optional.
 	 */
-	public static final String JBPM_USER = AntKeys.ANT_USER;
+	public static final String JBPM_USER = "jem.job.user";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set hold state of job. Is optional.
 	 */
-	public static final String JBPM_HOLD = AntKeys.ANT_HOLD;
+	public static final String JBPM_HOLD = "jem.job.hold";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set queue priority of job. Is optional.
 	 */
-	public static final String JBPM_PRIORITY = AntKeys.ANT_PRIORITY;
+	public static final String JBPM_PRIORITY = "jem.job.priority";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set memory in MB for job. Is optional.
 	 */
-	public static final String JBPM_MEMORY = AntKeys.ANT_MEMORY;
+	public static final String JBPM_MEMORY = "jem.job.memory";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set locking scope. Must be "job", "step" or "task". Is optional. Default is "job"
 	 */
-	public static final String JBPM_LOCKING_SCOPE = AntKeys.ANT_LOCKING_SCOPE;
+	public static final String JBPM_LOCKING_SCOPE = "jem.job.lockingScope";
 	
 	/**
 	 * Is constant to define locking scope to job level
 	 */
-	public static final String JBPM_JOB_SCOPE = AntKeys.ANT_JOB_SCOPE;
+	public static final String JBPM_JOB_SCOPE = "job";
 
 	/**
 	 * Is constant to define locking scope to step level
 	 */
-	public static final String JBPM_STEP_SCOPE = AntKeys.ANT_STEP_SCOPE;
+	public static final String JBPM_STEP_SCOPE = "step";
 
 	/**
 	 * Is constant to define locking scope to task level
 	 */
-	public static final String JBPM_TASK_SCOPE = AntKeys.ANT_ENVIRONMENT;
+	public static final String JBPM_TASK_SCOPE = "task";
 	
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to add libraries to JBPM classpath process. Is optional.
 	 */
-	public static final String JBPM_CLASSPATH = AntKeys.ANT_CLASSPATH;
+	public static final String JBPM_CLASSPATH = "jem.job.classPath";
 	
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to add libraries to JBPM classpath process, at the beginning of classpath. Is optional.
 	 */
-	public static final String JBPM_PRIOR_CLASSPATH = AntKeys.ANT_PRIOR_CLASSPATH;
+	public static final String JBPM_PRIOR_CLASSPATH = "jem.job.priorClassPath";
 
 	/**
 	 * Is the attribute value for property element inside of
 	 * process element, to set java version to use. Is optional.
 	 */
-	public static final String JBPM_JAVA = AntKeys.ANT_JAVA;
+	public static final String JBPM_JAVA = "jem.job.java";
 	
 	/**
 	 * Is the name use during binding of DataPaths container
 	 */
-	public static final String JBPM_DATAPATHS_BIND_NAME = AntKeys.ANT_DATAPATHS_BIND_NAME;
+	public static final String JBPM_DATAPATHS_BIND_NAME = "jem.dataPaths";
 	
 	/**
 	 * The workitem name used by JEM to create all resource
@@ -135,17 +134,17 @@ public final class JBpmKeys {
 	/**
 	 * Prefix of parameters workitem for data description
 	 */
-	public static final String JBPM_DATA_DESCRIPTION_PREFIX = AntKeys.ANT_DATA_DESCRIPTION_PREFIX;
+	public static final String JBPM_DATA_DESCRIPTION_PREFIX = "jem.dataDescription.";
 	
 	/**
 	 * Prefix of parameters workitem for data sources
 	 */
-	public static final String JBPM_DATA_SOURCE_PREFIX = AntKeys.ANT_DATA_SOURCE_PREFIX;
+	public static final String JBPM_DATA_SOURCE_PREFIX = "jem.dataSource.";
 	
 	/**
 	 * Name of parameter workitem for locks
 	 */
-	public static final String JBPM_LOCK_KEY = AntKeys.ANT_LOCK_KEY;
+	public static final String JBPM_LOCK_KEY = "jem.locks";
 
 
 	/**

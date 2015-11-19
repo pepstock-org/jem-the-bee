@@ -3,7 +3,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
            http://www.springframework.org/schema/batch 
            http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
 
@@ -51,12 +51,12 @@
 		<beans:property name="jdbcTemplate" ref="jdbcTemplate" />
 		<beans:property name="dataDescriptionList">
 				<beans:list>
-					<beans:ref local="log4j"/>
+					<beans:ref bean="log4j"/>
 				</beans:list>
 		</beans:property>
 		<beans:property name="dataSourceList">
 				<beans:list>
-					<beans:ref local="jem-db"/>
+					<beans:ref bean="jem-db"/>
 				</beans:list>
 		</beans:property>
 	</beans:bean>

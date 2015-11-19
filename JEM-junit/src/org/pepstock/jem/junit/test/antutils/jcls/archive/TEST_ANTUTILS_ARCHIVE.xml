@@ -25,9 +25,8 @@
 			<arg value="org.pepstock.jem.node.archive.DefaultJobOutputArchive"/>
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
-					<!-- ame LIKE 'TEST_ANTUTILS%' and user LIKE '%' and orgUnit LIKE '%' and result.returnCode='0' and jcl.type='ant' -->
 					<![CDATA[
-						name LIKE 'TEST_ANTUTILS%';
+						name:TEST_ANTUTILS*;
 					]]>
 				</dataSet>
 			</dataDescription>

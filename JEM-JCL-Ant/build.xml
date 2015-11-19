@@ -1,0 +1,59 @@
+<project name="jem-jcl-ant" default="build-distribution-jcl-ant" basedir=".">
+	<!-- import properties -->
+	<import file="build-properties.xml" />
+
+	<!-- clean project JEM-enterprise -->
+	<target name="jcl-ant-clean">
+		<delete dir="${jem.jcl-ant.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete dir="${jem.jcl-ant.distribute.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.jcl-ant.jar.file.location}" />
+	</target>
+
+	<!-- create directory needed -->
+	<target name="jcl-ant-make-folders" depends="jcl-ant-clean">
+		<mkdir dir="${jem.jcl-ant.classes.folder}" />
+		<mkdir dir="${jem.jcl-ant.distribute.folder}" />
+		<copy todir="${jem.jcl-ant.classes.folder}">
+			<fileset dir="${jem.jcl-ant.source.folder}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- copy JEM jar to JEM-JBPM -->
+	<target name="jcl-ant-replace-core" depends="jcl-ant-make-folders">
+		<delete file="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
+		<copy file="${jem.core.jar.file.location}" toFile="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
+	</target>
+
+	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
+	<target name="jcl-ant-compile" depends="jcl-ant-replace-core">
+		<javac srcdir="${jem.jcl-ant.source.folder}" destdir="${jem.jcl-ant.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+			<compilerarg value="-XDignore.symbol.file" />
+			<classpath>
+				<pathelement path="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
+				<pathelement path="${jem.jcl-ant.classes.folder}" />
+				<fileset dir="${jem.jcl-ant.library.folder}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar jarfile="${jem.jcl-ant.jar.file.location}" basedir="${jem.jcl-ant.classes.folder}">
+			<fileset dir="${jem.jcl-ant.classes.folder}"/>
+			<manifest>
+				<section name="JEM_the_BEE_ANT">
+					<attribute name="Jem_version" value="${jem.version}" />
+					<attribute name="Built-By" value="${jem.built.by}" />
+					<attribute name="Creation_time" value="${TODAY}" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="build-distribution-jcl-ant" depends="jcl-ant-compile">
+		<zip destfile="${jem.jcl-ant.zip.file.location}">
+			 <fileset dir="${jem.jcl-ant.library.folder}"/>
+			 <fileset dir="." includes="COPYING"/>
+		</zip>
+	</target>
+</project>

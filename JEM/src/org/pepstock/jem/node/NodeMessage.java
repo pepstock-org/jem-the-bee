@@ -1802,7 +1802,43 @@ public enum NodeMessage implements MessageInterface {
 	 * "Client is {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when Hazelcast client changes its status.")
-	JEMC296I("0296", "Client is {0}", MessageLevel.INFO);
+	JEMC296I("0296", "Client is {0}", MessageLevel.INFO),
+	
+	/**
+	 *"Class \"{0}\" is not an instance of \"{1}\", but \"{2}\"", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the class of job output archive is not of the right class.<br>Check job output archive implemented class.")
+	JEMC297E("0297", "Class \"{0}\" is not an instance of \"{1}\", but \"{2}\"", MessageLevel.ERROR),
+	
+	/**
+	 *"Job Output Archive is set to \"{0}\" ", MessageLevel.INFO
+	 */
+	@Description(explanation = "It informs about job output archive class to use to compute the job data.")
+	JEMC298I("0298", "Job Output Archive is set to \"{0}\" ", MessageLevel.INFO),
+	
+	/**
+	 *"Unable to remove job \"{0}\" from output queue", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the job output archive task wasn't able to remove the job from queue.<br>Check node log and contact JEM administrators.")
+	JEMC299E("0299", "Unable to remove job \"{0}\" from output queue", MessageLevel.ERROR),
+	
+	/**
+	 *"Job \"{0}\" is not removed by JobOutputArchive decision", MessageLevel.WARNING
+	 */
+	@Description(explanation = "It occurs when the job output archive plugin return 'false' because it decided to maintain the job.")
+	JEMC300W("0300", "Job \"{0}\" is not removed by JobOutputArchive decision", MessageLevel.WARNING),
+	
+	/**
+	 *""JobOutputArchive invocation error", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the job output archive plugin return an exception.<br>Please check the job output archive plugin.")
+	JEMC301E("0301", "JobOutputArchive invocation error with job \"{0}\" ", MessageLevel.ERROR),
+	
+	/**
+	 *"Job \"{0}\" has been archived", MessageLevel.INFO
+	 */
+	@Description(explanation = "It informs about job has been correctly archived.")
+	JEMC302I("0302", "Job \"{0}\" has been archived", MessageLevel.INFO);
 	
 	/**
 	 * The {@link Message} created in the constructor corresponding to an

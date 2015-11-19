@@ -1,56 +1,99 @@
 <project name="jem-distribution" default="build-distribution" basedir=".">
-	<import file="../JEM/build.xml" />
-	<import file="../JEM-gwt/build.xml" />
-	<import file="../JEM-junit/build.xml" />
+	
+	<import file="build-properties.xml" />
+	
+	<import file="${jem.core.build.file.location}" optional="true"/>
+	<import file="${jem.gwt.build.file.location}"  optional="true"/>
+	<import file="${jem.jcl-ant.build.file.location}"  optional="true"/>
+	<import file="${jem.jcl-springbatch.build.file.location}"  optional="true"/>
+	<import file="${jem.jbpm.build.file.location}"  optional="true"/>
+	<import file="${jem.junit.build.file.location}"  optional="true"/>
 	
 	<!-- clean directories -->
 	<target name="clean">
-		<delete dir="${distribute.directory}" includeemptydirs="true" />
-		<delete dir="${working.directory}" includeemptydirs="true" />
+		<delete dir="${jem.core.distribute.folder}" includeemptydirs="true" />
+		<delete dir="${jem.core.working.folder}" includeemptydirs="true" />
 	</target>
 
 	<!-- create directory needed to create distribution -->
-	<target name="make-directories" depends="clean">
-		<mkdir dir="${distribute.directory}" />
-		<mkdir dir="${working.jemhome.directory}" />
+	<target name="make-folders" depends="clean">
+		<mkdir dir="${jem.core.distribute.folder}" />
+		<mkdir dir="${jem.core.working.jemhome.folder}" />
 	</target>
 
-	<!-- compile JEM and JEM-gwt -->
-	<target name="compile-distribution" depends="make-directories">
-		<antcall target="compile-jem" />
-		<antcall target="gwtc" />
-		<antcall target="compile-jem-junit" />
-		<!-- copy jem.jar to JEM-gwt -->
-		<copy file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" todir="${jem.workspace}/${jem-gwt.library.directory}" />
-		<!-- copy jem.jar and jem-gwt.jar to JEM-plugin  -->
-		<copy file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" todir="${jem.workspace}/JEM-plugin/lib" />
-		<copy file="${jem.workspace}/${jem-gwt.library.directory}/${jem-gwt.jar.name}" todir="${jem.workspace}/JEM-plugin/lib" />		
-		<!-- copy jem-jnuit.jar to JEM/lib -->
-		<copy file="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" todir="${jem.workspace}/${jem.library.directory}" />
-	</target>
-
-	<!-- copy necessary files for distribution -->
-	<target name="create-distribution" depends="compile-distribution">
+	<!-- compile JEM core -->
+	<target name="compile-core">
+		<antcall target="core-compile" />
 		<!-- jem home directory -->
-		<copy todir="${working.jemhome.directory}">
-			<fileset dir="${jem.workspace}/${resources.directory}/jemhome" />
+		<copy todir="${jem.core.working.jemhome.folder}">
+			<fileset dir="${jem.core.resources.folder}/jemhome" />
 		</copy>
 		<!-- jem library directory -->
-		<copy todir="${working.jemhome.directory}/lib">
-			<fileset dir="${jem.workspace}/${jem.library.directory}">
+		<copy todir="${jem.core.working.jemhome.library.folder}">
+			<fileset dir="${jem.core.library.folder}">
 				<exclude name="junit/" />
 			</fileset>
 		</copy>
+	</target>
+
+	<!-- compile JEM gwt -->
+	<target name="compile-gwt" if="gwt" depends="gwt-exists">
+		<antcall target="gwt-compile" />
 		<!-- jem-gwt war -->
-		<copy todir="${working.jemhome.directory}/src/gfs/envname/web/war">
-			<fileset dir="${jem.workspace}/${jem-gwt.web.directory}">
+		<copy todir="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war">
+			<fileset dir="${jem.gwt.web.folder}">
 				<exclude name="WEB-INF/classes/**" />
 				<exclude name="WEB-INF/lib/servlet-api.jar" />
 			</fileset>
 		</copy>
+	</target>
+
+	<!-- compile JEM JBPM -->
+	<target name="compile-jbpm" if="jbpm" depends="jbpm-exists">
+		<antcall target="build-distribution-jbpm" />
+		<unzip src="${jem.jbpm.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jbpm"/>
+	</target>
+	
+	<!-- compile JEM JCL ant -->
+	<target name="compile-jcl-ant" if="jcl-ant" depends="jcl-ant-exists">
+		<antcall target="build-distribution-jcl-ant" />
+		<unzip src="${jem.jcl-ant.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jcl-ant"/>
+	</target>
+
+	<!-- compile JEM JCL springbatch -->
+	<target name="compile-jcl-springbatch" if="jcl-springbatch" depends="jcl-springbatch-exists">
+		<antcall target="build-distribution-jcl-springbatch" />
+		<unzip src="${jem.jcl-springbatch.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jcl-springbatch"/>
+	</target>
+
+	<!-- compile JEM junit -->
+	<target name="compile-junit" if="junit" depends="junit-exists">
+		<antcall target="junit-compile" />
+		<copy file="${jem.junit.jar.file.location}" todir="${jem.core.working.jemhome.library.folder}" />
+	</target>
+
+	<!-- compile JEM plugin -->
+	<target name="compile-plugin" if="plugin" depends="plugin-exists">
+		<delete file="${jem.plugin.library.folder}/${jem.core.jar.file}" />
+		<copy file="${jem.core.jar.file.location}" todir="${jem.plugin.library.folder}" />
+	</target>
+
+	<!-- compile JEM and JEM-gwt -->
+	<target name="compile-distribution" depends="make-folders">
+		<antcall target="compile-core" />
+		<antcall target="compile-gwt" />
+		<antcall target="compile-jcl-ant" />
+		<antcall target="compile-jcl-springbatch" />
+		<antcall target="compile-jbpm" />
+		<antcall target="compile-junit" />
+		<antcall target="compile-plugin" />
+	</target>
+
+	<!-- copy necessary files for distribution -->
+	<target name="create-distribution" depends="compile-distribution">
 		<!-- CREATE META-INF and manifest for war -->
-		<mkdir dir="${working.jemhome.directory}/src/gfs/envname/web/war/META-INF" />
-		<manifest file="${working.jemhome.directory}/src/gfs/envname/web/war/META-INF/MANIFEST.MF">
+		<mkdir dir="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war/META-INF" />
+		<manifest file="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war/META-INF/MANIFEST.MF">
 			<section name="JEM_the_BEE">
 				<attribute name="Jem_version" value="${jem.version}" />
 				<attribute name="Built-By" value="${jem.built.by}" />
@@ -58,17 +101,12 @@
 			</section>
 		</manifest>
 		<!-- COPY licences files -->
-		<copy file="${jem.workspace}/${license.file}" todir="${working.jemhome.directory}" />
+		<copy file="COPYING" todir="${jem.core.working.jemhome.folder}" />
 		<!-- create zip file containing the distribution -->
-		<zip destfile="${distribute.directory}/${zip.name}" basedir="${working.directory}" />
+		<zip destfile="${jem.core.zip.file.location}" basedir="${jem.core.working.folder}" />
 	</target>
 
 	<target name="build-distribution">
-		<antcall target="create-distribution">
-			<param name="jem.workspace" value="${jem.workspace}" />
-			<param name="distribute.directory" value="${jem.workspace}/${jem.distribute.directory}" />
-			<param name="working.directory" value="${jem.workspace}/${jem.working.directory}" />
-			<param name="working.jemhome.directory" value="${jem.workspace}/${jem.working.directory}/jemhome" />
-		</antcall>
+		<antcall target="create-distribution"/>
 	</target>
 </project>

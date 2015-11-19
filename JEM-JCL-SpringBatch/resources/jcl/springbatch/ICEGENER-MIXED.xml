@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+		<beans:property name="jobName" value="ICEGENER-MIXED" />
+		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="lockingScope" value="job" />
+	</beans:bean>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+	<beans:bean id="icegener-1" class="org.pepstock.jem.springbatch4.tasks.utilities.CopyTasklet">
+		<beans:property name="dataDescriptionList">
+				<beans:list>
+					<beans:ref bean="INPUT-1"/>
+					<beans:ref bean="OUTPUT-1"/>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="delegateItemReader"
+		class="org.pepstock.jem.springbatch4.items.SimpleFileItemReader"></beans:bean>
+
+	<beans:bean id="delegateItemWriter"
+		class="org.pepstock.jem.springbatch4.items.SimpleFileItemWriter"></beans:bean>
+
+	<beans:bean id="itemReader"
+		class="org.pepstock.jem.springbatch4.items.DataDescriptionItemReader">
+		<beans:property name="dataDescription">
+			<beans:ref bean="INPUT"></beans:ref>
+		</beans:property>
+		<beans:property name="delegate" ref="delegateItemReader"></beans:property>
+	</beans:bean>
+
+	<beans:bean id="itemWriter"
+		class="org.pepstock.jem.springbatch4.items.DataDescriptionItemWriter">
+		<beans:property name="dataDescription">
+			<beans:ref bean="OUTPUT"></beans:ref>
+		</beans:property>
+		<beans:property name="delegate" ref="delegateItemWriter"></beans:property>
+	</beans:bean>
+	
+	<!-- 
+		Data description list
+		INPUT file
+	 -->
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+		<beans:property name="name" value="INPUT" />
+		<beans:property name="disposition" value="SHR" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="name" value="gdg/jemtest(0)" />
+			        </beans:bean>
+			        <beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="text" value="
+			        	These records are added to OUTPUT file:
+						Record1 test abcdefghjklilmnopqrstuvzxw
+						Record2 test abcdefghjklilmnopqrstuvzxw
+						Record3 test abcdefghjklilmnopqrstuvzxw" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT file
+	 -->
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="name" value="gdg/jemtest(1)" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		INPUT-1 file
+	 -->
+	<beans:bean id="INPUT-1" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+		<beans:property name="name" value="INPUT" />
+		<beans:property name="disposition" value="SHR" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="name" value="gdg/jemtest(0)" />
+			        </beans:bean>
+			        <beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="text" value="
+			        	These records are added to OUTPUT file:
+						Record1 test abcdefghjklilmnopqrstuvzxw
+						Record2 test abcdefghjklilmnopqrstuvzxw
+						Record3 test abcdefghjklilmnopqrstuvzxw" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT-1 file
+	 -->
+	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        	<beans:property name="name" value="gdg/jemtest(2)" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		copy:  copy a GDG generation 0 in a new one
+	 -->
+	<job id="ICEGENER-MIXED">
+		<step id="copy" next="step1">
+			<tasklet>
+				<chunk reader="itemReader" writer="itemWriter"  commit-interval="10"/> 
+			</tasklet>
+		</step>
+		<step id="step1">
+			<tasklet ref="icegener-1" />
+		</step>
+		
+	</job>
+	
+</beans:beans>

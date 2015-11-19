@@ -1,46 +1,41 @@
-<project name="jem" default="compile-jem" basedir=".">
+<project name="jem" default="core-compile" basedir=".">
 	<!-- import properties -->
-	<import file="../JEM/build-properties.xml" />
+	<import file="build-properties.xml" />
 
 	<!-- clean project JEM -->
-	<target name="clean-jem">
-		<delete dir="${jem.workspace}/${jem.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
-		<delete file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" />
+	<target name="core-clean">
+		<delete dir="${jem.core.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.core.jar.file.location}" />
 	</target>
 
 	<!-- create directory needed -->
-	<target name="make-jem-directories" depends="clean-jem">
-		<mkdir dir="${jem.workspace}/${jem.classes.directory}" />
-		<copy todir="${jem.workspace}/${jem.classes.directory}">
-			<fileset dir="${jem.workspace}/${jem.source.directory}">
+	<target name="core-make-folders" depends="core-clean">
+		<mkdir dir="${jem.core.classes.folder}" />
+		<copy todir="${jem.core.classes.folder}">
+			<fileset dir="${jem.core.source.folder}">
 				<include name="**/*.xml" />
-				<include name="**/*.properties" />
 			</fileset>
 		</copy>
 	</target>
 
 	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
-	<target name="compile-jem" depends="make-jem-directories">
+	<target name="core-compile" depends="core-make-folders">
 		<echo>Java version: ${java.version}</echo>
-		<javac srcdir="${jem.workspace}/${jem.source.directory}" destdir="${jem.workspace}/${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+		<javac srcdir="${jem.core.source.folder}" destdir="${jem.core.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
-				<fileset dir="${jem.workspace}/${jem.library.directory}">
+				<pathelement path="${jem.core.classes.folder}" />
+				<fileset dir="${jem.core.library.folder}">
 					<include name="**/*.jar" />
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
-					
-					<!-- all SPRING-SOURCE jars are excluded from SPRING framework -->
-					<exclude name="spring/com.springsource.*.jar" />
-					<exclude name="spring/com.springsource.org.codehaus.*.jar" />
 				</fileset>
 				<pathelement path="${java.class.path}" />
 			</classpath>
 		</javac>
-		<jar jarfile="${jem.workspace}/${jem.library.directory}/${jem.jar.name}">
-			<fileset dir="${jem.workspace}/${jem.classes.directory}"/>
-			<fileset dir="${jem.workspace}/${jem.source.directory}" includes="**/*.xsd"/>
+		<jar jarfile="${jem.core.jar.file.location}">
+			<fileset dir="${jem.core.classes.folder}"/>
+			<fileset dir="${jem.core.source.folder}" includes="**/*.xsd"/>
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
@@ -48,7 +43,6 @@
 					<attribute name="Creation_time" value="${TODAY}" />
 				</section>
 			</manifest>
-			<metainf dir="${jem.workspace}/${jem.source.directory}/org/pepstock/jem/springbatch/xml" includes="spring.handlers, spring.schemas"/>
 		</jar>
 	</target>
 </project>

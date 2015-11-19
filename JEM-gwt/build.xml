@@ -1,34 +1,39 @@
-<project name="jem-web" default="gwtc" basedir=".">
+<project name="jem-web" default="gwt-compile" basedir=".">
 	<!-- import properties -->
-	<import file="../JEM-gwt/build-properties.xml" />
+	<import file="build-properties.xml" />
 
 	<!-- clean clean project JEM-gwt -->
-	<target name="clean-gwt">
-		<delete dir="${jem.workspace}/${jem.gwt.classes.directory}" includeemptydirs="true" />
-		<delete file="${jem.workspace}/${jem-gwt.library.directory}/${jem-gwt.jar.name}" />
-		<delete dir="${jem.workspace}/${jem-gwt.web.directory}/jem_gwt" includeemptydirs="true" />
-		<delete dir="${jem.workspace}/${jem-gwt.project.directory}/gwt-unitCache" includeemptydirs="true" />
-		<!--delete file="${jem.workspace}/${jem-gwt.library.directory}/${jem.jar.name}" /-->
+	<target name="gwt-clean">
+		<delete dir="${jem.gwt.classes.folder}" includeemptydirs="true" />
+		<delete file="${jem.gwt.jar.file.location}" />
+		<delete dir="${jem.gwt.folder}/gwt-unitCache" includeemptydirs="true" />
+		<delete dir="${jem.gwt.web.folder}/jem_gwt" includeemptydirs="true" />
 	</target>
 
 	<!-- create directory needed -->
-	<target name="make-gwt-directories" depends="clean-gwt">
-		<mkdir dir="${jem.workspace}/${jem.gwt.classes.directory}" />
+	<target name="gwt-make-folders" depends="gwt-clean">
+		<mkdir dir="${jem.gwt.classes.folder}" />
+	</target>
+	
+	<!-- copy JEM jar to JEM-JBPM -->
+	<target name="gwt-replace-core" depends="gwt-make-folders">
+		<delete file="${jem.gwt.web.library.folder}/${jem.core.jar.file}" />
+		<copy file="${jem.core.jar.file.location}" toFile="${jem.gwt.web.library.folder}/${jem.core.jar.file}" />
 	</target>
 
 	<!-- compile backend JEM-gwt -->
-	<target name="compile-backend" depends="make-gwt-directories">
-		<javac srcdir="${jem.workspace}/${jem-gwt.source.directory}" destdir="${jem.workspace}/${jem.gwt.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+	<target name="gwt-compile-backend" depends="gwt-replace-core">
+		<javac srcdir="${jem.gwt.source.folder}" destdir="${jem.gwt.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-dev.jar" />
-				<pathelement path="${jem.workspace}/${jem.library.directory}/gwt/gwt-user.jar" />
-				<fileset dir="${jem.workspace}/${jem-gwt.library.directory}">
+				<pathelement path="${jem.gwt.classes.folder}" />
+				<pathelement path="${jem.core.library.folder}/gwt/gwt-dev.jar" />
+				<pathelement path="${jem.core.library.folder}/gwt/gwt-user.jar" />
+				<fileset dir="${jem.gwt.web.library.folder}">
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
 		</javac>
-		<jar jarfile="${jem.workspace}/${jem-gwt.library.directory}/${jem-gwt.jar.name}" basedir="${jem.workspace}/${jem.gwt.classes.directory}" >
+		<jar jarfile="${jem.gwt.jar.file.location}" basedir="${jem.gwt.classes.folder}" >
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
@@ -40,26 +45,26 @@
 	</target>
 
 	<!-- compile the gwt application -->
-	<target name="gwtc" depends="compile-backend">
+	<target name="gwt-compile" depends="gwt-compile-backend">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
-				<pathelement location="${jem.workspace}/${jem-gwt.source.directory}" />
-				<pathelement location="${jem.workspace}/${jem.project.directory}/src" />
-				<pathelement location="${jem.workspace}/${jem.gwt.classes.directory}" />
-				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA.jar" />
-				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/validation-api-1.0.0.GA-sources.jar" />
-				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/gwt-dev.jar" />
-				<pathelement location="${jem.workspace}/${jem.library.directory}/gwt/gwt-user.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gflot-3.2.1.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-uploader-1.1.0.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/gwt-incubator-20101117-r1766.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-17.0.jar" />
-				<pathelement location="${jem.workspace}/${jem-gwt.library.directory}/guava-gwt-17.0.jar" />
-				<pathelement location="${jem.workspace}/${jem.classes.directory}" />
+				<pathelement location="${jem.gwt.source.folder}" />
+				<pathelement location="${jem.core.source.folder}" />
+				<pathelement location="${jem.gwt.classes.folder}" />
+				<pathelement location="${jem.core.library.folder}/gwt/validation-api-1.0.0.GA.jar" />
+				<pathelement location="${jem.core.library.folder}/gwt/validation-api-1.0.0.GA-sources.jar" />
+				<pathelement location="${jem.core.library.folder}/gwt/gwt-dev.jar" />
+				<pathelement location="${jem.core.library.folder}/gwt/gwt-user.jar" />
+				<pathelement location="${jem.gwt.web.library.folder}/gflot-3.2.1.jar" />
+				<pathelement location="${jem.gwt.web.library.folder}/gwt-uploader-1.1.0.jar" />
+				<pathelement location="${jem.gwt.web.library.folder}/gwt-incubator-20101117-r1766.jar" />
+				<pathelement location="${jem.gwt.web.library.folder}/guava-17.0.jar" />
+				<pathelement location="${jem.gwt.web.library.folder}/guava-gwt-17.0.jar" />
+				<pathelement location="${jem.gwt.classes.folder}" />
 			</classpath>
 			<jvmarg value="-Xmx700M" />
 			<arg line="-war" />
-			<arg value="${jem.workspace}/${jem-gwt.web.directory}" />
+			<arg value="${jem.gwt.web.folder}" />
 			<arg value="org.pepstock.jem.gwt.JEM_gwt" />
 		</java>
 	</target>

@@ -29,7 +29,34 @@
 				<!-- <property name="property.name" value="property.value"/> -->
 				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
 			</properties>
+			<classpath>
+				<pathElement>${JEM_HOME}/lib/plugins/jcl-ant/jem-jcl-ant.jar</pathElement>
+				<pathElement>${JEM_HOME}/lib/plugins/jcl-ant/ant/**</pathElement>
+			</classpath>
+			
 		</factory>
+		<factory className="org.pepstock.jem.ant.BashFactory" classLoader="ant">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+		<factory className="org.pepstock.jem.ant.WindowsCmdFactory" classLoader="ant">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+		<factory className="org.pepstock.jem.ant.PowerShellFactory" classLoader="ant">
+			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
+			<properties>
+				<!-- <property name="property.name" value="property.value"/> -->
+				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
+			</properties>
+		</factory>
+		
 		<factory className="org.pepstock.jem.springbatch.SpringBatchFactory">
 			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
 			<properties>
@@ -40,30 +67,15 @@
 				<property name="jem.jdbc.password" value="blahblah" />
 				<property name="jem.jdbc.type" value="mysql" /-->
 			</properties>
+			<classpath>
+				<pathElement>${JEM_HOME}/lib/plugins/jcl-springbatch/jem-jcl-springbatch.jar</pathElement>
+				<pathElement>${JEM_HOME}/lib/plugins/jcl-springbatch/spring/**</pathElement>
+			</classpath>
+			
 		</factory>
-		<factory className="org.pepstock.jem.ant.BashFactory">
-			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
-			<properties>
-				<!-- <property name="property.name" value="property.value"/> -->
-				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
-			</properties>
-		</factory>
-		<factory className="org.pepstock.jem.ant.WindowsCmdFactory">
-			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
-			<properties>
-				<!-- <property name="property.name" value="property.value"/> -->
-				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
-			</properties>
-		</factory>
-		<factory className="org.pepstock.jem.ant.PowerShellFactory">
-			<!-- if needed you can set property here and call them on JCL as ${property.name} -->
-			<properties>
-				<!-- <property name="property.name" value="property.value"/> -->
-				<!--  property name="jem.xslt.project.validator" value="${JEM_NODE}/policy/AntValidator.xslt" /-->
-			</properties>
-		</factory>
+		
 
-		<!--factory className="org.pepstock.jem.ant.GenericScriptFactory">
+		<!--factory className="org.pepstock.jem.ant.GenericScriptFactory" classLoader="ant">
 			<properties>
 				<property name="jem.generic.jcl.type" value=""/>
 				<property name="jem.generic.jcl.type.description" value=""/>
@@ -78,8 +90,8 @@
 			<properties>
 			</properties>
 			<classpath>
-				<pathElement>${jem.library}/jem-jbpm/jem-jbpm.jar</pathElement>
-				<pathElement>${jem.library}/jem-jbpm/jbpm/**</pathElement>
+				<pathElement>${JEM_HOME}/lib/plugins/jbpm/jem-jbpm.jar</pathElement>
+				<pathElement>${JEM_HOME}/lib/plugins/jbpm/jbpm/**</pathElement>
 			</classpath>
 		</factory-->
 	</factories>
@@ -92,11 +104,7 @@
 			</properties>
 		</listener>
 		
-		<listener
-			className="org.pepstock.jem.node.https.HttpJobListener">
-		</listener>
-		
-		<!-- listener className="org.pepstock.jem.listeners.JobOutputArchiveListener">
+		<!-- listener className="org.pepstock.jem.node.events.JobOutputArchiveListener">
 			<properties>
 				<property name="license" value="Pepstock_JEM_AntUtil.license" />
 				<property name="class" value="org.pepstock.jem.node.archive.DefaultJobOutputArchive" />

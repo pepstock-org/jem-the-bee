@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
  * 
@@ -38,7 +39,7 @@ public class SpringBatchXsdSubmit extends TestCase{
 	 */
 	public void testSpringBatchDatasource() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Datasource.xml"), "sb", true,
+				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Datasource.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -51,7 +52,7 @@ public class SpringBatchXsdSubmit extends TestCase{
 	 */
 	public void testSpringBatchSimple() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Simple.xml"), "sb", true,
+				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Simple.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -64,7 +65,7 @@ public class SpringBatchXsdSubmit extends TestCase{
 	 */
 	public void testSpringBatchReader() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Reader.xml"), "sb", true,
+				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Reader.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -77,7 +78,7 @@ public class SpringBatchXsdSubmit extends TestCase{
 	 */
 	public void testSpringBatchWriter() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Writer.xml"), "sb", true,
+				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_Writer.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -90,7 +91,7 @@ public class SpringBatchXsdSubmit extends TestCase{
 	 */
 	public void testSpringBatchReaderWriter() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_ReaderWriter.xml"), "sb", true,
+				.submit(getJcl("springbatch_xsd/TEST_JPPF_SBXSD_ReaderWriter.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);

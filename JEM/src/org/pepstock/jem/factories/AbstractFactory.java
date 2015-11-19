@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.util.Parser;
@@ -135,7 +134,7 @@ public abstract class AbstractFactory implements JemFactory {
 	}
 
 	
-	private File getFile(String fileName, String pathKey) throws BuildException{
+	private File getFile(String fileName, String pathKey) {
 		//checks if the filename is a absolute file name
 		// if absolute path is equals return the file 
 		// otherwise checks path

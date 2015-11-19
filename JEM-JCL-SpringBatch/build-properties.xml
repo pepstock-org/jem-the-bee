@@ -1,0 +1,11 @@
+<project name="jem-jcl-springbatch-properties" basedir=".">
+	<!-- import common properties -->
+	<import file="../JEM/build-common-properties.xml" />
+
+	<!--properties for JEM SpringBatch project -->
+	<property name="jem.jcl-springbatch.jar.file" value="jem-jcl-springbatch.jar" />
+	<property name="jem.jcl-springbatch.jar.file.location" location="${jem.jcl-springbatch.library.folder}/${jem.jcl-springbatch.jar.file}" />
+	<property name="jem.jcl-springbatch.distribute.folder" value="${jem.jcl-springbatch.folder}/dist" />
+	<property name="jem.jcl-springbatch.zip.file" value="jem-jcl-springbatch.zip" />
+	<property name="jem.jcl-springbatch.zip.file.location" location="${jem.jcl-springbatch.distribute.folder}/${jem.jcl-springbatch.zip.file}" />
+</project>

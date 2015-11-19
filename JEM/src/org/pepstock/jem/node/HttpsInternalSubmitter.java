@@ -16,6 +16,8 @@
 */
 package org.pepstock.jem.node;
 
+import java.util.Properties;
+
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.apache.http.protocol.HttpProcessor;
@@ -27,6 +29,8 @@ import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import org.apache.http.protocol.UriHttpRequestHandlerMapper;
 import org.pepstock.jem.node.configuration.ConfigurationException;
+import org.pepstock.jem.node.events.JobLifecycleListener;
+import org.pepstock.jem.node.https.HttpJobListener;
 import org.pepstock.jem.node.https.RequestListener;
 import org.pepstock.jem.node.https.SubmitHandler;
 import org.pepstock.jem.node.security.keystore.KeyStoreUtil;
@@ -53,6 +57,12 @@ public final class HttpsInternalSubmitter {
 	 * @throws ConfigurationException if any errors occurs
 	 */
 	public static void start(int port) throws ConfigurationException {
+		// creates the job listener
+		// to reply to nodejs script 
+		HttpJobListener jobListener = new HttpJobListener();
+		jobListener.init(new Properties());
+		Main.JOB_LIFECYCLE_LISTENERS_SYSTEM.addListener(JobLifecycleListener.class, jobListener);;
+		
         // Set up the HTTP protocol processor
         HttpProcessor httpproc = HttpProcessorBuilder.create()
                 .add(new ResponseDate())

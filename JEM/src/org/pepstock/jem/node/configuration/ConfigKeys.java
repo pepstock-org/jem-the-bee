@@ -289,6 +289,16 @@ public final class ConfigKeys {
 	public static final String CLASS_NAME_FIELD = "className";
 
 	/**
+	 * Alias for <code>classLoader</code> fields
+	 */
+	public static final String CLASS_LOADER_ATTRIBUTE_ALIAS = "classLoader";
+	
+	/**
+	 * Attribute name for <code>classLoader</code> fields
+	 */
+	public static final String CLASS_LOADER_FIELD = "classLoader";
+
+	/**
 	 * Alias used for database class to load
 	 */
 	public static final String DATABASE_ELEMENT = "database";

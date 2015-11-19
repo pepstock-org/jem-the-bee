@@ -1114,8 +1114,19 @@ public class StartUpSystem {
 			if (factory.getClassName() != null) {
 				String className = factory.getClassName();
 				try {
-					
-					ObjectAndClassPathContainer oacp = ClassLoaderUtil.loadAbstractPlugin(factory, PROPERTIES);
+					ObjectAndClassPathContainer oacp = null;
+					// gets teh link to another classloader
+					String classLoaderLink = factory.getClassLoader();
+					// if not null and already loaded
+					if (classLoaderLink != null && Main.FACTORIES_LIST.containsKey(classLoaderLink)){
+						// gets classloader from 
+						// the factory already loaded
+						JemFactory factoryLoaded = Main.FACTORIES_LIST.get(classLoaderLink);
+						oacp = ClassLoaderUtil.loadAbstractPlugin(factory, PROPERTIES, factoryLoaded.getClass().getClassLoader());
+					} else {
+						// loads the factory
+						oacp = ClassLoaderUtil.loadAbstractPlugin(factory, PROPERTIES);
+					}
 					Object objectFactory = oacp.getObject();
 
 					// check if it's a JemFactory. if not, exception occurs. if

@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
  * 
@@ -51,7 +52,7 @@ public class ReadWrite extends TestCase{
 	 */
 	public void testSBReadWrite() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_FTP_SB_READ_WRITE.xml"), "sb", true,
+				.submit(getJcl("TEST_FTP_SB_READ_WRITE.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);
@@ -64,7 +65,7 @@ public class ReadWrite extends TestCase{
 	 */
 	public void testSBXsdReadWrite() throws Exception {
 		Future<SubmitResult>future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_FTP_SBXSD_READ_WRITE.xml"), "sb", true,
+				.submit(getJcl("TEST_FTP_SBXSD_READ_WRITE.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);

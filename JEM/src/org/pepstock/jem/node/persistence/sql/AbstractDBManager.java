@@ -555,7 +555,7 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 	 * Called to hand over the control to DB manager to create additional SQL structure (like indexes).
 	 * @throws SQLException if any error occurs 
 	 */
-	private void checkAndCreateIndexes() throws SQLException {
+	private void checkAndCreateIndexes() {
 		// gets SQL container
 		SQLContainer container = getSqlContainer();
 		if (container.getIndexes().isEmpty()){
@@ -568,11 +568,13 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 			connection = DBPoolManager.getInstance().getConnection();
 			// gets metadata
 			DatabaseMetaData md = connection.getMetaData();
-			// gets a result set which searches for the table anme
+			// gets a result set which searches for the table name
 			rs = md.getIndexInfo(null, null, container.getTableName(), false, true);
+			System.err.println(rs);
 			// if result set is empty, it creates the table
 			while(!rs.next()) {
 				String indexName = rs.getString("INDEX_NAME");
+				System.err.println(indexName);
 				if (container.getIndexes().containsKey(indexName)){
 					container.getIndexes().remove(indexName);
 				}
@@ -584,6 +586,9 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 					DBPoolManager.getInstance().create(stmt);
 				}
 			}
+		} catch (SQLException e) {
+			// FIXME
+//			e.printStackTrace();
 		} finally {
 			// if result set is not null
 			// it closes the result set

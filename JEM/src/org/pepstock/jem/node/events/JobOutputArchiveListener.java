@@ -22,9 +22,9 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.ant.tasks.utilities.AntUtilMessage;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
+import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.archive.JobOutputArchive;
 import org.pepstock.jem.node.executors.ExecutionResult;
@@ -82,10 +82,10 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 				if (delete) {
 					purge(job);
 				} else {
-					LogAppl.getInstance().emit(AntUtilMessage.JEMZ045W, job.toString());	
+					LogAppl.getInstance().emit(NodeMessage.JEMC300W, job.toString());	
 				}
 			} catch (Exception re){
-				LogAppl.getInstance().emit(AntUtilMessage.JEMZ046E, re, job.toString());
+				LogAppl.getInstance().emit(NodeMessage.JEMC301E, re, job.toString());
 			}
 		}
 	}
@@ -103,14 +103,14 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
         try {
 	        objectTL = Class.forName(classParam).newInstance();
 			if (!(objectTL instanceof JobOutputArchive)) {
-				LogAppl.getInstance().emit(AntUtilMessage.JEMZ042E, classParam,JobOutputArchive.class.getName(), objectTL.getClass().getName());
+				LogAppl.getInstance().emit(NodeMessage.JEMC297E, classParam,JobOutputArchive.class.getName(), objectTL.getClass().getName());
 				return;
 			}
 			jobOutputArchive = (JobOutputArchive)objectTL;
-			LogAppl.getInstance().emit(AntUtilMessage.JEMZ043I, jobOutputArchive.getClass().getName());
+			LogAppl.getInstance().emit(NodeMessage.JEMC298I, jobOutputArchive.getClass().getName());
 			isInizialized = true;
         } catch (Exception e) {
-        	LogAppl.getInstance().emit(AntUtilMessage.JEMZ042E, e, classParam,JobOutputArchive.class.getName(), "null");
+        	LogAppl.getInstance().emit(NodeMessage.JEMC297E, e, classParam,JobOutputArchive.class.getName(), "null");
         }
 
 	}
@@ -135,9 +135,9 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 			ExecutorService executorService = Main.getHazelcast().getExecutorService();
 			task.setExecutionCallback(new GenericCallBack());
 			executorService.execute(task);
-			LogAppl.getInstance().emit(AntUtilMessage.JEMZ047I, job.toString());
+			LogAppl.getInstance().emit(NodeMessage.JEMC302I, job.toString());
 		} catch (Exception re){
-			LogAppl.getInstance().emit(AntUtilMessage.JEMZ044E, re, job.toString());
+			LogAppl.getInstance().emit(NodeMessage.JEMC299E, re, job.toString());
 		}
 	}
 

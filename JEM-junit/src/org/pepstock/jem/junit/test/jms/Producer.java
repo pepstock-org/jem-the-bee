@@ -18,10 +18,10 @@ package org.pepstock.jem.junit.test.jms;
 
 import java.util.concurrent.Future;
 
+import junit.framework.TestCase;
+
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
 
 /**
  * 

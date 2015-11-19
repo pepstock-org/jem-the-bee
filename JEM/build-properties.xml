@@ -1,11 +1,13 @@
 <project name="jem-properties" basedir=".">
 	<!-- import common properties -->
-	<import file="../JEM/build-common-properties.xml" />
+	<import file="build-common-properties.xml" />
 	<!-- properties for JEM project -->
-	<property name="license.file" value="${jem.project.directory}/COPYING" />
-	<property name="resources.directory" value="${jem.project.directory}/resources" />
-	<property name="jem.source.directory" value="${jem.project.directory}/src" />
-	<property name="jem.working.directory" value="${jem.project.directory}/work" />
-	<property name="jem.working.jemhome.directory" value="${jem.working.directory}/jemhome" />
-	<property name="jem.distribute.directory" value="${jem.project.directory}/dist" />
+	<property name="jem.core.resources.folder" value="${jem.core.folder}/resources" />
+	<property name="jem.core.working.folder" value="${jem.core.folder}/work" />
+	<property name="jem.core.working.jemhome.folder" value="${jem.core.working.folder}/jemhome" />
+	<property name="jem.core.working.jemhome.library.folder" value="${jem.core.working.jemhome.folder}/lib" />
+	<property name="jem.core.working.jemhome.library.plugins.folder" value="${jem.core.working.jemhome.library.folder}/plugins" />
+	<property name="jem.core.distribute.folder" value="${jem.core.folder}/dist" />
+	<property name="jem.core.zip.file" value="jem.zip" />
+	<property name="jem.core.zip.file.location" value="${jem.core.distribute.folder}/${jem.core.zip.file}" />
 </project>

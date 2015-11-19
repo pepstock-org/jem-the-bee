@@ -28,6 +28,8 @@ import java.io.Serializable;
 public class Factory extends AbstractPluginDefinition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	private String classLoader = null;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -36,4 +38,19 @@ public class Factory extends AbstractPluginDefinition implements Serializable{
 	public String toString() {
 		return "Factory [getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
 	}
+
+	/**
+	 * @return the classLoader
+	 */
+	public String getClassLoader() {
+		return classLoader;
+	}
+
+	/**
+	 * @param classLoader the classLoader to set
+	 */
+	public void setClassLoader(String classLoader) {
+		this.classLoader = classLoader;
+	}
+	
 }

@@ -1,67 +1,68 @@
-<project name="jem-junit" default="compile-jem-junit" basedir=".">
+<project name="jem-junit" default="junit-compile" basedir=".">
 	<!-- import properties -->
-	<import file="../JEM-junit/build-properties.xml" />
-
-	<taskdef resource="proguard/ant/task.properties" classpath="${jem.workspace}/${jem.library.directory}/proguard/proguard.jar" />
+	<import file="build-properties.xml" />
 
 	<!-- clean project JEM-junit -->
-	<target name="clean-jem-junit">
-		<delete file="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" />
-		<delete dir="${jem.workspace}/${jem-junit.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
+	<target name="junit-clean">
+		<delete file="${jem.junit.jar.file.location}" />
+		<delete dir="${jem.junit.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
 	</target>
 
 	<!-- create directory needed -->
-	<target name="make-jem-junit-directories" depends="clean-jem-junit">
-		<mkdir dir="${jem.workspace}/${jem-junit.classes.directory}" />
-		<mkdir dir="${jem.workspace}/${jem-junit.library.directory}" />
+	<target name="junit-make-folders" depends="junit-clean">
+		<mkdir dir="${jem.junit.classes.folder}" />
+		<mkdir dir="${jem.junit.library.folder}" />
 	</target>
 
 	<!-- compile JEM-junit project and create jem-junit.jar -->
-	<target name="compile-jem-junit" depends="make-jem-junit-directories">
-		<javac srcdir="${jem.workspace}/${jem-junit.source.directory}" destdir="${jem.workspace}/${jem-junit.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+	<target name="junit-compile" depends="junit-make-folders">
+		<javac srcdir="${jem.junit.source.folder}" destdir="${jem.junit.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
-				<pathelement path="${jem.workspace}/JEM-gwt/classes"/>
-				<pathelement path="${jem.workspace}/${jem-junit.classes.directory}" />
-				<pathelement path="${jem-jbpm.classes.directory}"/>
+				<pathelement path="${jem.core.classes.folder}" />
+				<pathelement path="${jem.gwt.classes.folder}"/>
+				<pathelement path="${jem.junit.classes.folder}" />
+				<pathelement path="${jem.jbpm.classes.folder}"/>
 				
-				<fileset dir="${jem.workspace}/${jem-junit.project.directory}/jppf/driver/lib">
+				<fileset dir="${jem.junit.folder}/jppf/driver/lib">
 					<include name="**/*.jar" />
 				</fileset>
-				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
+				<fileset dir="${jem.junit.folder}">
 					<include name="ftp/lib/*.jar" />
-				</fileset>
-				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
 					<include name="jms/lib/*.jar" />
-				</fileset>
-				<fileset dir="${jem.workspace}/${jem-junit.project.directory}">
 					<include name="jersey/*.jar" />
-				</fileset>
-				<fileset dir="${jem.workspace}/${jem.library.directory}">
+				</fileset>					
+				<fileset dir="${jem.core.library.folder}">	
 					<include name="lang/*.jar" />
 					<include name="commons-io/*.jar" />
 					<include name="xstream/*.jar" />
 					<include name="logging/*.jar" />
 					<include name="junit/*.jar" />
-					<include name="springbatch/*.jar" />
-					<include name="spring/*.jar" />
 					<include name="jppf/*.jar" />
 					<include name="jms/*.jar" />
 				</fileset>
-				<fileset dir="${jem-jbpm.library.directory}">
+				<fileset dir="${jem.jbpm.library.folder}">
 					<include name="*.jar" />
 				</fileset>
+				<fileset dir="${jem.jcl-springbatch.library.folder}">
+					<include name="*.jar" />
+					<include name="spring/*.jar" />
+				</fileset>	
+				<fileset dir="${jem.jcl-ant.library.folder}">
+					<include name="*.jar" />
+					<include name="ant/*.jar" />
+				</fileset>	
+				
 			</classpath>
 		</javac>
-		<copy todir="${jem.workspace}/${jem-junit.classes.directory}">
-			<fileset dir="${jem.workspace}/${jem-junit.project.directory}/src" includes="**/*.xml" />
-			<fileset dir="${jem.workspace}/${jem-junit.project.directory}/src" includes="**/*.bpmn" />
+		<copy todir="${jem.junit.classes.folder}">
+			<fileset dir="${jem.junit.source.folder}" includes="**/*.xml" />
+			<fileset dir="${jem.junit.source.folder}" includes="**/*.bpmn" />
 		</copy>
-		<jar jarfile="${jem.workspace}/${jem-junit.library.directory}/${jem-junit.jar.name}" basedir="${jem.workspace}/${jem-junit.classes.directory}">
-			<fileset dir="${jem.workspace}/${jem-junit.source.directory}" includes="**/*.key" />
+		<jar jarfile="${jem.junit.jar.file.location}" basedir="${jem.junit.classes.folder}">
+			<fileset dir="${jem.junit.source.folder}" includes="**/*.key" />
 			<manifest>
-				<section name="JEM_the_BEE">
+				<section name="JEM_the_BEE_JUNIT">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
