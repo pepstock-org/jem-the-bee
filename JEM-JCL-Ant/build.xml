@@ -20,21 +20,24 @@
 		</copy>
 	</target>
 	
-	<!-- copy JEM jar to JEM-JBPM -->
-	<target name="jcl-ant-replace-core" depends="jcl-ant-make-folders">
-		<delete file="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
-		<copy file="${jem.core.jar.file.location}" toFile="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
-	</target>
-
 	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
-	<target name="jcl-ant-compile" depends="jcl-ant-replace-core">
+	<target name="jcl-ant-compile" depends="jcl-ant-make-folders">
 		<javac srcdir="${jem.jcl-ant.source.folder}" destdir="${jem.jcl-ant.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
-				<pathelement path="${jem.jcl-ant.library.folder}/${jem.core.jar.file}" />
+				<pathelement path="${jem.core.classes.folder}" />
 				<pathelement path="${jem.jcl-ant.classes.folder}" />
+				<fileset dir="${jem.core.library.folder}">
+					<include name="cli/*.jar" />
+					<include name="commons-codec/*.jar" />
+					<include name="commons-io/*.jar" />
+					<include name="jppf/*.jar" />
+					<include name="lang/*.jar" />
+					<include name="xalan/*.jar" />
+					<include name="xstream/*.jar" />
+				</fileset>
 				<fileset dir="${jem.jcl-ant.library.folder}">
-					<include name="**/*.jar" />
+					<include name="ant/*.jar" />
 				</fileset>
 			</classpath>
 		</javac>

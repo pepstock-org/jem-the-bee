@@ -30,7 +30,6 @@
 				<fileset dir="${jem.junit.folder}">
 					<include name="ftp/lib/*.jar" />
 					<include name="jms/lib/*.jar" />
-					<include name="jersey/*.jar" />
 				</fileset>					
 				<fileset dir="${jem.core.library.folder}">	
 					<include name="lang/*.jar" />
@@ -40,6 +39,7 @@
 					<include name="junit/*.jar" />
 					<include name="jppf/*.jar" />
 					<include name="jms/*.jar" />
+					<include name="jersey/*.jar" />
 				</fileset>
 				<fileset dir="${jem.jbpm.library.folder}">
 					<include name="*.jar" />

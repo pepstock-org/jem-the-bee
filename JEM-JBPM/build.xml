@@ -16,19 +16,12 @@
 		<mkdir dir="${jem.jbpm.distribute.folder}" />
 	</target>
 	
-	<!-- copy JEM jar to JEM-JBPM -->
-	<target name="jbpm-replace-core" depends="jbpm-make-folders">
-		<delete file="${jem.jbpm.jar.file.location}" />
-		<copy file="${jem.core.jar.file.location}" toFile="${jem.jbpm.library.folder}/${jem.core.jar.file}" />
-	</target>
-
-
 	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
-	<target name="jbpm-compile" depends="jbpm-replace-core">
+	<target name="jbpm-compile" depends="jbpm-make-folders">
 		<javac srcdir="${jem.jbpm.source.folder}" destdir="${jem.jbpm.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
-				<pathelement path="${jem.jbpm.library.folder}/${jem.core.jar.file}" />
+				<pathelement path="${jem.core.classes.folder}" />
 				<pathelement path="${jem.jbpm.classes.folder}" />
 				<fileset dir="${jem.jbpm.library.folder}">
 					<include name="jbpm/*.jar" />

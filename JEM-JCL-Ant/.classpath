@@ -4,6 +4,20 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
+	<classpathentry kind="lib" path="/JEM/lib/cli/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-codec/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-compress-1.9.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-client.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/serializer.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xalan.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xml-apis.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xstream/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xstream/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-antlr.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-apache-bcel.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant-apache-bsf.jar"/>
@@ -27,18 +41,5 @@
 	<classpathentry kind="lib" path="lib/ant/ant-testutil.jar"/>
 	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry kind="lib" path="lib/ant/antcontrib.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec/commons-codec-1.9.jar"/>
-	<classpathentry kind="lib" path="lib/lang/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="lib/xstream/kxml2-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/xstream/xstream-1.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/cli/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/xalan/serializer.jar"/>
-	<classpathentry kind="lib" path="lib/xalan/xalan.jar"/>
-	<classpathentry kind="lib" path="lib/xalan/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/xalan/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-client.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-common-node.jar"/>
-	<classpathentry kind="lib" path="lib/jppf/jppf-common.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
