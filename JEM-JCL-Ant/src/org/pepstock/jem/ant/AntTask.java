@@ -37,8 +37,6 @@ import org.pepstock.jem.node.tasks.shell.JavaCommand;
 public class AntTask extends DefaultJobTask {
 
 	private static final long serialVersionUID = -1L;
-	
-	boolean useSU = false;
 
 	/**
 	 * Constructs the object save job instance to execute
@@ -48,8 +46,6 @@ public class AntTask extends DefaultJobTask {
 	 */
 	public AntTask(Job job, JemFactory factory) {
 		super(job, factory);
-
-
 	}
 	/**
 	 * Implementations of abstract method.<br>

@@ -88,7 +88,6 @@ public class SpringBatchFactory extends AbstractFactory {
 	public void init(Properties properties) throws JemException {
 		super.init(properties);
 		isJobRepositoryPersistent = DataSourceFactory.isJobRepositoryPersistent(properties);
-		System.err.println(isJobRepositoryPersistent);
 	}
 
 	/* (non-Javadoc)

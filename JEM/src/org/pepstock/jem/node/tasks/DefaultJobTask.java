@@ -59,11 +59,6 @@ public class DefaultJobTask extends JobTask {
 	private String persistencePath = "-D"+ConfigKeys.JEM_PERSISTENCE_PATH_NAME+"="+System.getProperty(ConfigKeys.JEM_PERSISTENCE_PATH_NAME);
 
 	/**
-	 * Environment variable to set classpath for JAVA 
-	 */
-	public static final String CLASSPATH_ENVIRONMENT_VARIABLE = "CLASSPATH";
-	
-	/**
 	 * Default constructor which calls the parent
 	 * @param job job to be executed
 	 * @param factory JEM factory which has created the job
