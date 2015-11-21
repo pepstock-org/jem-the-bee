@@ -29,11 +29,14 @@ public class WindowsCmdFactory extends ScriptFactory<WindowsScriptTask> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * public key which indicates the JCL type for ANT
+	 * default JCL type for ANT CMD
 	 */
 	public static final String CMD_TYPE = "cmd";
-	
-	private static final String CMD_TYPE_DESCRIPTION = "Windows Cmd script";
+
+	/**
+	 * default JCL description for ANT CMD
+	 */
+	public static final String CMD_TYPE_DESCRIPTION = "Windows Cmd script";
 	
 	private static final String CMD_COMMENT = "rem";
 	
@@ -42,6 +45,15 @@ public class WindowsCmdFactory extends ScriptFactory<WindowsScriptTask> {
 	private static final String CMD_END_TAG = "</JEM-CMD>";
 	
 	private static final String CMD_MODE = "batchfile";
+
+	/**
+	 * sets the default values of type and description
+	 */
+    public WindowsCmdFactory() {
+	    super();
+	    super.setType(CMD_TYPE);
+	    super.setTypeDescription(CMD_TYPE_DESCRIPTION);
+    }
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.ScriptFactory#getCommentCharSequence()
@@ -57,22 +69,6 @@ public class WindowsCmdFactory extends ScriptFactory<WindowsScriptTask> {
 	@Override
 	public Class<WindowsScriptTask> getAntTask() {
 		return WindowsScriptTask.class;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return CMD_TYPE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return CMD_TYPE_DESCRIPTION;
 	}
 
 	/* (non-Javadoc)

@@ -31,7 +31,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="JPPF" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
@@ -80,7 +80,7 @@
 		Data source for JPPF
 	 -->
 
-	<beans:bean id="datasource" class="org.pepstock.jem.springbatch4.tasks.DataSource">
+	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
 		<beans:property name="name" value="JUNIT_JDBC_JEM" />
 		<beans:property name="resource" value="JUNIT_JDBC_JEM" />
 	</beans:bean>	

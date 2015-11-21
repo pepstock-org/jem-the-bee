@@ -29,11 +29,14 @@ public class BashFactory extends ScriptFactory<BashScriptTask> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * public key which indicates the JCL type for ANT
+	 * default JCL type for ANT BASH
 	 */
 	public static final String BASH_TYPE = "bash";
-	
-	private static final String BASH_TYPE_DESCRIPTION = "Bash script";
+
+	/**
+	 * default JCL description for ANT BASH
+	 */
+	public static final String BASH_TYPE_DESCRIPTION = "Bash script";
 	
 	private static final String BASH_COMMENT = "#";
 	
@@ -42,6 +45,15 @@ public class BashFactory extends ScriptFactory<BashScriptTask> {
 	private static final String BASH_END_TAG = "</JEM-BASH>";
 	
 	private static final String BASH_MODE = "sh";
+	
+	/**
+	 * sets the default values of type and description
+	 */
+    public BashFactory() {
+	    super();
+	    super.setType(BASH_TYPE);
+	    super.setTypeDescription(BASH_TYPE_DESCRIPTION);
+    }
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.ant.ScriptFactory#getCommentCharSequence()
@@ -57,22 +69,6 @@ public class BashFactory extends ScriptFactory<BashScriptTask> {
 	@Override
 	public Class<BashScriptTask> getAntTask() {
 		return BashScriptTask.class;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return BASH_TYPE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return BASH_TYPE_DESCRIPTION;
 	}
 
 	/* (non-Javadoc)

@@ -31,7 +31,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="JPPF" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
@@ -121,12 +121,12 @@
 		Data description list
 		INPUT file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="INPUT" />
 		<beans:property name="disposition" value="SHR" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg/jemtest(0)" />
 			        </beans:bean>
 				</beans:list>
@@ -137,7 +137,7 @@
 		Data description list
 		OUTPUT-1 file
 	 -->
-	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="sysout" value="true" />
@@ -147,7 +147,7 @@
 		Data description list
 		OUTPUT-2 file
 	 -->
-	<beans:bean id="OUTPUT-2" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT-2" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="sysout" value="true" />
@@ -157,7 +157,7 @@
 		Data description list
 		OUTPUT-3 file
 	 -->
-	<beans:bean id="OUTPUT-3" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT-3" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="sysout" value="true" />
@@ -167,7 +167,7 @@
 		Data description list
 		OUTPUT-4 file
 	 -->
-	<beans:bean id="OUTPUT-4" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT-4" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="sysout" value="true" />

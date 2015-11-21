@@ -31,7 +31,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="JPPF" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
@@ -113,12 +113,12 @@
 		Data description list
 		INPUT file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="INPUT" />
 		<beans:property name="disposition" value="SHR" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg/jemtest(0)" />
 			        </beans:bean>
 				</beans:list>

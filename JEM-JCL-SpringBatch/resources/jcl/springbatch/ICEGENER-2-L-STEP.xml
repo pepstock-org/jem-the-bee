@@ -27,7 +27,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="ICEGENER-2" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="lockingScope" value="step" />
@@ -37,7 +37,7 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="icegener" class="org.pepstock.jem.springbatch4.tasks.utilities.CopyTasklet">
+	<beans:bean id="icegener" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 		<beans:property name="dataDescriptionList">
 				<beans:list>
 					<beans:ref bean="INPUT"/>
@@ -50,15 +50,15 @@
 		Data description list
 		INPUT file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="INPUT" />
 		<beans:property name="disposition" value="SHR" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg1/jemtest(0)" />
 			        </beans:bean>
-			        <beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        <beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="text" value="
 			        	These records are added to OUTPUT file:
 						Record1 test abcdefghjklilmnopqrstuvzxw
@@ -73,12 +73,12 @@
 		Data description list
 		OUTPUT file
 	 -->
-	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg1/jemtest(1)" />
           			</beans:bean>
 				</beans:list>

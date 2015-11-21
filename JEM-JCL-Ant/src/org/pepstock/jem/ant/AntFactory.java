@@ -53,21 +53,26 @@ public class AntFactory extends AbstractFactory {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * public key which indicates the JCL type for ANT
+	 * default JCL type for ANT
 	 */
 	public static final String ANT_TYPE = "ant";
-	
-	private static final String ANT_TYPE_DESCRIPTION = "Apache ANT";
+
+	/**
+	 * default JCL description for ANT
+	 */
+	public static final String ANT_TYPE_DESCRIPTION = "Apache ANT";
 
 	private static final String ANT_BASE_DIR = ".";
 	
 	private transient TransformerValidator validator = null;
 	
 	/**
-	 * Empty constructor. Does nothing
+	 * sets the default values of type and description
 	 */
 	public AntFactory() {
 		super();
+		super.setType(ANT_TYPE);
+		super.setTypeDescription(ANT_TYPE_DESCRIPTION);
 	}
 
 	@Override
@@ -103,7 +108,7 @@ public class AntFactory extends AbstractFactory {
 	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates JCL object setting the source code
 		Jcl jcl = new Jcl();
-		jcl.setType(ANT_TYPE);
+		jcl.setType(getType());
 		jcl.setContent(content);
 
 		// file reference to use to write JCL
@@ -296,26 +301,4 @@ public class AntFactory extends AbstractFactory {
 	public JobTask createJobTask(Job job) {
 		return new AntTask(job, this);
 	}
-
-	/**
-	 * Returns the type of this factory. This is unique key (value "ant" means
-	 * ANT) to search factory loaded during startup.
-	 * 
-	 * @see org.pepstock.jem.node.Main#FACTORIES_LIST
-	 * @see org.pepstock.jem.node.StartUpSystem#run()
-	 * @see org.pepstock.jem.factories.JemFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return ANT_TYPE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.factories.JemFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return ANT_TYPE_DESCRIPTION;
-	}
-
 }

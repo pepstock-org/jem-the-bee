@@ -31,7 +31,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="ABEND" />
 		<beans:property name="environment" value="TEST-Env" />
 		 <beans:property name="lockingScope" value="step"/>
@@ -43,7 +43,7 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="abend" class="org.pepstock.jem.springbatch4.tasks.utilities.AbendTasklet">
+	<beans:bean id="abend" class="org.pepstock.jem.springbatch.tasks.utilities.AbendTasklet">
 		<!-- beans:property name="bean" ref="jem.bean" /-->
 	</beans:bean>
 

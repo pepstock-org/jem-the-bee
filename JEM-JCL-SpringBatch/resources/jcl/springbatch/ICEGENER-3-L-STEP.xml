@@ -27,7 +27,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="ICEGENER-3" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="lockingScope" value="step" />
@@ -37,7 +37,7 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="icegener" class="org.pepstock.jem.springbatch4.tasks.utilities.CopyTasklet">
+	<beans:bean id="icegener" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 		<beans:property name="dataDescriptionList">
 				<beans:list>
 					<beans:ref bean="INPUT"/>
@@ -56,12 +56,12 @@
 		Data source for FTP
 	 -->
 
-	<beans:bean id="datasource" class="org.pepstock.jem.springbatch4.tasks.DataSource">
+	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
 		<beans:property name="name" value="localhost" />
 		<beans:property name="resource" value="FTPlocalhost" />
 		<beans:property name="properties">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.Property">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.Property">
 			        	<beans:property name="name" value="binary" />
 			        	<beans:property name="value" value="true" />
 			        </beans:bean>
@@ -75,12 +75,12 @@
 		Data description list
 		INPUT file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="INPUT" />
 		<beans:property name="disposition" value="SHR" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="Action.java" />
 			        	<beans:property name="datasource" value="localhost" />
 			        </beans:bean>
@@ -92,12 +92,12 @@
 		Data description list
 		OUTPUT file
 	 -->
-	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg1/jemtest(1)" />
           			</beans:bean>
 				</beans:list>

@@ -41,6 +41,10 @@ public abstract class AbstractFactory implements JemFactory {
 	private final Properties systemProperties = new Properties();
 
 	private Properties properties = null;
+
+	private String type = null;
+	
+	private String description = null;
 	
 	private boolean useSudo = false;
 	
@@ -66,7 +70,38 @@ public abstract class AbstractFactory implements JemFactory {
 		this.properties = properties;
 		useSudo = Parser.parseBoolean(properties.getProperty(JobTaskFactory.SWITCH_USER_KEY), false);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#getType()
+	 */
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#setType(java.lang.String)
+	 */
+	@Override
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#getTypeDescription()
+	 */
+	@Override
+	public String getTypeDescription() {
+		return description;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#setTypeDescription(java.lang.String)
+	 */
+	@Override
+	public void setTypeDescription(String description) {
+		this.description = description;
+	}
 
 	/**
 	 * Returns all properties configured for this factory
@@ -77,8 +112,6 @@ public abstract class AbstractFactory implements JemFactory {
 	public Properties getProperties() {
 		return properties;
 	}
-	
-
 
 	/**
 	 * @return the useSudo

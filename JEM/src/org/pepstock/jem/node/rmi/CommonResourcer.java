@@ -58,11 +58,11 @@ public interface CommonResourcer extends RmiObject {
 	Reference lookupReference(String jobId, String resourceType) throws RemoteException;
 	
 	/**
-	 * Returns the properties of the JEM factory plugin, identified by name.
-	 * @param type JEM factory type
+	 * Returns the properties of the JEM factory plugin, identified by jobId.
+	 * @param jobId jobId
 	 * @return the properties
 	 * @throws RemoteException if any error occurs
 	 */
-	Properties getJemFactoryProperties(String type) throws RemoteException;
+	Properties getJemFactoryProperties(String jobId) throws RemoteException;
 
 }

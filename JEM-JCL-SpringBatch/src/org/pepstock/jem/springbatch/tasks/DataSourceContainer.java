@@ -23,8 +23,8 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.pepstock.jem.node.tasks.InitiatorManager;
+import org.pepstock.jem.node.tasks.JobId;
 import org.pepstock.jem.springbatch.DataSourceFactory;
-import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
  * It contains the data source instance for job repository.It asks by RMI to JEM node to get
@@ -52,8 +52,9 @@ final class DataSourceContainer {
 	static synchronized void createInstances() throws RemoteException, UnknownHostException{
 		// creates the data source instance ONLY the first time 
 		if (DATASOURCE_INSTANCE == null){
+			
 			// gets by RMI of JCL factory properties
-			Properties jdbcProps = InitiatorManager.getCommonResourcer().getJemFactoryProperties(SpringBatchFactory.SPRINGBATCH_TYPE);
+			Properties jdbcProps = InitiatorManager.getCommonResourcer().getJemFactoryProperties(JobId.VALUE);
 			// creates a data source 
 			DATASOURCE_INSTANCE = DataSourceFactory.createDataSource(jdbcProps);
 		}

@@ -58,11 +58,14 @@ public class SpringBatchFactory extends AbstractFactory {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * JCL type for Springbatch
+	 * Default JCL type for Springbatch
 	 */
 	public static final String SPRINGBATCH_TYPE = "sb";
 
-	private static final String SPRINGBATCH_TYPE_DESCRIPTION = "Spring Batch";
+	/**
+	 * Default JCL description for Springbatch
+	 */
+	public static final String SPRINGBATCH_TYPE_DESCRIPTION = "Spring Batch";
 	
 	private transient SpringBatchJobLifecycleListener listener = null;
 	
@@ -71,9 +74,12 @@ public class SpringBatchFactory extends AbstractFactory {
 	private File jdbcJar = null;
 
 	/**
-	 * Empty constructor. Do nothing
+	 * sets the default values of type and description
 	 */
 	public SpringBatchFactory() {
+		super();
+		super.setType(SPRINGBATCH_TYPE);
+		super.setTypeDescription(SPRINGBATCH_TYPE_DESCRIPTION);
 	}
 
 	/*
@@ -136,7 +142,7 @@ public class SpringBatchFactory extends AbstractFactory {
 	public Jcl createJcl(String content, List<String> inputArguments) throws JclFactoryException {
 		// creates JCL object setting the source code
 		Jcl jcl = new Jcl();
-		jcl.setType(SPRINGBATCH_TYPE);
+		jcl.setType(getType());
 		jcl.setContent(content);
 
 		// check validation of content
@@ -306,28 +312,5 @@ public class SpringBatchFactory extends AbstractFactory {
 	@Override
 	public JobTask createJobTask(Job job) {
 		return  new SpringBatchTask(job, this, (isJobRepositoryPersistent && jdbcJar != null) ? jdbcJar.getAbsolutePath() : null);
-	}
-
-	/**
-	 * Returns the type of this factory. This is unique key (value "sb" means
-	 * SpringBatch) to search factory loaded during startup.
-	 * 
-	 * @see org.pepstock.jem.node.Main#FACTORIES_LIST
-	 * @see org.pepstock.jem.node.StartUpSystem#run()
-	 * @see org.pepstock.jem.factories.JemFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return SPRINGBATCH_TYPE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pepstock.jem.factories.JemFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return SPRINGBATCH_TYPE_DESCRIPTION;
 	}
 }

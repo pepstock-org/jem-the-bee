@@ -7,7 +7,7 @@
            http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
            http://www.springframework.org/schema/batch 
-           http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
            http://www.pepstock.org/schema/jem
            http://www.pepstock.org/schema/jem/jem.xsd">
 
@@ -36,7 +36,7 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="abend" class="org.pepstock.jem.springbatch4.tasks.utilities.AbendTasklet"/>
+	<beans:bean id="abend" class="org.pepstock.jem.springbatch.tasks.utilities.AbendTasklet"/>
 	
 	<!-- 
 		null: does nothing

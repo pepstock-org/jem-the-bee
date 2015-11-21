@@ -31,7 +31,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="LAUNCHER" />
 		<beans:property name="environment" value="TEST-Env" />
 	</beans:bean>
@@ -40,8 +40,8 @@
 		Tasklet Defintion
 	 -->
 
-	<beans:bean id="null" class="org.pepstock.jem.springbatch4.tasks.utilities.LauncherTasklet">
-		<beans:property name="className" value="org.pepstock.jem.springbatch4.tasks.utilities.NullTasklet" />
+	<beans:bean id="null" class="org.pepstock.jem.springbatch.tasks.utilities.LauncherTasklet">
+		<beans:property name="className" value="org.pepstock.jem.springbatch.tasks.utilities.NullTasklet" />
 		<beans:property name="arguments">
 				<beans:list>
 					<beans:value>argument1</beans:value>

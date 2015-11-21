@@ -74,10 +74,6 @@ public class GenericScriptFactory extends ScriptFactory<GenericShellScriptTask> 
 	// default mime type of script
 	private static final String DEFAULT_MODE = "batchfile";
 	
-	private String type = null;
-	
-	private String description = null;
-	
 	private String comment = null;
 	
 	private String beginTag = null;
@@ -94,26 +90,30 @@ public class GenericScriptFactory extends ScriptFactory<GenericShellScriptTask> 
 		// reads all properties
 		super.init(properties);
 		
-		// checks if type is present. It's mandatory
-		if (!getProperties().containsKey(GENERIC_JCL_TYPE_PROPERTY)){
-			throw new JemException(GENERIC_JCL_TYPE_PROPERTY+" is missing!");
-		} else {
-			type = getProperties().getProperty(GENERIC_JCL_TYPE_PROPERTY);
+		// checks if type is present. It's mandatory only if is not already set
+		if (super.getType() == null){
+			if (!getProperties().containsKey(GENERIC_JCL_TYPE_PROPERTY) || "".equalsIgnoreCase(getProperties().getProperty(GENERIC_JCL_TYPE_PROPERTY))){
+				throw new JemException(GENERIC_JCL_TYPE_PROPERTY+" is missing!");
+			} else {
+				super.setType(getProperties().getProperty(GENERIC_JCL_TYPE_PROPERTY));
+			}
 		}
-		// checks if type descritpion is present. It's mandatory
-		if (!getProperties().containsKey(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY)){
-			throw new JemException(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY+" is missing!");
-		} else {
-			description = getProperties().getProperty(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY);
+		// checks if type description is present. It's mandatory only if not set by config
+		if (super.getTypeDescription() == null){
+			if (!getProperties().containsKey(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY) || "".equalsIgnoreCase(getProperties().getProperty(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY))){
+				throw new JemException(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY+" is missing!");
+			} else {
+				super.setTypeDescription(getProperties().getProperty(GENERIC_JCL_TYPE_DESCRIPTION_PROPERTY));
+			}
 		}
 		// checks if comment chars are present. they are mandatory
-		if (!getProperties().containsKey(GENERIC_JCL_COMMENT_PROPERTY)){
+		if (!getProperties().containsKey(GENERIC_JCL_COMMENT_PROPERTY) || "".equalsIgnoreCase(getProperties().getProperty(GENERIC_JCL_COMMENT_PROPERTY))){
 			throw new JemException(GENERIC_JCL_COMMENT_PROPERTY+" is missing!");
 		} else {
 			comment = getProperties().getProperty(GENERIC_JCL_COMMENT_PROPERTY);
 		}
 		// checks if full command is present. It's mandatory
-		if (!getProperties().containsKey(GENERIC_COMMAND_PROPERTY)){
+		if (!getProperties().containsKey(GENERIC_COMMAND_PROPERTY)|| "".equalsIgnoreCase(getProperties().getProperty(GENERIC_COMMAND_PROPERTY))){
 			throw new JemException(GENERIC_COMMAND_PROPERTY+" is missing!");
 		} 
 
@@ -125,8 +125,8 @@ public class GenericScriptFactory extends ScriptFactory<GenericShellScriptTask> 
 			endTag = "</"+tag.toUpperCase()+">";
 		} else {
 			// default is JEM-[JCL type]
-			beginTag = "<JEM-"+type.toUpperCase()+">";
-			endTag = "</JEM-"+type.toUpperCase()+">";
+			beginTag = "<JEM-"+getType().toUpperCase()+">";
+			endTag = "</JEM-"+getType().toUpperCase()+">";
 		}
 	
 		// checks if mode is present otherwise it uses the default
@@ -167,22 +167,6 @@ public class GenericScriptFactory extends ScriptFactory<GenericShellScriptTask> 
 	@Override
 	public String getCommentCharSequence() {
 		return comment;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return type;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.ant.AntFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return description;
 	}
 
 	/* (non-Javadoc)

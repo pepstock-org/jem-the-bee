@@ -27,7 +27,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="WAIT" />
 		<beans:property name="environment" value="TEST-Env" />
 	</beans:bean>
@@ -37,7 +37,7 @@
 	 -->
 
 	<beans:bean id="wait"
-		class="org.pepstock.jem.springbatch4.tasks.utilities.WaitTasklet">
+		class="org.pepstock.jem.springbatch.tasks.utilities.WaitTasklet">
 		<beans:property name="seconds" value="100" />
 		<beans:property name="locks">
 			<beans:list>
@@ -47,7 +47,7 @@
 	</beans:bean>
 
 	<beans:bean id="LOCK"
-		class="org.pepstock.jem.springbatch4.tasks.Lock">
+		class="org.pepstock.jem.springbatch.tasks.Lock">
 		<beans:property name="name" value="semaforo" />
 	</beans:bean>
 

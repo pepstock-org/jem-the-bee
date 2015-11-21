@@ -247,7 +247,9 @@ public class Configuration {
 		xstream.alias(ConfigKeys.FACTORY_ALIAS, Factory.class);
 		xstream.aliasAttribute(Factory.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);
 		xstream.aliasAttribute(Factory.class, ConfigKeys.CLASS_LOADER_FIELD, ConfigKeys.CLASS_LOADER_ATTRIBUTE_ALIAS);
-
+		xstream.aliasAttribute(Factory.class, ConfigKeys.TYPE_FIELD, ConfigKeys.TYPE_ATTRIBUTE_ALIAS);
+		xstream.aliasAttribute(Factory.class, ConfigKeys.DESCRIPTION_FIELD, ConfigKeys.DESCRIPTION_ATTRIBUTE_ALIAS);
+		
 		xstream.processAnnotations(ClassPath.class);
 		xstream.alias(ConfigKeys.LISTENER_ALIAS, Listener.class);
 		xstream.aliasAttribute(Listener.class, ConfigKeys.CLASS_NAME_FIELD, ConfigKeys.CLASS_NAME_ATTRIBUTE_ALIAS);

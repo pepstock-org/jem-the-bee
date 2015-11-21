@@ -27,7 +27,7 @@
 		Jem Props
 	 -->
 
-	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch4.JemBean">
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
 		<beans:property name="jobName" value="ICEGENER-CHUNK" />
 		<beans:property name="environment" value="TEST-Env" />
 		<beans:property name="lockingScope" value="step" />
@@ -38,13 +38,13 @@
 	 -->
 
 	<beans:bean id="delegateItemReader"
-		class="org.pepstock.jem.springbatch4.items.SimpleFileItemReader"></beans:bean>
+		class="org.pepstock.jem.springbatch.items.SimpleFileItemReader"></beans:bean>
 
 	<beans:bean id="delegateItemWriter"
-		class="org.pepstock.jem.springbatch4.items.SimpleFileItemWriter"></beans:bean>
+		class="org.pepstock.jem.springbatch.items.SimpleFileItemWriter"></beans:bean>
 
 	<beans:bean id="itemReader"
-		class="org.pepstock.jem.springbatch4.items.DataDescriptionItemReader">
+		class="org.pepstock.jem.springbatch.items.DataDescriptionItemReader">
 		<beans:property name="dataDescription">
 			<beans:ref bean="INPUT"></beans:ref>
 		</beans:property>
@@ -52,7 +52,7 @@
 	</beans:bean>
 
 	<beans:bean id="itemWriter"
-		class="org.pepstock.jem.springbatch4.items.DataDescriptionItemWriter">
+		class="org.pepstock.jem.springbatch.items.DataDescriptionItemWriter">
 		<beans:property name="dataDescription">
 			<beans:ref bean="OUTPUT"></beans:ref>
 		</beans:property>
@@ -60,7 +60,7 @@
 	</beans:bean>
 
 	<beans:bean id="itemWriter-1"
-		class="org.pepstock.jem.springbatch4.items.DataDescriptionItemWriter">
+		class="org.pepstock.jem.springbatch.items.DataDescriptionItemWriter">
 		<beans:property name="dataDescription">
 			<beans:ref bean="OUTPUT-1"></beans:ref>
 		</beans:property>
@@ -70,15 +70,15 @@
 		Data description list
 		INPUT file
 	 -->
-	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="INPUT" />
 		<beans:property name="disposition" value="SHR" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg/jemtest(0)" />
 			        </beans:bean>
-			        <beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+			        <beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="text" value="
 			        	These records are added to OUTPUT file:
 						Record1 test abcdefghjklilmnopqrstuvzxw
@@ -93,24 +93,24 @@
 		Data description list
 		OUTPUT file
 	 -->
-	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg/jemtest(1)" />
           			</beans:bean>
 				</beans:list>
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch4.tasks.DataDescription">
+	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch.tasks.DataDescription">
 		<beans:property name="name" value="OUTPUT" />
 		<beans:property name="disposition" value="NEW" />
 		<beans:property name="datasets">
 				<beans:list>
-					<beans:bean class="org.pepstock.jem.springbatch4.tasks.DataSet">
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
 			        	<beans:property name="name" value="gdg/jemtest(2)" />
           			</beans:bean>
 				</beans:list>

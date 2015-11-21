@@ -1137,6 +1137,16 @@ public class StartUpSystem {
 					if (objectFactory instanceof JemFactory) {
 						JemFactory jf = (JemFactory) objectFactory;
 
+						// sets the type if has been specified into config file
+						if (factory.getType() != null && !"".equalsIgnoreCase(factory.getType().trim())){
+							jf.setType(factory.getType());
+						}
+
+						// sets the type description if has been specified into config file
+						if (factory.getDescription() != null && !"".equalsIgnoreCase(factory.getDescription().trim())){
+							jf.setTypeDescription(factory.getDescription());
+						}
+						
 						// gets properties defined. If not empty, substitutes
 						// the value of property with variables
 						Properties propsOfFactory = factory.getProperties();
