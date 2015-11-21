@@ -1,36 +1,55 @@
 <project name="jem-junit" default="junit-compile" basedir=".">
-	<!-- import properties -->
+	<!--
+	Builds the JEM JUNIT project, JEN test cases 
+	-->
+	<!-- 
+	Import JEM JUNIT properties 
+	-->
 	<import file="build-properties.xml" />
 
-	<!-- clean project JEM-junit -->
+	<!-- 
+	Cleans the classes folder and JEM junit jar file if exists
+	-->
 	<target name="junit-clean">
 		<delete file="${jem.junit.jar.file.location}" />
 		<delete dir="${jem.junit.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
 	</target>
 
-	<!-- create directory needed -->
+	<!-- 
+	Creates the classes and library folder
+	-->
 	<target name="junit-make-folders" depends="junit-clean">
 		<mkdir dir="${jem.junit.classes.folder}" />
 		<mkdir dir="${jem.junit.library.folder}" />
 	</target>
 
-	<!-- compile JEM-junit project and create jem-junit.jar -->
+	<!-- 
+	Compiles JEM junit project and creates the JAR file of JEM project setting the manifest
+	with JEM information
+	The compiling phase is linked to all the other JEM projects
+	-->
 	<target name="junit-compile" depends="junit-make-folders">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation -->
 		<javac srcdir="${jem.junit.source.folder}" destdir="${jem.junit.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
+				<!-- links all classes folder of all other JEM projects -->
 				<pathelement path="${jem.core.classes.folder}" />
 				<pathelement path="${jem.gwt.classes.folder}"/>
 				<pathelement path="${jem.junit.classes.folder}" />
 				<pathelement path="${jem.jbpm.classes.folder}"/>
-				
+
+				<!-- links all jars of the SERVERS part of the framework, present into JEM junit projects -->
 				<fileset dir="${jem.junit.folder}/jppf/driver/lib">
 					<include name="**/*.jar" />
 				</fileset>
 				<fileset dir="${jem.junit.folder}">
 					<include name="ftp/lib/*.jar" />
 					<include name="jms/lib/*.jar" />
-				</fileset>					
+				</fileset>
+				<!-- links jars located into JEM core project -->
 				<fileset dir="${jem.core.library.folder}">	
 					<include name="lang/*.jar" />
 					<include name="commons-io/*.jar" />
@@ -41,31 +60,36 @@
 					<include name="jms/*.jar" />
 					<include name="jersey/*.jar" />
 				</fileset>
+				<!-- links jars located into JEM JBPM core project -->
 				<fileset dir="${jem.jbpm.library.folder}">
 					<include name="*.jar" />
 				</fileset>
+				<!-- links jars located into JEM SPRINGBATCH core project -->
 				<fileset dir="${jem.jcl-springbatch.library.folder}">
 					<include name="*.jar" />
 					<include name="spring/*.jar" />
 				</fileset>	
+				<!-- links jars located into JEM ANT core project -->
 				<fileset dir="${jem.jcl-ant.library.folder}">
 					<include name="*.jar" />
 					<include name="ant/*.jar" />
 				</fileset>	
-				
 			</classpath>
 		</javac>
+		<!-- copies all JCLs into classes sot hat they are available searching from classpath -->
 		<copy todir="${jem.junit.classes.folder}">
 			<fileset dir="${jem.junit.source.folder}" includes="**/*.xml" />
 			<fileset dir="${jem.junit.source.folder}" includes="**/*.bpmn" />
 		</copy>
+		<!-- Creates the JAR file adding the classes folder and adding the manifest part -->
 		<jar jarfile="${jem.junit.jar.file.location}" basedir="${jem.junit.classes.folder}">
 			<fileset dir="${jem.junit.source.folder}" includes="**/*.key" />
 			<manifest>
-				<section name="JEM_the_BEE_JUNIT">
+				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-junit" />
 				</section>
 			</manifest>
 		</jar>

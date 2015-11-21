@@ -1,14 +1,25 @@
 <project name="jem" default="core-compile" basedir=".">
-	<!-- import properties -->
+	<!--
+	Builds the JEM project, core of JEM the BEE
+	-->
+	<!-- 
+	Import JEM properties 
+	-->
 	<import file="build-properties.xml" />
 
-	<!-- clean project JEM -->
+	<!-- 
+	Cleans the classes and removes the jar file of JEM project 
+	-->
 	<target name="core-clean">
 		<delete dir="${jem.core.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
 		<delete file="${jem.core.jar.file.location}" />
 	</target>
 
-	<!-- create directory needed -->
+	<!-- 
+	Creates the classes folder and copies the XML files (for resources definitions)
+	from the source to classes folder because they are available 
+	into classpath at runtime
+	-->
 	<target name="core-make-folders" depends="core-clean">
 		<mkdir dir="${jem.core.classes.folder}" />
 		<copy todir="${jem.core.classes.folder}">
@@ -18,29 +29,35 @@
 		</copy>
 	</target>
 
-	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
+	<!-- 
+	Compile JEM project and creates the JAR file of JEM project setting the manifest
+	with JEM information
+	-->
 	<target name="core-compile" depends="core-make-folders">
+		<!-- display java version -->
 		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation -->
 		<javac srcdir="${jem.core.source.folder}" destdir="${jem.core.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
 				<pathelement path="${jem.core.classes.folder}" />
+				<!-- All necessary libraries are in the lib folder but removes from library the GWT part -->
 				<fileset dir="${jem.core.library.folder}">
 					<include name="**/*.jar" />
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
 				</fileset>
-				<pathelement path="${java.class.path}" />
 			</classpath>
 		</javac>
+		<!-- Creates the JAR file adding the classes folder and adding the mnifest part -->
 		<jar jarfile="${jem.core.jar.file.location}">
 			<fileset dir="${jem.core.classes.folder}"/>
-			<fileset dir="${jem.core.source.folder}" includes="**/*.xsd"/>
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-core" />
 				</section>
 			</manifest>
 		</jar>

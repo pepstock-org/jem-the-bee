@@ -1,7 +1,18 @@
 <project name="jem-distribution" default="build-distribution" basedir=".">
-	
+	<!-- 
+	This file contains all steps to build all exisisted JEM projects into workspace.
+	The result is a zip file with the distribution of JEM. 
+	Only JEM project MUST be present
+	-->	
+	<!-- 
+	Imports the properties of JEM core project which will include also the common ones.
+	-->	
 	<import file="build-properties.xml" />
 	
+	<!-- 
+	Imports all build files of all projects. It uses the "optional=true" attribute
+	because if a project doesn't exists, the build must continue, skipping the missing projects.
+	-->	
 	<import file="${jem.core.build.file.location}" optional="true"/>
 	<import file="${jem.gwt.build.file.location}"  optional="true"/>
 	<import file="${jem.jcl-ant.build.file.location}"  optional="true"/>
@@ -9,26 +20,35 @@
 	<import file="${jem.jbpm.build.file.location}"  optional="true"/>
 	<import file="${jem.junit.build.file.location}"  optional="true"/>
 	
-	<!-- clean directories -->
+	<!-- 
+	Cleans folders which are used to put the working directory to zip into a file 
+	-->
 	<target name="clean">
 		<delete dir="${jem.core.distribute.folder}" includeemptydirs="true" />
 		<delete dir="${jem.core.working.folder}" includeemptydirs="true" />
 	</target>
 
-	<!-- create directory needed to create distribution -->
+	<!-- 
+	Creates folders which are used to put the working directory to zip into a file 
+	-->
 	<target name="make-folders" depends="clean">
 		<mkdir dir="${jem.core.distribute.folder}" />
 		<mkdir dir="${jem.core.working.jemhome.folder}" />
 	</target>
 
-	<!-- compile JEM core -->
+	<!-- 
+	Calls the compile target of JEM core
+	There is not dependency because 
+	JEM project MUST be present
+	-->
 	<target name="compile-core">
+		<!-- calls JEM core compile target of build.xml fot that project-->
 		<antcall target="core-compile" />
-		<!-- jem home directory -->
+		<!-- copies all resources which contain teh configuration files -->
 		<copy todir="${jem.core.working.jemhome.folder}">
 			<fileset dir="${jem.core.resources.folder}/jemhome" />
 		</copy>
-		<!-- jem library directory -->
+		<!-- copies all libraries to the working folder, without JUNIT ones -->
 		<copy todir="${jem.core.working.jemhome.library.folder}">
 			<fileset dir="${jem.core.library.folder}">
 				<exclude name="junit/" />
@@ -36,10 +56,16 @@
 		</copy>
 	</target>
 
-	<!-- compile JEM gwt -->
+	<!-- 
+	Calls the compile target of JEM GWT 
+	This targeet is executing ONLY if the JEM-gwt project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-gwt" if="gwt" depends="gwt-exists">
+		<!-- calls JEM GWT compile target of build.xml fot that project-->
 		<antcall target="gwt-compile" />
-		<!-- jem-gwt war -->
+		<!-- copies all web folder of JEM gwt to the working folder -->
 		<copy todir="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war">
 			<fileset dir="${jem.gwt.web.folder}">
 				<exclude name="WEB-INF/classes/**" />
@@ -48,37 +74,74 @@
 		</copy>
 	</target>
 
-	<!-- compile JEM JBPM -->
+	<!-- 
+	Calls the compile target of JEM JBPM 
+	This targeet is executing ONLY if the JEM-jbpm project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-jbpm" if="jbpm" depends="jbpm-exists">
+		<!-- calls JEM JBPM compile target of build.xml fot that project-->
 		<antcall target="build-distribution-jbpm" />
+		<!-- unzip the distribution file of the plugin into the working folder -->
 		<unzip src="${jem.jbpm.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jbpm"/>
 	</target>
 	
-	<!-- compile JEM JCL ant -->
+	<!-- 
+	Calls the compile target of JEM jcl ANT 
+	This targeet is executing ONLY if the JEM-jcl-ant project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-jcl-ant" if="jcl-ant" depends="jcl-ant-exists">
+		<!-- calls JEM jcl-ant compile target of build.xml fot that project-->
 		<antcall target="build-distribution-jcl-ant" />
+		<!-- unzip the distribution file of the plugin into the working folder -->
 		<unzip src="${jem.jcl-ant.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jcl-ant"/>
 	</target>
 
-	<!-- compile JEM JCL springbatch -->
+	<!-- 
+	Calls the compile target of JEM jcl SPRINGBATCH 
+	This targeet is executing ONLY if the JEM-jcl-springbatch project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-jcl-springbatch" if="jcl-springbatch" depends="jcl-springbatch-exists">
+		<!-- calls JEM jcl-springbatch compile target of build.xml fot that project-->
 		<antcall target="build-distribution-jcl-springbatch" />
+		<!-- unzip the distribution file of the plugin into the working folder -->
 		<unzip src="${jem.jcl-springbatch.zip.file.location}" dest="${jem.core.working.jemhome.library.plugins.folder}/jcl-springbatch"/>
 	</target>
 
-	<!-- compile JEM junit -->
+	<!-- 
+	Calls the compile target of JEM junit 
+	This targeet is executing ONLY if the JEM-junit project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-junit" if="junit" depends="junit-exists">
+		<!-- calls JEM junit compile target of build.xml fot that project-->
 		<antcall target="junit-compile" />
+		<!-- copies junit jar to the working folder -->
 		<copy file="${jem.junit.jar.file.location}" todir="${jem.core.working.jemhome.library.folder}" />
 	</target>
 
-	<!-- compile JEM plugin -->
+	<!-- 
+	Calls the actions for JEM eclipse plugin 
+	This targeet is executing ONLY if the JEM-plugin project is into workspace.
+	the "if" attributes check if the property exists after calling the target
+	which tests if the folder of project exists 
+	-->
 	<target name="compile-plugin" if="plugin" depends="plugin-exists">
+		<!-- removes the old file of JEM core from plugin lib folder -->
 		<delete file="${jem.plugin.library.folder}/${jem.core.jar.file}" />
+		<!-- copies the new JEM core file into plugin lib folder -->
 		<copy file="${jem.core.jar.file.location}" todir="${jem.plugin.library.folder}" />
 	</target>
 
-	<!-- compile JEM and JEM-gwt -->
+	<!--
+	Calls in cascade all build.xml of all JE the BEE projects
+	-->
 	<target name="compile-distribution" depends="make-folders">
 		<antcall target="compile-core" />
 		<antcall target="compile-gwt" />
@@ -89,9 +152,11 @@
 		<antcall target="compile-plugin" />
 	</target>
 
-	<!-- copy necessary files for distribution -->
+	<!-- 
+	This target performs all necessary actions to create the distribution file of JEM the BEE  
+	-->
 	<target name="create-distribution" depends="compile-distribution">
-		<!-- CREATE META-INF and manifest for war -->
+		<!-- Creates META-INF folder for manifest of war -->
 		<mkdir dir="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war/META-INF" />
 		<manifest file="${jem.core.working.jemhome.folder}/src/gfs/envname/web/war/META-INF/MANIFEST.MF">
 			<section name="JEM_the_BEE">
@@ -100,12 +165,16 @@
 				<attribute name="Creation_time" value="${TODAY}" />
 			</section>
 		</manifest>
-		<!-- COPY licences files -->
+		<!-- copies licences files -->
 		<copy file="COPYING" todir="${jem.core.working.jemhome.folder}" />
-		<!-- create zip file containing the distribution -->
+		<!-- creates zip file containing the distribution -->
 		<zip destfile="${jem.core.zip.file.location}" basedir="${jem.core.working.folder}" />
 	</target>
 
+	<!-- 
+	Main target which creates the distribution zip file
+	calling all build.xml file for each JEM the BEE projects 
+	-->
 	<target name="build-distribution">
 		<antcall target="create-distribution"/>
 	</target>

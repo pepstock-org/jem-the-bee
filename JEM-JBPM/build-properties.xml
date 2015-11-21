@@ -1,7 +1,12 @@
 <project name="jem-jbpm-properties" basedir=".">
+	<!-- 
+	Creates all properties used inside the build for JEM JBPM core project
+	Many of these properties are based on the common ones 
+	-->
 	<!-- import common properties -->
 	<import file="../JEM/build-common-properties.xml" />
-	<!--properties for JEM-enterprise project -->
+	
+	<!--properties for JEM JBPM project -->
 	<property name="jem.jbpm.resources.folder" value="${jem.jbpm.folder}/resources" />
 	<property name="jem.jbpm.jar.file" value="jem-jbpm.jar" />
 	<property name="jem.jbpm.jar.file.location" location="${jem.jbpm.library.folder}/${jem.jbpm.jar.file}" />

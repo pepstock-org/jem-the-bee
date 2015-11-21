@@ -1,15 +1,25 @@
 <project name="jem-jcl-ant" default="build-distribution-jcl-ant" basedir=".">
-	<!-- import properties -->
+	<!--
+	Builds the JEM JCL ANT project, JCL extension to manage ANT 
+	-->
+	<!-- 
+	Import JEM ANT properties 
+	-->
 	<import file="build-properties.xml" />
 
-	<!-- clean project JEM-enterprise -->
+	<!-- 
+	Cleans classes and distribution folders and the jar of JEM ANT if exists
+	-->
 	<target name="jcl-ant-clean">
 		<delete dir="${jem.jcl-ant.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
 		<delete dir="${jem.jcl-ant.distribute.folder}" includeemptydirs="true" includes="**/*" excludes="." />
 		<delete file="${jem.jcl-ant.jar.file.location}" />
 	</target>
 
-	<!-- create directory needed -->
+	<!-- 
+	Creates classes and distribution folders. Into classes, it adds all properties file. 
+	There is only 1 properties file with all ANT task for JEM defined OOTB
+	-->
 	<target name="jcl-ant-make-folders" depends="jcl-ant-clean">
 		<mkdir dir="${jem.jcl-ant.classes.folder}" />
 		<mkdir dir="${jem.jcl-ant.distribute.folder}" />
@@ -20,13 +30,21 @@
 		</copy>
 	</target>
 	
-	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
+	<!-- 
+	Compile JEM JCL ANT project and creates the JAR file of JEM project setting the manifest
+	with JEM information
+	-->
 	<target name="jcl-ant-compile" depends="jcl-ant-make-folders">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation -->
 		<javac srcdir="${jem.jcl-ant.source.folder}" destdir="${jem.jcl-ant.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
+				<!-- linked to JEM core project -->
 				<pathelement path="${jem.core.classes.folder}" />
 				<pathelement path="${jem.jcl-ant.classes.folder}" />
+				<!-- linked to JEM core project -->
 				<fileset dir="${jem.core.library.folder}">
 					<include name="cli/*.jar" />
 					<include name="commons-codec/*.jar" />
@@ -41,18 +59,23 @@
 				</fileset>
 			</classpath>
 		</javac>
+		<!-- Creates the JAR file adding the classes folder and adding the manifest part -->
 		<jar jarfile="${jem.jcl-ant.jar.file.location}" basedir="${jem.jcl-ant.classes.folder}">
 			<fileset dir="${jem.jcl-ant.classes.folder}"/>
 			<manifest>
-				<section name="JEM_the_BEE_ANT">
+				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-JCL-ANT" />
 				</section>
 			</manifest>
 		</jar>
 	</target>
-	
+
+	<!--
+	Creates a zip file, to distribute, which contains all jar files
+	-->
 	<target name="build-distribution-jcl-ant" depends="jcl-ant-compile">
 		<zip destfile="${jem.jcl-ant.zip.file.location}">
 			 <fileset dir="${jem.jcl-ant.library.folder}"/>

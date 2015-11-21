@@ -1,8 +1,16 @@
 <project name="jem-web" default="gwt-compile" basedir=".">
-	<!-- import properties -->
+	<!--
+	Builds the JEM GWT project, web UI of JEM the BEE
+	-->
+	<!-- 
+	Import JEM GWT properties 
+	-->
 	<import file="build-properties.xml" />
 
-	<!-- clean clean project JEM-gwt -->
+	<!-- 
+	Cleans the classes, removes the jar file of JEM GWT project,
+	removes all GWT cache and teh javascript folder of GWT, created when a GWT compiler runs 
+	-->
 	<target name="gwt-clean">
 		<delete dir="${jem.gwt.classes.folder}" includeemptydirs="true" />
 		<delete file="${jem.gwt.jar.file.location}" />
@@ -10,19 +18,29 @@
 		<delete dir="${jem.gwt.web.folder}/jem_gwt" includeemptydirs="true" />
 	</target>
 
-	<!-- create directory needed -->
+	<!-- 
+	Create classes folder 
+	-->
 	<target name="gwt-make-folders" depends="gwt-clean">
 		<mkdir dir="${jem.gwt.classes.folder}" />
 	</target>
 	
-	<!-- copy JEM jar to JEM-JBPM -->
+	<!-- 
+	Deletes the JEM core jar file and replaces it witht the current into JEM core project 
+	-->
 	<target name="gwt-replace-core" depends="gwt-make-folders">
 		<delete file="${jem.gwt.web.library.folder}/${jem.core.jar.file}" />
 		<copy file="${jem.core.jar.file.location}" toFile="${jem.gwt.web.library.folder}/${jem.core.jar.file}" />
 	</target>
 
-	<!-- compile backend JEM-gwt -->
+	<!-- 
+	Compiles the web app, back-end for GWT, creating the manifest part with
+	JEM and compiling information
+	-->
 	<target name="gwt-compile-backend" depends="gwt-replace-core">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation, using the GWT jars (dev and user) from JEM core library -->
 		<javac srcdir="${jem.gwt.source.folder}" destdir="${jem.gwt.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
 				<pathelement path="${jem.gwt.classes.folder}" />
@@ -33,19 +51,29 @@
 				</fileset>
 			</classpath>
 		</javac>
+		<!-- Creates the JAR file adding the classes folder and adding the mnifest part -->
 		<jar jarfile="${jem.gwt.jar.file.location}" basedir="${jem.gwt.classes.folder}" >
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-gwt" />
 				</section>
 			</manifest>
 		</jar>
 	</target>
 
-	<!-- compile the gwt application -->
+	<!-- 
+	Compiles the GWT application, calling the GWT compiler
+	 -->
 	<target name="gwt-compile" depends="gwt-compile-backend">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- 
+		JAVA execution of GWT compiler, using into classpath the JEM core source, 
+		the GWT source and classes path and all additional library needed into UI 
+		-->
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="${jem.gwt.source.folder}" />
@@ -63,6 +91,7 @@
 				<pathelement location="${jem.gwt.classes.folder}" />
 			</classpath>
 			<jvmarg value="-Xmx700M" />
+			<!-- folder of project where put the GWT compilation result -->
 			<arg line="-war" />
 			<arg value="${jem.gwt.web.folder}" />
 			<arg value="org.pepstock.jem.gwt.JEM_gwt" />

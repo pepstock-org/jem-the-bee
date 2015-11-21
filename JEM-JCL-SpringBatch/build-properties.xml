@@ -1,8 +1,12 @@
 <project name="jem-jcl-springbatch-properties" basedir=".">
+	<!-- 
+	Creates all properties used inside the build for JEM JCL SPRINGBATCH project
+	Many of these properties are based on the common ones 
+	-->
 	<!-- import common properties -->
 	<import file="../JEM/build-common-properties.xml" />
 
-	<!--properties for JEM SpringBatch project -->
+	<!--properties for JEM JEC SpringBatch project -->
 	<property name="jem.jcl-springbatch.jar.file" value="jem-jcl-springbatch.jar" />
 	<property name="jem.jcl-springbatch.jar.file.location" location="${jem.jcl-springbatch.library.folder}/${jem.jcl-springbatch.jar.file}" />
 	<property name="jem.jcl-springbatch.distribute.folder" value="${jem.jcl-springbatch.folder}/dist" />
