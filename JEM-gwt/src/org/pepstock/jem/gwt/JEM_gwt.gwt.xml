@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='jem_gwt'>
+<module rename-to="jem_gwt">
 
 	<!-- Inherit the core Web Toolkit stuff. -->
-	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.user.User" />
 
 	<!-- Inherit the default GWT style sheet. You can change -->
 	<!-- the theme of your GWT application by uncommenting -->
 	<!-- any one of the following lines. -->
-	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
-	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
-	<inherits name='com.google.gwt.user.theme.clean.Clean' />
+	<!-- <inherits name="com.google.gwt.user.theme.standard.Standard"/> -->
+	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
+	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
+	<inherits name="com.google.gwt.user.theme.clean.Clean" />
 
 	<!-- LOGGING configuration -->
 	<inherits name="com.google.gwt.logging.Logging"/>
-	
-	<define-property name="gwt.logging.firebugHandler" values="ENABLED, DISABLED" />
-	<define-property name="gwt.logging.popupHandler" values="ENABLED, DISABLED" />
 	
     <set-property name="gwt.logging.consoleHandler" value="DISABLED"/>
     <set-property name="gwt.logging.firebugHandler" value="DISABLED"/>
@@ -26,7 +23,7 @@
 	<!-- OTHER MODULE inherits -->
 	<inherits name="org.pepstock.JEM" />
 
-	<inherits name='com.google.gwt.xml.XML'/>
+	<inherits name="com.google.gwt.xml.XML"/>
 	<inherits name="com.google.gwt.i18n.I18N" />
 	
 	<!-- GFlot chart library -->
@@ -38,17 +35,17 @@
 	<inherits name="org.moxieapps.gwt.uploader.Uploader"/>
 
 	<!-- Multi file uploader widgets (progress bar, ...) -->	
-	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
+	<inherits name="com.google.gwt.widgetideas.WidgetIdeas" />
 
 	<!-- Guava -->
-	<inherits name='com.google.common.base.Base' />
+	<inherits name="com.google.common.base.Base" />
     	
 	<!-- Specify the app ENTRY POINT class -->
-	<entry-point class='org.pepstock.jem.gwt.client.Main' />
+	<entry-point class="org.pepstock.jem.gwt.client.Main" />
 	
 	<!-- Specify the paths for TRANSLATABLE CODE -->
-	<source path='client' />
-	<source path='shared' />
+	<source path="client" />
+	<source path="shared" />
 	
 	<!-- LOCALE	configuration (adding a locale means adding permutations at GWT compile time) -->
 	<extend-property name="locale" values="en" />
@@ -65,4 +62,5 @@
 	<!-- Choose, if available, the application locale based on browser preferences -->
 	<set-configuration-property name="locale.useragent" value="Y"/>
 	
+	<set-configuration-property name="xsiframe.failIfScriptTag" value="FALSE" />
 </module>
