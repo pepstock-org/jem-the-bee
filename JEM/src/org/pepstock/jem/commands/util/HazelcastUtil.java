@@ -145,5 +145,47 @@ public class HazelcastUtil {
 		// creates a new Client instance of Hazelcast
 		return HazelcastClient.newHazelcastClient(clientConfig);
 	}
+	
+	/**
+	 * Creates a Hazelcast instance client to connect to JEM which is running on another machine of submit command.
+	 * @param proxy is the address and port of proxy service
+	 * @param env environment of JEM
+	 * @param envPassword is the password for the environment
+	 * @param privateKeyPathFile path of private key used during socket interceptor 
+	 * @param privateKeyPassword password of private key used during socket interceptor 
+	 * @param userId userid logged on machine
+	 * @return hazelcast instance
+	 * @throws SubmitException if any exception occurs
+	 */
+	public static final HazelcastClient getInstance(String proxy, String env, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+			throws SubmitException {
+		// creates a client configuration for Hazelcast
+		ClientConfig clientConfig = new ClientConfig();
+
+		// sets the group name (received by http call) and sets the constant
+		// password
+		clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
+		
+		// connect to Hazelcast using the complete list of current members
+		clientConfig.addAddress(proxy);
+		clientConfig.setReconnectionAttemptLimit(0);
+		clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
+
+		clientConfig.setUpdateAutomatic(false);
+
+		// if properties are not empyt, sets up SocketInterceptor.
+		if (privateKeyPathFile != null) {
+			try {
+				SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
+				clientConfig.setSocketInterceptor(myClientSocketInterceptor);
+			} catch (KeyException e) {
+				throw new SubmitException(SubmitMessage.JEMW005E, e);
+			} catch (MessageException e) {
+				throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
+			}
+		}
+		// creates a new Client instance of Hazelcast
+		return HazelcastClient.newHazelcastClient(clientConfig);
+	}
 
 }

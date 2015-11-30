@@ -1,0 +1,20 @@
+# !/bin/bash
+source $JEM_HOME/bin/jem_set_classpath.sh
+
+for OPTION in "$@"
+do
+   if [ ${OPTION:0:2} = -D ] ; then
+      JAVA_OPT="$JAVA_OPT $OPTION"
+   else
+      PGM_OPT="$PGM_OPT $OPTION"
+   fi
+done
+
+java -cp $CLASSPATH $JAVA_OPT org.pepstock.jem.commands.docker.StartUpNode $PGM_OPT
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+chmod -R 700 /mnt/jem/persistence
+chmod -R 777 $JEM_HOME/$JEM_ENVIRONMENT/node-000/bin
+$JEM_HOME/$JEM_ENVIRONMENT/node-000/bin/jem.sh console

@@ -13,27 +13,37 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test;
+*/
+package org.pepstock.jem.gwt.server.proxy;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
-import org.pepstock.jem.junit.test.common.CommonSuite;
-import org.pepstock.jem.junit.test.rest.RestSuite;
-import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
+import java.net.Socket;
 
 /**
- * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 3.0
  */
-@RunWith(Suite.class)
-//@SuiteClasses({SpringBatchSuite.class })
-//@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
-//		RestSuite.class, HttpSuite.class, JBpmSuite.class})
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class, RestSuite.class})
-public class JemTestSuite {
+class IncomingDataHandler extends DataHandler{
 
+	/**
+	 * @param bean
+	 */
+    IncomingDataHandler(ProxyBean bean) {
+	    super(bean);
+    }
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.proxy.DataHandler#getIncomingSocket()
+	 */
+    @Override
+    Socket getIncomingSocket() {
+	    return getBean().getIncomingSocket();
+    }
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.gwt.server.proxy.DataHandler#getOutcomingSocket()
+	 */
+    @Override
+    Socket getOutcomingSocket() {
+	    return getBean().getOutcomingSocket();
+    }
 }

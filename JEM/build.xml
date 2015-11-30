@@ -17,7 +17,8 @@
 
 	<!-- 
 	Creates the classes folder and copies the XML files (for resources definitions)
-	from the source to classes folder because they are available 
+	from the source to classes folder because they are available. it copies 
+	also the propeties for Docker installation
 	into classpath at runtime
 	-->
 	<target name="core-make-folders" depends="core-clean">
@@ -25,6 +26,7 @@
 		<copy todir="${jem.core.classes.folder}">
 			<fileset dir="${jem.core.source.folder}">
 				<include name="**/*.xml" />
+				<include name="**/*.properties" />
 			</fileset>
 		</copy>
 	</target>

@@ -203,12 +203,6 @@ public class NodeProperties {
 	public static final List<Integer> DEFAULT_MULTICAST_ADDRESS = Collections.unmodifiableList(Arrays.asList(233, 0, 0, 1));
 
 	/**
-	 * property that indicates the default user for the db where the hazelcast
-	 * map are persisted {@value}
-	 */
-	public static final String DEFAULT_JEM_DB_USER = "root";
-
-	/**
 	 * property that indicates the driver for the db where the hazelcast map are
 	 * persisted {@value}
 	 */
@@ -653,7 +647,7 @@ public class NodeProperties {
 		if (propValue != null && !"".equals(propValue.trim())){
 			return propValue.trim();
 		} else {
-			return DEFAULT_JEM_DB_USER;
+			return "";
 		}
 	}
 

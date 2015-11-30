@@ -13,27 +13,36 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.pepstock.jem.junit.test;
+*/
+package org.pepstock.jem.commands.docker;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.pepstock.jem.junit.test.antutils.AntUtilsSuite;
-import org.pepstock.jem.junit.test.common.CommonSuite;
-import org.pepstock.jem.junit.test.rest.RestSuite;
-import org.pepstock.jem.junit.test.springbatch.SpringBatchSuite;
+
 
 /**
+ * Contains all keys used to creates the JEM node inside Docker.
  * 
  * @author Andrea "Stock" Stocchero
- * @version 1.4
+ * @version 3.0
  */
-@RunWith(Suite.class)
-//@SuiteClasses({SpringBatchSuite.class })
-//@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class,
-//		RestSuite.class, HttpSuite.class, JBpmSuite.class})
-@SuiteClasses({ CommonSuite.class, AntUtilsSuite.class, SpringBatchSuite.class, RestSuite.class})
-public class JemTestSuite {
+public final class Keys {
 
+	public static final String JEM_ENVIRONMENT_VARIABLE = "JEM_ENVIRONMENT";
+	
+	public static final String JEM_DOMAIN_VARIABLE = "JEM_DOMAIN";
+	
+	public static final String JEM_AFFINITY_VARIABLE = "JEM_AFFINITY";
+	
+	public static final String JEM_DB_PORT_VARIABLE = "JEMDB_PORT";
+	
+	public static final String CREATE_NODE_PROPERTIES = "org/pepstock/jem/commands/docker/create_node_docker.properties";
+	
+	public static final String MYSQL_URL_FORMAT = "jdbc:mysql://{0}:{1}/jem";
+	
+	public static final String MONGO_URL_FORMAT = "mongodb://{0}:{1}/jem";
+
+	/**
+	 * To avoid any instantiation
+	 */
+	private Keys() {
+	}
 }

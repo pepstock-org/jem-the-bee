@@ -19,11 +19,13 @@ package org.pepstock.jem.junit.init;
 import java.util.concurrent.Callable;
 
 import org.pepstock.jem.commands.HttpSubmit;
+import org.pepstock.jem.commands.ProxySubmit;
 import org.pepstock.jem.commands.Submit;
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.submitters.AbstractSubmitter;
 import org.pepstock.jem.junit.init.submitters.HttpSubmitter;
 import org.pepstock.jem.junit.init.submitters.LocalHostSubmitter;
+import org.pepstock.jem.junit.init.submitters.ProxySubmitter;
 import org.pepstock.jem.junit.init.submitters.SubmitSubmitter;
 
 /**
@@ -73,6 +75,8 @@ public class Task implements Callable<SubmitResult> {
 			s = new HttpSubmitter(selectedSubmitter, jcl, type, wait, printout);
 		} else if (selectedSubmitter.getReferenceClass().equals(Submit.class)) {
 			s = new SubmitSubmitter(selectedSubmitter, jcl, type, wait, printout);
+		} else if (selectedSubmitter.getReferenceClass().equals(ProxySubmit.class)) {
+			s = new ProxySubmitter(selectedSubmitter, jcl, type, wait, printout);
 		} else {
 			s = new LocalHostSubmitter(selectedSubmitter, jcl, type, wait, printout);
 		}

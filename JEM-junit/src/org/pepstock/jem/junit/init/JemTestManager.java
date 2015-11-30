@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.commands.HttpSubmit;
 import org.pepstock.jem.commands.LocalHostSubmit;
+import org.pepstock.jem.commands.ProxySubmit;
 import org.pepstock.jem.commands.Submit;
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.log.JemException;
@@ -78,6 +79,8 @@ public class JemTestManager {
 				selectedSubmitter = submitter;
 				if (!selectedSubmitter.getReferenceClass().equals(
 						HttpSubmit.class)
+						&& !selectedSubmitter.getReferenceClass().equals(
+								ProxySubmit.class)
 						&& !selectedSubmitter.getReferenceClass().equals(
 								Submit.class)
 						&& !selectedSubmitter.getReferenceClass().equals(

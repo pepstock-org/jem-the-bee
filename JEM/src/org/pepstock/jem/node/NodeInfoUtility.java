@@ -120,6 +120,13 @@ public class NodeInfoUtility {
 		} catch (SigarException e) {
 			throw new NodeException(e.getMessage(), e);
 		}
+        
+        String dockerHostAddress = System.getenv(ConfigKeys.JEM_DOCKER_HOST);
+        if (dockerHostAddress == null || !dockerHostAddress.contains(":")){
+        	dockerHostAddress = info.getLabel();
+        }
+        info.setDockerHostAddress(dockerHostAddress);
+        
         // informs the node itself that it has been loaded
         info.loaded();
     }
