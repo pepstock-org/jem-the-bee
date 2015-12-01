@@ -32,7 +32,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.BuildException;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -480,7 +479,7 @@ public class JemWorkItemHandler implements WorkItemHandler {
 				// the absolute name of the file is property value
 				changed = file.getAbsolutePath();
 			} catch (InvalidDatasetNameException e) {
-				throw new BuildException(e);
+				throw new JemRuntimeException(e);
 			}
 		} else {
 			// uses substituter utilities to changed all properties

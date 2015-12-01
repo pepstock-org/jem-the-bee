@@ -146,7 +146,7 @@ public class DataDescriptionManager {
 	 * @param ddImpl data description implementation
 	 * @param dd data description instance
 	 * @param item JBPM task, caller
-	 * @throws BuildException if errors occurs
+	 * @throws JBpmException if errors occurs
 	 * @throws IOException if I/O occurs
 	 */
 	private static void loadSingleDataset(DataDescriptionImpl ddImpl, DataDescription dd, Task item) throws JBpmException, IOException {
@@ -176,7 +176,7 @@ public class DataDescriptionManager {
 	 * @param ddImpl data description implementation
 	 * @param dd data description instance
 	 * @param item JBPM task, caller
-	 * @throws BuildException if errors occurs
+	 * @throws JBpmException if errors occurs
 	 * @throws IOException if I/O occurs
 	 */
 	private static void loadMultiDataset(DataDescriptionImpl ddImpl, DataDescription dd, Task item) throws JBpmException, IOException {

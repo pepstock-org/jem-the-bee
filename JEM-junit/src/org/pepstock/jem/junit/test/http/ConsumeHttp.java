@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.JemTestManager;
+import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
  * 
@@ -51,7 +52,7 @@ public class ConsumeHttp extends TestCase {
 	 */
 	public void testConsumeSb() throws Exception {
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_HTTP_SB_CONSUME.xml"), "sb", true,
+				.submit(getJcl("TEST_HTTP_SB_CONSUME.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);

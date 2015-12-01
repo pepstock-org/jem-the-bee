@@ -18,10 +18,11 @@ package org.pepstock.jem.junit.test.jms;
 
 import java.util.concurrent.Future;
 
+import junit.framework.TestCase;
+
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.junit.init.JemTestManager;
-
-import junit.framework.TestCase;
+import org.pepstock.jem.springbatch.SpringBatchFactory;
 
 /**
  * 
@@ -38,7 +39,7 @@ public class SbProducerConsumer extends TestCase{
 	public void test() throws Exception {
 		// clean jobs
 		Future<SubmitResult> future = JemTestManager.getSharedInstance()
-				.submit(getJcl("TEST_JMS_SB_PRODUCE_CONSUME_MESSAGE.xml"), "sb", true,
+				.submit(getJcl("TEST_JMS_SB_PRODUCE_CONSUME_MESSAGE.xml"), SpringBatchFactory.SPRINGBATCH_TYPE, true,
 						false);
 		SubmitResult sr = future.get();
 		assertEquals(sr.getRc(), 0);

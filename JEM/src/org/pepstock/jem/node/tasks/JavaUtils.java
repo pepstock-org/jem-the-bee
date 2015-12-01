@@ -116,16 +116,6 @@ public class JavaUtils {
 	 * @return the classpath
 	 */
 	public static String getClassPath() {
-		return getClassPath(null);
-	}
-
-	/**
-	 * Returns classpath with absolute parent path of libraries and java wildcard (only for java process).
-	 * 
-	 * @param additionalFolders additional folders to add 
-	 * @return the classpath
-	 */
-	public static String getClassPath(String[] additionalFolders) {
 		String classPath = null;
 		String fileSeparator = File.separator;
 		String pathSeparator = System.getProperty("path.separator");
@@ -141,7 +131,7 @@ public class JavaUtils {
 			File file = new File(fileName);
 			
 			// here checks if the file is to add to classpath for new process or not
-			if (isToAdd(file, additionalFolders)){
+			if (isToAdd(file)){
 				String ext = FilenameUtils.getExtension(file.getAbsolutePath());
 				String parent = null;
 				// if is a directory, use it as is
@@ -169,10 +159,9 @@ public class JavaUtils {
 	 * Checks if the passed file is valid for classpath for process or not.
 	 * 
 	 * @param file file to check
-	 * @param additionalFolders additional folder or null
 	 * @return true is the file must be included in classpath, otherwise false
 	 */
-	private static boolean isToAdd(File file, String[] additionalFolders){
+	private static boolean isToAdd(File file){
 		// all directories are added
 		if (file.isDirectory()){
 			return true;
@@ -188,15 +177,6 @@ public class JavaUtils {
 		for (Libraries lib : Libraries.values()){
 			if (path.equalsIgnoreCase(lib.getPath())){
 				return true;
-			}
-		}
-		// checks if there are additional folders to add
-		if (additionalFolders != null){
-			// scans additional folders
-			for (int i=0; i<additionalFolders.length; i++){
-				if (path.equalsIgnoreCase(additionalFolders[i])){
-					return true;
-				}
 			}
 		}
 		return false;

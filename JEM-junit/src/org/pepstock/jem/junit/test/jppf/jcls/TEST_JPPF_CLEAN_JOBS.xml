@@ -26,7 +26,7 @@
 			<dataDescription name="COMMAND" disposition="SHR">
 				<dataSet>
 					<![CDATA[
-						name LIKE 'TEST_JPPF%';
+						name:TEST_JPPF*;
 					]]>
 				</dataSet>
 			</dataDescription>

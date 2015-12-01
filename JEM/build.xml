@@ -1,54 +1,65 @@
-<project name="jem" default="compile-jem" basedir=".">
-	<!-- import properties -->
-	<import file="../JEM/build-properties.xml" />
+<project name="jem" default="core-compile" basedir=".">
+	<!--
+	Builds the JEM project, core of JEM the BEE
+	-->
+	<!-- 
+	Import JEM properties 
+	-->
+	<import file="build-properties.xml" />
 
-	<!-- clean project JEM -->
-	<target name="clean-jem">
-		<delete dir="${jem.workspace}/${jem.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
-		<delete file="${jem.workspace}/${jem.library.directory}/${jem.jar.name}" />
+	<!-- 
+	Cleans the classes and removes the jar file of JEM project 
+	-->
+	<target name="core-clean">
+		<delete dir="${jem.core.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.core.jar.file.location}" />
 	</target>
 
-	<!-- create directory needed -->
-	<target name="make-jem-directories" depends="clean-jem">
-		<mkdir dir="${jem.workspace}/${jem.classes.directory}" />
-		<copy todir="${jem.workspace}/${jem.classes.directory}">
-			<fileset dir="${jem.workspace}/${jem.source.directory}">
+	<!-- 
+	Creates the classes folder and copies the XML files (for resources definitions)
+	from the source to classes folder because they are available 
+	into classpath at runtime
+	-->
+	<target name="core-make-folders" depends="core-clean">
+		<mkdir dir="${jem.core.classes.folder}" />
+		<copy todir="${jem.core.classes.folder}">
+			<fileset dir="${jem.core.source.folder}">
 				<include name="**/*.xml" />
-				<include name="**/*.properties" />
 			</fileset>
 		</copy>
 	</target>
 
-	<!-- compile JEM project and create jem.jar with manifest in JEM/lib -->
-	<target name="compile-jem" depends="make-jem-directories">
+	<!-- 
+	Compile JEM project and creates the JAR file of JEM project setting the manifest
+	with JEM information
+	-->
+	<target name="core-compile" depends="core-make-folders">
+		<!-- display java version -->
 		<echo>Java version: ${java.version}</echo>
-		<javac srcdir="${jem.workspace}/${jem.source.directory}" destdir="${jem.workspace}/${jem.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+		<!-- JAVA compilation -->
+		<javac srcdir="${jem.core.source.folder}" destdir="${jem.core.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<classpath>
-				<pathelement path="${jem.workspace}/${jem.classes.directory}" />
-				<fileset dir="${jem.workspace}/${jem.library.directory}">
+				<pathelement path="${jem.core.classes.folder}" />
+				<!-- All necessary libraries are in the lib folder but removes from library the GWT part -->
+				<fileset dir="${jem.core.library.folder}">
 					<include name="**/*.jar" />
 					<exclude name="gwt/gwt-dev.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA-sources.jar" />
 					<exclude name="gwt/validation-api-1.0.0.GA.jar" />
-					
-					<!-- all SPRING-SOURCE jars are excluded from SPRING framework -->
-					<exclude name="spring/com.springsource.*.jar" />
-					<exclude name="spring/com.springsource.org.codehaus.*.jar" />
 				</fileset>
-				<pathelement path="${java.class.path}" />
 			</classpath>
 		</javac>
-		<jar jarfile="${jem.workspace}/${jem.library.directory}/${jem.jar.name}">
-			<fileset dir="${jem.workspace}/${jem.classes.directory}"/>
-			<fileset dir="${jem.workspace}/${jem.source.directory}" includes="**/*.xsd"/>
+		<!-- Creates the JAR file adding the classes folder and adding the mnifest part -->
+		<jar jarfile="${jem.core.jar.file.location}">
+			<fileset dir="${jem.core.classes.folder}"/>
 			<manifest>
 				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-core" />
 				</section>
 			</manifest>
-			<metainf dir="${jem.workspace}/${jem.source.directory}/org/pepstock/jem/springbatch/xml" includes="spring.handlers, spring.schemas"/>
 		</jar>
 	</target>
 </project>

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tools.ant.BuildException;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 import org.pepstock.jem.util.Parser;
@@ -42,6 +41,10 @@ public abstract class AbstractFactory implements JemFactory {
 	private final Properties systemProperties = new Properties();
 
 	private Properties properties = null;
+
+	private String type = null;
+	
+	private String description = null;
 	
 	private boolean useSudo = false;
 	
@@ -67,7 +70,38 @@ public abstract class AbstractFactory implements JemFactory {
 		this.properties = properties;
 		useSudo = Parser.parseBoolean(properties.getProperty(JobTaskFactory.SWITCH_USER_KEY), false);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#getType()
+	 */
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#setType(java.lang.String)
+	 */
+	@Override
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#getTypeDescription()
+	 */
+	@Override
+	public String getTypeDescription() {
+		return description;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.factories.JemFactory#setTypeDescription(java.lang.String)
+	 */
+	@Override
+	public void setTypeDescription(String description) {
+		this.description = description;
+	}
 
 	/**
 	 * Returns all properties configured for this factory
@@ -78,8 +112,6 @@ public abstract class AbstractFactory implements JemFactory {
 	public Properties getProperties() {
 		return properties;
 	}
-	
-
 
 	/**
 	 * @return the useSudo
@@ -135,7 +167,7 @@ public abstract class AbstractFactory implements JemFactory {
 	}
 
 	
-	private File getFile(String fileName, String pathKey) throws BuildException{
+	private File getFile(String fileName, String pathKey) {
 		//checks if the filename is a absolute file name
 		// if absolute path is equals return the file 
 		// otherwise checks path

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
+	<classpathentry kind="lib" path="/JEM/lib/cli/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-codec/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-compress-1.9.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-client.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common-node.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jppf/jppf-common.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/serializer.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xalan.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xalan/xml-apis.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xstream/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/xstream/xstream-1.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-antlr.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-bcel.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-bsf.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-log4j.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-oro.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-regexp.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-resolver.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-apache-xalan2.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-commons-net.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-jai.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-javamail.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-jdepend.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-jmf.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-jsch.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-junit.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-junit4.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-netrexx.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-swing.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant-testutil.jar"/>
+	<classpathentry kind="lib" path="lib/ant/ant.jar"/>
+	<classpathentry kind="lib" path="lib/ant/antcontrib.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

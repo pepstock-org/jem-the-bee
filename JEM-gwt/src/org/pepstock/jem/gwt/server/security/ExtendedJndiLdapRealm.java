@@ -164,8 +164,6 @@ public class ExtendedJndiLdapRealm extends JndiLdapRealm {
 		return firstInstallationUserId;
 	}
 
-
-
 	/**
 	 * @param firstInstallationUserId the firstInstallationUserId to set
 	 */

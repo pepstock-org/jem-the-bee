@@ -568,10 +568,11 @@ public abstract class AbstractDBManager<T> extends AbstractDatabaseManager<T> im
 			connection = DBPoolManager.getInstance().getConnection();
 			// gets metadata
 			DatabaseMetaData md = connection.getMetaData();
-			// gets a result set which searches for the table anme
+			// gets a result set which searches for the table name
 			rs = md.getIndexInfo(null, null, container.getTableName(), false, true);
+			
 			// if result set is empty, it creates the table
-			while(!rs.next()) {
+			while(rs.next()) {
 				String indexName = rs.getString("INDEX_NAME");
 				if (container.getIndexes().containsKey(indexName)){
 					container.getIndexes().remove(indexName);

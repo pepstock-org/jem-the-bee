@@ -1,0 +1,85 @@
+<project name="jem-jcl-springbatch" default="build-distribution-jcl-springbatch" basedir=".">
+	<!--
+	Builds the JEM JCL SPRINGBATCH project, JCL extension to manage SPRINGBATCH 
+	-->
+	<!-- 
+	Import JEM SPRINGBATCH properties 
+	-->
+	<import file="build-properties.xml" />
+
+	<!-- 
+	Cleans classes and distribution folders and the jar of JEM SPRINGBATCH if exists
+	-->
+	<target name="jcl-springbatch-clean">
+		<delete dir="${jem.jcl-springbatch.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete dir="${jem.jcl-springbatch.distribute.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.jcl-springbatch.jar.file.location}" />
+	</target>
+
+	<!-- 
+	Creates classes and distribution folders 
+	-->
+	<target name="jcl-springbatch-make-folders" depends="jcl-springbatch-clean">
+		<mkdir dir="${jem.jcl-springbatch.classes.folder}" />
+		<mkdir dir="${jem.jcl-springbatch.distribute.folder}" />
+	</target>
+
+	<!-- 
+	Compile JEM JCL SPRINGBATCH project and creates the JAR file of JEM project setting the manifest
+	with JEM information
+	-->
+	<target name="jcl-springbatch-compile" depends="jcl-springbatch-make-folders">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation -->
+		<javac srcdir="${jem.jcl-springbatch.source.folder}" destdir="${jem.jcl-springbatch.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+			<compilerarg value="-XDignore.symbol.file" />
+			<classpath>
+				<!-- linked to JEM core project -->
+				<pathelement path="${jem.core.classes.folder}" />
+				<pathelement path="${jem.jcl-springbatch.classes.folder}" />
+				<!-- linked to JEM core project -->
+				<fileset dir="${jem.core.library.folder}">
+					<include name="commons-io/*.jar" />
+					<include name="dbcp/*.jar" />
+					<include name="jppf/*.jar" />
+					<include name="lang/*.jar" />
+					<include name="logging/*.jar" />
+					<include name="xstream/*.jar" />
+				</fileset>
+				<fileset dir="${jem.jcl-springbatch.library.folder}">
+					<include name="spring/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<!-- Creates the JAR file adding the classes folder and adding the manifest part -->
+		<jar jarfile="${jem.jcl-springbatch.jar.file.location}" basedir="${jem.jcl-springbatch.classes.folder}">
+			<fileset dir="${jem.jcl-springbatch.classes.folder}"/>
+			<!-- Includes the XML schemas of XML authoring of Springbatch for JEM -->
+			<fileset dir="${jem.jcl-springbatch.source.folder}" includes="**/*.xsd"/>
+			<manifest>
+				<section name="JEM_the_BEE">
+					<attribute name="Jem_version" value="${jem.version}" />
+					<attribute name="Built-By" value="${jem.built.by}" />
+					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-JCL-Springbatch" />
+				</section>
+			</manifest>
+			<!--
+			Creates also META-INF adding the files located into source folder.
+			These files include the definition of XMLauthoring extension of SpringBatch for JEM
+			 -->
+			<metainf dir="${jem.jcl-springbatch.source.folder}/org/pepstock/jem/springbatch/xml" includes="spring.handlers, spring.schemas"/>
+		</jar>
+	</target>
+	
+	<!--
+	Creates a zip file, to distribute, which contains all jar files
+	-->
+	<target name="build-distribution-jcl-springbatch" depends="jcl-springbatch-compile">
+		<zip destfile="${jem.jcl-springbatch.zip.file.location}">
+			 <fileset dir="${jem.jcl-springbatch.library.folder}"/>
+			 <fileset dir="." includes="COPYING"/>
+		</zip>
+	</target>
+</project>

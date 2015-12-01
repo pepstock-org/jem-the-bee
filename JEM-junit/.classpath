@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JEM-gwt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JBPM"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JCL-SpringBatch"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JCL-Ant"/>
 	<classpathentry kind="lib" path="/JEM/lib/xstream/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/commons-io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/logging/log4j-1.2.17.jar"/>
@@ -25,46 +30,37 @@
 	<classpathentry kind="lib" path="jms/lib/mx4j-remote-3.0.2.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/jms/jms-1.1.jar"/>
 	<classpathentry kind="lib" path="/JEM/lib/lang/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="jersey/asm-3.3.1.jar"/>
-	<classpathentry kind="lib" path="jersey/jackson-core-asl-1.9.2.jar"/>
-	<classpathentry kind="lib" path="jersey/jackson-jaxrs-1.9.2.jar"/>
-	<classpathentry kind="lib" path="jersey/jackson-mapper-asl-1.9.2.jar"/>
-	<classpathentry kind="lib" path="jersey/jackson-xc-1.9.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/JEM/lib/springbatch/spring-batch-core-2.2.6.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/springbatch/spring-batch-infrastructure-2.2.6.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/springbatch/spring-batch-test-2.2.6.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.aop-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.asm-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.aspects-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.beans-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.context-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.context.support-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.core-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.expression-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.instrument-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.instrument.tomcat-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.jdbc-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.jms-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.orm-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.oxm-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.test-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.transaction-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.portlet-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.servlet-3.1.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/JEM/lib/spring/org.springframework.web.struts-3.1.4.RELEASE.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JEM-JBPM"/>
-	<classpathentry kind="lib" path="jersey/jersey-apache-client4-1.9.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-bundle-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-client-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-core-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-json-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-multipart-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-server-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jersey-servlet-1.19.jar"/>
-	<classpathentry kind="lib" path="jersey/jsr311-api-1.1.1.jar"/>
-	<classpathentry kind="lib" path="jersey/mimepull-1.4.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/asm-3.3.1.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-apache-client4-1.9.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-bundle-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-client-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-core-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-json-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-multipart-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-server-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jersey-servlet-1.19.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/JEM/lib/jersey/mimepull-1.4.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-aop-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-batch-core-2.2.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-batch-infrastructure-2.2.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-batch-test-2.2.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-beans-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-context-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-context-support-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-core-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-expression-4.2.1.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-jdbc-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-jms-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-messaging-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-retry-1.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-tx-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-web-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/JEM-JCL-SpringBatch/lib/spring/spring-webmvc-4.1.7.RELEASE.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

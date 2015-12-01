@@ -59,6 +59,11 @@ public abstract class JobTask extends CommandLineTask {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Environment variable to set classpath for JAVA 
+	 */
+	public static final String CLASSPATH_ENVIRONMENT_VARIABLE = "CLASSPATH";
+	
 	private Job job = null;
 
 	private boolean isCancelled = false;
@@ -186,10 +191,10 @@ public abstract class JobTask extends CommandLineTask {
 		}
 
 		// if classpath is empty, set a default classpath
-		if (!getEnv().containsKey("CLASSPATH")) {
+		if (!getEnv().containsKey(CLASSPATH_ENVIRONMENT_VARIABLE)) {
 			// sets class path variable for the process with the classpath of
 			// node
-			getEnv().put("CLASSPATH", JavaUtils.getClassPath());
+			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, JavaUtils.getClassPath());
 		}
 
 		// sets the roles of the user

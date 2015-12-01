@@ -1,11 +1,14 @@
 <project name="jem-gwt-properties" basedir=".">
+	<!-- 
+	Creates all properties used inside the build for JEM-GWT core project
+	Many of these properties are based on the common ones 
+	-->
 	<!-- import common properties -->
 	<import file="../JEM/build-common-properties.xml" />
-	<!-- PROPERTIES JEM-gwt project -->
-	<property name="jem-gwt.project.directory" value="JEM-gwt" />
-	<property name="jem-gwt.source.directory" value="${jem-gwt.project.directory}/src" />
-	<property name="jem.gwt.classes.directory" value="${jem-gwt.project.directory}/classes" />
-	<property name="jem-gwt.web.directory" value="${jem-gwt.project.directory}/war" />
-	<property name="jem-gwt.library.directory" value="${jem-gwt.web.directory}/WEB-INF/lib" />
-	<property name="jem-gwt.jar.name" value="jem-gwt.jar" />
+	<!-- properties for JEM-gwt project -->
+	<property name="jem.gwt.web.folder" value="${jem.gwt.folder}/war" />
+	<property name="jem.gwt.web.library.folder" value="${jem.gwt.web.folder}/WEB-INF/lib" />
+	<property name="jem.gwt.jar.file" value="jem-gwt.jar" />
+	<property name="jem.gwt.jar.file.location" value="${jem.gwt.web.library.folder}/${jem.gwt.jar.file}" />
+	
 </project>

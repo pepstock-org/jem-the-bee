@@ -1,0 +1,15 @@
+<project name="jem-jcl-ant-properties" basedir=".">
+	<!-- 
+	Creates all properties used inside the build for JEM JCL ANT project
+	Many of these properties are based on the common ones 
+	-->
+	<!-- import common properties -->
+	<import file="../JEM/build-common-properties.xml" />
+
+	<!--properties for JEM-JCL ant project -->
+	<property name="jem.jcl-ant.jar.file" value="jem-jcl-ant.jar" />
+	<property name="jem.jcl-ant.jar.file.location" location="${jem.jcl-ant.library.folder}/${jem.jcl-ant.jar.file}" />
+	<property name="jem.jcl-ant.distribute.folder" value="${jem.jcl-ant.folder}/dist" />
+	<property name="jem.jcl-ant.zip.file" value="jem-jcl-ant.zip" />
+	<property name="jem.jcl-ant.zip.file.location" value="${jem.jcl-ant.distribute.folder}/${jem.jcl-ant.zip.file}" />
+</project>

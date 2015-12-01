@@ -1,59 +1,72 @@
-<project name="jem-jbpm" default="build-distribution-jem-jbpm" basedir=".">
-	<!-- import properties -->
-	<import file="../JEM-JBPM/build-properties.xml" />
+<project name="jem-jbpm" default="build-distribution-jbpm" basedir=".">
+	<!--
+	Builds the JEM JBPM project, JCL extension to manage JBPM 
+	-->
+	<!-- 
+	Import JEM JBPM properties 
+	-->
+	<import file="build-properties.xml" />
 
-	<!-- clean project JEM-enterprise -->
-	<target name="clean-jem-jbpm">
-		<delete dir="${jem-jbpm.classes.directory}" includeemptydirs="true" includes="**/*" excludes="." />
-		<delete dir="${jem-jbpm.distribute.directory}" includeemptydirs="true" includes="**/*" excludes="." />
-		<delete file="${jem-jbpm.jar.file}" />
+	<!-- 
+	Cleans classes and distribution folders and the jar of JEM JBPM if exists
+	-->
+	<target name="jbpm-clean">
+		<delete dir="${jem.jbpm.classes.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete dir="${jem.jbpm.distribute.folder}" includeemptydirs="true" includes="**/*" excludes="." />
+		<delete file="${jem.jbpm.jar.file.location}" />
 	</target>
 
-	<!-- create directory needed -->
-	<target name="make-jem-jbpm-directories" depends="clean-jem-jbpm">
-		<mkdir dir="${jem-jbpm.classes.directory}" />
-		<mkdir dir="${jem-jbpm.classes.directory}/META-INF" />
-		<mkdir dir="${jem-jbpm.distribute.directory}" />
+	<!-- 
+	Creates classes and distribution folders. Into classes, it adds also the META-INF necessary 
+	to add this project to the JBPM Eclipse plugin to create JBPM workflows.
+	-->
+	<target name="jbpm-make-folders" depends="jbpm-clean">
+		<mkdir dir="${jem.jbpm.classes.folder}" />
+		<mkdir dir="${jem.jbpm.classes.folder}/META-INF" />
+		<mkdir dir="${jem.jbpm.distribute.folder}" />
 	</target>
 	
-	<!-- copy JEM jar to JEM-JBPM -->
-	<target name="copy-jem-2-jemjbpm" depends="make-jem-jbpm-directories">
-		<delete file="${jem-jbpm.library.directory}/${jem.jar.name}" />
-		<copy file="${jem.repository}/${jem.library.directory}/${jem.jar.name}" toFile="${jem-jbpm.library.directory}/${jem.jar.name}" />
-	</target>
-
-
-	<!-- compile JEM-enterprise project and create jem-clear-enterprise.jar -->
-	<target name="compile-jem-jbpm" depends="copy-jem-2-jemjbpm">
-		<javac srcdir="${jem-jbpm.source.directory}" destdir="${jem-jbpm.classes.directory}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
+	<!-- 
+	Compile JEM JBPM project and create the JAR file of JEM project setting the manifest
+	with JEM information
+	-->
+	<target name="jbpm-compile" depends="jbpm-make-folders">
+		<!-- display java version -->
+		<echo>Java version: ${java.version}</echo>
+		<!-- JAVA compilation -->
+		<javac srcdir="${jem.jbpm.source.folder}" destdir="${jem.jbpm.classes.folder}" debug="${jem.javac.debug}" debuglevel="${jem.javac.debuglevel}" includeantruntime="${jem.javac.includeantruntime}" source="${jem.javac.source}" target="${jem.javac.target}">
 			<compilerarg value="-XDignore.symbol.file" />
 			<classpath>
-				<pathelement path="${jem-jbpm.library.directory}/${jem.jar.name}" />
-				<pathelement path="${jem-jbpm.classes.directory}" />
-				<fileset dir="${jem-jbpm.library.directory}">
+				<pathelement path="${jem.core.classes.folder}" />
+				<pathelement path="${jem.jbpm.classes.folder}" />
+				<fileset dir="${jem.jbpm.library.folder}">
 					<include name="jbpm/*.jar" />
 					<include name="jbpm/lib/*.jar" />
 				</fileset>
 			</classpath>
 		</javac>
-		<jar jarfile="${jem-jbpm.jar.file}" basedir="${jem-jbpm.classes.directory}">
+		<!-- Creates the JAR file adding the classes folder and adding the manifest part -->
+		<jar jarfile="${jem.jbpm.jar.file.location}" basedir="${jem.jbpm.classes.folder}">
 			<manifest>
-				<section name="JEM_the_BEE_JBPM">
+				<section name="JEM_the_BEE">
 					<attribute name="Jem_version" value="${jem.version}" />
 					<attribute name="Built-By" value="${jem.built.by}" />
 					<attribute name="Creation_time" value="${TODAY}" />
+					<attribute name="Component" value="JEM-JBPM" />
 				</section>
 			</manifest>
-			<!--metainf dir="${jem-jbpm.source.directory}/org/pepstock/jem/jbpm/" includes="jem.wid, drools.rulebase.conf"/-->
 		</jar>
 	</target>
-	
-	<target name="build-distribution-jem-jbpm" depends="compile-jem-jbpm">
-		<zip destfile="${jem-jbpm.distribute.directory}/${jem-jbpm.zip.name}">
-			 <fileset dir="${jem-jbpm.library.directory}"/>
-			 <fileset dir="." includes="COPYING, COPYING-EXCEPTION"/>
-			<zipfileset dir="${jem-jbpm.resources.directory}/META-INF" prefix="${jem-jbpm-workitem.distribute.directory}/META-INF"/>
-			<zipfileset dir="${jem-jbpm.resources.directory}/icons" prefix="${jem-jbpm-workitem.distribute.directory}/icons"/>
+
+	<!--
+	Creates a zip file which contains all jar files and necessary info into META-INF for JBPM Eclipse plugin
+	-->
+	<target name="build-distribution-jbpm" depends="jbpm-compile">
+		<zip destfile="${jem.jbpm.zip.file.location}">
+			<fileset dir="${jem.jbpm.library.folder}"/>
+			<fileset dir="." includes="COPYING"/>
+			<zipfileset dir="${jem.jbpm.resources.folder}/META-INF" prefix="${jem.jbpm.workitem.distribute.folder}/META-INF"/>
+			<zipfileset dir="${jem.jbpm.resources.folder}/icons" prefix="${jem.jbpm.workitem.distribute.folder}/icons"/>
 		</zip>
 	</target>
 </project>

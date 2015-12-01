@@ -28,12 +28,60 @@ import java.io.Serializable;
 public class Factory extends AbstractPluginDefinition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	private String classLoader = null;
+	
+	private String type = null;
+	
+	private String description = null;
+
+	/**
+	 * @return the classLoader
+	 */
+	public String getClassLoader() {
+		return classLoader;
+	}
+
+	/**
+	 * @param classLoader the classLoader to set
+	 */
+	public void setClassLoader(String classLoader) {
+		this.classLoader = classLoader;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Factory [getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
+		return "Factory [classLoader=" + classLoader + ", type=" + type + ", description=" + description + ", getClassName()=" + getClassName() + ", getProperties()=" + getProperties() + "]";
 	}
 }

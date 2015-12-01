@@ -1,22 +1,153 @@
 <project name="jem-common-properties" basedir=".">
-	<!-- COMMON PROPERTIES -->
+	<!-- 
+	This file contains all properties for all JEM projects to use on all build file.
+	Common properties used for manifests
+	-->
 	<property name="jem.version" value="2.3" />
 	<property name="jem.built.by" value="www.pepstock.org" />
 	<tstamp>
 		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 	</tstamp>
-	<!-- compilation properties -->
+	
+	<!-- 
+	Java compilation properties for all projects
+	It used source and target to version 1.6 for compatibility to the past 
+	-->
 	<property name="jem.javac.debug" value="true" />
 	<property name="jem.javac.debuglevel" value="lines,vars,source" />
 	<property name="jem.javac.source" value="1.6" />
 	<property name="jem.javac.target" value="1.6" />
 	<property name="jem.javac.includeantruntime" value="false" />
 
-	<!-- jem common properties used in other build -->
-	<property name="jem.workspace" value="../" />
-	<property name="jem.project.directory" value="JEM" />
-	<property name="jem.library.directory" value="${jem.project.directory}/lib" />
-	<property name="jem.jar.name" value="jem.jar" />
-	<property name="jem.classes.directory" value="${jem.project.directory}/classes" />
-	<property name="zip.name" value="jem.zip" />
+	<!-- 
+	Workspace JEM projects folders
+	assumptions is to run teh build file from
+	JEM project therefore coming back to 1 level of folder
+	you are to the workspace folder 
+	-->
+	<property name="jem.workspace.folder" value="../" />
+
+	<!-- 
+	JEM core project 
+	-->
+	<property name="jem.core.folder" value="${jem.workspace.folder}/JEM" />
+	<property name="jem.core.source.folder" value="${jem.core.folder}/src" />
+	<property name="jem.core.library.folder" value="${jem.core.folder}/lib" />
+	<property name="jem.core.classes.folder" value="${jem.core.folder}/classes" />
+	<property name="jem.core.jar.file" value="jem.jar" />
+	<property name="jem.core.jar.file.location" value="${jem.core.library.folder}/${jem.core.jar.file}" />
+	<property name="jem.core.build.file.location" value="${jem.core.folder}/build.xml" />
+	<!-- 
+	JEM-gwt project 
+	-->
+	<property name="jem.gwt.folder" value="${jem.workspace.folder}/JEM-gwt" />
+	<property name="jem.gwt.source.folder" value="${jem.gwt.folder}/src" />
+	<property name="jem.gwt.library.folder" value="${jem.gwt.folder}/lib" />
+	<property name="jem.gwt.classes.folder" value="${jem.gwt.folder}/classes" />
+	<property name="jem.gwt.build.file.location" value="${jem.gwt.folder}/build.xml" />
+
+	<!-- 
+	JEM-JBPM project 
+	-->
+	<property name="jem.jbpm.folder" value="${jem.workspace.folder}/JEM-JBPM" />
+	<property name="jem.jbpm.source.folder" value="${jem.jbpm.folder}/src" />
+	<property name="jem.jbpm.library.folder" value="${jem.jbpm.folder}/lib" />
+	<property name="jem.jbpm.classes.folder" value="${jem.jbpm.folder}/classes" />
+	<property name="jem.jbpm.build.file.location" value="${jem.jbpm.folder}/build.xml" />
+
+	<!-- 
+	JEM-JCL-Ant project 
+	-->
+	<property name="jem.jcl-ant.folder" value="${jem.workspace.folder}/JEM-JCL-Ant" />
+	<property name="jem.jcl-ant.source.folder" value="${jem.jcl-ant.folder}/src" />
+	<property name="jem.jcl-ant.library.folder" value="${jem.jcl-ant.folder}/lib" />
+	<property name="jem.jcl-ant.classes.folder" value="${jem.jcl-ant.folder}/classes" />
+	<property name="jem.jcl-ant.build.file.location" value="${jem.jcl-ant.folder}/build.xml" />
+
+	<!-- 
+	JEM-JCL-SpringBatch project 
+	-->
+	<property name="jem.jcl-springbatch.folder" value="${jem.workspace.folder}/JEM-JCL-SpringBatch" />
+	<property name="jem.jcl-springbatch.source.folder" value="${jem.jcl-springbatch.folder}/src" />
+	<property name="jem.jcl-springbatch.library.folder" value="${jem.jcl-springbatch.folder}/lib" />
+	<property name="jem.jcl-springbatch.classes.folder" value="${jem.jcl-springbatch.folder}/classes" />
+	<property name="jem.jcl-springbatch.build.file.location" value="${jem.jcl-springbatch.folder}/build.xml" />
+
+	<!-- 
+	JEM-junit project 
+	-->
+	<property name="jem.junit.folder" value="${jem.workspace.folder}/JEM-junit" />
+	<property name="jem.junit.source.folder" value="${jem.junit.folder}/src" />
+	<property name="jem.junit.library.folder" value="${jem.junit.folder}/lib" />
+	<property name="jem.junit.classes.folder" value="${jem.junit.folder}/classes" />
+	<property name="jem.junit.build.file.location" value="${jem.junit.folder}/build.xml" />
+
+	<!-- 
+	JEM-plugin project (Ecplise plugin) 
+	There aren't here all properties like the other projects
+	because there isn't the unattended implemented build for Ecplise plugin
+	-->
+	<property name="jem.plugin.folder" value="${jem.workspace.folder}/JEM-plugin" />
+	<property name="jem.plugin.library.folder" value="${jem.plugin.folder}/lib" />
+	
+	<!--
+	Checks if JEM-gwt project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="gwt-exists">
+		<condition property="gwt">
+			<available file="${jem.gwt.build.file.location}"/>
+		</condition>
+	</target>
+
+	<!--
+	Checks if JEM-jbpm project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="jbpm-exists">
+		<condition property="jbpm">
+			<available file="${jem.jbpm.build.file.location}"/>
+		</condition>
+	</target>
+
+	<!--
+	Checks if JEM-jcl-ant project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="jcl-ant-exists">
+		<condition property="jcl-ant">
+			<available file="${jem.jcl-ant.build.file.location}"/>
+		</condition>
+	</target>
+
+	<!--
+	Checks if JEM-jcl-springbatch project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="jcl-springbatch-exists">
+		<condition property="jcl-springbatch">
+			<available file="${jem.jcl-springbatch.build.file.location}"/>
+		</condition>
+	</target>
+
+	<!--
+	Checks if JEM-junit project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="junit-exists">
+		<condition property="junit">
+			<available file="${jem.junit.build.file.location}"/>
+		</condition>
+	</target>
+
+	<!--
+	Checks if JEM-plugin project is present on teh workspace.
+	If yes, creates a property to test from the ANT "target" caller 
+	-->
+	<target name="plugin-exists">
+		<condition property="plugin">
+			<available file="${jem.plugin.library.folder}"/>
+		</condition>
+	</target>
+
 </project>

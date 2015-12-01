@@ -23,6 +23,7 @@ import javax.naming.Reference;
 
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Queues;
@@ -111,7 +112,12 @@ public class CommonResourcerImpl extends AuthorizedDefaultRmiObject implements C
 	 * @see org.pepstock.jem.node.rmi.CommonResourcer#getJclFactoryProperties(java.lang.String)
 	 */
 	@Override
-	public Properties getJemFactoryProperties(String type) throws RemoteException {
+	public Properties getJemFactoryProperties(String jobId) throws RemoteException {
+		// checks if you have resource read permission
+		checkAuthorization(jobId, Permissions.RESOURCES_READ);
+		// gets taks by jobid
+		CancelableTask task = getCurrentTask(jobId);
+		String type = task.getJobTask().getJob().getJcl().getType();
 		if (Main.FACTORIES_LIST.containsKey(type)){
 			JemFactory factory = Main.FACTORIES_LIST.get(type);
 			return factory.getProperties();

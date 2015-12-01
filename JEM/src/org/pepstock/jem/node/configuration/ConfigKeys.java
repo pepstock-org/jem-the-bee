@@ -244,12 +244,12 @@ public final class ConfigKeys {
 	public static final String PATHS_ELEMENT = "paths";
 
 	/**
-	 * Attribute name alias for <code>name</code> fields
+	 * Attribute name alias for <code>name</code> field
 	 */
 	public static final String NAME_ATTRIBUTE_ALIAS = "name";
 
 	/**
-	 * Attribute name for <code>name</code> fields
+	 * Attribute name for <code>name</code> field
 	 */
 	public static final String NAME_FIELD = "name";
 	
@@ -279,14 +279,24 @@ public final class ConfigKeys {
 	public static final String LISTENER_ALIAS = "listener";
 
 	/**
-	 * Alias for <code>className</code> fields
+	 * Alias for <code>className</code> field
 	 */
 	public static final String CLASS_NAME_ATTRIBUTE_ALIAS = "className";
 	
 	/**
-	 * Attribute name for <code>className</code> fields
+	 * Attribute name for <code>className</code> field
 	 */
 	public static final String CLASS_NAME_FIELD = "className";
+
+	/**
+	 * Alias for <code>classLoader</code> field
+	 */
+	public static final String CLASS_LOADER_ATTRIBUTE_ALIAS = "classLoader";
+	
+	/**
+	 * Attribute name for <code>classLoader</code> field
+	 */
+	public static final String CLASS_LOADER_FIELD = "classLoader";
 
 	/**
 	 * Alias used for database class to load
@@ -304,12 +314,12 @@ public final class ConfigKeys {
 	public static final String STATISTICS_MANAGER_FIELD = "statsManager";
 
 	/**
-	 * Alias for <code>path</code> fields
+	 * Alias for <code>path</code> field
 	 */
 	public static final String PATH_ATTRIBUTE_ALIAS = "path";
 	
 	/**
-	 * Attribute name for <code>path</code> fields
+	 * Attribute name for <code>path</code> field
 	 */
 	public static final String PATH_FIELD = "path";
 	
@@ -324,12 +334,12 @@ public final class ConfigKeys {
 	public static final String DATA_ELEMENT = "data";
 	
 	/**
-	 * Alias for <code>enable</code> fields
+	 * Alias for <code>enable</code> field
 	 */
 	public static final String ENABLE_ATTRIBUTE_ALIAS = "enable";
 	
 	/**
-	 * Attribute name for <code>path</code> fields
+	 * Attribute name for <code>path</code> field
 	 */
 	public static final String ENABLE_FIELD = "enable";
 
@@ -391,43 +401,53 @@ public final class ConfigKeys {
 	public static final String RESOURCE_CUSTOM_PROPERTIES_FIELD = "customProperties";
 	
 	/**
-	 * Attribute name for <code>type</code> fields
+	 * Attribute name for <code>type</code> field
 	 */
 	public static final String TYPE_FIELD = "type";
 
 	/**
-	 * Attribute alias for <code>type</code> fields
+	 * Attribute alias for <code>type</code> field
 	 */
 	public static final String TYPE_ATTRIBUTE_ALIAS = "type";
 
 	/**
-	 * Attribute name for <code>user</code> fields
+	 * Attribute name for <code>description</code> field
+	 */
+	public static final String DESCRIPTION_FIELD = "description";
+
+	/**
+	 * Attribute alias for <code>description</code> field
+	 */
+	public static final String DESCRIPTION_ATTRIBUTE_ALIAS = "description";
+
+	/**
+	 * Attribute name for <code>user</code> field
 	 */
 	public static final String USER_FIELD = "user";
 
 	/**
-	 * Attribute alias for <code>user</code> fields
+	 * Attribute alias for <code>user</code> field
 	 */
 	public static final String USER_ATTRIBUTE_ALIAS = "user";
 
 	/**
-	 * Attribute name for <code>lastModified</code> fields
+	 * Attribute name for <code>lastModified</code> field
 	 */
 	public static final String LAST_MODIFIED_FIELD = "lastModified";
 
 	/**
-	 * Attribute alias for <code>lastModified</code> fields
+	 * Attribute alias for <code>lastModified</code> field
 	 */
 	public static final String LAST_MODIFIED_ATTRIBUTE_ALIAS = "lastModified";
 
 	
 	/**
-	 * Attribute name for <code>properties</code> fields
+	 * Attribute name for <code>properties</code> field
 	 */
 	public static final String PROPERTIES_FIELD = "properties";
 
 	/**
-	 * Attribute alias for <code>property</code> fields
+	 * Attribute alias for <code>property</code> field
 	 */
 	public static final String PROPERTY_ATTRIBUTE_ALIAS = "property";
 

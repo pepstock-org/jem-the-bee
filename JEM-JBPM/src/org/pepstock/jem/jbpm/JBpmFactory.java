@@ -62,37 +62,26 @@ public class JBpmFactory extends AbstractFactory {
     private static final long serialVersionUID = 1L;
     
 	/**
-	 * public key which indicates the JCL type for JBPM
+	 * Default JCL type for JBPM
 	 */
 	public static final String JBPM_TYPE = "jbpm";
-	
-	private static final String JBPM_TYPE_DESCRIPTION = "JBoss BPM";
+
+	/**
+	 * default the JCL description for JBPM
+	 */
+	public static final String JBPM_TYPE_DESCRIPTION = "JBoss BPM";
 	
 	private static final String PROCESS_XML_ELEMENT = "process";
 
 	private static final String ID_XML_ATTRIBUTE = "id";
 	
 	/**
-	 * Empty constructor
+	 * sets the default values of type and description
 	 */
 	public JBpmFactory() {
 		super();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.factories.JemFactory#getType()
-	 */
-	@Override
-	public String getType() {
-		return JBPM_TYPE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.factories.JemFactory#getTypeDescription()
-	 */
-	@Override
-	public String getTypeDescription() {
-		return JBPM_TYPE_DESCRIPTION;
+		super.setType(JBPM_TYPE);
+		super.setTypeDescription(JBPM_TYPE_DESCRIPTION);
 	}
 
 	/* (non-Javadoc)
@@ -103,7 +92,7 @@ public class JBpmFactory extends AbstractFactory {
 		// creates a default JCL
 		Jcl jcl = new Jcl();
 		// sets type and content
-		jcl.setType(JBPM_TYPE);
+		jcl.setType(getType());
 		jcl.setContent(content);
 		try {
 			// validates JCL

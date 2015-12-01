@@ -24,7 +24,6 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.tasks.DefaultJobTask;
-import org.pepstock.jem.node.tasks.JavaUtils;
 import org.pepstock.jem.node.tasks.shell.JavaCommand;
 
 /**
@@ -48,8 +47,6 @@ public class JBpmTask extends DefaultJobTask {
 	 */
 	public JBpmTask(Job job, JemFactory factory) {
 		super(job, factory);
-
-
 	}
 	/**
 	 * Implementations of abstract method.<br>
@@ -63,20 +60,7 @@ public class JBpmTask extends DefaultJobTask {
 		
 		// gets CLASSPATH, setting the name of folder in JEM lib to add
 		// to process to launch
-		String currentClassPath = JavaUtils.getClassPath();
-		
-		// using a custom classloadr, CLASSPATH of factory couldn't be empty
-		if (getFactory().getClassPath() != null && !getFactory().getClassPath().isEmpty()){
-			StringBuilder builder = new StringBuilder(currentClassPath);
-			for (String path : getFactory().getClassPath()){
-				 builder.append(File.pathSeparator).append(path);
-			}
-			currentClassPath = builder.toString();
-		} else {
-			throw new IOException("classPath is empty");
-		}
-		// sets classpath
-		getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
+		String currentClassPath = loadAndGetClassPathFromClassLoader();
 	
 		// get job instance and get JCL file, necessary to pass to JBPM Batch
 		Job job = getJob();
@@ -85,15 +69,6 @@ public class JBpmTask extends DefaultJobTask {
 		// adds the custom classpath if not null
 		Jcl jcl =job.getJcl();
 		
-		if (jcl.getPriorClassPath() != null){
-			currentClassPath = jcl.getPriorClassPath() + File.pathSeparator + currentClassPath;
-			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
-		}
-		
-		if (jcl.getClassPath() != null){
-			currentClassPath = currentClassPath + File.pathSeparator + jcl.getClassPath();
-			getEnv().put(CLASSPATH_ENVIRONMENT_VARIABLE, currentClassPath);
-		}
 		// creates a Java command
 		JavaCommand jCommand = getCommand();
 		

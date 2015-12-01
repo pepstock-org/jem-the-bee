@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="JPPF" />
+		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
+	</beans:bean>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="test-T-Attribute" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Attribute-Bean" />
+	</beans:bean>
+
+	<beans:bean id="test-T-Resource" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Bean" />
+		<beans:property name="dataSourceList">
+			<beans:list>
+				<beans:ref bean="datasource"/>
+			</beans:list>
+		</beans:property>		
+	</beans:bean>
+
+	<beans:bean id="test-T-Config" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="JPPF-CONFIG"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="test-Attribute" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Attribute-Bean" />
+	</beans:bean>
+
+	<beans:bean id="test-Resource" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Bean" />
+		<beans:property name="dataSourceList">
+			<beans:list>
+				<beans:ref bean="datasource"/>
+			</beans:list>
+		</beans:property>		
+	</beans:bean>
+
+	<beans:bean id="test-Config" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="JPPF-CONFIG"/>
+			</beans:list>
+		</beans:property>		
+	</beans:bean>
+	
+	<!-- 
+		JPPF beans Defintion
+	 -->
+
+	<beans:bean id="test-T-Attribute-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.SimpleJPPFTask" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+	</beans:bean>
+
+	<beans:bean id="test-T-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.SimpleJPPFTask" />
+		<beans:property name="parallelTaskNumber" value="5" />
+	</beans:bean>
+
+	<beans:bean id="test-Attribute-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.SimpleRunnable" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+	</beans:bean>
+
+	<beans:bean id="test-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.SimpleRunnable" />
+		<beans:property name="parallelTaskNumber" value="5" />
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		JPPF-CONFIG file
+	 -->
+	<beans:bean id="JPPF-CONFIG" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="JPPF-CONFIG" />
+		<beans:property name="disposition" value="SHR" />
+		<beans:property name="datasets">
+				<beans:list>
+			        <beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
+			        	<beans:property name="name" value="jppf.config" />
+          			</beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- 
+		Data source for JPPF
+	 -->
+
+	<beans:bean id="datasource" class="org.pepstock.jem.springbatch.tasks.DataSource">
+		<beans:property name="name" value="jppf" />
+		<beans:property name="resource" value="JPPFLocalhost" />
+	</beans:bean>	
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="JPPF">
+		<step id="test-Task-Resource" next="test-Task-Attribute">
+			<tasklet ref="test-T-Resource" />
+		</step>
+		<step id="test-Task-Attribute" next="test-Task-Config">
+			<tasklet ref="test-T-Attribute" />
+		</step>
+		<step id="test-Task-Config" next="test-Run-Resource">
+			<tasklet ref="test-T-Config" />
+		</step>
+		<step id="test-Run-Resource" next="test-Run-Attribute">
+			<tasklet ref="test-Resource" />
+		</step>
+		<step id="test-Run-Attribute" next="test-Run-Config">
+			<tasklet ref="test-Attribute" />
+		</step>
+		<step id="test-Run-Config">
+			<tasklet ref="test-Config" />
+		</step>
+	</job>
+	
+</beans:beans>

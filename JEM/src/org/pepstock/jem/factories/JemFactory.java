@@ -51,7 +51,17 @@ public interface JemFactory extends JclFactory, JobTaskFactory, NodeLifeCycleLis
 	 * @return type string representation
 	 */
 	String getType();
-	
+
+	/**
+	 * Uses to set the type of job control language. This is the unique key
+	 * related to the factory loading it during the startup phase.
+	 * It overrides the value set by the factory because comes from configuration.
+	 * @param type  type string representation
+	 * 
+	 * @see org.pepstock.jem.Jcl#getType()
+	 */
+	void setType(String type);
+
 	/**
 	 * Uses to describe the type of job control language.
 	 * 
@@ -59,6 +69,15 @@ public interface JemFactory extends JclFactory, JobTaskFactory, NodeLifeCycleLis
 	 * @return description string representation
 	 */
 	String getTypeDescription();
+	
+	/**
+	 * Uses to describe the type of job control language.
+	 * It overrides the value set by the factory because comes from configuration.
+	 * 
+	 * @see org.pepstock.jem.Jcl#getTypeDescription()
+	 * @param description string representation
+	 */
+	void setTypeDescription(String description);
 	
 	/**
 	 * Returns all properties passed as argument on initialization.

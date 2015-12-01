@@ -3,7 +3,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
            http://www.springframework.org/schema/batch 
            http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
 
@@ -39,13 +39,13 @@
 	<beans:bean id="read-tasklet" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 		<beans:property name="dataDescriptionList">
 				<beans:list>
-					<beans:ref local="INPUT"/>
-					<beans:ref local="OUTPUT"/>
+					<beans:ref bean="INPUT"/>
+					<beans:ref bean="OUTPUT"/>
 				</beans:list>
 		</beans:property>
 		<beans:property name="dataSourceList">
 				<beans:list>
-					<beans:ref local="datasource"/>
+					<beans:ref bean="datasource"/>
 				</beans:list>
 		</beans:property>
 	</beans:bean>
@@ -53,13 +53,13 @@
 	<beans:bean id="dump-tasklet" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 		<beans:property name="dataDescriptionList">
 				<beans:list>
-					<beans:ref local="INPUT"/>
-					<beans:ref local="SYSOUT"/>
+					<beans:ref bean="INPUT"/>
+					<beans:ref bean="SYSOUT"/>
 				</beans:list>
 		</beans:property>
 		<beans:property name="dataSourceList">
 				<beans:list>
-					<beans:ref local="datasource"/>
+					<beans:ref bean="datasource"/>
 				</beans:list>
 		</beans:property>
 	</beans:bean>
@@ -67,13 +67,13 @@
 	<beans:bean id="write-tasklet" class="org.pepstock.jem.springbatch.tasks.utilities.CopyTasklet">
 		<beans:property name="dataDescriptionList">
 				<beans:list>
-					<beans:ref local="INPUT-WRITE"/>
-					<beans:ref local="OUTPUT-WRITE"/>
+					<beans:ref bean="INPUT-WRITE"/>
+					<beans:ref bean="OUTPUT-WRITE"/>
 				</beans:list>
 		</beans:property>
 		<beans:property name="dataSourceList">
 				<beans:list>
-					<beans:ref local="datasource"/>
+					<beans:ref bean="datasource"/>
 				</beans:list>
 		</beans:property>
 	</beans:bean>

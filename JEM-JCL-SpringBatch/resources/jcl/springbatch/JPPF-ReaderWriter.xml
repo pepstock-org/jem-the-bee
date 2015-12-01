@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	    <beans:property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</beans:bean>
+	<!-- 
+		Application Context
+	 -->
+	<beans:bean id="transactionManager"
+        class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+	<beans:bean id="jobRepository" 
+  		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+    	<beans:property name="transactionManager" ref="transactionManager"/>
+	</beans:bean>
+
+	<beans:bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    	<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<!-- 
+		Jem Props
+	 -->
+
+	<beans:bean id="jem.bean" class="org.pepstock.jem.springbatch.JemBean">
+		<beans:property name="jobName" value="JPPF" />
+		<beans:property name="environment" value="TEST-Env" />
+		<beans:property name="classPath" value="${jem.classpath}/test/jem-test.jar" />
+	</beans:bean>
+
+	<!-- 
+		Tasklet Defintion
+	 -->
+
+	<beans:bean id="test-T-ReaderWriter" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="INPUT"/>
+				<beans:ref bean="OUTPUT-1"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="test-T-Chunk-ReaderWriter" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-T-Chunk-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="INPUT"/>
+				<beans:ref bean="OUTPUT-2"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>	
+
+	<beans:bean id="test-ReaderWriter" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="INPUT"/>
+				<beans:ref bean="OUTPUT-3"/>
+			</beans:list>
+		</beans:property>		
+	</beans:bean>
+	
+	<beans:bean id="test-Chunk-ReaderWriter" class="org.pepstock.jem.jppf.JPPFTasklet">
+		<beans:property name="bean" ref="test-Chunk-Bean" />
+		<beans:property name="dataDescriptionList">
+			<beans:list>
+				<beans:ref bean="INPUT"/>
+				<beans:ref bean="OUTPUT-4"/>
+			</beans:list>
+		</beans:property>		
+	</beans:bean>
+	
+	<!-- 
+		JPPF beans Defintion
+	 -->
+
+	<beans:bean id="test-T-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.JPPFTaskReaderWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+
+	<beans:bean id="test-T-Chunk-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.JPPFTaskReaderWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="chunkableDataDescription" value="INPUT" />
+		<beans:property name="delimiterString" value="789" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+
+	<beans:bean id="test-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.RunnableReaderWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+	
+	<beans:bean id="test-Chunk-Bean" class="org.pepstock.jem.jppf.JPPFBean">
+		<beans:property name="runnable" value="org.pepstock.jem.testjppf.RunnableReaderWriter" />
+		<beans:property name="address" value="localhost:11111" />
+		<beans:property name="parallelTaskNumber" value="5" />
+		<beans:property name="chunkableDataDescription" value="INPUT" />
+		<beans:property name="delimiterString" value="789" />
+		<beans:property name="mergedDataDescription" value="OUTPUT" />
+	</beans:bean>
+	
+	<!-- 
+		Data description list
+		INPUT file
+	 -->
+	<beans:bean id="INPUT" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="INPUT" />
+		<beans:property name="disposition" value="SHR" />
+		<beans:property name="datasets">
+				<beans:list>
+					<beans:bean class="org.pepstock.jem.springbatch.tasks.DataSet">
+			        	<beans:property name="name" value="gdg/jemtest(0)" />
+			        </beans:bean>
+				</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT-1 file
+	 -->
+	<beans:bean id="OUTPUT-1" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+
+	<!-- 
+		Data description list
+		OUTPUT-2 file
+	 -->
+	<beans:bean id="OUTPUT-2" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+	
+		<!-- 
+		Data description list
+		OUTPUT-3 file
+	 -->
+	<beans:bean id="OUTPUT-3" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+	
+		<!-- 
+		Data description list
+		OUTPUT-4 file
+	 -->
+	<beans:bean id="OUTPUT-4" class="org.pepstock.jem.springbatch.tasks.DataDescription">
+		<beans:property name="name" value="OUTPUT" />
+		<beans:property name="disposition" value="NEW" />
+		<beans:property name="sysout" value="true" />
+	</beans:bean>
+
+	<!-- 
+		null: does nothing
+	 -->
+	<job id="JPPF">
+		<step id="test-Task-Chunk-ReaderWriter" next="test-Task-ReaderWriter">
+			<tasklet ref="test-T-Chunk-ReaderWriter" />
+		</step>
+		<step id="test-Task-ReaderWriter" next="test-Run-Chunk-ReaderWriter">
+			<tasklet ref="test-T-ReaderWriter" />
+		</step>
+		<step id="test-Run-Chunk-ReaderWriter" next="test-Run-ReaderWriter">
+			<tasklet ref="test-Chunk-ReaderWriter" />
+		</step>
+		<step id="test-Run-ReaderWriter">
+			<tasklet ref="test-ReaderWriter" />
+		</step>
+	</job>
+	
+</beans:beans>

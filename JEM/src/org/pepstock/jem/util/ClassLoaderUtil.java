@@ -172,6 +172,7 @@ public final class ClassLoaderUtil {
 					}
 				}
 			}
+			
 			// checks if the collection is empty.
 			// if yes, all classpath definiton is wrong and no files have been
 			// loaded

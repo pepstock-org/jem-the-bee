@@ -3,7 +3,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
            http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
            http://www.springframework.org/schema/batch 
            http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
 
@@ -49,7 +49,7 @@
 		<beans:property name="bean" ref="test-T-Bean" />
 		<beans:property name="dataSourceList">
 			<beans:list>
-				<beans:ref local="datasource"/>
+				<beans:ref bean="datasource"/>
 			</beans:list>
 		</beans:property>		
 	</beans:bean>
@@ -58,7 +58,7 @@
 		<beans:property name="bean" ref="test-T-Bean" />
 		<beans:property name="dataDescriptionList">
 			<beans:list>
-				<beans:ref local="JPPF-CONFIG"/>
+				<beans:ref bean="JPPF-CONFIG"/>
 			</beans:list>
 		</beans:property>
 	</beans:bean>
@@ -71,7 +71,7 @@
 		<beans:property name="bean" ref="test-Bean" />
 		<beans:property name="dataSourceList">
 			<beans:list>
-				<beans:ref local="datasource"/>
+				<beans:ref bean="datasource"/>
 			</beans:list>
 		</beans:property>		
 	</beans:bean>
@@ -80,7 +80,7 @@
 		<beans:property name="bean" ref="test-Bean" />
 		<beans:property name="dataDescriptionList">
 			<beans:list>
-				<beans:ref local="JPPF-CONFIG"/>
+				<beans:ref bean="JPPF-CONFIG"/>
 			</beans:list>
 		</beans:property>		
 	</beans:bean>

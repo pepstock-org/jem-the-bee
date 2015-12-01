@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="JobOutputArchive" default="step1" basedir=".">
+	<description>
+		Clean up GDG
+    </description>
+
+
+	<property name="jem.job.name" value="JobOutputArchive"/>
+	<property name="jem.job.environment" value="TEST-Env"/>
+	
+	<taskdef name="archive" classname="org.pepstock.jem.ant.tasks.utilities.JobOutputArchiveTask" />
+	
+
+	<target name="step1">
+		<archive>
+			<arg value="-class"/>
+			<arg value="org.pepstock.jem.node.archive.DefaultJobOutputArchive"/>
+
+			<dataDescription name="COMMAND" disposition="SHR">
+				<dataSet>
+					<![CDATA[
+					user: root;
+					]]>
+				</dataSet>
+				
+				<!--dataSet>
+					<![CDATA[
+					means job with whatever name, submitted by user root and older of 4 days
+					name:* user:root  endedTime:!4d;
+					]]>
+				</dataSet-->
+			</dataDescription>
+		</archive>
+	</target>
+
+</project>
