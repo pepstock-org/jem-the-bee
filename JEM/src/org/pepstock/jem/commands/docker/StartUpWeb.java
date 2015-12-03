@@ -16,8 +16,10 @@
 */
 package org.pepstock.jem.commands.docker;
 
+import java.io.File;
 import java.util.Properties;
 
+import org.pepstock.jem.commands.util.NodeAttributes;
 import org.pepstock.jem.commands.util.NodeProperties;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 
@@ -31,7 +33,7 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
 public class StartUpWeb extends StartUp{
 	
 	private static final String COMMAND = "jem-web.sh";
-
+	
 	/**
 	 * Constructs the object saving the command name (necessary on help) and adding arguments definitions.
 	 * 
@@ -60,7 +62,29 @@ public class StartUpWeb extends StartUp{
 		return COMMAND;
 	}
 
-
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.commands.docker.StartUp#hasConfigured()
+	 */
+	@Override
+	boolean hasConfigured() {
+		// checks if there is the persistent with ENVIROMENT 
+		// already mounted
+		File persistence = new File(JEM_GFS_FILE, "persistence");
+		if (persistence.exists()){
+			// if persistence exists
+			File env = new File(persistence, getEnvironment());
+			if (env.exists()){
+				// if env exists
+				File web = new File(env, NodeAttributes.TEMPLATE_WEB_DIRECTORY_NAME);
+				if (web.exists()){
+					// if web exists
+					File warFile = new File(web, NodeAttributes.TEMPLATE_WAR_FILE_NAME);
+					return warFile.exists();
+				}
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Main method! Parses the arguments, creates the client, submits job.

@@ -18,9 +18,7 @@
 
 	<statistics-manager/>
 
-	<!-- node className="org.pepstock.jem.grs.GrsNode">
-		<properties/>
-	</node-->
+	<node className="org.pepstock.jem.grs.GrsNode"/>
 
 	<factories>
 		<factory className="org.pepstock.jem.ant.AntFactory">

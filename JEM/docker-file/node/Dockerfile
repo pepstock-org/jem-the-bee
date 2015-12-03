@@ -3,7 +3,7 @@
 # deploying it on JAVA
 ###
 FROM java:7-jre
-MAINTAINER info@pepstock.org
+MAINTAINER Andrea Stock Stocchero <info@pepstock.org>
 ###
 # Creates the JEM folder
 ###
@@ -39,7 +39,7 @@ ENV PATH $JEM_HOME/bin:$PATH
 # 54327 - Hazelcast multicast group
 # 5910 - JEM HTTPS listener
 ###
-EXPOSE 5710 54327 5910
+##EXPOSE 5710 54327 5910
 ###
 # Standard command: BASH
 ###

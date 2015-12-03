@@ -1484,7 +1484,7 @@ public class StartUpSystem {
 					// gets properties defined. If not empty, substitutes
 					// the value of property with variables
 					Properties propsOfNode = node.getProperties();
-					if (!propsOfNode.isEmpty()) {
+					if (propsOfNode != null && !propsOfNode.isEmpty()) {
 						// scans all properties
 						for (Enumeration<Object> e = propsOfNode.keys(); e.hasMoreElements();) {
 							// gets key and value

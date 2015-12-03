@@ -35,6 +35,7 @@ import org.pepstock.jem.commands.util.ArgumentsParser;
 import org.pepstock.jem.commands.util.NodeProperties;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
+import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
 
 /**
@@ -47,15 +48,26 @@ public abstract class StartUp {
 
 	static final String JEM_GFS_MOUNT_POINT = "/mnt/jem";
 
-	private final Map<String, CreateNodeArgument> arguments = new HashMap<String, CreateNodeArgument>();
+	static final File JEM_GFS_FILE = new File(JEM_GFS_MOUNT_POINT);
 	
+	private final Map<String, CreateNodeArgument> arguments = new HashMap<String, CreateNodeArgument>();
+
 	private String environment = null;
+	
+	private String home = null;
 	
 	/**
 	 * @return the environment
 	 */
 	String getEnvironment() {
 		return environment;
+	}
+
+	/**
+	 * @return the home
+	 */
+	String getHome() {
+		return home;
 	}
 
 	/**
@@ -111,6 +123,11 @@ public abstract class StartUp {
 	 * @throws ConfigurationException if some mandatory env variables are missing
 	 */
 	void readEnvironmentVariables() throws ConfigurationException {
+		home = System.getenv(ConfigKeys.JEM_HOME);
+		if (home == null || "".equalsIgnoreCase(home)){
+			throw new ConfigurationException(ConfigKeys.JEM_HOME+" is missing"); 
+		}
+		
 		environment = System.getenv(Keys.JEM_ENVIRONMENT_VARIABLE);
 		if (environment == null || "".equalsIgnoreCase(environment)){
 			throw new ConfigurationException(Keys.JEM_ENVIRONMENT_VARIABLE+" is missing"); 
@@ -120,6 +137,8 @@ public abstract class StartUp {
 	abstract void loadProperties(Properties props) throws ConfigurationException;
 	
 	abstract String getCommand();
+	
+	abstract boolean hasConfigured();
 
 	/**
 	 * Executes all necessary steps to submit the job.
@@ -130,26 +149,33 @@ public abstract class StartUp {
 	public int execute(String[] args){
 		int rc = 0;
 		try {
+			readEnvironmentVariables();
+
+			// if the folders on persistence and home
+			// of environment are already installed then 
+			// skip config
+			if (hasConfigured()){
+				return rc;
+			}
 			parseArguments(args);
 			readArguments();
-			readEnvironmentVariables();
+			
 			Properties props = new Properties();
 			URL res = this.getClass().getClassLoader().getResource(Keys.CREATE_NODE_PROPERTIES);
 			props.load(res.openStream());
 			props.setProperty(NodeProperties.JEM_ENVIRONMENT_NAME_PROP, environment);
 			
-			File gfsParent = new File(JEM_GFS_MOUNT_POINT);
-			if (!gfsParent.exists()){
-				gfsParent.mkdirs();
+			if (!JEM_GFS_FILE.exists()){
+				JEM_GFS_FILE.mkdirs();
 			}
 			
-			props.setProperty(NodeProperties.JEM_OUTPUT_PROP, createFolder(gfsParent, "output").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_DATA_PROP, createFolder(gfsParent, "data").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_SOURCE_PROP, createFolder(gfsParent, "src").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_BINARY_PROP, createFolder(gfsParent, "bin").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_CLASSPATH_PROP, createFolder(gfsParent, "classes").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_LIBRARY_PROP, createFolder(gfsParent, "lib").getAbsolutePath());
-			props.setProperty(NodeProperties.JEM_PERSISTENCE_PROP, createFolder(gfsParent, "persistence").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_OUTPUT_PROP, createFolder(JEM_GFS_FILE, "output").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_DATA_PROP, createFolder(JEM_GFS_FILE, "data").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_SOURCE_PROP, createFolder(JEM_GFS_FILE, "src").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_BINARY_PROP, createFolder(JEM_GFS_FILE, "bin").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_CLASSPATH_PROP, createFolder(JEM_GFS_FILE, "classes").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_LIBRARY_PROP, createFolder(JEM_GFS_FILE, "lib").getAbsolutePath());
+			props.setProperty(NodeProperties.JEM_PERSISTENCE_PROP, createFolder(JEM_GFS_FILE, "persistence").getAbsolutePath());
 			
 			loadProperties(props);
 			

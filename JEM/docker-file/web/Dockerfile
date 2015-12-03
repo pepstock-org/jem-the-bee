@@ -3,7 +3,7 @@
 # deploying it on TOMCAT
 ###
 FROM tomcat:7
-MAINTAINER info@pepstock.org
+MAINTAINER Andrea Stock Stocchero <info@pepstock.org>
 ###
 # Creates the JEM folder
 ###
@@ -26,6 +26,8 @@ RUN unzip jem && \
 ###
 ENV JEM_HOME=/opt/jem/jemhome
 ENV PATH $JEM_HOME/bin:$PATH
+
+EXPOSE 9701
 ###
 # Start of JEM installation and TOMCAT startup
 ###

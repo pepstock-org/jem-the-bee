@@ -1,6 +1,6 @@
 <configuration>
 	<restconf>
-		<url>http://localhost:8888/rest</url>
+		<url>http://192.168.99.100:9090/jem_gwt/rest</url>
 		<user>root</user>
 		<password>pwd</password>
 	</restconf>
@@ -78,7 +78,6 @@
 		<submitter> 
 		    <name>PROXY_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.ProxySubmit</referenceClass>
-			<selected>true</selected> 
 			<embedded>true</embedded> 			   
 			<params>
 				<param>
@@ -189,6 +188,34 @@
 				<param>
 				     <name>host</name>
 				     <value>http://localhost:8888/jem_gwt</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		<submitter> 
+		    <name>PROXY_NOEMBEDDED_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.ProxySubmit</referenceClass>
+			<selected>true</selected> 
+			<embedded>false</embedded> 			   
+			<params>
+				<param>
+				     <name>env</name>
+				     <value>TEST-Env</value>
+				</param>
+				<param>
+				     <name>host</name>
+				     <value>192.168.99.100:9701</value>
 				</param>
 				<param>
 				     <name>password</name>

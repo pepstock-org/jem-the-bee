@@ -16,6 +16,7 @@
 */
 package org.pepstock.jem.commands.docker;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -154,6 +155,38 @@ public class StartUpNode extends StartUp{
 		return COMMAND;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.commands.docker.StartUp#hasAlreadyInstalled()
+	 */
+	@Override
+	boolean hasConfigured() {
+		return checkGfsPersistence() && checkHomeNode();
+	}
+	
+	private boolean checkHomeNode(){
+		// checks if there is the home with ENVIROMENT 
+		// already mounted
+		File env = new File(getHome(), getEnvironment());
+		if (env.exists()){
+			// if persistence exists
+			File node = new File(env, "/node-000/bin");
+			return node.exists();
+		}
+		return false;
+	}
+	
+	private boolean checkGfsPersistence(){
+		// checks if there is the persistent with ENVIROMENT 
+		// already mounted
+		File persistence = new File(JEM_GFS_FILE, "persistence");
+		if (persistence.exists()){
+			// if persistence exists
+			File env = new File(persistence, getEnvironment());
+			return env.exists();
+		}
+		return false;
+	}
+
 	/**
 	 * Main method! Parses the arguments, creates the client, submits job.
 	 * 
