@@ -67,6 +67,6 @@
 	<set-property-fallback name="locale" value="en" />
 	<!-- Choose, if available, the application locale based on browser preferences -->
 	<set-configuration-property name="locale.useragent" value="Y" />
-	
+	<!-- Avoid compile fail caused by org.moxieapps.gwt.uploader.Uploader inclusion -->
 	<set-configuration-property name="xsiframe.failIfScriptTag" value="FALSE" />
 </module>
