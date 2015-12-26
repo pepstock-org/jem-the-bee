@@ -28,7 +28,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.StringPermission;
@@ -81,9 +82,9 @@ public class RolesManager extends DefaultService{
 		// only for 10 seconds otherwise
 		// throws an exception
 		boolean isLock = false;
-		Lock lock = getInstance().getLock(Queues.ROLES_MAP_LOCK);
+		Lock lock = getInstance().getLock(Locks.ROLES_MAP);
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// applies predicate
 				list = new ArrayList<Role>(roles.values(predicate));

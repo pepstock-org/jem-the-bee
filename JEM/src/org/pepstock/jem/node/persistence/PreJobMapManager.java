@@ -28,8 +28,12 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.ConfigProvider;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.util.Numbers;
 
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.QueueConfig;
 import com.hazelcast.core.IQueue;
 
 /**
@@ -38,7 +42,7 @@ import com.hazelcast.core.IQueue;
  * @author Simone "Busy" Businaro
  * 
  */
-public class PreJobMapManager implements Recoverable{ 
+public class PreJobMapManager implements Recoverable, ConfigProvider{ 
 
 	private static PreJobMapManager INSTANCE = null;
 	
@@ -65,6 +69,32 @@ public class PreJobMapManager implements Recoverable{
 			INSTANCE = new PreJobMapManager(dbManager);
 		}
 		return INSTANCE;
+	}
+	
+	/**
+	 * Returns Hazelcast configuration
+	 * @return Hazelcast configuration
+	 */
+	public QueueConfig getQueueConfig(){
+		QueueConfig config = new QueueConfig();
+		config.setName(Queues.JCL_CHECKING_QUEUE);
+		
+		config.setAsyncBackupCount(0);
+		config.setBackupCount(MapConfig.MAX_BACKUP_COUNT);
+		
+		config.setMaxSize(Numbers.N_1000);
+		config.setStatisticsEnabled(true);
+		
+		return config;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.hazelcast.ConfigProvider#getMapConfig()
+	 */
+	@Override
+	public MapConfig getMapConfig() {
+		return null;
 	}
 	
 	/**
@@ -269,4 +299,5 @@ public class PreJobMapManager implements Recoverable{
 			l.unlock();
 		}
 	}
+
 }

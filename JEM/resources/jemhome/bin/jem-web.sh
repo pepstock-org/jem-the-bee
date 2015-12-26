@@ -1,19 +1,30 @@
 # !/bin/bash
+#----------------------------------------------
+# Start up of JEM web inside a container
+#----------------------------------------------
+#
+# import the classpath
 source $JEM_HOME/bin/jem_set_classpath.sh
 
-for OPTION in "$@"
-do
-   if [ ${OPTION:0:2} = -D ] ; then
-      JAVA_OPT="$JAVA_OPT $OPTION"
-   else
-      PGM_OPT="$PGM_OPT $OPTION"
-   fi
-done
-
-java -cp $CLASSPATH $JAVA_OPT org.pepstock.jem.commands.docker.StartUpWeb $PGM_OPT
+#
+# Run the configurator which creates the webapp
+# using the environment variable needed, JEM_ENVIROMENT.
+# if configurator has got some issues, close in RC 1
+java -cp $CLASSPATH org.pepstock.jem.commands.docker.StartUpWeb
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cp /mnt/jem/persistence/$JEM_ENVIRONMENT/web/jem_gwt.war /usr/local/tomcat/webapps
-catalina.sh run
+#
+# set the persistence path, where webapp is located
+JEM_PERSISTENCE=/mnt/jem/persistence
+
+#
+# copy the war file, which contains the webapp, into TOMCAT webapp folder
+cp $JEM_PERSISTENCE/$JEM_ENVIRONMENT/web/jem_gwt.war /usr/local/tomcat/webapps
+
+#
+# Run TOMCAT
+# it uses "exec" to maintain the PID 1 inside of container
+# so that it can receive teh SIGTERM when docker stops the container
+exec catalina.sh run

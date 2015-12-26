@@ -31,6 +31,8 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.node.tasks.JobTask;
 
 import com.hazelcast.core.IMap;
@@ -44,8 +46,8 @@ import com.hazelcast.core.ITopic;
  * 
  * @see org.pepstock.jem.node.InputQueueManager#InputQueueManager()
  * @see org.pepstock.jem.node.Status#Status(int, String)
- * @see org.pepstock.jem.node.Queues#RUNNING_QUEUE
- * @see org.pepstock.jem.node.Queues#OUTPUT_QUEUE
+ * @see org.pepstock.jem.node.hazelcast.Queues#RUNNING_QUEUE
+ * @see org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE
  * @author Andrea "Stock" Stocchero
  * 
  */
@@ -203,9 +205,9 @@ public class Submitter implements Runnable {
 	 * Moves the job instance from RUNNING queue to OUTPUT queue.<br>
 	 * It notify the message for job end, using Hazelcast topic structure.
 	 * 
-	 * @see org.pepstock.jem.node.Queues#RUNNING_QUEUE
-	 * @see org.pepstock.jem.node.Queues#OUTPUT_QUEUE
-	 * @see org.pepstock.jem.node.Queues#ENDED_JOB_TOPIC
+	 * @see org.pepstock.jem.node.hazelcast.Queues#RUNNING_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#ENDED_JOB_TOPIC
 	 * @param job job instance
 	 */
 	private void jobEnded(Job job) {
@@ -240,7 +242,7 @@ public class Submitter implements Runnable {
 
 		if (!job.isNowait()){
 			// send a topic to client which is wait for
-			ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
+			ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.ENDED_JOB);
 			topic.publish(jobEnded);
 		}
 	}

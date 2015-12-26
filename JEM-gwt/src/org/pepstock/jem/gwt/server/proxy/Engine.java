@@ -159,7 +159,6 @@ public class Engine extends Thread {
 					LogAppl.getInstance().emit(UserInterfaceMessage.JEMG084I, handler.getBean());
 				}
 			} else {
-				// FIXME
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG083E, runnable.getClass().getName());
 			}
 		}

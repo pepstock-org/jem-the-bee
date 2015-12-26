@@ -19,6 +19,7 @@ package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.NodeInfoBean;
@@ -28,7 +29,6 @@ import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.NodeFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
@@ -39,7 +39,7 @@ import com.hazelcast.query.Predicate;
  * @version 1.0	
  *
  */
-public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements Serializable {
+public class NodePredicate extends JemFilterPredicate implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,13 +64,13 @@ public class NodePredicate extends JemFilterPredicate<NodeInfoBean> implements S
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Entry entry) {
 		// casts the object to a NodeInfo
 		NodeInfoBean node = ((NodeInfo)entry.getValue()).getNodeInfoBean();
 		boolean includeThis = true;
-		if (!getFilter().isEmpty()){
+		if (!getObject().isEmpty()){
 			// iterate over all filter tokens
-			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			Iterator<FilterToken> iterator = getObject().values().iterator();
 			// exit if tokens already processed OR if i can immediate exclude this
 			while(iterator.hasNext() && includeThis) {
 				FilterToken token = iterator.next();			

@@ -17,27 +17,26 @@
 package org.pepstock.jem.gwt.server.commons;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.GenericCallBack;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.Member;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 2.0
  */
-public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<ExecutionResult> {
+public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<Boolean> {
 
 	/**
 	 * @param callable
 	 * @param member
 	 */
-	public GenericDistributedTaskExecutor(Callable<ExecutionResult> callable, Member member) {
+	public GenericDistributedTaskExecutor(Callable<Boolean> callable, Member member) {
 		super(callable, member);
 	}
 
@@ -45,7 +44,7 @@ public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<Exec
 	 * @see org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor#getResult()
 	 */
     @Override
-    public ExecutionResult getResult() throws ServiceMessageException {
+    public Boolean getResult() throws ServiceMessageException {
 	    throw new UnsupportedOperationException("Use method \"execute\"!");
     }
 	/**
@@ -54,11 +53,8 @@ public class GenericDistributedTaskExecutor extends DistributedTaskExecutor<Exec
 	 */
 	public void execute() throws ServiceMessageException {
 		// creates cancel executor
-		DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(getCallable(), getMember());
 		HazelcastInstance instance = SharedObjects.getHazelcastInstance();
-		ExecutorService executorService = instance.getExecutorService();
-		task.setExecutionCallback(new GenericCallBack());
-		// executes it
-		executorService.execute(task);
+		IExecutorService executorService = instance.getExecutorService(ExecutorServices.NODE);
+		executorService.submitToMember(getCallable(), getMember(), GenericCallBack.DEFAULT);
 	}
 }

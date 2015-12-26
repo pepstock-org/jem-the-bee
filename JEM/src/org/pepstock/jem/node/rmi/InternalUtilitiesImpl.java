@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -33,14 +33,15 @@ import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
-import org.pepstock.jem.node.executors.ExecutionResult;
-import org.pepstock.jem.node.executors.GenericCallBack;
+import org.pepstock.jem.node.executors.TaskExecutor;
 import org.pepstock.jem.node.executors.jobs.Purge;
 import org.pepstock.jem.node.executors.nodes.Drain;
 import org.pepstock.jem.node.executors.nodes.Start;
 import org.pepstock.jem.node.executors.resources.AddResource;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.EvictionHelper;
 import org.pepstock.jem.node.persistence.OutputMapManager;
@@ -61,10 +62,10 @@ import org.pepstock.jem.util.filters.predicates.NodePredicate;
 import org.pepstock.jem.util.filters.predicates.ResourcePredicate;
 
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
-import com.hazelcast.core.Transaction;
+import com.hazelcast.transaction.TransactionContext;
 
 /**
  * @author Andrea "Stock" Stocchero
@@ -107,11 +108,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 						// is the same member
 						if (node.getKey().equalsIgnoreCase(memberKey)){
 							// creates the future task
-							DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Drain(), member);
 							// gets executor service and executes!
-							ExecutorService executorService = Main.getHazelcast().getExecutorService();
-							task.setExecutionCallback(new GenericCallBack());
-							executorService.execute(task);
+							TaskExecutor.submit(new Drain(), cluster.getLocalMember());
 							count++;
 						} 
 					}
@@ -151,11 +149,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 						// is the same member
 						if (node.getKey().equalsIgnoreCase(memberKey)){
 							// creates the future task
-							DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Start(), member);
 							// gets executor service and executes!
-							ExecutorService executorService = Main.getHazelcast().getExecutorService();
-							task.setExecutionCallback(new GenericCallBack());
-							executorService.execute(task);
+							TaskExecutor.submit(new Start(), member);
 							count++;
 						} 
 					}
@@ -194,9 +189,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		// if is not able to lock it in 10 seconds
 		// throws an exception
 		boolean isLock = false;
-		Lock lock = Main.getHazelcast().getLock(Queues.NODES_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.NODES_MAP);
 		try {
-			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){ 
 				allNodes = nodes.values(predicate);
 			} else {
@@ -252,8 +247,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * LOAD Roles checking permissions
 		 */
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			for (Role role: all){
 				boolean updated = false;
@@ -275,10 +270,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 	}
@@ -321,8 +316,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * LOAD Roles checking permissions
 		 */
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			for (Role role: all){
 				boolean updated = false;
@@ -344,10 +339,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 	}
@@ -384,8 +379,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 			}
 		}
 
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			/**
 			 * LOAD Roles checking permissions
@@ -410,10 +405,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 
@@ -455,8 +450,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * LOAD Roles checking permissions
 		 */
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			for (Role role: all){
 				boolean updated = false;
@@ -478,10 +473,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				}
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 
@@ -525,17 +520,17 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * Checks 
 		 */
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			for (int i=0; i<oldRoles.length; i++){
 				roles.remove(oldRoles[i]);
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 	}
@@ -568,8 +563,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		/**
 		 * LOAD
 		 */
-		Transaction txn = Main.getHazelcast().getTransaction();
-		txn.begin();
+		TransactionContext txn = Main.getHazelcast().newTransactionContext();
+		txn.beginTransaction();
 		try {
 			for (Role role: all){
 				CancelableTask task = getCurrentTask(jobId);
@@ -582,10 +577,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 				roles.put(role.getName(), role);
 			}
 			//do other things..
-			txn.commit();
+			txn.commitTransaction();
 		}catch (Exception ex)  {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
-			txn.rollback();
+			txn.rollbackTransaction();
 			throw new RemoteException(ex.getMessage());
 		}
 
@@ -634,11 +629,8 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 
 		Cluster cluster = Main.getHazelcast().getCluster();
 		// creates the future task
-		DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Purge(job), cluster.getLocalMember());
 		// gets executor service and executes!
-		ExecutorService executorService = Main.getHazelcast().getExecutorService();
-		task.setExecutionCallback(new GenericCallBack());
-		executorService.execute(task);
+		TaskExecutor.submit(new Purge(job), cluster.getLocalMember());
 	}
 
 	/* (non-Javadoc)
@@ -681,11 +673,10 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		} else {
 			checkAuthorization(jobId, Permissions.RESOURCES_CREATE);
 			try {
-				DistributedTask<Boolean> addTask = new DistributedTask<Boolean>(new AddResource(resource), Main.getHazelcast().getCluster().getLocalMember());
 				// gets executor service and executes!
-				ExecutorService executorService = Main.getHazelcast().getExecutorService();
-				executorService.execute(addTask);
-				return addTask.get();
+				IExecutorService executorService = Main.getHazelcast().getExecutorService(ExecutorServices.NODE);
+				Future<Boolean> andTask = executorService.submitToMember(new AddResource(resource), Main.getHazelcast().getCluster().getLocalMember());
+				return andTask.get();
 			} catch (Exception ex) {
 				LogAppl.getInstance().ignore(ex.getMessage(), ex);
 				throw new RemoteException(ex.getMessage(), ex);				
@@ -736,9 +727,9 @@ public class InternalUtilitiesImpl extends CommonResourcerImpl implements Intern
 		IMap<String, Resource> map = Main.getHazelcast().getMap(Queues.COMMON_RESOURCES_MAP);
 		Collection<Resource> result = null;		
 		boolean isLock=false;
-		Lock lock = Main.getHazelcast().getLock(Queues.COMMON_RESOURCES_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.COMMON_RESOURCES_MAP);
 		try {
-			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){ 
 					result = map.values(predicate);
 			} else {

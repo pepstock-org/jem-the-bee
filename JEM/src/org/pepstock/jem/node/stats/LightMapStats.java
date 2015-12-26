@@ -37,8 +37,6 @@ public class LightMapStats extends MapOperationsStats{
 
 	private long lockedEntryCount = 0;
 	
-	private long lockWaitCount = 0;
-
 	private long hits = 0;
 	
 	/**
@@ -101,20 +99,6 @@ public class LightMapStats extends MapOperationsStats{
 	 */
 	public void setLockedEntryCount(long lockedEntryCount) {
 		this.lockedEntryCount = lockedEntryCount;
-	}
-
-	/**
-	 * @return the lockWaitCount
-	 */
-	public long getLockWaitCount() {
-		return lockWaitCount;
-	}
-
-	/**
-	 * @param lockWaitCount the lockWaitCount to set
-	 */
-	public void setLockWaitCount(long lockWaitCount) {
-		this.lockWaitCount = lockWaitCount;
 	}
 
 	/**

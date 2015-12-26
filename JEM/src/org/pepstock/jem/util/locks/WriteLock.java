@@ -17,7 +17,6 @@
 package org.pepstock.jem.util.locks;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.InstanceDestroyedException;
 
 /**
  * Implements a distributed write lock, leveraging on Hazelcast features
@@ -46,8 +45,6 @@ public class WriteLock extends ConcurrentLock{
 			// trying acquire the lock on semaphore
 			// for no waiting
 			getNoWaiting().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		}
@@ -55,8 +52,6 @@ public class WriteLock extends ConcurrentLock{
 			// trying acquire the lock on semaphore
 			// for no accessing
 			getNoAccessing().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		} finally {

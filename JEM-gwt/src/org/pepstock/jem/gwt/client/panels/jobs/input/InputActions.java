@@ -21,7 +21,7 @@ import org.pepstock.jem.gwt.client.events.EventBus;
 import org.pepstock.jem.gwt.client.events.SubmitterClosedEvent;
 import org.pepstock.jem.gwt.client.events.SubmitterClosedEventHandler;
 import org.pepstock.jem.gwt.client.panels.jobs.commons.JobsBaseActions;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * @see org.pepstock.jem.gwt.client.panels.jobs.commons.JobsBaseActions

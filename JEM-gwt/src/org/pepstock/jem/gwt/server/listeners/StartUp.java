@@ -46,7 +46,7 @@ import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.net.InterfacesUtils;
 
 import com.hazelcast.config.InMemoryXmlConfig;
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
 import com.hazelcast.config.NetworkConfig;
 
 /**
@@ -159,7 +159,7 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 			SharedObjects.getInstance().setNetworkInterface(InterfacesUtils.getInterface(config));
 			// Overrides the 
 			NetworkConfig network = config.getNetworkConfig();
-			Interfaces interfaces = network.getInterfaces();
+			InterfacesConfig interfaces = network.getInterfaces();
 			// overrides network only if is not set
 			if (interfaces == null){
 				network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());

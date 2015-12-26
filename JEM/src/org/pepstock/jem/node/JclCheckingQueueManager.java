@@ -37,6 +37,9 @@ import org.pepstock.jem.factories.JclFactoryException;
 import org.pepstock.jem.gfs.GfsFileType;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.node.persistence.PreJobMapManager;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.RegExpPermission;
@@ -50,7 +53,7 @@ import org.pepstock.jem.util.TimeUtils;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ITopic;
-import com.hazelcast.core.Transaction;
+import com.hazelcast.transaction.TransactionContext;
 
 /**
  * Manages all activities related to JCL checking queue, after job job
@@ -79,7 +82,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 	/**
 	 * Access to queue and stay in wait for Prejob to check and validate.
 	 * 
-	 * @see org.pepstock.jem.node.Queues#JCL_CHECKING_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#JCL_CHECKING_QUEUE
 	 */
 	public void run() {
 		// gets HC queue
@@ -90,28 +93,30 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 			while (!Main.IS_SHUTTING_DOWN.get()) {
 				// checks if the node is really working and not in access MAINT
 				if (Main.getNode().isOperational() && !Main.IS_ACCESS_MAINT.get()) {
-					
-					// creates a transaction to rollback if there is any exception
-					// done because it removes from queue and adds the job on input map
-					// and an exception must rollback everything, re-putting the job in queue for check
-					Transaction tran = Main.getHazelcast().getTransaction();
-					tran.begin();
-					// gets the job
-					PreJob prejob = poll(jclCheckingQueue);
-
-					// checks because when the system is shutting
-					// down, hazecast gets a null object
-					if (prejob != null) {
-						// check JCL
-						checkAndLoadJcl(prejob);
-						// commit always! Rollback is never necessary
-						// Rollback is called automatically when node crashed
-						tran.commit();
-					} else {
-						// commit always! Rollback is never necessary
-						// Rollback is called automatically when node crashed
-						tran.commit();
-						Thread.sleep(INTERVAL_IF_QUEUE_IS_EMPTY);
+					try{
+						// creates a transaction to rollback if there is any exception
+						// done because it removes from queue and adds the job on input map
+						// and an exception must rollback everything, re-putting the job in queue for check
+						TransactionContext tran = Main.getHazelcast().newTransactionContext();
+						tran.beginTransaction();
+						// gets the job
+						PreJob prejob = poll(jclCheckingQueue);
+						// checks because when the system is shutting
+						// down, hazecast gets a null object
+						if (prejob != null) {
+							// check JCL
+							checkAndLoadJcl(prejob);
+							// commit always! Rollback is never necessary
+							// Rollback is called automatically when node crashed
+							tran.commitTransaction();
+						} else {
+							// commit always! Rollback is never necessary
+							// Rollback is called automatically when node crashed
+							tran.commitTransaction();
+							Thread.sleep(INTERVAL_IF_QUEUE_IS_EMPTY);
+						}
+					} catch (Exception ex){
+						LogAppl.getInstance().ignore(ex.getMessage(), ex);
 					}
 				} else {
 					// sleeps 15 second before checks if there is a new job on queue
@@ -137,7 +142,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		try {
 			// poll on queue for 10
 			// seconds and then leaves
-			prejob = jclCheckingQueue.poll(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			prejob = jclCheckingQueue.poll(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC163E, e);
 		}
@@ -291,17 +296,17 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// creates Hazelcast predicate to extract all roles and permissions
 		// assigned to user
 		RolesQueuePredicate predicate = new RolesQueuePredicate();
-		predicate.setUser(user);
+		predicate.setObject(user);
 
 		// gets HC map for roles
 		IMap<String, Role> roles = Main.getHazelcast().getMap(Queues.ROLES_MAP);
 		// locks in HC to have a consistent status on roles
-		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.ROLES_MAP);
 		List<Role> myroles = null;
 		boolean isLock = false;
 		try {
 			// locks the map, if not EXCEPTION!!
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// reads the roles of the job user
 				myroles = new ArrayList<Role>(roles.values(predicate));
@@ -401,7 +406,7 @@ public class JclCheckingQueueManager extends Thread implements ShutDownInterface
 		// notification
 		// client needs notification if "-nowait" parameter is not used
 		if (!job.isNowait()){
-			ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
+			ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.ENDED_JOB);
 			topic.publish(job);
 		}
 	}

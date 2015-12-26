@@ -17,7 +17,7 @@
 package org.pepstock.jem.gwt.client.panels.jobs.routing;
 
 import org.pepstock.jem.gwt.client.panels.jobs.commons.JobsBaseActions;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * @see org.pepstock.jem.gwt.client.panels.jobs.commons.JobsBaseActions

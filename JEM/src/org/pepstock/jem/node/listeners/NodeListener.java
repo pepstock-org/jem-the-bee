@@ -28,14 +28,16 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.RequestLock;
 import org.pepstock.jem.node.events.JobLifecycleEvent;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 import com.hazelcast.core.Message;
@@ -51,7 +53,7 @@ import com.hazelcast.core.MessageListener;
  * @see org.pepstock.jem.node.NodeInfo
  * 
  */
-public class NodeListener implements MembershipListener, MessageListener<MembershipEvent> {
+public class NodeListener implements MembershipListener, MessageListener<String> {
 
 	private final List<MembershipEvent> membersRemoved = new LinkedList<MembershipEvent>();
 
@@ -59,7 +61,7 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 	 * Empty constructor.
 	 */
 	public NodeListener() {
-		ITopic<MembershipEvent> topic = Main.getHazelcast().getTopic(Queues.REMOVED_NODE_INFO_TOPIC);
+		ITopic<String> topic = Main.getHazelcast().getTopic(Topics.REMOVED_NODE_INFO);
 		topic.addMessageListener(this);
 	}
 
@@ -70,6 +72,14 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 	 */
 	@Override
 	public void memberAdded(MembershipEvent event) {
+		// do nothing
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hazelcast.core.MembershipListener#memberAttributeChanged(com.hazelcast.core.MemberAttributeEvent)
+	 */
+	@Override
+	public void memberAttributeChanged(MemberAttributeEvent arg0) {
 		// do nothing
 	}
 
@@ -170,8 +180,8 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 				LogAppl.getInstance().emit(NodeMessage.JEMC174E, ex);
 			}
 		}
-		ITopic<MembershipEvent> topic = Main.getHazelcast().getTopic(Queues.REMOVED_NODE_INFO_TOPIC);
-		topic.publish(event);
+		ITopic<String> topic = Main.getHazelcast().getTopic(Topics.REMOVED_NODE_INFO);
+		topic.publish(event.getMember().getUuid());
 	}
 
 	/**
@@ -243,7 +253,7 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 
 			if (!job.isNowait()){
 				// send a topic to client which is wait for
-				ITopic<Job> topic = Main.getHazelcast().getTopic(Queues.ENDED_JOB_TOPIC);
+				ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.REMOVED_NODE_INFO);
 				topic.publish(job);
 			}
 		}
@@ -256,15 +266,15 @@ public class NodeListener implements MembershipListener, MessageListener<Members
 	 * com.hazelcast.core.MessageListener#onMessage(com.hazelcast.core.Message)
 	 */
 	@Override
-	public void onMessage(Message<MembershipEvent> event) {
+	public void onMessage(Message<String> event) {
 		Iterator<MembershipEvent> iter = membersRemoved.iterator();
 		while (iter.hasNext()) {
 			MembershipEvent savedEvent = iter.next();
-			if (savedEvent.getMember().getUuid().equalsIgnoreCase(event.getMessageObject().getMember().getUuid())) {
+			if (savedEvent.getMember().getUuid().equalsIgnoreCase(event.getMessageObject())) {
 				iter.remove();
 				return;
 			}
 		}
-		LogAppl.getInstance().emit(NodeMessage.JEMC223W, event.getMessageObject().getMember());
+		LogAppl.getInstance().emit(NodeMessage.JEMC223W, event);
 	}
 }

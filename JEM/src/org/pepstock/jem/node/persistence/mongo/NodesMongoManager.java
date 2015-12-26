@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Map manager based on MONGO for nodes.

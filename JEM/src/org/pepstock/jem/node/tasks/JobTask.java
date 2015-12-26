@@ -35,7 +35,8 @@ import org.pepstock.jem.node.JobLogManager;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.NodeMessageException;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Role;
 import org.pepstock.jem.node.security.RolesQueuePredicate;
 import org.pepstock.jem.node.security.User;
@@ -227,15 +228,15 @@ public abstract class JobTask extends CommandLineTask {
 		// creates Hazelcast predicate to extract all roles and permissions
 		// assigned to user
 		RolesQueuePredicate predicate = new RolesQueuePredicate();
-		predicate.setUser(user);
+		predicate.setObject(user);
 
 		List<Role> myroles = null;
 		// gets map and performs predicate!
 		IMap<String, Role> rolesMap = Main.getHazelcast().getMap(Queues.ROLES_MAP);
-		Lock lock = Main.getHazelcast().getLock(Queues.ROLES_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.ROLES_MAP);
 		boolean isLock = false;
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				myroles = new ArrayList<Role>(rolesMap.values(predicate));
 			} else {

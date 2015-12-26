@@ -18,15 +18,16 @@ package org.pepstock.jem.commands.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.security.KeyException;
 
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
-import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.security.socketinterceptor.SubmitInterceptor;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientNetworkConfig;
+import com.hazelcast.config.SocketInterceptorConfig;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Utility to creates Hazelcast instance to submit jobs.
@@ -60,21 +61,25 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastClient getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastInstance getLocalInstance(String env, String port, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		try {
 			// creates a client configuration for Hazelcast
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
-			clientConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
-			clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
-			clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
-			clientConfig.setUpdateAutomatic(true);
+			
+			ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+			clientConfig.setNetworkConfig(networkConfig);
+			networkConfig.addAddress(InetAddress.getLocalHost().getHostAddress() + ":" + port);
+			
+			networkConfig.setConnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+			networkConfig.setConnectionTimeout(DEFAULT_RECONNECTION_TIMEOUT);
+			networkConfig.setSmartRouting(true);
 			
 			// check if the environment has the socket interceptor enable is so
 			// use it also in the client to login correctly
 			if (privateKeyPathFile != null) {
-				setSocketInterceptor(clientConfig, privateKeyPathFile, privateKeyPassword, userId);
+				setSocketInterceptor(networkConfig, privateKeyPathFile, privateKeyPassword, userId);
 			}
 			// creates a new Client instance of Hazelcast
 			return HazelcastClient.newHazelcastClient(clientConfig);
@@ -91,15 +96,14 @@ public class HazelcastUtil {
 	 * @param userId user identification
 	 * @throws SubmitException if any errors occurs
 	 */
-	private static void setSocketInterceptor(ClientConfig clientConfig, String privateKeyPathFile, String privateKeyPassword, String userId) throws SubmitException{
-		try {
-			SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-			clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-		} catch (KeyException e) {
-			throw new SubmitException(SubmitMessage.JEMW005E, e);
-		} catch (MessageException e) {
-			throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
-		}
+	private static void setSocketInterceptor(ClientNetworkConfig networkConfig, String privateKeyPathFile, String privateKeyPassword, String userId) {
+		SocketInterceptorConfig socketInterceptorConfig = new SocketInterceptorConfig();
+		socketInterceptorConfig.setClassName(SubmitInterceptor.class.getName());
+		socketInterceptorConfig.setEnabled(true);
+		socketInterceptorConfig.setProperty(SubmitInterceptor.PRIVATE_KEY_FILE_PATH, privateKeyPathFile);
+		socketInterceptorConfig.setProperty(SubmitInterceptor.KEY_PASSWORD, privateKeyPassword);
+		socketInterceptorConfig.setProperty(SubmitInterceptor.SUBJECT_ID, userId);
+		networkConfig.setSocketInterceptorConfig(socketInterceptorConfig);
 	}
 
 	/**
@@ -113,7 +117,7 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastClient getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastInstance getInstance(String url, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		String groupName = HttpUtil.getGroupName(url);
 
@@ -125,22 +129,17 @@ public class HazelcastUtil {
 		clientConfig.getGroupConfig().setName(groupName).setPassword(envPassword);
 		
 		// connect to Hazelcast using the complete list of current members
-		clientConfig.addAddress(HttpUtil.getMembers(url));
-		clientConfig.setReconnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
-		clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
-
-		clientConfig.setUpdateAutomatic(true);
+		ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+		clientConfig.setNetworkConfig(networkConfig);
+		networkConfig.addAddress(HttpUtil.getMembers(url));
+		
+		networkConfig.setConnectionAttemptLimit(DEFAULT_RECONNECTION_ATTEMPT_LIMIT);
+		networkConfig.setConnectionTimeout(DEFAULT_RECONNECTION_TIMEOUT);
+		networkConfig.setSmartRouting(true);
 
 		// if properties are not empyt, sets up SocketInterceptor.
 		if (privateKeyPathFile != null) {
-			try {
-				SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-				clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-			} catch (KeyException e) {
-				throw new SubmitException(SubmitMessage.JEMW005E, e);
-			} catch (MessageException e) {
-				throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
-			}
+			setSocketInterceptor(networkConfig, privateKeyPathFile, privateKeyPassword, userId);
 		}
 		// creates a new Client instance of Hazelcast
 		return HazelcastClient.newHazelcastClient(clientConfig);
@@ -157,7 +156,7 @@ public class HazelcastUtil {
 	 * @return hazelcast instance
 	 * @throws SubmitException if any exception occurs
 	 */
-	public static final HazelcastClient getInstance(String proxy, String env, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
+	public static final HazelcastInstance getInstance(String proxy, String env, String envPassword, String privateKeyPathFile, String privateKeyPassword, String userId) 
 			throws SubmitException {
 		// creates a client configuration for Hazelcast
 		ClientConfig clientConfig = new ClientConfig();
@@ -165,24 +164,19 @@ public class HazelcastUtil {
 		// sets the group name (received by http call) and sets the constant
 		// password
 		clientConfig.getGroupConfig().setName(env).setPassword(envPassword);
-		
-		// connect to Hazelcast using the complete list of current members
-		clientConfig.addAddress(proxy);
-		clientConfig.setReconnectionAttemptLimit(0);
-		clientConfig.setReConnectionTimeOut(DEFAULT_RECONNECTION_TIMEOUT);
 
-		clientConfig.setUpdateAutomatic(false);
+		// connect to Hazelcast using the complete list of current members
+		ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+		clientConfig.setNetworkConfig(networkConfig);
+		networkConfig.addAddress(proxy);
+		
+		networkConfig.setConnectionAttemptLimit(0);
+		networkConfig.setConnectionTimeout(DEFAULT_RECONNECTION_TIMEOUT);
+		networkConfig.setSmartRouting(false);
 
 		// if properties are not empyt, sets up SocketInterceptor.
 		if (privateKeyPathFile != null) {
-			try {
-				SubmitInterceptor myClientSocketInterceptor = new SubmitInterceptor(privateKeyPathFile, privateKeyPassword, userId);
-				clientConfig.setSocketInterceptor(myClientSocketInterceptor);
-			} catch (KeyException e) {
-				throw new SubmitException(SubmitMessage.JEMW005E, e);
-			} catch (MessageException e) {
-				throw new SubmitException(e.getMessageInterface(), e, e.getObjects());
-			}
+			setSocketInterceptor(networkConfig, privateKeyPathFile, privateKeyPassword, userId);
 		}
 		// creates a new Client instance of Hazelcast
 		return HazelcastClient.newHazelcastClient(clientConfig);

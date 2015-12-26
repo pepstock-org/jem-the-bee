@@ -18,9 +18,9 @@ package org.pepstock.jem.node.executors.resources;
 
 import org.apache.shiro.subject.ExecutionException;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;

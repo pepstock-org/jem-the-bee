@@ -24,9 +24,9 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.util.locks.LockException;
 import org.pepstock.jem.util.locks.WriteLock;
 
@@ -63,7 +63,7 @@ public class SaveDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 		// checks if a datasets rules file is defined
 		if (Main.DATA_PATHS_MANAGER.getDatasetRulesFile() != null) {
 			// locks the access to file to avoid multiple accesses
-			WriteLock write = new WriteLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
+			WriteLock write = new WriteLock(Main.getHazelcast(), Locks.DATASETS_RULES);
 			try {
 				write.acquire();
 				File file = Main.DATA_PATHS_MANAGER.getDatasetRulesFile();
@@ -86,13 +86,13 @@ public class SaveDatasetsRules extends DefaultExecutor<ConfigurationFile> {
 			} catch (IOException e) {
 				throw new ExecutorException(NodeMessage.JEMC238E, e, Main.DATA_PATHS_MANAGER.getDatasetRulesFile().toString());
 			} catch (LockException e) {
-				throw new ExecutorException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
+				throw new ExecutorException(NodeMessage.JEMC260E, e, Locks.DATASETS_RULES);
 			} finally {
 				// unlock always
 				try {
 					write.release();
 				} catch (Exception e) {
-					LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+					LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Locks.DATASETS_RULES);
 				}
 			}
 		}

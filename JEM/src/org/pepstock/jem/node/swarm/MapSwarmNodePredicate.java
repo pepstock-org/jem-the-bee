@@ -16,14 +16,10 @@
 */
 package org.pepstock.jem.node.swarm;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.util.Map.Entry;
 
 import org.pepstock.jem.node.NodeInfo;
-
-import com.hazelcast.core.MapEntry;
-import com.hazelcast.query.Predicates.AbstractPredicate;
+import org.pepstock.jem.util.InternalAbstractPredicate;
 
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to
@@ -33,35 +29,14 @@ import com.hazelcast.query.Predicates.AbstractPredicate;
  * @version 1.0
  * 
  */
-public class MapSwarmNodePredicate extends AbstractPredicate {
+public class MapSwarmNodePredicate extends InternalAbstractPredicate<String> {
 
 	private static final long serialVersionUID = 1L;
-
-	private String environment = null;
 
 	/**
 	 * Empty constructor
 	 */
 	public MapSwarmNodePredicate() {
-	}
-
-	/**
-	 * Returns the environment
-	 * 
-	 * @return the environment
-	 */
-	public String getEnvironment() {
-		return environment;
-	}
-
-	/**
-	 * Sets the environment
-	 * 
-	 * @param environment
-	 *            the executionEnviroment to set
-	 */
-	public void setEnvironment(String environment) {
-		this.environment = environment;
 	}
 
 	/**
@@ -73,7 +48,7 @@ public class MapSwarmNodePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
+	public boolean apply(@SuppressWarnings("rawtypes")Entry entry) {
 		// gets job instance and JCL
 		NodeInfo nodeInfo = (NodeInfo) entry.getValue();
 		if (nodeInfo == null) {
@@ -85,31 +60,9 @@ public class MapSwarmNodePredicate extends AbstractPredicate {
 		if (nodeInfo.getExecutionEnvironment().getEnvironment() == null) {
 			return false;
 		}
-		if (nodeInfo.getExecutionEnvironment().getEnvironment().equalsIgnoreCase(environment)) {
+		if (nodeInfo.getExecutionEnvironment().getEnvironment().equalsIgnoreCase(getObject())) {
 			return true;
 		}
 		return false;
 	}
-
-	/**
-	 * DeSerializes ExecutionEnviroment from XML
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
-	 */
-	@Override
-	public void readData(DataInput data) throws IOException {
-		String ee = data.readLine();
-		environment = ee;
-	}
-
-	/**
-	 * Serializes Environment to XML
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
-	 */
-	@Override
-	public void writeData(DataOutput data) throws IOException {
-		data.writeBytes(environment);
-	}
-
 }

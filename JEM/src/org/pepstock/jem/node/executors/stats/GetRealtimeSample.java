@@ -18,9 +18,9 @@ package org.pepstock.jem.node.executors.stats;
 
 import org.hyperic.sigar.Sigar;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.stats.LightMapStats;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightSample;

@@ -99,10 +99,8 @@ public class OverviewPanel extends AdminPanel implements ResizeCapable {
 						queueData.setGets(map.getNumberOfGets() + queueData.getGets());
 						queueData.setPuts(map.getNumberOfPuts() + queueData.getPuts());
 						queueData.setRemoves(map.getNumberOfRemoves() + queueData.getRemoves());
-
 						queueData.setHits(map.getHits() + queueData.getHits());
 						queueData.setLocked(map.getLockedEntryCount() + queueData.getLocked());
-						queueData.setHits(map.getLockWaitCount() + queueData.getLockWaits());
 
 						mapData.put(map.getName(), queueData);
 					}

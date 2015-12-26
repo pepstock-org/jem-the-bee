@@ -29,7 +29,7 @@ import org.pepstock.jem.gwt.client.panels.administration.commons.BackListener;
 import org.pepstock.jem.gwt.client.panels.administration.commons.InspectorHeader;
 import org.pepstock.jem.gwt.client.panels.administration.commons.Instances;
 import org.pepstock.jem.gwt.client.panels.components.TableContainer;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.node.stats.LightMemberSampleComparator;
 import org.pepstock.jem.node.stats.LightSample;

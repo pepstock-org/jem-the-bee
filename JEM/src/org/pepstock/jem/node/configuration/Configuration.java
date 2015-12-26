@@ -53,6 +53,8 @@ public class Configuration {
 	private List<CommonResourceDefinition> resourceDefinitions = null;
 	
 	private String datasetsRules = null;
+	
+	private Eviction eviction = null;
 
 	/**
 	 * Empty constructor.
@@ -226,6 +228,20 @@ public class Configuration {
 	 */
 	public void setDatasetsRules(String datasetsRules) {
 		this.datasetsRules = datasetsRules;
+	}
+	
+	/**
+	 * @return the eviction
+	 */
+	public Eviction getEviction() {
+		return eviction;
+	}
+
+	/**
+	 * @param eviction the eviction to set
+	 */
+	public void setEviction(Eviction eviction) {
+		this.eviction = eviction;
 	}
 
 	/**

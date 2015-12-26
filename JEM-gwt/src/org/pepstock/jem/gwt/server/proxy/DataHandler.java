@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.log.LogAppl;
 
 /**
@@ -99,17 +100,22 @@ abstract class DataHandler implements Runnable {
 			//do nothing
 			//the tcp connection could be closed
 		} catch (IOException ioe) {
-			// FIXME
-			ioe.printStackTrace();
+			LogAppl.getInstance().emit(UserInterfaceMessage.JEMG085E, ioe);
 		} finally {
 			shutdownHandler();
 		}
 	}
 	
+    /**
+     * Stops the handler
+     */
 	public void stopHandler() {
 		shutdownHandler();
 	}
 	
+	/**
+	 * Closes Input and Output streams
+	 */
 	private void shutdownHandler() {
 		//Try to close sockets cleanly
 		try {

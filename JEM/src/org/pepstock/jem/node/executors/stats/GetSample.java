@@ -29,10 +29,10 @@ import org.hyperic.sigar.SigarException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.stats.CpuUtilization;
 import org.pepstock.jem.node.stats.FileSystemUtilization;
 import org.pepstock.jem.node.stats.LightMapStats;
@@ -48,9 +48,7 @@ import org.pepstock.jem.node.stats.QueueStats;
 import org.pepstock.jem.node.stats.Sample;
 import org.pepstock.jem.util.TimeUtils;
 
-import com.hazelcast.monitor.LocalMapOperationStats;
 import com.hazelcast.monitor.LocalMapStats;
-import com.hazelcast.monitor.LocalQueueOperationStats;
 import com.hazelcast.monitor.LocalQueueStats;
 
 /**
@@ -248,7 +246,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		lmap.setOwnedEntryMemoryCost(map.getOwnedEntryMemoryCost());
 		// loads the locks info
 		lmap.setLockedEntryCount(map.getLockedEntryCount());
-		lmap.setLockWaitCount(map.getLockWaitCount());
 		// loads the latency on different actions on map
 		lmap.setTotalGetLatency(map.getOperationsStats().getTotalGetLatency());
 		lmap.setTotalPutLatency(map.getOperationsStats().getTotalPutLatency());
@@ -518,8 +515,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	private MapStats loadMapStats(String mapName) {
 		// gets the local map stats
 		LocalMapStats stats = Main.getHazelcast().getMap(mapName).getLocalMapStats();
-		// gets the local operations info
-		LocalMapOperationStats ostats = stats.getOperationStats();
 
 		// creates the bean for MAP stats to return
 		MapStats mstats = new MapStats();
@@ -533,7 +528,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		mstats.setHits(stats.getHits());
 		// loads lock entries
 		mstats.setLockedEntryCount(stats.getLockedEntryCount());
-		mstats.setLockWaitCount(stats.getLockWaitCount());
 		// loads entry count and used memory
 		mstats.setOwnedEntryCount(stats.getOwnedEntryCount());
 		mstats.setOwnedEntryMemoryCost(stats.getOwnedEntryMemoryCost());
@@ -541,16 +535,16 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		// creates the bean for MAP OPERATION stats to return
 		MapOperationsStats mostats = mstats.getOperationsStats();
 		// sets the amount of actions
-		mostats.setNumberOfEvents(ostats.getNumberOfEvents());
-		mostats.setNumberOfGets(ostats.getNumberOfGets());
-		mostats.setNumberOfOtherOperations(ostats.getNumberOfOtherOperations());
-		mostats.setNumberOfPuts(ostats.getNumberOfPuts());
-		mostats.setNumberOfRemoves(ostats.getNumberOfRemoves());
+		mostats.setNumberOfEvents(stats.getEventOperationCount());
+		mostats.setNumberOfGets(stats.getGetOperationCount());
+		mostats.setNumberOfOtherOperations(stats.getOtherOperationCount());
+		mostats.setNumberOfPuts(stats.getPutOperationCount());
+		mostats.setNumberOfRemoves(stats.getRemoveOperationCount());
 		// loads the latency information on 
 		// different actions
-		mostats.setTotalGetLatency(ostats.getTotalGetLatency());
-		mostats.setTotalPutLatency(ostats.getTotalPutLatency());
-		mostats.setTotalRemoveLatency(ostats.getTotalRemoveLatency());
+		mostats.setTotalGetLatency(stats.getMaxGetLatency());
+		mostats.setTotalPutLatency(stats.getMaxPutLatency());
+		mostats.setTotalRemoveLatency(stats.getMaxRemoveLatency());
 		return mstats;
 	}
 
@@ -563,8 +557,6 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 	private QueueStats loadQueueStats(String queueName) {
 		// gets the local queue stats 
 		LocalQueueStats stats = Main.getHazelcast().getQueue(queueName).getLocalQueueStats();
-		// gets operation stats 
-		LocalQueueOperationStats ostats = stats.getOperationStats();
 		
 		// creates the bean about QUEUE stats to return
 		QueueStats qstats = new QueueStats();
@@ -572,7 +564,7 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		qstats.setName(queueName);
 
 		// sets age information
-		qstats.setAveAge(stats.getAveAge());
+		qstats.setAveAge(stats.getAvgAge());
 		qstats.setMaxAge(stats.getMaxAge());
 		qstats.setMinAge(stats.getMinAge());
 		// sets item counts
@@ -582,10 +574,10 @@ public class GetSample extends DefaultExecutor<LightMemberSample> {
 		// creates the bean about QUEUE OPERATION stats to return
 		QueueOperationsStats qostats = qstats.getOperationsStats();
 		// sets the amount of actions
-		qostats.setNumberOfEmptyPolls(ostats.getNumberOfEmptyPolls());
-		qostats.setNumberOfOffers(ostats.getNumberOfOffers());
-		qostats.setNumberOfPolls(ostats.getNumberOfPolls());
-		qostats.setNumberOfRejectedOffers(ostats.getNumberOfRejectedOffers());
+		qostats.setNumberOfEmptyPolls(stats.getEmptyPollOperationCount());
+		qostats.setNumberOfOffers(stats.getOfferOperationCount());
+		qostats.setNumberOfPolls(stats.getPollOperationCount());
+		qostats.setNumberOfRejectedOffers(stats.getRejectedOfferOperationCount());
 		return qstats;
 	}
 }

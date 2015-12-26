@@ -19,6 +19,7 @@ package org.pepstock.jem.node;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.node.persistence.sql.DBPoolManager;
 import org.pepstock.jem.util.TimeUtils;
 
@@ -85,7 +86,7 @@ public class ShutDownHandler extends Thread {
 			LogAppl.getInstance().emit(NodeMessage.JEMC071I, Main.getNode().getLabel());
 
 			if (Main.getHazelcast() != null) {
-				shutdownSynch = Main.getHazelcast().getLock(Queues.SHUTDOWN_LOCK);
+				shutdownSynch = Main.getHazelcast().getLock(Locks.SHUTDOWN);
 				shutdownSynch.lock();
 			}
 			// sets the static reference to true

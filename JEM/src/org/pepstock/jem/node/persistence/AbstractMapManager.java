@@ -28,8 +28,12 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.hazelcast.ConfigFactory;
+import org.pepstock.jem.node.hazelcast.ConfigProvider;
 import org.pepstock.jem.util.filters.Filter;
 
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.QueueConfig;
 import com.hazelcast.core.MapStore;
 
 /**
@@ -42,7 +46,7 @@ import com.hazelcast.core.MapStore;
  * @param <T> Object to map this store
  * 
  */
-public abstract class AbstractMapManager<T> implements MapStore<String, T>, Recoverable {
+public abstract class AbstractMapManager<T> implements MapStore<String, T>, Recoverable, ConfigProvider {
 
 	private DatabaseManager<T> dbManager = null;
 	
@@ -80,6 +84,21 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 	 */
 	public RedoManager<T> getRedoManager() {
 		return redoManager;
+	}
+	
+	/**
+	 * Returns the Hazelcast configuration for this map
+	 * @return the Hazelcast configuration for this map
+	 */
+	public MapConfig getMapConfig(){
+		return ConfigFactory.createMapConfig(getQueueName(), this);
+	}
+	
+	/**
+	 * Returns alwasy null
+	 */
+	public QueueConfig getQueueConfig(){
+		return null;
 	}
 
 	/**
@@ -167,7 +186,6 @@ public abstract class AbstractMapManager<T> implements MapStore<String, T>, Reco
 			try {
 				// load object instance from table
 				objects = dbManager.getAllItems(keys);
-				LogAppl.getInstance().emit(NodeMessage.JEMC055I, String.valueOf(objects.size()), getQueueName());
 			} catch (DatabaseException e) {
 				LogAppl.getInstance().emit(NodeMessage.JEMC043E, e);
 			}

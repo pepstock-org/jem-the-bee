@@ -531,7 +531,13 @@ public enum UserInterfaceMessage implements MessageInterface {
 	 *  "Proxy service is ended for {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the proxy session with the client is terminated correctly")
-	JEMG084I("0084", "Proxy service is ended for {0}", MessageLevel.INFO);
+	JEMG084I("0084", "Proxy service is ended for {0}", MessageLevel.INFO),
+	
+	/**
+	 *  "Proxy data handler error", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the proxy session gets a IO exception. Please have a look to the exception")
+	JEMG085E("0085", "Proxy data handler error", MessageLevel.ERROR);
 
 
 	/**

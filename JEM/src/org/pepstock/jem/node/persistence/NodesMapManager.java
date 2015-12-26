@@ -17,6 +17,9 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.hazelcast.ConfigFactory;
+
+import com.hazelcast.config.MapConfig;
 
 /**
  * Persistent manager for NodeInfos map.<br>
@@ -55,4 +58,14 @@ public class NodesMapManager extends AbstractMapManager<NodeInfo>{
 	public static NodesMapManager getInstance() {
 		return INSTANCE;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractMapManager#getMapConfig()
+	 */
+	@Override
+	public MapConfig getMapConfig() {
+		return ConfigFactory.createMapConfig(getQueueName());
+	}
+	
+	
 }

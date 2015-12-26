@@ -21,6 +21,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.pepstock.jem.node.DefaultRequestLock;
 import org.pepstock.jem.node.ResourceLock;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
@@ -79,7 +81,7 @@ public class GrsRequestLock extends DefaultRequestLock {
 		countDown = new CountDownLatch(getResources().size());
 
 		// uses a common lock to synchronized the requests in the cluster
-		ILock lockRequest = GrsManager.getInstance().getHazelcastInstance().getLock(LockStructures.LOCK_REQUEST);
+		ILock lockRequest = GrsManager.getInstance().getHazelcastInstance().getLock(Locks.GRS_REQUEST);
 		// waits for semaphore
 		lockRequest.lock();
 		// locks all resources in one shot!
@@ -137,7 +139,7 @@ public class GrsRequestLock extends DefaultRequestLock {
 		int mode = resource.getMode();
 
 		// get map for counter of writers and readers
-		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 		// locks the key by resource name (use Hazelcast feature)
 		counterMutex.lock(resourceName);
 
@@ -223,7 +225,7 @@ public class GrsRequestLock extends DefaultRequestLock {
 		int mode = resource.getMode();
 
 		// get map for counter of writers and readers
-		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 		
 		if (!counterMutex.containsKey(resourceName)){
 			// could be a problem because

@@ -22,7 +22,6 @@ import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.executors.DefaultExecutor;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
@@ -37,7 +36,7 @@ import org.pepstock.jem.node.executors.ExecutorException;
  * @version 1.0
  * 
  */
-public class Start extends DefaultExecutor<ExecutionResult>{
+public class Start extends DefaultExecutor<Boolean>{
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,7 +49,7 @@ public class Start extends DefaultExecutor<ExecutionResult>{
 	 * @throws Exception occurs if errors
 	 */
 	@Override
-	public ExecutionResult execute() throws ExecutorException {
+	public Boolean execute() throws ExecutorException {
 		// uses this flag
 		// to understand if must be check current job in queue
 		boolean checkJob = false;
@@ -87,7 +86,7 @@ public class Start extends DefaultExecutor<ExecutionResult>{
 			// checks JOBS for all core threads of pool
 			Main.INPUT_QUEUE_MANAGER.checkJobsInQueue();
 		}
-		return ExecutionResult.SUCCESSFUL;
+		return Boolean.TRUE;
 	}
 
 }

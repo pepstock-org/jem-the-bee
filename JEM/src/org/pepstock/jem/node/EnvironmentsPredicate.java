@@ -16,17 +16,12 @@
 */
 package org.pepstock.jem.node;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
-
-import com.hazelcast.core.MapEntry;
-import com.hazelcast.query.Predicates.AbstractPredicate;
+import org.pepstock.jem.util.InternalAbstractPredicate;
 
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to
@@ -40,34 +35,14 @@ import com.hazelcast.query.Predicates.AbstractPredicate;
  * @version 1.0
  * 
  */
-public abstract class EnvironmentsPredicate extends AbstractPredicate {
+public abstract class EnvironmentsPredicate extends InternalAbstractPredicate<Set<String>> {
 
 	private static final long serialVersionUID = 1L;
-
-	private Set<String> environments = null;
-
+	
 	/**
 	 * Empty constructor
 	 */
 	public EnvironmentsPredicate() {
-	}
-
-	/**
-	 * Returns the execution environments
-	 * 
-	 * @return the executionEnviroments
-	 */
-	public Set<String> getEnvironments() {
-		return environments;
-	}
-
-	/**
-	 * Sets the execution environments
-	 * 
-	 * @param environments the environments to set
-	 */
-	public void setEnvironments(Set<String> environments) {
-		this.environments = environments;
 	}
 
 	/**
@@ -79,11 +54,11 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public final boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
+	public boolean apply(@SuppressWarnings("rawtypes")Entry entry) {
 		// gets job instance and JCL
 		return apply((Job) entry.getValue());
 	}
-	
+
 	/**
 	 * Checks if the job fits the filter
 	 * @param job job instance to check
@@ -108,32 +83,4 @@ public abstract class EnvironmentsPredicate extends AbstractPredicate {
 	 * @return <code>true</code> if must be included, otherwise <code>false</code>.
 	 */
 	public abstract boolean check(Job job);
-
-	/**
-	 * DeSerializes environments from Set
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
-	 */
-	@Override
-	public void readData(DataInput data) throws IOException {
-		String ee = data.readLine();
-		String setString = ee.substring(1, ee.length() - 1);
-		String[] tokens = setString.split(",");
-		environments = new HashSet<String>();
-		for (String currToken : tokens) {
-			environments.add(currToken.trim());
-		}
-	}
-
-	/**
-	 * Serializes Set of environment to String
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
-	 */
-	@Override
-	public void writeData(DataOutput data) throws IOException {
-		String ee = environments.toString();
-		data.writeBytes(ee);
-	}
-
 }

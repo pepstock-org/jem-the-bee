@@ -16,17 +16,12 @@
  */
 package org.pepstock.jem.node;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
-
-import com.hazelcast.core.MapEntry;
-import com.hazelcast.query.Predicates.AbstractPredicate;
-import com.thoughtworks.xstream.XStream;
+import org.pepstock.jem.util.InternalAbstractPredicate;
 
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to
@@ -50,36 +45,14 @@ import com.thoughtworks.xstream.XStream;
  * @version 1.0
  * 
  */
-public class InputQueuePredicate extends AbstractPredicate {
+public class InputQueuePredicate extends InternalAbstractPredicate<ExecutionEnvironment> {
 
 	private static final long serialVersionUID = 1L;
-
-	private ExecutionEnvironment executionEnviroment = null;
-
-	private transient XStream stream = new XStream();
 
 	/**
 	 * Empty constructor
 	 */
 	public InputQueuePredicate() {
-	}
-
-	/**
-	 * Returns the execution environment
-	 * 
-	 * @return the executionEnviroment
-	 */
-	public ExecutionEnvironment getExecutionEnviroment() {
-		return executionEnviroment;
-	}
-
-	/**
-	 * Sets the execution environment
-	 * 
-	 * @param executionEnviroment the executionEnviroment to set
-	 */
-	public void setExecutionEnviroment(ExecutionEnvironment executionEnviroment) {
-		this.executionEnviroment = executionEnviroment;
 	}
 
 	/**
@@ -91,7 +64,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public boolean apply(@SuppressWarnings("rawtypes") MapEntry entry) {
+	public boolean apply(@SuppressWarnings("rawtypes") Entry entry) {
 		// gets job instance and JCL
 		Job job = (Job) entry.getValue();
 		if (job == null) {
@@ -102,6 +75,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 			return false;
 		}
 
+		ExecutionEnvironment executionEnviroment = getObject();
 		// if is in hold, skips it
 		// if doens't have the same environment, skips it
 		// if doens't have the same domain or not the default, skips it
@@ -132,30 +106,7 @@ public class InputQueuePredicate extends AbstractPredicate {
 	 * @return <code>true</code> if the enviroment matches ith JCL definition
 	 */
 	private boolean matchExecutionEnvironment(Jcl jcl) {
-		return jcl.getEnvironment().equalsIgnoreCase(executionEnviroment.getEnvironment()) && (jcl.getDomain().equalsIgnoreCase(executionEnviroment.getDomain()) || jcl.getDomain().equalsIgnoreCase(Jcl.DEFAULT_DOMAIN));
-	}
-
-	/**
-	 * DeSerializes ExecutionEnviroment from XML
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
-	 */
-	@Override
-	public void readData(DataInput data) throws IOException {
-		String ee = data.readLine();
-		executionEnviroment = (ExecutionEnvironment) stream.fromXML(ee);
-	}
-
-	/**
-	 * Serializes ExecutionEnviroment to XML
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
-	 */
-	@Override
-	public void writeData(DataOutput data) throws IOException {
-		// replace \n beacause are not supported from serialize engine
-		String ee = stream.toXML(executionEnviroment).replace('\n', ' ');
-		data.writeBytes(ee);
+		return jcl.getEnvironment().equalsIgnoreCase(getObject().getEnvironment()) && (jcl.getDomain().equalsIgnoreCase(getObject().getDomain()) || jcl.getDomain().equalsIgnoreCase(Jcl.DEFAULT_DOMAIN));
 	}
 
 	private boolean containsIgnoreCase(List<String> list, String string) {

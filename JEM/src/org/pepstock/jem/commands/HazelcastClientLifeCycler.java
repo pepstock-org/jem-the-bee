@@ -17,10 +17,10 @@
 package org.pepstock.jem.commands;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.DefaultClientLifeCycle;
 
-import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
 /**
@@ -33,7 +33,7 @@ public class HazelcastClientLifeCycler extends DefaultClientLifeCycle {
 	
 	private AbstractConnectedClusterSubmit submitter =null;
 	
-	private HazelcastClient client = null;
+	private HazelcastInstance client = null;
 	
 	private boolean isClosed = false;
 
@@ -42,7 +42,7 @@ public class HazelcastClientLifeCycler extends DefaultClientLifeCycle {
 	 * @param submitter submitter instance
 	 * @param client HC client instance
 	 */
-	public HazelcastClientLifeCycler(AbstractConnectedClusterSubmit submitter, HazelcastClient client) {
+	public HazelcastClientLifeCycler(AbstractConnectedClusterSubmit submitter, HazelcastInstance client) {
 		this.submitter = submitter;
 		this.client = client;
 	}
@@ -53,7 +53,7 @@ public class HazelcastClientLifeCycler extends DefaultClientLifeCycle {
 	 * @see org.pepstock.jem.util.DefaultClientLifeCycle#clientConnectionOpened()
 	 */
 	@Override
-	public void clientConnectionOpened() {
+	public void clientConnected() {
 		// if the connection if opened
 		// it checks if the the job is ended (in the meanwhile of its reconnection)
 		Job savedJob = submitter.getJob();

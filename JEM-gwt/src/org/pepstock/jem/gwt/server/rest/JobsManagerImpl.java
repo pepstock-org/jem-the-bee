@@ -45,7 +45,7 @@ import org.pepstock.jem.gwt.server.services.JobsManager;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.rest.entities.JobQueue;
 import org.pepstock.jem.rest.paths.CommonPaths;
 import org.pepstock.jem.rest.paths.JobsManagerPaths;

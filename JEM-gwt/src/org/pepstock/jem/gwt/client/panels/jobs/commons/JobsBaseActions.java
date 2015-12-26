@@ -33,7 +33,7 @@ import org.pepstock.jem.gwt.client.panels.jobs.input.MultiDragAndDropSubmitter;
 import org.pepstock.jem.gwt.client.security.ClientPermissions;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Permissions;
 
 import com.google.gwt.core.client.Scheduler;

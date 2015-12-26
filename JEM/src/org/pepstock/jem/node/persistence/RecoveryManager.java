@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -32,10 +33,9 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.TimeUtils;
-
-import com.hazelcast.core.IMap;
 
 /**
  * This manager will apply all redo statements when the database is back up & running.
@@ -78,13 +78,13 @@ public class RecoveryManager {
 	 */
 	public boolean applyRedoStatements() throws MessageException {
 		// gets the HC map
-		IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
+		Map<Long, RedoStatement> redoMap = Main.getHazelcast().getReplicatedMap(Queues.REDO_STATEMENT_MAP);
 		// locks internally of JEM cluster
-		Lock lock = Main.getHazelcast().getLock(Queues.REDO_STATEMENT_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.REDO_STATEMENT_MAP);
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// if map of redo statements is empty
 				// means nothing to apply
@@ -160,7 +160,7 @@ public class RecoveryManager {
 				if (Main.getNode().isOperational()) {
 					// checks if there are some redo statements
 					// if yes, it will apply all redo statements
-					IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
+					Map<Long, RedoStatement> redoMap = Main.getHazelcast().getReplicatedMap(Queues.REDO_STATEMENT_MAP);
 					if (!redoMap.isEmpty()) {
 						applyRedoStatements();
 					}

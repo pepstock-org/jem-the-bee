@@ -21,11 +21,11 @@ import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.security.JemCacheManager;
 import org.pepstock.jem.gwt.server.services.ServiceMessageException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.GetEvictionInfo;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.DefaultClientLifeCycle;
 
-import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 
 /**
@@ -59,7 +59,7 @@ abstract class LifeCycle extends DefaultClientLifeCycle{
 	 * 
 	 * @param instance
 	 */
-	public void atInstantiation(HazelcastClient instance) {
+	public void atInstantiation(HazelcastInstance instance) {
 		SharedObjects.getInstance().setDataClusterAvailable(true);
 		SharedObjects.getInstance().setHazelcastClient(instance);
 		checkEviction();

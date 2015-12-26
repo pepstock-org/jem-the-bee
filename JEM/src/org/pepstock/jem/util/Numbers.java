@@ -527,6 +527,10 @@ public final class Numbers {
 	 */
 	public static final int N_100 = 100;
 
+	/**
+	 * Represents the NUMBER 1000
+	 */
+	public static final int N_1000 = 1000;
 
 
 	/**

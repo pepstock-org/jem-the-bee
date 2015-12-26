@@ -21,14 +21,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -36,6 +36,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.executors.stats.GetSample;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.sgm.InvalidDatasetNameException;
 import org.pepstock.jem.node.sgm.PathsContainer;
 import org.pepstock.jem.node.stats.LightMemberSample;
@@ -48,9 +51,9 @@ import org.pepstock.jem.util.DateFormatter;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
-import com.hazelcast.core.MultiTask;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -333,15 +336,14 @@ public class StatisticsManager {
 					lightEnvironmentSample.setTime(times[1]);
 					// creates the distributed task
 					// and schedule the task on all members
-					MultiTask<LightMemberSample> task = new MultiTask<LightMemberSample>(new GetSample(environmentSample), listOfNodes);
-					ExecutorService executorService = Main.getHazelcast().getExecutorService();
-					executorService.execute(task);
+					IExecutorService executorServie = Main.getHazelcast().getExecutorService(ExecutorServices.NODE);
+					Map<Member, Future<LightMemberSample>> futures = executorServie.submitToMembers(new GetSample(environmentSample), listOfNodes);
 					try {
 						// sets if is in executing 
 						isExecuting = true;
 						// gets the results from nodes
-						Collection<LightMemberSample> results = task.get();
-						for (LightMemberSample result : results) {
+						for (Future<LightMemberSample> future : futures.values()) {
+							LightMemberSample result = future.get();
 							// adds all results on the light sample
 							// for each member
 							if (result != null) {
@@ -353,11 +355,11 @@ public class StatisticsManager {
 							// gets HC map
 							IMap<String, LightSample> samples = Main.getHazelcast().getMap(Queues.STATS_MAP);
 							// gets lock for the map
-							Lock lock = Main.getHazelcast().getLock(Queues.STATS_MAP_LOCK);
+							Lock lock = Main.getHazelcast().getLock(Locks.STATS_MAP);
 							boolean isLock = false;
 							try {
 								// locks the map
-								isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+								isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 								// adds the new sample
 								samples.put(lightEnvironmentSample.getKey(), lightEnvironmentSample);
 								// here checks if the map has got more than

@@ -96,9 +96,6 @@ public class LoginImager extends AbsolutePanel {
 		// adds images and set the position of logo
 		ImageResource jem = Images.INSTANCE.logoForLogin();
 		add(new Image(jem));
-		add(logo);
-		add(license);
-		setWidgetPosition(logo, 60, 0);
 
 		
 		// calls RPC servccie to have URL and link of logo
@@ -115,6 +112,9 @@ public class LoginImager extends AbsolutePanel {
 				logo.setUrl(result[InfoService.Indexes.URL.getIndex()]);
 				link = result[InfoService.Indexes.LINK.getIndex()];
 			}
+			add(logo);
+			add(license);
+			setWidgetPosition(logo, 60, 0);
 		}
 		
 		@Override
@@ -122,6 +122,10 @@ public class LoginImager extends AbsolutePanel {
 			// when failure occurs, it uses the default LOGO
 			logo.setUrl(Images.INSTANCE.pepstock().getSafeUri());
 			link = DEFAULT_LOGO_LINK;
+			add(logo);
+			add(license);
+			setWidgetPosition(logo, 60, 0);
+
 		}
 
 		@Override

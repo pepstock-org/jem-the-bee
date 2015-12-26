@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.node.persistence.mongo;
 
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Map manager based on MONGO for jobs into INPUT queue.

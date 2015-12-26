@@ -25,7 +25,7 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
 
 
 /**
- * Creates a node using the minimum arguments to use into Docker container run.
+ * Creates web app using the minimum arguments to use into Docker container run.
  * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
@@ -33,15 +33,7 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
 public class StartUpWeb extends StartUp{
 	
 	private static final String COMMAND = "jem-web.sh";
-	
-	/**
-	 * Constructs the object saving the command name (necessary on help) and adding arguments definitions.
-	 * 
-	 * @param commandName command name  (necessary on help)
-	 */
-	public StartUpWeb() {
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.docker.StartUp#loadProperties(java.util.Properties)
 	 */
@@ -51,8 +43,6 @@ public class StartUpWeb extends StartUp{
 		props.setProperty(NodeProperties.JEM_DB_DRIVER, this.getClass().getName());
 		props.setProperty(NodeProperties.JEM_DB_URL, this.getClass().getName());
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.docker.StartUp#getCommand()
@@ -87,8 +77,7 @@ public class StartUpWeb extends StartUp{
 	}
 
 	/**
-	 * Main method! Parses the arguments, creates the client, submits job.
-	 * 
+	 * Main method!  
 	 * @param args command-line arguments
 	 */
 	public static void main(String[] args) {

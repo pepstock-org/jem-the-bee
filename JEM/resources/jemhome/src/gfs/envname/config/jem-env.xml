@@ -14,6 +14,11 @@
 		</properties-->
 	</database>
 	
+	<!-- eviction>
+		<maxSize>100</maxSize>
+		<percentage>25</percentage>
+	</eviction-->
+	
 	<datasetsRules>${jem.persistence}/#[jem.environment.name]/config/datasetsRules.xml</datasetsRules>
 
 	<statistics-manager/>

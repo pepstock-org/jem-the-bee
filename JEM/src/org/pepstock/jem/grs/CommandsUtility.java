@@ -24,8 +24,9 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.ResourceLock;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.IMap;
 
@@ -70,14 +71,14 @@ public final class CommandsUtility {
 		StringBuilder sb = new StringBuilder(TITLE).append('\n');
 
 		// get latch info map reference
-		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 		// gets all resources names (all keys)
 
 		boolean isLock=false;
-		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(LockStructures.COUNTER_MUTEX_LOCK);
+		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(Locks.GRS_COUNTER_MUTEX);
 		Collection<LatchInfo> values = null; 
 		try {
-			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			values = counterMutex.values();
 		} catch (Exception ex) {
 			LogAppl.getInstance().ignore(ex.getMessage(), ex);
@@ -113,12 +114,12 @@ public final class CommandsUtility {
 		StringBuilder sb = new StringBuilder(TITLE).append('\n');
 
 		// get latch info map reference
-		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(LockStructures.COUNTER_MUTEX);
-		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(LockStructures.COUNTER_MUTEX_LOCK);
+		IMap<String, LatchInfo> counterMutex = GrsManager.getInstance().getHazelcastInstance().getMap(Queues.GRS_COUNTER_MUTEX_MAP);
+		Lock lock = GrsManager.getInstance().getHazelcastInstance().getLock(Locks.GRS_COUNTER_MUTEX);
 		boolean isLock = false;
 		// gets latch info and print it
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				return sb.append(buildDisplay(counterMutex.get(resourceKey)));
 			} else {

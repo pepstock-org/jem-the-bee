@@ -29,12 +29,14 @@ import org.pepstock.jem.gwt.client.services.InfoService.Indexes;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.About;
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.DisplayRequestors;
 import org.pepstock.jem.node.executors.GetAbout;
 import org.pepstock.jem.node.executors.clients.Count;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.RedoStatement;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
@@ -95,13 +97,13 @@ public class InternalsManager extends DefaultService{
     	
 		IMap<Long, RedoStatement> redos = getInstance().getMap(Queues.REDO_STATEMENT_MAP);
 		List<RedoStatement> list = null;
-		Lock lock = getInstance().getLock(Queues.REDO_STATEMENT_MAP_LOCK);
+		Lock lock = getInstance().getLock(Locks.REDO_STATEMENT_MAP);
 		boolean isLock = false;
 		try {
 			// locks all map to have a consistent collection
 			// only for 10 seconds otherwise
 			// throws an exception
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
 				list = new ArrayList<RedoStatement>(redos.values());
 				// sorts the result to have a right table
@@ -193,23 +195,28 @@ public class InternalsManager extends DefaultService{
 		// to get the uptime
 		// uses the started time information of JEM node info
 		// try locks by uuid
-		if (nodes.tryLock(oldest.getUuid(), Queues.LOCK_TIMEOUT, TimeUnit.SECONDS)) {
-			try {
-				// if coordinator is not on map (mustn't be!!)
-				// set not available
-				NodeInfo oldestInfo = nodes.get(oldest.getUuid());
-				if (oldestInfo != null){
-					infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
-				} else {
-					infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
-				}
-			} finally {
-				// unlocks always the key
-				nodes.unlock(oldest.getUuid());
-			}
-		} else {
-			infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
-		}
+		try {
+	        if (nodes.tryLock(oldest.getUuid(), Locks.LOCK_TIMEOUT, TimeUnit.SECONDS)) {
+	        	try {
+	        		// if coordinator is not on map (mustn't be!!)
+	        		// set not available
+	        		NodeInfo oldestInfo = nodes.get(oldest.getUuid());
+	        		if (oldestInfo != null){
+	        			infos[Indexes.STARTED_TIME.getIndex()] = String.valueOf(oldestInfo.getStartedTime().getTime());	
+	        		} else {
+	        			infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+	        		}
+	        	} finally {
+	        		// unlocks always the key
+	        		nodes.unlock(oldest.getUuid());
+	        	}
+	        } else {
+	        	infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+	        }
+        } catch (InterruptedException e) {
+	        LogAppl.getInstance().ignore(e.getMessage(), e);
+        	infos[Indexes.STARTED_TIME.getIndex()] = "N/A";
+        }
 		
 		// gets the current time. 
 		// this is helpful because ould be some time differences 

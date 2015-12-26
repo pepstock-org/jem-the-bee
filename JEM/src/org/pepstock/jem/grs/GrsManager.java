@@ -22,11 +22,14 @@ import java.util.List;
 
 import org.pepstock.jem.node.RequestLock;
 import org.pepstock.jem.node.ResourceLock;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import com.hazelcast.map.listener.EntryAddedListener;
+import com.hazelcast.map.listener.EntryRemovedListener;
+import com.hazelcast.map.listener.EntryUpdatedListener;
 
 /**
  * Singleton used to manage the lock requests of a GRS node.<br>
@@ -54,7 +57,7 @@ public class GrsManager {
 	 */
 	private GrsManager(HazelcastInstance hInstance) {
 		this.hazelcastInstance = hInstance;
-		IMap<String, LatchInfo> counterMutex = this.hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = this.hazelcastInstance.getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 		counterMutex.addEntryListener(new CounterMutexListener(), true);
 	}
 
@@ -124,7 +127,7 @@ public class GrsManager {
 	 */
 	public List<RequestorInfo> getRequestors(String resourceName) {
 		// gets the map reference and lock by resource name
-		IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+		IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 		counterMutex.lock(resourceName);
 
 		// get Latch info by resource name and unlock the key
@@ -156,7 +159,7 @@ public class GrsManager {
 			// scans all requested resources of node
 			for (ResourceLock resource : request.getResources().values()) {
 				// gets shared map reference and lock by resource name
-				IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(LockStructures.COUNTER_MUTEX);
+				IMap<String, LatchInfo> counterMutex = hazelcastInstance.getMap(Queues.GRS_COUNTER_MUTEX_MAP);
 				counterMutex.lock(resource.getName());
 
 				// checks if the map contains the resource name
@@ -217,7 +220,7 @@ public class GrsManager {
 	 * @author Andrea "Stock" Stocchero
 	 * 
 	 */
-	private static class CounterMutexListener implements EntryListener<String, LatchInfo> {
+	private static class CounterMutexListener implements EntryAddedListener<String, LatchInfo>, EntryRemovedListener<String, LatchInfo>, EntryUpdatedListener<String, LatchInfo> {
 
 		/**
 		 * Catches "EntryADDED" event and checks the resource is included in the
@@ -228,16 +231,6 @@ public class GrsManager {
 		@Override
 		public void entryAdded(EntryEvent<String, LatchInfo> event) {
 			check(event);
-		}
-
-		/**
-		 * Not implemented because useless.
-		 * 
-		 * @param event Hazelcast map event
-		 */
-		@Override
-		public void entryEvicted(EntryEvent<String, LatchInfo> event) {
-			// do nothing
 		}
 
 		/**

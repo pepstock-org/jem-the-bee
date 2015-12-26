@@ -27,7 +27,7 @@ import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;

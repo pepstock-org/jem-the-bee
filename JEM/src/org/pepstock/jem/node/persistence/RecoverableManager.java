@@ -17,7 +17,7 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Enumeration of Recoverable managers, related to own HZ queue/map name.

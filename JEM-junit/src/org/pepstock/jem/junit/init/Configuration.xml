@@ -1,6 +1,6 @@
 <configuration>
 	<restconf>
-		<url>http://192.168.99.100:9090/jem_gwt/rest</url>
+		<url>http://localhost:8888/rest</url>
 		<user>root</user>
 		<password>pwd</password>
 	</restconf>
@@ -8,12 +8,13 @@
 		<submitter>
 		    <name>SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.Submit</referenceClass>
+			<selected>true</selected> 
 			<embedded>true</embedded>
 			<nodeJs>false</nodeJs> 			
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://localhost:8888/jem_gwt</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>password</name>
@@ -63,7 +64,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://localhost:8888/jem_gwt</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -114,7 +115,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://localhost:8888/jem_gwt</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>password</name>
@@ -164,7 +165,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://localhost:8888/jem_gwt</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -187,7 +188,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://localhost:8888/jem_gwt</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>password</name>
@@ -206,7 +207,6 @@
 		<submitter> 
 		    <name>PROXY_NOEMBEDDED_SUBMIT</name>
 			<referenceClass>org.pepstock.jem.commands.ProxySubmit</referenceClass>
-			<selected>true</selected> 
 			<embedded>false</embedded> 			   
 			<params>
 				<param>

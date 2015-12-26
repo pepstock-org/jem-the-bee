@@ -43,4 +43,4 @@ ENV PATH $JEM_HOME/bin:$PATH
 ###
 # Standard command: BASH
 ###
-CMD ["/bin/bash"]
+CMD ["/bin/bash", "jem-node.sh"]

@@ -17,7 +17,7 @@
 package org.pepstock.jem.gwt.client.panels.administration.nodesqueues;
 
 import org.pepstock.jem.gwt.client.commons.IndexedColumnComparator;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.stats.LightMemberSample;
 import org.pepstock.jem.util.ColumnIndex;
 

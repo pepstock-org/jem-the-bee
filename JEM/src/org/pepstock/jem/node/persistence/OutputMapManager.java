@@ -17,6 +17,10 @@
 package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.Job;
+import org.pepstock.jem.node.configuration.Eviction;
+import org.pepstock.jem.node.hazelcast.ConfigFactory;
+
+import com.hazelcast.config.MapConfig;
 
 /**
  * Persistent manager for OUTPUT queue.<br>
@@ -26,6 +30,8 @@ import org.pepstock.jem.Job;
  * 
  */
 public class OutputMapManager extends AbstractMapManager<Job> {
+	
+	private Eviction eviction = null;
 
 	private static OutputMapManager INSTANCE = null;
 	
@@ -53,4 +59,27 @@ public class OutputMapManager extends AbstractMapManager<Job> {
 	public static OutputMapManager getInstance() {
 		return INSTANCE;
 	}
+
+	/**
+	 * @return the eviction
+	 */
+	public Eviction getEviction() {
+		return eviction;
+	}
+
+	/**
+	 * @param eviction the eviction to set
+	 */
+	public void setEviction(Eviction eviction) {
+		this.eviction = eviction;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractMapManager#getMapConfig()
+	 */
+	@Override
+	public MapConfig getMapConfig() {
+		return ConfigFactory.createMapConfig(getQueueName(), this, eviction);
+	}
+	
 }

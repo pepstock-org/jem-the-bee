@@ -55,5 +55,5 @@ public class InputMapManager extends AbstractMapManager<Job> {
 	public static InputMapManager getInstance() {
 		return INSTANCE;
 	}
-	
+
 }

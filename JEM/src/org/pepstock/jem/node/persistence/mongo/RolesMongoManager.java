@@ -19,7 +19,7 @@ package org.pepstock.jem.node.persistence.mongo;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Role;
 
 /**

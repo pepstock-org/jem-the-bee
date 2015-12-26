@@ -18,7 +18,6 @@ package org.pepstock.jem.node.executors.nodes;
 
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.executors.DefaultExecutor;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.ExecutorException;
 import org.pepstock.jem.util.TimeUtils;
 
@@ -30,7 +29,7 @@ import org.pepstock.jem.util.TimeUtils;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class Shutdown extends DefaultExecutor<ExecutionResult> {
+public class Shutdown extends DefaultExecutor<Boolean> {
 
 	private static final long WAIT_BEFORE_EXIT = 5 * TimeUtils.SECOND;
 	
@@ -42,11 +41,11 @@ public class Shutdown extends DefaultExecutor<ExecutionResult> {
 	 * @throws Exception occurs if errors
 	 */
 	@Override
-	public ExecutionResult execute() throws ExecutorException {
+	public Boolean execute() throws ExecutorException {
 		// creates a thead to call system.exit
 		SystemExitCaller caller = new SystemExitCaller();
 		caller.start();
-		return ExecutionResult.SUCCESSFUL;
+		return Boolean.TRUE;
 	}
 
 	

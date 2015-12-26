@@ -40,7 +40,7 @@ import org.pepstock.jem.gwt.client.panels.status.Header;
 import org.pepstock.jem.gwt.client.panels.status.JobsSearcher;
 import org.pepstock.jem.gwt.client.services.Services;
 import org.pepstock.jem.log.MessageLevel;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

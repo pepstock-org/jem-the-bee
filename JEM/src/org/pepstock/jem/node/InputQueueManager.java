@@ -32,10 +32,12 @@ import java.util.concurrent.locks.Lock;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
+import com.hazelcast.map.listener.EntryAddedListener;
+import com.hazelcast.map.listener.EntryUpdatedListener;
 
 /**
  * Manages all activities related to input queue. It's able to listen when new
@@ -45,7 +47,7 @@ import com.hazelcast.core.IMap;
  * @author Andrea "Stock" Stocchero
  * 
  */
-public class InputQueueManager implements ShutDownInterface, EntryListener<String, Job>{
+public class InputQueueManager implements ShutDownInterface, EntryAddedListener<String, Job>, EntryUpdatedListener<String, Job>{
 	
 	private static final BlockingQueue<Runnable> RUNNABLES = new SynchronousQueue<Runnable>();
 	
@@ -83,7 +85,7 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 	 * @see org.pepstock.jem.Job#getPriority()
 	 */
 	public InputQueueManager() {
-		predicate.setExecutionEnviroment(Main.EXECUTION_ENVIRONMENT);
+		predicate.setObject(Main.EXECUTION_ENVIRONMENT);
 	}
 	
 	/**
@@ -309,22 +311,6 @@ public class InputQueueManager implements ShutDownInterface, EntryListener<Strin
 				checkJobsInQueue();
 			}
 		}
-	}
-
-	/**
-	 * Not implemented because not necessary
-	 */
-	@Override
-	public void entryEvicted(EntryEvent<String, Job> event) {
-		// do nothing
-	}
-
-	/**
-	 * Not implemented because not necessary
-	 */
-	@Override
-	public void entryRemoved(EntryEvent<String, Job> event) {
-		// do nothing
 	}
 
 	/**

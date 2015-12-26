@@ -19,12 +19,13 @@ package org.pepstock.jem.node.swarm.listeners;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.swarm.SwarmNodeMessage;
-import org.pepstock.jem.node.swarm.SwarmQueues;
 
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 
@@ -55,6 +56,17 @@ public class NodeListener implements MembershipListener {
 		// do nothing
 	}
 
+
+	/**
+	 * Not implement because not necessary
+	 * 
+	 * @param event event of hazelcast
+	 */
+	@Override
+	public void memberAttributeChanged(MemberAttributeEvent event) {
+		// do nothing
+	}
+	
 	/**
 	 * Checks who is the first member on the list will work, becoming the
 	 * coordinator of group.
@@ -101,7 +113,7 @@ public class NodeListener implements MembershipListener {
 		Member memberRemoved = event.getMember();
 
 		// access to map using Uuid of member removed
-		IMap<String, NodeInfo> membersMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+		IMap<String, NodeInfo> membersMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 		String key = memberRemoved.getUuid();
 		// check is I have on nodes map
 		if (membersMap.containsKey(key)) {
@@ -117,7 +129,8 @@ public class NodeListener implements MembershipListener {
 		} else {
 			// if not found, probably this is not correct!!!
 			// it means that the list NODES_MAP is not well-maintained
-			LogAppl.getInstance().emit(SwarmNodeMessage.JEMO017E, memberRemoved.toString(), SwarmQueues.NODES_MAP);
+			LogAppl.getInstance().emit(SwarmNodeMessage.JEMO017E, memberRemoved.toString(), Queues.SWARM_NODES_MAP);
 		}
 	}
+
 }

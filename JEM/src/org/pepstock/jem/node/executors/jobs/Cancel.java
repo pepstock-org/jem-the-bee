@@ -22,7 +22,6 @@ import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.executors.DefaultExecutor;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
@@ -35,7 +34,7 @@ import org.pepstock.jem.node.executors.ExecutorException;
  * @version 1.0
  * 
  */
-public class Cancel extends DefaultExecutor<ExecutionResult>{
+public class Cancel extends DefaultExecutor<Boolean>{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -67,14 +66,14 @@ public class Cancel extends DefaultExecutor<ExecutionResult>{
 	 * @throws ExecutorException occurs if errors
 	 */
 	@Override
-	public ExecutionResult execute() throws ExecutorException {
+	public Boolean execute() throws ExecutorException {
 		// Checks if the job, passed as parameter, is in the list of current tasks of 
 		// node. If not, logs a warning
 		if (Main.CURRENT_TASKS.containsKey(job.getId())) {
 			CancelableTask task = Main.CURRENT_TASKS.get(job.getId());
 			// it shouldn't be null... but to avoid NullPointer
 			if (task == null){
-				return ExecutionResult.UNSUCCESSUL;
+				return Boolean.FALSE;
 			}
 			// sets force to cancel.
 			task.setForce(force);
@@ -87,7 +86,7 @@ public class Cancel extends DefaultExecutor<ExecutionResult>{
 		} else {
 			LogAppl.getInstance().emit(NodeMessage.JEMC028W, job.toString(), job.toString());
 		}
-		return ExecutionResult.SUCCESSFUL;
+		return Boolean.TRUE;
 	}
 	
 	/* (non-Javadoc)

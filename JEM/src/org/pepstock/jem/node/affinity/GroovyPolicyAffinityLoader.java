@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
 
 import com.hazelcast.core.ILock;
 
@@ -74,7 +74,7 @@ public class GroovyPolicyAffinityLoader extends PolicyAffinityLoader {
 		GroovyShell shell = new GroovyShell(getClass().getClassLoader(), binding);
 
 		// synchronizes the access to file
-		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+		ILock writeSynch = Main.getHazelcast().getLock(Locks.AFFINITY_LOADER);
 		// in this way, the execution of affinity script
 		// can run synchronized inside of JEM environment
 		// even because the script can be modify by user interface

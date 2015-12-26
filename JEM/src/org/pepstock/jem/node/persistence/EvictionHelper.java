@@ -18,6 +18,7 @@ package org.pepstock.jem.node.persistence;
 
 import org.pepstock.jem.node.Main;
 
+import com.hazelcast.config.EvictionPolicy;
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.config.MaxSizeConfig;
 
@@ -47,7 +48,7 @@ public class EvictionHelper {
 		// if has got the eviction
 		if (config.getEvictionPolicy() != null){
 			// checks the eviction policy
-			isEvicted = isEvicted && !config.getEvictionPolicy().equalsIgnoreCase(MapConfig.DEFAULT_EVICTION_POLICY);
+			isEvicted = isEvicted && !config.getEvictionPolicy().equals(EvictionPolicy.NONE);
 		} else {
 			// otherwise not evicted
 			return false;

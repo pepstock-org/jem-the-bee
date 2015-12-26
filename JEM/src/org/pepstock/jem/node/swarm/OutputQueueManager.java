@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
@@ -32,8 +32,9 @@ import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.OutputQueuePredicate;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.EvictionHelper;
 import org.pepstock.jem.node.persistence.OutputMapManager;
@@ -42,11 +43,11 @@ import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.map.listener.EntryAddedListener;
 
 /**
  * Output queue manager listeners, whcih informs when a job is ended (put in OUTPTU map).
@@ -55,7 +56,7 @@ import com.hazelcast.core.Member;
  * @version 1.3
  * 
  */
-public class OutputQueueManager implements EntryListener<String, Job> {
+public class OutputQueueManager implements EntryAddedListener<String, Job> {
 
 	private JobComparator comparator = new JobComparator();
 
@@ -85,30 +86,6 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 		}		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hazelcast.core.EntryListener#entryEvicted(com.hazelcast.core.EntryEvent)
-	 */
-	@Override
-	public void entryEvicted(EntryEvent<String, Job> arg0) {
-		// Do nothing
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hazelcast.core.EntryListener#entryRemoved(com.hazelcast.core.EntryEvent)
-	 */
-	@Override
-	public void entryRemoved(EntryEvent<String, Job> arg0) {
-		// Do nothing
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hazelcast.core.EntryListener#entryUpdated(com.hazelcast.core.EntryEvent)
-	 */
-	@Override
-	public void entryUpdated(EntryEvent<String, Job> arg0) {
-		// Do nothing		
-	}
-
 	/**
 	 * This method will send back to the environment that execute the routing
 	 * the routed jobs to notify their end.
@@ -116,7 +93,7 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 	public synchronized void notifyEndedRoutedJobsByAvailableEnvironments() {
 		// if swarm is active
 		if (Main.SWARM.getStatus().equals(Status.ACTIVE)) {
-			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 			Collection<NodeInfo> nodes = nodesMap.values();
 			// notify ended job only if nodes exist
 			if (nodes != null && !nodes.isEmpty()) {
@@ -137,7 +114,7 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 				// to get all jobs submitted from another environment
 				Collection<Job> jobs = null;
 				OutputQueuePredicate oqp = new OutputQueuePredicate();
-				oqp.setEnvironments(environments);
+				oqp.setObject(environments);
 				if (EvictionHelper.isEvicted(Queues.OUTPUT_QUEUE)){
 					jobs = new ArrayList<Job>();
 					for (String env : environments){
@@ -184,7 +161,7 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 			// sets status that is working
 			setNotifyOutputEnded(false);
 			IMap<String, Job> outputQueue = Main.getHazelcast().getMap(Queues.OUTPUT_QUEUE);
-			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 			// lock the entry of the job
 			try {
 				// gets job by job id
@@ -194,7 +171,7 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 				if (job != null && job.getRoutingInfo().isOutputCommitted() == null) {
 					// gets member to reply the end of the job
 					MapSwarmNodePredicate mnp = new MapSwarmNodePredicate();
-					mnp.setEnvironment(job.getRoutingInfo().getEnvironment());
+					mnp.setObject(job.getRoutingInfo().getEnvironment());
 					Member member = MapSwarmNodesManager.getMember(nodesMap.values(mnp));
 					// check if member is still available otherwise do
 					// nothing
@@ -203,13 +180,12 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 						// executes a distrbuted task to notified to the member
 						// previously extracted that
 						// the job is ended
-						DistributedTask<Boolean> task = new DistributedTask<Boolean>(new RouterOut(job), member);
-						ExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService();
+						IExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService(ExecutorServices.SWARM);
 						// start 2 phase commit
 						// setting the status to false to the job and saving it again
 						job.getRoutingInfo().setOutputCommitted(false);
 						outputQueue.put(job.getId(), job);
-						executorService.execute(task);
+						Future<Boolean> task = executorService.submitToMember(new RouterOut(job), member);
 						if (task.get()) {
 							// now output is committed
 							// and set the status
@@ -223,12 +199,12 @@ public class OutputQueueManager implements EntryListener<String, Job> {
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(SwarmNodeMessage.JEMO005E, currJob, e);
 			} finally {
-				// always unloch output queue
+				// always unlock output queue
 				if (outputQueue != null) {
 					outputQueue.unlock(currJob.getId());
 				}
 			}
-			// reset nofication status
+			// reset notification status
 			setNotifyOutputEnded(true);
 		}
 	}

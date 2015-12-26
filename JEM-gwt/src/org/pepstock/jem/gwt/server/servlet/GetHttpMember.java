@@ -66,8 +66,8 @@ public class GetHttpMember extends JemDefaultServlet {
 		
 		int pos = index % list.size();
 		Member member = list.get(pos);
-		String ipAddress = member.getInetSocketAddress().getAddress().getHostAddress();
-		int port = member.getInetSocketAddress().getPort() + Main.INCREMENT_HTTP_PORT;
+		String ipAddress = member.getSocketAddress().getAddress().getHostAddress();
+		int port = member.getSocketAddress().getPort() + Main.INCREMENT_HTTP_PORT;
 		
 		response.getWriter().print(ipAddress+":"+port);
 		response.getWriter().close();
