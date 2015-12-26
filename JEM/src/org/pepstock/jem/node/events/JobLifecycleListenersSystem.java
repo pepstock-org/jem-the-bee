@@ -22,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Contains all listener of job lifecycle. <br>

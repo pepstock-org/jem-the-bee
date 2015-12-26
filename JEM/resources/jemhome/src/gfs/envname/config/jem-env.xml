@@ -14,13 +14,16 @@
 		</properties-->
 	</database>
 	
+	<!-- eviction>
+		<maxSize>100</maxSize>
+		<percentage>25</percentage>
+	</eviction-->
+	
 	<datasetsRules>${jem.persistence}/#[jem.environment.name]/config/datasetsRules.xml</datasetsRules>
 
 	<statistics-manager/>
 
-	<!-- node className="org.pepstock.jem.grs.GrsNode">
-		<properties/>
-	</node-->
+	<node className="org.pepstock.jem.grs.GrsNode"/>
 
 	<factories>
 		<factory className="org.pepstock.jem.ant.AntFactory">

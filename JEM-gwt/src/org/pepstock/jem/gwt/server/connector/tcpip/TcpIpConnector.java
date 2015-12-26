@@ -24,9 +24,12 @@ import org.pepstock.jem.gwt.server.connector.WebInterceptor;
 import org.pepstock.jem.gwt.server.listeners.TcpIpLifeCycle;
 import org.pepstock.jem.log.LogAppl;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.config.Config;
+import com.hazelcast.config.SocketInterceptorConfig;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Is the runnable that try to connect to the JEM cluster in TCP/IP mode
@@ -49,10 +52,18 @@ public class TcpIpConnector implements Runnable {
 			try {
 				Config config = SharedObjects.getInstance().getHazelcastConfig();
 				boolean isSocketInterceptor = config.getNetworkConfig().getSocketInterceptorConfig().isEnabled();
+				
 				ClientConfig clientConfig = new ClientConfig();
 				clientConfig.setGroupConfig(config.getGroupConfig());
+				ClientNetworkConfig networkConfig = new ClientNetworkConfig();
+				//enables that HC client will listen the membership on cluster to maintain the members 
+				//networkConfig.set(true);
+				networkConfig.setSmartRouting(true);
+				// check socket interceptor
 				if (isSocketInterceptor) {
-					clientConfig.setSocketInterceptor(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+					SocketInterceptorConfig siConfig = new SocketInterceptorConfig();
+					siConfig.setImplementation(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+					networkConfig.setSocketInterceptorConfig(siConfig);
 				}
 				List<String> members = config.getNetworkConfig().getJoin().getTcpIpConfig().getMembers();
 				int port = config.getNetworkConfig().getPort();
@@ -60,13 +71,13 @@ public class TcpIpConnector implements Runnable {
 					for (int i = 0; i < MAXIMUM_NUMBER_OF_NODES_PER_MACHINE; i++) {
 						int currPort = port + i;
 						String currMember = member + ":" + currPort;
-						clientConfig.addAddress(currMember);
+						networkConfig.addAddress(currMember);
 					}
 				}
-				clientConfig.setUpdateAutomatic(true);
+				clientConfig.setNetworkConfig(networkConfig);
+				HazelcastInstance instance = HazelcastClient.newHazelcastClient(clientConfig);
 				TcpIpLifeCycle lc = new TcpIpLifeCycle();
-				clientConfig.getListeners().add(lc);
-				HazelcastClient instance = HazelcastClient.newHazelcastClient(clientConfig);
+				instance.getLifecycleService().addLifecycleListener(lc);
 				lc.atInstantiation(instance);
 				lc.setClientConnected(true);
 				break;

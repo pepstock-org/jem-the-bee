@@ -41,6 +41,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
+import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.node.sgm.DataPaths;
 import org.pepstock.jem.node.sgm.DataSetPattern;
 import org.pepstock.jem.node.sgm.DataSetRules;
@@ -153,7 +154,7 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 	 * @throws FileNotFoundException if any IO error occurs
 	 */
 	void loadRules(File fileDatasetRules) throws MessageException{
-		ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
+		ReadLock read = new ReadLock(Main.getHazelcast(), Locks.DATASETS_RULES);
 		try {
 			read.acquire();
 			if (this.datasetRulesFile == null){
@@ -164,12 +165,12 @@ public final class DataPathsManager extends FileAlterationListenerAdaptor implem
 			loadAndParseDataSetsRules();
 			LogAppl.getInstance().emit(NodeMessage.JEMC252I, datasetsRules.size());
 		} catch (LockException e) {
-			throw new MessageException(NodeMessage.JEMC260E, e, Queues.DATASETS_RULES_LOCK);
+			throw new MessageException(NodeMessage.JEMC260E, e, Locks.DATASETS_RULES);
 		} finally {
 			try {
 				read.release();
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Locks.DATASETS_RULES);
 			}
 		}
     }

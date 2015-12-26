@@ -28,8 +28,6 @@ public class DetailedQueueData extends QueueData {
 	
 	private long locked = 0;
 	
-	private long lockWaits = 0;
-	
 	private long puts = 0;
 	
 	private long removes = 0;
@@ -107,17 +105,4 @@ public class DetailedQueueData extends QueueData {
 		this.locked = locked;
 	}
 
-	/**
-	 * @return the lockWaits
-	 */
-	public long getLockWaits() {
-		return lockWaits;
-	}
-
-	/**
-	 * @param lockWaits the lockWaits to set
-	 */
-	public void setLockWaits(long lockWaits) {
-		this.lockWaits = lockWaits;
-	}
 }

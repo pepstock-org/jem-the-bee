@@ -18,7 +18,6 @@ package org.pepstock.jem.util.locks;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.InstanceDestroyedException;
 
 /**
  * Implements a distributed read lock, leveraging on Hazelcast features
@@ -52,8 +51,6 @@ public class ReadLock extends ConcurrentLock{
 		try {
 			// gets no waiting lock
 			getNoWaiting().acquire();
-		} catch (InstanceDestroyedException e) {
-			throw new LockException(e);
 		} catch (InterruptedException e) {
 			throw new LockException(e);
 		}
@@ -87,9 +84,6 @@ public class ReadLock extends ConcurrentLock{
 			try {
 				// gets the lock for access
 				getNoAccessing().acquire();
-			} catch (InstanceDestroyedException e) {
-				getNoWaiting().release();
-				throw new LockException(e);
 			} catch (InterruptedException e) {
 				getNoWaiting().release();
 				throw new LockException(e);

@@ -1,0 +1,2 @@
+ALTER DATABASE jem COLLATE utf8_bin;
+COMMIT;

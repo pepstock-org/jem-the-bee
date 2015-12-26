@@ -17,15 +17,16 @@
 package org.pepstock.jem.node;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.node.executors.PutJobInQueue;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 
 /**
  * Utility class to call a deistributed task to add a per job in a queue
@@ -47,11 +48,8 @@ public final class SubmitPreJob {
 	 * @throws SubmitException if any errors occurs
 	 */
 	public static void submit(HazelcastInstance instance, PreJob preJob) throws SubmitException{
-		//creates the task
-		DistributedTask<Boolean> task = new DistributedTask<Boolean>(new PutJobInQueue(preJob));
-		ExecutorService executorService = instance.getExecutorService();
-		// executes it
-		executorService.execute(task);
+		IExecutorService executorService = instance.getExecutorService(ExecutorServices.NODE);
+		Future<Boolean> task = executorService.submit(new PutJobInQueue(preJob));
 		try {
 			// gets result
 			Boolean success = task.get();

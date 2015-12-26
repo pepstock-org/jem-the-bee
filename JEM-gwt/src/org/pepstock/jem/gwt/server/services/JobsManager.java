@@ -52,7 +52,6 @@ import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.Cancel;
 import org.pepstock.jem.node.executors.jobs.GetJclTypes;
@@ -61,6 +60,9 @@ import org.pepstock.jem.node.executors.jobs.GetJobs;
 import org.pepstock.jem.node.executors.jobs.GetOutputFileContent;
 import org.pepstock.jem.node.executors.jobs.GetOutputTree;
 import org.pepstock.jem.node.executors.jobs.Purge;
+import org.pepstock.jem.node.hazelcast.IdGenerators;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
@@ -573,7 +575,7 @@ public class JobsManager extends DefaultService {
 					if (!storedJob.isNowait()){
 						// sends a topic to all subscribers
 						// telling them that jobs is ended
-						ITopic<Job> topic = getInstance().getTopic(Queues.ENDED_JOB_TOPIC);
+						ITopic<Job> topic = getInstance().getTopic(Topics.ENDED_JOB);
 						topic.publish(storedJob);
 					}
 				}
@@ -834,7 +836,7 @@ public class JobsManager extends DefaultService {
 		}
 
 		// gets a new ID to create a unique job id
-		IdGenerator generator = getInstance().getIdGenerator(Queues.JOB_ID_GENERATOR);
+		IdGenerator generator = getInstance().getIdGenerator(IdGenerators.JOB);
 		long id = generator.newId();
 
 		// creates job id and sets it

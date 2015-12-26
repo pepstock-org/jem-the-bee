@@ -73,6 +73,14 @@ public final class ConfigKeys {
 	 * <code>-Djem.check.version=true</code>
 	 */
 	public static final String JEM_CHECK_VERSION = "jem.check.version";
+	
+	/**
+	 * Is the variable name to use in command line to start JEM node.<br>
+	 * The value of property is configuration file name present in the gfs.<br>
+	 * Example:<br>
+	 * <code>-Djem.env=jem-env.xml</code>
+	 */
+	public static final String JEM_DOCKER_HOST = "JEM_DOCKER_HOST";
 
 	/**
 	 * Is the variable that define the root folder of the Jem installation, it

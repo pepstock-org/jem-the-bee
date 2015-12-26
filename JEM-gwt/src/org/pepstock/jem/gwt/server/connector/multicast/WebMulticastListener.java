@@ -33,10 +33,13 @@ import org.pepstock.jem.node.multicast.messages.NodeResponse;
 import org.pepstock.jem.node.multicast.messages.ShutDown;
 import org.pepstock.jem.util.CharSet;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.SocketInterceptorConfig;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * ClientMulticastListener listen to the same multicast address of hazelcast on
@@ -106,15 +109,20 @@ public class WebMulticastListener implements Runnable {
 							// create client config
 							ClientConfig clientConfig = new ClientConfig();
 							clientConfig.setGroupConfig(config.getGroupConfig());
+							ClientNetworkConfig networkConfig = new ClientNetworkConfig();
 							//enables that HC client will listen the membership on cluster to maintain the members 
-							clientConfig.setUpdateAutomatic(true);
+							//networkConfig.set(true);
+							networkConfig.setSmartRouting(true);
 							// check socket interceptor
 							if (isSocketInterceptor) {
-								clientConfig.setSocketInterceptor(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+								SocketInterceptorConfig siConfig = new SocketInterceptorConfig();
+								siConfig.setImplementation(new WebInterceptor(config.getNetworkConfig().getSocketInterceptorConfig().getProperties()));
+								networkConfig.setSocketInterceptorConfig(siConfig);
 							}
-							clientConfig.setAddresses(message.getNodesMembers());
-							clientConfig.getListeners().add(lifeCycle);
-							HazelcastClient instance = HazelcastClient.newHazelcastClient(clientConfig);
+							networkConfig.setAddresses(message.getNodesMembers());
+							clientConfig.setNetworkConfig(networkConfig);
+							HazelcastInstance instance = HazelcastClient.newHazelcastClient(clientConfig);
+							instance.getLifecycleService().addLifecycleListener(lifeCycle);
 							lifeCycle.atInstantiation(instance);
 						} else {
 							LogAppl.getInstance().emit(UserInterfaceMessage.JEMG076I);

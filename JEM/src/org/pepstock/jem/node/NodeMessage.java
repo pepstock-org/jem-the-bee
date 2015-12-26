@@ -1332,10 +1332,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC218I("0218", "{0} jobs are still running", MessageLevel.INFO),
 	
 	/**
-	 * "Recovery from database is staring", MessageLevel.INFO
+	 * "Recovery from database is staring for map {0}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when Hazelcast has got some data loss and JEM recovers the data from database.")
-	JEMC219I("0219", "Recovery from database is started", MessageLevel.INFO),
+	JEMC219I("0219", "Recovery from database is started for map {0}", MessageLevel.INFO),
 	
 	/**
 	 * "Recovery of map {0} is started", MessageLevel.INFO
@@ -1344,10 +1344,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC220I("0220", "Recovery of map {0} is started", MessageLevel.INFO),
 	
 	/**
-	 * "Recovery from database is ended in {0} ms", MessageLevel.INFO
+	 * "Recovery from database is ended in {0} ms for map {1}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when a recovery from database is ended an shows how long it took.")
-	JEMC221I("0221", "Recovery from database is ended in {0} ms", MessageLevel.INFO),
+	JEMC221I("0221", "Recovery from database is ended in {0} ms for map {1}", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to recovery map {0} from database", MessageLevel.ERROR
@@ -1787,10 +1787,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC293W("0293", "A default JAVA has been already set. JAVA {0} is NOT the JAVA default", MessageLevel.WARNING),
 	
 	/**
-	 * "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR
+	 * "Hazelcast config is not correct. {0} is defined and should not", MessageLevel.ERROR
 	 */
-	@Description(explanation = "It occurs when during the startup the Hazelcast configuration is not completed and a map is missing.<br>Please have a look to the Hazelcast configuration.")
-	JEMC294E("0294", "Hazelcast config is incomplete. Map {0} is NOT defined", MessageLevel.ERROR),
+	@Description(explanation = "It occurs when during the startup the Hazelcast configuration is not correct and is defined.<br>Please have a look to the Hazelcast configuration.")
+	JEMC294E("0294", "Hazelcast config is not correct. {0} is defined and should not", MessageLevel.ERROR),
 	
 	/**
 	 * "Unable to get the objects from database", MessageLevel.ERROR

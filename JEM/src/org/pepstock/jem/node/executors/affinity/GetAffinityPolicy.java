@@ -22,10 +22,10 @@ import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.affinity.ScriptAffinityLoader;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Locks;
 
 import com.hazelcast.core.ILock;
 
@@ -55,7 +55,7 @@ public class GetAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
 				// locks the access to file to avoid multiple accesses
 				ILock writeSynch = null;
 				// gets lock
-				writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+				writeSynch = Main.getHazelcast().getLock(Locks.AFFINITY_LOADER);
 				try {
 					// locks
 					writeSynch.lock();

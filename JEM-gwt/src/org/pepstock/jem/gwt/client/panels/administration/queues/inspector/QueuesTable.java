@@ -94,19 +94,7 @@ public class QueuesTable extends AbstractTable<DetailedQueueData> {
 		};
 		locks.setSortable(true);
 		table.addColumn(locks, "Locked Entries");	
-		
-		/*-------------------------+
-		 | TOT NUMBER OF Locks Wait   |
-		 +-------------------------*/
-		TextColumn<DetailedQueueData> lockWaits = new TextColumn<DetailedQueueData>() {
-			@Override
-			public String getValue(DetailedQueueData data) {
-				return NumberFormat.getFormat("###,###,##0").format(data.getLockWaits());
-			}
-		};
-		lockWaits.setSortable(true);
-		table.addColumn(lockWaits, "Lock Waits");	
-		
+	
 		/*-------------------------+
 		 | TOT NUMBER OF Gets      |
 		 +-------------------------*/

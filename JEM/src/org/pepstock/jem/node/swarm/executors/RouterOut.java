@@ -22,7 +22,8 @@ import java.util.concurrent.Callable;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.node.swarm.SwarmException;
 import org.pepstock.jem.node.swarm.SwarmNodeMessage;
 
@@ -74,7 +75,7 @@ public class RouterOut implements Callable<Boolean>, Serializable {
 			routedQueue.put(job.getRoutingInfo().getId(), job);
 			LogAppl.getInstance().emit(SwarmNodeMessage.JEMO013I, job);
 			// gets topic object and adds itself as listener
-			ITopic<Job> topic = hazelcastInstance.getTopic(Queues.ENDED_JOB_TOPIC);
+			ITopic<Job> topic = hazelcastInstance.getTopic(Topics.ENDED_JOB);
 			topic.publish(job);
 		}
 		return true;

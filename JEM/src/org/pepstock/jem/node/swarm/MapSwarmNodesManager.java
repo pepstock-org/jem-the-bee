@@ -21,25 +21,26 @@ import java.util.Random;
 
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 import com.hazelcast.core.Cluster;
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.map.listener.EntryAddedListener;
 
 /**
  * Map storn nodes manager
  * 
  * @author Marco "Fuzzo" Cuccato
  */
-public class MapSwarmNodesManager implements EntryListener<String, NodeInfo> {
+public class MapSwarmNodesManager implements EntryAddedListener<String, NodeInfo> {
 
 	/**
 	 * Constructor
 	 */
 	public MapSwarmNodesManager() {
-		IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+		IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 		nodesMap.addEntryListener(this, true);
 	}
 
@@ -60,21 +61,7 @@ public class MapSwarmNodesManager implements EntryListener<String, NodeInfo> {
 		Main.SWARM.getOutputQueueManager().notifyEndedRoutedJobsByAvailableEnvironments();
 	}
 
-	@Override
-	public void entryEvicted(EntryEvent<String, NodeInfo> arg0) {
-		// Do nothing
-	}
-
-	@Override
-	public void entryRemoved(EntryEvent<String, NodeInfo> arg0) {
-		// Do nothing
-	}
-
-	@Override
-	public void entryUpdated(EntryEvent<String, NodeInfo> arg0) {
-		// Do nothing
-	}
-
+	
 	/**
 	 * 
 	 * @param nodes of "swarm" cluster

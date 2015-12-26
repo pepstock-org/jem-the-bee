@@ -16,6 +16,7 @@
  */
 package org.pepstock.jem.node.persistence;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -23,9 +24,8 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
-
-import com.hazelcast.core.IMap;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * This is the manager which is in charge to save on Hazelcast all redo statements, during the connection broken with the database
@@ -79,14 +79,14 @@ public class RedoManager<T> {
 	 */
 	private void storeRedoStatement(String id, T entity, String what){
 		// gets hazelcast map
-		IMap<Long, RedoStatement> redoMap = Main.getHazelcast().getMap(Queues.REDO_STATEMENT_MAP);
+		Map<Long, RedoStatement> redoMap = Main.getHazelcast().getReplicatedMap(Queues.REDO_STATEMENT_MAP);
 		// gets a lock to avoid
 		// that other nodes access to the same resource
-		Lock lock = Main.getHazelcast().getLock(Queues.REDO_STATEMENT_MAP_LOCK);
+		Lock lock = Main.getHazelcast().getLock(Locks.REDO_STATEMENT_MAP);
 		boolean isLock = false;
 		try {
 			// gets a lock
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// creates a redo statement using a counter as ID
 				Long redoid = Long.valueOf(redoMap.size() + 1);

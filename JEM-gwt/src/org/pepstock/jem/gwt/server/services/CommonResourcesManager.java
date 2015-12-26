@@ -27,9 +27,10 @@ import org.apache.shiro.subject.Subject;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.certificates.GetCryptedValueAndHash;
 import org.pepstock.jem.node.executors.resources.AddResource;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.resources.CryptedValueAndHash;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.security.Permissions;
@@ -240,9 +241,9 @@ public class CommonResourcesManager extends DefaultService {
 		// only for 10 seconds otherwise
 		// throws an exception
 		boolean isLock = false;
-		Lock lock = getInstance().getLock(Queues.COMMON_RESOURCES_MAP_LOCK);
+		Lock lock = getInstance().getLock(Locks.COMMON_RESOURCES_MAP);
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// performs predicate to have the collection
 				result = map.values(predicate);

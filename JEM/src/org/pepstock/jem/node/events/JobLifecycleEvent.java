@@ -17,7 +17,7 @@
 package org.pepstock.jem.node.events;
 
 import org.pepstock.jem.Job;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Internal event, with the status change and job instance
@@ -35,9 +35,9 @@ public class JobLifecycleEvent {
 	 * Constructs a event with status and job instance.<br>
 	 * Status values could be the constants on Queues object.
 	 * 
-	 * @see org.pepstock.jem.node.Queues#INPUT_QUEUE
-	 * @see org.pepstock.jem.node.Queues#RUNNING_QUEUE
-	 * @see org.pepstock.jem.node.Queues#OUTPUT_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#INPUT_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#RUNNING_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE
 	 * 
 	 * @param status status changed
 	 * @param job job instance

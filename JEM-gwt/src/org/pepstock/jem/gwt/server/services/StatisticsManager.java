@@ -21,16 +21,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.executors.stats.GetRealtimeSample;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.stats.LightMemberSample;
@@ -40,9 +43,9 @@ import org.pepstock.jem.node.stats.SampleComparator;
 import org.pepstock.jem.util.DateFormatter;
 
 import com.hazelcast.core.Cluster;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
-import com.hazelcast.core.MultiTask;
 
 /**
  * This service provides all statistics metrics to client about the status of JEM environment.
@@ -77,14 +80,14 @@ public class StatisticsManager extends InternalsManager{
     		}
     	}
 		IMap<String, LightSample> samples = getInstance().getMap(Queues.STATS_MAP);
-		Lock lock = getInstance().getLock(Queues.STATS_MAP_LOCK);
+		Lock lock = getInstance().getLock(Locks.STATS_MAP);
 		boolean isLock=false;
 		List<LightSample> list = null;
 		try{
 			// locks all map to have a consistent collection
 			// only for 10 seconds otherwise
 			// throws an exception
-			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
 			// gets data...
 			list = new ArrayList<LightSample>(samples.values());
@@ -92,11 +95,11 @@ public class StatisticsManager extends InternalsManager{
 			Collections.sort(list, sampleComparator);
 			} else {
 				// timeout exception
-				throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, Queues.STATS_MAP_LOCK);
+				throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, Queues.STATS_MAP);
 			}
 		} catch (InterruptedException e) {
 			// timeout exception
-			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.STATS_MAP_LOCK);
+			throw new ServiceMessageException(UserInterfaceMessage.JEMG022E, e, Queues.STATS_MAP);
         } finally{
 			// unlocks always the map
 			if(isLock){
@@ -150,14 +153,20 @@ public class StatisticsManager extends InternalsManager{
 			lightSample.setDate(times[0]);
 			lightSample.setTime(times[1]);
 			
-			// schedules a multi task on all memebers to get data
-			MultiTask<LightMemberSample> task = new MultiTask<LightMemberSample>(new GetRealtimeSample(lightSample), listOfNodes);
-			ExecutorService executorService = getInstance().getExecutorService();
-			executorService.execute(task);
+			// creates the distributed task
+			// and schedule the task on all members
+			IExecutorService executorServie = getInstance().getExecutorService(ExecutorServices.NODE);
+			Map<Member, Future<LightMemberSample>> futures = executorServie.submitToMembers(new GetRealtimeSample(lightSample), listOfNodes);
 			try {
-				// gets the results from all members
-				Collection<LightMemberSample> results = task.get();
-				lightSample.getMembers().addAll(results);
+				// gets the results from nodes
+				for (Future<LightMemberSample> future : futures.values()) {
+					LightMemberSample result = future.get();
+					// adds all results on the light sample
+					// for each member
+					if (result != null) {
+						lightSample.getMembers().add(result);
+					}
+				}
 			} catch (Exception e) {
 				LogAppl.getInstance().emit(UserInterfaceMessage.JEMG018E, e);
 			}

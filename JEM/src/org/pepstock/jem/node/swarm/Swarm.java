@@ -27,15 +27,16 @@ import org.pepstock.jem.node.ExecutionEnvironment;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeInfoUtility;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.swarm.listeners.NodeListener;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.ExecutorConfig;
-import com.hazelcast.config.Join;
+import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.PartitionGroupConfig.MemberGroupType;
 import com.hazelcast.core.Cluster;
@@ -53,11 +54,7 @@ import com.hazelcast.core.Member;
  */
 public class Swarm {
 	
-	private static final int CORE_POOL = 16;
-	
 	private static final int MAX_ACTIVIE = 64;
-	
-	private static final int KEEP_ALIVE = 60;
 
 	/**
 	 * It represent the hazelcast configuration for the swarm environment
@@ -72,14 +69,14 @@ public class Swarm {
 	/**
 	 * It's a listener for the ROUTING QUEUE.
 	 * 
-	 * @see org.pepstock.jem.node.Queues#ROUTING_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#ROUTING_QUEUE
 	 */
 	private RoutingQueueManager routingQueueManager = null;
 
 	/**
 	 * It's a listener for the OUTPUT QUEUE
 	 * 
-	 * @see org.pepstock.jem.node.Queues#OUTPUT_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE
 	 */
 	private OutputQueueManager outputQueueManager = null;
 
@@ -166,7 +163,7 @@ public class Swarm {
 	public boolean start() throws SwarmException {
 		getActiveConfiguration();
 		List<String> allowHosts = activeConfiguration.getNetworks();
-		String localHost = Main.getHazelcast().getCluster().getLocalMember().getInetSocketAddress().getAddress().getHostAddress();
+		String localHost = Main.getHazelcast().getCluster().getLocalMember().getSocketAddress().getAddress().getHostAddress();
 		
 		if (allowHosts.contains(localHost) && getStatus().equals(Status.DRAINED)) {
 			setStatus(Status.STARTING);
@@ -261,7 +258,7 @@ public class Swarm {
 		
 
 		// JOIN
-		Join join = network.getJoin();
+		JoinConfig join = network.getJoin();
 		join.getTcpIpConfig().setEnabled(true);
 		join.getMulticastConfig().setEnabled(false);
 		if (activeConfiguration.getNetworks().isEmpty()) {
@@ -275,7 +272,7 @@ public class Swarm {
 		cfg.getPartitionGroupConfig().setEnabled(true);
 		cfg.getPartitionGroupConfig().setGroupType(MemberGroupType.HOST_AWARE);
 		cfg.getProperties().setProperty("hazelcast.logging.type", "log4j");
-		ExecutorConfig executor = new ExecutorConfig("pool", CORE_POOL, MAX_ACTIVIE, KEEP_ALIVE);
+		ExecutorConfig executor = new ExecutorConfig(ExecutorServices.SWARM, MAX_ACTIVIE);
 		cfg.addExecutorConfig(executor);
 		swarmInstance = Hazelcast.newHazelcastInstance(cfg);
 		swarmInstance.getCluster().addMembershipListener(new NodeListener());
@@ -286,7 +283,7 @@ public class Swarm {
 	 * @see org.pepstock.jem.gwt.server.swarm.SwarmQueues#NODES_MAP
 	 */
 	private void registerNode() {
-		IMap<String, NodeInfo> map = swarmInstance.getMap(SwarmQueues.NODES_MAP);
+		IMap<String, NodeInfo> map = swarmInstance.getMap(Queues.SWARM_NODES_MAP);
 		map.put(nodeInfo.getKey(), nodeInfo);
 	}
 
@@ -300,7 +297,7 @@ public class Swarm {
 		// set uuid of member of hazelcast as key
 		nodeInfo.setKey(member.getUuid());
 		// set port and ip address
-		InetSocketAddress address = member.getInetSocketAddress();
+		InetSocketAddress address = member.getSocketAddress();
 		nodeInfo.setPort(address.getPort());
 		nodeInfo.setIpaddress(address.getAddress().getHostAddress());
 		// sets label to be displayed by GRS
@@ -343,7 +340,7 @@ public class Swarm {
 	 *         associated with the OUTPUT QUEUE relative to the routing
 	 *         operation
 	 * 
-	 * @see org.pepstock.jem.node.Queues#OUTPUT_QUEUE
+	 * @see org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE
 	 */
 	public OutputQueueManager getOutputQueueManager() {
 		return outputQueueManager;
@@ -369,7 +366,7 @@ public class Swarm {
 		nodeInfo.setStatus(status);
 		if (swarmInstance != null && swarmInstance.getLifecycleService().isRunning()) {
 			// update Map if node is present
-			IMap<String, NodeInfo> membersMap = swarmInstance.getMap(SwarmQueues.NODES_MAP);
+			IMap<String, NodeInfo> membersMap = swarmInstance.getMap(Queues.SWARM_NODES_MAP);
 			String key = nodeInfo.getKey();
 			if (key != null && membersMap.containsKey(key)) {
 				try {

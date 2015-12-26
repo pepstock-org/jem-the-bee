@@ -49,14 +49,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class InspectorPanel extends AdminPanel implements ResizeCapable {
 
 	@SuppressWarnings("javadoc")
-    public static final int ENTRIES = 0, HITS = 1, LOCKED = 2, WAITS = 3, GETS = 4, PUTS = 5, REMOVES = 6;
+    public static final int ENTRIES = 0, HITS = 1, LOCKED = 2, GETS = 3, PUTS = 4, REMOVES = 5;
 
 	final TabPanel mainTabPanel = new TabPanel();
 	
 	private TimeCountLineChart chartEntries = new TimeCountLineChart();
 	private TimeCountLineChart chartHits = new TimeCountLineChart();
 	private TimeCountLineChart chartLocked = new TimeCountLineChart();
-	private TimeCountLineChart chartWaits = new TimeCountLineChart();
 	private TimeCountLineChart chartGets = new TimeCountLineChart();
 	private TimeCountLineChart chartPuts = new TimeCountLineChart();
 	private TimeCountLineChart chartRemoves = new TimeCountLineChart();
@@ -64,7 +63,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	private boolean chartEntriesLoaded;
 	private boolean chartHitsLoaded;
 	private boolean chartLockedLoaded;
-	private boolean chartWaitsLoaded;
 	private boolean chartGetsLoaded;
 	private boolean chartPutsLoaded;
 	private boolean chartRemovesLoaded;
@@ -79,7 +77,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	private VerticalPanel entPanel = new VerticalPanel();
 	private VerticalPanel hitPanel = new VerticalPanel();
 	private VerticalPanel lokPanel = new VerticalPanel();
-	private VerticalPanel waitPanel = new VerticalPanel();
 	private VerticalPanel getPanel = new VerticalPanel();
 	private VerticalPanel putPanel = new VerticalPanel();
 	private VerticalPanel remPanel = new VerticalPanel();
@@ -93,7 +90,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		mainTabPanel.add(entPanel, "Entries", false);
 		mainTabPanel.add(hitPanel, "Hits", false);
 		mainTabPanel.add(lokPanel, "Locked", false);
-		mainTabPanel.add(waitPanel, "LockWaits", false);
 		mainTabPanel.add(getPanel, "Gets", false);
 		mainTabPanel.add(putPanel, "Puts", false);
 		mainTabPanel.add(remPanel, "Removes", false);
@@ -139,9 +135,8 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
     		for (LightMemberSample msample : sample.getMembers()){
     			LightMapStats map = msample.getMapsStats().get(queueName);
     	    	data.setEntries(map.getOwnedEntryCount() + data.getEntries());
-    	    	data.setGets(map.getHits() + data.getHits());
-    	    	data.setGets(map.getLockedEntryCount() + data.getLocked());
-    	    	data.setGets(map.getLockWaitCount() + data.getLockWaits());
+    	    	data.setHits(map.getHits() + data.getHits());
+    	    	data.setLocked(map.getLockedEntryCount() + data.getLocked());
     	    	data.setGets(map.getNumberOfGets() + data.getGets());
     	    	data.setPuts(map.getNumberOfPuts() + data.getPuts());
     	    	data.setRemoves(map.getNumberOfRemoves() + data.getRemoves());
@@ -161,7 +156,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		chartEntriesLoaded = false;
 		chartHitsLoaded = false;
 		chartLockedLoaded = false;
-		chartWaitsLoaded = false;
 		chartGetsLoaded = false;
 		chartPutsLoaded = false;
 		chartRemovesLoaded = false;
@@ -172,12 +166,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 	private void loadChart(int selected) {
 
 		boolean allLoaded = chartEntriesLoaded && chartHitsLoaded && chartLockedLoaded;
-		allLoaded = allLoaded && chartWaitsLoaded && chartGetsLoaded;
+		allLoaded = allLoaded && chartGetsLoaded;
 		allLoaded = allLoaded && chartPutsLoaded && chartRemovesLoaded;
 
 		if (!allLoaded) {
 			String[] times = new String[listData.size()];
-			long[] values;
 			// load times
 			for (int i=0; i<listData.size(); i++) {
 				DetailedQueueData dqd = listData.get(i);
@@ -187,44 +180,37 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 			switch (selected) {
 			case ENTRIES:
 				if (!chartEntriesLoaded) {
-					values = setChartData(chartEntries, times, getEntries(), ColorsHex.LIGHT_CYAN.getCode(), "Entries", entPanel);
+					setChartData(chartEntries, times, getEntries(), ColorsHex.LIGHT_CYAN.getCode(), "Entries", entPanel);
 					chartEntriesLoaded = true;
 				}
 				break;
 			case HITS:
 				if (!chartHitsLoaded) {
-					values = setChartData(chartHits, times, getHits(), ColorsHex.LIGHT_CYAN.getCode(), "Hits", hitPanel);
+					setChartData(chartHits, times, getHits(), ColorsHex.LIGHT_CYAN.getCode(), "Hits", hitPanel);
 					chartHitsLoaded = true;
 				}
 				break;
 			case LOCKED:
 				if (!chartLockedLoaded) {
-					values = setChartData(chartLocked, times, getLocked(), ColorsHex.LIGHT_CYAN.getCode(), "Locked", lokPanel);
+					setChartData(chartLocked, times, getLocked(), ColorsHex.LIGHT_CYAN.getCode(), "Locked", lokPanel);
 					chartLockedLoaded = true;
-				}
-				break;
-			case WAITS:
-				if (!chartWaitsLoaded) {
-					values = getWaits();
-					setChartData(chartWaits, times, values, ColorsHex.LIGHT_CYAN.getCode(), "Waits", waitPanel);
-					chartWaitsLoaded = true;
 				}
 				break;
 			case GETS:
 				if (!chartGetsLoaded) {
-					values = setChartData(chartGets, times, getGets(), ColorsHex.LIGHT_CYAN.getCode(), "Gets", getPanel);
+					setChartData(chartGets, times, getGets(), ColorsHex.LIGHT_CYAN.getCode(), "Gets", getPanel);
 					chartGetsLoaded = true;
 				}
 				break;
 			case PUTS:
 				if (!chartPutsLoaded) {
-					values = setChartData(chartPuts, times, getPuts(), ColorsHex.LIGHT_CYAN.getCode(), "Puts", putPanel);
+					setChartData(chartPuts, times, getPuts(), ColorsHex.LIGHT_CYAN.getCode(), "Puts", putPanel);
 					chartPutsLoaded = true;
 				}
 				break;
 			case REMOVES:
 				if (!chartRemovesLoaded) {
-					values = setChartData(chartRemoves, times, getRemoves(), ColorsHex.LIGHT_CYAN.getCode(), "Removes", remPanel);
+					setChartData(chartRemoves, times, getRemoves(), ColorsHex.LIGHT_CYAN.getCode(), "Removes", remPanel);
 					chartRemovesLoaded = true;
 				}
 				break;
@@ -235,12 +221,11 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 
 	}
 
-	private long[] setChartData(TimeCountLineChart chart, String[] times, long[] values, String color, String yAxixLabel, VerticalPanel container) {
+	private void setChartData(TimeCountLineChart chart, String[] times, long[] values, String color, String yAxixLabel, VerticalPanel container) {
 		chart.setTimeAndDatas(times, values, color, "Time", yAxixLabel);
 		if (container.getWidgetCount() == 0) {
 			container.add(chart);
 		}
-		return values;
 	}
 	
 	private long[] getEntries() {
@@ -266,15 +251,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		for (int i=0; i<listData.size(); i++) {
 			DetailedQueueData dqd = listData.get(i);
 			values[i] = dqd.getLocked();
-		}
-		return values;
-	}
-
-	private long[] getWaits() {
-		long[] values = new long[listData.size()];
-		for (int i=0; i<listData.size(); i++) {
-			DetailedQueueData dqd = listData.get(i);
-			values[i] = dqd.getLockWaits();
 		}
 		return values;
 	}
@@ -333,7 +309,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		chartEntries.setWidth(chartWidth);
 		chartHits.setWidth(chartWidth);
 		chartLocked.setWidth(chartWidth);
-		chartWaits.setWidth(chartWidth);
 		chartGets.setWidth(chartWidth);
 		chartPuts.setWidth(chartWidth);
 		chartRemoves.setWidth(chartWidth);
@@ -342,7 +317,6 @@ public class InspectorPanel extends AdminPanel implements ResizeCapable {
 		chartEntries.setHeight(Sizes.CHART_HEIGHT);
 		chartHits.setHeight(Sizes.CHART_HEIGHT);
 		chartLocked.setHeight(Sizes.CHART_HEIGHT);
-		chartWaits.setHeight(Sizes.CHART_HEIGHT);
 		chartGets.setHeight(Sizes.CHART_HEIGHT);
 		chartPuts.setHeight(Sizes.CHART_HEIGHT);
 		chartRemoves.setHeight(Sizes.CHART_HEIGHT);

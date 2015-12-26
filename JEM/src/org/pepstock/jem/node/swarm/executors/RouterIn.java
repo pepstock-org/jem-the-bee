@@ -26,8 +26,8 @@ import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.SubmitPreJob;
+import org.pepstock.jem.node.hazelcast.IdGenerators;
 import org.pepstock.jem.node.swarm.SwarmException;
 import org.pepstock.jem.node.swarm.SwarmNodeMessage;
 
@@ -91,7 +91,7 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 		preJob.setJclContent(job.getJcl().getContent());
 		preJob.setJclType(job.getJcl().getType());
 		// gets unique ID
-		IdGenerator generator = Main.getHazelcast().getIdGenerator(Queues.JOB_ID_GENERATOR);
+		IdGenerator generator = Main.getHazelcast().getIdGenerator(IdGenerators.JOB);
 		long id = generator.newId();
 		// creates job id
 		String jobId = Factory.createJobId(job, id);

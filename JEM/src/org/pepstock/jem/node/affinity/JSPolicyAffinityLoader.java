@@ -26,7 +26,7 @@ import java.io.StringReader;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.util.CharSet;
 
 import com.hazelcast.core.ILock;
@@ -64,7 +64,7 @@ public class JSPolicyAffinityLoader extends PolicyAffinityLoader {
 	@Override
 	public Result runScript(File script, SystemInfo info) throws IOException {
 		// synchronized the access to file
-		ILock writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+		ILock writeSynch = Main.getHazelcast().getLock(Locks.AFFINITY_LOADER);
 		writeSynch.lock();
 		try {
 			// reader of JS file

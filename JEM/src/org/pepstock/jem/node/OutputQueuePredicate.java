@@ -23,7 +23,7 @@ import org.pepstock.jem.Job;
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to
  * extract from the output queue:
- * {@value org.pepstock.jem.node.Queues#OUTPUT_QUEUE} only jobs which belongs to
+ * {@value org.pepstock.jem.node.hazelcast.Queues#OUTPUT_QUEUE} only jobs which belongs to
  * a specific set of environments.<br>
  * Uses also filter for job:<br>
  * <ol>
@@ -53,7 +53,7 @@ public class OutputQueuePredicate extends EnvironmentsPredicate {
 		}
 		if (job.getRoutingInfo().isOutputCommitted() == null) {
 			// if doens't have the same environment, skip it
-			Iterator<String> envsIter = getEnvironments().iterator();
+			Iterator<String> envsIter = getObject().iterator();
 			while (envsIter.hasNext()) {
 				if (envsIter.next().equalsIgnoreCase(job.getJcl().getEnvironment())) {
 					return true;

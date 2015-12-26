@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.node.security.CertificateEntry;
 
 import com.hazelcast.core.ILock;
@@ -61,7 +61,7 @@ public class CertificatesUtil {
 	 * @throws KeyStoreException 
 	 */
 	public static List<CertificateEntry> getCertificates() throws CertificateException, KeyStoreException {
-		ILock lock = Main.getHazelcast().getLock(Queues.KEYSTORE_LOCK);
+		ILock lock = Main.getHazelcast().getLock(Locks.KEYSTORE);
 		try{
 			lock.lock();
 			KeyStoreInfo info = KeyStoreUtil.getKeyStoresInfo().getUserKeystoreInfo();
@@ -79,7 +79,7 @@ public class CertificatesUtil {
 	 * @throws KeyStoreException 
 	 */
 	public static void addCertificate(byte[] certificate, String certificateAlias) throws CertificateException, KeyStoreException {
-		ILock lock = Main.getHazelcast().getLock(Queues.KEYSTORE_LOCK);
+		ILock lock = Main.getHazelcast().getLock(Locks.KEYSTORE);
 		try{
 			lock.lock();
 			KeyStoreInfo info = KeyStoreUtil.getKeyStoresInfo().getUserKeystoreInfo();
@@ -102,7 +102,7 @@ public class CertificatesUtil {
 	 * @throws KeyStoreException 
 	 */
 	public static void removeCertificate(String certificateAlias) throws CertificateException, KeyStoreException {
-		ILock lock = Main.getHazelcast().getLock(Queues.KEYSTORE_LOCK);
+		ILock lock = Main.getHazelcast().getLock(Locks.KEYSTORE);
 		try{
 			lock.lock();
 			KeyStoreInfo info = KeyStoreUtil.getKeyStoresInfo().getUserKeystoreInfo();

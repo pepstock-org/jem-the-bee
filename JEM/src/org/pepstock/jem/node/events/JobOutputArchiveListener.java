@@ -19,21 +19,18 @@ package org.pepstock.jem.node.events;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.archive.JobOutputArchive;
-import org.pepstock.jem.node.executors.ExecutionResult;
-import org.pepstock.jem.node.executors.GenericCallBack;
+import org.pepstock.jem.node.executors.TaskExecutor;
 import org.pepstock.jem.node.executors.jobs.Purge;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.ZipUtil;
 
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.IMap;
 
 /**
@@ -130,11 +127,7 @@ public class JobOutputArchiveListener implements JobLifecycleListener {
 
 			Cluster cluster = Main.getHazelcast().getCluster();
 			// creates the future task
-			DistributedTask<ExecutionResult> task = new DistributedTask<ExecutionResult>(new Purge(job), cluster.getLocalMember());
-			// gets executor service and executes!
-			ExecutorService executorService = Main.getHazelcast().getExecutorService();
-			task.setExecutionCallback(new GenericCallBack());
-			executorService.execute(task);
+			TaskExecutor.submit(new Purge(job), cluster.getLocalMember());
 			LogAppl.getInstance().emit(NodeMessage.JEMC302I, job.toString());
 		} catch (Exception re){
 			LogAppl.getInstance().emit(NodeMessage.JEMC299E, re, job.toString());

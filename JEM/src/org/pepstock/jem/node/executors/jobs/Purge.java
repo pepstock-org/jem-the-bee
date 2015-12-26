@@ -25,7 +25,6 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.executors.DefaultExecutor;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
@@ -36,7 +35,7 @@ import org.pepstock.jem.node.executors.ExecutorException;
  * @version 1.2
  * 
  */
-public class Purge extends DefaultExecutor<ExecutionResult>{
+public class Purge extends DefaultExecutor<Boolean>{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -59,7 +58,7 @@ public class Purge extends DefaultExecutor<ExecutionResult>{
 	 * @throws Exception occurs if errors
 	 */
 	@Override
-	public ExecutionResult execute() throws ExecutorException {
+	public Boolean execute() throws ExecutorException {
 		// gets the jcl file to extract the directory
 		File jclFile;
 		try {
@@ -85,6 +84,6 @@ public class Purge extends DefaultExecutor<ExecutionResult>{
 		} catch (IOException ioe){
 			LogAppl.getInstance().emit(NodeMessage.JEMC164W, ioe, job.toString(), jobOutputFolder.getAbsolutePath());	
 		}
-		return ExecutionResult.SUCCESSFUL;
+		return Boolean.TRUE;
 	}
 }

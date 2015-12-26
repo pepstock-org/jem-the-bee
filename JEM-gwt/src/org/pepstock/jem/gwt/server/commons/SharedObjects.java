@@ -29,7 +29,6 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.util.net.Interface;
 
-import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -49,7 +48,7 @@ public class SharedObjects {
 
 	private boolean isDataClusterAvailable = false;
 
-	private HazelcastClient hazelcastClient = null;
+	private HazelcastInstance hazelcastClient = null;
 
 	private String sessionsInstance = null;
 
@@ -182,7 +181,7 @@ public class SharedObjects {
 	 * 
 	 * @return the client of Hazelcast
 	 */
-	public HazelcastClient getHazelcastClient() {
+	public HazelcastInstance getHazelcastClient() {
 		return hazelcastClient;
 	}
 
@@ -192,7 +191,7 @@ public class SharedObjects {
 	 * @param hazelcastClient
 	 *            the Hazelcast client to set
 	 */
-	public void setHazelcastClient(HazelcastClient hazelcastClient) {
+	public void setHazelcastClient(HazelcastInstance hazelcastClient) {
 		this.hazelcastClient = hazelcastClient;
 	}
 

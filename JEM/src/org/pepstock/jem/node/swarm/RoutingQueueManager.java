@@ -23,36 +23,39 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.JobComparator;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.RoutingQueuePredicate;
 import org.pepstock.jem.node.Status;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.swarm.executors.RouterIn;
 
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.map.listener.EntryAddedListener;
+import com.hazelcast.map.listener.EntryRemovedListener;
+import com.hazelcast.map.listener.EntryUpdatedListener;
 
 /**
  * 
  * Manages all activities related to routing queue. It's able to listen when new
  * jobs are put in routing queue:
- * {@value org.pepstock.jem.node.Queues#ROUTING_QUEUE} and checks if it can be
+ * {@value org.pepstock.jem.node.hazelcast.Queues#ROUTING_QUEUE} and checks if it can be
  * routed or not that is if the environment to which it refers is actually
  * connected to the "swarm" environment.
  * 
  * @author Simone "Busy" Businaro
  * 
  */
-public class RoutingQueueManager implements EntryListener<String, Job> {
+public class RoutingQueueManager implements EntryAddedListener<String, Job>, EntryUpdatedListener<String, Job>, EntryRemovedListener<String, Job> {
 
 	private JobComparator comparator = new JobComparator();
 
@@ -76,11 +79,6 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 		if (Main.SWARM.getStatus().equals(Status.ACTIVE) && event.getValue().getRoutingInfo().isRoutingCommitted() == null && !event.getValue().getJcl().isHold()) {
 			routeJob(event.getValue());
 		}
-	}
-
-	@Override
-	public void entryEvicted(EntryEvent<String, Job> event) {
-		// do nothing
 	}
 
 	@Override
@@ -110,7 +108,7 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 	 */
 	public synchronized void routeJobsByAvailableEnvironments() {
 		if (Main.SWARM.getStatus().equals(Status.ACTIVE)) {
-			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 			Collection<NodeInfo> nodes = nodesMap.values();
 			// route job only if nodes exist
 			if (nodes != null && !nodes.isEmpty()) {
@@ -121,7 +119,7 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 				}
 				IMap<String, Job> routingQueue = Main.getHazelcast().getMap(Queues.ROUTING_QUEUE);
 				RoutingQueuePredicate rqp = new RoutingQueuePredicate();
-				rqp.setEnvironments(environments);
+				rqp.setObject(environments);
 				Collection<Job> jobs = routingQueue.values(rqp);
 				// sort jobs
 				List<Job> queuedJobs = new ArrayList<Job>(jobs);
@@ -153,7 +151,7 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 		if (Main.SWARM.getStatus().equals(Status.ACTIVE)) {
 			setRouteEnded(false);
 			IMap<String, Job> routingQueue = Main.getHazelcast().getMap(Queues.ROUTING_QUEUE);
-			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+			IMap<String, NodeInfo> nodesMap = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 			try {
 				// lock the entry of the job
 				routingQueue.lock(currJob.getId());
@@ -163,19 +161,18 @@ public class RoutingQueueManager implements EntryListener<String, Job> {
 				Job job = routingQueue.get(currJob.getId());
 				if (job != null && job.getRoutingInfo().isRoutingCommitted() == null) {
 					MapSwarmNodePredicate mnp = new MapSwarmNodePredicate();
-					mnp.setEnvironment(job.getJcl().getEnvironment());
+					mnp.setObject(job.getJcl().getEnvironment());
 					Member member = MapSwarmNodesManager.getMember(nodesMap.values(mnp));
 					// check if member is still available otherwise do
 					// nothing
 					if (member != null) {
 						LogAppl.getInstance().emit(SwarmNodeMessage.JEMO009I, job);
 						// route the job to the specific member
-						DistributedTask<Boolean> task = new DistributedTask<Boolean>(new RouterIn(job, Main.EXECUTION_ENVIRONMENT.getEnvironment()), member);
-						ExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService();
+						IExecutorService executorService = Main.SWARM.getHazelcastInstance().getExecutorService(ExecutorServices.SWARM);
 						// start 2 phase commit
 						job.getRoutingInfo().setRoutingCommitted(false);
 						routingQueue.put(job.getId(), job);
-						executorService.execute(task);
+						Future<Boolean> task = executorService.submitToMember(new RouterIn(job, Main.EXECUTION_ENVIRONMENT.getEnvironment()), member);
 						// if get response from task remove job from routing
 						// queue
 						if (task.get()) {

@@ -42,8 +42,6 @@ public class MapStats implements Serializable{
 	private long backupEntryMemoryCost = Long.MIN_VALUE;
 	
 	private long lockedEntryCount = Long.MIN_VALUE;
-
-	private long lockWaitCount = Long.MIN_VALUE;
 	
 	private long dirtyEntryCount = Long.MIN_VALUE;
 	
@@ -142,20 +140,6 @@ public class MapStats implements Serializable{
 	}
 
 	/**
-	 * @return the lockWaitCount
-	 */
-	public long getLockWaitCount() {
-		return lockWaitCount;
-	}
-
-	/**
-	 * @param lockWaitCount the lockWaitCount to set
-	 */
-	public void setLockWaitCount(long lockWaitCount) {
-		this.lockWaitCount = lockWaitCount;
-	}
-
-	/**
 	 * @return the dirtyEntryCount
 	 */
 	public long getDirtyEntryCount() {
@@ -203,6 +187,6 @@ public class MapStats implements Serializable{
 	@Override
 	public String toString() {
 		return "MapStats [name=" + name + ", ownedEntryCount=" + ownedEntryCount + ", backupEntryCount=" + backupEntryCount + ", ownedEntryMemoryCost=" + ownedEntryMemoryCost + ", backupEntryMemoryCost=" + backupEntryMemoryCost + ", lockedEntryCount="
-				+ lockedEntryCount + ", lockWaitCount=" + lockWaitCount + ", dirtyEntryCount=" + dirtyEntryCount + ", hits=" + hits + ", operationsStats=" + operationsStats + "]";
+				+ lockedEntryCount + ", dirtyEntryCount=" + dirtyEntryCount + ", hits=" + hits + ", operationsStats=" + operationsStats + "]";
 	}
 }

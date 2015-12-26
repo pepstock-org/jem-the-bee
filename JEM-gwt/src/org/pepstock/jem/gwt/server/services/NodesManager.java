@@ -34,12 +34,10 @@ import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.affinity.Result;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.affinity.CheckAffinityPolicy;
 import org.pepstock.jem.node.executors.affinity.GetAffinityPolicy;
 import org.pepstock.jem.node.executors.affinity.SaveAffinityPolicy;
@@ -61,6 +59,8 @@ import org.pepstock.jem.node.executors.nodes.Shutdown;
 import org.pepstock.jem.node.executors.nodes.Start;
 import org.pepstock.jem.node.executors.nodes.Top;
 import org.pepstock.jem.node.executors.nodes.Update;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.util.filters.Filter;
@@ -122,9 +122,9 @@ public class NodesManager extends DefaultService {
     	// gets HC map
         IMap<String, NodeInfo> nodes = getInstance().getMap(Queues.NODES_MAP);
         boolean isLock=false;
-        Lock lock = getInstance().getLock(Queues.NODES_MAP_LOCK);
+        Lock lock = getInstance().getLock(Locks.NODES_MAP);
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){
 				return nodes.get(key);
 			} else {
@@ -215,9 +215,9 @@ public class NodesManager extends DefaultService {
 		List<NodeInfoBean> list = new ArrayList<NodeInfoBean>();
 		Collection<NodeInfo> allNodes = null;
 		boolean isLock=false;
-		Lock lock = getInstance().getLock(Queues.NODES_MAP_LOCK);
+		Lock lock = getInstance().getLock(Locks.NODES_MAP);
 		try {
-			isLock=lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock=lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock){ 
 				// gets all nodes by predicate
 				allNodes = nodes.values(predicate);
@@ -295,7 +295,7 @@ public class NodesManager extends DefaultService {
 	 * @return always <code>true</code>
 	 * @throws ServiceMessageException if any exception occours
 	 */
-	private Boolean doNodeAction(Collection<NodeInfoBean> nodes, Callable<ExecutionResult> executor) throws ServiceMessageException {
+	private Boolean doNodeAction(Collection<NodeInfoBean> nodes, Callable<Boolean> executor) throws ServiceMessageException {
 		// gets nodes map instance 
 		IMap<String, NodeInfo> membersMap = getInstance().getMap(Queues.NODES_MAP);
 		// scans all nodes

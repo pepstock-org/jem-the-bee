@@ -65,18 +65,14 @@ public class QueuesComparator extends IndexedColumnComparator<DetailedQueueData>
 				diff = (int)(o1.getLocked() - o2.getLocked());
 				break;
 			case ColumnIndex.COLUMN_5: 
-				// sorts by locks wait
-				diff = (int)(o1.getLockWaits() - o2.getLockWaits());
-				break;
-			case ColumnIndex.COLUMN_6: 
 				// sorts by gets
 				diff = (int)(o1.getGets() - o2.getGets());
 				break;
-			case ColumnIndex.COLUMN_7: 
+			case ColumnIndex.COLUMN_6: 
 				// sorts by puts
 				diff = (int)(o1.getPuts() - o2.getPuts());
 				break;
-			case ColumnIndex.COLUMN_8: 
+			case ColumnIndex.COLUMN_7: 
 				// sorts by remove
 				diff = (int)(o1.getRemoves() - o2.getRemoves());
 				break;

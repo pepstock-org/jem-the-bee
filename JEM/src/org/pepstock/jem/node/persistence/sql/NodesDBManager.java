@@ -17,7 +17,7 @@
 package org.pepstock.jem.node.persistence.sql;
 
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Manages all SQL statements towards the database to persist the nodes.<br>

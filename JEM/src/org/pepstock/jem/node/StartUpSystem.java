@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -49,6 +49,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
+import org.pepstock.jem.grs.GrsMapConfigProvider;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.affinity.AffinityLoader;
@@ -71,14 +72,17 @@ import org.pepstock.jem.node.configuration.StatsManager;
 import org.pepstock.jem.node.configuration.SwarmConfiguration;
 import org.pepstock.jem.node.events.JobLifecycleListener;
 import org.pepstock.jem.node.executors.nodes.GetDataPaths;
+import org.pepstock.jem.node.hazelcast.ConfigProvider;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.listeners.NodeListener;
-import org.pepstock.jem.node.listeners.NodeMigrationListener;
 import org.pepstock.jem.node.multicast.MulticastService;
-import org.pepstock.jem.node.persistence.AbstractMapManager;
 import org.pepstock.jem.node.persistence.CommonResourcesMapManager;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.InputMapManager;
 import org.pepstock.jem.node.persistence.MapManagersFactory;
+import org.pepstock.jem.node.persistence.NodesMapManager;
 import org.pepstock.jem.node.persistence.OutputMapManager;
 import org.pepstock.jem.node.persistence.PreJobMapManager;
 import org.pepstock.jem.node.persistence.RecoveryManager;
@@ -103,6 +107,9 @@ import org.pepstock.jem.node.security.UserPreference;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
 import org.pepstock.jem.node.sgm.DataPaths;
 import org.pepstock.jem.node.sgm.Path;
+import org.pepstock.jem.node.stats.StatsMapConfigProvider;
+import org.pepstock.jem.node.swarm.RoutedQueueMapConfigProvider;
+import org.pepstock.jem.node.swarm.SwarmNodeMapConfigProvider;
 import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.ClassLoaderUtil;
 import org.pepstock.jem.util.ObjectAndClassPathContainer;
@@ -115,17 +122,16 @@ import org.xml.sax.SAXException;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.config.MapConfig;
-import com.hazelcast.config.MapStoreConfig;
 import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.QueueConfig;
 import com.hazelcast.config.SemaphoreConfig;
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.ILock;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ISemaphore;
 import com.hazelcast.core.Member;
-import com.hazelcast.partition.PartitionService;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 
@@ -189,9 +195,6 @@ public class StartUpSystem {
 			throw new ConfigurationException(e);
 		}
 		LogAppl.getInstance().emit(NodeMessage.JEMC012I, ManagementFactory.getRuntimeMXBean().getName());
-		// recovery data loss handler
-		PartitionService partitionService = Main.getHazelcast().getPartitionService();
-		partitionService.addMigrationListener(new NodeMigrationListener());
 		// start swarm
 		try {
 			Main.SWARM.start();
@@ -272,22 +275,38 @@ public class StartUpSystem {
 				}
 				
 				// defines here all read and writes locks 
-				SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig(ConcurrentLock.NO_WAITING_PREFIX+"*", Integer.MAX_VALUE);
-				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig(ConcurrentLock.NO_ACCESSING_PREFIX+"*", 1);
+				SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig();
+				semaphoreConfig1.setName(ConcurrentLock.NO_WAITING_PREFIX+"*");
+				semaphoreConfig1.setInitialPermits(Integer.MAX_VALUE);
+				semaphoreConfig1.setBackupCount(0);
+				semaphoreConfig1.setAsyncBackupCount(0);
+				SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig();
+				semaphoreConfig2.setName(ConcurrentLock.NO_ACCESSING_PREFIX+"*");
+				semaphoreConfig2.setInitialPermits(1);
+				semaphoreConfig2.setBackupCount(0);
+				semaphoreConfig2.setAsyncBackupCount(0);
+
+				
 				config.addSemaphoreConfig(semaphoreConfig1);
 				config.addSemaphoreConfig(semaphoreConfig2);
 				
 				// checks map store configuration
-				checkMapStore(config, Queues.INPUT_QUEUE, InputMapManager.getInstance());
-				checkMapStore(config, Queues.RUNNING_QUEUE, RunningMapManager.getInstance());	
-				checkMapStore(config, Queues.OUTPUT_QUEUE, OutputMapManager.getInstance());
-				checkMapStore(config, Queues.ROUTING_QUEUE, RoutingMapManager.getInstance());
-				checkMapStore(config, Queues.COMMON_RESOURCES_MAP, CommonResourcesMapManager.getInstance());
-				checkMapStore(config, Queues.ROLES_MAP, RolesMapManager.getInstance());
-				checkMapStore(config, Queues.ROUTING_CONFIG_MAP, RoutingConfigMapManager.getInstance());
-				checkMapStore(config, Queues.USER_PREFERENCES_MAP, UserPreferencesMapManager.getInstance());
-				// PAY ATTENTION
-				// NODES don't have the map store
+				addHazelcastConfig(config, Queues.INPUT_QUEUE, InputMapManager.getInstance());
+				addHazelcastConfig(config, Queues.RUNNING_QUEUE, RunningMapManager.getInstance());	
+				addHazelcastConfig(config, Queues.OUTPUT_QUEUE, OutputMapManager.getInstance());
+				addHazelcastConfig(config, Queues.ROUTING_QUEUE, RoutingMapManager.getInstance());
+				addHazelcastConfig(config, Queues.COMMON_RESOURCES_MAP, CommonResourcesMapManager.getInstance());
+				addHazelcastConfig(config, Queues.ROLES_MAP, RolesMapManager.getInstance());
+				addHazelcastConfig(config, Queues.ROUTING_CONFIG_MAP, RoutingConfigMapManager.getInstance());
+				addHazelcastConfig(config, Queues.USER_PREFERENCES_MAP, UserPreferencesMapManager.getInstance());
+				addHazelcastConfig(config, Queues.NODES_MAP, NodesMapManager.getInstance());
+				
+				addHazelcastConfig(config, Queues.JCL_CHECKING_QUEUE, PreJobMapManager.getInstance());
+
+				addHazelcastConfig(config, Queues.SWARM_NODES_MAP, SwarmNodeMapConfigProvider.getInstance());
+				addHazelcastConfig(config, Queues.ROUTED_QUEUE, RoutedQueueMapConfigProvider.getInstance());
+				addHazelcastConfig(config, Queues.GRS_COUNTER_MUTEX_MAP, GrsMapConfigProvider.getInstance());
+				addHazelcastConfig(config, Queues.STATS_MAP, StatsMapConfigProvider.getInstance());
 				
 				// saves HC config
 				Main.setHazelcastConfig(config);
@@ -300,7 +319,7 @@ public class StartUpSystem {
 
 				// creates a key anyway, even if couldn't be necessary, to avoid
 				loadKey();
-
+				
 			} catch (MessageException e) {
 				throw new ConfigurationException(e);
 			} catch (FileNotFoundException e) {
@@ -322,8 +341,7 @@ public class StartUpSystem {
 			}
 
 		}
-
-		ILock lock = Main.getHazelcast().getLock(Queues.STARTUP_LOCK);
+		ILock lock = Main.getHazelcast().getLock(Locks.STARTUP);
 		try {
 			lock.lock();
 			// get the cluster adding a new listener and extract local member to
@@ -403,38 +421,27 @@ public class StartUpSystem {
 	 * @param mapStore MapStore implementation to set it.
 	 * @throws MessageException if a mandatory map is missing
 	 */
-	private static void checkMapStore(Config config, String mapName, AbstractMapManager<?> mapStore) throws MessageException{
-		// get map config
-		MapConfig mapConfig = config.findMatchingMapConfig(mapName);
-		// if map has been configured
-		if (mapConfig != null && !"default".equalsIgnoreCase(mapConfig.getName())){
-			// if map DON'T have to use eviction
-			// override the value setting NONE
-			if (!mapStore.canBeEvicted()){
-				mapConfig.setEvictionPolicy(MapConfig.DEFAULT_EVICTION_POLICY);
+	private static void addHazelcastConfig(Config config, String mapName, ConfigProvider provider) throws MessageException{
+		MapConfig newMapConfig = provider.getMapConfig();
+		if (newMapConfig != null){
+			// get map config
+			MapConfig mapConfig = config.findMapConfig(mapName);
+			if (mapConfig != null && !"default".equalsIgnoreCase(mapConfig.getName())){
+				throw new MessageException(NodeMessage.JEMC294E, mapName);
 			}
-			// gets mapstore config
-			MapStoreConfig msConfig = mapConfig.getMapStoreConfig();
-			// if mapstore has been configure
-			if (msConfig != null){
-				// override setting true to enable it
-				msConfig.setEnabled(true);
-				// stores the MAPSTOE object
-				msConfig.setImplementation(mapStore);
-			} else {
-				// if here, there isn't any mapstore configuration
-				// but it's mandatory
-				// therefore it add a default config
-				msConfig = new MapStoreConfig();
-				// enables mapstore
-				msConfig.setEnabled(true);
-				// stores the MAPSTOE object
-				msConfig.setImplementation(mapStore);
-				// by default it sets SYNC store
-				msConfig.setWriteDelaySeconds(0);
+			// if map has been configured
+			config.addMapConfig(newMapConfig);
+			return;
+		}
+		QueueConfig newQueueConfig = provider.getQueueConfig();
+		if (newQueueConfig != null){
+			// get queue config
+			QueueConfig queueConfig = config.findQueueConfig(mapName);
+			if (queueConfig != null && !"default".equalsIgnoreCase(queueConfig.getName())){
+				throw new MessageException(NodeMessage.JEMC294E, mapName);
 			}
-		} else {
-			throw new MessageException(NodeMessage.JEMC294E, mapName);
+			// if map has been configured
+			config.addQueueConfig(newQueueConfig);
 		}
 	}
 	
@@ -557,10 +564,10 @@ public class StartUpSystem {
 		if (Main.IS_COORDINATOR.get()) {
 			IMap<String, Job> runningQueue = Main.getHazelcast().getMap(Queues.RUNNING_QUEUE);
 
-			Lock lock = Main.getHazelcast().getLock(Queues.RUNNING_QUEUE_LOCK);
+			Lock lock = Main.getHazelcast().getLock(Locks.RUNNING_QUEUE);
 			boolean isLock = false;
 			try {
-				isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+				isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 				if (!runningQueue.isEmpty()) {
 					for (Job job : runningQueue.values()) {
 						org.pepstock.jem.Result result = new org.pepstock.jem.Result();
@@ -1037,6 +1044,11 @@ public class StartUpSystem {
 		// initializes all map stores.
 		try {
 			MapManagersFactory.initAll();
+			// if JEM env configuration sets the eviction
+			// for output map, sets here
+			if (JEM_ENV_CONFIG.getEviction() != null){
+				OutputMapManager.getInstance().setEviction(JEM_ENV_CONFIG.getEviction());
+			}
 		} catch (DatabaseException e) {
 			LogAppl.getInstance().emit(NodeMessage.JEMC167E, e);
 			throw new ConfigurationException(NodeMessage.JEMC167E.toMessage().getFormattedMessage());
@@ -1434,9 +1446,8 @@ public class StartUpSystem {
 	 * @throws ConfigurationException
 	 */
 	private static void checkDataPaths() throws ConfigurationException {
-        DistributedTask<List<String>> task = new DistributedTask<List<String>>(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
-        ExecutorService executorService = Main.getHazelcast().getExecutorService();
-        executorService.execute(task);
+		IExecutorService executorService = Main.getHazelcast().getExecutorService(ExecutorServices.NODE);
+		Future<List<String>> task = executorService.submitToMember(new GetDataPaths(), Main.getHazelcast().getCluster().getMembers().iterator().next());
 		// gets result
         try {
         	List<String> localDataPaths = Main.DATA_PATHS_MANAGER.getDataPathsNames();
@@ -1484,7 +1495,7 @@ public class StartUpSystem {
 					// gets properties defined. If not empty, substitutes
 					// the value of property with variables
 					Properties propsOfNode = node.getProperties();
-					if (!propsOfNode.isEmpty()) {
+					if (propsOfNode != null && !propsOfNode.isEmpty()) {
 						// scans all properties
 						for (Enumeration<Object> e = propsOfNode.keys(); e.hasMoreElements();) {
 							// gets key and value
@@ -1557,7 +1568,6 @@ public class StartUpSystem {
 					LogAppl.getInstance().emit(NodeMessage.JEMC058E, variables[i]);
 					throw new ConfigurationException(NodeMessage.JEMC058E.toMessage().getFormattedMessage(variables[i]));
 				}
-
 			}
 			// sets the variable on system and writes log
 			System.getProperties().setProperty(variables[i], normalizePath(variable));

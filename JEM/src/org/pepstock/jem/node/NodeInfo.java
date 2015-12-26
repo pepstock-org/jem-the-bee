@@ -85,6 +85,8 @@ public class NodeInfo implements Serializable {
 
 	private String processId = null;
 
+	private String dockerHostAddress = null;
+
 	private String user = null;
 
 	private Status status = Status.UNKNOWN;
@@ -113,7 +115,7 @@ public class NodeInfo implements Serializable {
 	private final String javaVendor = System.getProperty(ConfigKeys.JAVA_VENDOR);
 			
 	private final String javaVersion = System.getProperty(ConfigKeys.JAVA_VERSION);
-
+	
 	private final ReentrantLock lock = new ReentrantLock();
 
 	/**
@@ -483,6 +485,20 @@ public class NodeInfo implements Serializable {
 	 */
 	public ReentrantLock getLock() {
 		return lock;
+	}
+
+	/**
+	 * @return the dockerHostAddress
+	 */
+	public String getDockerHostAddress() {
+		return dockerHostAddress;
+	}
+
+	/**
+	 * @param dockerHostAddress the dockerHostAddress to set
+	 */
+	public void setDockerHostAddress(String dockerHostAddress) {
+		this.dockerHostAddress = dockerHostAddress;
 	}
 
 	/**

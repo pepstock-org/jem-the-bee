@@ -18,6 +18,7 @@ package org.pepstock.jem.util.filters.predicates;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.JemRuntimeException;
@@ -26,7 +27,6 @@ import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.RoleFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
@@ -38,7 +38,7 @@ import com.hazelcast.query.Predicate;
  * @version 1.0	
  *
  */
-public class RolePredicate extends JemFilterPredicate<Role> implements Serializable {
+public class RolePredicate extends JemFilterPredicate implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,14 +64,14 @@ public class RolePredicate extends JemFilterPredicate<Role> implements Serializa
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Entry entry) {
 		// casts the object to a Role 
 		Role role = (Role)entry.getValue();
 		boolean includeThis = true;
 		// gets all tokens of filter
-		if (!getFilter().isEmpty()){
+		if (!getObject().isEmpty()){
 			// iterate over all filter tokens
-			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			Iterator<FilterToken> iterator = getObject().values().iterator();
 			// exit if tokens already processed OR if i can immediate exclude this
 			while(iterator.hasNext() && includeThis) {
 				FilterToken token = iterator.next();

@@ -29,7 +29,7 @@ import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.NodeMessage;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
 
 /**
  * Is a class with common utilities for network interface utility
@@ -64,7 +64,7 @@ public final class InterfacesUtils {
 	 */
 	public static Interface getInterface(Config hazelcastConfig) throws MessageException{
 		Interface networkInterface = new Interface();
-		Interfaces interfaces = null;
+		InterfacesConfig interfaces = null;
 		// if config is null, it doesn't use Hazelcast, only local host
 		if (hazelcastConfig != null){
 			interfaces = hazelcastConfig.getNetworkConfig().getInterfaces();	

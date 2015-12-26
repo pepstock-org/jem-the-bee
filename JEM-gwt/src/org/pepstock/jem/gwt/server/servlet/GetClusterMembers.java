@@ -17,19 +17,20 @@
 package org.pepstock.jem.gwt.server.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.node.NodeInfo;
+import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.hazelcast.Queues;
 
-import com.hazelcast.core.Cluster;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.Member;
+import com.hazelcast.core.IMap;
 
 /**
  * Calls to have the list of all active member of JEM group.
@@ -50,20 +51,39 @@ public class GetClusterMembers extends JemDefaultServlet {
 		super.execute(request, response);
 		HazelcastInstance instance = SharedObjects.getInstance().getHazelcastClient();
 		
-		List<Member> list = new ArrayList<Member>();
-		Cluster cluster = instance.getCluster();
-		Set<Member> members = cluster.getMembers();
-		for (Member member : members) {
-			list.add(member);
-		}
-		int count = list.size();
-		for (Member member : list) {
-			response.getWriter().print(member.getInetSocketAddress().getAddress().getHostAddress()+":"+member.getInetSocketAddress().getPort());
-			if (--count > 0){
-				response.getWriter().print(",");
-			}
-		}
-		response.getWriter().close();
+//		List<Member> list = new ArrayList<Member>();
+//		Cluster cluster = instance.getCluster();
+//		Set<Member> members = cluster.getMembers();
+//		for (Member member : members) {
+//			list.add(member);
+//		}
+//		int count = list.size();
+//		for (Member member : list) {
+//			response.getWriter().print(member.getInetSocketAddress().getAddress().getHostAddress()+":"+member.getInetSocketAddress().getPort());
+//			if (--count > 0){
+//				response.getWriter().print(",");
+//			}
+//		}
+//		response.getWriter().close();
+		
+	      IMap<String, NodeInfo> membersMap = instance.getMap(Queues.NODES_MAP);
+	        try {
+	            // check if node release version inside the cluster are different
+	            Collection<NodeInfo> allNodes = membersMap.values();
+	    		int count = allNodes.size();
+	            // scans all node to check the version
+	            for (NodeInfo currNodeInfo : allNodes) {
+	            	
+	    			response.getWriter().print(currNodeInfo.getDockerHostAddress());
+	    			if (--count > 0){
+	    				response.getWriter().print(",");
+	    			}
+	            }
+	        } catch (Exception ex) {
+	            LogAppl.getInstance().emit(NodeMessage.JEMC174E, ex);
+	        } finally {
+	        	response.getWriter().close();
+	        }
 	}
 
 }

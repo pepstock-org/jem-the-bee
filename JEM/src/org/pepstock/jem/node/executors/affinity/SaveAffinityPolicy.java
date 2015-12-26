@@ -22,10 +22,10 @@ import org.apache.commons.io.FileUtils;
 import org.pepstock.jem.node.ConfigurationFile;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.affinity.ScriptAffinityLoader;
 import org.pepstock.jem.node.executors.DefaultExecutor;
 import org.pepstock.jem.node.executors.ExecutorException;
+import org.pepstock.jem.node.hazelcast.Locks;
 
 import com.hazelcast.core.ILock;
 
@@ -67,7 +67,7 @@ public class SaveAffinityPolicy extends DefaultExecutor<ConfigurationFile> {
 			if (loader.getScriptFile() != null) {
 				// locks the access to file to avoid multiple accesses
 				ILock writeSynch = null;
-				writeSynch = Main.getHazelcast().getLock(Queues.AFFINITY_LOADER_LOCK);
+				writeSynch = Main.getHazelcast().getLock(Locks.AFFINITY_LOADER);
 				writeSynch.lock();
 				try {
 					// checks if the bean is out-of-sync using the last

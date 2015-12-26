@@ -30,7 +30,7 @@ import org.pepstock.jem.log.MessageRuntimeException;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.node.persistence.Recoverable;
 import org.pepstock.jem.node.persistence.RecoveryManager;

@@ -26,9 +26,9 @@ import org.pepstock.jem.NodeInfoBean;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.swarm.SwarmException;
-import org.pepstock.jem.node.swarm.SwarmQueues;
 
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.Predicates;
@@ -58,26 +58,26 @@ public abstract class AbstractGetNodes implements Callable<Collection<NodeInfoBe
 	 */
 	public final Collection<NodeInfo> getNodes(Predicates.AbstractPredicate predicate) throws SwarmException{
 		// gets map of nodes
-		IMap<String, NodeInfo> nodes = Main.SWARM.getHazelcastInstance().getMap(SwarmQueues.NODES_MAP);
+		IMap<String, NodeInfo> nodes = Main.SWARM.getHazelcastInstance().getMap(Queues.SWARM_NODES_MAP);
 		// locks all map to have a consistent collection
 		// only for 10 seconds otherwise
 		// throws an exception
 		Collection<NodeInfo> allNodes = null;
-		Lock lock = Main.SWARM.getHazelcastInstance().getLock(SwarmQueues.NODES_MAP_LOCK);
+		Lock lock = Main.SWARM.getHazelcastInstance().getLock(Locks.SWARM_NODES_MAP);
 		boolean isLock = false;
 		try {
 			// trying lock
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				// gets all swarm nodes
 				allNodes = nodes.values(predicate);
 			} else {
-				throw new SwarmException(NodeMessage.JEMC119E, SwarmQueues.NODES_MAP);
+				throw new SwarmException(NodeMessage.JEMC119E, Queues.SWARM_NODES_MAP);
 			}
 			// returns all nodes
 			return allNodes;
 		} catch (Exception e) {
-			throw new SwarmException(NodeMessage.JEMC119E, e, SwarmQueues.NODES_MAP);
+			throw new SwarmException(NodeMessage.JEMC119E, e, Queues.SWARM_NODES_MAP);
 		} finally {
 			// unlocks always the map
 			if (isLock){

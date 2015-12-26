@@ -32,7 +32,8 @@ import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.RegExpPermission;
 import org.pepstock.jem.node.security.Role;
@@ -77,7 +78,7 @@ public class Authorizator {
 		// creates Hazelcast predicate to extract all roles and permissions
 		// assigned to user
 		RolesQueuePredicate predicate = new RolesQueuePredicate();
-		predicate.setUser(user);
+		predicate.setObject(user);
 		try {
 			// gets map and performs predicate!
 			IMap<String, Role> roles = SharedObjects.getInstance().getHazelcastClient().getMap(Queues.ROLES_MAP);
@@ -127,9 +128,9 @@ public class Authorizator {
 	 */
 	private Collection<Role> getRoles(IMap<String, Role> roles, RolesQueuePredicate predicate) throws MessageException{
 		boolean isLock = false;
-		Lock lock = SharedObjects.getInstance().getHazelcastClient().getLock(Queues.ROLES_MAP_LOCK);
+		Lock lock = SharedObjects.getInstance().getHazelcastClient().getLock(Locks.ROLES_MAP);
 		try {
-			isLock = lock.tryLock(Queues.LOCK_TIMEOUT, TimeUnit.SECONDS);
+			isLock = lock.tryLock(Locks.LOCK_TIMEOUT, TimeUnit.SECONDS);
 			if (isLock) {
 				return roles.values(predicate);
 			} else {

@@ -483,7 +483,62 @@ public enum UserInterfaceMessage implements MessageInterface {
 	 *  "Ignore message from multicast service", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when the web app receives a message from multicast but the client is up and running.")
-	JEMG076I("0076", "Ignore message from multicast service", MessageLevel.INFO);
+	JEMG076I("0076", "Ignore message from multicast service", MessageLevel.INFO),
+	
+	/**
+	 *  "Proxy service is waiting connections at port {0}"
+	 */
+	@Description(explanation = "It occurs when the proxy engine is starting to listen new connections.")
+	JEMG077I("0077", "Proxy service is waiting for connections at port {0}", MessageLevel.INFO),
+
+	/**
+	 *  "Unable to start proxy service at port {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the proxy engine is not able to start. Please have a look to the occurred exception.")
+	JEMG078E("0078", "Unable to start proxy service at port {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Proxy service received connection request from: {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the proxy engine received a new connection from client")
+	JEMG079I("0079", "Proxy service received connection request from: {0}", MessageLevel.INFO),
+	
+	/**
+	 *  "Unable to create a proxy bean service for {0}", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the proxy engine is not able to create a service.")
+	JEMG080E("0080", "Unable to create a proxy bean service for {0}", MessageLevel.ERROR),
+	
+	/**
+	 *  "Proxy service is shutting down", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the proxy engine is shutting down")
+	JEMG081I("0081", "Proxy service is shutting down", MessageLevel.INFO),
+	
+	/**
+	 *  "Unable to create a proxy service", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the proxy engine is not able to create a service by network errors.")
+	JEMG082E("0082", "Unable to create a proxy service", MessageLevel.ERROR),
+	
+	/**
+	 * "Invalid proxy handler class:  {0} ", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when a invalid proxy handler is running on pool. Please contact your JEM administrator.")
+	JEMG083E("0083", "Invalid proxy handler class:  {0} ", MessageLevel.ERROR),
+	
+	/**
+	 *  "Proxy service is ended for {0}", MessageLevel.INFO
+	 */
+	@Description(explanation = "It occurs when the proxy session with the client is terminated correctly")
+	JEMG084I("0084", "Proxy service is ended for {0}", MessageLevel.INFO),
+	
+	/**
+	 *  "Proxy data handler error", MessageLevel.ERROR
+	 */
+	@Description(explanation = "It occurs when the proxy session gets a IO exception. Please have a look to the exception")
+	JEMG085E("0085", "Proxy data handler error", MessageLevel.ERROR);
+
 
 	/**
 	 * The {@link Message} created in the constructor corresponding to an instance of <code>UserInterfaceMessage</code>. 

@@ -64,7 +64,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://127.0.0.1:8888</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -76,6 +76,34 @@
 				</param>
 			</params>
 		</submitter>
+		<submitter> 
+		    <name>PROXY_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.ProxySubmit</referenceClass>
+			<embedded>true</embedded> 			   
+			<params>
+				<param>
+				     <name>env</name>
+				     <value>TEST-Env</value>
+				</param>
+				<param>
+				     <name>host</name>
+				     <value>localhost:9701</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		
 		<!-- 
 		NO EMBEDDED
 		-->
@@ -137,7 +165,7 @@
 			<params>
 				<param>
 				     <name>host</name>
-				     <value>http://127.0.0.1:8888</value>
+				     <value>http://localhost:8888</value>
 				</param>
 				<param>
 				     <name>user</name>
@@ -161,6 +189,33 @@
 				<param>
 				     <name>host</name>
 				     <value>http://localhost:8888</value>
+				</param>
+				<param>
+				     <name>password</name>
+				     <value>jem_password</value>
+				</param>
+				<!-- param>
+				     <name>privateKey</name>
+				     <value>C:/JEM/jem_share/persistence/privatekey.pem</value>
+				</param>
+				<param>
+				     <name>privateKeyPwd</name>
+				     <value>jempassword</value>
+				</param-->
+			</params>
+		</submitter>
+		<submitter> 
+		    <name>PROXY_NOEMBEDDED_SUBMIT</name>
+			<referenceClass>org.pepstock.jem.commands.ProxySubmit</referenceClass>
+			<embedded>false</embedded> 			   
+			<params>
+				<param>
+				     <name>env</name>
+				     <value>TEST-Env</value>
+				</param>
+				<param>
+				     <name>host</name>
+				     <value>192.168.99.100:9701</value>
 				</param>
 				<param>
 				     <name>password</name>

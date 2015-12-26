@@ -26,7 +26,7 @@ import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.resources.Resource;
 import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionException;

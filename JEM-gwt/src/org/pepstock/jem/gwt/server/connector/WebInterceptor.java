@@ -34,6 +34,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.shiro.codec.Base64;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
+import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.security.keystore.Factory;
@@ -60,13 +61,20 @@ public class WebInterceptor implements SocketInterceptor {
 	private String keyStoreFileName = null;
 	
 	private boolean readKeyStore = false;
-
+	
 	/**
-	 * Build the web connector to JEM
-	 * @param configProperties
-	 * @throws IOException 
+	 * Initializes the socket interceptor
+	 * @param configProperties properites of HZ config
 	 */
-	public WebInterceptor(Properties configProperties) throws IOException {
+	public WebInterceptor(Properties configProperties) {
+		init(configProperties);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hazelcast.nio.SocketInterceptor#init(java.util.Properties)
+	 */
+    @Override
+    public void init(Properties configProperties) {
 		File clusterKeystoreFile = null;
 		// before reading the hazelcast path for keystore file
 		// checks on System properties
@@ -106,9 +114,13 @@ public class WebInterceptor implements SocketInterceptor {
 		// if it must read the keystore 
 		// form servlet context
 		if (readKeyStore){
-			readKeyStore();
+			try {
+	            readKeyStore();
+            } catch (IOException e) {
+	           throw new JemRuntimeException(e);
+            }
 		}
-	}
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -177,4 +189,5 @@ public class WebInterceptor implements SocketInterceptor {
 		IOUtils.copy(is, baos);
 		clusterKeystoreInfo.setBytes(baos);
 	}
+
 }

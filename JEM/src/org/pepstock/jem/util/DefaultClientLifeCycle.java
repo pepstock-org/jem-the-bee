@@ -39,24 +39,10 @@ public class DefaultClientLifeCycle implements LifecycleListener {
 			starting();
 		} else if (event.getState().equals(LifecycleState.STARTED)) {
 			started();
-		} else if (event.getState().equals(LifecycleState.RESTARTING)) {
-			restarting();
-		} else if (event.getState().equals(LifecycleState.RESTARTED)) {
-			restarted();
-		} else if (event.getState().equals(LifecycleState.PAUSING)) {
-			pausing();
-		} else if (event.getState().equals(LifecycleState.PAUSED)) {
-			paused();
-		} else if (event.getState().equals(LifecycleState.RESUMING)) {
-			resuming();
-		} else if (event.getState().equals(LifecycleState.RESUMED)) {
-			resumed();
-		} else if (event.getState().equals(LifecycleState.CLIENT_CONNECTION_OPENING)) {
-			clientConnectionOpening();
-		} else if (event.getState().equals(LifecycleState.CLIENT_CONNECTION_OPENED)) {
-			clientConnectionOpened();
-		} else if (event.getState().equals(LifecycleState.CLIENT_CONNECTION_LOST)) {
-			clientConnectionLost();
+		} else if (event.getState().equals(LifecycleState.CLIENT_CONNECTED)) {
+			clientConnected();
+		} else if (event.getState().equals(LifecycleState.CLIENT_DISCONNECTED)) {
+			clientDisconnected();
 		} else if (event.getState().equals(LifecycleState.SHUTTING_DOWN)) {
 			shuttingDown();
 		} else if (event.getState().equals(LifecycleState.SHUTDOWN)) {
@@ -79,48 +65,6 @@ public class DefaultClientLifeCycle implements LifecycleListener {
 	}
 
 	/**
-	 * Called when client is restarting
-	 */
-	public void restarting(){
-		// do nothing
-	}
-	
-	/**
-	 * Called when client is restarted
-	 */
-	public void restarted(){
-		// do nothing
-	}
-	
-	/**
-	 * Called when client is pausing
-	 */
-	public void pausing(){
-		// do nothing
-	}
-	
-	/**
-	 * Called when client is paused
-	 */
-	public void paused(){
-		// do nothing
-	}
-	
-	/**
-	 * Called when client is resuming
-	 */
-	public void resuming(){
-		// do nothing
-	}
-
-	/**
-	 * Called when client is resumed
-	 */
-	public void resumed(){
-		// do nothing
-	}
-
-	/**
 	 * Called when client is shutting down
 	 */
 	public void shuttingDown(){
@@ -137,21 +81,14 @@ public class DefaultClientLifeCycle implements LifecycleListener {
 	/**
 	 * Called when client is opening connection
 	 */
-	public void clientConnectionOpening(){
+	public void clientConnected(){
 		// do nothing
 	}
 
 	/**
 	 * Called when client is opened connection
 	 */
-	public void clientConnectionOpened(){
-		// do nothing
-	}
-
-	/**
-	 * Called when client lost connection
-	 */
-	public void clientConnectionLost(){
+	public void clientDisconnected(){
 		// do nothing
 	}
 	

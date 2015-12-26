@@ -28,7 +28,8 @@ import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.JobLogManager;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Locks;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.locks.LockException;
 import org.pepstock.jem.util.locks.ReadLock;
 import org.pepstock.jem.util.rmi.DefaultRmiObject;
@@ -114,7 +115,7 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 		// prints header into job-log
 		JobLogManager.printJobStarted(job);
 		
-		ReadLock read = new ReadLock(Main.getHazelcast(), Queues.DATASETS_RULES_LOCK);
+		ReadLock read = new ReadLock(Main.getHazelcast(), Locks.DATASETS_RULES);
 		try {
 			read.acquire();	
 			JobStartedObjects result = new JobStartedObjects();
@@ -122,12 +123,12 @@ public class TasksDoorImpl extends DefaultRmiObject implements TasksDoor {
 			result.setStorageGroupsManager(Main.DATA_PATHS_MANAGER);
 			return result;
 		} catch (LockException e) {
-			throw new RemoteException(NodeMessage.JEMC260E.toMessage().getFormattedMessage(Queues.DATASETS_RULES_LOCK), e);
+			throw new RemoteException(NodeMessage.JEMC260E.toMessage().getFormattedMessage(Locks.DATASETS_RULES), e);
 		} finally {
 			try {
 				read.release();
 			} catch (Exception e) {
-				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Queues.DATASETS_RULES_LOCK);
+				LogAppl.getInstance().emit(NodeMessage.JEMC261E, e, Locks.DATASETS_RULES);
 			}
 		}
 	}

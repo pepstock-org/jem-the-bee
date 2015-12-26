@@ -74,8 +74,8 @@ public class MulticastSender {
 			// scans all members
 			for (Member member : members) {
 				// gets ip and prot 
-				String ip = member.getInetSocketAddress().getAddress().getHostAddress();
-				int port = member.getInetSocketAddress().getPort();
+				String ip = member.getSocketAddress().getAddress().getHostAddress();
+				int port = member.getSocketAddress().getPort();
 				// adds HC node, format ip:port
 				nodeMessage.addMember(ip + ":" + port);
 			}

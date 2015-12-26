@@ -20,7 +20,7 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.PreJobMapManager;
 
 import com.hazelcast.core.IQueue;

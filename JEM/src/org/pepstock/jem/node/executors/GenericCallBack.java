@@ -16,8 +16,6 @@
 */
 package org.pepstock.jem.node.executors;
 
-import java.util.concurrent.Future;
-
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 
@@ -32,7 +30,22 @@ import com.hazelcast.core.ExecutionCallback;
  * @version 1.0
  * 
  */
-public class GenericCallBack implements ExecutionCallback<ExecutionResult> {
+public class GenericCallBack implements ExecutionCallback<Boolean> {
+	
+	/**
+	 * Common callback for task with boolean result
+	 */
+	public static final GenericCallBack DEFAULT = new GenericCallBack();
+	
+	/**
+	 * Successful result of task
+	 */
+	private static final String SUCCESSFUL = "SUCCESSFUL";
+
+	/**
+	 * Unsuccessful result of task
+	 */
+	private static final String UNSUCCESSUL = "UNSUCCESSFUL";
 	
 	/**
 	 * Empty constructor
@@ -40,23 +53,19 @@ public class GenericCallBack implements ExecutionCallback<ExecutionResult> {
 	public GenericCallBack() {
 	}
 
-	/**
-	 * Method called when the execution is ended.<br>
-	 * It writes only information records if the task is canceled or if a
-	 * exception occurs.
-	 * 
-	 * @see ExecutionResult
-	 * @param future future task executed
+	/* (non-Javadoc)
+	 * @see com.hazelcast.core.ExecutionCallback#onFailure(java.lang.Throwable)
 	 */
 	@Override
-	public void done(Future<ExecutionResult> future) {
-		try {
-			if (!future.isCancelled()) {
-				ExecutionResult result = future.get();
-				LogAppl.getInstance().emit(NodeMessage.JEMC113I, result.getDescription());
-			}
-		} catch (Exception e) {
-			LogAppl.getInstance().emit(NodeMessage.JEMC112E, e);
-		}
+	public void onFailure(Throwable exception) {
+		LogAppl.getInstance().emit(NodeMessage.JEMC113I, exception);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hazelcast.core.ExecutionCallback#onResponse(java.lang.Object)
+	 */
+	@Override
+	public void onResponse(Boolean result) {
+		LogAppl.getInstance().emit(NodeMessage.JEMC113I, result ? SUCCESSFUL : UNSUCCESSUL);
 	}
 }

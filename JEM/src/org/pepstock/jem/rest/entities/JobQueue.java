@@ -16,7 +16,7 @@
  */
 package org.pepstock.jem.rest.entities;
 
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 /**
  * Enumeration with a matrix between the queue keys of JEM node and the path

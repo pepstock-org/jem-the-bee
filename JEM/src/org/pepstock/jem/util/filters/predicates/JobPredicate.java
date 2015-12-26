@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
@@ -31,7 +32,6 @@ import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JemFilterFields;
 import org.pepstock.jem.util.filters.fields.JobFilterFields;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 /**
@@ -42,7 +42,7 @@ import com.hazelcast.query.Predicate;
  * @version 1.4
  *
  */
-public class JobPredicate extends JemFilterPredicate<Job> implements Serializable {
+public class JobPredicate extends JemFilterPredicate implements Serializable {
 
 	private static final long serialVersionUID = 7910310173201523940L;
 	
@@ -67,16 +67,16 @@ public class JobPredicate extends JemFilterPredicate<Job> implements Serializabl
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean apply(MapEntry entry) {
+	public boolean apply(Entry entry) {
 		// map entry value
 		Job job = (Job)entry.getValue();
 		
 		// initial flag, this should be invalidated if some checks fail
 		boolean includeThis = true;
 		
-		if (!getFilter().isEmpty()){
+		if (!getObject().isEmpty()){
 			// iterate over all filter tokens
-			Iterator<FilterToken> iterator = getFilter().values().iterator();
+			Iterator<FilterToken> iterator = getObject().values().iterator();
 			// exit if tokens already processed OR if i can immediate exclude this
 			while(iterator.hasNext() && includeThis) {
 				FilterToken token = iterator.next();

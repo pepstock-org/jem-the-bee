@@ -22,7 +22,6 @@ import org.pepstock.jem.node.NodeInfoUtility;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.node.Status;
 import org.pepstock.jem.node.executors.DefaultExecutor;
-import org.pepstock.jem.node.executors.ExecutionResult;
 import org.pepstock.jem.node.executors.ExecutorException;
 
 /**
@@ -38,7 +37,7 @@ import org.pepstock.jem.node.executors.ExecutorException;
  * @version 1.0
  * 
  */
-public class Drain extends DefaultExecutor<ExecutionResult>{
+public class Drain extends DefaultExecutor<Boolean>{
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +50,7 @@ public class Drain extends DefaultExecutor<ExecutionResult>{
 	 * @throws Exception occurs if errors
 	 */
 	@Override
-	public ExecutionResult execute() throws ExecutorException {
+	public Boolean execute() throws ExecutorException {
 		// locks the access on node
 		// to have a consistent status
 		Main.getNode().getLock().lock();
@@ -61,7 +60,7 @@ public class Drain extends DefaultExecutor<ExecutionResult>{
 			if (Main.getNode().getStatus().equals(Status.STARTING) || Main.getNode().getStatus().equals(Status.UNKNOWN)){
 				Main.getNode().setStatus(Status.DRAINED);
 				if (!Main.IS_ACCESS_MAINT.get()){
-					return ExecutionResult.SUCCESSFUL;
+					return Boolean.TRUE;
 				}
 			}
 				
@@ -81,7 +80,7 @@ public class Drain extends DefaultExecutor<ExecutionResult>{
 			// always unlock
 			Main.getNode().getLock().unlock();
 		}
-		return ExecutionResult.SUCCESSFUL;
+		return Boolean.TRUE;
 	}
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.node.executors.DefaultExecutor#checkShutDown()

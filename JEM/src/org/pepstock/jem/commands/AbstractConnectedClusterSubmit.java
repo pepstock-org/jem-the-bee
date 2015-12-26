@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
@@ -33,15 +33,18 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
+import org.pepstock.jem.node.hazelcast.ExecutorServices;
+import org.pepstock.jem.node.hazelcast.IdGenerators;
+import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.util.CmdConsole;
 import org.pepstock.jem.util.Parser;
 
-import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.IdGenerator;
@@ -68,7 +71,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	private String privateKeyPassword = null;
 
-	private HazelcastClient client = null;
+	private HazelcastInstance client = null;
 	
 	// uses a count down latch to wait end of job
 	private final CountDownLatch lock = new CountDownLatch(1);
@@ -189,12 +192,12 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 * @return Hazelcast instance 
 	 * @throws SubmitException if nay excetpion occurs
 	 */
-	public abstract HazelcastClient createClient() throws SubmitException;
+	public abstract HazelcastInstance createClient() throws SubmitException;
 	
 	/**
 	 * @return the client
 	 */
-	HazelcastClient getClient() {
+	HazelcastInstance getClient() {
 		return client;
 	}
 
@@ -256,7 +259,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		}
 		
 		// creates a job ID asking to Hazelcast for a new long value
-		IdGenerator generator = client.getIdGenerator(Queues.JOB_ID_GENERATOR);
+		IdGenerator generator = client.getIdGenerator(IdGenerators.JOB);
 		long id = generator.newId();
 		// Pads the value with "0"
 		String jobId = Factory.createJobId(job, id);
@@ -279,7 +282,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 		// gets topic object and adds itself as listener
 		if (isWait()){
-			ITopic<Job> topic = client.getTopic(Queues.ENDED_JOB_TOPIC);
+			ITopic<Job> topic = client.getTopic(Topics.ENDED_JOB);
 			topic.addMessageListener(this);
 		}
 
@@ -443,9 +446,8 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		Set<Member> set = cluster.getMembers();
 		Member member = set.iterator().next();
 		// calls a distributed task to get standard output and error
-		DistributedTask<String> task = new DistributedTask<String>(new GetMessagesLog(getJob()), member);
-		ExecutorService executorService = client.getExecutorService();
-		executorService.execute(task);
+		IExecutorService executorService = client.getExecutorService(ExecutorServices.NODE);
+		Future<String> task = executorService.submitToMember(new GetMessagesLog(getJob()), member);
 		try {
 			// gets content
 			String content = task.get();

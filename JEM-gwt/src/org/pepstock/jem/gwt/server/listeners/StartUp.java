@@ -34,6 +34,7 @@ import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.SharedObjects;
 import org.pepstock.jem.gwt.server.configuration.ConfigurationException;
 import org.pepstock.jem.gwt.server.connector.ConnectorServiceFactory;
+import org.pepstock.jem.gwt.server.proxy.Engine;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
@@ -45,7 +46,7 @@ import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.net.InterfacesUtils;
 
 import com.hazelcast.config.InMemoryXmlConfig;
-import com.hazelcast.config.Interfaces;
+import com.hazelcast.config.InterfacesConfig;
 import com.hazelcast.config.NetworkConfig;
 
 /**
@@ -61,6 +62,8 @@ import com.hazelcast.config.NetworkConfig;
 public class StartUp extends EnvironmentLoaderListener implements ServletContextListener {
 	
 	private static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
+	
+	private final Engine proxyEngine = new Engine();
 
 	/**
 	 * Constraucts initializing log4j and shared objects
@@ -83,6 +86,9 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		// close proxy engine
+		proxyEngine.shutdown();
+		proxyEngine.interrupt();
 		// stop connector services
 		SharedObjects.getInstance().getConnectorService().shutdown();
 		// stop client instance
@@ -123,6 +129,8 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 		} else {
 			throw new MessageRuntimeException(UserInterfaceMessage.JEMG021E);
 		}
+		// starts proxy engine
+		proxyEngine.start();
 	}
 
 	/**
@@ -151,7 +159,7 @@ public class StartUp extends EnvironmentLoaderListener implements ServletContext
 			SharedObjects.getInstance().setNetworkInterface(InterfacesUtils.getInterface(config));
 			// Overrides the 
 			NetworkConfig network = config.getNetworkConfig();
-			Interfaces interfaces = network.getInterfaces();
+			InterfacesConfig interfaces = network.getInterfaces();
 			// overrides network only if is not set
 			if (interfaces == null){
 				network.getInterfaces().setEnabled(true).addInterface(Main.getNetworkInterface().getAddress().getHostAddress());

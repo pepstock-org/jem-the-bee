@@ -16,7 +16,11 @@
 */
 package org.pepstock.jem.node.persistence;
 
+import org.pepstock.jem.node.configuration.Eviction;
+import org.pepstock.jem.node.hazelcast.ConfigFactory;
 import org.pepstock.jem.node.security.UserPreferences;
+
+import com.hazelcast.config.MapConfig;
 
 /**
  * Persistent manager for RoutingConfs map.<br>
@@ -25,6 +29,12 @@ import org.pepstock.jem.node.security.UserPreferences;
  * 
  */
 public class UserPreferencesMapManager extends AbstractMapManager<UserPreferences> {
+	
+	private static final int MAX_SIZE = 200;
+	
+	private static final int PERCENTAGE = 25;
+	
+	private static final Eviction DEFAULT_EVICTION = new Eviction(MAX_SIZE, PERCENTAGE);
 	
 	private static UserPreferencesMapManager INSTANCE = null;
 
@@ -57,5 +67,13 @@ public class UserPreferencesMapManager extends AbstractMapManager<UserPreference
 	 */
 	public static UserPreferencesMapManager getInstance() {
 		return INSTANCE;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.persistence.AbstractMapManager#getMapConfig()
+	 */
+	@Override
+	public MapConfig getMapConfig() {
+		return ConfigFactory.createMapConfig(getQueueName(), DEFAULT_EVICTION);
 	}
 }

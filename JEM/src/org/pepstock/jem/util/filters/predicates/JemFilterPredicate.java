@@ -16,21 +16,17 @@
 */
 package org.pepstock.jem.util.filters.predicates;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.InternalAbstractPredicate;
 import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
 
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
-import com.hazelcast.query.Predicates.AbstractPredicate;
-import com.thoughtworks.xstream.XStream;
 
 /**
  * Root class of Hazelcast custom {@link Predicate}s. It uses as abstract class for predicates on JEM entities.
@@ -39,15 +35,10 @@ import com.thoughtworks.xstream.XStream;
  * @author Marco "Fuzzo" Cuccato
  * @version 1.0	
  *
- * @param <T> JEM entity type managed by the class
  */
-public abstract class JemFilterPredicate<T> extends AbstractPredicate implements Serializable {
+public abstract class JemFilterPredicate extends InternalAbstractPredicate<Filter> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private transient XStream stream = new XStream();
-	
-	private Filter filter = null;
 
 	/**
 	 * Empty constructor
@@ -60,7 +51,7 @@ public abstract class JemFilterPredicate<T> extends AbstractPredicate implements
 	 * @param filter the {@link Filter} associated with this {@link Predicate}
 	 */
 	public JemFilterPredicate(Filter filter) {
-		this.filter = filter;
+		this.setObject(filter);
 	}
 	
 	/* (non-Javadoc)
@@ -68,44 +59,8 @@ public abstract class JemFilterPredicate<T> extends AbstractPredicate implements
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public abstract boolean apply(MapEntry entry);
+	public abstract boolean apply(Entry entry);
 	
-	/* (non-Javadoc)
-	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
-	 */
-	@Override
-	public void readData(DataInput dataInput) throws IOException {
-		// de-serialize the filter object
-		String filterString = dataInput.readLine();
-		filter = (Filter) stream.fromXML(filterString);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
-	 */
-	@Override
-	public void writeData(DataOutput dataOutput) throws IOException {
-		// replace \n because are not supported from serialization engine
-		// of Hazelcast
-		String ee = stream.toXML(filter).replace('\n', ' ');
-		dataOutput.writeBytes(ee);
-	}
-
-	/**
-	 * @return the associated {@link Filter}
-	 */
-	public Filter getFilter() {
-		return filter;
-	}
-
-	/**
-	 * Set the associated filter
-	 * @param filter the associated filter
-	 */
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-	}
-
 	/**
 	 * Checks name of object with the filter value
 	 * @param tokenValue filter of resource

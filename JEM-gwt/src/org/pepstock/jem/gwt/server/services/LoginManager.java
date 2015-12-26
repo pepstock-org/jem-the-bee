@@ -28,7 +28,7 @@ import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.security.FirstInstallationManager;
 import org.pepstock.jem.gwt.server.security.FirstInstallationToken;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.security.LoggedUser;
 import org.pepstock.jem.node.security.OrganizationalUnit;
 import org.pepstock.jem.node.security.Permissions;

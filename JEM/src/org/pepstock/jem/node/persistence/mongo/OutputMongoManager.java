@@ -27,7 +27,7 @@ import org.bson.Document;
 import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.DatabaseException;
 import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.Parser;

@@ -26,8 +26,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.commands.HttpSubmit;
 import org.pepstock.jem.commands.LocalHostSubmit;
+import org.pepstock.jem.commands.ProxySubmit;
 import org.pepstock.jem.commands.Submit;
 import org.pepstock.jem.commands.SubmitResult;
 import org.pepstock.jem.log.JemException;
@@ -78,6 +80,8 @@ public class JemTestManager {
 				selectedSubmitter = submitter;
 				if (!selectedSubmitter.getReferenceClass().equals(
 						HttpSubmit.class)
+						&& !selectedSubmitter.getReferenceClass().equals(
+								ProxySubmit.class)
 						&& !selectedSubmitter.getReferenceClass().equals(
 								Submit.class)
 						&& !selectedSubmitter.getReferenceClass().equals(
@@ -132,7 +136,7 @@ public class JemTestManager {
 		if (!selectedSubmitter.getEmbedded()){
 			File temp;
             try {
-	            temp = File.createTempFile(type, ".jcl");
+	            temp = File.createTempFile(StringUtils.rightPad(type, 3, "0"), ".jcl");
 	            URL url = new URL(jcl);
 	            FileUtils.copyURLToFile(url, temp);
 	            newJcl = temp.getAbsolutePath();

@@ -16,16 +16,12 @@
 */
 package org.pepstock.jem.node.security;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hazelcast.core.MapEntry;
-import com.hazelcast.query.Predicates.AbstractPredicate;
-import com.thoughtworks.xstream.XStream;
+import org.pepstock.jem.util.InternalAbstractPredicate;
 
 /**
  * Is a custom predicate (used by Hazelcast to filter object from maps) to extract from roles queue only roles which matches with user or orgUnit.<br>
@@ -34,37 +30,9 @@ import com.thoughtworks.xstream.XStream;
  * @version 1.0
  * 
  */
-public class RolesQueuePredicate extends AbstractPredicate {
+public class RolesQueuePredicate extends InternalAbstractPredicate<User> {
 
 	private static final long serialVersionUID = 1L;
-
-	private User user = null;
-
-	private transient XStream stream = new XStream();
-
-	/**
-	 * Empty constructor
-	 */
-	public RolesQueuePredicate() {
-	}
-
-
-
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return user;
-	}
-
-
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 	/**
 	 * Checks the job passed by Hazelcast matches with Execution Environment of node. <br>
@@ -73,7 +41,8 @@ public class RolesQueuePredicate extends AbstractPredicate {
 	 * @see com.hazelcast.query.Predicate#apply(com.hazelcast.core.MapEntry)
 	 */
 	@Override
-	public boolean apply(@SuppressWarnings("rawtypes") MapEntry arg0) {
+	public boolean apply(@SuppressWarnings("rawtypes") Entry arg0) {
+		User user = getObject();
 		// gets role instance
 		Role role = (Role) arg0.getValue();
 		// gets all users list
@@ -96,28 +65,4 @@ public class RolesQueuePredicate extends AbstractPredicate {
 		}
 		return false;
 	}
-
-	/**
-	 * DeSerializes ExecutionEnviroment from XML  
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#readData(java.io.DataInput)
-	 */
-	@Override
-	public void readData(DataInput arg0) throws IOException {
-		String ee = arg0.readLine();
-		user = (User) stream.fromXML(ee);
-	}
-
-	/**
-	 * Serializes ExecutionEnviroment to XML 
-	 * 
-	 * @see com.hazelcast.nio.DataSerializable#writeData(java.io.DataOutput)
-	 */
-	@Override
-	public void writeData(DataOutput arg0) throws IOException {
-		// replace \n beacause are not supported from serialize engine
-		String ee = stream.toXML(user).replace('\n', ' ');
-		arg0.writeBytes(ee);
-	}
-
 }

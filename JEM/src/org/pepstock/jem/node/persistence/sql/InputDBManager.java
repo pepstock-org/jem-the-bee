@@ -16,7 +16,7 @@
 */
 package org.pepstock.jem.node.persistence.sql;
 
-import org.pepstock.jem.node.Queues;
+import org.pepstock.jem.node.hazelcast.Queues;
 
 
 /**

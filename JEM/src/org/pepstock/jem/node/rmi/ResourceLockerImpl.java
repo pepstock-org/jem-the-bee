@@ -23,9 +23,9 @@ import org.pepstock.jem.Job;
 import org.pepstock.jem.node.CancelableTask;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.NodeInfoUtility;
-import org.pepstock.jem.node.Queues;
 import org.pepstock.jem.node.RequestLock;
 import org.pepstock.jem.node.ResourceLock;
+import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.util.rmi.DefaultRmiObject;
 
 import com.hazelcast.core.IMap;
