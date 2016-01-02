@@ -81,6 +81,7 @@
 	<classpathentry kind="lib" path="lib/groovy/groovy-templates-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-xml-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/mina/mina-core-2.0.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

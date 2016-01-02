@@ -14,36 +14,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.hazelcast;
+package org.pepstock.jem.protocol;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public final class Topics {
-
-
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
-	 */
-	public static final String ENDED_JOB = "org.pepstock.jem.job.ended";
+public final class MessageCodes {
 	
+	public static final int SESSION_CREATED = 0;
+	
+	public static final int SESSION_CLOSE = 1;
 
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
-	 */
-	public static final String REMOVED_NODE_INFO = "org.pepstock.jem.node.info.removed";
+	public static final int MEMBERS = 2;
 
+	public static final int EXCEPTION = 3;
+	
+	public static final int JOBID = 4;
+	
+	public static final int HEARTBEAT = 5;
+	
+	public static final int SUBMIT_JOB = 6;
+	
+	public static final int ENDED_JOB = 7;
+	
+	public static final int PRINT_OUTPUT = 8;
 	/**
-	 * to avoid any instantiation
+	 * To avoid any instantiation
 	 */
-	private Topics() {
+	private MessageCodes() {
 	}
-
 }

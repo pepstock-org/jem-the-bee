@@ -50,6 +50,11 @@ public class Job implements Serializable, Comparable<Object> {
 	 * Status of job when the control of job execution is to job task process
 	 */
 	public static final int RUNNING = 1;
+	
+	/**
+	 * If the job has not been submitted by a JEM client
+	 */
+	public static final int NO_FUTURE_ID = -1;
 
 	private String id = null;
 
@@ -88,7 +93,11 @@ public class Job implements Serializable, Comparable<Object> {
 	private List<String> inputArguments = new ArrayList<String>();
 
 	private Step currentStep = null;
-
+	
+	private String clientSessionId = null;
+			
+	private int clientFutureId = NO_FUTURE_ID;
+	
 	/**
 	 * Constructor without any arguments
 	 */
@@ -491,4 +500,34 @@ public class Job implements Serializable, Comparable<Object> {
 	public void setNowait(boolean nowait) {
 		this.nowait = nowait;
 	}
+
+	/**
+	 * @return the clientSessionId
+	 */
+	public String getClientSessionId() {
+		return clientSessionId;
+	}
+
+	/**
+	 * @param clientSessionId the clientSessionId to set
+	 */
+	public void setClientSessionId(String clientSessionId) {
+		this.clientSessionId = clientSessionId;
+	}
+
+	/**
+	 * @return the clientFutureId
+	 */
+	public int getClientFutureId() {
+		return clientFutureId;
+	}
+
+	/**
+	 * @param clientFutureId the clientFutureId to set
+	 */
+	public void setClientFutureId(int clientFutureId) {
+		this.clientFutureId = clientFutureId;
+	}
+	
+	
 }

@@ -14,36 +14,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.hazelcast;
+package org.pepstock.jem.protocol;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public final class Topics {
-
-
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
-	 */
-	public static final String ENDED_JOB = "org.pepstock.jem.job.ended";
+public class SessionInfo extends Credentials implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
+	private final String id = UUID.randomUUID().toString();
 
 	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
+	 * @return the id
 	 */
-	public static final String REMOVED_NODE_INFO = "org.pepstock.jem.node.info.removed";
-
-	/**
-	 * to avoid any instantiation
-	 */
-	private Topics() {
+	public String getId() {
+		return id;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "SessionInfo [id=" + id + ", getGroup()=" + getGroup() + ", getUser()=" + getUser() + "]";
+	}
+	
 }

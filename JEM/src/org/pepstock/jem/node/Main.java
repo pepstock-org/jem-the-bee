@@ -17,6 +17,7 @@
 package org.pepstock.jem.node;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,6 +38,7 @@ import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionsManager;
 import org.pepstock.jem.node.swarm.Swarm;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
+import org.pepstock.jem.protocol.Server;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.net.Interface;
 import org.pepstock.jem.util.rmi.RegistryContainer;
@@ -64,6 +66,12 @@ public class Main {
 	 * That means maximum 100 nodes per machines
 	 */
 	public static final int INCREMENT_HTTP_PORT = 200;
+	
+	/**
+	 * Increments the Hazelcast port for TCP server listener, to submit jobs.
+	 * That means maximum 100 nodes per machines
+	 */
+	public static final int INCREMENT_TCP_SERVER_PORT = 300;
 	
 	/**
 	 * If <code>true</code>, this instance of node is the oldest one of cluster.<br>
@@ -227,6 +235,9 @@ public class Main {
 	// JCL_CHECKING queue
 	static final JclCheckingQueueManager JCL_CHECKER = new JclCheckingQueueManager();
 	
+	// listener TCP
+	static Server SUBMIT_SERVER = null;
+	
 	static Interface NETWORK_INTERFACE = null; 
 
 	/**
@@ -257,6 +268,13 @@ public class Main {
 			RegistryContainer.createInstance(objectRmiPort);
 			LogAppl.getInstance().emit(NodeMessage.JEMC014I);
 			Main.getNode().setRmiPort(objectRmiPort);
+
+			int objectTcpPort = Main.getNode().getPort() + INCREMENT_TCP_SERVER_PORT;
+			InetSocketAddress sAddress = new InetSocketAddress(Main.getNode().getIpaddress(), objectTcpPort);
+			SUBMIT_SERVER = new Server(sAddress);
+			SUBMIT_SERVER.start();
+			Main.getNode().setTcpPort(objectTcpPort);
+			
 			NodeInfoUtility.checkAndStoreNodeInfo(Main.getNode());
 
 			Main.getStatisticsManager().init();
@@ -265,7 +283,7 @@ public class Main {
 			
 			int objectHttpsPort = Main.getNode().getPort() + INCREMENT_HTTP_PORT;
 			HttpsInternalSubmitter.start(objectHttpsPort);
-
+			
 			// and at the end, wait this thread...
 			waitState();
 

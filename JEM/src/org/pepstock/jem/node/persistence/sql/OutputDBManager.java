@@ -63,7 +63,21 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 	public void fillSQLStatement(PreparedStatement statement, Job item) throws SQLException {
 		// sets on prepare statement all fields to add the job
 		statement.setString(Numbers.N_3, item.getName().toLowerCase());
-		statement.setString(Numbers.N_4, (item.isUserSurrogated()) ? item.getJcl().getUser().toLowerCase() : item.getUser().toLowerCase());
+		
+		if (item.isUserSurrogated()){
+			if (item.getJcl() != null && item.getJcl().getUser() != null){
+				statement.setString(Numbers.N_4, item.getJcl().getUser().toLowerCase());
+			} else {
+				statement.setString(Numbers.N_4, "unknown");
+			}
+		} else {
+			if (item.getUser() != null){
+				statement.setString(Numbers.N_4, item.getUser().toLowerCase());
+			} else {
+				statement.setString(Numbers.N_4, "unknown");
+			}
+		}
+		
 		// checks if job has got routing info
 		if (item.getRoutingInfo() != null){
 			statement.setBoolean(Numbers.N_5, item.getRoutingInfo().getRoutedTime() != null);
@@ -86,12 +100,14 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 		} else {
 			statement.setString(Numbers.N_11, null);	
 		}
-		statement.setString(Numbers.N_12, item.getJcl().getType() != null ? item.getJcl().getType().toLowerCase() : null);
-		statement.setString(Numbers.N_13, item.getJcl().getEnvironment().toLowerCase());
-		statement.setString(Numbers.N_14, item.getJcl().getDomain().toLowerCase());
-		statement.setString(Numbers.N_15, item.getJcl().getAffinity().toLowerCase());
-		statement.setInt(Numbers.N_16, item.getJcl().getPriority());
-		statement.setInt(Numbers.N_17, item.getJcl().getMemory());
+		if (item.getJcl() != null){
+			statement.setString(Numbers.N_12, item.getJcl().getType() != null ? item.getJcl().getType().toLowerCase() : null);
+			statement.setString(Numbers.N_13, item.getJcl().getEnvironment().toLowerCase());
+			statement.setString(Numbers.N_14, item.getJcl().getDomain().toLowerCase());
+			statement.setString(Numbers.N_15, item.getJcl().getAffinity().toLowerCase());
+			statement.setInt(Numbers.N_16, item.getJcl().getPriority());
+			statement.setInt(Numbers.N_17, item.getJcl().getMemory());
+		}
 	}
 
 	/* (non-Javadoc)

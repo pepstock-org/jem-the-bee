@@ -43,6 +43,8 @@ public class NodeInfoBean implements Serializable {
 
 	private int rmiPort = Integer.MIN_VALUE;
 
+	private int tcpPort = Integer.MIN_VALUE;
+
 	private String processId = null;
 
 	private String status = null;
@@ -191,6 +193,20 @@ public class NodeInfoBean implements Serializable {
 
 	public void setRmiPort(int rmiPort) {
 		this.rmiPort = rmiPort;
+	}
+
+	/**
+	 * @return the tcpPort
+	 */
+	public int getTcpPort() {
+		return tcpPort;
+	}
+
+	/**
+	 * @param tcpPort the tcpPort to set
+	 */
+	public void setTcpPort(int tcpPort) {
+		this.tcpPort = tcpPort;
 	}
 
 	/**

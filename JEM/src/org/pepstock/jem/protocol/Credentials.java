@@ -14,36 +14,63 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.hazelcast;
+package org.pepstock.jem.protocol;
+
+import java.io.Serializable;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public final class Topics {
-
-
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
-	 */
-	public static final String ENDED_JOB = "org.pepstock.jem.job.ended";
+public abstract class Credentials implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
+	private String group = null;
+	
+	private String password = null;
+	
+	private String user = null;
 
 	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
+	 * @return the groupName
 	 */
-	public static final String REMOVED_NODE_INFO = "org.pepstock.jem.node.info.removed";
-
-	/**
-	 * to avoid any instantiation
-	 */
-	private Topics() {
+	public String getGroup() {
+		return group;
 	}
 
+	/**
+	 * @param group the groupName to set
+	 */
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(String user) {
+		this.user = user;
+	}
 }

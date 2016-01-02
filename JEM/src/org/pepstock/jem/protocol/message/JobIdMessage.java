@@ -14,36 +14,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.node.hazelcast;
+package org.pepstock.jem.protocol.message;
+
+import org.pepstock.jem.protocol.Message;
+import org.pepstock.jem.protocol.MessageCodes;
 
 /**
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public final class Topics {
+public class JobIdMessage extends Message<String> {
 
-
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.protocol.test.Message#getCode()
 	 */
-	public static final String ENDED_JOB = "org.pepstock.jem.job.ended";
-	
-
-	/**
-	 * Key for Hazelcast topic structure which are able to notify a message to
-	 * all listeners. It is used to notify the end of job execution.
-	 * 
-	 * @see org.pepstock.jem.protocol.ClientConfig.Client#onMessage(com.hazelcast.core.Message)
-	 */
-	public static final String REMOVED_NODE_INFO = "org.pepstock.jem.node.info.removed";
-
-	/**
-	 * to avoid any instantiation
-	 */
-	private Topics() {
+	@Override
+	public int getCode() {
+		return MessageCodes.JOBID;
 	}
 
 }
