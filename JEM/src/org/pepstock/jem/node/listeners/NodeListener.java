@@ -253,7 +253,7 @@ public class NodeListener implements MembershipListener, MessageListener<String>
 
 			if (!job.isNowait()){
 				// send a topic to client which is wait for
-				ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.REMOVED_NODE_INFO);
+				ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.ENDED_JOB);
 				topic.publish(job);
 			}
 		}

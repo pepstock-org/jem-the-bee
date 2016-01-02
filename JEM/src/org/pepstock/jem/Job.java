@@ -51,11 +51,6 @@ public class Job implements Serializable, Comparable<Object> {
 	 */
 	public static final int RUNNING = 1;
 	
-	/**
-	 * If the job has not been submitted by a JEM client
-	 */
-	public static final int NO_FUTURE_ID = -1;
-
 	private String id = null;
 
 	private String name = null;
@@ -95,8 +90,6 @@ public class Job implements Serializable, Comparable<Object> {
 	private Step currentStep = null;
 	
 	private String clientSessionId = null;
-			
-	private int clientFutureId = NO_FUTURE_ID;
 	
 	/**
 	 * Constructor without any arguments
@@ -514,20 +507,4 @@ public class Job implements Serializable, Comparable<Object> {
 	public void setClientSessionId(String clientSessionId) {
 		this.clientSessionId = clientSessionId;
 	}
-
-	/**
-	 * @return the clientFutureId
-	 */
-	public int getClientFutureId() {
-		return clientFutureId;
-	}
-
-	/**
-	 * @param clientFutureId the clientFutureId to set
-	 */
-	public void setClientFutureId(int clientFutureId) {
-		this.clientFutureId = clientFutureId;
-	}
-	
-	
 }

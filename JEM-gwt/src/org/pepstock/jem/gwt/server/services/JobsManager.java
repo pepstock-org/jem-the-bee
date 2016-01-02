@@ -46,7 +46,6 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
 import org.pepstock.jem.UpdateJob;
 import org.pepstock.jem.commands.SubmitException;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.gwt.server.UserInterfaceMessage;
 import org.pepstock.jem.gwt.server.commons.DistributedTaskExecutor;
 import org.pepstock.jem.gwt.server.commons.GenericDistributedTaskExecutor;
@@ -67,6 +66,7 @@ import org.pepstock.jem.node.security.Permissions;
 import org.pepstock.jem.node.security.StringPermission;
 import org.pepstock.jem.node.security.User;
 import org.pepstock.jem.rest.entities.JobQueue;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterFactory;
 import org.pepstock.jem.util.filters.FilterToken;
@@ -225,7 +225,7 @@ public class JobsManager extends DefaultService {
 		// parses filter to understand if the request is done by
 		// job name or job id
 		try {
-			MessageFormat jobIdFormat = new MessageFormat(Factory.JOBID_FORMAT);
+			MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
 			// checks if is by job id
 			jobIdFormat.parse(filter);
 			sb.append("id = '").append(filter).append("'");
@@ -840,7 +840,7 @@ public class JobsManager extends DefaultService {
 		long id = generator.newId();
 
 		// creates job id and sets it
-		String jobId = Factory.createJobId(job, id);
+		String jobId = JobIdGenerator.createJobId(job, id);
 		preJob.setId(jobId);
 		job.setId(jobId);
 		

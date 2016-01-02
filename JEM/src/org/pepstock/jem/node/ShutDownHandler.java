@@ -21,6 +21,7 @@ import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.hazelcast.Locks;
 import org.pepstock.jem.node.persistence.sql.DBPoolManager;
+import org.pepstock.jem.protocol.TcpInternalSubmitter;
 import org.pepstock.jem.util.TimeUtils;
 
 import com.hazelcast.core.ILock;
@@ -114,6 +115,13 @@ public class ShutDownHandler extends Thread {
 					// ignore
 				}
 			}
+		}
+		
+		try {
+			// interrupt the submit
+			TcpInternalSubmitter.getInstance().shutdown();
+		} catch (Exception e) {
+			LogAppl.getInstance().emit(NodeMessage.JEMC162E, e, StringUtils.substringAfterLast(TcpInternalSubmitter.class.getName(), "."));
 		}
 
 		// interrupts all threads

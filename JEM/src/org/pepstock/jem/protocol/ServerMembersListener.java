@@ -78,7 +78,7 @@ final class ServerMembersListener implements EntryAddedListener<String, NodeInfo
 				try {
 					// adds new task for session
 					session.getPendingTasksCount().incrementAndGet();
-					server.getDelegate().execute(new ServerMessageHandler(key, message.serialize(), message));
+					server.getDelegate().execute(new ServerMessageHandler(key, message));
 				} catch (JemException e) {
 					// TODO LOGS
 					e.printStackTrace();

@@ -15,16 +15,22 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Hex;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
+import org.pepstock.jem.node.NodeException;
 import org.pepstock.jem.node.NodeInfo;
 import org.pepstock.jem.node.NodeMessage;
+import org.pepstock.jem.node.NodeMessageException;
+import org.pepstock.jem.node.ShutDownInterface;
 import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.hazelcast.Topics;
 import org.pepstock.jem.protocol.message.ExceptionMessage;
@@ -32,7 +38,7 @@ import org.pepstock.jem.protocol.message.ExceptionMessage;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.ITopic;
 
-public class Server extends Thread {
+public class Server extends Thread implements ShutDownInterface{
 	
 	private static final int NO_DATA = -1;
 	
@@ -45,11 +51,13 @@ public class Server extends Thread {
     private ServerSocketChannel channel;
     
     private Selector selector;
+    
+    private DefaultFuture<Boolean> started = new DefaultFuture<Boolean>();
         
     /**
      * Create the TCP server
      */
-    public Server(InetSocketAddress socketAddress) {
+    Server(InetSocketAddress socketAddress) {
     	this.socketAddress = socketAddress;
     }
 
@@ -74,7 +82,6 @@ public class Server extends Thread {
 		// gets topic object and adds itself as listener
 		ITopic<Job> topic = Main.getHazelcast().getTopic(Topics.ENDED_JOB);
 		String topicName = topic.addMessageListener(new ServerJobListener(this));
-		
         try {
 			channel = ServerSocketChannel.open();
 			channel.configureBlocking(false);
@@ -83,18 +90,21 @@ public class Server extends Thread {
 			channel.register(selector, SelectionKey.OP_ACCEPT);
 			listen();
 		} catch (ClosedChannelException e) {
-			e.printStackTrace();
+			started.setExcetpionAndNotify(new ExecutionException(e));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			started.setExcetpionAndNotify(new ExecutionException(e));
 		}
         topic.removeMessageListener(topicName);
         membersMap.removeEntryListener(name);
     }
+	
+	Future<Boolean> isStarted(){
+		return started;
+	}
   	
   	private void listen(){
-  		// TODO logs
-        System.out.println("Server started on "+socketAddress);
+
+        started.setObjectAndNotify(Boolean.TRUE);
         while (channel.isOpen()) {
             try {
                 if (selector.select() != 0) {
@@ -169,7 +179,7 @@ public class Server extends Thread {
         	}
             // data is available for read
             // buffer for reading
-            ByteBuffer buffer = ByteBuffer.allocate(1024 * 4);
+            ByteBuffer buffer = ByteBuffer.allocate(1024 * 8);
             int reads = NO_DATA;
 			try {
 				reads = session.read(buffer);
@@ -191,7 +201,8 @@ public class Server extends Thread {
 				}
 			    return;
 			}
-			
+			buffer.position(0);
+			System.err.println(Hex.encodeHex(buffer.array()));
 			// adds new task for session
 			session.getPendingTasksCount().incrementAndGet();
 			// message handler on thread pool 
@@ -199,7 +210,32 @@ public class Server extends Thread {
         }
     }
     
-    void closeSession(SelectionKey key){
+
+	/* (non-Javadoc)
+	 * @see org.pepstock.jem.node.ShutDownInterface#shutdown()
+	 */
+	@Override
+	public void shutdown() throws NodeException, NodeMessageException {
+		for (SelectionKey key : selector.keys()){
+			Session session = (Session)key.attachment();
+			if (session != null){
+				closeSession(key, true);
+			}
+		}
+		try {
+			channel.close();
+			selector.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+    
+	void closeSession(SelectionKey key){
+		closeSession(key, false);
+	}
+	
+    void closeSession(SelectionKey key, boolean force){
     	if (key == null){
     		return;
     	}
@@ -209,8 +245,8 @@ public class Server extends Thread {
     		return;
     	}
     	session.getOpen().set(false);
-    	if (session.getPendingTasksCount().get() == 0){
-    		 System.err.println("Closed "+session);
+    	if (session.getPendingTasksCount().get() == 0 || force){
+    		System.err.println("Closed "+session);
     		key.cancel();
     		try {
 				session.getChannel().close();
@@ -278,7 +314,7 @@ public class Server extends Thread {
 						// cloze the session ONLY
 						// if the message is ASYNC
 						// if not, it sends back the exception
-						if (message.getId() == Message.NO_ID){
+						if (message.getId() == null){
 							session.getOpen().set(false);
 						}
 					}
@@ -292,4 +328,5 @@ public class Server extends Thread {
 			}
 		}
 	}
+
 }

@@ -22,8 +22,6 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -33,28 +31,12 @@ import org.pepstock.jem.Result;
 import org.pepstock.jem.commands.util.JclLoader;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
-import org.pepstock.jem.node.SubmitPreJob;
-import org.pepstock.jem.node.executors.jobs.GetMessagesLog;
-import org.pepstock.jem.node.hazelcast.ExecutorServices;
-import org.pepstock.jem.node.hazelcast.IdGenerators;
-import org.pepstock.jem.node.hazelcast.Queues;
-import org.pepstock.jem.node.hazelcast.Topics;
+import org.pepstock.jem.protocol.Client;
 import org.pepstock.jem.util.CmdConsole;
-import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.Parser;
 
-import com.hazelcast.core.Cluster;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IExecutorService;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.ITopic;
-import com.hazelcast.core.IdGenerator;
-import com.hazelcast.core.Member;
-import com.hazelcast.core.Message;
-import com.hazelcast.core.MessageListener;
-
 /**
- * Extends the command line engine to submit job connecting directly to cluster (usually by Hazelcast protocol).
+ * Extends the command line engine to submit job connecting directly to cluster (using JEM protocol).
  * <br>
  * It contains the necessary parameters for that, as JEM PASSWORD, PRIVATE KEY and PRIVATE KEY PASSWORD, and PRINTOUTPUT. 
  * 
@@ -62,8 +44,9 @@ import com.hazelcast.core.MessageListener;
  * @version 1.4
  * 
  */
-public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine implements MessageListener<Job> {
-
+//public abstract class AbstractNewConnectedClusterSubmit extends SubmitCommandLine implements MessageListener<Job> {
+	public abstract class AbstractNewConnectedClusterSubmit extends SubmitCommandLine {
+		
 	private String password = null;
 
 	private boolean printOutput = false;
@@ -72,17 +55,19 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 
 	private String privateKeyPassword = null;
 
-	private HazelcastInstance client = null;
+	private Client client = null;
 	
 	// uses a count down latch to wait end of job
-	private final CountDownLatch lock = new CountDownLatch(1);
+//	private final CountDownLatch lock = new CountDownLatch(1);
+	
+	private Future<Job> futureSubmitJob = null;
 
 	/**
 	 * Creates the submit engine passing the command name
 	 * 
 	 * @param commandName command name  (necessary on help)
 	 */
-	public AbstractConnectedClusterSubmit(String commandName) {
+	public AbstractNewConnectedClusterSubmit(String commandName) {
 		super(commandName);
 		Map<String, SubmitArgument> arguments = getArguments();
 		// loads all mandatory parameters
@@ -148,57 +133,57 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		this.privateKeyPassword = privateKeyPassword;
 	}
 
-	/**
-	 * Is called from Hazelcast engine when a job is put in OUTPUT queue, so is
-	 * ended. Checks if same job that has submitted. If yes, notifies the thread
-	 * to end
-	 * 
-	 * @param endedJob job ended
-	 */
-	@Override
-	public final void onMessage(Message<Job> endedJob) {
-		Job job = getJob();
-		// check if it was a routed job
-		if (endedJob.getMessageObject().getRoutingInfo().getId() != null) {
-			// if is not the job submitted, does nothing
-			if (!job.getId().equals(endedJob.getMessageObject().getRoutingInfo().getId())){
-				return;
-			}
-			// save job ended, overriding the previous instance beacause routing
-			// info has been added
-			job = endedJob.getMessageObject();
-			setJob(job);
-			// if nowait is false remove job from ROUTED QUEUE
-			if (!job.isNowait()) {
-				IMap<String, Job> routedQueue = client.getMap(Queues.ROUTED_QUEUE);
-				routedQueue.remove(job.getRoutingInfo().getId());
-			}
-		} else {
-			// if is not the job submitted, does nothing
-			if (!job.equals(endedJob.getMessageObject())){
-				return;
-			}
-			// save job ended, overriding the previous instance (no necessary
-			// now
-			// anymore)
-			job = endedJob.getMessageObject();
-			setJob(job);
-		}
-		// notify that job is ended
-		lock.countDown();
-	}
+//	/**
+//	 * Is called from Hazelcast engine when a job is put in OUTPUT queue, so is
+//	 * ended. Checks if same job that has submitted. If yes, notifies the thread
+//	 * to end
+//	 * 
+//	 * @param endedJob job ended
+//	 */
+//	@Override
+//	public final void onMessage(Message<Job> endedJob) {
+//		Job job = getJob();
+//		// check if it was a routed job
+//		if (endedJob.getMessageObject().getRoutingInfo().getId() != null) {
+//			// if is not the job submitted, does nothing
+//			if (!job.getId().equals(endedJob.getMessageObject().getRoutingInfo().getId())){
+//				return;
+//			}
+//			// save job ended, overriding the previous instance beacause routing
+//			// info has been added
+//			job = endedJob.getMessageObject();
+//			setJob(job);
+//			// if nowait is false remove job from ROUTED QUEUE
+//			if (!job.isNowait()) {
+//				IMap<String, Job> routedQueue = client.getMap(Queues.ROUTED_QUEUE);
+//				routedQueue.remove(job.getRoutingInfo().getId());
+//			}
+//		} else {
+//			// if is not the job submitted, does nothing
+//			if (!job.equals(endedJob.getMessageObject())){
+//				return;
+//			}
+//			// save job ended, overriding the previous instance (no necessary
+//			// now
+//			// anymore)
+//			job = endedJob.getMessageObject();
+//			setJob(job);
+//		}
+//		// notify that job is ended
+//		lock.countDown();
+//	}
 	
 	/**
 	 * Returns a Hazelcast instance to use to connect to JEM cluster and then submit the job
 	 * @return Hazelcast instance 
 	 * @throws SubmitException if nay excetpion occurs
 	 */
-	public abstract HazelcastInstance createClient() throws SubmitException;
+	public abstract Client createClient() throws SubmitException;
 	
 	/**
 	 * @return the client
 	 */
-	HazelcastInstance getClient() {
+	Client getClient() {
 		return client;
 	}
 
@@ -259,11 +244,25 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 			job.setName(jobName);
 		}
 		
-		// creates a job ID asking to Hazelcast for a new long value
-		IdGenerator generator = client.getIdGenerator(IdGenerators.JOB);
-		long id = generator.newId();
-		// Pads the value with "0"
-		String jobId = JobIdGenerator.createJobId(job, id);
+		Future<String> futureJobId = client.getJobId();
+		
+		String jobId = null;
+		try {
+			jobId = futureJobId.get();
+		} catch (InterruptedException e) {
+			// FIXME LOGS
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		// creates a job ID asking to Hazelcast for a new long value
+//		IdGenerator generator = client.getIdGenerator(IdGenerators.JOB);
+//		long id = generator.newId();
+//		// Pads the value with "0"
+//		String jobId = JobIdGenerator.createJobId(job, id);
+
 		preJob.setId(jobId);
 		job.setId(jobId);
 		// loads all line arguments (the -D properties).
@@ -281,13 +280,7 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		// if job id is the same
 		super.setJob(job);
 
-		// gets topic object and adds itself as listener
-		if (isWait()){
-			ITopic<Job> topic = client.getTopic(Topics.ENDED_JOB);
-			topic.addMessageListener(this);
-		}
-
-		SubmitPreJob.submit(client, preJob);
+		futureSubmitJob = client.submit(preJob);
 	}
 	
 	/* (non-Javadoc)
@@ -298,8 +291,9 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		SubmitResult result =  super.execute(args);
 		// shutdown hazelcast client
 		if (client != null) {
-			client.getLifecycleService().shutdown();
+			client.close();
 		}
+		System.err.println("Esco in "+result);
 		return result;
 	}
 	
@@ -363,28 +357,6 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		}
 	}
 	
-	/**
-	 * Called by lifecycle client listener when
-	 * the HC client lost the connection
-	 */
-	void clientDisconnect(){
-		// set to null to end in error
-		clientDisconnect(null);
-	}
-
-	/**
-	 * Called by lifecycle client listener when the HC client lost the connection or when, after restart, get the job in output.
-	 * 
-	 * @param job if null, the caller wants to close the HC client because is not able to get connected with the cluster, otherwise
-	 * after a restart, it found teh job in output, then completed
-	 */
-	void clientDisconnect(Job job){
-		// set to null to end in error
-		setJob(job);
-		// notify that job is ended
-		lock.countDown();
-	}
-
 	/* (non-Javadoc)
 	 * @see org.pepstock.jem.commands.SubmitCommandLine#afterJobSubmit()
 	 */
@@ -395,8 +367,9 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 		if (isWait()){
 			try {
 				// waits for ending of job execution
-				lock.await();
-				Job job = getJob();
+				Job job = futureSubmitJob.get();
+				setJob(job);
+//				lock.await();
 				// checks if job is not null
 				if (job != null) {
 					// logs return code and exception if exists
@@ -424,13 +397,17 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 				if (job != null && isPrintOutput()) {
 					printOutput();
 				}
-			} catch (InterruptedException e1) {
+			} catch (InterruptedException e) {
 				// sets return code to error
-				LogAppl.getInstance().emit(NodeMessage.JEMC017E, e1);
+				LogAppl.getInstance().emit(NodeMessage.JEMC017E, e);
 				rc = 1;
 			} catch (SubmitException e) {
 				// sets return code to error
 				LogAppl.getInstance().emit(e.getMessageInterface(), e, e.getObjects());
+				rc = 1;
+			} catch (ExecutionException e) {
+				// sets return code to error
+				LogAppl.getInstance().emit(NodeMessage.JEMC017E, e);
 				rc = 1;
 			}
 		}
@@ -442,22 +419,33 @@ public abstract class AbstractConnectedClusterSubmit extends SubmitCommandLine i
 	 * @throws Exception if any errors occurs getting the output
 	 */
 	private void printOutput() throws SubmitException {
-		// gets HC environment
-		Cluster cluster = client.getCluster();
-		Set<Member> set = cluster.getMembers();
-		Member member = set.iterator().next();
-		// calls a distributed task to get standard output and error
-		IExecutorService executorService = client.getExecutorService(ExecutorServices.NODE);
-		Future<String> task = executorService.submitToMember(new GetMessagesLog(getJob()), member);
+		Future<String> futureContent = client.getOutput(getJob());
 		try {
-			// gets content
-			String content = task.get();
-			// prints the content
+			String content = futureContent.get();
 			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content);
 		} catch (InterruptedException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
 		} catch (ExecutionException e) {
 			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
 		}
+
+		
+//		// gets HC environment
+//		Cluster cluster = client.getCluster();
+//		Set<Member> set = cluster.getMembers();
+//		Member member = set.iterator().next();
+//		// calls a distributed task to get standard output and error
+//		IExecutorService executorService = client.getExecutorService(ExecutorServices.NODE);
+//		Future<String> task = executorService.submitToMember(new GetMessagesLog(getJob()), member);
+//		try {
+//			// gets content
+//			String content = task.get();
+//			// prints the content
+//			LogAppl.getInstance().emit(NodeMessage.JEMC246I, getJob().getName(), content);
+//		} catch (InterruptedException e) {
+//			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
+//		} catch (ExecutionException e) {
+//			throw new SubmitException(SubmitMessage.JEMW009E, e, getJob());
+//		}
 	}
 }

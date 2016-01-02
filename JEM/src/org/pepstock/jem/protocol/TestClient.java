@@ -52,8 +52,10 @@ public class TestClient {
 		
 		Future<Client> future = Client.open(config);
 		
+		Client client = null;
+		
 		try {
-			Client client = future.get();
+			client = future.get();
 			
 			System.err.println("Client started");
 			
@@ -87,6 +89,10 @@ public class TestClient {
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (client != null){
+				client.close();
+			}
 		}
 		
 		System.err.println("SONO QUI!");

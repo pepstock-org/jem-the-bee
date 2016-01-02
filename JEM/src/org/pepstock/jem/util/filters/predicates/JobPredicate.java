@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.filters.Filter;
 import org.pepstock.jem.util.filters.FilterToken;
 import org.pepstock.jem.util.filters.fields.JemFilterFields;
@@ -194,7 +194,7 @@ public class JobPredicate extends JemFilterPredicate implements Serializable {
 				return StringUtils.containsIgnoreCase(job.getName(), newTokenValue);
 			} else {
 				// testif a job id has been inserted
-				MessageFormat jobIdFormat = new MessageFormat(Factory.JOBID_FORMAT);
+				MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
 				// checks if is by job id
 				try {
 					// try to parse the job id

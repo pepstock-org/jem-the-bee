@@ -17,9 +17,12 @@
 package org.pepstock.jem.protocol;
 
 import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.protocol.message.EndedJobMessage;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.Numbers;
 
 import com.thoughtworks.xstream.XStream;
@@ -35,13 +38,13 @@ public abstract class Message<T> {
 	 * Default id to be ignored when is set -1. 
 	 * It uses for synch communication 
 	 */
-	public static final int NO_ID = -1;
+	private static final long NO_ID = -1L;
 	
 	private static final XStream XSTREAM = new XStream();
 	
 	private int length = 0;
 	
-	private int id = NO_ID;
+	private String id = null;
 	
 	private T object = null;
 	
@@ -67,14 +70,14 @@ public abstract class Message<T> {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -98,11 +101,28 @@ public abstract class Message<T> {
 			}
 			String xml = XSTREAM.toXML(object);
 			length = xml.length();
-			// length of buffer is: 4 bytes for code, 4 for ID, 4 for length and rest of object
-			ByteBuffer buffer = ByteBuffer.allocate(length * Numbers.N_2 + Numbers.N_12);
+			
+			long prefixId = NO_ID;
+			long suffixId = NO_ID;
+			if (id != null){
+				// parse the job id
+				MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
+				Object[] idsLong = jobIdFormat.parse(id);
+				prefixId = (Long)idsLong[0];
+				suffixId = (Long)idsLong[1];
+			}
+			
+			if (this instanceof EndedJobMessage){
+				System.err.println(getId());
+				System.err.println(xml);
+			}
+			
+			// length of buffer is: 4 bytes for code, 8 for prefix ID, 8 for suffix ID, 4 for length and rest of object
+			ByteBuffer buffer = ByteBuffer.allocate(length * Numbers.N_2 + Numbers.N_24);
 			buffer.clear();
 			buffer.putInt(getCode());
-			buffer.putInt(id);
+			buffer.putLong(prefixId);
+			buffer.putLong(suffixId);
 			buffer.putInt(length);
 			buffer.put(xml.getBytes(CharSet.DEFAULT));
 			return buffer;
@@ -128,7 +148,12 @@ public abstract class Message<T> {
 			if (code != getCode()){
 				throw new JemException("Invalid protocol: code received is "+code+" but should be "+getCode());
 			}
-			id = byteBuffer.getInt();
+			long prefixId = byteBuffer.getLong();
+			long suffixId = byteBuffer.getLong();
+
+			if (prefixId != NO_ID && suffixId != NO_ID){
+				id = JobIdGenerator.createJobId(prefixId, suffixId);
+			}
 			length = byteBuffer.getInt();
 			if (length > 0){
 				byte[] array = new byte[length];

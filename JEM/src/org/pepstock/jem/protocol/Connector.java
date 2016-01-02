@@ -57,6 +57,7 @@ public class Connector extends Thread  {
 	}
 	
 	void write(Message<?> message) throws JemException, ClosedChannelException {
+		System.err.println(System.currentTimeMillis()+" "+message.getCode());
 		ByteBuffer buffer = message.serialize();
 		int writes = NO_DATA;
 		lockForConnecting.readLock().lock();
@@ -121,7 +122,7 @@ public class Connector extends Thread  {
 				session = new Session(channel);
 				session.setId(client.getSessionInfo().getId());
 				System.err.println("Created "+session);
-				
+				System.err.println(client.getSessionInfo());
 		       	SessionCreatedMessage msg = new SessionCreatedMessage();
 		       	msg.setObject(client.getSessionInfo());
 		       	write(msg);
@@ -178,7 +179,7 @@ public class Connector extends Thread  {
         if (key.isReadable()) {
             // data is available for read
             // buffer for reading
-            ByteBuffer buffer = ByteBuffer.allocate(1024 * 4);
+            ByteBuffer buffer = ByteBuffer.allocate(1024 * 8);
             int reads = NO_DATA;
 			try {
 				reads = session.read(buffer);

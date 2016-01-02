@@ -51,7 +51,7 @@ final class ServerJobListener implements MessageListener<Job> {
 	@Override
 	public void onMessage(Message<Job> event) {
 		Job endedJob = event.getMessageObject();
-		if (endedJob.getClientSessionId() == null || endedJob.getClientFutureId() == Job.NO_FUTURE_ID){
+		if (endedJob.getClientSessionId() == null){
 			return;
 		}
 		String sessionId = endedJob.getClientSessionId();
@@ -72,20 +72,24 @@ final class ServerJobListener implements MessageListener<Job> {
 	}
 	
 	private void checkAndSend(SelectionKey key, Session session, Job endedJob) throws JemException{
-		// check if it was a routed job
-		// if nowait is false remove job from ROUTED QUEUE
-		if (endedJob.getRoutingInfo().getId() != null && !endedJob.isNowait()) {
-			IMap<String, Job> routedQueue = Main.getHazelcast().getMap(Queues.ROUTED_QUEUE);
-			routedQueue.remove(endedJob.getRoutingInfo().getId());
-		}
-		
 		EndedJobMessage message = new EndedJobMessage();
 		message.setObject(endedJob);
-		message.setId(endedJob.getClientFutureId());
+		
+		// check if it was a routed job
+		// if nowait is false remove job from ROUTED QUEUE
+		if (endedJob.getRoutingInfo().getId() != null) {
+			message.setId(endedJob.getRoutingInfo().getId());
+			if (!endedJob.isNowait()) {
+				IMap<String, Job> routedQueue = Main.getHazelcast().getMap(Queues.ROUTED_QUEUE);
+				routedQueue.remove(endedJob.getRoutingInfo().getId());
+			}
+		} else {
+			message.setId(endedJob.getId());
+		}
 		
 		// adds new task for session
 		session.getPendingTasksCount().incrementAndGet();
-		server.getDelegate().execute(new ServerMessageHandler(key, message.serialize(), message));
+		server.getDelegate().execute(new ServerMessageHandler(key, message));
 	}
 
 }

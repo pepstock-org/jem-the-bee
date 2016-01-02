@@ -54,13 +54,13 @@ public class ServerMessageHandler implements Runnable {
 	 * @param length
 	 */
 	public ServerMessageHandler(SelectionKey key, ByteBuffer buffer) {
-		this(key, buffer, null);
-	}
-
-	public ServerMessageHandler(SelectionKey key, ByteBuffer buffer, Message<?> message) {
 		this.key = key;
 		this.buffer = buffer;
 		this.session = (Session)key.attachment();
+	}
+
+	public ServerMessageHandler(SelectionKey key, Message<?> message) throws JemException {
+		this(key, message.serialize());
 		this.message = message;
 	}
 
@@ -117,9 +117,11 @@ public class ServerMessageHandler implements Runnable {
 	
 	private void execute() throws JemException{
 		// TODO logs
-		System.err.println("Message from "+buffer);
 		buffer.position(0);
 		int code = buffer.getInt();
+		
+		System.err.println("Code: "+code+", message: "+message);
+		
 		switch(code){
 			case MessageCodes.SESSION_CREATED:
 				sessionCreated();
@@ -136,11 +138,9 @@ public class ServerMessageHandler implements Runnable {
 			case MessageCodes.MEMBERS:
 				writeBuffer(buffer);
 				break;
-				
 			case MessageCodes.PRINT_OUTPUT:
 				printOutput();
 				break;
-				
 			default:
 				// TODO fare nuovo messaggio
 				throw new JemException("Invalid protocol : "+code);

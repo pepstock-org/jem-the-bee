@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.hazelcast.Queues;
 import org.pepstock.jem.node.persistence.DatabaseException;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.TimeUtils;
@@ -321,7 +321,7 @@ public class OutputMongoManager extends JobMongoManager {
 				addStringFilter(doc, token, JobFilterFields.NAME, newTokenValue);
 			} else {
 				// test if a job id has been inserted
-				MessageFormat jobIdFormat = new MessageFormat(Factory.JOBID_FORMAT);
+				MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
 				// checks if is by job id
 				try {
 					// try to parse the job id

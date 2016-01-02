@@ -21,8 +21,6 @@ import java.io.StringWriter;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.JemURLStreamHandlerFactory;
 import org.pepstock.jem.log.LogAppl;
@@ -35,35 +33,14 @@ import org.pepstock.jem.node.NodeMessage;
  * @author Andrea "Stock" Stocchero
  *
  */
-public class Factory {
+public class JclLoader {
 	
-	//Max length for a long value. It uses numbers of digits of Long.MAX_VALUE
-	private static final int LONG_LENGTH = String.valueOf(Long.MAX_VALUE).length();
-	
-	/**
-	 * Job id Format
-	 */
-	public static final String JOBID_FORMAT = "{0,number}-{1,number}";
-	
+
 	/**
 	 * To avoid any instantiations
 	 */
-	private Factory() {
+	private JclLoader() {
 		
-	}
-
-	/**
-	 * Creates the unique id for the job, normalizing generated id joined to started time stamp of job.<br>
-	 * it pads (on left) with '0' string representation of both id and timestamp
-	 * 
-	 * @param job job instance, needs to extract started timestamp 
-	 * @param id job id
-	 * @return job id in job format
-	 */
-	public static String createJobId(Job job, long id){
-		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtils.leftPad(String.valueOf(id), LONG_LENGTH, "0")).append('-').append(StringUtils.leftPad(String.valueOf(job.getSubmittedTime().getTime()), LONG_LENGTH, "0")); 
-		return sb.toString();
 	}
 
 	/**

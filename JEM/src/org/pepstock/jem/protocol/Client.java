@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
@@ -18,6 +17,7 @@ import org.pepstock.jem.protocol.message.JobIdMessage;
 import org.pepstock.jem.protocol.message.MembersMessage;
 import org.pepstock.jem.protocol.message.PrintOutputMessage;
 import org.pepstock.jem.protocol.message.SubmitJobMessage;
+import org.pepstock.jem.util.JobIdGenerator;
 
 public class Client {
 
@@ -27,9 +27,7 @@ public class Client {
    
     private final SessionInfo sessionInfo = new SessionInfo();
     
-    private AtomicInteger messageCounter = new AtomicInteger();
-    
-    private final Map<Integer, DefaultFuture<?>> futures = new ConcurrentHashMap<Integer, DefaultFuture<?>>();
+    private final Map<String, DefaultFuture<?>> futures = new ConcurrentHashMap<String, DefaultFuture<?>>();
     
     /**
 	 * @param clientConfig
@@ -65,7 +63,7 @@ public class Client {
 	
 	public Future<String> getJobId(){
 		JobIdMessage jmsg = new JobIdMessage();
-		jmsg.setId(messageCounter.incrementAndGet());
+		jmsg.setId(JobIdGenerator.createRandomJobId());
 		jmsg.setObject(String.valueOf(jmsg.getId()));
 		DefaultFuture<String> future = new DefaultFuture<String>();
 		try {
@@ -81,11 +79,10 @@ public class Client {
 
 	public Future<Job> submit(PreJob prejob){
 		SubmitJobMessage jmsg = new SubmitJobMessage();
-		jmsg.setId(messageCounter.incrementAndGet());
+		jmsg.setId(prejob.getId());
 		jmsg.setObject(prejob);
 		
 		Job job = prejob.getJob();
-		job.setClientFutureId(jmsg.getId());
 		job.setClientSessionId(sessionInfo.getId());
 		
 		DefaultFuture<Job> future = new DefaultFuture<Job>();
@@ -102,10 +99,9 @@ public class Client {
 
 	public Future<String> getOutput(Job job){
 		GetPrintOutputMessage jmsg = new GetPrintOutputMessage();
-		jmsg.setId(messageCounter.incrementAndGet());
+		jmsg.setId(job.getId());
 		jmsg.setObject(job);
 		
-		job.setClientFutureId(jmsg.getId());
 		job.setClientSessionId(sessionInfo.getId());
 		
 		DefaultFuture<String> future = new DefaultFuture<String>();
@@ -118,6 +114,16 @@ public class Client {
 			future.setExcetpionAndNotify(new ExecutionException(e));
 		}
 		return future;
+	}
+	
+	public void close(){
+		DefaultFuture<Boolean> closeFuture = new DefaultFuture<Boolean>();
+		for (DefaultFuture<?> future : futures.values()){
+			if (!future.isDone()){
+				future.setExcetpionAndNotify(new ExecutionException(new ClosedChannelException()));
+			}
+		}
+		connector.close();
 	}
 	
 	/* (non-Javadoc)
@@ -175,7 +181,8 @@ public class Client {
 				ExceptionMessage emsg = new ExceptionMessage();
 				emsg.deserialize(buffer);
 				JemException exception = new JemException(emsg.getObject());
-				if (emsg.getId() != Message.NO_ID){
+				System.err.println("EXCEPTION: "+emsg.getId());
+				if (emsg.getId() != null){
 					DefaultFuture<?> futureForException = futures.remove(emsg.getId());
 					if (futureForException != null){
 						futureForException.setExcetpionAndNotify(new ExecutionException(exception));

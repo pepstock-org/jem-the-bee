@@ -51,7 +51,6 @@ import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitException;
 import org.pepstock.jem.commands.SubmitMessage;
 import org.pepstock.jem.commands.SubmitParameters;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.Main;
@@ -62,6 +61,7 @@ import org.pepstock.jem.node.security.keystore.KeyStoreUtil;
 import org.pepstock.jem.node.security.keystore.KeyStoresInfo;
 import org.pepstock.jem.node.security.keystore.KeysUtil;
 import org.pepstock.jem.util.CharSet;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.Parser;
 
 import com.hazelcast.core.IdGenerator;
@@ -265,7 +265,7 @@ public class SubmitHandler implements HttpRequestHandler {
 		IdGenerator generator = Main.getHazelcast().getIdGenerator(IdGenerators.JOB);
 		long id = generator.newId();
 		// Pads the value with "0"
-		String jobId = Factory.createJobId(job, id);
+		String jobId = JobIdGenerator.createJobId(job, id);
 		preJob.setId(jobId);
 		job.setId(jobId);
 		// loads all line arguments (the -D properties).

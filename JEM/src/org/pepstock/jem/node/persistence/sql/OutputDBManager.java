@@ -24,10 +24,10 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.Job;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.JemRuntimeException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.hazelcast.Queues;
+import org.pepstock.jem.util.JobIdGenerator;
 import org.pepstock.jem.util.Numbers;
 import org.pepstock.jem.util.TimeUtils;
 import org.pepstock.jem.util.filters.Filter;
@@ -291,7 +291,7 @@ public class OutputDBManager extends JobDBManager implements EvictionHandler<Job
 				addStringFilter(statement, token, JobFilterFields.NAME, newTokenValue);
 			} else {
 				// testif a job id has been inserted
-				MessageFormat jobIdFormat = new MessageFormat(Factory.JOBID_FORMAT);
+				MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
 				// checks if is by job id
 				try {
 					// try to parse the job id

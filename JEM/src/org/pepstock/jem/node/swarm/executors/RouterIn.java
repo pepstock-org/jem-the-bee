@@ -23,13 +23,13 @@ import java.util.concurrent.Callable;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.commands.SubmitException;
-import org.pepstock.jem.commands.util.Factory;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.Main;
 import org.pepstock.jem.node.SubmitPreJob;
 import org.pepstock.jem.node.hazelcast.IdGenerators;
 import org.pepstock.jem.node.swarm.SwarmException;
 import org.pepstock.jem.node.swarm.SwarmNodeMessage;
+import org.pepstock.jem.util.JobIdGenerator;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IdGenerator;
@@ -94,7 +94,7 @@ public class RouterIn implements Callable<Boolean>, Serializable {
 		IdGenerator generator = Main.getHazelcast().getIdGenerator(IdGenerators.JOB);
 		long id = generator.newId();
 		// creates job id
-		String jobId = Factory.createJobId(job, id);
+		String jobId = JobIdGenerator.createJobId(job, id);
 		preJob.setId(jobId);
 		// sets job id
 		job.setId(jobId);

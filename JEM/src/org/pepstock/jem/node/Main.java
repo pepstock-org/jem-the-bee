@@ -38,7 +38,7 @@ import org.pepstock.jem.node.resources.definition.ResourceDefinition;
 import org.pepstock.jem.node.resources.definition.ResourceDefinitionsManager;
 import org.pepstock.jem.node.swarm.Swarm;
 import org.pepstock.jem.node.tasks.platform.CurrentPlatform;
-import org.pepstock.jem.protocol.Server;
+import org.pepstock.jem.protocol.TcpInternalSubmitter;
 import org.pepstock.jem.util.Parser;
 import org.pepstock.jem.util.net.Interface;
 import org.pepstock.jem.util.rmi.RegistryContainer;
@@ -235,9 +235,6 @@ public class Main {
 	// JCL_CHECKING queue
 	static final JclCheckingQueueManager JCL_CHECKER = new JclCheckingQueueManager();
 	
-	// listener TCP
-	static Server SUBMIT_SERVER = null;
-	
 	static Interface NETWORK_INTERFACE = null; 
 
 	/**
@@ -271,8 +268,7 @@ public class Main {
 
 			int objectTcpPort = Main.getNode().getPort() + INCREMENT_TCP_SERVER_PORT;
 			InetSocketAddress sAddress = new InetSocketAddress(Main.getNode().getIpaddress(), objectTcpPort);
-			SUBMIT_SERVER = new Server(sAddress);
-			SUBMIT_SERVER.start();
+			TcpInternalSubmitter.start(sAddress);
 			Main.getNode().setTcpPort(objectTcpPort);
 			
 			NodeInfoUtility.checkAndStoreNodeInfo(Main.getNode());

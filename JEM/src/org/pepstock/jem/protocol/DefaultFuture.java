@@ -89,12 +89,8 @@ public class DefaultFuture<T> implements Future<T> {
 		return object;
 	}
 	
-	void setObject(T object){
-		this.object = object;
-	}
-
 	void setObjectAndNotify(T object){
-		setObject(object);
+		this.object = object;
 		countDown.countDown();
 	}
 

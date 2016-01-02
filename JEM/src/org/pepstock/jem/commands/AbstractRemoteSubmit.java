@@ -26,7 +26,7 @@ import java.util.Map;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.PreJob;
 import org.pepstock.jem.Result;
-import org.pepstock.jem.commands.util.Factory;
+import org.pepstock.jem.commands.util.JclLoader;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeMessage;
 import org.pepstock.jem.util.CmdConsole;
@@ -199,7 +199,7 @@ public abstract class AbstractRemoteSubmit extends SubmitCommandLine {
 		// creates Prejob loading from URL
 		PreJob preJob;
 		try {
-			preJob = Factory.createPreJob(url);
+			preJob = JclLoader.createPreJob(url);
 		} catch (InstantiationException e) {
 			throw new SubmitException(SubmitMessage.JEMW007E, e, getJcl());
 		}
