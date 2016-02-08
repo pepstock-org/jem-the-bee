@@ -13,75 +13,97 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.pepstock.jem.protocol;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 
 import org.pepstock.jem.log.JemException;
+import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.node.NodeInfo;
-import org.pepstock.jem.protocol.message.MembersMessage;
+import org.pepstock.jem.protocol.Server.ThreadPoolDelegate;
 
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.map.listener.EntryAddedListener;
 import com.hazelcast.map.listener.EntryRemovedListener;
 
 /**
+ * Listen to the add and remove of a node and try to send the message to the
+ * client if there is. <br>
+ * The client, when the connection is lost, try to connect to another member of
+ * cluster and it needs the right list of nodes, therefore the server sends this
+ * list to the client when the situation changes
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
 final class ServerMembersListener implements EntryAddedListener<String, NodeInfo>, EntryRemovedListener<String, NodeInfo> {
-	
-	private final Server server;
+
+	private final ThreadPoolDelegate pool;
+
+	private final Selector selector;
 
 	/**
-	 * @param server server instance used to get sessions and to execute the writes to sessions
+	 * Creates the object storing the thread pool and the IO selector
+	 * 
+	 * @param pool thread pool which executes workers
+	 * @param selector listener of IO events
 	 */
-	ServerMembersListener(Server server) {
-		this.server = server;
+	ServerMembersListener(ThreadPoolDelegate pool, Selector selector) {
+		this.pool = pool;
+		this.selector = selector;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.hazelcast.map.listener.EntryRemovedListener#entryRemoved(com.hazelcast.core.EntryEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hazelcast.map.listener.EntryRemovedListener#entryRemoved(com.hazelcast
+	 * .core.EntryEvent)
 	 */
 	@Override
 	public void entryRemoved(EntryEvent<String, NodeInfo> event) {
 		sendMembres();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.hazelcast.map.listener.EntryAddedListener#entryAdded(com.hazelcast.core.EntryEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hazelcast.map.listener.EntryAddedListener#entryAdded(com.hazelcast
+	 * .core.EntryEvent)
 	 */
 	@Override
 	public void entryAdded(EntryEvent<String, NodeInfo> event) {
-		if (event.getValue().getTcpPort() > 0){
+		if (event.getValue().getTcpPort() > 0) {
 			sendMembres();
 		}
-	}	
-	
+	}
+
+	/**
+	 * Sends the messages with all members to all clients 
+	 */
 	private void sendMembres() {
-		MembersMessage message;
+		// creates message
+		Message message;
 		try {
-			message = ServerMessageFactory.createMembersMessage();
-		} catch (JemException e1) {
-			// TODO logs
-			e1.printStackTrace();
+			message = ServerFactory.createMembers();
+		} catch (JemException e) {
+			LogAppl.getInstance().emit(ProtocolMessage.JEME013E, e);
 			return;
 		}
-		Selector selector = server.getSelector();
-		for (SelectionKey key : selector.keys()){
-			Session session = (Session)key.attachment();
-			if (session != null){
-				try {
-					// adds new task for session
-					session.getPendingTasksCount().incrementAndGet();
-					server.getDelegate().execute(new ServerMessageHandler(key, message));
-				} catch (JemException e) {
-					// TODO LOGS
-					e.printStackTrace();
+		// scans all keys to get
+		// the client session and send the new list
+		for (SelectionKey key : selector.keys()) {
+			// checks if session is valid
+			if (key.isValid()) {
+				// gets session
+				Session session = (Session) key.attachment();
+				// if session exists
+				if (session != null) {
+					// send new list of members
+					pool.execute(new Worker(session, message));
 				}
 			}
 		}

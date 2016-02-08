@@ -14,23 +14,49 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.protocol.message;
-
-import org.pepstock.jem.protocol.Message;
-import org.pepstock.jem.protocol.MessageCodes;
+package org.pepstock.jem.protocol;
 
 /**
+ * Enumeration with all status of session.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public class JobIdMessage extends Message<String> {
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.protocol.test.Message#getCode()
+public enum SessionStatus {
+	
+	/**
+	 * Status if the session is not completed
 	 */
-	@Override
+	HANDSHAKING(-1),
+	/**
+	 * Status if the session is not completed
+	 */
+	STARTING(0),
+	
+	/**
+	 * Status if the session is ready to be used
+	 */
+	CONNECTED(1),
+	
+	/**
+	 * Status if the session is closed
+	 */
+	DISCONNECTED(2);
+	
+	private int code = 0;
+
+	/**
+	 * @param code
+	 */
+	private SessionStatus(int code) {
+		this.code = code;
+	}
+
+	/**
+	 * @return the code
+	 */
 	public int getCode() {
-		return MessageCodes.JOBID;
+		return code;
 	}
 
 }

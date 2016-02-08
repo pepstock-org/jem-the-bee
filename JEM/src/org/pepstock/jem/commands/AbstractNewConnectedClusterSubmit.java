@@ -279,7 +279,6 @@ import org.pepstock.jem.util.Parser;
 		// using the topic listener to check
 		// if job id is the same
 		super.setJob(job);
-
 		futureSubmitJob = client.submit(preJob);
 	}
 	
@@ -293,7 +292,6 @@ import org.pepstock.jem.util.Parser;
 		if (client != null) {
 			client.close();
 		}
-		System.err.println("Esco in "+result);
 		return result;
 	}
 	
@@ -367,6 +365,7 @@ import org.pepstock.jem.util.Parser;
 		if (isWait()){
 			try {
 				// waits for ending of job execution
+				
 				Job job = futureSubmitJob.get();
 				setJob(job);
 //				lock.await();

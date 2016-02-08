@@ -19,6 +19,8 @@ package org.pepstock.jem.protocol;
 import java.io.Serializable;
 
 /**
+ * Container of session/configuration information to be able to connect to JEM cluster
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */

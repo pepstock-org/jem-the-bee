@@ -50,6 +50,7 @@ import org.pepstock.jem.Jcl;
 import org.pepstock.jem.Job;
 import org.pepstock.jem.factories.JemFactory;
 import org.pepstock.jem.grs.GrsMapConfigProvider;
+import org.pepstock.jem.log.JemException;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.affinity.AffinityLoader;
@@ -1191,8 +1192,15 @@ public class StartUpSystem {
 					} else {
 						LogAppl.getInstance().emit(NodeMessage.JEMC040E, className);
 					}
-
-				} catch (Exception e) {
+				} catch (IllegalAccessException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
+				} catch (InstantiationException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
+				} catch (ClassNotFoundException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
+				} catch (JemException e) {
+					LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
+				} catch (IOException e) {
 					LogAppl.getInstance().emit(NodeMessage.JEMC031E, e, className);
 				}
 				// in this case the class name is null so ignore, emitting a

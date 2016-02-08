@@ -16,57 +16,65 @@
 */
 package org.pepstock.jem.protocol;
 
-import java.nio.ByteBuffer;
-import java.text.MessageFormat;
-
-import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.protocol.message.EndedJobMessage;
-import org.pepstock.jem.util.CharSet;
-import org.pepstock.jem.util.JobIdGenerator;
-import org.pepstock.jem.util.Numbers;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
+ * Implementation of a message, used to communicate between the client and the server.<br>
+ * The ID of message is used to related the future created into client (which waits for answer) and
+ * the message of server. The ID format is the same used for JOB ID (long-long).
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
- * @param <T> Object type to serialize
  */
-public abstract class Message<T> {
-	
+public class Message {
 	/**
 	 * Default id to be ignored when is set -1. 
 	 * It uses for synch communication 
 	 */
-	private static final long NO_ID = -1L;
-	
-	private static final XStream XSTREAM = new XStream();
+	public static final long NO_ID = -1L;
 	
 	private int length = 0;
 	
+	private int code = Integer.MIN_VALUE;
+	
 	private String id = null;
 	
-	private T object = null;
+	private String value = null;
 	
+
 	/**
 	 * @return the code
 	 */
-	public abstract int getCode();
-
-	/**
-	 * @return the object
-	 */
-	public T getObject() {
-		return object;
+	public int getCode() {
+		return code;
 	}
 
+
 	/**
-	 * @param object the object to set
+	 * @param code the code to set
 	 */
-	public void setObject(T object) {
-		this.object = object;
+	public void setCode(int code) {
+		this.code = code;
 	}
-	
+
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(String value) {
+		this.value = value;
+		if (value != null){
+			length = value.length();
+		}
+	}
+
 	/**
 	 * @return the id
 	 */
@@ -81,93 +89,12 @@ public abstract class Message<T> {
 		this.id = id;
 	}
 
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Message [code=" + getCode() + ", id=" + id + ", length=" + length + ", object=" + object + "]";
+		return "Message [code=" + getCode() + ", id=" + id + ", length=" + length + ", data=" + value + "]";
 	}
-
-	/**
-	 * 
-	 * @return
-	 * @throws JemException
-	 */
-	public ByteBuffer serialize() throws JemException{
-		try {
-			if (object == null){
-				throw new JemException("Object inside the message is null");
-			}
-			String xml = XSTREAM.toXML(object);
-			length = xml.length();
-			
-			long prefixId = NO_ID;
-			long suffixId = NO_ID;
-			if (id != null){
-				// parse the job id
-				MessageFormat jobIdFormat = new MessageFormat(JobIdGenerator.JOBID_FORMAT);
-				Object[] idsLong = jobIdFormat.parse(id);
-				prefixId = (Long)idsLong[0];
-				suffixId = (Long)idsLong[1];
-			}
-			
-			if (this instanceof EndedJobMessage){
-				System.err.println(getId());
-				System.err.println(xml);
-			}
-			
-			// length of buffer is: 4 bytes for code, 8 for prefix ID, 8 for suffix ID, 4 for length and rest of object
-			ByteBuffer buffer = ByteBuffer.allocate(length * Numbers.N_2 + Numbers.N_24);
-			buffer.clear();
-			buffer.putInt(getCode());
-			buffer.putLong(prefixId);
-			buffer.putLong(suffixId);
-			buffer.putInt(length);
-			buffer.put(xml.getBytes(CharSet.DEFAULT));
-			return buffer;
-		} catch (Exception e) {
-			if (e instanceof JemException){
-				throw (JemException)e;
-			}
-			throw new JemException(e);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param byteBuffer
-	 * @return
-	 * @throws JemException
-	 */
-	@SuppressWarnings("unchecked")
-	public T deserialize(ByteBuffer byteBuffer) throws JemException{
-		try {
-			byteBuffer.position(0);
-			int code = byteBuffer.getInt();
-			if (code != getCode()){
-				throw new JemException("Invalid protocol: code received is "+code+" but should be "+getCode());
-			}
-			long prefixId = byteBuffer.getLong();
-			long suffixId = byteBuffer.getLong();
-
-			if (prefixId != NO_ID && suffixId != NO_ID){
-				id = JobIdGenerator.createJobId(prefixId, suffixId);
-			}
-			length = byteBuffer.getInt();
-			if (length > 0){
-				byte[] array = new byte[length];
-				byteBuffer.get(array);
-				String xml = new String(array, CharSet.DEFAULT);
-				object = (T)XSTREAM.fromXML(xml);
-			}
-			return object;
-		} catch (Exception e) {
-			if (e instanceof JemException){
-				throw (JemException)e;
-			}
-			throw new JemException(e);
-		}
-	}
-
 }

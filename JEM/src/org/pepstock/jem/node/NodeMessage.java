@@ -1496,10 +1496,10 @@ public enum NodeMessage implements MessageInterface {
 	JEMC245E("0245", "{0} is not supported.", MessageLevel.ERROR),
 	
 	/**
-	 * "Content of job {0}\n{1}", MessageLevel.ERROR
+	 * "Content of job {0}\n{1}", MessageLevel.INFO
 	 */
 	@Description(explanation = "It occurs when a submit command has been executed and -printOutput parm has been set.")
-	JEMC246I("0246", "Content of job {0}\n{1}", MessageLevel.ERROR),
+	JEMC246I("0246", "Content of job {0}\n{1}", MessageLevel.INFO),
 	
 	/**
 	 * "Unable to delete WAR folder", MessageLevel.ERROR

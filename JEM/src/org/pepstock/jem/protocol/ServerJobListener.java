@@ -21,75 +21,72 @@ import java.nio.channels.Selector;
 
 import org.pepstock.jem.Job;
 import org.pepstock.jem.log.JemException;
-import org.pepstock.jem.node.Main;
-import org.pepstock.jem.node.hazelcast.Queues;
-import org.pepstock.jem.protocol.message.EndedJobMessage;
+import org.pepstock.jem.log.LogAppl;
+import org.pepstock.jem.protocol.Server.ThreadPoolDelegate;
 
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 /**
+ * Listen to the end of the job and try to send the message to the client if there is
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
 final class ServerJobListener implements MessageListener<Job> {
 	
-	private Server server = null;
+	private final ThreadPoolDelegate pool;
+	
+	private final Selector selector;
 
 	/**
-	 * @param server server instance used to get sessions and to execute the writes to sessions
+	 * Creates the object storing the thread pool and the IO selector
+	 * 
+	 * @param pool thread pool which executes workers
+	 * @param selector listener of IO events
 	 */
-	ServerJobListener(Server server) {
-		super();
-		this.server = server;
+	ServerJobListener(ThreadPoolDelegate pool, Selector selector) {
+		this.pool = pool;
+		this.selector = selector;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hazelcast.core.MessageListener#onMessage(com.hazelcast.core.Message)
 	 */
 	@Override
-	public void onMessage(Message<Job> event) {
+	public void onMessage(com.hazelcast.core.Message<Job> event) {
+		// gets teh job from event
 		Job endedJob = event.getMessageObject();
+		// if job doesn't have any session ID
+		// means that hasn't been submitted by NIO client
+		// therefore nothing to do
 		if (endedJob.getClientSessionId() == null){
 			return;
 		}
+		// gets session ID
 		String sessionId = endedJob.getClientSessionId();
-		Selector selector = server.getSelector();
+		// scans all selection keys registered into selector
+		// to get teh session related to the ended job
 		for (SelectionKey key : selector.keys()){
-			Session session = (Session)key.attachment();
-			if (session != null){
-				if (sessionId.equalsIgnoreCase(session.getId())){
-					try {
-						checkAndSend(key, session, endedJob);
-					} catch (JemException e) {
-						// TODO logs
-						e.printStackTrace();
+			// checks if the session is valid
+			if (key.isValid()){
+				// gets session
+				Session session = (Session)key.attachment();
+				// if there is
+				if (session != null){
+					// checks if the id is the same
+					if (sessionId.equalsIgnoreCase(session.getId())){
+						try {
+							// execute the worker of ended job
+							pool.execute(new Worker(session, ServerFactory.createJobEnded(session, endedJob)));
+
+						} catch (JemException e) {
+							LogAppl.getInstance().emit(ProtocolMessage.JEME012E, e, session.toString());
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	private void checkAndSend(SelectionKey key, Session session, Job endedJob) throws JemException{
-		EndedJobMessage message = new EndedJobMessage();
-		message.setObject(endedJob);
-		
-		// check if it was a routed job
-		// if nowait is false remove job from ROUTED QUEUE
-		if (endedJob.getRoutingInfo().getId() != null) {
-			message.setId(endedJob.getRoutingInfo().getId());
-			if (!endedJob.isNowait()) {
-				IMap<String, Job> routedQueue = Main.getHazelcast().getMap(Queues.ROUTED_QUEUE);
-				routedQueue.remove(endedJob.getRoutingInfo().getId());
-			}
-		} else {
-			message.setId(endedJob.getId());
-		}
-		
-		// adds new task for session
-		session.getPendingTasksCount().incrementAndGet();
-		server.getDelegate().execute(new ServerMessageHandler(key, message));
-	}
 
 }

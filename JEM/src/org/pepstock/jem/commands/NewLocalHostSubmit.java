@@ -150,7 +150,7 @@ public class NewLocalHostSubmit extends AbstractNewConnectedClusterSubmit {
 			config.setUser(getUserID());
 
 		
-			config.addAddresses("192.168.1.16:6010");
+			config.addAddresses("192.168.56.1:6010");
 			
 //			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 //			while (interfaces.hasMoreElements()) {

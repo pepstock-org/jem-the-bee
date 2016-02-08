@@ -31,7 +31,6 @@ import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -61,7 +60,7 @@ import org.pepstock.jem.util.TimeUtils;
  *
  */
 
-final class SelfSignedCertificate {
+public final class SelfSignedCertificate {
 
 	// alias for keystore
     private static final String CERTIFICATE_ALIAS = "JEM-HTTP";
@@ -73,9 +72,6 @@ final class SelfSignedCertificate {
     private static final int CERTIFICATE_BITS = 1024;
     
     private static final long TEN_YEARS = 10 * TimeUtils.DAY * 365;
-    
-    // random password 
-    static final String CERTIFICATE_PASSWORD = UUID.randomUUID().toString();
     
     static {
         // adds the Bouncy castle provider to java security
@@ -90,6 +86,7 @@ final class SelfSignedCertificate {
     
     /**
      * Returns X.509 certificates programmatically leveraging on Bouncycastle lightweight API
+     * @param password password of keystore
      * @return certificate in byte array format
      * @throws KeyStoreException if any error occurs
      * @throws NoSuchAlgorithmException if any error occurs
@@ -97,7 +94,7 @@ final class SelfSignedCertificate {
      * @throws IOException if any error occurs
      * @throws OperatorCreationException if any error occurs
      */
-	static ByteArrayInputStream getCertificate() throws NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, IOException {
+	public static ByteArrayInputStream getCertificate(String password) throws NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, IOException {
 		// creates a key pair generator
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CERTIFICATE_ALGORITHM);
 		keyPairGenerator.initialize(CERTIFICATE_BITS, new SecureRandom());
@@ -119,7 +116,7 @@ final class SelfSignedCertificate {
 		ContentSigner sigGen = new JcaContentSignerBuilder("SHA256WithRSAEncryption").setProvider("BC").build(keyPair.getPrivate());
 		// build certificate and convert in JCA
 		X509Certificate cert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(certGen.build(sigGen));
-		return createKeyStore(cert, keyPair.getPrivate());
+		return createKeyStore(cert, keyPair.getPrivate(), password);
 	}
 
     /**
@@ -132,15 +129,15 @@ final class SelfSignedCertificate {
      * @throws CertificateException if any error occurs
      * @throws IOException if any error occurs
      */
-    private static ByteArrayInputStream createKeyStore(X509Certificate cert, PrivateKey key) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+    private static ByteArrayInputStream createKeyStore(X509Certificate cert, PrivateKey key, String password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         KeyStore keyStore = KeyStore.getInstance("JKS");    
         // creates an empty keystore
         keyStore.load(null, null);
         // adds certificate
-        keyStore.setKeyEntry(CERTIFICATE_ALIAS, key, CERTIFICATE_PASSWORD.toCharArray(),  new java.security.cert.Certificate[]{cert});
+        keyStore.setKeyEntry(CERTIFICATE_ALIAS, key, password.toCharArray(),  new java.security.cert.Certificate[]{cert});
         // stores the key store in bytes
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        keyStore.store(baos, CERTIFICATE_PASSWORD.toCharArray());
+        keyStore.store(baos, password.toCharArray());
         return new ByteArrayInputStream(baos.toByteArray());
     }
 }

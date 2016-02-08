@@ -29,7 +29,7 @@ import org.pepstock.jem.Job;
 public final class JobIdGenerator {
 
 	// Max length for a long value. It uses numbers of digits of Long.MAX_VALUE
-	private static final int LONG_LENGTH = String.valueOf(Long.MAX_VALUE).length();
+	public static final int LONG_LENGTH = String.valueOf(Long.MAX_VALUE).length();
 
 	public static final int ID_LENGTH = LONG_LENGTH + LONG_LENGTH + 1;
 

@@ -14,30 +14,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.pepstock.jem.protocol.message;
-
-import org.pepstock.jem.protocol.Message;
+package org.pepstock.jem.protocol;
 
 /**
+ * Interface to listen the handshake termination
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public class HeartbeatMessage extends Message<Boolean> {
-
+public interface HandshakeListener {
+	
 	/**
-	 * 
+	 * Notifies that the handshake is ended
+	 * @param session the session instance of handshake
 	 */
-	public HeartbeatMessage() {
-		setObject(Boolean.TRUE);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.pepstock.jem.protocol.Message#getCode()
-	 */
-	@Override
-	public int getCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	void handshakeEnded(Session session);
 
 }

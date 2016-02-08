@@ -17,19 +17,21 @@
 package org.pepstock.jem.commands.docker;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.security.KeyStoreException;
 import java.util.Properties;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.pepstock.jem.commands.CreateNode;
 import org.pepstock.jem.commands.util.NodeProperties;
 import org.pepstock.jem.log.LogAppl;
 import org.pepstock.jem.log.MessageException;
 import org.pepstock.jem.node.configuration.ConfigKeys;
 import org.pepstock.jem.node.configuration.ConfigurationException;
+import org.pepstock.jem.util.CharSet;
 import org.pepstock.jem.util.TimeUtils;
 
 /**
@@ -139,7 +141,9 @@ public abstract class StartUp {
 			// if GFS mount point doesn't exists
 			// it creates
 			if (!JEM_GFS_FILE.exists()){
-				JEM_GFS_FILE.mkdirs();
+				if (!JEM_GFS_FILE.mkdirs()){
+					throw new IOException("Unable to create GFS folder: "+JEM_GFS_FILE.getAbsolutePath());
+				}
 			}
 			
 			// checks all GFS folders and if not exists it creates them
@@ -158,7 +162,9 @@ public abstract class StartUp {
 			
 			// stores the JEM node on a temporary file
 			File tempProperties = File.createTempFile("jem", "tmp");
-			props.store(new FileWriter(tempProperties), "Docker setup");
+			FileWriterWithEncoding writer = new FileWriterWithEncoding(tempProperties, CharSet.DEFAULT);
+			props.store(writer, "Docker setup");
+			IOUtils.closeQuietly(writer);
 			
 			// serializes when more than 1 container is starting at the same time
 			// it uses a file of GFS to serialize the configuration creation
@@ -194,8 +200,11 @@ public abstract class StartUp {
 			rc = 1;
 		} finally {
 			// unlocks always teh file
-			if (fileLock !=null){
-				fileLock.delete();	
+			if (fileLock != null){
+				if (!fileLock.delete()){
+					// FIXME
+					LogAppl.getInstance().debug("Unable to delete "+fileLock);
+				}
 			}
 		}
 		return rc;
@@ -207,13 +216,15 @@ public abstract class StartUp {
 	 * @param what GFS folder
 	 * @return the created file
 	 */
-	private static File createFolder(File parent, String what){
+	private static File createFolder(File parent, String what) throws IOException{
 		// creates file
 		File file = new File(parent, what);
 		// if not exists
 		if (!file.exists()){
 			// creates!!
-			file.mkdirs();
+			if (!file.mkdirs()){
+				throw new IOException("Unable to create folder: "+file);
+			}
 		}
 		return file;
 	}

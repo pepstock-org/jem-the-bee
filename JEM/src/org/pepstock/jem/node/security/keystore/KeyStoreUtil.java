@@ -31,6 +31,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.UUID;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -55,6 +56,8 @@ import com.hazelcast.config.SocketInterceptorConfig;
 public class KeyStoreUtil {
 
 	private static KeyStoresInfo INFO = null;
+	
+	private static final String CERTIFICATE_PASSWORD = UUID.randomUUID().toString();
 	
 	/**
 	 * Private constructor to avoid any instantiation 
@@ -86,15 +89,15 @@ public class KeyStoreUtil {
 	public static SSLServerSocketFactory getSSLServerSocketFactory() throws KeyStoreException {
 		try {
 			// gets a key stores created at runtime
-			ByteArrayInputStream baos = SelfSignedCertificate.getCertificate();
+			ByteArrayInputStream baos = SelfSignedCertificate.getCertificate(CERTIFICATE_PASSWORD);
 			KeyStore keystore  = KeyStore.getInstance("jks");
 			// loads the keystore
-			keystore.load(baos, SelfSignedCertificate.CERTIFICATE_PASSWORD.toCharArray());
+			keystore.load(baos, CERTIFICATE_PASSWORD.toCharArray());
 			KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(
 					KeyManagerFactory.getDefaultAlgorithm());
 			
 			// initialiazes the key manager
-			kmfactory.init(keystore, SelfSignedCertificate.CERTIFICATE_PASSWORD.toCharArray());
+			kmfactory.init(keystore, CERTIFICATE_PASSWORD.toCharArray());
 			KeyManager[] keymanagers = kmfactory.getKeyManagers();
 			// creates SSL socket factory
 			SSLContext sslcontext = SSLContext.getInstance("TLS");

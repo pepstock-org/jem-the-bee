@@ -29,7 +29,6 @@ import org.pepstock.jem.node.configuration.ConfigurationException;
 
 /**
  * Starts a TPC listener to submit JOB inside job.<br>
- * FIXME
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -45,6 +44,10 @@ public final class TcpInternalSubmitter implements ShutDownInterface {
 	private TcpInternalSubmitter() {
 	}
 	
+	/**
+	 * Returns the private instance beinga singleton
+	 * @return a static instance
+	 */
 	public static TcpInternalSubmitter getInstance(){
 		return INSTANCE;
 	}
@@ -65,13 +68,13 @@ public final class TcpInternalSubmitter implements ShutDownInterface {
 
 	/**
 	 * Starts the TCP listener.
+	 * @param socketAddress Socket address to bind in listening
 	 * 
 	 * @throws ConfigurationException if any errors occurs
 	 */
 	public static synchronized void start(InetSocketAddress socketAddress) throws ConfigurationException {
 		if (INSTANCE.getServer() != null){
-			// FIXME
-			throw new ConfigurationException("Unable to start more than 1 time the TCP server");
+			throw new ConfigurationException(ProtocolMessage.JEME002E.toMessage().getFormattedMessage());
 		}
 		// creates the listener
 		try {
@@ -83,8 +86,7 @@ public final class TcpInternalSubmitter implements ShutDownInterface {
 			Future<Boolean> future = server.isStarted(); 
 
 			if (future.get()){
-				// TODO logs
-				System.out.println("Server started on "+socketAddress);
+				LogAppl.getInstance().emit(ProtocolMessage.JEME001I, socketAddress.toString());
 				INSTANCE.setServer(server);
 			}
         } catch (Exception e) {
@@ -97,7 +99,10 @@ public final class TcpInternalSubmitter implements ShutDownInterface {
 	 */
 	@Override
 	public void shutdown() throws NodeException, NodeMessageException {
+		// called when JEM node is shutting down
 		if (server != null){
+			// if server is available
+			// closes it
 			server.shutdown();
 			LogAppl.getInstance().emit(NodeMessage.JEMC069I, StringUtils.substringAfterLast(TcpInternalSubmitter.class.getName(), "."));
 		}

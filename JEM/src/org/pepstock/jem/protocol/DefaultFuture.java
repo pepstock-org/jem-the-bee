@@ -23,10 +23,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * Common future used to communicate to the user because all IO operations are non-blocking
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
-public class DefaultFuture<T> implements Future<T> {
+class DefaultFuture<T> implements Future<T> {
 	
 	private CountDownLatch countDown = new CountDownLatch(1);
 	
@@ -64,6 +66,7 @@ public class DefaultFuture<T> implements Future<T> {
 	@Override
 	public T get() throws InterruptedException, ExecutionException {
 		try {
+			// waits forever
 			return get(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (TimeoutException e) {
 			throw new ExecutionException(e);
@@ -75,30 +78,54 @@ public class DefaultFuture<T> implements Future<T> {
 	 */
 	@Override
 	public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+		// if OK, return the value
 		if (isDone()){
 			return get0();
 		}
+		// wait
 		await0(timeout, unit);
+		// if the future has got 
+		// the exception, throws it
 		if (exception != null){
 			throw exception;
 		}
+		// return the object
 		return object;
 	}
 	
+	/**
+	 * Returns the object
+	 * @return object 
+	 */
 	T getObject(){
 		return object;
 	}
 	
+	/**
+	 * Sets the object and notify the wait that is ended
+	 * @param object object to set into future
+	 */
 	void setObjectAndNotify(T object){
 		this.object = object;
 		countDown.countDown();
 	}
 
+	/**
+	 * Sets the exception and notify the wait that is ended
+	 * @param exception exception occurred during the connection with server
+	 */
 	void setExcetpionAndNotify(ExecutionException exception){
 		this.exception = exception;
 		countDown.countDown();
 	}
 	
+	/**
+	 * Waits for a time period. If period is ended, throw a timeout.
+	 * @param timeout period of time
+	 * @param unit unit of time
+	 * @throws InterruptedException if any error occurs
+	 * @throws TimeoutException if it went in timeout
+	 */
 	private void await0(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException{
 		boolean endedOk= countDown.await(timeout, unit);
 		if (!endedOk){
@@ -106,6 +133,11 @@ public class DefaultFuture<T> implements Future<T> {
 		}
 	}
 
+	/**
+	 * Returns the object 
+	 * @return the object
+	 * @throws ExecutionException if there is an exception
+	 */
 	private T get0() throws ExecutionException{
 		if (exception != null){
 			throw exception;

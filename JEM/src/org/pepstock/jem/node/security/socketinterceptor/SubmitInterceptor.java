@@ -62,17 +62,17 @@ public class SubmitInterceptor implements SocketInterceptor {
 	/**
 	 * the private key for secure communication between client and cluster
 	 */
-	public static String PRIVATE_KEY_FILE_PATH="privateKeyFilePath";
+	public static final String PRIVATE_KEY_FILE_PATH = "privateKeyFilePath";
 	
 	/**
 	 * the password for the private key for secure communication between client and cluster
 	 */
-	public static String KEY_PASSWORD="keyPassword";
+	public static final String KEY_PASSWORD = "keyPassword";
 
 	/**
 	 * the subject id relative to the private key so to be able to search it in the keystore
 	 */
-	public static String SUBJECT_ID="subjectId";
+	public static final String SUBJECT_ID = "subjectId";
 	
 	/**
 	 * 

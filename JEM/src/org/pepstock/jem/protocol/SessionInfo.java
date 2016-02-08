@@ -17,9 +17,16 @@
 package org.pepstock.jem.protocol;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import org.pepstock.jem.util.JobIdGenerator;
+
 /**
+ * Contains the session information from client perspective.<br>
+ * The client configuration feeds it.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -28,12 +35,30 @@ public class SessionInfo extends Credentials implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private final String id = UUID.randomUUID().toString();
+	
+	private final String futureId = JobIdGenerator.createRandomJobId();
+	
+	private final Set<String> jobIds = new HashSet<String>();
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return the futureId
+	 */
+	public String getFutureId() {
+		return futureId;
+	}
+
+	/**
+	 * @return the jobIds
+	 */
+	public Set<String> getJobIds() {
+		return jobIds;
 	}
 
 	/* (non-Javadoc)

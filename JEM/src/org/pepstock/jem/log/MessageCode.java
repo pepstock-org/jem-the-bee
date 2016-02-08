@@ -47,6 +47,10 @@ public enum MessageCode {
 	 */
 	JPPF("J"),
 	/**
+	 * GWT and user interface module
+	 */
+	TCP_SERVER("E"),
+	/**
 	 * Core JEM module
 	 */	
 	NODE("C"),

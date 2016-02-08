@@ -17,28 +17,91 @@
 package org.pepstock.jem.protocol;
 
 /**
+ * List of codes of messages used into the communication protocol to identify which
+ * kind of message is coming.<br>
+ * <pre>
+ * Client                                 Server
+ *   | SESSION_CREATED                      |
+ *   |+------------------------------------>|             
+ *   |                      SESSION_CREATED |
+ *   |<------------------------------------+|
+ *   |                            ENDED_JOB |
+ *   |<------------------------------------+|
+ *   |                          GET_MEMBERS | 
+ *   |<------------------------------------+|
+ *   | GET_JOBID                            |
+ *   |+------------------------------------>|             
+ *   |                            GET_JOBID |
+ *   |<------------------------------------+|
+ *   | SUBMIT_JOB                           |
+ *   |+------------------------------------>|             
+ *   |                            ENDED_JOB |
+ *   |<------------------------------------+|
+ *   | GET_PRINT_OUTPUT                     |
+ *   |+------------------------------------>|             
+ *   |                     GET_PRINT_OUTPUT |
+ *   |<------------------------------------+|
+ *
+ *   Heartbeat:   
+ *   
+ *   | HEARTBEAT                            |
+ *   |+------------------------------------>|             
+ *   |                            HEARTBEAT |
+ *   |<------------------------------------+|
+ *   
+ * </pre>  
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
 public final class MessageCodes {
 	
-	public static final int SESSION_CREATED = 0;
+	/**
+	 * From client to server
+	 */
+	public static final int SESSION_CREATED = 1;
 	
-	public static final int SESSION_CLOSE = 1;
+	/**
+	 * From server to client
+	 */	
+	public static final int GET_JOBID = 2;
 
-	public static final int MEMBERS = 2;
+	/**
+	 * From client to server
+	 */
+	public static final int SUBMIT_JOB = 3;
 
-	public static final int EXCEPTION = 3;
+	/**
+	 * From server to client
+	 */	
+	public static final int ENDED_JOB = 4;
+
+	/**
+	 * From server to client
+	 */	
+	public static final int GET_PRINT_OUTPUT = 5;
+
+	/**
+	 * From server to client
+	 */	
+	public static final int GET_MEMBERS = 100;
+
+	/**
+	 * From server to client and viceversa
+	 */	
+	public static final int HEARTBEAT = 101;
+
+	/**
+	 * From server to client
+	 */	
+	public static final int INVALID_PROTOCOL = 102;
+
+	/**
+	 * From server to server
+	 */	
+	public static final int FORCE_CLOSE_SESSION = 103;
+
 	
-	public static final int JOBID = 4;
-	
-	public static final int HEARTBEAT = 5;
-	
-	public static final int SUBMIT_JOB = 6;
-	
-	public static final int ENDED_JOB = 7;
-	
-	public static final int PRINT_OUTPUT = 8;
 	/**
 	 * To avoid any instantiation
 	 */

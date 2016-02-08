@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.pepstock.jem.util.Parser;
 
 /**
+ * Contains all information necessary to connect to JEM cluster.
+ * 
  * @author Andrea "Stock" Stocchero
  * @version 3.0
  */
@@ -36,15 +38,21 @@ public class ClientConfig extends Credentials {
 	private List<InetSocketAddress> storedAddresses = new ArrayList<InetSocketAddress>();
 	
 	/**
-	 * FIXME
-	 * @param addresses
+	 * Adds a list of addresses which represents JEM cluster
+	 * @param addresses nodes of JEM cluster, format [ip]:[port]
 	 */
 	public void addAddresses(String... addresses){
+		// checks if parameter is correct
 		if (addresses != null && addresses.length > 0){
+			// scans all addresses
 			for (String address : addresses){
+				// gets ip address of host
 				String host = StringUtils.substringBefore(address, ":");
+				// gets port
 				int port = Parser.parseInt(StringUtils.substringAfter(address, ":"), -1);
+				// if has got correct data
 				if (port > -1 && host != null){
+					// adds to addresses list
 					InetSocketAddress socketAddress = new InetSocketAddress(host, port);
 					storedAddresses.add(socketAddress);
 				}
@@ -52,9 +60,22 @@ public class ClientConfig extends Credentials {
 		}
 	}
 
-	void clearAndAddAddresses(List<String> addresses){
-		storedAddresses.clear();
-		addAddresses(addresses.toArray(new String[0]));
+	/**
+	 * Called when the client receives a message from server with all JEM nodes.
+	 * @param addresses nodes of JEM cluster, format [ip]:[port], comma separated
+	 */
+	void clearAndAddAddresses(String addresses){
+		// checks parameter
+		if (addresses != null){
+			// splits by comma
+			String[] values = addresses.split(",");
+			// checks after split if correct
+			if (values != null && values.length > 0){
+				// clears the set and adds all addresses
+				storedAddresses.clear();
+				addAddresses(values);
+			}
+		}
 	}
 	
 	/**
