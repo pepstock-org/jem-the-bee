@@ -49,7 +49,7 @@ Download previous versions from [here](http://jemthebee.org/index.php/downloads/
  * Submitting jobs by scripts and by **NodeJS**, to reduce the amount of needed memory if necessary 
  * **License**: JEM, the BEE is under GPL version 3!! JEM, the BEE Eclipse plugin is under EPL version 1
  
-###Let's start###
+###Let's get started###
  
 Read the [wiki](../../wiki/Home) to see in details all capabilities of JEM.
 Start with the [installation instructions](../../wiki/Installation). Enjoy!
