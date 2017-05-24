@@ -1,12 +1,12 @@
-#jem-the-bee
+# jem-the-bee
 
-##Version 2.3 Bergamotto has been released!
+## Version 2.3 Bergamotto has been released!
  
 Download previous versions from [here](http://jemthebee.org/index.php/downloads/)!
 
 **Play with JEM version 2.1!** Download the sandbox from [here](http://www.pepstock.org/download/jem-v2.1-centos-x64-sandbox.ova), for both Virtual Box and VMWare player, and try it!
  
-###What's new in release 2.3?###
+### What's new in release 2.3?###
   
   * **[Multiple java runtimes](../../wiki/ConfiguringJEMNode)** which allows you to use the JRE you need for business logic
   * **[SpringBatch restartability](../../wiki/JCLReferenceUsingSpringBatch#restartability)** out of the box, provided by JEM
@@ -16,11 +16,11 @@ Download previous versions from [here](http://jemthebee.org/index.php/downloads/
   * JEM is distributed compiled by Java 7
  
  
-###What is it?###
+### What is it?###
  
 **JEM** is java and cloud application which implements a batch execution environment which is able to manage the execution of batches. You could consider it as an application server for batches and long running activities.
  
-###Main features###
+### Main features###
  
  * **Cloud-aware**: runs on cluster mode
  * **Cross platform**: is a java application, so can run everywhere!
@@ -49,7 +49,7 @@ Download previous versions from [here](http://jemthebee.org/index.php/downloads/
  * Submitting jobs by scripts and by **NodeJS**, to reduce the amount of needed memory if necessary 
  * **License**: JEM, the BEE is under GPL version 3!! JEM, the BEE Eclipse plugin is under EPL version 1
  
-###Let's get started###
+### Let's get started###
  
 Read the [wiki](../../wiki/Home) to see in details all capabilities of JEM.
 Start with the [installation instructions](../../wiki/Installation). Enjoy!
