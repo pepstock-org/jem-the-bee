@@ -1,6 +1,6 @@
-# jem-the-bee
+#jem-the-bee
 
-##Version 2.3 Bergamotto has been released!##
+##Version 2.3 Bergamotto has been released!
  
 Download previous versions from [here](http://jemthebee.org/index.php/downloads/)!
 
